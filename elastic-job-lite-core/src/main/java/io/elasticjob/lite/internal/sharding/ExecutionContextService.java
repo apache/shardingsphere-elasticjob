@@ -35,8 +35,6 @@ import java.util.Map;
 
 /**
  * 作业运行时上下文服务.
- * 
- * @author zhangliang
  */
 public final class ExecutionContextService {
     

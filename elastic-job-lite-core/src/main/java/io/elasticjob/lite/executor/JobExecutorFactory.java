@@ -29,8 +29,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 作业执行器工厂.
- *
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorFactory {

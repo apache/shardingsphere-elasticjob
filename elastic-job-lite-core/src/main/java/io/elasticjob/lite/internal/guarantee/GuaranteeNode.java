@@ -22,8 +22,6 @@ import com.google.common.base.Joiner;
 
 /**
  * 保证分布式任务全部开始和结束状态节点路径.
- * 
- * @author zhangliang
  */
 public final class GuaranteeNode {
     

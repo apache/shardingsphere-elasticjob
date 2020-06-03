@@ -25,9 +25,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 重调度监听管理器.
- * 
- * @author caohao
- * @author zhangliang
  */
 public final class RescheduleListenerManager extends AbstractListenerManager {
     

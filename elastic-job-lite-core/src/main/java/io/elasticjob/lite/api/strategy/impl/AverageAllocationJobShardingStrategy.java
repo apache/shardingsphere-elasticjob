@@ -36,8 +36,6 @@ import java.util.Map;
  * 2. 如果有3台服务器, 分成8片, 则每台服务器分到的分片是: 1=[0,1,6], 2=[2,3,7], 3=[4,5].
  * 3. 如果有3台服务器, 分成10片, 则每台服务器分到的分片是: 1=[0,1,2,9], 2=[3,4,5], 3=[6,7,8].
  * </p>
- * 
- * @author zhangliang
  */
 public final class AverageAllocationJobShardingStrategy implements JobShardingStrategy {
     

@@ -43,8 +43,6 @@ import java.util.Map;
 
 /**
  * 作业分片服务.
- * 
- * @author zhangliang
  */
 @Slf4j
 public final class ShardingService {

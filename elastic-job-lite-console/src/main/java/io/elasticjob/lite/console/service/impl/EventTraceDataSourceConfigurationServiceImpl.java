@@ -27,8 +27,6 @@ import com.google.common.base.Optional;
 
 /**
  * 事件追踪数据源配置服务实现类.
- *
- * @author caohao
  */
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     

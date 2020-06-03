@@ -19,8 +19,6 @@ package io.elasticjob.lite.internal.config;
 
 /**
  * Lite配置的常量.
- *
- * @author caohao
  */
 public final class LiteJobConfigurationConstants {
     

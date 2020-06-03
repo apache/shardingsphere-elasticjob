@@ -29,8 +29,6 @@ import java.sql.SQLException;
 
 /**
  * 作业数据库事件配置.
- *
- * @author caohao
  */
 @RequiredArgsConstructor
 @Getter

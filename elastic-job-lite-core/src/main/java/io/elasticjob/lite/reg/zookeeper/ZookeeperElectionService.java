@@ -28,9 +28,6 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * 使用{@link LeaderSelector}实现选举服务.
- * 
- * @author gaohongtao
- * @author caohao
  */
 @Slf4j
 public final class ZookeeperElectionService {

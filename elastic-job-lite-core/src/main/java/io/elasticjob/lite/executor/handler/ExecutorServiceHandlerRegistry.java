@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * 线程池服务处理器注册表.
- * 
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExecutorServiceHandlerRegistry {

@@ -24,8 +24,6 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * 分布式作业的命名空间处理器.
- * 
- * @author caohao
  */
 public final class JobNamespaceHandler extends NamespaceHandlerSupport {
     

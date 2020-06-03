@@ -26,8 +26,6 @@ import java.util.Collection;
 
 /**
  * 作业内部服务门面服务.
- * 
- * @author zhangliang
  */
 public interface JobFacade {
     

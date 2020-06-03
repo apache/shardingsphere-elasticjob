@@ -35,9 +35,6 @@ import java.util.EnumSet;
 
 /**
  * REST API的内嵌服务器.
- *
- * @author zhangliang
- * @author caohao
  */
 @Slf4j
 public final class RestfulServer {

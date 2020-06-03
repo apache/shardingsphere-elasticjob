@@ -29,8 +29,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 分片监听管理器.
- * 
- * @author zhangliang
  */
 public final class ShardingListenerManager extends AbstractListenerManager {
     

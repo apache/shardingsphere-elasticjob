@@ -33,8 +33,6 @@ import java.util.regex.Pattern;
 
 /**
  * 敏感信息过滤工具类.
- * 
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SensitiveInfoUtils {

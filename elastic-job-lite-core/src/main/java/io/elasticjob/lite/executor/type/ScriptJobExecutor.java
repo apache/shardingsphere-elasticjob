@@ -31,9 +31,6 @@ import java.io.IOException;
 
 /**
  * 脚本作业执行器.
- * 
- * @author zhangliang
- * @author caohao
  */
 public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     

@@ -19,8 +19,6 @@ package io.elasticjob.lite.lifecycle.restful;
 
 /**
  * REST API异常.
- *
- * @author zhangliang
  */
 public final class RestfulException extends RuntimeException {
     

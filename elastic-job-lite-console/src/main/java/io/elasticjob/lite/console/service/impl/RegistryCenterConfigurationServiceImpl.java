@@ -27,8 +27,6 @@ import com.google.common.base.Optional;
 
 /**
  * 注册中心配置服务实现类.
- *
- * @author zhangliang
  */
 public final class RegistryCenterConfigurationServiceImpl implements RegistryCenterConfigurationService {
     

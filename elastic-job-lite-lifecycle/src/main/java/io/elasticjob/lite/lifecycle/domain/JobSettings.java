@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
  * 作业设置对象.
- * 
- * @author zhangliang
  */
 @Getter
 @Setter

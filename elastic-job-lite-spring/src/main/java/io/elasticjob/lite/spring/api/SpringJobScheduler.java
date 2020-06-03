@@ -30,9 +30,6 @@ import io.elasticjob.lite.spring.job.util.AopTargetUtils;
 
 /**
  * 基于Spring的作业启动器.
- *
- * @author caohao
- * @author zhangliang
  */
 public final class SpringJobScheduler extends JobScheduler implements DisposableBean {
     
@@ -61,10 +58,9 @@ public final class SpringJobScheduler extends JobScheduler implements Disposable
     protected Optional<ElasticJob> createElasticJobInstance() {
         return Optional.fromNullable(elasticJob);
     }
-
-	@Override
-	public void destroy() throws Exception {
-		shutdown();
-	}
     
+    @Override
+    public void destroy() {
+        shutdown();
+    }
 }

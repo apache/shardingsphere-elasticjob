@@ -34,8 +34,6 @@ import java.util.Collection;
 
 /**
  * 服务器维度操作的RESTful API.
- *
- * @author caohao
  */
 @Path("/servers")
 public final class ServerOperationRestfulApi {

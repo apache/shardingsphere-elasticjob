@@ -19,8 +19,6 @@ package io.elasticjob.lite.exception;
 
 /**
  * 作业统计异常.
- * 
- * @author liguangyun
  */
 public final class JobStatisticException extends RuntimeException {
     

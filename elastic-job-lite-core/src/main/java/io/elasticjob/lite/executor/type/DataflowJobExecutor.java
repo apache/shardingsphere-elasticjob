@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * 数据流作业执行器.
- * 
- * @author zhangliang
  */
 public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     

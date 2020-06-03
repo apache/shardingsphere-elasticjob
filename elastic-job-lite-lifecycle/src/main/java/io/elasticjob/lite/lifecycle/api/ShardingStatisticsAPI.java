@@ -23,8 +23,6 @@ import java.util.Collection;
 
 /**
  * 作业分片状态展示的API.
- *
- * @author caohao
  */
 public interface ShardingStatisticsAPI {
     

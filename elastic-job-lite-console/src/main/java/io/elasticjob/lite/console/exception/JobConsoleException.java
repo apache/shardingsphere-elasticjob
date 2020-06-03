@@ -19,8 +19,6 @@ package io.elasticjob.lite.console.exception;
 
 /**
  * 控制台异常.
- *
- * @author zhangliang
  */
 public final class JobConsoleException extends RuntimeException {
     

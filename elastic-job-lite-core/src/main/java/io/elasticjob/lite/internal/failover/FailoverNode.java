@@ -23,8 +23,6 @@ import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
  * 失效转移节点路径.
- * 
- * @author zhangliang
  */
 public final class FailoverNode {
     

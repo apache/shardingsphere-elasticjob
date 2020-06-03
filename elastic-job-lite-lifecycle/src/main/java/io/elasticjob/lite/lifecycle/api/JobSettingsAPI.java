@@ -21,8 +21,6 @@ import io.elasticjob.lite.lifecycle.domain.JobSettings;
 
 /**
  * 作业配置的API.
- *
- * @author zhangliang
  */
 public interface JobSettingsAPI {
     

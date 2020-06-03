@@ -33,8 +33,6 @@ import java.util.List;
 
 /**
  * 失效转移监听管理器.
- * 
- * @author zhangliang
  */
 public final class FailoverListenerManager extends AbstractListenerManager {
     

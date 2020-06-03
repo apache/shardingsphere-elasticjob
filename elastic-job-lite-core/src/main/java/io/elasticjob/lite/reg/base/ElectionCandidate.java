@@ -21,8 +21,6 @@ package io.elasticjob.lite.reg.base;
  * 选举候选人.
  * 保证{@link #startLeadership()}与{@link #stopLeadership()}方法在同一个线程内交替运行,
  * 且不会出现并发执行的情况.
- * 
- * @author gaohongtao
  */
 public interface ElectionCandidate {
     

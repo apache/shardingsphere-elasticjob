@@ -24,8 +24,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 事件追踪数据源配置的会话声明周期.
- *
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SessionEventTraceDataSourceConfiguration {

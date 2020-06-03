@@ -21,9 +21,6 @@ import io.elasticjob.lite.api.JobType;
 
 /**
  * 作业类型配置.
- * 
- * @author caohao
- * @author zhangliang
  */
 public interface JobTypeConfiguration {
     

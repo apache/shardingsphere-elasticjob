@@ -19,8 +19,6 @@ package io.elasticjob.lite.lifecycle.api;
 
 /**
  * 操作分片的API.
- *
- * @author caohao
  */
 public interface ShardingOperateAPI {
     

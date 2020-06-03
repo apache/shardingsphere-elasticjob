@@ -43,8 +43,6 @@ import java.util.List;
 
 /**
  * 为作业提供内部服务的门面类.
- * 
- * @author zhangliang
  */
 @Slf4j
 public final class LiteJobFacade implements JobFacade {

@@ -22,8 +22,6 @@ import java.util.Map;
 
 /**
  * 作业分片策略.
- * 
- * @author zhangliang
  */
 public interface JobShardingStrategy {
     

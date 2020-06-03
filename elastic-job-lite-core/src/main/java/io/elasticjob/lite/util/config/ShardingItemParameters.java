@@ -28,8 +28,6 @@ import java.util.Map;
 
 /**
  * 分片序列号个性化参数.
- *
- * @author zhangliang
  */
 @Getter
 public final class ShardingItemParameters {

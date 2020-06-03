@@ -21,8 +21,6 @@ import java.io.IOException;
 
 /**
  * 网络主机异常.
- * 
- * @author zhangliang
  */
 public final class HostException extends RuntimeException {
     

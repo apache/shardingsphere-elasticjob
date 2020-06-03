@@ -26,8 +26,6 @@ import java.util.Date;
 
 /**
  * 任务运行结果统计数据.
- *
- * @author liguangyun
  */
 @Getter
 @AllArgsConstructor

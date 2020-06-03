@@ -30,8 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 事件追踪数据源工厂.
- *
- * @author zhangxinguo
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EventTraceDataSourceFactory {

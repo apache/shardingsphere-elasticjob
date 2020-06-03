@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 数据流作业属性解析标签.
- *
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataflowJobBeanDefinitionParserTag {

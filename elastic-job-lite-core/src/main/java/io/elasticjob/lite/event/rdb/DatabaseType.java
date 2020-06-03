@@ -25,8 +25,6 @@ import java.util.Arrays;
 
 /**
  * 支持的数据库类型.
- * 
- * @author caohao
  */
 public enum DatabaseType {
     

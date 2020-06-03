@@ -25,8 +25,6 @@ import lombok.Setter;
 
 /**
  * 在分布式作业中只执行一次的监听器.
- * 
- * @author zhangliang
  */
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     

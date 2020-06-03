@@ -30,8 +30,6 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
  * 注册中心连接状态监听器.
- *
- * @author zhangliang
  */
 public final class RegistryCenterConnectionStateListener implements ConnectionStateListener {
     

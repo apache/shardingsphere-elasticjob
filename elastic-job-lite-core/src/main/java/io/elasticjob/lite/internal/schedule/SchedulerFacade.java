@@ -34,8 +34,6 @@ import java.util.List;
 
 /**
  * 为调度器提供内部服务的门面类.
- * 
- * @author zhangliang
  */
 public final class SchedulerFacade {
     

@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * 分片项工具类.
- *
- * @author zhangliang
  */
 @Getter
 public final class ShardingItems {

@@ -19,8 +19,6 @@ package io.elasticjob.lite.event;
 
 /**
  * 作业事件监听器配置异常.
- * 
- * @author zhangliang
  */
 public final class JobEventListenerConfigurationException extends Exception {
     

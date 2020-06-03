@@ -40,8 +40,6 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * 弹性化分布式作业执行器.
- *
- * @author zhangliang
  */
 @Slf4j
 public abstract class AbstractElasticJobExecutor {

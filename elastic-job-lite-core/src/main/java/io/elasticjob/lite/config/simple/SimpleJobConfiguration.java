@@ -25,9 +25,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 简单作业配置.
- * 
- * @author caohao
- * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter

@@ -39,8 +39,6 @@ import java.util.List;
 
 /**
  * 统计信息数据仓库，基于数据库.
- *
- * @author liguangyun
  */
 @Slf4j
 public class StatisticRdbRepository {

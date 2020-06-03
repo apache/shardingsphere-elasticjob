@@ -21,8 +21,6 @@ import io.elasticjob.lite.api.ElasticJob;
 
 /**
  * 脚本分布式作业接口.
- * 
- * @author zhangliang
  */
 public interface ScriptJob extends ElasticJob {
 }

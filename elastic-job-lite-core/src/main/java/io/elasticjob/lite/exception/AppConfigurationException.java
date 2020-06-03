@@ -19,8 +19,6 @@ package io.elasticjob.lite.exception;
 
 /**
  * 作业App配置异常.
- * 
- * @author caohao
  */
 public final class AppConfigurationException extends RuntimeException {
     

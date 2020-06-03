@@ -33,9 +33,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 作业配置的实现类.
- *
- * @author zhangliang
- * @author caohao
  */
 @RequiredArgsConstructor
 public final class JobSettingsAPIImpl implements JobSettingsAPI {

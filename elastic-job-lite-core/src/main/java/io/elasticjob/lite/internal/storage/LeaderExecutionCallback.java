@@ -19,8 +19,6 @@ package io.elasticjob.lite.internal.storage;
 
 /**
  * 主节点执行操作的回调接口.
- * 
- * @author zhangliang
  */
 public interface LeaderExecutionCallback {
     

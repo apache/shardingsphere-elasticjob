@@ -28,8 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 主节点服务.
- * 
- * @author zhangliang
  */
 @Slf4j
 public final class LeaderService {

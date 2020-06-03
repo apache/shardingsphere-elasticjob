@@ -39,8 +39,6 @@ import java.util.Collection;
 
 /**
  * 注册中心配置的RESTful API.
- *
- * @author caohao
  */
 @Path("/registry-center")
 public final class RegistryCenterRestfulApi {

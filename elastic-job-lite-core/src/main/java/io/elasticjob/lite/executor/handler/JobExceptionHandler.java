@@ -19,8 +19,6 @@ package io.elasticjob.lite.executor.handler;
 
 /**
  * 作业异常处理器.
- *
- * @author zhangliang
  */
 public interface JobExceptionHandler {
     

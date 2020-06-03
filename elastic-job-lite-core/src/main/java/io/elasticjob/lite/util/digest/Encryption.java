@@ -27,8 +27,6 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * 字符串加密工具类.
- *
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Encryption {

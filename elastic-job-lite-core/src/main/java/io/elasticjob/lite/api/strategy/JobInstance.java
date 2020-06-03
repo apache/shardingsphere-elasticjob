@@ -26,8 +26,6 @@ import java.lang.management.ManagementFactory;
 
 /**
  * 作业运行实例.
- * 
- * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter

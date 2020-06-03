@@ -23,8 +23,6 @@ import lombok.ToString;
 
 /**
  * 分片上下文.
- * 
- * @author zhangliang
  */
 @Getter
 @ToString

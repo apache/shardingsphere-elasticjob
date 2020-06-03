@@ -21,8 +21,6 @@ import io.elasticjob.lite.console.domain.GlobalConfiguration;
 
 /**
  * 基于XML的全局配置数据访问器.
- *
- * @author zhangliang
  */
 public interface ConfigurationsXmlRepository extends XmlRepository<GlobalConfiguration> {
 }

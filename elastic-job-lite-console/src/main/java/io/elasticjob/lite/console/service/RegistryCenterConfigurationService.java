@@ -23,8 +23,6 @@ import com.google.common.base.Optional;
 
 /**
  * 注册中心配置服务.
- *
- * @author zhangliang
  */
 public interface RegistryCenterConfigurationService {
     

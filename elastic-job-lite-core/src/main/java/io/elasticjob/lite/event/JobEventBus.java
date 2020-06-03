@@ -24,9 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 运行痕迹事件总线.
- * 
- * @author zhangliang
- * @author caohao
  */
 @Slf4j
 public final class JobEventBus {

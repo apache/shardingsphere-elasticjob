@@ -37,8 +37,6 @@ import java.util.List;
 
 /**
  * 作业监控服务.
- * 
- * @author caohao
  */
 @Slf4j
 public final class MonitorService {

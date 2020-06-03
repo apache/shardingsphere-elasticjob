@@ -27,8 +27,6 @@ import org.quartz.spi.ClassLoadHelper;
 
 /**
  * 作业关闭钩子.
- *
- * @author zhangliang
  */
 public final class JobShutdownHookPlugin extends ShutdownHookPlugin {
     

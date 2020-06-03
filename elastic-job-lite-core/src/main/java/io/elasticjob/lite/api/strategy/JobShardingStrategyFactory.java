@@ -25,8 +25,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 作业分片策略工厂.
- * 
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobShardingStrategyFactory {

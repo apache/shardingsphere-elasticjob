@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * 作业分片信息对象.
- *
- * @author caohao
  */
 @Getter
 @Setter
@@ -50,8 +48,6 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     
     /**
      * 作业分片状态.
-     *
-     * @author caohao
      */
     public enum ShardingStatus {
         

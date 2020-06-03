@@ -24,8 +24,6 @@ import io.elasticjob.lite.event.type.JobStatusTraceEvent;
 
 /**
  * 作业事件监听器.
- *
- * @author zhangliang
  */
 public interface JobEventListener extends JobEventIdentity {
     

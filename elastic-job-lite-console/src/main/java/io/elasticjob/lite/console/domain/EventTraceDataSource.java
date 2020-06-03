@@ -26,8 +26,6 @@ import java.sql.SQLException;
 
 /**
  * 事件追踪数据源.
- * 
- * @author zhangxinguo
  */
 @Slf4j
 public final class EventTraceDataSource {

@@ -44,8 +44,6 @@ import java.util.Map;
 
 /**
  * 事件追踪历史记录的RESTful API.
- *
- * @author zhangxinguo
  */
 @Path("/event-trace")
 public final class EventTraceHistoryRestfulApi {

@@ -33,8 +33,6 @@ import java.util.List;
 
 /**
  * 作业失效转移服务.
- * 
- * @author zhangliang
  */
 @Slf4j
 public final class FailoverService {

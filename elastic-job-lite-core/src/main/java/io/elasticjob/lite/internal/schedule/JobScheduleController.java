@@ -30,8 +30,6 @@ import org.quartz.TriggerKey;
 
 /**
  * 作业调度控制器.
- * 
- * @author zhangliang
  */
 @RequiredArgsConstructor
 public final class JobScheduleController {

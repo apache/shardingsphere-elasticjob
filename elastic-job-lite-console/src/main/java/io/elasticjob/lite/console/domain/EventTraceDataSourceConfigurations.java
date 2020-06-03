@@ -27,8 +27,6 @@ import java.util.Set;
 
 /**
  * 事件追踪数据源配置根对象.
- *
- * @author zhangxinguo
  */
 @Getter
 @XmlRootElement

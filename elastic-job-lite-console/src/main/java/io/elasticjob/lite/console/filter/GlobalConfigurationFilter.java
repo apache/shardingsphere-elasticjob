@@ -44,8 +44,6 @@ import java.io.IOException;
 
 /**
  * 全局配置过滤器.
- *
- * @author caohao
  */
 public final class GlobalConfigurationFilter implements Filter {
     
@@ -54,7 +52,7 @@ public final class GlobalConfigurationFilter implements Filter {
     private final EventTraceDataSourceConfigurationService rdbService = new EventTraceDataSourceConfigurationServiceImpl();
     
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) {
     }
     
     @Override

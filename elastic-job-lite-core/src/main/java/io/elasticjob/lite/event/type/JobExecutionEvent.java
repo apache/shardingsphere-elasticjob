@@ -30,8 +30,6 @@ import java.util.UUID;
 
 /**
  * 作业执行事件.
- *
- * @author zhangliang
  */
 @RequiredArgsConstructor
 @AllArgsConstructor

@@ -23,8 +23,6 @@ import com.google.common.base.Optional;
 
 /**
  * 事件追踪数据源配置服务.
- * 
- * @author caohao
  */
 public interface EventTraceDataSourceConfigurationService {
     

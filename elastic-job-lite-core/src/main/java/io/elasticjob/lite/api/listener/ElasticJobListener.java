@@ -21,8 +21,6 @@ import io.elasticjob.lite.executor.ShardingContexts;
 
 /**
  * 弹性化分布式作业监听器接口.
- * 
- * @author zhangliang
  */
 public interface ElasticJobListener {
     

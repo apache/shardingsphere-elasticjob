@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 
 /**
  * 服务器节点路径.
- * 
- * @author zhangliang
  */
 public final class ServerNode {
     

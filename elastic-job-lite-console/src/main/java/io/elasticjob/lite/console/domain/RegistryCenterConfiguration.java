@@ -29,8 +29,6 @@ import java.io.Serializable;
 
 /**
  * 注册中心配置.
- *
- * @author zhangliang
  */
 @Getter
 @Setter

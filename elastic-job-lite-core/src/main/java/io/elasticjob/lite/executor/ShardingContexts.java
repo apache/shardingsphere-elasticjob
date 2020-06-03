@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
  * 分片上下文集合.
- * 
- * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter

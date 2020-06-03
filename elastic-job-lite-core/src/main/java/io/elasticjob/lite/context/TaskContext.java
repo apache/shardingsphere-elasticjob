@@ -34,9 +34,6 @@ import java.util.UUID;
 
 /**
  * 任务运行时上下文.
- *
- * @author zhangliang
- * @author caohao
  */
 @Getter
 @EqualsAndHashCode(of = "id")

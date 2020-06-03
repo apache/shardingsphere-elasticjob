@@ -22,8 +22,6 @@ import io.elasticjob.lite.api.ShardingContext;
 
 /**
  * 简单分布式作业接口.
- * 
- * @author zhangliang
  */
 public interface SimpleJob extends ElasticJob {
     

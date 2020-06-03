@@ -21,8 +21,6 @@ import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 
 /**
  * 事务执行操作的回调接口.
- * 
- * @author zhangliang
  */
 public interface TransactionExecutionCallback {
     

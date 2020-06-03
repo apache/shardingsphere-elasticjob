@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 服务器维度简明信息对象.
- *
- * @author caohao
  */
 @RequiredArgsConstructor
 @Getter

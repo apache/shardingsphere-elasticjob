@@ -22,8 +22,6 @@ import io.elasticjob.lite.console.repository.ConfigurationsXmlRepository;
 
 /**
  * 基于XML的全局配置数据访问器实现类.
- *
- * @author zhangliang
  */
 public final class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
     

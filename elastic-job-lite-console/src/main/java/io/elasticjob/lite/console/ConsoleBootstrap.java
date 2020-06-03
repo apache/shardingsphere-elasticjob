@@ -28,8 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 界面启动器.
- *
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j

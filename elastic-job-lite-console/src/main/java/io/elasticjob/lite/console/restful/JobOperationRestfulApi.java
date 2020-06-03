@@ -35,8 +35,6 @@ import java.util.Collection;
 
 /**
  * 作业维度操作的RESTful API.
- *
- * @author caohao
  */
 @Path("/jobs")
 public final class JobOperationRestfulApi {

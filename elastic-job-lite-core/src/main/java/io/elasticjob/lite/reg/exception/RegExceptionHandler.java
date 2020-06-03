@@ -26,8 +26,6 @@ import org.apache.zookeeper.KeeperException.NodeExistsException;
 
 /**
  * 注册中心异常处理类.
- * 
- * @author zhangliang
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

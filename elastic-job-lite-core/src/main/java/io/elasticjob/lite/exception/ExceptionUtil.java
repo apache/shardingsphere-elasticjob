@@ -25,8 +25,6 @@ import java.io.StringWriter;
 
 /**
  * 异常处理工具类.
- *
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExceptionUtil {

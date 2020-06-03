@@ -28,8 +28,6 @@ import org.w3c.dom.Element;
 
 /**
  * 基于Zookeeper注册中心的命名空间解析器.
- * 
- * @author caohao
  */
 public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionParser {
     

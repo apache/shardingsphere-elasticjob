@@ -31,8 +31,6 @@ import com.google.common.base.Optional;
 
 /**
  * 作业API服务实现类.
- * 
- * @author zhangliang 
  */
 public final class JobAPIServiceImpl implements JobAPIService {
     

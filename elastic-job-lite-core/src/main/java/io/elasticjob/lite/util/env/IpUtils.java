@@ -28,8 +28,6 @@ import java.util.Enumeration;
 
 /**
  * 获取真实本机网络的服务.
- * 
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IpUtils {

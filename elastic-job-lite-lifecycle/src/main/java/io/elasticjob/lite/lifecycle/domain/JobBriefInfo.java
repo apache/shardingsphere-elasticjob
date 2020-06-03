@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * 作业简明信息对象.
- *
- * @author caohao
  */
 @Getter
 @Setter
@@ -52,8 +50,6 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     
     /**
      * 作业状态.
-     *
-     * @author caohao
      */
     public enum JobStatus {
         OK, 

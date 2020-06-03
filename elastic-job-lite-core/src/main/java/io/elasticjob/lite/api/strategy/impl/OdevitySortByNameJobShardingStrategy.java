@@ -35,8 +35,6 @@ import java.util.Map;
  * 1. 如果有3台服务器, 分成2片, 作业名称的哈希值为奇数, 则每台服务器分到的分片是: 1=[0], 2=[1], 3=[].
  * 2. 如果有3台服务器, 分成2片, 作业名称的哈希值为偶数, 则每台服务器分到的分片是: 3=[0], 2=[1], 1=[].
  * </p>
- * 
- * @author zhangliang
  */
 public final class OdevitySortByNameJobShardingStrategy implements JobShardingStrategy {
     

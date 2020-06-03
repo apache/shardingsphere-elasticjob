@@ -23,12 +23,9 @@ import io.elasticjob.lite.executor.JobFacade;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 /**
  * Lite调度作业.
- *
- * @author zhangliang
  */
 public final class LiteJob implements Job {
     
@@ -39,7 +36,7 @@ public final class LiteJob implements Job {
     private JobFacade jobFacade;
     
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) {
         JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
     }
 }

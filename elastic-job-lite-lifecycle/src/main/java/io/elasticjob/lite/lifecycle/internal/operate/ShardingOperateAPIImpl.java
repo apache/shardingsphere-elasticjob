@@ -23,8 +23,6 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 /**
  * 操作分片的实现类.
- *
- * @author caohao
  */
 public final class ShardingOperateAPIImpl implements ShardingOperateAPI {
     

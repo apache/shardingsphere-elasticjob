@@ -27,8 +27,6 @@ import java.util.Set;
 
 /**
  * 注册中心配置根对象.
- *
- * @author zhangliang
  */
 @Getter
 @XmlRootElement

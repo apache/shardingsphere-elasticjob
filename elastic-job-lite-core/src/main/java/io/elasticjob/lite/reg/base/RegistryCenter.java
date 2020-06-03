@@ -19,8 +19,6 @@ package io.elasticjob.lite.reg.base;
 
 /**
  * 注册中心.
- * 
- * @author zhangliang
  */
 public interface RegistryCenter {
     

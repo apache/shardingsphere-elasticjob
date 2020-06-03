@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * 作业运行实例服务.
- * 
- * @author zhangliang
  */
 public final class InstanceService {
     

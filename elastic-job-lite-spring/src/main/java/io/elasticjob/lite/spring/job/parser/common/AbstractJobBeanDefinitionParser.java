@@ -37,9 +37,6 @@ import java.util.List;
 
 /**
  * 基本作业的命名空间解析器.
- * 
- * @author zhangliang
- * @author caohao
  */
 public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     

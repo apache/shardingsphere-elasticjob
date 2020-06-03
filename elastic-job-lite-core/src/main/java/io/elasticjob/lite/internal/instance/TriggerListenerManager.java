@@ -25,8 +25,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 作业触发监听管理器.
- * 
- * @author zhangliang
  */
 public final class TriggerListenerManager extends AbstractListenerManager {
     

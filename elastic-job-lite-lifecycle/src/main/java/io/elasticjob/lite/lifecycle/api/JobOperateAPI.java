@@ -21,8 +21,6 @@ import com.google.common.base.Optional;
 
 /**
  * 操作作业的API.
- *
- * @author zhangliang
  */
 public interface JobOperateAPI {
     

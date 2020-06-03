@@ -21,8 +21,6 @@ import io.elasticjob.lite.event.JobEventIdentity;
 
 /**
  * 关系型数据库作业事件标识.
- *
- * @author zhangliang
  */
 public class JobEventRdbIdentity implements JobEventIdentity {
     

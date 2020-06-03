@@ -22,8 +22,6 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * 注册中心的命名空间处理器.
- * 
- * @author zhangliang
  */
 public final class RegNamespaceHandler extends NamespaceHandlerSupport {
     

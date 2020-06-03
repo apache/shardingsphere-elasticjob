@@ -24,8 +24,6 @@ import java.io.File;
 
 /**
  * 用户目录工具类.
- * 
- * @author zhangliang 
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HomeFolderUtils {

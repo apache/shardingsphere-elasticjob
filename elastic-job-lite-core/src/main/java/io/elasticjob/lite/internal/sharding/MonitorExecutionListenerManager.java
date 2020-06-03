@@ -26,8 +26,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 幂等性监听管理器.
- * 
- * @author zhangliang
  */
 public final class MonitorExecutionListenerManager extends AbstractListenerManager {
     

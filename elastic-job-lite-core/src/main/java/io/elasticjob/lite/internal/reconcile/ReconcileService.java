@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 调解分布式作业不一致状态服务.
- *
- * @author caohao
  */
 @Slf4j
 public final class ReconcileService extends AbstractScheduledService {

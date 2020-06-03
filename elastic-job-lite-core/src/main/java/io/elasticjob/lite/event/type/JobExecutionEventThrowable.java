@@ -24,8 +24,6 @@ import lombok.ToString;
 
 /**
  * 作业执行事件Throwable.
- *
- * @author liguangyun
  */
 @RequiredArgsConstructor
 @AllArgsConstructor

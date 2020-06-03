@@ -19,8 +19,6 @@ package io.elasticjob.lite.exception;
 
 /**
  * 作业执行环境异常.
- * 
- * @author zhangliang
  */
 public final class JobExecutionEnvironmentException extends Exception {
     

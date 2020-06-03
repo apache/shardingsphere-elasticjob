@@ -23,9 +23,6 @@ import lombok.Setter;
 
 /**
  * 基于Zookeeper的注册中心配置.
- * 
- * @author zhangliang
- * @author caohao
  */
 @Getter
 @Setter

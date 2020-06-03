@@ -22,8 +22,6 @@ import lombok.Getter;
 
 /**
  * 作业类型统计数据.
- *
- * @author liguangyun
  */
 @Getter
 @AllArgsConstructor

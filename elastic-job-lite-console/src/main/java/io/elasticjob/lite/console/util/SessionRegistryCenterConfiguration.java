@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 注册中心配置的会话声明周期.
- * 
- * @author zhangliang 
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SessionRegistryCenterConfiguration {

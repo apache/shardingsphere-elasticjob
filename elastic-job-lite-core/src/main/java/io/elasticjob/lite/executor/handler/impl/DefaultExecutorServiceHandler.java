@@ -24,8 +24,6 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * 默认线程池服务处理器.
- * 
- * @author zhangliang
  */
 public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
     

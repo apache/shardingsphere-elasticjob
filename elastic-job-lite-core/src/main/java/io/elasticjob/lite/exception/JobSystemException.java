@@ -19,8 +19,6 @@ package io.elasticjob.lite.exception;
 
 /**
  * 作业系统异常.
- * 
- * @author zhangliang
  */
 public final class JobSystemException extends RuntimeException {
     

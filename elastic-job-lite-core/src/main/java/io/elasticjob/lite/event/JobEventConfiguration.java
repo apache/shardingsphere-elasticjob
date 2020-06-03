@@ -19,8 +19,6 @@ package io.elasticjob.lite.event;
 
 /**
  * 作业事件配置标识接口.
- *
- * @author caohao
  */
 public interface JobEventConfiguration extends JobEventIdentity {
     

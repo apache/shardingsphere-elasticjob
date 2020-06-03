@@ -31,8 +31,6 @@ import java.util.Map;
 
 /**
  * 作业属性配置.
- *
- * @author zhangliang
  */
 @AllArgsConstructor
 @NoArgsConstructor

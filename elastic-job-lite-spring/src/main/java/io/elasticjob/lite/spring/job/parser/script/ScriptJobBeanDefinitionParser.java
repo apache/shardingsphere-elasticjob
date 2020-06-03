@@ -26,8 +26,6 @@ import org.w3c.dom.Element;
 
 /**
  * 脚本作业的命名空间解析器.
- * 
- * @author caohao
  */
 public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     

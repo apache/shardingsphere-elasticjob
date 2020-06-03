@@ -26,8 +26,6 @@ import java.sql.SQLException;
 
 /**
  * 运行痕迹事件数据库监听器.
- *
- * @author caohao
  */
 public final class JobEventRdbListener extends JobEventRdbIdentity implements JobEventListener {
     

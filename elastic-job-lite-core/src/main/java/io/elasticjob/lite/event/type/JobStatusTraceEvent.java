@@ -29,8 +29,6 @@ import java.util.UUID;
 
 /**
  * 作业状态痕迹事件.
- *
- * @author caohao
  */
 @RequiredArgsConstructor
 @AllArgsConstructor

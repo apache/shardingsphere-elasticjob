@@ -44,8 +44,6 @@ import java.util.Map;
 
 /**
  * 运行痕迹事件数据库检索.
- *
- * @author liguangyun
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -271,8 +269,6 @@ public final class JobEventRdbSearch {
     
     /**
      * 查询条件对象.
-     * 
-     * @author liguangyun
      */
     @RequiredArgsConstructor
     @Getter

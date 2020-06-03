@@ -19,8 +19,6 @@ package io.elasticjob.lite.api;
 
 /**
  * 作业类型.
- *
- * @author caohao
  */
 public enum JobType {
     

@@ -27,9 +27,6 @@ import io.elasticjob.lite.util.env.TimeService;
 
 /**
  * 弹性化分布式作业配置服务.
- * 
- * @author zhangliang
- * @author caohao
  */
 public final class ConfigurationService {
     

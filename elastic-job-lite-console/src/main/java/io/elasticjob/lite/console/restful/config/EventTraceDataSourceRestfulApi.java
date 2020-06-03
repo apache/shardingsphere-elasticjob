@@ -38,8 +38,6 @@ import java.util.Collection;
 
 /**
  * 事件追踪数据源配置的RESTful API.
- *
- * @author caohao
  */
 @Path("/data-source")
 public final class EventTraceDataSourceRestfulApi {

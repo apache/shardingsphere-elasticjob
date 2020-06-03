@@ -32,8 +32,6 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * 作业配置的RESTful API.
- *
- * @author caohao
  */
 @Path("/jobs/config")
 public final class LiteJobConfigRestfulApi {

@@ -33,8 +33,6 @@ import java.util.List;
 
 /**
  * 作业注册中心的监听器管理者.
- * 
- * @author zhangliang
  */
 public final class ListenerManager {
     

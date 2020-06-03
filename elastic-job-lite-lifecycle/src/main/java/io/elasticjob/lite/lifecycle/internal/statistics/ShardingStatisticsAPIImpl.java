@@ -30,8 +30,6 @@ import java.util.List;
 
 /**
  * 作业分片状态展示的实现类.
- *
- * @author caohao
  */
 @RequiredArgsConstructor
 public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {

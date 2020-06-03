@@ -19,8 +19,6 @@ package io.elasticjob.lite.config;
 
 /**
  * 作业配置根接口.
- *
- * @author zhangliang
  */
 public interface JobRootConfiguration {
     

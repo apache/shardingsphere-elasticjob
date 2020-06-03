@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 作业基本属性解析标签.
- *
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BaseJobBeanDefinitionParserTag {

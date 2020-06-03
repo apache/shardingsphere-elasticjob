@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 线程池执行服务对象.
- *
- * @author zhangliang
  */
 public final class ExecutorServiceObject {
     

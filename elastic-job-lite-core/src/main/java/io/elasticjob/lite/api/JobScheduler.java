@@ -49,9 +49,6 @@ import java.util.Properties;
 
 /**
  * 作业调度器.
- * 
- * @author zhangliang
- * @author caohao
  */
 public class JobScheduler {
     

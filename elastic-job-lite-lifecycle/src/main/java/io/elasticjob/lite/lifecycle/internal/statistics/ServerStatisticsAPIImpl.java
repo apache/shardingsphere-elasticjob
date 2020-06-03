@@ -33,8 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业服务器状态展示的实现类.
- *
- * @author caohao
  */
 @RequiredArgsConstructor
 public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {

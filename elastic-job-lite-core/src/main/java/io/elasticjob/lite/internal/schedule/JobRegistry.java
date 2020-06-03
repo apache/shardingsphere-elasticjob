@@ -27,9 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业注册表.
- * 
- * @author zhangliang
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobRegistry {

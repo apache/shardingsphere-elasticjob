@@ -21,8 +21,6 @@ import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
  * 配置节点路径.
- * 
- * @author zhangliang
  */
 public final class ConfigurationNode {
     

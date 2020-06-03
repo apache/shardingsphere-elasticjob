@@ -19,8 +19,6 @@ package io.elasticjob.lite.event;
 
 /**
  * 作业事件标识.
- *
- * @author zhangliang
  */
 public interface JobEventIdentity {
     

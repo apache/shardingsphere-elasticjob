@@ -29,8 +29,6 @@ import java.io.Serializable;
 
 /**
  * 事件追踪数据源配置.
- *
- * @author zhangxinguo
  */
 @NoArgsConstructor
 @Getter

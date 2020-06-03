@@ -31,8 +31,6 @@ import java.util.Map;
 
 /**
  * Lite作业配置的Gson工厂.
- *
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LiteJobConfigurationGsonFactory {
@@ -73,8 +71,6 @@ public final class LiteJobConfigurationGsonFactory {
     
     /**
      * Lite作业配置的Json转换适配器.
-     *
-     * @author zhangliang
      */
     static final class LiteJobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<LiteJobConfiguration> {
         

@@ -25,8 +25,6 @@ import lombok.RequiredArgsConstructor;
  * <p>
  * 作业节点是在普通的节点前加上作业名称的前缀.
  * </p>
- * 
- * @author zhangliang
  */
 @RequiredArgsConstructor
 public final class JobNodePath {

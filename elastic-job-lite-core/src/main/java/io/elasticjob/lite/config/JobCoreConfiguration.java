@@ -27,8 +27,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 作业核心配置.
- * 
- * @author zhangliang
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

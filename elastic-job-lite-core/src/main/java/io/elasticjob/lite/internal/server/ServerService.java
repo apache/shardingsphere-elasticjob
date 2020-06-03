@@ -26,9 +26,6 @@ import java.util.List;
 
 /**
  * 作业服务器服务.
- * 
- * @author zhangliang
- * @author caohao
  */
 public final class ServerService {
     

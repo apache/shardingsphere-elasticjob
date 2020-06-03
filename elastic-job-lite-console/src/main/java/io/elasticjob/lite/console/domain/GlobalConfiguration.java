@@ -26,8 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 全局配置.
- *
- * @author zhangxinguo
  */
 @Getter
 @Setter

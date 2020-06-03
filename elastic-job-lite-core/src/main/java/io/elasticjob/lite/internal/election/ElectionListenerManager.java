@@ -28,8 +28,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 主节点选举监听管理器.
- * 
- * @author zhangliang
  */
 public final class ElectionListenerManager extends AbstractListenerManager {
     

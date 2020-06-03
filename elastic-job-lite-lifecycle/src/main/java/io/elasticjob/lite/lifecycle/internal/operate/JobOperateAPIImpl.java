@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * 操作作业的实现类.
- *
- * @author caohao
  */
 public final class JobOperateAPIImpl implements JobOperateAPI {
     

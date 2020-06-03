@@ -19,8 +19,6 @@ package io.elasticjob.lite.event;
 
 /**
  * 作业事件接口.
- *
- * @author zhangliang
  */
 public interface JobEvent {
     

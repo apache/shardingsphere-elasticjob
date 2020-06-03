@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * 数据流分布式作业接口.
  * 
- * @author zhangliang
- * 
  * @param <T> 数据类型
  */
 public interface DataflowJob<T> extends ElasticJob {

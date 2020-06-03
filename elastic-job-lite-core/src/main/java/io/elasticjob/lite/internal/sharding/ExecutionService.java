@@ -30,9 +30,6 @@ import java.util.List;
 
 /**
  * 执行作业的服务.
- * 
- * @author zhangliang
- * @author caohao
  */
 public final class ExecutionService {
     

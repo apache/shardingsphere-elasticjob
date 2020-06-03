@@ -19,8 +19,6 @@ package io.elasticjob.lite.context;
 
 /**
  * 执行类型.
- *
- * @author zhangliang
  */
 public enum ExecutionType {
     

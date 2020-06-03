@@ -22,8 +22,6 @@ import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
  * 运行实例节点路径.
- * 
- * @author zhangliang
  */
 public final class InstanceNode {
     

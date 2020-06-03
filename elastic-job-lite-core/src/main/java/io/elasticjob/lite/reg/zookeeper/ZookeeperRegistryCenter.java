@@ -48,8 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Zookeeper的注册中心.
- * 
- * @author zhangliang
  */
 @Slf4j
 public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {

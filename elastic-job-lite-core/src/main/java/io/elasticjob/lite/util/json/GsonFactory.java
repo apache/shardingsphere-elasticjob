@@ -27,8 +27,6 @@ import java.lang.reflect.Type;
 
 /**
  * Gson构建器.
- *
- * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonFactory {

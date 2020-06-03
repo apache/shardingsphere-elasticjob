@@ -19,8 +19,6 @@ package io.elasticjob.lite.util.env;
 
 /**
  * 获取时间的服务.
- * 
- * @author zhangliang
  */
 public final class TimeService {
     

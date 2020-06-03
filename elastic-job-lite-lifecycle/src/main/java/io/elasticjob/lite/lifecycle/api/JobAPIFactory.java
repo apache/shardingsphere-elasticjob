@@ -30,8 +30,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * 作业API工厂.
- *
- * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobAPIFactory {
