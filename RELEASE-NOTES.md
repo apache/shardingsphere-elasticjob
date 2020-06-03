@@ -9,7 +9,7 @@
 
 ### 新功能
 
-1. [ISSUE #373](https://github.com/elasticjob/elastic-job/issues/373) Cloud可区分处理TASK_UNREACHABLE, TASK_UNKNOW, TASK_DROPPED, TASK_GONE等状态
+1. [ISSUE #373](https://github.com/elasticjob/elastic-job/issues/373) Cloud可区分处理TASK_UNREACHABLE, TASK_UNKNOWN, TASK_DROPPED, TASK_GONE等状态
 
 ### 缺陷修正
 
