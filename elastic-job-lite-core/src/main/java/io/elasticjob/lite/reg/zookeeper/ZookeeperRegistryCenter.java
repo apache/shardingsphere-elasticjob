@@ -15,13 +15,13 @@
  * </p>
  */
 
-package io.elasticjob.lite.reg.zookeeper;
+package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import io.elasticjob.lite.reg.exception.RegExceptionHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +40,10 @@ import org.apache.zookeeper.data.Stat;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**

@@ -26,12 +26,7 @@ import io.elasticjob.lite.event.type.JobStatusTraceEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -142,7 +137,13 @@ final class JobEventRdbStorage {
     }
     
     private void createTaskIdAndStateIndex(final Connection conn, final String tableName) throws SQLException {
-        String sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
+        String sql;
+        DatabaseMetaData dbMetaData = conn.getMetaData();
+        if ("MySQL".equalsIgnoreCase(dbMetaData.getDatabaseProductName())) {
+            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`(128), `state`);";
+        } else {
+            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
+        }
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.execute();
         }
