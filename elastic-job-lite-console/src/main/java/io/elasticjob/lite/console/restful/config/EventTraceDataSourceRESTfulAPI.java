@@ -37,20 +37,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
- * 事件追踪数据源配置的RESTful API.
+ * Event trace data source RESTful API.
  */
 @Path("/data-source")
-public final class EventTraceDataSourceRestfulApi {
+public final class EventTraceDataSourceRESTfulAPI {
     
     public static final String DATA_SOURCE_CONFIG_KEY = "data_source_config_key";
     
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService = new EventTraceDataSourceConfigurationServiceImpl();
     
     /**
-     * 判断是否存在已连接的事件追踪数据源配置.
+     * Judge whether event trace data source is activated.
      *
-     * @param request HTTP请求
-     * @return 是否存在已连接的事件追踪数据源配置
+     * @param request HTTP request
+     * @return event trace data source is activated or not
      */
     @GET
     @Path("/activated")
@@ -59,10 +59,10 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
-     * 读取事件追踪数据源配置.
+     * Load event trace data source configuration.
      * 
-     * @param request HTTP请求对象
-     * @return 事件追踪数据源配置集合
+     * @param request HTTP request
+     * @return event trace data source configurations
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -75,10 +75,10 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
-     * 添加事件追踪数据源配置.
+     * Add event trace data source configuration.
      * 
-     * @param config 事件追踪数据源配置
-     * @return 是否添加成功
+     * @param config event trace data source configuration
+     * @return success to added or not
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,9 +88,9 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
-     * 删除事件追踪数据源配置.
+     * Delete event trace data source configuration.
      * 
-     * @param config 事件追踪数据源配置
+     * @param config event trace data source configuration
      */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,11 +99,11 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
-     * 连接事件追踪数据源测试.
+     * Test event trace data source connection.
      *
-     * @param config 事件追踪数据源配置
-     * @param request HTTP请求对象
-     * @return 是否连接成功
+     * @param config event trace data source configuration
+     * @param request HTTP request
+     * @return success or not
      */
     @POST
     @Path("/connectTest")
@@ -114,11 +114,11 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
-     * 连接事件追踪数据源.
+     * Connect event trace data source.
      *
-     * @param config 事件追踪数据源配置
-     * @param request HTTP请求对象
-     * @return 是否连接成功
+     * @param config event trace data source
+     * @param request HTTP request
+     * @return success or not
      */
     @POST
     @Path("/connect")

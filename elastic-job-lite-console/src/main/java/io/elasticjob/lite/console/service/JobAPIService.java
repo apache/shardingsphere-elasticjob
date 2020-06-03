@@ -29,42 +29,42 @@ public interface JobAPIService {
     /**
      * Job settings API.
      *
-     * @return JobSettingsAPI
+     * @return job settings API
      */
     JobSettingsAPI getJobSettingsAPI();
 
     /**
      * Job operate API.
      *
-     * @return JobOperateAPI
+     * @return Job operate API
      */
     JobOperateAPI getJobOperatorAPI();
 
     /**
      * Sharding operate API.
      *
-     * @return ShardingOperateAPI
+     * @return sharding operate API
      */
     ShardingOperateAPI getShardingOperateAPI();
 
     /**
      * Job statistics API.
      *
-     * @return JobStatisticsAPI
+     * @return job statistics API
      */
     JobStatisticsAPI getJobStatisticsAPI();
 
     /**
      * Servers statistics API.
      *
-     * @return ServerStatisticsAPI
+     * @return server statistics API
      */
     ServerStatisticsAPI getServerStatisticsAPI();
 
     /**
      * Sharding statistics API.
      *
-     * @return ShardingStatisticsAPI
+     * @return sharding statistics API
      */
     ShardingStatisticsAPI getShardingStatisticsAPI();
     

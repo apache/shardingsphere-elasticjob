@@ -26,7 +26,7 @@ import io.elasticjob.lite.console.service.EventTraceDataSourceConfigurationServi
 import com.google.common.base.Optional;
 
 /**
- * 事件追踪数据源配置服务实现类.
+ * Event trace data source configuration service implementation.
  */
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     

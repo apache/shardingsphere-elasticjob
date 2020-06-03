@@ -33,17 +33,17 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
- * 服务器维度操作的RESTful API.
+ * Server operation RESTful API.
  */
 @Path("/servers")
-public final class ServerOperationRestfulApi {
+public final class ServerOperationRESTfulAPI {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     /**
-     * 获取服务器总数.
+     * Get servers total count.
      * 
-     * @return 服务器总数
+     * @return servers total count
      */
     @GET
     @Path("/count")
@@ -52,9 +52,9 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 获取服务器详情.
+     * Get all servers brief info.
      * 
-     * @return 服务器详情集合
+     * @return all servers brief info
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,9 +63,9 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 禁用作业.
+     * Disable server.
      *
-     * @param serverIp 服务器IP地址
+     * @param serverIp server IP address
      */
     @POST
     @Path("/{serverIp}/disable")
@@ -74,9 +74,9 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 启用作业.
+     * Enable server.
      *
-     * @param serverIp 服务器IP地址
+     * @param serverIp server IP address
      */
     @DELETE
     @Path("/{serverIp}/disable")
@@ -85,9 +85,9 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 终止作业.
+     * Shutdown server.
      *
-     * @param serverIp 服务器IP地址
+     * @param serverIp server IP address
      */
     @POST
     @Path("/{serverIp}/shutdown")
@@ -96,9 +96,9 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 清理作业.
+     * Remove server.
      *
-     * @param serverIp 服务器IP地址
+     * @param serverIp server IP address
      */
     @DELETE
     @Path("/{serverIp}")
@@ -107,10 +107,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 获取该服务器上注册的作业的简明信息.
+     * Get jobs.
      *
-     * @param serverIp 服务器IP地址
-     * @return 作业简明信息对象集合
+     * @param serverIp server IP address
+     * @return Job brief info
      */
     @GET
     @Path("/{serverIp}/jobs")
@@ -120,10 +120,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 禁用作业.
+     * Disable server job.
      * 
-     * @param serverIp 服务器IP地址
-     * @param jobName 作业名称
+     * @param serverIp server IP address
+     * @param jobName job name
      */
     @POST
     @Path("/{serverIp}/jobs/{jobName}/disable")
@@ -132,10 +132,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 启用作业.
+     * Enable server job.
      *
-     * @param serverIp 服务器IP地址
-     * @param jobName 作业名称
+     * @param serverIp server IP address
+     * @param jobName job name
      */
     @DELETE
     @Path("/{serverIp}/jobs/{jobName}/disable")
@@ -144,10 +144,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 终止作业.
+     * Shutdown server job.
      *
-     * @param serverIp 服务器IP地址
-     * @param jobName 作业名称
+     * @param serverIp server IP address
+     * @param jobName job name
      */
     @POST
     @Path("/{serverIp}/jobs/{jobName}/shutdown")
@@ -156,10 +156,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 清理作业.
+     * Remove server job.
      *
-     * @param serverIp 服务器IP地址
-     * @param jobName 作业名称
+     * @param serverIp server IP address
+     * @param jobName job name
      */
     @DELETE
     @Path("/{serverIp}/jobs/{jobName}")

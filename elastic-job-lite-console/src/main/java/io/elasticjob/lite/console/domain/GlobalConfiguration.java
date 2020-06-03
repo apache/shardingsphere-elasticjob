@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 全局配置.
+ * Global configuration.
  */
 @Getter
 @Setter

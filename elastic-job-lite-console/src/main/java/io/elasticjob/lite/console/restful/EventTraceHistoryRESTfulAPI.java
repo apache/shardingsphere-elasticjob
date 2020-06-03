@@ -43,21 +43,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 事件追踪历史记录的RESTful API.
+ * Event trace history RESTful API.
  */
 @Path("/event-trace")
-public final class EventTraceHistoryRestfulApi {
+public final class EventTraceHistoryRESTfulAPI {
     
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService = new EventTraceDataSourceConfigurationServiceImpl();
     
     /**
-     * 查询作业执行事件.
+     * Find job execution events.
      * 
-     * @param uriInfo 查询条件
-     * @return 运行痕迹事件结果集
-     * @throws ParseException 解析异常
+     * @param uriInfo query criteria
+     * @return job execution event trace result
+     * @throws ParseException parse exception
      */
     @GET
     @Path("/execution")
@@ -72,11 +72,11 @@ public final class EventTraceHistoryRestfulApi {
     }
     
     /**
-     * 查询作业状态事件.
+     * Find job status trace events.
      *
-     * @param uriInfo 查询条件
-     * @return 运行痕迹事件结果集
-     * @throws ParseException 解析异常
+     * @param uriInfo query criteria
+     * @return job status trace result
+     * @throws ParseException parse exception
      */
     @GET
     @Path("/status")

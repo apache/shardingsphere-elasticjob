@@ -25,7 +25,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * 事件追踪数据源.
+ * Event tracing data source.
  */
 @Slf4j
 public final class EventTraceDataSource {
@@ -38,7 +38,7 @@ public final class EventTraceDataSource {
     }
     
     /**
-     * 初始化.
+     * Initialize data source.
      */
     public void init() {
         log.debug("Elastic job: data source init, connection url is: {}.", eventTraceDataSourceConfiguration.getUrl());

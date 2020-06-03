@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import java.io.File;
 
 /**
- * 用户目录工具类.
+ * Home folder Utils.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HomeFolderUtils {
@@ -35,17 +35,17 @@ public final class HomeFolderUtils {
     private static final String CONSOLE_ROOT_FOLDER = ".elastic-job-console";
     
     /**
-     * 获取用户目录文件.
+     * Get file path in home folder.
      * 
-     * @param fileName 文件名
-     * @return 用户目录所在的文件名
+     * @param fileName file name
+     * @return file path in home folder
      */
     public static String getFilePathInHomeFolder(final String fileName) {
         return String.format("%s%s", getHomeFolder(), fileName);
     }
     
     /**
-     * 创建用户目录.
+     * Create home folder if not existed.
      */
     public static void createHomeFolderIfNotExisted() {
         File file = new File(getHomeFolder());

@@ -20,7 +20,7 @@ package io.elasticjob.lite.console.repository;
 import io.elasticjob.lite.console.domain.GlobalConfiguration;
 
 /**
- * 基于XML的全局配置数据访问器.
+ * Configurations XML repository.
  */
 public interface ConfigurationsXmlRepository extends XmlRepository<GlobalConfiguration> {
 }

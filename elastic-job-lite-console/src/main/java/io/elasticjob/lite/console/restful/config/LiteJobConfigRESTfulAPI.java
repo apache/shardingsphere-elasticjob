@@ -31,18 +31,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * 作业配置的RESTful API.
+ * Job configuration RESTful API.
  */
 @Path("/jobs/config")
-public final class LiteJobConfigRestfulApi {
+public final class LiteJobConfigRESTfulAPI {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     /**
-     * 获取作业配置.
+     * get job settings.
      * 
-     * @param jobName 作业名称
-     * @return 作业配置
+     * @param jobName job name
+     * @return job settings
      */
     @GET
     @Path("/{jobName}")
@@ -52,9 +52,9 @@ public final class LiteJobConfigRestfulApi {
     }
     
     /**
-     * 修改作业配置.
+     * Update job settings.
      * 
-     * @param jobSettings 作业配置
+     * @param jobSettings job settings
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,9 +63,9 @@ public final class LiteJobConfigRestfulApi {
     }
     
     /**
-     * 删除作业配置.
+     * Remove job settings.
      * 
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     @DELETE
     @Path("/{jobName}")

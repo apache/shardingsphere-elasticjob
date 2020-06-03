@@ -22,53 +22,53 @@ import io.elasticjob.lite.console.domain.EventTraceDataSourceConfigurations;
 import com.google.common.base.Optional;
 
 /**
- * 事件追踪数据源配置服务.
+ * Event trace data source configuration service.
  */
 public interface EventTraceDataSourceConfigurationService {
     
     /**
-     * 读取全部事件追踪数据源配置.
+     * Load all event trace data source configurations.
      *
-     * @return 全部事件追踪数据源配置
+     * @return all event trace data source configuration
      */
     EventTraceDataSourceConfigurations loadAll();
     
     /**
-     * 读取事件追踪数据源配置.
+     * Load event trace data source configuration.
      * 
-     * @param name 配置名称
-     * @return 事件追踪数据源配置
+     * @param name name of event trace data source configuration
+     * @return event trace data source configuration
      */
     EventTraceDataSourceConfiguration load(String name);
     
     /**
-     * 查找事件追踪数据源配置.
+     * Find event trace data source configuration.
      *
-     * @param name 配置名称
-     * @param configs 全部事件追踪数据源配置
-     * @return 事件追踪数据源配置
+     * @param name name of event trace data source configuration
+     * @param configs event trace data source configurations
+     * @return event trace data source configuration
      */
     EventTraceDataSourceConfiguration find(String name, EventTraceDataSourceConfigurations configs);
     
     /**
-     * 读取已连接的事件追踪数据源配置.
+     * Load activated event trace data source configuration.
      * 
-     * @return 已连接的事件追踪数据源配置
+     * @return activated event trace data source configuration
      */
     Optional<EventTraceDataSourceConfiguration> loadActivated();
     
     /**
-     * 添加事件追踪数据源配置.
+     * Add event trace data source configuration.
      * 
-     * @param config 事件追踪数据源配置
-     * @return 是否添加成功
+     * @param config event trace data source configuration
+     * @return success to add or not
      */
     boolean add(EventTraceDataSourceConfiguration config);
     
     /**
-     * 删除事件追踪数据源配置.
+     * Delete event trace data source configuration.
      *
-     * @param name 配置名称
+     * @param name name of event trace data source configuration
      */
     void delete(String name);
 }

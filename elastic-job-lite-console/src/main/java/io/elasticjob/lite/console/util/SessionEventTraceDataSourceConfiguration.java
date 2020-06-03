@@ -23,7 +23,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 事件追踪数据源配置的会话声明周期.
+ * Event trace data source configuration in session.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SessionEventTraceDataSourceConfiguration {
@@ -31,18 +31,18 @@ public final class SessionEventTraceDataSourceConfiguration {
     private static EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration;
     
     /**
-     * 从当前会话范围获取事件追踪数据源配置.
+     * Get event trace data source configuration.
      * 
-     * @return 事件追踪数据源配置
+     * @return event trace data source configuration
      */
     public static EventTraceDataSourceConfiguration getEventTraceDataSourceConfiguration() {
         return eventTraceDataSourceConfiguration;
     }
     
     /**
-     * 设置事件追踪数据源配置至当前会话范围.
+     * Set event trace data source configuration.
      *
-     * @param eventTraceDataSourceConfiguration 事件追踪数据源配置
+     * @param eventTraceDataSourceConfiguration event trace data source configuration
      */
     public static void setDataSourceConfiguration(final EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration) {
         SessionEventTraceDataSourceConfiguration.eventTraceDataSourceConfiguration = eventTraceDataSourceConfiguration;

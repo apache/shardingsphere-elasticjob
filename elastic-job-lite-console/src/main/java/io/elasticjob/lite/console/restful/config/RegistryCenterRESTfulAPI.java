@@ -38,20 +38,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
- * 注册中心配置的RESTful API.
+ * Registry center RESTful API.
  */
 @Path("/registry-center")
-public final class RegistryCenterRestfulApi {
+public final class RegistryCenterRESTfulAPI {
     
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     
     private RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
     
     /**
-     * 判断是否存在已连接的注册中心配置.
+     * Judge whether registry center is activated.
      *
-     * @param request HTTP请求
-     * @return 是否存在已连接的注册中心配置
+     * @param request HTTP request
+     * @return registry center is activated or not
      */
     @GET
     @Path("/activated")
@@ -62,8 +62,8 @@ public final class RegistryCenterRestfulApi {
     /**
      * 读取注册中心配置集合.
      * 
-     * @param request HTTP请求
-     * @return 注册中心配置集合
+     * @param request HTTP request
+     * @return registry center configurations
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -78,8 +78,8 @@ public final class RegistryCenterRestfulApi {
     /**
      * 添加注册中心.
      * 
-     * @param config 注册中心配置
-     * @return 是否添加成功
+     * @param config registry center configuration
+     * @return success to add or not
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,9 +88,9 @@ public final class RegistryCenterRestfulApi {
     }
     
     /**
-     * 删除注册中心.
+     * Delete registry center.
      *
-     * @param config 注册中心配置
+     * @param config registry center configuration
      */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
@@ -102,8 +102,8 @@ public final class RegistryCenterRestfulApi {
      * Connect to registry center.
      *
      * @param config config of registry center
-     * @param request http request
-     * @return true if connected
+     * @param request HTTP request
+     * @return connected or not
      */
     @POST
     @Path("/connect")

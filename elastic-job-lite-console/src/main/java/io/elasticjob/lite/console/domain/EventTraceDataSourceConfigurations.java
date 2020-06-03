@@ -26,7 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 事件追踪数据源配置根对象.
+ * Event trace data source configurations.
  */
 @Getter
 @XmlRootElement

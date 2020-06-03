@@ -34,17 +34,17 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
- * 作业维度操作的RESTful API.
+ * Job operation RESTful API.
  */
 @Path("/jobs")
-public final class JobOperationRestfulApi {
+public final class JobOperationRESTfulAPI {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     /**
-     * 获取作业总数.
+     * Get jobs total count.
      * 
-     * @return 作业总数
+     * @return jobs total count
      */
     @GET
     @Path("/count")
@@ -53,9 +53,9 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 获取作业详情.
+     * Get all jobs brief info.
      * 
-     * @return 作业详情集合
+     * @return all jobs brief info
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,9 +64,9 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 触发作业.
+     * Trigger job.
      * 
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     @POST
     @Path("/{jobName}/trigger")
@@ -75,9 +75,9 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 禁用作业.
+     * Disable job.
      * 
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     @POST
     @Path("/{jobName}/disable")
@@ -87,9 +87,9 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 启用作业.
+     * Enable job.
      *
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     @DELETE
     @Path("/{jobName}/disable")
@@ -99,9 +99,9 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 终止作业.
+     * Shutdown job.
      * 
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     @POST
     @Path("/{jobName}/shutdown")
@@ -111,10 +111,10 @@ public final class JobOperationRestfulApi {
     }
     
     /**
-     * 获取分片信息.
+     * Get sharding info.
      * 
-     * @param jobName 作业名称
-     * @return 分片信息集合
+     * @param jobName job name
+     * @return sharding info
      */
     @GET
     @Path("/{jobName}/sharding")
@@ -124,7 +124,7 @@ public final class JobOperationRestfulApi {
     }
 
     /**
-     * Disable Sharding.
+     * Disable sharding.
      *
      * @param jobName job name
      * @param item sharding item
@@ -137,7 +137,7 @@ public final class JobOperationRestfulApi {
     }
 
     /**
-     * EnableS Sharding.
+     * Enable sharding.
      *
      * @param jobName job name
      * @param item sharding item

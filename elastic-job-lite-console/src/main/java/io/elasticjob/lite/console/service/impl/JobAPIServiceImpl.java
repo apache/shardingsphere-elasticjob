@@ -30,7 +30,7 @@ import io.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
 import com.google.common.base.Optional;
 
 /**
- * 作业API服务实现类.
+ * Job API service implementation.
  */
 public final class JobAPIServiceImpl implements JobAPIService {
     

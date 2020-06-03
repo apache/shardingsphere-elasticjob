@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * 注册中心配置.
+ * Registry center configuration.
  */
 @Getter
 @Setter

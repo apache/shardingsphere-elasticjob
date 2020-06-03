@@ -27,9 +27,9 @@ import javax.xml.bind.Marshaller;
 import java.io.File;
 
 /**
- * 基于XML的数据访问器实现类.
+ * Abstract XML repository implementation.
  *
- * @param <E> 数据类型
+ * @param <E> type of data
  */
 public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
     

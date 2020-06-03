@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
- * 事件追踪数据源配置.
+ * Event trace data source configuration.
  */
 @NoArgsConstructor
 @Getter

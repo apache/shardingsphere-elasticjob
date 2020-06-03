@@ -22,53 +22,53 @@ import io.elasticjob.lite.console.domain.RegistryCenterConfigurations;
 import com.google.common.base.Optional;
 
 /**
- * 注册中心配置服务.
+ * Registry center configuration service.
  */
 public interface RegistryCenterConfigurationService {
     
     /**
-     * 读取全部注册中心配置.
+     * Load all registry center configurations.
      *
-     * @return 全部注册中心配置
+     * @return all registry center configurations
      */
     RegistryCenterConfigurations loadAll();
     
     /**
-     * 读取注册中心配置.
+     * Load registry center configuration.
      *
-     * @param name 配置名称
-     * @return 注册中心配置
+     * @param name name of registry center configuration
+     * @return registry center configuration
      */
     RegistryCenterConfiguration load(String name);
     
     /**
-     * 查找注册中心配置.
+     * Find registry center configuration.
      * 
-     * @param name 配置名称
-     * @param configs 全部注册中心配置
-     * @return 注册中心配置
+     * @param name name of registry center configuration
+     * @param configs registry center configurations
+     * @return registry center configuration
      */
     RegistryCenterConfiguration find(String name, RegistryCenterConfigurations configs);
     
     /**
-     * 读取已连接的注册中心配置.
+     * Load activated registry center configuration.
      *
-     * @return 已连接的注册中心配置
+     * @return activated registry center configuration
      */
     Optional<RegistryCenterConfiguration> loadActivated();
     
     /**
-     * 添加注册中心配置.
+     * Add registry center configuration.
      *
-     * @param config 注册中心配置
-     * @return 是否添加成功
+     * @param config registry center configuration
+     * @return success to add or not
      */
     boolean add(RegistryCenterConfiguration config);
     
     /**
-     * 删除注册中心配置.
+     * Delete registry center configuration.
      *
-     * @param name 配置名称
+     * @param name name of registry center configuration
      */
     void delete(String name);
 }

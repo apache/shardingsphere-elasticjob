@@ -22,7 +22,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 注册中心配置的会话声明周期.
+ * Registry center configuration configuration.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SessionRegistryCenterConfiguration {
@@ -30,18 +30,18 @@ public final class SessionRegistryCenterConfiguration {
     private static RegistryCenterConfiguration regCenterConfig;
     
     /**
-     * 从当前会话范围获取注册中心配置.
+     * Get registry center configuration.
      *
-     * @return 事件追踪数据源配置
+     * @return registry center configuration
      */
     public static RegistryCenterConfiguration getRegistryCenterConfiguration() {
         return regCenterConfig;
     }
     
     /**
-     * 设置注册中心配置至当前会话范围.
+     * Set registry center configuration.
      * 
-     * @param regCenterConfig 注册中心配置
+     * @param regCenterConfig registry center configuration
      */
     public static void setRegistryCenterConfiguration(final RegistryCenterConfiguration regCenterConfig) {
         SessionRegistryCenterConfiguration.regCenterConfig = regCenterConfig;

@@ -18,23 +18,23 @@
 package io.elasticjob.lite.console.repository;
 
 /**
- * 基于XML的数据访问器.
+ * XML repository.
  *
- * @param <E> 数据类型
+ * @param <E> type of data
  */
 public interface XmlRepository<E> {
     
     /**
-     * 读取数据.
+     * Load data.
      * 
-     * @return 数据
+     * @return load result
      */
     E load();
     
     /**
-     * 存储数据.
+     * Save data.
      * 
-     * @param entity 数据
+     * @param entity entity
      */
     void save(E entity);
 }

@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 事件追踪数据源工厂.
+ * Event trace data source factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EventTraceDataSourceFactory {
@@ -37,16 +37,16 @@ public final class EventTraceDataSourceFactory {
     private static final ConcurrentHashMap<HashCode, EventTraceDataSource> DATA_SOURCE_REGISTRY = new ConcurrentHashMap<>(); 
     
     /**
-     * 创建事件追踪数据源.
+     * Create event trace data source.
      * 
-     * @param driver 数据库驱动类名称
-     * @param url 数据库URL
-     * @param username 数据库用户名
-     * @param password 数据库密码
-     * @return 事件追踪数据源
+     * @param driverClassName database driver class name
+     * @param url database URL
+     * @param username database username
+     * @param password database password
+     * @return event trace data source
      */
-    public static EventTraceDataSource createEventTraceDataSource(final String driver, final String url, final String username, final Optional<String> password) {
-        Hasher hasher = Hashing.md5().newHasher().putString(driver, Charsets.UTF_8).putString(url, Charsets.UTF_8);
+    public static EventTraceDataSource createEventTraceDataSource(final String driverClassName, final String url, final String username, final Optional<String> password) {
+        Hasher hasher = Hashing.md5().newHasher().putString(driverClassName, Charsets.UTF_8).putString(url, Charsets.UTF_8);
         if (!Strings.isNullOrEmpty(username)) {
             hasher.putString(username, Charsets.UTF_8);
         }
@@ -58,7 +58,7 @@ public final class EventTraceDataSourceFactory {
         if (null != result) {
             return result;
         }
-        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driver, url, username);
+        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driverClassName, url, username);
         if (password.isPresent()) {
             eventTraceDataSourceConfiguration.setPassword(password.get());
         }

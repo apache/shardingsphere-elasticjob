@@ -26,7 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 注册中心配置根对象.
+ * Registry center configurations.
  */
 @Getter
 @XmlRootElement

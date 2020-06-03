@@ -19,7 +19,7 @@ package io.elasticjob.lite.console;
 
 import com.google.common.base.Optional;
 import io.elasticjob.lite.console.filter.GlobalConfigurationFilter;
-import io.elasticjob.lite.console.restful.JobOperationRestfulApi;
+import io.elasticjob.lite.console.restful.JobOperationRESTfulAPI;
 import io.elasticjob.lite.lifecycle.restful.RestfulServer;
 import io.elasticjob.lite.lifecycle.security.WwwAuthFilter;
 import lombok.AccessLevel;
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 界面启动器.
+ * Console bootstrap.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
@@ -36,10 +36,10 @@ public final class ConsoleBootstrap {
     private static final String CONSOLE_PATH = "console";
     
     /**
-     * 启动RESTful服务并加载页面.
+     * Startup RESTful server.
      * 
-     * @param args 启动参数
-     * @throws Exception 启动服务器异常
+     * @param args arguments
+     * @throws Exception exception
      */
     //CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
@@ -56,6 +56,6 @@ public final class ConsoleBootstrap {
         restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
                      .addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")
-                     .start(JobOperationRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+                     .start(JobOperationRESTfulAPI.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
     }
 }
