@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 作业服务器状态展示的实现类.
+ * Server statistics API implementation class.
  */
 @RequiredArgsConstructor
 public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {

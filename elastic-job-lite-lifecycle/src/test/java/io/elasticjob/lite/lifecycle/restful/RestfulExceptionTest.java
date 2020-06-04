@@ -26,6 +26,6 @@ public final class RestfulExceptionTest {
     
     @Test
     public void assertRestfulException() {
-        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+        assertThat(new RESTfulAPIException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

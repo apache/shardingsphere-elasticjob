@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 作业分片状态展示的实现类.
+ * Sharding statistics API implementation class.
  */
 @RequiredArgsConstructor
 public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {

@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 作业设置对象.
+ * Job settings.
  */
 @Getter
 @Setter

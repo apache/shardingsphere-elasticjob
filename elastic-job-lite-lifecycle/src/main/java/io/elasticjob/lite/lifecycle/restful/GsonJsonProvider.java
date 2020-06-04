@@ -36,7 +36,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * 基于GSON解析JSON的解析器.
+ * Gson json provider.
  */
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
@@ -51,7 +51,7 @@ public final class GsonJsonProvider implements MessageBodyWriter<Object>, Messag
         try (InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8)) {
             return GsonFactory.getGson().fromJson(streamReader, type.equals(genericType) ? type : genericType);
         } catch (final IOException ex) {
-            throw new RestfulException(ex);
+            throw new RESTfulAPIException(ex);
         }
     }
     
@@ -61,7 +61,7 @@ public final class GsonJsonProvider implements MessageBodyWriter<Object>, Messag
         try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
             GsonFactory.getGson().toJson(object, type.equals(genericType) ? type : genericType, writer);
         } catch (final IOException ex) {
-            throw new RestfulException(ex);
+            throw new RESTfulAPIException(ex);
         }
     }
     

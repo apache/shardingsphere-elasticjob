@@ -23,7 +23,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * 作业简明信息对象.
+ * Job brief info.
  */
 @Getter
 @Setter
@@ -49,7 +49,7 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     }
     
     /**
-     * 作业状态.
+     * Job status.
      */
     public enum JobStatus {
         OK, 

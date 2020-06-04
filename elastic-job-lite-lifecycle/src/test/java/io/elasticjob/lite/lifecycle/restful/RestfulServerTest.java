@@ -42,13 +42,13 @@ public final class RestfulServerTest {
     
     private static final String URL = "http://127.0.0.1:17000/api/test/call";
     
-    private static RestfulServer server;
+    private static RESTfulAPIServer server;
     
     private Caller caller;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        server = new RestfulServer(17000);
+        server = new RESTfulAPIServer(17000);
         server.addFilter(TestFilter.class, "/*");
         server.start(TestRestfulApi.class.getPackage().getName(), Optional.<String>absent());
     }

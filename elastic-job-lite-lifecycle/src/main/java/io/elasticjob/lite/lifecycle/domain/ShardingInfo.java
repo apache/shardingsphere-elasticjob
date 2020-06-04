@@ -23,7 +23,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * 作业分片信息对象.
+ * Job sharding info.
  */
 @Getter
 @Setter
@@ -47,7 +47,7 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     }
     
     /**
-     * 作业分片状态.
+     * Job sharding status.
      */
     public enum ShardingStatus {
         
@@ -57,12 +57,12 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
         PENDING;
     
         /**
-         * 获取分片状态.
+         * Get sharding status.
          * 
-         * @param isDisabled 是否被禁用 
-         * @param isRunning 是否在运行
-         * @param isShardingFlag 是否需要分片
-         * @return 作业运行时状态
+         * @param isDisabled is disabled 
+         * @param isRunning is running
+         * @param isShardingFlag is need to Sharding
+         * @return job sharding status
          */
         public static ShardingStatus getShardingStatus(final boolean isDisabled, final boolean isRunning, final boolean isShardingFlag) {
             if (isDisabled) {

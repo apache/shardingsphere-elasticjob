@@ -20,51 +20,51 @@ package io.elasticjob.lite.lifecycle.api;
 import com.google.common.base.Optional;
 
 /**
- * 操作作业的API.
+ * Job operate API.
  */
 public interface JobOperateAPI {
     
     /**
-     * 作业立刻执行.
+     * Trigger job to run at once.
      *
-     * <p>作业在不与上次运行中作业冲突的情况下才会启动, 并在启动后自动清理此标记.</p>
+     * <p>Job will not start until it does not conflict with the last running job, and this tag will be automatically cleaned up after it starts.</p>
      *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
+     * @param jobName job name
+     * @param serverIp server IP address
      */
     void trigger(Optional<String> jobName, Optional<String> serverIp);
     
     /**
-     * 作业禁用.
+     * Disable job.
      * 
-     * <p>会重新分片.</p>
+     * <p>Will cause resharding.</p>
      *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
+     * @param jobName job name
+     * @param serverIp server IP address
      */
     void disable(Optional<String> jobName, Optional<String> serverIp);
     
     /**
-     * 作业启用.
-     *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
+     * Enable job.
+     * 
+     * @param jobName job name
+     * @param serverIp server IP address
      */
     void enable(Optional<String> jobName, Optional<String> serverIp);
     
     /**
-     * 作业关闭.
+     * Shutdown Job.
      *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
+     * @param jobName job name
+     * @param serverIp server IP address
      */
     void shutdown(Optional<String> jobName, Optional<String> serverIp);
     
     /**
-     * 作业删除.
+     * Remove job.
      * 
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
+     * @param jobName job name
+     * @param serverIp server IP address
      */
     void remove(Optional<String> jobName, Optional<String> serverIp);
 }

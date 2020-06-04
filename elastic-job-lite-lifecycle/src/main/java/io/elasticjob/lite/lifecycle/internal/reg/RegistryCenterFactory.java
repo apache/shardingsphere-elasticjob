@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 注册中心工厂.
+ * Registry center factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RegistryCenterFactory {
@@ -39,12 +39,12 @@ public final class RegistryCenterFactory {
     private static final ConcurrentHashMap<HashCode, CoordinatorRegistryCenter> REG_CENTER_REGISTRY = new ConcurrentHashMap<>(); 
     
     /**
-     * 创建注册中心.
+     * Create registry center.
      *
-     * @param connectString 注册中心连接字符串
-     * @param namespace 注册中心命名空间
-     * @param digest 注册中心凭证
-     * @return 注册中心对象
+     * @param connectString registry center connect string
+     * @param namespace registry center namespace
+     * @param digest registry center digest
+     * @return registry center
      */
     public static CoordinatorRegistryCenter createCoordinatorRegistryCenter(final String connectString, final String namespace, final Optional<String> digest) {
         Hasher hasher = Hashing.md5().newHasher().putString(connectString, Charsets.UTF_8).putString(namespace, Charsets.UTF_8);

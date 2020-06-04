@@ -22,7 +22,7 @@ import io.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 /**
- * 操作分片的实现类.
+ * Sharding operate API implementation class.
  */
 public final class ShardingOperateAPIImpl implements ShardingOperateAPI {
     

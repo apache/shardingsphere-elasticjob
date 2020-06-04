@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * 认证过滤器.
+ * WWW auth filter.
  */
 @Slf4j
 public final class WwwAuthFilter implements Filter {
@@ -65,7 +65,7 @@ public final class WwwAuthFilter implements Filter {
     private String guestPassword;
     
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) {
         Properties props = new Properties();
         URL classLoaderURL = Thread.currentThread().getContextClassLoader().getResource("");
         if (null != classLoaderURL) {

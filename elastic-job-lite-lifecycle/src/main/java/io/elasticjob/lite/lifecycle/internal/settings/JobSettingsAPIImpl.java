@@ -32,7 +32,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 作业配置的实现类.
+ * Job settings API implementation class.
  */
 @RequiredArgsConstructor
 public final class JobSettingsAPIImpl implements JobSettingsAPI {

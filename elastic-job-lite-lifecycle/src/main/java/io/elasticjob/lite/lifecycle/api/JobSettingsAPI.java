@@ -20,29 +20,29 @@ package io.elasticjob.lite.lifecycle.api;
 import io.elasticjob.lite.lifecycle.domain.JobSettings;
 
 /**
- * 作业配置的API.
+ * Job settings API.
  */
 public interface JobSettingsAPI {
     
     /**
-     * 获取作业设置.
+     * get job settings.
      *
-     * @param jobName 作业名称
-     * @return 作业设置对象
+     * @param jobName job name
+     * @return job settings
      */
     JobSettings getJobSettings(String jobName);
     
     /**
-     * 更新作业设置.
+     * Update job settings.
      *
-     * @param jobSettings 作业设置对象
+     * @param jobSettings job settings
      */
     void updateJobSettings(JobSettings jobSettings);
     
     /**
-     * 删除作业设置.
+     * Remove job settings.
      *
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     void removeJobSettings(String jobName);
 }
