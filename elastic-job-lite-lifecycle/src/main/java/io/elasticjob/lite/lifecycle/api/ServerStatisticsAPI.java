@@ -22,21 +22,21 @@ import io.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
 import java.util.Collection;
 
 /**
- * 作业服务器状态展示的API.
+ * Server statistics API.
  */
 public interface ServerStatisticsAPI {
     
     /**
-     * 获取作业服务器总数.
+     * Get servers total count.
      *
-     * @return 作业服务器总数
+     * @return servers total count
      */
     int getServersTotalCount();
     
     /**
-     * 获取所有作业服务器简明信息.
+     * Get all servers brief info.
      *
-     * @return 作业服务器简明信息集合
+     * @return all servers brief info
      */
     Collection<ServerBriefInfo> getAllServersBriefInfo();
 }

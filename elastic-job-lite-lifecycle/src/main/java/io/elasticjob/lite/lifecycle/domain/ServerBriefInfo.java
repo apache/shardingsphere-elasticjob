@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 服务器维度简明信息对象.
+ * Server brief info.
  */
 @RequiredArgsConstructor
 @Getter

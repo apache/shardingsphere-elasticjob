@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 
 /**
- * 操作作业的实现类.
+ * Job operate API implementation class.
  */
 public final class JobOperateAPIImpl implements JobOperateAPI {
     

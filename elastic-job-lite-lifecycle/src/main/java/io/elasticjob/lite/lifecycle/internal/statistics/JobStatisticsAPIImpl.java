@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 作业状态展示的实现类.
+ * Job statistics API implementation class.
  */
 @RequiredArgsConstructor
 public final class JobStatisticsAPIImpl implements JobStatisticsAPI {

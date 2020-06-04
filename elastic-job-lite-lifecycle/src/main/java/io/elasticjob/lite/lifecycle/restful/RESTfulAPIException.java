@@ -17,21 +17,14 @@
 
 package io.elasticjob.lite.lifecycle.restful;
 
-import io.elasticjob.lite.exception.ExceptionUtil;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 /**
- * RESTFul API的异常处理器.
+ * RESTful API exception.
  */
-@Provider
-public final class RestfulExceptionMapper implements ExceptionMapper<Throwable> {
+public final class RESTfulAPIException extends RuntimeException {
     
-    @Override
-    public Response toResponse(final Throwable cause) {
-        return Response.ok(ExceptionUtil.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    private static final long serialVersionUID = -7594937349408972960L;
+    
+    public RESTfulAPIException(final Throwable cause) {
+        super(cause);
     }
 }

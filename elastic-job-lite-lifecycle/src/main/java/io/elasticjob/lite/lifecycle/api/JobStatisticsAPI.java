@@ -22,37 +22,37 @@ import io.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import java.util.Collection;
 
 /**
- * 作业状态展示的API.
+ * Job statistics API.
  */
 public interface JobStatisticsAPI {
     
     /**
-     * 获取作业总数.
+     * Get jobs total count.
      *
-     * @return 作业总数.
+     * @return jobs total count.
      */
     int getJobsTotalCount();
     
     /**
-     * 获取所有作业简明信息.
+     * Get all jobs brief info.
      *
-     * @return 作业简明信息集合.
+     * @return all jobs brief info.
      */
     Collection<JobBriefInfo> getAllJobsBriefInfo();
     
     /**
-     * 获取作业简明信息.
+     * Get job brief info.
      *
-     * @param jobName 作业名称
-     * @return 作业简明信息.
+     * @param jobName job name
+     * @return job brief info
      */
     JobBriefInfo getJobBriefInfo(String jobName);
     
     /**
-     * 获取该IP下所有作业简明信息.
+     * Get jobs brief info.
      *
-     * @param ip 服务器IP
-     * @return 作业简明信息集合.
+     * @param ip server IP address
+     * @return jobs brief info
      */
     Collection<JobBriefInfo> getJobsBriefInfo(String ip);
 }

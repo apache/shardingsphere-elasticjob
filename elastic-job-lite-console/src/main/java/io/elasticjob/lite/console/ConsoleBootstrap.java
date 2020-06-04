@@ -20,7 +20,7 @@ package io.elasticjob.lite.console;
 import com.google.common.base.Optional;
 import io.elasticjob.lite.console.filter.GlobalConfigurationFilter;
 import io.elasticjob.lite.console.restful.JobOperationRESTfulAPI;
-import io.elasticjob.lite.lifecycle.restful.RestfulServer;
+import io.elasticjob.lite.lifecycle.restful.RESTfulAPIServer;
 import io.elasticjob.lite.lifecycle.security.WwwAuthFilter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -52,7 +52,7 @@ public final class ConsoleBootstrap {
                 log.warn("Wrong port format, using default port 8899 instead.");
             }
         }
-        RestfulServer restfulServer = new RestfulServer(port);
+        RESTfulAPIServer restfulServer = new RESTfulAPIServer(port);
         restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
                      .addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")

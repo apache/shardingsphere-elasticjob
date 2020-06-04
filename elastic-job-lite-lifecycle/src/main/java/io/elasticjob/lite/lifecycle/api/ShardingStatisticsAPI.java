@@ -22,15 +22,15 @@ import io.elasticjob.lite.lifecycle.domain.ShardingInfo;
 import java.util.Collection;
 
 /**
- * 作业分片状态展示的API.
+ * Sharding statistics API.
  */
 public interface ShardingStatisticsAPI {
     
     /**
-     * 获取作业分片信息集合.
+     * Get sharding info.
      *
-     * @param jobName 作业名称
-     * @return 作业分片信息集合
+     * @param jobName job name
+     * @return sharding info of job
      */
     Collection<ShardingInfo> getShardingInfo(String jobName);
 }
