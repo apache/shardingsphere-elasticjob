@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
@@ -89,27 +88,27 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     }
     
     @Override
-    public void shutdown(final Optional<String> jobName, final Optional<String> serverIp) {
-        Preconditions.checkArgument(jobName.isPresent() || serverIp.isPresent(), "At least indicate jobName or serverIp.");
-        if (jobName.isPresent() && serverIp.isPresent()) {
-            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+    public void shutdown(final String jobName, final String serverIp) {
+        Preconditions.checkArgument(null != jobName || null != serverIp, "At least indicate jobName or serverIp.");
+        if (null != jobName && null != serverIp) {
+            JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-                if (serverIp.get().equals(each.split("@-@")[0])) {
+                if (serverIp.equals(each.split("@-@")[0])) {
                     regCenter.remove(jobNodePath.getInstanceNodePath(each));
                 }
             }
-        } else if (jobName.isPresent()) {
-            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+        } else if (null != jobName) {
+            JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
                 regCenter.remove(jobNodePath.getInstanceNodePath(each));
             }
-        } else if (serverIp.isPresent()) {
+        } else {
             List<String> jobNames = regCenter.getChildrenKeys("/");
             for (String job : jobNames) {
                 JobNodePath jobNodePath = new JobNodePath(job);
                 List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
                 for (String each : instances) {
-                    if (serverIp.get().equals(each.split("@-@")[0])) {
+                    if (serverIp.equals(each.split("@-@")[0])) {
                         regCenter.remove(jobNodePath.getInstanceNodePath(each));
                     }
                 }
@@ -118,20 +117,20 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     }
     
     @Override
-    public void remove(final Optional<String> jobName, final Optional<String> serverIp) {
+    public void remove(final String jobName, final String serverIp) {
         shutdown(jobName, serverIp);
-        if (jobName.isPresent() && serverIp.isPresent()) {
-            regCenter.remove(new JobNodePath(jobName.get()).getServerNodePath(serverIp.get()));
-        } else if (jobName.isPresent()) {
-            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+        if (null != jobName && null != serverIp) {
+            regCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp));
+        } else if (null != jobName) {
+            JobNodePath jobNodePath = new JobNodePath(jobName);
             List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
             for (String each : servers) {
                 regCenter.remove(jobNodePath.getServerNodePath(each));
             }
-        } else if (serverIp.isPresent()) {
+        } else if (null != serverIp) {
             List<String> jobNames = regCenter.getChildrenKeys("/");
             for (String each : jobNames) {
-                regCenter.remove(new JobNodePath(each).getServerNodePath(serverIp.get()));
+                regCenter.remove(new JobNodePath(each).getServerNodePath(serverIp));
             }
         }
     }

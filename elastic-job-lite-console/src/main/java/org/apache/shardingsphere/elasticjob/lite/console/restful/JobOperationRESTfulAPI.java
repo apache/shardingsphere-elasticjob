@@ -19,9 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.console.restful;
 
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.JobAPIServiceImpl;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
-import com.google.common.base.Optional;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -107,7 +106,7 @@ public final class JobOperationRESTfulAPI {
     @Path("/{jobName}/shutdown")
     @Consumes(MediaType.APPLICATION_JSON)
     public void shutdownJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().shutdown(jobName, null);
     }
     
     /**

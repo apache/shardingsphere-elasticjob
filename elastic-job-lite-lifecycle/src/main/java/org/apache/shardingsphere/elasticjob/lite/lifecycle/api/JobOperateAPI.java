@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
-import com.google.common.base.Optional;
-
 /**
  * Job operate API.
  */
@@ -57,7 +55,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void shutdown(Optional<String> jobName, Optional<String> serverIp);
+    void shutdown(String jobName, String serverIp);
     
     /**
      * Remove job.
@@ -65,5 +63,5 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void remove(Optional<String> jobName, Optional<String> serverIp);
+    void remove(String jobName, String serverIp);
 }

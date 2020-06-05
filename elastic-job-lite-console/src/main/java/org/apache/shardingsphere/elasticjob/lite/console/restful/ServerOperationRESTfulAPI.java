@@ -21,7 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.JobAPIServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
-import com.google.common.base.Optional;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -92,7 +91,7 @@ public final class ServerOperationRESTfulAPI {
     @POST
     @Path("/{serverIp}/shutdown")
     public void shutdownServer(@PathParam("serverIp") final String serverIp) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.<String>absent(), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().shutdown(null, serverIp);
     }
     
     /**
@@ -103,7 +102,7 @@ public final class ServerOperationRESTfulAPI {
     @DELETE
     @Path("/{serverIp}")
     public void removeServer(@PathParam("serverIp") final String serverIp) {
-        jobAPIService.getJobOperatorAPI().remove(Optional.<String>absent(), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().remove(null, serverIp);
     }
     
     /**
@@ -152,7 +151,7 @@ public final class ServerOperationRESTfulAPI {
     @POST
     @Path("/{serverIp}/jobs/{jobName}/shutdown")
     public void shutdownServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().shutdown(jobName, serverIp);
     }
     
     /**
@@ -164,6 +163,6 @@ public final class ServerOperationRESTfulAPI {
     @DELETE
     @Path("/{serverIp}/jobs/{jobName}")
     public void removeServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().remove(jobName, serverIp);
     }
 }
