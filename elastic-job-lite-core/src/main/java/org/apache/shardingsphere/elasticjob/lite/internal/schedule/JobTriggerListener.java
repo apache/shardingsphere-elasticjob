@@ -17,9 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.quartz.Trigger;
 import org.quartz.listeners.TriggerListenerSupport;

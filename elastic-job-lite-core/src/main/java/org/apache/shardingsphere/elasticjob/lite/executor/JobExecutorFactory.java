@@ -17,15 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.SimpleJobExecutor;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.ScriptJobExecutor;

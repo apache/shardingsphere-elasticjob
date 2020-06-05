@@ -110,9 +110,9 @@ public class JobScheduler {
    /**
     * Shutdown job.
     */
-   public void shutdown() {
-	   schedulerFacade.shutdownInstance();
-   }
+    public void shutdown() { 
+        schedulerFacade.shutdownInstance();
+    }
     
     private JobDetail createJobDetail(final String jobClass) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();

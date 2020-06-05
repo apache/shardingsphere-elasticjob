@@ -18,12 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
 
 import com.google.common.base.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
 
 import javax.sql.DataSource;

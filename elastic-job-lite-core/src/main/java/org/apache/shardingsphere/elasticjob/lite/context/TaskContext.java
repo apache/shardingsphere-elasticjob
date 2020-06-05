@@ -96,7 +96,7 @@ public final class TaskContext {
     }
     
     /**
-     * Set job server ID
+     * Set job server ID.
      * 
      * @param slaveId job server ID
      */
@@ -130,7 +130,7 @@ public final class TaskContext {
     @RequiredArgsConstructor
     @Getter
     @EqualsAndHashCode
-    public static class MetaInfo {
+    public static final class MetaInfo {
         
         private final String jobName;
         

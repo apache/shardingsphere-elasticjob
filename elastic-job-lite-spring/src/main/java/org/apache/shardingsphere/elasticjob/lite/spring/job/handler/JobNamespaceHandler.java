@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.handler;
 
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow.DataflowJobBeanDefinitionParser;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.simple.SimpleJobBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script.ScriptJobBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.simple.SimpleJobBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;

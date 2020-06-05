@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.util;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;

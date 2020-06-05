@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.ElectionCandidate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;

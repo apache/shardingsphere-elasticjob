@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.util.config;
 
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;

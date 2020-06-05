@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
 
 import java.util.Collection;
 

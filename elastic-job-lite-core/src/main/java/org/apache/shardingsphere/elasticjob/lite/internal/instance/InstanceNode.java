@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.instance;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 
 /**
  * Instance node.

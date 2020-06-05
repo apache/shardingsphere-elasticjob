@@ -29,8 +29,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 
 import java.util.List;
 

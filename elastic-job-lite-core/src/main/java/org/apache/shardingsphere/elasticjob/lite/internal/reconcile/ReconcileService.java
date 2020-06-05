@@ -18,13 +18,12 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.reconcile;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 
 import java.util.concurrent.TimeUnit;
 
