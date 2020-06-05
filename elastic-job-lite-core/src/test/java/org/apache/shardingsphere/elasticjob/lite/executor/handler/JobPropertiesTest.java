@@ -21,8 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultEx
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 

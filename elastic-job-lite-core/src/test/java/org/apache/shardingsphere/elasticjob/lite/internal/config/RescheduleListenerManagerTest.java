@@ -17,16 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;

@@ -17,13 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.config;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
@@ -31,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 
 @RequiredArgsConstructor
 public final class TestScriptJobConfiguration implements JobRootConfiguration {

@@ -22,8 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUt
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -18,11 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
 
 import com.google.common.base.Optional;
-import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;

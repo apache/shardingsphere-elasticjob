@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.strategy.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobShardingStrategy;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;

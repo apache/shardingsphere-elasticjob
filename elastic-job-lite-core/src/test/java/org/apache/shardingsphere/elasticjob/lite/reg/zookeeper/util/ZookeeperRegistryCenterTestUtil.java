@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.util;
 
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;

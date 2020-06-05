@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.ElectionCandidate;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;

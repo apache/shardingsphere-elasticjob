@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
 
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

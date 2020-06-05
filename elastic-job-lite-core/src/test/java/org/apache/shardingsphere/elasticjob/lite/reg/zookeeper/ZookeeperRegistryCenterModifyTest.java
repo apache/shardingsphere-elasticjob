@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

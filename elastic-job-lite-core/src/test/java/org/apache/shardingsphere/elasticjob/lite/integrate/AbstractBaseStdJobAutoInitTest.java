@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.junit.Before;
 
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {

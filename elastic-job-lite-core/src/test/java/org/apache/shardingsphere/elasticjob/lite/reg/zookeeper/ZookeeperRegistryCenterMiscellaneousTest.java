@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;

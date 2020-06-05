@@ -20,9 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.event.fixture;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
 
 public final class TestJobEventFailureConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     

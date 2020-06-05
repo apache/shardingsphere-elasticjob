@@ -17,14 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.config;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration.Builder;
@@ -32,6 +24,9 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
+import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
 
 @NoArgsConstructor
 public final class TestSimpleJobConfiguration implements JobRootConfiguration {

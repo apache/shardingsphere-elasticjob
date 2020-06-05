@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.api;
 
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

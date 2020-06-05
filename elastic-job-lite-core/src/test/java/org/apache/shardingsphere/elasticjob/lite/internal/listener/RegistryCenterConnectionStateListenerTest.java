@@ -17,14 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
-import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
-import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;

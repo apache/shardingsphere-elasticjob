@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.event.JobEventIdentity;
 public class JobEventRdbIdentity implements JobEventIdentity {
     
     @Override
-    public String getIdentity() {
+    public final String getIdentity() {
         return "rdb";
     }
 }

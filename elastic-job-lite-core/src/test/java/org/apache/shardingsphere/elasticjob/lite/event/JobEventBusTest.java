@@ -23,10 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventConfi
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventFailureConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventFailureConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;

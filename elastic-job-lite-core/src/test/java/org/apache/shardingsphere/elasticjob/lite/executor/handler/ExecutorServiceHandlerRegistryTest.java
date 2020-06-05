@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.junit.After;

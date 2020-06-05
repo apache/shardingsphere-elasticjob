@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.config;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
@@ -25,12 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 
 @RequiredArgsConstructor
 public final class TestDataflowJobConfiguration implements JobRootConfiguration {

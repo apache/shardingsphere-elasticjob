@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.reg.zookeeper;
 
 import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegException;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegException;
 import org.junit.Test;
 
 public final class ZookeeperRegistryCenterInitFailureTest {

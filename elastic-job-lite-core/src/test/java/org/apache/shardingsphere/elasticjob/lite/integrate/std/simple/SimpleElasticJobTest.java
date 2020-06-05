@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.std.simple;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

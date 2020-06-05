@@ -24,9 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

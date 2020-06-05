@@ -17,10 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;

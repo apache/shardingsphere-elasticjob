@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.event.fixture;
 
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventIdentity;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventIdentity;
 
 public class TestJobEventIdentity implements JobEventIdentity {
     
