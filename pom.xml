@@ -319,7 +319,7 @@
                     <!--<configuration>-->
                         <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
                         <!--<excludes>-->
-                            <!--<exclude>io.elasticjob.lite.integrate.**</exclude>-->
+                            <!--<exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>-->
                         <!--</excludes>-->
                     <!--</configuration>-->
                 <!--</plugin>-->

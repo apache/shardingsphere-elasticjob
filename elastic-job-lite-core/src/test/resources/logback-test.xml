@@ -37,8 +37,8 @@
     </root>
 
     <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
-    <logger name="io.elasticjob.lite.event.rdb.JobEventRdbConfiguration" level="OFF" />
-    <logger name="io.elasticjob.lite.event.JobEventBus" level="OFF" />
-    <logger name="io.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler" level="OFF" />
-    <logger name="io.elasticjob.lite.internal.monitor.MonitorService" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.event.JobEventBus" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService" level="OFF" />
 </configuration>
