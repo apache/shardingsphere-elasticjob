@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.restful;
 
-import com.google.common.base.Optional;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.fixture.Caller;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.fixture.TestFilter;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.fixture.TestRESTfulApi;
@@ -50,16 +49,16 @@ public final class RestfulServerTest {
     public static void setUpClass() throws Exception {
         server = new RESTfulAPIServer(17000);
         server.addFilter(TestFilter.class, "/*");
-        server.start(TestRESTfulApi.class.getPackage().getName(), Optional.<String>absent());
+        server.start(TestRESTfulApi.class.getPackage().getName(), null);
     }
     
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         server.stop();
     }
     
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         caller = Mockito.mock(Caller.class);
         TestRESTfulApi.setCaller(caller);
     }
