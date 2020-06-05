@@ -22,7 +22,7 @@ import io.elasticjob.lite.internal.sharding.ShardingNode;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
- * 失效转移节点路径.
+ * Failover node.
  */
 public final class FailoverNode {
     
@@ -53,10 +53,10 @@ public final class FailoverNode {
     }
     
     /**
-     * 根据失效转移执行路径获取分片项.
+     * Get sharding item by execution failover path.
      * 
-     * @param path 失效转移执行路径
-     * @return 分片项, 不是失效转移执行路径获则返回null
+     * @param path failover path
+     * @return sharding item, return null if not from failover path
      */
     public Integer getItemByExecutionFailoverPath(final String path) {
         if (!isFailoverPath(path)) {

@@ -23,23 +23,23 @@ import io.elasticjob.lite.event.type.JobExecutionEvent;
 import io.elasticjob.lite.event.type.JobStatusTraceEvent;
 
 /**
- * 作业事件监听器.
+ * Job event listener.
  */
 public interface JobEventListener extends JobEventIdentity {
     
     /**
-     * 作业执行事件监听执行.
+     * Listen job execution event.
      *
-     * @param jobExecutionEvent 作业执行事件
+     * @param jobExecutionEvent job execution event
      */
     @Subscribe
     @AllowConcurrentEvents
     void listen(JobExecutionEvent jobExecutionEvent);
     
     /**
-     * 作业状态痕迹事件监听执行.
+     * Listen job status trace event.
      *
-     * @param jobStatusTraceEvent 作业状态痕迹事件
+     * @param jobStatusTraceEvent job status trace event
      */
     @Subscribe
     @AllowConcurrentEvents

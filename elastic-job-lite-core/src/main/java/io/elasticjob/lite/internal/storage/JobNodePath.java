@@ -20,10 +20,10 @@ package io.elasticjob.lite.internal.storage;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 作业节点路径类.
+ * Job node path.
  * 
  * <p>
- * 作业节点是在普通的节点前加上作业名称的前缀.
+ * Job node is add job name as prefix.
  * </p>
  */
 @RequiredArgsConstructor
@@ -42,86 +42,86 @@ public final class JobNodePath {
     private final String jobName;
     
     /**
-     * 获取节点全路径.
+     * Get full path.
      * 
-     * @param node 节点名称
-     * @return 节点全路径
+     * @param node node
+     * @return full path
      */
     public String getFullPath(final String node) {
         return String.format("/%s/%s", jobName, node);
     }
     
     /**
-     * 获取配置节点根路径.
+     * Get configuration node path.
      *
-     * @return 配置节点根路径
+     * @return configuration node path
      */
     public String getConfigNodePath() {
         return String.format("/%s/%s", jobName, CONFIG_NODE);
     }
     
     /**
-     * 获取leader选举地址节点路径.
+     * Get leader host node path.
      *
-     * @return leader选举地址节点路径
+     * @return leader host node path
      */
     public String getLeaderHostNodePath() {
         return String.format("/%s/%s", jobName, LEADER_HOST_NODE);
     }
     
     /**
-     * 获取作业节点IP地址根路径.
+     * Get server node path.
      *
-     * @return 作业节点IP地址根路径
+     * @return server node path
      */
     public String getServerNodePath() {
         return String.format("/%s/%s", jobName, SERVERS_NODE);
     }
     
     /**
-     * 根据IP地址获取作业节点路径.
+     * Get server node path.
      *
-     * @param serverIp 作业服务器IP地址
-     * @return 作业节点IP地址路径
+     * @param serverIp server IP address
+     * @return server node path
      */
     public String getServerNodePath(final String serverIp) {
         return String.format("%s/%s", getServerNodePath(), serverIp);
     }
     
     /**
-     * 获取作业实例节点根路径.
+     * Get instances node path.
      *
-     * @return 作业实例节点根路径
+     * @return instances node path
      */
     public String getInstancesNodePath() {
         return String.format("/%s/%s", jobName, INSTANCES_NODE);
     }
     
     /**
-     * 根据作业实例ID获取作业实例节点路径.
+     * Get instance node path via job instance ID.
      *
-     * @param instanceId 作业实例ID
-     * @return 作业实例节点路径
+     * @param instanceId instance ID
+     * @return instance node path
      */
     public String getInstanceNodePath(final String instanceId) {
         return String.format("%s/%s", getInstancesNodePath(), instanceId);
     }
     
     /**
-     * 获取分片节点根路径.
+     * Get sharding node path.
      *
-     * @return 分片节点根路径
+     * @return sharding node path
      */
     public String getShardingNodePath() {
         return String.format("/%s/%s", jobName, SHARDING_NODE);
     }
     
     /**
-     * 获取分片节点路径.
+     * Get sharding node path.
      *
-     * @param item 分片项
-     * @param nodeName 子节点名称
-     * @return 分片节点路径
+     * @param item sharding item
+     * @param nodeName node name
+     * @return sharding node path
      */
     public String getShardingNodePath(final String item, final String nodeName) {
         return String.format("%s/%s/%s", getShardingNodePath(), item, nodeName);

@@ -23,25 +23,25 @@ import io.elasticjob.lite.api.ShardingContext;
 import java.util.List;
 
 /**
- * 数据流分布式作业接口.
+ * Dataflow job.
  * 
- * @param <T> 数据类型
+ * @param <T> type of data
  */
 public interface DataflowJob<T> extends ElasticJob {
     
     /**
-     * 获取待处理数据.
+     * Fetch to be processed data.
      *
-     * @param shardingContext 分片上下文
-     * @return 待处理的数据集合
+     * @param shardingContext sharding context
+     * @return to be processed data
      */
     List<T> fetchData(ShardingContext shardingContext);
     
     /**
-     * 处理数据.
+     * Process data.
      *
-     * @param shardingContext 分片上下文
-     * @param data 待处理数据集合
+     * @param shardingContext sharding context
+     * @param data to be processed data
      */
     void processData(ShardingContext shardingContext, List<T> data);
 }

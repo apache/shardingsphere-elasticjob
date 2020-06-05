@@ -24,7 +24,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import java.util.Collection;
 
 /**
- * 保证分布式任务全部开始和结束状态的服务.
+ * Guarantee service.
  */
 public final class GuaranteeService {
     
@@ -38,9 +38,9 @@ public final class GuaranteeService {
     }
     
     /**
-     * 根据分片项注册任务开始运行.
+     * Register start.
      * 
-     * @param shardingItems 待注册的分片项
+     * @param shardingItems to be registered sharding items 
      */
     public void registerStart(final Collection<Integer> shardingItems) {
         for (int each : shardingItems) {
@@ -49,9 +49,9 @@ public final class GuaranteeService {
     }
     
     /**
-     * 判断是否所有的任务均启动完毕.
+     * Judge whether job's sharding items are all started.
      *
-     * @return 是否所有的任务均启动完毕
+     * @return job's sharding items are all started or not
      */
     public boolean isAllStarted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
@@ -59,16 +59,16 @@ public final class GuaranteeService {
     }
     
     /**
-     * 清理所有任务启动信息.
+     * Clear all started job's info.
      */
     public void clearAllStartedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.STARTED_ROOT);
     }
     
     /**
-     * 根据分片项注册任务完成运行.
+     * Register complete.
      *
-     * @param shardingItems 待注册的分片项
+     * @param shardingItems to be registered sharding items
      */
     public void registerComplete(final Collection<Integer> shardingItems) {
         for (int each : shardingItems) {
@@ -77,9 +77,9 @@ public final class GuaranteeService {
     }
     
     /**
-     * 判断是否所有的任务均执行完毕.
+     * Judge whether job's sharding items are all completed.
      *
-     * @return 是否所有的任务均执行完毕
+     * @return job's sharding items are all completed or not
      */
     public boolean isAllCompleted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
@@ -87,7 +87,7 @@ public final class GuaranteeService {
     }
     
     /**
-     * 清理所有任务启动信息.
+     * Clear all completed job's info.
      */
     public void clearAllCompletedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.COMPLETED_ROOT);

@@ -32,7 +32,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import java.util.List;
 
 /**
- * 失效转移监听管理器.
+ * Failover listener manager.
  */
 public final class FailoverListenerManager extends AbstractListenerManager {
     

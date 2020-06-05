@@ -20,7 +20,7 @@ package io.elasticjob.lite.event.rdb;
 import io.elasticjob.lite.event.JobEventIdentity;
 
 /**
- * 关系型数据库作业事件标识.
+ * Job event RDB identity.
  */
 public class JobEventRdbIdentity implements JobEventIdentity {
     

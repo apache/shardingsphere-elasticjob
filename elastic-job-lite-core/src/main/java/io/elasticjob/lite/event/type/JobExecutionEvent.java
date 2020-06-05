@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * 作业执行事件.
+ * Job execution event.
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -62,9 +62,9 @@ public final class JobExecutionEvent implements JobEvent {
     private JobExecutionEventThrowable failureCause;
     
     /**
-     * 作业执行成功.
+     * Execution success.
      * 
-     * @return 作业执行事件
+     * @return job execution event
      */
     public JobExecutionEvent executionSuccess() {
         JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
@@ -74,10 +74,10 @@ public final class JobExecutionEvent implements JobEvent {
     }
     
     /**
-     * 作业执行失败.
+     * execution failure.
      * 
-     * @param failureCause 失败原因
-     * @return 作业执行事件
+     * @param failureCause failure cause
+     * @return job execution event
      */
     public JobExecutionEvent executionFailure(final Throwable failureCause) {
         JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, new JobExecutionEventThrowable(failureCause));
@@ -87,18 +87,19 @@ public final class JobExecutionEvent implements JobEvent {
     }
     
     /**
-     * 获取失败原因.
+     * Get failure cause.
      * 
-     * @return 失败原因
+     * @return failure cause
      */
     public String getFailureCause() {
         return ExceptionUtil.transform(failureCause == null ? null : failureCause.getThrowable());
     }
     
     /**
-     * 执行来源.
+     * Execution source.
      */
     public enum ExecutionSource {
+        
         NORMAL_TRIGGER, MISFIRE, FAILOVER
     }
 }

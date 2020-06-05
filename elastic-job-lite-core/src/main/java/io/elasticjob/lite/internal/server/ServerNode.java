@@ -24,13 +24,10 @@ import io.elasticjob.lite.util.env.IpUtils;
 import java.util.regex.Pattern;
 
 /**
- * 服务器节点路径.
+ * Server node.
  */
 public final class ServerNode {
     
-    /**
-     * 服务器信息根节点.
-     */
     public static final String ROOT = "servers";
     
     private static final String SERVERS = ROOT + "/%s";
@@ -45,20 +42,20 @@ public final class ServerNode {
     }
     
     /**
-     * 判断给定路径是否为作业服务器路径.
+     * Judge is server path or not.
      *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器路径
+     * @param path path to be judged
+     * @return is server path or not
      */
     public boolean isServerPath(final String path) {
         return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + IpUtils.IP_REGEX).matcher(path).matches();
     }
     
     /**
-     * 判断给定路径是否为本地作业服务器路径.
+     * Judge is server path for localhost or not.
      *
-     * @param path 待判断的路径
-     * @return 是否为本地作业服务器路径
+     * @param path path to be judged
+     * @return is server path for localhost or not
      */
     public boolean isLocalServerPath(final String path) {
         return path.equals(jobNodePath.getFullPath(String.format(SERVERS, JobRegistry.getInstance().getJobInstance(jobName).getIp())));

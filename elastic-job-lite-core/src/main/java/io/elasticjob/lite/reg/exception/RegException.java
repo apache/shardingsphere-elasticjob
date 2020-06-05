@@ -18,7 +18,7 @@
 package io.elasticjob.lite.reg.exception;
 
 /**
- * 注册中心异常.
+ * Registry center exception.
  */
 public final class RegException extends RuntimeException {
     

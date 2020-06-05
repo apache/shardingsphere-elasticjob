@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Date;
 
 /**
- * 任务运行结果统计数据.
+ * Task result statistics.
  */
 @Getter
 @AllArgsConstructor

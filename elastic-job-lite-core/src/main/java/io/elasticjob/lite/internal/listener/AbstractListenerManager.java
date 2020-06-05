@@ -22,7 +22,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 
 /**
- * 作业注册中心的监听器管理者的抽象类.
+ * Listener manager.
  */
 public abstract class AbstractListenerManager {
     
@@ -33,7 +33,7 @@ public abstract class AbstractListenerManager {
     }
 
     /**
-     * 开启监听器.
+     * Start listener.
      */
     public abstract void start();
     

@@ -20,7 +20,7 @@ package io.elasticjob.lite.internal.config;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
- * 配置节点路径.
+ * Configuration node.
  */
 public final class ConfigurationNode {
     
@@ -33,10 +33,10 @@ public final class ConfigurationNode {
     }
     
     /**
-     * 判断是否为作业配置根路径.
+     * Judge is configuration root path or not.
      * 
-     * @param path 节点路径
-     * @return 是否为作业配置根路径
+     * @param path node path
+     * @return is configuration root path or not
      */
     public boolean isConfigPath(final String path) {
         return jobNodePath.getConfigNodePath().equals(path);

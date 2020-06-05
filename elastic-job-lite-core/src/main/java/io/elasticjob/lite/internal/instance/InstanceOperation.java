@@ -18,7 +18,7 @@
 package io.elasticjob.lite.internal.instance;
 
 /**
- * 作业运行实例操作.
+ * Instance operation.
  */
 public enum InstanceOperation {
     

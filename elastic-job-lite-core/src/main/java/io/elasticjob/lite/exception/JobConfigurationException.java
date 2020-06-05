@@ -18,7 +18,7 @@
 package io.elasticjob.lite.exception;
 
 /**
- * 作业配置异常.
+ * Job configuration exception.
  */
 public final class JobConfigurationException extends RuntimeException {
     

@@ -29,7 +29,7 @@ import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
- * 注册中心连接状态监听器.
+ * Registry center connection state listener.
  */
 public final class RegistryCenterConnectionStateListener implements ConnectionStateListener {
     

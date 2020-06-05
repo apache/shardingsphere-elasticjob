@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 作业执行类型统计数据.
+ * Job execution type statistics.
  */
 @Getter
 @AllArgsConstructor

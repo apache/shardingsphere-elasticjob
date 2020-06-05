@@ -18,14 +18,14 @@
 package io.elasticjob.lite.util.env;
 
 /**
- * 获取时间的服务.
+ * Time service.
  */
 public final class TimeService {
     
     /**
-     * 获取当前时间的毫秒数.
+     * Get current millis.
      * 
-     * @return 当前时间的毫秒数
+     * @return current millis
      */
     public long getCurrentMillis() {
         return System.currentTimeMillis();

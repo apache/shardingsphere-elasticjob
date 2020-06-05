@@ -22,40 +22,42 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 分片上下文.
+ * Sharding context.
  */
 @Getter
 @ToString
 public final class ShardingContext {
     
     /**
-     * 作业名称.
+     * job name.
      */
     private final String jobName;
     
     /**
-     * 作业任务ID.
+     * task ID.
      */
     private final String taskId;
     
     /**
-     * 分片总数.
+     * sharding total count.
      */
     private final int shardingTotalCount;
     
     /**
-     * 作业自定义参数.
-     * 可以配置多个相同的作业, 但是用不同的参数作为不同的调度实例.
+     * job parameter.
+     * 
+     * <p>Can configure for same job class, but use different parameter for different job schedule instance.</p>
+     * 
      */
     private final String jobParameter;
     
     /**
-     * 分配于本作业实例的分片项.
+     * Sharding item assigned for this sharding.
      */
     private final int shardingItem;
     
     /**
-     * 分配于本作业实例的分片参数.
+     * Sharding parameter assigned for this sharding.
      */
     private final String shardingParameter;
     

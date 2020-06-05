@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 作业核心配置.
+ * Job core configuration.
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -51,12 +51,12 @@ public final class JobCoreConfiguration {
     private final JobProperties jobProperties;
     
     /**
-     * 创建简单作业配置构建器.
+     * Create simple job configuration builder.
      *
-     * @param jobName 作业名称
-     * @param cron 作业启动时间的cron表达式
-     * @param shardingTotalCount 作业分片总数
-     * @return 简单作业配置构建器
+     * @param jobName job name
+     * @param cron cron expression for job trigger
+     * @param shardingTotalCount sharding total count
+     * @return simple job configuration builder
      */
     public static Builder newBuilder(final String jobName, final String cron, final int shardingTotalCount) {
         return new Builder(jobName, cron, shardingTotalCount);
@@ -84,18 +84,19 @@ public final class JobCoreConfiguration {
         private final JobProperties jobProperties = new JobProperties();
         
         /**
-         * 设置分片序列号和个性化参数对照表.
+         * Set mapper of sharding items and sharding parameters.
          *
          * <p>
-         * 分片序列号和参数用等号分隔, 多个键值对用逗号分隔. 类似map.
-         * 分片序列号从0开始, 不可大于或等于作业分片总数.
-         * 如:
+         * sharding item and sharding parameter split by =, multiple sharding items and sharding parameters split by comma, just like map.
+         * Sharding item start from zero, cannot equal to great than sharding total count.
+         * 
+         * For example:
          * 0=a,1=b,2=c
          * </p>
          *
-         * @param shardingItemParameters 分片序列号和个性化参数对照表
+         * @param shardingItemParameters mapper of sharding items and sharding parameters
          *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder shardingItemParameters(final String shardingItemParameters) {
             if (null != shardingItemParameters) {
@@ -105,15 +106,11 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 设置作业自定义参数.
+         * Set job parameter.
          *
-         * <p>
-         * 可以配置多个相同的作业, 但是用不同的参数作为不同的调度实例.
-         * </p>
+         * @param jobParameter job parameter
          *
-         * @param jobParameter 作业自定义参数
-         *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder jobParameter(final String jobParameter) {
             if (null != jobParameter) {
@@ -123,15 +120,15 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 设置是否开启失效转移.
+         * Set enable failover.
          *
          * <p>
-         * 只有对monitorExecution的情况下才可以开启失效转移.
+         * Only for `monitorExecution` enabled.
          * </p> 
          *
-         * @param failover 是否开启失效转移
+         * @param failover enable or disable failover
          *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder failover(final boolean failover) {
             this.failover = failover;
@@ -139,11 +136,11 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 设置是否开启misfire.
+         * Set enable misfire.
          *
-         * @param misfire 是否开启misfire
+         * @param misfire enable or disable misfire
          *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder misfire(final boolean misfire) {
             this.misfire = misfire;
@@ -151,11 +148,11 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 设置作业描述信息.
+         * Set job description.
          *
-         * @param description 作业描述信息
+         * @param description job description
          *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder description(final String description) {
             if (null != description) {
@@ -165,12 +162,12 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 设置作业属性.
+         * Set job properties.
          *
-         * @param key 属性键
-         * @param value 属性值
+         * @param key property key
+         * @param value property value
          *
-         * @return 作业配置构建器
+         * @return job configuration builder
          */
         public Builder jobProperties(final String key, final String value) {
             jobProperties.put(key, value);
@@ -178,9 +175,9 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * 构建作业配置对象.
+         * Build Job.
          *
-         * @return 作业配置对象
+         * @return job configuration builder
          */
         public final JobCoreConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");

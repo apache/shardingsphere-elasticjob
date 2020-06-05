@@ -28,17 +28,17 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 作业执行器工厂.
+ * Job executor factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorFactory {
     
     /**
-     * 获取作业执行器.
+     * Get job executor.
      *
-     * @param elasticJob 分布式弹性作业
-     * @param jobFacade 作业内部服务门面服务
-     * @return 作业执行器
+     * @param elasticJob elasticJob object
+     * @param jobFacade job facade
+     * @return job executor
      */
     @SuppressWarnings("unchecked")
     public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {

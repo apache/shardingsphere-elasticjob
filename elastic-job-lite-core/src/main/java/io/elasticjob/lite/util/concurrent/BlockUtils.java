@@ -20,6 +20,9 @@ package io.elasticjob.lite.util.concurrent;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Block utility.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BlockUtils {
 

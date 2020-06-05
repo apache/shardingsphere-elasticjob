@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
- * 作业数据库事件配置.
+ * Job event RDB configuration.
  */
 @RequiredArgsConstructor
 @Getter

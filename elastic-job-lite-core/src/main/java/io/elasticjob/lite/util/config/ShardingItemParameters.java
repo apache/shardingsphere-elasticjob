@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 分片序列号个性化参数.
+ * Sharding item parameters.
  */
 @Getter
 public final class ShardingItemParameters {

@@ -21,13 +21,10 @@ import io.elasticjob.lite.internal.schedule.JobRegistry;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
- * 运行实例节点路径.
+ * Instance node.
  */
 public final class InstanceNode {
     
-    /**
-     * 运行实例信息根节点.
-     */
     public static final String ROOT = "instances";
     
     private static final String INSTANCES = ROOT + "/%s";
@@ -42,19 +39,19 @@ public final class InstanceNode {
     }
     
     /**
-     * 获取作业运行实例全路径.
+     * Get job instance full path.
      *
-     * @return 作业运行实例全路径
+     * @return job instance full path
      */
     public String getInstanceFullPath() {
         return jobNodePath.getFullPath(InstanceNode.ROOT);
     }
     
     /**
-     * 判断给定路径是否为作业运行实例路径.
+     * Judge path is job instance path or not.
      *
-     * @param path 待判断的路径
-     * @return 是否为作业运行实例路径
+     * @param path path to be judged
+     * @return path is job instance path or not
      */
     public boolean isInstancePath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(InstanceNode.ROOT));

@@ -24,7 +24,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 重调度监听管理器.
+ * Reschedule listener manager.
  */
 public final class RescheduleListenerManager extends AbstractListenerManager {
     

@@ -18,12 +18,12 @@
 package io.elasticjob.lite.internal.storage;
 
 /**
- * 主节点执行操作的回调接口.
+ * Leader server execution callback.
  */
 public interface LeaderExecutionCallback {
     
     /**
-     * 节点选中之后执行的回调方法.
+     * Execute after leader elected.
      */
     void execute();
 }

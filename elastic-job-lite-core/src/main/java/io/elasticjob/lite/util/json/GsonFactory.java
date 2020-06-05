@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 import java.lang.reflect.Type;
 
 /**
- * Gson构建器.
+ * Gson factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonFactory {
@@ -36,10 +36,10 @@ public final class GsonFactory {
     private static volatile Gson gson = GSON_BUILDER.create();
     
     /**
-     * 注册Gson解析对象.
+     * Register type adapter.
      * 
-     * @param type Gson解析对象类型
-     * @param typeAdapter Gson解析对象适配器
+     * @param type Gson type
+     * @param typeAdapter Gson type adapter
      */
     public static synchronized void registerTypeAdapter(final Type type, final TypeAdapter typeAdapter) {
         GSON_BUILDER.registerTypeAdapter(type, typeAdapter);
@@ -47,9 +47,9 @@ public final class GsonFactory {
     }
     
     /**
-     * 获取Gson实例.
+     * Get gson instance.
      * 
-     * @return Gson实例
+     * @return gson instance
      */
     public static Gson getGson() {
         return gson;

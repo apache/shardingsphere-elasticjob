@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作业运行时上下文服务.
+ * Execution context service.
  */
 public final class ExecutionContextService {
     
@@ -51,10 +51,10 @@ public final class ExecutionContextService {
     }
     
     /**
-     * 获取当前作业服务器分片上下文.
+     * Get job sharding context.
      * 
-     * @param shardingItems 分片项
-     * @return 分片上下文
+     * @param shardingItems sharding items
+     * @return job sharding context
      */
     public ShardingContexts getJobShardingContext(final List<Integer> shardingItems) {
         LiteJobConfiguration liteJobConfig = configService.load(false);

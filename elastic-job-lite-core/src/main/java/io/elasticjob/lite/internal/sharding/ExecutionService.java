@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 执行作业的服务.
+ * Execution service.
  */
 public final class ExecutionService {
     
@@ -46,9 +46,9 @@ public final class ExecutionService {
     }
         
     /**
-     * 注册作业启动信息.
+     * Register job begin.
      * 
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
@@ -61,9 +61,9 @@ public final class ExecutionService {
     }
     
     /**
-     * 注册作业完成信息.
+     * Register job completed.
      * 
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, false);
@@ -76,16 +76,16 @@ public final class ExecutionService {
     }
     
     /**
-     * 清除全部分片的运行状态.
+     * Clear all running info.
      */
     public void clearAllRunningInfo() {
         clearRunningInfo(getAllItems());
     }
     
     /**
-     * 清除分配分片项的运行状态.
+     * Clear running info.
      * 
-     * @param items 需要清理的分片项列表
+     * @param items sharding items which need to be cleared
      */
     public void clearRunningInfo(final List<Integer> items) {
         for (int each : items) {
@@ -94,10 +94,10 @@ public final class ExecutionService {
     }
     
     /**
-     * 判断分片项中是否还有执行中的作业.
+     * Judge has running items or not.
      *
-     * @param items 需要判断的分片项列表
-     * @return 分片项中是否还有执行中的作业
+     * @param items sharding items need to be judged
+     * @return has running items or not
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
         LiteJobConfiguration jobConfig = configService.load(true);
@@ -113,9 +113,9 @@ public final class ExecutionService {
     }
     
     /**
-     * 判断是否还有执行中的作业.
+     * Judge has running items or not.
      *
-     * @return 是否还有执行中的作业
+     * @return has running items or not
      */
     public boolean hasRunningItems() {
         return hasRunningItems(getAllItems());
@@ -131,10 +131,10 @@ public final class ExecutionService {
     }
     
     /**
-     * 如果当前分片项仍在运行则设置任务被错过执行的标记.
+     * Set misfire flag if sharding items still running.
      * 
-     * @param items 需要设置错过执行的任务分片项
-     * @return 是否错过本次执行
+     * @param items sharding items need to be set misfire flag
+     * @return is misfired for this schedule time or not
      */
     public boolean misfireIfHasRunningItems(final Collection<Integer> items) {
         if (!hasRunningItems(items)) {
@@ -145,9 +145,9 @@ public final class ExecutionService {
     }
     
     /**
-     * 设置任务被错过执行的标记.
+     * Set misfire flag if sharding items still running.
      *
-     * @param items 需要设置错过执行的任务分片项
+     * @param items sharding items need to be set misfire flag
      */
     public void setMisfire(final Collection<Integer> items) {
         for (int each : items) {
@@ -156,10 +156,10 @@ public final class ExecutionService {
     }
     
     /**
-     * 获取标记被错过执行的任务分片项.
+     * Get misfired job sharding items.
      * 
-     * @param items 需要获取标记被错过执行的任务分片项
-     * @return 标记被错过执行的任务分片项
+     * @param items sharding items need to be judged
+     * @return misfired job sharding items
      */
     public List<Integer> getMisfiredJobItems(final Collection<Integer> items) {
         List<Integer> result = new ArrayList<>(items.size());
@@ -172,9 +172,9 @@ public final class ExecutionService {
     }
     
     /**
-     * 清除任务被错过执行的标记.
+     * Clear misfire flag.
      * 
-     * @param items 需要清除错过执行的任务分片项
+     * @param items sharding items need to be cleared
      */
     public void clearMisfire(final Collection<Integer> items) {
         for (int each : items) {
@@ -183,10 +183,10 @@ public final class ExecutionService {
     }
     
     /**
-     * 获取禁用的任务分片项.
+     * Get disabled sharding items.
      *
-     * @param items 需要获取禁用的任务分片项
-     * @return 禁用的任务分片项
+     * @param items sharding items need to be got
+     * @return disabled sharding items
      */
     public List<Integer> getDisabledItems(final List<Integer> items) {
         List<Integer> result = new ArrayList<>(items.size());

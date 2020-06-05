@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 调解分布式作业不一致状态服务.
+ * Reconcile service.
  */
 @Slf4j
 public final class ReconcileService extends AbstractScheduledService {
@@ -49,7 +49,7 @@ public final class ReconcileService extends AbstractScheduledService {
     }
     
     @Override
-    protected void runOneIteration() throws Exception {
+    protected void runOneIteration() {
         LiteJobConfiguration config = configService.load(true);
         int reconcileIntervalMinutes = null == config ? -1 : config.getReconcileIntervalMinutes();
         if (reconcileIntervalMinutes > 0 && (System.currentTimeMillis() - lastReconcileTime >= reconcileIntervalMinutes * 60 * 1000)) {

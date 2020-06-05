@@ -23,7 +23,7 @@ import io.elasticjob.lite.executor.AbstractElasticJobExecutor;
 import io.elasticjob.lite.executor.JobFacade;
 
 /**
- * 简单作业执行器.
+ * Simple job executor.
  */
 public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     

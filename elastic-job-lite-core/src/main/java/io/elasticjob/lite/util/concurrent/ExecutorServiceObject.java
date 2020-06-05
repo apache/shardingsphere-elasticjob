@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 线程池执行服务对象.
+ * Executor service object.
  */
 public final class ExecutorServiceObject {
     
@@ -44,9 +44,9 @@ public final class ExecutorServiceObject {
     }
     
     /**
-     * 创建线程池服务对象.
+     * Create executor service.
      *
-     * @return 线程池服务对象
+     * @return executor service
      */
     public ExecutorService createExecutorService() {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
@@ -62,18 +62,18 @@ public final class ExecutorServiceObject {
     }
     
     /**
-     * 获取当前活跃的线程数.
+     * Get active thread count.
      *
-     * @return 当前活跃的线程数
+     * @return active thread count
      */
     public int getActiveThreadCount() {
         return threadPoolExecutor.getActiveCount();
     }
     
     /**
-     * 获取待执行任务数量.
+     * Get work queue size.
      *
-     * @return 待执行任务数量
+     * @return work queue size
      */
     public int getWorkQueueSize() {
         return workQueue.size();

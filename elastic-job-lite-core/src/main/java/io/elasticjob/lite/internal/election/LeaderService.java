@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 主节点服务.
+ * Leader service.
  */
 @Slf4j
 public final class LeaderService {
@@ -45,7 +45,7 @@ public final class LeaderService {
     }
     
     /**
-     * 选举主节点.
+     * Elect leader.
      */
     public void electLeader() {
         log.debug("Elect a new leader now.");
@@ -54,13 +54,13 @@ public final class LeaderService {
     }
     
     /**
-     * 判断当前节点是否是主节点.
+     * Judge current server is leader or not.
      * 
      * <p>
-     * 如果主节点正在选举中而导致取不到主节点, 则阻塞至主节点选举完成再返回.
+     * If leader is electing, this method will block until leader elected success.
      * </p>
      * 
-     * @return 当前节点是否是主节点
+     * @return current server is leader or not
      */
     public boolean isLeaderUntilBlock() {
         while (!hasLeader() && serverService.hasAvailableServers()) {
@@ -74,25 +74,25 @@ public final class LeaderService {
     }
     
     /**
-     * 判断当前节点是否是主节点.
+     * Judge current server is leader or not.
      *
-     * @return 当前节点是否是主节点
+     * @return current server is leader or not
      */
     public boolean isLeader() {
         return !JobRegistry.getInstance().isShutdown(jobName) && JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(LeaderNode.INSTANCE));
     }
     
     /**
-     * 判断是否已经有主节点.
+     * Judge has leader or not in current time.
      * 
-     * @return 是否已经有主节点
+     * @return has leader or not in current time
      */
     public boolean hasLeader() {
         return jobNodeStorage.isJobNodeExisted(LeaderNode.INSTANCE);
     }
     
     /**
-     * 删除主节点供重新选举.
+     * Remove leader and trigger leader election.
      */
     public void removeLeader() {
         jobNodeStorage.removeJobNodeIfExisted(LeaderNode.INSTANCE);

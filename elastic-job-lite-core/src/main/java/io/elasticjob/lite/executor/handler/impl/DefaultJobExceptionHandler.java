@@ -21,7 +21,7 @@ import io.elasticjob.lite.executor.handler.JobExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 默认作业异常处理器.
+ * Default job exception handler.
  */
 @Slf4j
 public final class DefaultJobExceptionHandler implements JobExceptionHandler {

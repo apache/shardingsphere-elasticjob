@@ -18,14 +18,14 @@
 package io.elasticjob.lite.event;
 
 /**
- * 作业事件接口.
+ * Job event.
  */
 public interface JobEvent {
     
     /**
-     * 获取作业名称.
+     * Get job name.
      * 
-     * @return 作业名称
+     * @return job name
      */
     String getJobName();
 }

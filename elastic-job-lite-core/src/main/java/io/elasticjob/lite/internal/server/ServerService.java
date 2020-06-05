@@ -25,7 +25,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import java.util.List;
 
 /**
- * 作业服务器服务.
+ * Server service.
  */
 public final class ServerService {
     
@@ -42,9 +42,9 @@ public final class ServerService {
     }
     
     /**
-     * 持久化作业服务器上线信息.
+     * Persist online status of job server.
      * 
-     * @param enabled 作业是否启用
+     * @param enabled enable server or not
      */
     public void persistOnline(final boolean enabled) {
         if (!JobRegistry.getInstance().isShutdown(jobName)) {
@@ -53,9 +53,9 @@ public final class ServerService {
     }
     
     /**
-     * 获取是否还有可用的作业服务器.
+     * Judge has available servers or not.
      * 
-     * @return 是否还有可用的作业服务器
+     * @return has available servers or not
      */
     public boolean hasAvailableServers() {
         List<String> servers = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
@@ -68,10 +68,10 @@ public final class ServerService {
     }
     
     /**
-     * 判断作业服务器是否可用.
+     * Judge is available server or not.
      * 
-     * @param ip 作业服务器IP地址
-     * @return 作业服务器是否可用
+     * @param ip job server IP address
+     * @return is available server or not
      */
     public boolean isAvailableServer(final String ip) {
         return isEnableServer(ip) && hasOnlineInstances(ip);
@@ -87,10 +87,10 @@ public final class ServerService {
     }
     
     /**
-     * 判断服务器是否启用.
+     * Judge is server enabled or not.
      *
-     * @param ip 作业服务器IP地址
-     * @return 服务器是否启用
+     * @param ip job server IP address
+     * @return is server enabled or not
      */
     public boolean isEnableServer(final String ip) {
         return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip)));

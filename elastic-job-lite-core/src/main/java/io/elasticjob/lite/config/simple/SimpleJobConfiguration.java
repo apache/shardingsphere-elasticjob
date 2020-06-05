@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 简单作业配置.
+ * Simple job configuration.
  */
 @RequiredArgsConstructor
 @Getter

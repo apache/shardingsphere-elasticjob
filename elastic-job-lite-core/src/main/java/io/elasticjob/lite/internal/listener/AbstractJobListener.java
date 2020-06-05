@@ -25,7 +25,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 
 /**
- * 作业注册中心的监听器.
+ * Job Listener.
  */
 public abstract class AbstractJobListener implements TreeCacheListener {
     

@@ -24,7 +24,7 @@ import org.quartz.Trigger;
 import org.quartz.listeners.TriggerListenerSupport;
 
 /**
- * 作业触发监听器.
+ * Job trigger listener.
  */
 @RequiredArgsConstructor
 public final class JobTriggerListener extends TriggerListenerSupport {

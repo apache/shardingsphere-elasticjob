@@ -21,14 +21,14 @@ import io.elasticjob.lite.api.ElasticJob;
 import io.elasticjob.lite.api.ShardingContext;
 
 /**
- * 简单分布式作业接口.
+ * Simple job.
  */
 public interface SimpleJob extends ElasticJob {
     
     /**
-     * 执行作业.
+     * Execute job.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContext sharding context
      */
     void execute(ShardingContext shardingContext);
 }

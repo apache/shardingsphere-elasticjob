@@ -25,116 +25,120 @@ import io.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import java.util.Collection;
 
 /**
- * 作业内部服务门面服务.
+ * Job facade.
  */
 public interface JobFacade {
     
     /**
-     * 读取作业配置.
+     * Load job root configuration.
      * 
-     * @param fromCache 是否从缓存中读取
-     * @return 作业配置
+     * @param fromCache load from cache or not
+     * @return job root configuration
      */
     JobRootConfiguration loadJobRootConfiguration(boolean fromCache);
     
     /**
-     * 检查作业执行环境.
+     * check job execution environment.
      * 
-     * @throws JobExecutionEnvironmentException 作业执行环境异常
+     * @throws JobExecutionEnvironmentException job execution environment exception
      */
     void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException;
     
     /**
-     * 如果需要失效转移, 则执行作业失效转移.
+     * Failover If necessary.
      */
     void failoverIfNecessary();
     
     /**
-     * 注册作业启动信息.
+     * Register job begin.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void registerJobBegin(ShardingContexts shardingContexts);
     
     /**
-     * 注册作业完成信息.
+     * Register job completed.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void registerJobCompleted(ShardingContexts shardingContexts);
     
     /**
-     * 获取当前作业服务器的分片上下文.
+     * Get sharding contexts.
      *
-     * @return 分片上下文
+     * @return sharding contexts
      */
     ShardingContexts getShardingContexts();
     
     /**
-     * 设置任务被错过执行的标记.
+     * Set task misfire flag.
      *
-     * @param shardingItems 需要设置错过执行的任务分片项
-     * @return 是否满足misfire条件
+     * @param shardingItems sharding items to be set misfire flag
+     * @return whether satisfy misfire condition
      */
     boolean misfireIfRunning(Collection<Integer> shardingItems);
     
     /**
-     * 清除任务被错过执行的标记.
+     * Clear misfire flag.
      *
-     * @param shardingItems 需要清除错过执行的任务分片项
+     * @param shardingItems sharding items to be cleared misfire flag
      */
     void clearMisfire(Collection<Integer> shardingItems);
     
     /**
-     * 判断作业是否需要执行错过的任务.
+     * Judge job whether need to execute misfire tasks.
      * 
-     * @param shardingItems 任务分片项集合
-     * @return 作业是否需要执行错过的任务
+     * @param shardingItems sharding items
+     * @return whether need to execute misfire tasks
      */
     boolean isExecuteMisfired(Collection<Integer> shardingItems);
     
     /**
-     * 判断作业是否符合继续运行的条件.
+     * Judge job whether eligible running.
      * 
-     * <p>如果作业停止或需要重分片或非流式处理则作业将不会继续运行.</p>
+     * <p>The ineligible job includes:
+     * 1. Need to shutdown;
+     * 2. Need to resharding;
+     * 3. Not stream job.
      * 
-     * @return 作业是否符合继续运行的条件
+     * @return job is eligible running or not
      */
     boolean isEligibleForJobRunning();
     
-    /**判断是否需要重分片.
+    /**
+     * Judge job whether need resharding.
      *
-     * @return 是否需要重分片
+     * @return whether need resharding
      */
     boolean isNeedSharding();
     
     /**
-     * 作业执行前的执行的方法.
+     * Call before job executed.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void beforeJobExecuted(ShardingContexts shardingContexts);
     
     /**
-     * 作业执行后的执行的方法.
+     * Call after job executed.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void afterJobExecuted(ShardingContexts shardingContexts);
     
     /**
-     * 发布执行事件.
+     * Post job execution event.
      *
-     * @param jobExecutionEvent 作业执行事件
+     * @param jobExecutionEvent job execution event
      */
     void postJobExecutionEvent(JobExecutionEvent jobExecutionEvent);
     
     /**
-     * 发布作业状态追踪事件.
+     * Post job status trace event.
      *
-     * @param taskId 作业Id
-     * @param state 作业执行状态
-     * @param message 作业执行消息
+     * @param taskId task Id
+     * @param state job state
+     * @param message job message
      */
     void postJobStatusTraceEvent(String taskId, State state, String message);
 }

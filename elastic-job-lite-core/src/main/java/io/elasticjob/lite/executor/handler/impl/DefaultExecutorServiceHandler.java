@@ -23,7 +23,7 @@ import io.elasticjob.lite.util.concurrent.ExecutorServiceObject;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 默认线程池服务处理器.
+ * Default executor service handler.
  */
 public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
     

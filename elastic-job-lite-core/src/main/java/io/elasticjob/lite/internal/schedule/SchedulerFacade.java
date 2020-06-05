@@ -33,7 +33,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import java.util.List;
 
 /**
- * 为调度器提供内部服务的门面类.
+ * Scheduler facade.
  */
 public final class SchedulerFacade {
     
@@ -83,19 +83,19 @@ public final class SchedulerFacade {
     }
     
     /**
-     * 获取作业触发监听器.
+     * Create job trigger listener.
      *
-     * @return 作业触发监听器
+     * @return job trigger listener
      */
     public JobTriggerListener newJobTriggerListener() {
         return new JobTriggerListener(executionService, shardingService);
     }
     
     /**
-     * 更新作业配置.
+     * Update job configuration.
      *
-     * @param liteJobConfig 作业配置
-     * @return 更新后的作业配置
+     * @param liteJobConfig job configuration to be updated
+     * @return updated job configuration
      */
     public LiteJobConfiguration updateJobConfiguration(final LiteJobConfiguration liteJobConfig) {
         configService.persist(liteJobConfig);
@@ -103,9 +103,9 @@ public final class SchedulerFacade {
     }
     
     /**
-     * 注册作业启动信息.
+     * Register start up info.
      * 
-     * @param enabled 作业是否启用
+     * @param enabled enable job on startup
      */
     public void registerStartUpInfo(final boolean enabled) {
         listenerManager.startAllListeners();
@@ -120,7 +120,7 @@ public final class SchedulerFacade {
     }
     
     /**
-     * 终止作业调度.
+     * Shutdown instance.
      */
     public void shutdownInstance() {
         if (leaderService.isLeader()) {

@@ -25,7 +25,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 /**
- * Lite调度作业.
+ * Lite job class.
  */
 public final class LiteJob implements Job {
     

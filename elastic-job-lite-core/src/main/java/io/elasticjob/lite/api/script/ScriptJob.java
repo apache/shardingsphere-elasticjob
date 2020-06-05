@@ -20,7 +20,7 @@ package io.elasticjob.lite.api.script;
 import io.elasticjob.lite.api.ElasticJob;
 
 /**
- * 脚本分布式作业接口.
+ * Script job.
  */
 public interface ScriptJob extends ElasticJob {
 }

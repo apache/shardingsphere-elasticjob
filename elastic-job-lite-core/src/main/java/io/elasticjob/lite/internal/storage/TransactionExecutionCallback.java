@@ -20,15 +20,15 @@ package io.elasticjob.lite.internal.storage;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 
 /**
- * 事务执行操作的回调接口.
+ * Transaction execution callback.
  */
 public interface TransactionExecutionCallback {
     
     /**
-     * 事务执行的回调方法.
+     * Execute in transaction.
      * 
-     * @param curatorTransactionFinal 执行事务的上下文
-     * @throws Exception 处理中异常
+     * @param curatorTransactionFinal transaction execution context
+     * @throws Exception exception
      */
     void execute(CuratorTransactionFinal curatorTransactionFinal) throws Exception;
 }

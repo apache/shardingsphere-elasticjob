@@ -18,15 +18,15 @@
 package io.elasticjob.lite.executor.handler;
 
 /**
- * 作业异常处理器.
+ * Job exception handler.
  */
 public interface JobExceptionHandler {
     
     /**
-     * 处理作业异常.
+     * Handle exception.
      * 
-     * @param jobName 作业名称
-     * @param cause 异常原因
+     * @param jobName job name
+     * @param cause cause
      */
     void handleException(String jobName, Throwable cause);
 }

@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作业分片服务.
+ * Sharding service.
  */
 @Slf4j
 public final class ShardingService {
@@ -75,26 +75,27 @@ public final class ShardingService {
     }
     
     /**
-     * 设置需要重新分片的标记.
+     * Set resharding flag.
      */
     public void setReshardingFlag() {
         jobNodeStorage.createJobNodeIfNeeded(ShardingNode.NECESSARY);
     }
     
     /**
-     * 判断是否需要重分片.
+     * Judge is need resharding or not.
      * 
-     * @return 是否需要重分片
+     * @return is need resharding or not
      */
     public boolean isNeedSharding() {
         return jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY);
     }
     
     /**
-     * 如果需要分片且当前节点为主节点, 则作业分片.
+     * Sharding if necessary.
      * 
      * <p>
-     * 如果当前无可用节点则不分片.
+     * Sharding if current job server is leader server;
+     * Do not sharding if no available job server. 
      * </p>
      */
     public void shardingIfNecessary() {
@@ -145,10 +146,10 @@ public final class ShardingService {
     }
     
     /**
-     * 获取作业运行实例的分片项集合.
+     * Get sharding items.
      *
-     * @param jobInstanceId 作业运行实例主键
-     * @return 作业运行实例的分片项集合
+     * @param jobInstanceId job instance ID
+     * @return sharding items
      */
     public List<Integer> getShardingItems(final String jobInstanceId) {
         JobInstance jobInstance = new JobInstance(jobInstanceId);
@@ -166,9 +167,9 @@ public final class ShardingService {
     }
     
     /**
-     * 获取运行在本作业实例的分片项集合.
+     * Get sharding items from localhost job server.
      * 
-     * @return 运行在本作业实例的分片项集合
+     * @return sharding items from localhost job server
      */
     public List<Integer> getLocalShardingItems() {
         if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
@@ -178,9 +179,9 @@ public final class ShardingService {
     }
     
     /**
-     * 查询是包含有分片节点的不在线服务器.
+     * Query has sharding info in offline servers or not.
      * 
-     * @return 是包含有分片节点的不在线服务器
+     * @return has sharding info in offline servers or not
      */
     public boolean hasShardingInfoInOfflineServers() {
         List<String> onlineInstances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);

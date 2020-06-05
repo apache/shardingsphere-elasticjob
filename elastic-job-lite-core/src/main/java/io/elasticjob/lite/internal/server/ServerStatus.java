@@ -18,7 +18,7 @@
 package io.elasticjob.lite.internal.server;
 
 /**
- * 服务器状态.
+ * Server status.
  */
 public enum ServerStatus {
     
