@@ -27,7 +27,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * 基于Zookeeper注册中心的命名空间解析器.
+ * Bean definition parser for ZooKeeper.
  */
 public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionParser {
     

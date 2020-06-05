@@ -27,7 +27,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * 简单作业的命名空间解析器.
+ * Simple job bean definition parser.
  */
 public final class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     

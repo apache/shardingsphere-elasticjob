@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 脚本作业属性解析标签.
+ * Script job bean definition parser tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScriptJobBeanDefinitionParserTag {

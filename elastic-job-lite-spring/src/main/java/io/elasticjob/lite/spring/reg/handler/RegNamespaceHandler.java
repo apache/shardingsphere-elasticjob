@@ -21,7 +21,7 @@ import io.elasticjob.lite.spring.reg.parser.ZookeeperBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * 注册中心的命名空间处理器.
+ * Registry center spring namespace handler.
  */
 public final class RegNamespaceHandler extends NamespaceHandlerSupport {
     

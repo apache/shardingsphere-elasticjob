@@ -27,7 +27,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * 数据流作业的命名空间解析器.
+ * Dataflow job bean definition parser.
  */
 public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
