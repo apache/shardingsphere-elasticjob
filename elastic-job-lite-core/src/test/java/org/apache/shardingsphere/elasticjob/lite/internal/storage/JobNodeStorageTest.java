@@ -171,13 +171,7 @@ public final class JobNodeStorageTest {
         when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
         when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        jobNodeStorage.executeInTransaction(new TransactionExecutionCallback() {
-            
-            @Override
-            public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
-                curatorTransactionFinal.create().forPath("/test_transaction").and();
-            }
-        });
+        jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
         verify(regCenter).getRawClient();
         verify(client).inTransaction();
         verify(curatorTransaction).check();
@@ -204,13 +198,7 @@ public final class JobNodeStorageTest {
         when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
         when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenThrow(new RuntimeException());
-        jobNodeStorage.executeInTransaction(new TransactionExecutionCallback() {
-
-            @Override
-            public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
-                curatorTransactionFinal.create().forPath("/test_transaction").and();
-            }
-        });
+        jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
         verify(regCenter).getRawClient();
         verify(client).inTransaction();
         verify(curatorTransaction).check();
