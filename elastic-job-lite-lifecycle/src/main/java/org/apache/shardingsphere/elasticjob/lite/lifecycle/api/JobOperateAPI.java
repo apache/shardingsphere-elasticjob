@@ -30,9 +30,8 @@ public interface JobOperateAPI {
      * <p>Job will not start until it does not conflict with the last running job, and this tag will be automatically cleaned up after it starts.</p>
      *
      * @param jobName job name
-     * @param serverIp server IP address
      */
-    void trigger(Optional<String> jobName, Optional<String> serverIp);
+    void trigger(String jobName);
     
     /**
      * Disable job.

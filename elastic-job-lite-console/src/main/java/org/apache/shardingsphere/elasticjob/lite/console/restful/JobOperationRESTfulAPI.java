@@ -71,7 +71,7 @@ public final class JobOperationRESTfulAPI {
     @POST
     @Path("/{jobName}/trigger")
     public void triggerJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobName), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().trigger(jobName);
     }
     
     /**
