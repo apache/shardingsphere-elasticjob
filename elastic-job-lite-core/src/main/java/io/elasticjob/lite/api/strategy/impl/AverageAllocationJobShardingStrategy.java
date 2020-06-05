@@ -27,14 +27,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 基于平均分配算法的分片策略.
+ * Sharding strategy which for average by sharding item.
  * 
  * <p>
- * 如果分片不能整除, 则不能整除的多余分片将依次追加到序号小的服务器.
- * 如: 
- * 1. 如果有3台服务器, 分成9片, 则每台服务器分到的分片是: 1=[0,1,2], 2=[3,4,5], 3=[6,7,8].
- * 2. 如果有3台服务器, 分成8片, 则每台服务器分到的分片是: 1=[0,1,6], 2=[2,3,7], 3=[4,5].
- * 3. 如果有3台服务器, 分成10片, 则每台服务器分到的分片是: 1=[0,1,2,9], 2=[3,4,5], 3=[6,7,8].
+ * If the job server number and sharding count cannot be divided, 
+ * the redundant sharding item that cannot be divided will be added to the server with small sequence number in turn.
+ * 
+ * For example:
+ * 
+ * 1. If there are 3 job servers and the total sharding count is 9, each job server is divided into: 1=[0,1,2], 2=[3,4,5], 3=[6,7,8];
+ * 2. If there are 3 job servers and the total sharding count is 8, each job server is divided into: 1=[0,1,6], 2=[2,3,7], 3=[4,5];
+ * 3. If there are 3 job servers and the total sharding count is 10, each job server is divided into: 1=[0,1,2,9], 2=[3,4,5], 3=[6,7,8].
  * </p>
  */
 public final class AverageAllocationJobShardingStrategy implements JobShardingStrategy {

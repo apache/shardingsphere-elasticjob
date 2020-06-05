@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 运行痕迹事件数据库存储.
+ * Job event RDB storage.
  */
 @Slf4j
 final class JobEventRdbStorage {

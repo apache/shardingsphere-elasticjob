@@ -26,7 +26,7 @@ import io.elasticjob.lite.executor.JobFacade;
 import java.util.List;
 
 /**
- * 数据流作业执行器.
+ * Dataflow job executor.
  */
 public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     

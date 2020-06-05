@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 作业运行实例服务.
+ * Job instance service.
  */
 public final class InstanceService {
     
@@ -43,30 +43,30 @@ public final class InstanceService {
     }
     
     /**
-     * 持久化作业运行实例上线相关信息.
+     * Persist job online status.
      */
     public void persistOnline() {
         jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), "");
     }
     
     /**
-     * 删除作业运行状态.
+     * Persist job instance.
      */
     public void removeInstance() {
         jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstanceNode());
     }
     
     /**
-     * 清理作业触发标记.
+     * Clear trigger flag.
      */
     public void clearTriggerFlag() {
         jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), "");
     }
     
     /**
-     * 获取可分片的作业运行实例.
+     * Get available job instances.
      *
-     * @return 可分片的作业运行实例
+     * @return available job instances
      */
     public List<JobInstance> getAvailableJobInstances() {
         List<JobInstance> result = new LinkedList<>();
@@ -80,9 +80,9 @@ public final class InstanceService {
     }
     
     /**
-     * 判断当前作业运行实例的节点是否仍然存在.
+     * Judge is job instance existed or not in localhost.
      * 
-     * @return 当前作业运行实例的节点是否仍然存在
+     * @return is job instance existed or not in localhost
      */
     public boolean isLocalJobInstanceExisted() {
         return jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode());

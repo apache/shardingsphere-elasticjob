@@ -18,7 +18,7 @@
 package io.elasticjob.lite.api;
 
 /**
- * 弹性化分布式作业标识接口.
+ * ElasticJob interface.
  */
 public interface ElasticJob {
 }

@@ -27,7 +27,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import java.util.List;
 
 /**
- * 保证分布式任务全部开始和结束状态监听管理器.
+ * Guarantee listener manager.
  */
 public final class GuaranteeListenerManager extends AbstractListenerManager {
     

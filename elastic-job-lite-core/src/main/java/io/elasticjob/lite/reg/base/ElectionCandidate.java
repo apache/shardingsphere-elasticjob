@@ -18,21 +18,23 @@
 package io.elasticjob.lite.reg.base;
 
 /**
- * 选举候选人.
- * 保证{@link #startLeadership()}与{@link #stopLeadership()}方法在同一个线程内交替运行,
- * 且不会出现并发执行的情况.
+ * Election candidate.
+ * 
+ * Guarantee {@link #startLeadership()} and {@link #stopLeadership()} method run in same thread. 
  */
 public interface ElectionCandidate {
     
     /**
-     * 开始领导状态.
-     * @throws Exception 抛出的异常
+     * Start leadership.
+     * 
+     * @throws Exception exception
      */
     void startLeadership() throws Exception;
     
     /**
-     * 终止领导状态.
-     * 实现该方法时不应该抛出任何异常
+     * Stop leadership.
+     * 
+     * <p>Should not throw any exception for the implementation class.</p>
      */
     void stopLeadership();
 }

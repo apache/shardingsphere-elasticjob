@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 分片上下文集合.
+ * Sharding contexts.
  */
 @RequiredArgsConstructor
 @Getter
@@ -36,44 +36,44 @@ public final class ShardingContexts implements Serializable {
     private static final long serialVersionUID = -4585977349142082152L;
     
     /**
-     * 作业任务ID.
+     * task ID.
      */
     private final String taskId;
     
     /**
-     * 作业名称.
+     * job name.
      */
     private final String jobName;
     
     /**
-     * 分片总数.
+     * sharding total count.
      */
     private final int shardingTotalCount;
     
     /**
-     * 作业自定义参数.
-     * 可以配置多个相同的作业, 但是用不同的参数作为不同的调度实例.
+     * Job parameter.
+     * Can configure multiple identical jobs, but use different parameters as different scheduling instances
      */
     private final String jobParameter;
     
     /**
-     * 分配于本作业实例的分片项和参数的Map.
+     * Sharding items and parameters map.
      */
     private final Map<Integer, String> shardingItemParameters;
     
     /**
-     * 作业事件采样统计数.
+     * Job event sampling count.
      */
     private int jobEventSamplingCount;
     
     /**
-     * 当前作业事件采样统计数.
+     * Current job event sampling count.
      */
     @Setter
     private int currentJobEventSamplingCount;
     
     /**
-     * 是否允许可以发送作业事件.
+     * Whether allow send job event.
      */
     @Setter
     private boolean allowSendJobEvent = true;

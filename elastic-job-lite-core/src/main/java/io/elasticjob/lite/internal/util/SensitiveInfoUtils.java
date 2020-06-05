@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 敏感信息过滤工具类.
+ * Sensitive info utility.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SensitiveInfoUtils {
@@ -40,10 +40,10 @@ public final class SensitiveInfoUtils {
     private static final String FAKE_IP_SAMPLE = "ip";
     
     /**
-     * 屏蔽替换IP地址敏感信息.
+     * Filter sensitive IP addresses.
      * 
-     * @param target 待替换敏感信息的字符串列表
-     * @return 替换敏感信息后的字符串列表
+     * @param target IP addresses to be filtered
+     * @return filtered IP addresses
      */
     public static List<String> filterSensitiveIps(final List<String> target) {
         final Map<String, String> fakeIpMap = new HashMap<>();

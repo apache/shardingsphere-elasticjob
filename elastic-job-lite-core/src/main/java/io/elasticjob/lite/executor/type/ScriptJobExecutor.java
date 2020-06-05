@@ -30,7 +30,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import java.io.IOException;
 
 /**
- * 脚本作业执行器.
+ * Script job executor.
  */
 public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     

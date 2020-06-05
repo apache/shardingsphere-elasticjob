@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * 运行痕迹事件数据库监听器.
+ * Job event RDB listener.
  */
 public final class JobEventRdbListener extends JobEventRdbIdentity implements JobEventListener {
     

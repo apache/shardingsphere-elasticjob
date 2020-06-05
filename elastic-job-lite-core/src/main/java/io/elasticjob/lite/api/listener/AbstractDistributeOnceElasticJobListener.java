@@ -24,7 +24,7 @@ import io.elasticjob.lite.util.env.TimeService;
 import lombok.Setter;
 
 /**
- * 在分布式作业中只执行一次的监听器.
+ * Distributed once elasticjob listener.
  */
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     
@@ -103,21 +103,21 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     }
     
     /**
-     * 分布式环境中最后一个作业执行前的执行的方法.
+     * Do before job executed at last sharding job started.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     public abstract void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts);
     
     /**
-     * 分布式环境中最后一个作业执行后的执行的方法.
+     * Do after job executed at last sharding job completed.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     public abstract void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts);
     
     /**
-     * 通知任务开始.
+     * Notify waiting task start.
      */
     public void notifyWaitingTaskStart() {
         synchronized (startedWait) {
@@ -126,7 +126,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     }
     
     /**
-     * 通知任务结束.
+     * Notify waiting task complete.
      */
     public void notifyWaitingTaskComplete() {
         synchronized (completedWait) {

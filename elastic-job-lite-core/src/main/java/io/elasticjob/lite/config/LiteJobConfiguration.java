@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Lite作业配置.
+ * ElasticJob lite configuration.
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -46,28 +46,28 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
     private final boolean overwrite;
     
     /**
-     * 获取作业名称.
+     * Get job name.
      * 
-     * @return 作业名称
+     * @return job name
      */
     public String getJobName() {
         return typeConfig.getCoreConfig().getJobName();
     }
     
     /**
-     * 获取是否开启失效转移.
+     * Get is enable or disable failover.
      *
-     * @return 是否开启失效转移
+     * @return is enable failover
      */
     public boolean isFailover() {
         return typeConfig.getCoreConfig().isFailover();
     }
     
     /**
-     * 创建Lite作业配置构建器.
+     * Create ElasticJob lite configuration builder.
      * 
-     * @param jobConfig 作业配置
-     * @return Lite作业配置构建器
+     * @param jobConfig job configuration
+     * @return ElasticJob lite configuration builder
      */
     public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
         return new Builder(jobConfig);
@@ -93,16 +93,18 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         private int reconcileIntervalMinutes = 10;
     
         /**
-         * 设置监控作业执行时状态.
+         * Set enable or disable monitor execution.
          *
          * <p>
-         * 每次作业执行时间和间隔时间均非常短的情况, 建议不监控作业运行时状态以提升效率, 因为是瞬时状态, 所以无必要监控. 请用户自行增加数据堆积监控. 并且不能保证数据重复选取, 应在作业中实现幂等性. 也无法实现作业失效转移.
-         * 每次作业执行时间和间隔时间均较长短的情况, 建议监控作业运行时状态, 可保证数据不会重复选取.
+         * For short interval job, it is better to disable monitor execution to improve performance. 
+         * It can't guarantee repeated data fetch and can't failover if disable monitor execution, please keep idempotence in job.
+         * 
+         * For long interval job, it is better to enable monitor execution to guarantee fetch data exactly once.
          * </p>
          *
-         * @param monitorExecution 监控作业执行时状态
+         * @param monitorExecution monitor job execution status 
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder monitorExecution(final boolean monitorExecution) {
             this.monitorExecution = monitorExecution;
@@ -110,16 +112,16 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置最大容忍的本机与注册中心的时间误差秒数.
+         * Set max tolerate time different seconds between job server and registry center.
          *
          * <p>
-         * 如果时间误差超过配置秒数则作业启动时将抛异常.
-         * 配置为-1表示不检查时间误差.
+         * ElasticJob will throw exception if exceed max tolerate time different seconds.
+         * -1 means do not check.
          * </p>
          *
-         * @param maxTimeDiffSeconds 最大容忍的本机与注册中心的时间误差秒数
+         * @param maxTimeDiffSeconds max tolerate time different seconds between job server and registry center
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder maxTimeDiffSeconds(final int maxTimeDiffSeconds) {
             this.maxTimeDiffSeconds = maxTimeDiffSeconds;
@@ -127,11 +129,11 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置作业辅助监控端口.
+         * Set job monitor port.
+         * 
+         * @param monitorPort job monitor port
          *
-         * @param monitorPort 作业辅助监控端口
-         *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder monitorPort(final int monitorPort) {
             this.monitorPort = monitorPort;
@@ -139,15 +141,15 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置作业分片策略实现类全路径.
+         * Set job sharding strategy class.
          *
          * <p>
-         * 默认使用{@code io.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy}.
+         * Default for {@code io.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy}.
          * </p>
          *
-         * @param jobShardingStrategyClass 作业分片策略实现类全路径
+         * @param jobShardingStrategyClass job sharding strategy class
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder jobShardingStrategyClass(final String jobShardingStrategyClass) {
             if (null != jobShardingStrategyClass) {
@@ -157,15 +159,15 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
     
         /**
-         * 设置修复作业服务器不一致状态服务执行间隔分钟数.
+         * Set reconcile interval minutes for job sharding status.
          *
          * <p>
-         * 每隔一段时间监视作业服务器的状态，如果不正确则重新分片.
+         * Monitor the status of the job server at regular intervals, and resharding if incorrect.
          * </p>
          *
-         * @param reconcileIntervalMinutes 修复作业服务器不一致状态服务执行间隔分钟数
+         * @param reconcileIntervalMinutes reconcile interval minutes for job sharding status
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder reconcileIntervalMinutes(final int reconcileIntervalMinutes) {
             this.reconcileIntervalMinutes = reconcileIntervalMinutes;
@@ -173,15 +175,15 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置作业是否启动时禁止.
+         * Set whether disable job when start.
          * 
          * <p>
-         * 可用于部署作业时, 先在启动时禁止, 部署结束后统一启动.
+         * Using in job deploy, start job together after deploy.
          * </p>
          *
-         * @param disabled 作业是否启动时禁止
+         * @param disabled whether disable job when start
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder disabled(final boolean disabled) {
             this.disabled = disabled;
@@ -189,15 +191,15 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置本地配置是否可覆盖注册中心配置.
+         * Set whether overwrite local configuration to registry center when job startup. 
          * 
          * <p>
-         * 如果可覆盖, 每次启动作业都以本地配置为准.
+         *  If overwrite enabled, every startup will use local configuration.
          * </p>
          *
-         * @param overwrite 本地配置是否可覆盖注册中心配置
+         * @param overwrite whether overwrite local configuration to registry center when job startup
          *
-         * @return 作业配置构建器
+         * @return ElasticJob lite configuration builder
          */
         public Builder overwrite(final boolean overwrite) {
             this.overwrite = overwrite;
@@ -205,9 +207,9 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 构建作业配置对象.
+         * Build ElasticJob lite configuration.
          * 
-         * @return 作业配置对象
+         * @return ElasticJob lite configuration
          */
         public final LiteJobConfiguration build() {
             return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, reconcileIntervalMinutes, disabled, overwrite);

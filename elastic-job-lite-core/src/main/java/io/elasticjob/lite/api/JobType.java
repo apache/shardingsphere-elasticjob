@@ -18,7 +18,7 @@
 package io.elasticjob.lite.api;
 
 /**
- * 作业类型.
+ * Job type.
  */
 public enum JobType {
     

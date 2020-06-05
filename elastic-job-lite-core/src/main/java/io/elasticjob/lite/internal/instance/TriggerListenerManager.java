@@ -24,7 +24,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 作业触发监听管理器.
+ * Job trigger listener manager.
  */
 public final class TriggerListenerManager extends AbstractListenerManager {
     

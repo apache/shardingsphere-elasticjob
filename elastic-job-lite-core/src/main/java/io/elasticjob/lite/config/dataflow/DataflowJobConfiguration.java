@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 数据流作业配置信息.
+ * Dataflow job configuration.
  */
 @RequiredArgsConstructor
 @Getter

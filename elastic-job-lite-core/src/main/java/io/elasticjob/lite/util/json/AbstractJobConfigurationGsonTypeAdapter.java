@@ -36,9 +36,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 作业配置的Json转换适配器.
+ * Job configuration gson type adapter.
  *
- * @param <T> 作业配置对象泛型
+ * @param <T> type of job root configuration
  */
 public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootConfiguration> extends TypeAdapter<T> {
     

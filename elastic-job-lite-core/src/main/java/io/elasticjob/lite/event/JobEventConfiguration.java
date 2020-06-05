@@ -18,15 +18,15 @@
 package io.elasticjob.lite.event;
 
 /**
- * 作业事件配置标识接口.
+ * Job event configuration.
  */
 public interface JobEventConfiguration extends JobEventIdentity {
     
     /**
-     * 创建作业事件监听器.
+     * Create job event listener.
      * 
-     * @return 作业事件监听器.
-     * @throws JobEventListenerConfigurationException 作业事件监听器配置异常
+     * @return Job event listener
+     * @throws JobEventListenerConfigurationException job event listener configuration exception
      */
     JobEventListener createJobEventListener() throws JobEventListenerConfigurationException;
 }

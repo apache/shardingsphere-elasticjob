@@ -18,14 +18,14 @@
 package io.elasticjob.lite.config;
 
 /**
- * 作业配置根接口.
+ * Job root configuration.
  */
 public interface JobRootConfiguration {
     
     /**
-     * 获取作业类型配置.
+     * Get type Configuration.
      * 
-     * @return 作业类型配置
+     * @return Job type configuration
      */
     JobTypeConfiguration getTypeConfig();
 }

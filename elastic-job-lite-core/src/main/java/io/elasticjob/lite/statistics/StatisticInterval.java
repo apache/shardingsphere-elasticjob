@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 统计时间间隔.
+ * statistic interval.
  */
 @Getter
 @RequiredArgsConstructor

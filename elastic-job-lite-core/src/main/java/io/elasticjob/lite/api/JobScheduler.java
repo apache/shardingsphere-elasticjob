@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 作业调度器.
+ * Job scheduler.
  */
 public class JobScheduler {
     
@@ -95,7 +95,7 @@ public class JobScheduler {
     }
     
     /**
-     * 初始化作业.
+     * Initialize job.
      */
     public void init() {
         LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(liteJobConfig);
@@ -108,7 +108,7 @@ public class JobScheduler {
     }
     
    /**
-    * 关闭服务
+    * Shutdown job.
     */
    public void shutdown() {
 	   schedulerFacade.shutdownInstance();

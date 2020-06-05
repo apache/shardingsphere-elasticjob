@@ -21,13 +21,10 @@ import io.elasticjob.lite.internal.election.LeaderNode;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
- * 分片节点路径.
+ * Sharding node.
  */
 public final class ShardingNode {
     
-    /**
-     * 执行状态根节点.
-     */
     public static final String ROOT = "sharding";
     
     static final String INSTANCE_APPENDIX = "instance";
@@ -65,10 +62,10 @@ public final class ShardingNode {
     }
     
     /**
-     * 获取作业运行状态节点路径.
+     * Get job running node.
      *
-     * @param item 作业项
-     * @return 作业运行状态节点路径
+     * @param item sharding item
+     * @return job running node
      */
     public static String getRunningNode(final int item) {
         return String.format(RUNNING, item);
@@ -83,10 +80,10 @@ public final class ShardingNode {
     }
     
     /**
-     * 根据运行中的分片路径获取分片项.
+     * Get item by running item path.
      *
-     * @param path 运行中的分片路径
-     * @return 分片项, 不是运行中的分片路径获则返回null
+     * @param path running item path
+     * @return running item, return null if sharding item is not running
      */
     public Integer getItemByRunningItemPath(final String path) {
         if (!isRunningItemPath(path)) {

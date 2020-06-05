@@ -20,13 +20,10 @@ package io.elasticjob.lite.internal.election;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 
 /**
- * 主节点路径.
+ * Leader path node.
  */
 public final class LeaderNode {
     
-    /**
-     * 主节点根路径.
-     */
     public static final String ROOT = "leader";
     
     static final String ELECTION_ROOT = ROOT + "/election";

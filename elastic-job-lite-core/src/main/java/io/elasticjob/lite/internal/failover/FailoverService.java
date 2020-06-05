@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 作业失效转移服务.
+ * Failover service.
  */
 @Slf4j
 public final class FailoverService {
@@ -50,9 +50,9 @@ public final class FailoverService {
     }
     
     /**
-     * 设置失效的分片项标记.
+     * set crashed failover flag.
      * 
-     * @param item 崩溃的作业项
+     * @param item crashed job item
      */
     public void setCrashedFailoverFlag(final int item) {
         if (!isFailoverAssigned(item)) {
@@ -65,7 +65,7 @@ public final class FailoverService {
     }
     
     /**
-     * 如果需要失效转移, 则执行作业失效转移.
+     * Failover if necessary.
      */
     public void failoverIfNecessary() {
         if (needFailover()) {
@@ -79,9 +79,9 @@ public final class FailoverService {
     }
     
     /**
-     * 更新执行完毕失效转移的分片项状态.
+     * Update sharding items status when failover execution complete.
      * 
-     * @param items 执行完毕失效转移的分片项集合
+     * @param items sharding items of failover execution completed
      */
     public void updateFailoverComplete(final Collection<Integer> items) {
         for (int each : items) {
@@ -90,10 +90,10 @@ public final class FailoverService {
     }
     
     /**
-     * 获取作业服务器的失效转移分片项集合.
+     * Get failover items.
      *
-     * @param jobInstanceId 作业运行实例主键
-     * @return 作业失效转移的分片项集合
+     * @param jobInstanceId job instance ID
+     * @return failover items
      */
     public List<Integer> getFailoverItems(final String jobInstanceId) {
         List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
@@ -110,9 +110,9 @@ public final class FailoverService {
     }
     
     /**
-     * 获取运行在本作业服务器的失效转移分片项集合.
+     * Get failover items which execute on localhost.
      * 
-     * @return 运行在本作业服务器的失效转移分片项集合
+     * @return failover items which execute on localhost
      */
     public List<Integer> getLocalFailoverItems() {
         if (JobRegistry.getInstance().isShutdown(jobName)) {
@@ -122,9 +122,9 @@ public final class FailoverService {
     }
     
     /**
-     * 获取运行在本作业服务器的被失效转移的序列号.
+     * Get failover items which crashed on localhost.
      * 
-     * @return 运行在本作业服务器的被失效转移的序列号
+     * @return failover items which crashed on localhost
      */
     public List<Integer> getLocalTakeOffItems() {
         List<Integer> shardingItems = shardingService.getLocalShardingItems();
@@ -138,7 +138,7 @@ public final class FailoverService {
     }
     
     /**
-     * 删除作业失效转移信息.
+     * Remove failover info.
      */
     public void removeFailoverInfo() {
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)) {

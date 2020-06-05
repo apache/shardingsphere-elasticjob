@@ -27,7 +27,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 主节点选举监听管理器.
+ * Election listener manager.
  */
 public final class ElectionListenerManager extends AbstractListenerManager {
     

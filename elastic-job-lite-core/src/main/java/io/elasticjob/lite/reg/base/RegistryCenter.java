@@ -18,72 +18,71 @@
 package io.elasticjob.lite.reg.base;
 
 /**
- * 注册中心.
+ * Registry center.
  */
 public interface RegistryCenter {
     
     /**
-     * 初始化注册中心.
+     * Initialize registry center.
      */
     void init();
     
     /**
-     * 关闭注册中心.
+     * Close registry center.
      */
     void close();
     
     /**
-     * 获取注册数据.
+     * Get value.
      * 
-     * @param key 键
-     * @return 值
+     * @param key key
+     * @return value
      */
     String get(String key);
     
     /**
-     * 获取数据是否存在.
+     * Judge node is exist or not.
      * 
-     * @param key 键
-     * @return 数据是否存在
+     * @param key key
+     * @return node is exist or not
      */
     boolean isExisted(String key);
     
     /**
-     * 持久化注册数据.
+     * Persist data.
      * 
-     * @param key 键
-     * @param value 值
+     * @param key key
+     * @param value value
      */
     void persist(String key, String value);
     
     /**
-     * 更新注册数据.
+     * Update data.
      * 
-     * @param key 键
-     * @param value 值
+     * @param key key
+     * @param value value
      */
     void update(String key, String value);
     
     /**
-     * 删除注册数据.
+     * Remove data.
      * 
-     * @param key 键
+     * @param key key
      */
     void remove(String key);
     
     /**
-     * 获取注册中心当前时间.
+     * Get current time from registry center.
      * 
-     * @param key 用于获取时间的键
-     * @return 注册中心当前时间
+     * @param key key
+     * @return current time from registry center
      */
     long getRegistryCenterTime(String key);
     
     /**
-     * 直接获取操作注册中心的原生客户端.
-     * 如：Zookeeper或Redis等原生客户端.
-     * 
-     * @return 注册中心的原生客户端
+     * Get raw client for registry center client.
+     ** 
+     * @return registry center raw client
      */
     Object getRawClient();
 }

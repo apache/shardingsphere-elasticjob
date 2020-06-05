@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Lite作业配置的Gson工厂.
+ * Job configuration gson factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LiteJobConfigurationGsonFactory {
@@ -40,37 +40,37 @@ public final class LiteJobConfigurationGsonFactory {
     }
     
     /**
-     * 将作业配置转换为JSON字符串.
+     * Transform job configuration to json.
      * 
-     * @param liteJobConfig 作业配置对象
-     * @return 作业配置JSON字符串
+     * @param liteJobConfig job configuration
+     * @return job configuration json string
      */
     public static String toJson(final LiteJobConfiguration liteJobConfig) {
         return GsonFactory.getGson().toJson(liteJobConfig);
     }
     
     /**
-     * 将作业配置转换为JSON字符串.
+     * Transform job configuration to json.
      *
-     * @param liteJobConfig 作业配置对象
-     * @return 作业配置JSON字符串
+     * @param liteJobConfig job configuration
+     * @return job configuration json string
      */
     public static String toJsonForObject(final Object liteJobConfig) {
         return GsonFactory.getGson().toJson(liteJobConfig);
     }
     
     /**
-     * 将JSON字符串转换为作业配置.
+     * Transform json string to job configuration.
      *
-     * @param liteJobConfigJson 作业配置JSON字符串
-     * @return 作业配置对象
+     * @param liteJobConfigJson job configuration json string
+     * @return job configuration
      */
     public static LiteJobConfiguration fromJson(final String liteJobConfigJson) {
         return GsonFactory.getGson().fromJson(liteJobConfigJson, LiteJobConfiguration.class);
     }
     
     /**
-     * Lite作业配置的Json转换适配器.
+     * Job configuration gson type adapter.
      */
     static final class LiteJobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<LiteJobConfiguration> {
         

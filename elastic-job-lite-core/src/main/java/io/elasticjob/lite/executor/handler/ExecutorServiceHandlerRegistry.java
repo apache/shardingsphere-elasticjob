@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 线程池服务处理器注册表.
+ * Executor service handler registry.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExecutorServiceHandlerRegistry {
@@ -33,11 +33,11 @@ public final class ExecutorServiceHandlerRegistry {
     private static final Map<String, ExecutorService> REGISTRY = new HashMap<>();
     
     /**
-     * 获取线程池服务.
+     * Get executor service handler.
      * 
-     * @param jobName 作业名称
-     * @param executorServiceHandler 线程池服务处理器
-     * @return 线程池服务
+     * @param jobName job name
+     * @param executorServiceHandler executor service handler
+     * @return executor service
      */
     public static synchronized ExecutorService getExecutorServiceHandler(final String jobName, final ExecutorServiceHandler executorServiceHandler) {
         if (!REGISTRY.containsKey(jobName)) {
@@ -47,9 +47,9 @@ public final class ExecutorServiceHandlerRegistry {
     }
     
     /**
-     * 从注册表中删除该作业线程池服务.
+     * Remove executor service from executor service handler registry.
      *
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     public static synchronized void remove(final String jobName) {
         REGISTRY.remove(jobName);

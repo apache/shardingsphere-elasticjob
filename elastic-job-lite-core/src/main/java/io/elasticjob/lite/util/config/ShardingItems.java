@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 分片项工具类.
+ * Sharding items.
  */
 @Getter
 public final class ShardingItems {
@@ -34,10 +34,10 @@ public final class ShardingItems {
     private static final String DELIMITER = ",";
     
     /**
-     * 根据分片项字符串获取分片项列表.
+     * Get sharding items via string.
      *
-     * @param itemsString 分片项字符串
-     * @return 分片项列表
+     * @param itemsString sharding items string
+     * @return sharding items
      */
     public static List<Integer> toItemList(final String itemsString) {
         if (Strings.isNullOrEmpty(itemsString)) {
@@ -55,10 +55,10 @@ public final class ShardingItems {
     }
     
     /**
-     * 根据分片项列表获取分片项字符串.
+     * Get sharding items string.
      *
-     * @param items 分片项列表
-     * @return 分片项字符串
+     * @param items sharding items
+     * @return sharding items string
      */
     public static String toItemsString(final List<Integer> items) {
         return items.isEmpty() ? "" : Joiner.on(DELIMITER).join(items);

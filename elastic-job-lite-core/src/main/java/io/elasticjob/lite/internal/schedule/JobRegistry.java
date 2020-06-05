@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 作业注册表.
+ * Job registry.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobRegistry {
@@ -44,9 +44,9 @@ public final class JobRegistry {
     private Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
     
     /**
-     * 获取作业注册表实例.
+     * Get instance of job registry.
      * 
-     * @return 作业注册表实例
+     * @return instance of job registry
      */
     public static JobRegistry getInstance() {
         if (null == instance) {
@@ -60,11 +60,11 @@ public final class JobRegistry {
     }
     
     /**
-     * 添加作业调度控制器.
+     * Register job.
      * 
-     * @param jobName 作业名称
-     * @param jobScheduleController 作业调度控制器
-     * @param regCenter 注册中心
+     * @param jobName job name
+     * @param jobScheduleController job schedule controller
+     * @param regCenter registry center
      */
     public void registerJob(final String jobName, final JobScheduleController jobScheduleController, final CoordinatorRegistryCenter regCenter) {
         schedulerMap.put(jobName, jobScheduleController);
@@ -73,50 +73,50 @@ public final class JobRegistry {
     }
     
     /**
-     * 获取作业调度控制器.
+     * Get job schedule controller.
      * 
-     * @param jobName 作业名称
-     * @return 作业调度控制器
+     * @param jobName job name
+     * @return job schedule controller
      */
     public JobScheduleController getJobScheduleController(final String jobName) {
         return schedulerMap.get(jobName);
     }
     
     /**
-     * 获取作业注册中心.
+     * Get registry center.
      *
-     * @param jobName 作业名称
-     * @return 作业注册中心
+     * @param jobName job name
+     * @return registry center
      */
     public CoordinatorRegistryCenter getRegCenter(final String jobName) {
         return regCenterMap.get(jobName);
     }
     
     /**
-     * 添加作业实例.
+     * Add job instance.
      *
-     * @param jobName 作业名称
-     * @param jobInstance 作业实例
+     * @param jobName job name
+     * @param jobInstance job instance
      */
     public void addJobInstance(final String jobName, final JobInstance jobInstance) {
         jobInstanceMap.put(jobName, jobInstance);
     }
     
     /**
-     * 获取作业运行实例.
+     * Get job instance.
      *
-     * @param jobName 作业名称
-     * @return 作业运行实例
+     * @param jobName job name
+     * @return job instance
      */
     public JobInstance getJobInstance(final String jobName) {
         return jobInstanceMap.get(jobName);
     }
     
     /**
-     * 获取作业是否在运行.
+     * Judge job is running or not.
      * 
-     * @param jobName 作业名称
-     * @return 作业是否在运行
+     * @param jobName job name
+     * @return job is running or not
      */
     public boolean isJobRunning(final String jobName) {
         Boolean result = jobRunningMap.get(jobName);
@@ -124,20 +124,20 @@ public final class JobRegistry {
     }
     
     /**
-     * 设置作业是否在运行.
+     * Set job running status.
      * 
-     * @param jobName 作业名称
-     * @param isRunning 作业是否在运行
+     * @param jobName job name
+     * @param isRunning job running status
      */
     public void setJobRunning(final String jobName, final boolean isRunning) {
         jobRunningMap.put(jobName, isRunning);
     }
     
     /**
-     * 获取当前分片总数.
+     * Get sharding total count which running on current job server.
      *
-     * @param jobName 作业名称
-     * @return 当前分片总数
+     * @param jobName job name
+     * @return sharding total count which running on current job server
      */
     public int getCurrentShardingTotalCount(final String jobName) {
         Integer result = currentShardingTotalCountMap.get(jobName);
@@ -145,19 +145,19 @@ public final class JobRegistry {
     }
     
     /**
-     * 设置当前分片总数.
+     * Set sharding total count which running on current job server.
      *
-     * @param jobName 作业名称
-     * @param currentShardingTotalCount 当前分片总数
+     * @param jobName job name
+     * @param currentShardingTotalCount sharding total count which running on current job server
      */
     public void setCurrentShardingTotalCount(final String jobName, final int currentShardingTotalCount) {
         currentShardingTotalCountMap.put(jobName, currentShardingTotalCount);
     }
     
     /**
-     * 终止任务调度.
+     * Shutdown job schedule.
      * 
-     * @param jobName 作业名称
+     * @param jobName job name
      */
     public void shutdown(final String jobName) {
         JobScheduleController scheduleController = schedulerMap.remove(jobName);
@@ -174,10 +174,10 @@ public final class JobRegistry {
     }
     
     /**
-     * 判断任务调度是否已终止.
+     * Judge job is shutdown or not.
      * 
-     * @param jobName 作业名称
-     * @return 任务调度是否已终止
+     * @param jobName job name
+     * @return job is shutdown or not
      */
     public boolean isShutdown(final String jobName) {
         return !schedulerMap.containsKey(jobName) || !jobInstanceMap.containsKey(jobName);

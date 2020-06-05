@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 运行痕迹事件数据库检索.
+ * Job event RDB search.
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -62,20 +62,20 @@ public final class JobEventRdbSearch {
     private final DataSource dataSource;
     
     /**
-     * 检索作业运行执行轨迹.
+     * Find job execution events.
      * 
-     * @param condition 查询条件
-     * @return 作业执行轨迹检索结果
+     * @param condition query condition
+     * @return job execution events
      */
     public Result<JobExecutionEvent> findJobExecutionEvents(final Condition condition) {
         return new Result<>(getEventCount(TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition), getJobExecutionEvents(condition));
     }
     
     /**
-     * 检索作业运行状态轨迹.
+     * Find job status trace events.
      * 
-     * @param condition 查询条件
-     * @return 作业状态轨迹检索结果
+     * @param condition query condition
+     * @return job status trace events
      */
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(final Condition condition) {
         return new Result<>(getEventCount(TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition), getJobStatusTraceEvents(condition));
@@ -97,7 +97,7 @@ public final class JobEventRdbSearch {
                 result.add(jobExecutionEvent);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO 记录失败直接输出日志, 未来可考虑配置化
             log.error("Fetch JobExecutionEvent from DB error:", ex);
         }
         return result;
@@ -117,7 +117,7 @@ public final class JobEventRdbSearch {
                 result.add(jobStatusTraceEvent);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO 记录失败直接输出日志, 未来可考虑配置化
             log.error("Fetch JobStatusTraceEvent from DB error:", ex);
         }
         return result;
@@ -268,7 +268,7 @@ public final class JobEventRdbSearch {
     }
     
     /**
-     * 查询条件对象.
+     * Query condition.
      */
     @RequiredArgsConstructor
     @Getter

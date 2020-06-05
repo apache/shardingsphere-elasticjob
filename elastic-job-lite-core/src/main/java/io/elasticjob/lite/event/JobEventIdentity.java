@@ -18,14 +18,14 @@
 package io.elasticjob.lite.event;
 
 /**
- * 作业事件标识.
+ * Job event identity.
  */
 public interface JobEventIdentity {
     
     /**
-     * 获取作业事件标识.
+     * Get identity.
      * 
-     * @return 作业事件标识
+     * @return identity
      */
     String getIdentity();
 }

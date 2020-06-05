@@ -25,7 +25,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 幂等性监听管理器.
+ * Monitor execution listener manager.
  */
 public final class MonitorExecutionListenerManager extends AbstractListenerManager {
     

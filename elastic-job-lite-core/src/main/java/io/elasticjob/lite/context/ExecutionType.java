@@ -18,17 +18,17 @@
 package io.elasticjob.lite.context;
 
 /**
- * 执行类型.
+ * Execution type.
  */
 public enum ExecutionType {
     
     /**
-     * 准备执行的任务.
+     * Ready of execute.
      */
     READY,
     
     /**
-     * 失效转移的任务.
+     * Failover execution.
      */
     FAILOVER
 }

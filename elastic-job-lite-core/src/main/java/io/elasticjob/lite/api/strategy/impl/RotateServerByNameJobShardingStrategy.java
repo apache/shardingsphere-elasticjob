@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 根据作业名的哈希值对服务器列表进行轮转的分片策略.
+ * Sharding strategy which for rotate server by name job.
  */
 public final class RotateServerByNameJobShardingStrategy implements JobShardingStrategy {
     

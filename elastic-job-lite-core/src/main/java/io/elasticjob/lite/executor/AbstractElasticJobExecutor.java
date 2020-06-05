@@ -39,7 +39,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 弹性化分布式作业执行器.
+ * ElasticJob executor.
  */
 @Slf4j
 public abstract class AbstractElasticJobExecutor {

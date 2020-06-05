@@ -20,77 +20,77 @@ package io.elasticjob.lite.reg.base;
 import java.util.List;
 
 /**
- * 用于协调分布式服务的注册中心.
+ * Coordinator registry center.
  */
 public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
-     * 直接从注册中心而非本地缓存获取数据.
+     * Get value from registry center directly.
      * 
-     * @param key 键
-     * @return 值
+     * @param key key
+     * @return value
      */
     String getDirectly(String key);
     
     /**
-     * 获取子节点名称集合.
+     * Get children keys.
      * 
-     * @param key 键
-     * @return 子节点名称集合
+     * @param key key
+     * @return children keys
      */
     List<String> getChildrenKeys(String key);
     
     /**
-     * 获取子节点数量.
+     * Get children number.
      *
-     * @param key 键
-     * @return 子节点数量
+     * @param key key
+     * @return children number
      */
     int getNumChildren(String key);
     
     /**
-     * 持久化临时注册数据.
+     * Persist ephemeral data.
      * 
-     * @param key 键
-     * @param value 值
+     * @param key key
+     * @param value value
      */
     void persistEphemeral(String key, String value);
     
     /**
-     * 持久化顺序注册数据.
+     * Persist sequential data.
      *
-     * @param key 键
-     * @param value 值
-     * @return 包含10位顺序数字的znode名称
+     * @param key key
+     * @param value value
+     * @return value which include 10 digital
      */
     String persistSequential(String key, String value);
     
     /**
-     * 持久化临时顺序注册数据.
+     * Persist ephemeral sequential data.
      * 
-     * @param key 键
+     * @param key key
      */
     void persistEphemeralSequential(String key);
     
     /**
-     * 添加本地缓存.
+     * Add data to cache.
      * 
-     * @param cachePath 需加入缓存的路径
+     * @param cachePath cache path
      */
     void addCacheData(String cachePath);
     
     /**
-     * 释放本地缓存.
+     * Evict data from cache.
      *
-     * @param cachePath 需释放缓存的路径
+     * @param cachePath cache path
      */
     void evictCacheData(String cachePath);
     
     /**
-     * 获取注册中心数据缓存对象.
+     * Get raw cache object of registry center.
      * 
-     * @param cachePath 缓存的节点路径
-     * @return 注册中心数据缓存对象
+     * @param cachePath cache path
+     * @return raw cache object of registry center
      */
     Object getRawCache(String cachePath);
 }

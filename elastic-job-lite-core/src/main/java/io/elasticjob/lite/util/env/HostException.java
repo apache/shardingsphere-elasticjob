@@ -20,7 +20,7 @@ package io.elasticjob.lite.util.env;
 import java.io.IOException;
 
 /**
- * 网络主机异常.
+ * Host exception.
  */
 public final class HostException extends RuntimeException {
     

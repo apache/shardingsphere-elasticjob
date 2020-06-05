@@ -28,7 +28,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 分片监听管理器.
+ * Sharding listener manager.
  */
 public final class ShardingListenerManager extends AbstractListenerManager {
     

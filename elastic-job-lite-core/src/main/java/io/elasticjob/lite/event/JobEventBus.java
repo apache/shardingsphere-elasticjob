@@ -23,7 +23,7 @@ import io.elasticjob.lite.util.concurrent.ExecutorServiceObject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 运行痕迹事件总线.
+ * Job event bus.
  */
 @Slf4j
 public final class JobEventBus {
@@ -59,9 +59,9 @@ public final class JobEventBus {
     }
     
     /**
-     * 发布事件.
+     * Post event.
      *
-     * @param event 作业事件
+     * @param event job event
      */
     public void post(final JobEvent event) {
         if (isRegistered && !executorServiceObject.isShutdown()) {

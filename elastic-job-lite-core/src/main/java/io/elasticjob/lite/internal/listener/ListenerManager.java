@@ -32,7 +32,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import java.util.List;
 
 /**
- * 作业注册中心的监听器管理者.
+ * Listener manager facade.
  */
 public final class ListenerManager {
     
@@ -70,7 +70,7 @@ public final class ListenerManager {
     }
     
     /**
-     * 开启所有监听器.
+     * Start all listeners.
      */
     public void startAllListeners() {
         electionListenerManager.start();

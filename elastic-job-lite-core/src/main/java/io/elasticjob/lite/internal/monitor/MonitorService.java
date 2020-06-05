@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作业监控服务.
+ * Monitor service.
  */
 @Slf4j
 public final class MonitorService {
@@ -60,7 +60,7 @@ public final class MonitorService {
     }
     
     /**
-     * 初始化作业监听服务.
+     * start to listen.
      */
     public void listen() {
         int port = configService.load(true).getMonitorPort();
@@ -132,7 +132,7 @@ public final class MonitorService {
     }
     
     /**
-     * 关闭作业监听服务.
+     * Close listener.
      */
     public void close() {
         closed = true;

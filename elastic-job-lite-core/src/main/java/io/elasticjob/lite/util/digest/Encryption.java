@@ -26,7 +26,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 字符串加密工具类.
+ * Encryption.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Encryption {
@@ -34,10 +34,10 @@ public final class Encryption {
     private static final String MD5 = "MD5";
     
     /**
-     * 采用MD5算法加密字符串.
+     * Use md5 to encrypt string.
      * 
-     * @param str 需要加密的字符串
-     * @return 加密后的字符串
+     * @param str string to be encrypted
+     * @return encrypted string
      */
     public static String md5(final String str) {
         try {

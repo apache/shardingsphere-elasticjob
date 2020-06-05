@@ -29,7 +29,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 
 /**
- * 作业调度控制器.
+ * Job schedule controller.
  */
 @RequiredArgsConstructor
 public final class JobScheduleController {
@@ -41,9 +41,9 @@ public final class JobScheduleController {
     private final String triggerIdentity;
     
     /**
-     * 调度作业.
+     * Schedule job.
      * 
-     * @param cron CRON表达式
+     * @param cron CRON expression
      */
     public void scheduleJob(final String cron) {
         try {
@@ -57,9 +57,9 @@ public final class JobScheduleController {
     }
     
     /**
-     * 重新调度作业.
+     * Reschedule job.
      * 
-     * @param cron CRON表达式
+     * @param cron CRON expression
      */
     public synchronized void rescheduleJob(final String cron) {
         try {
@@ -77,9 +77,9 @@ public final class JobScheduleController {
     }
     
     /**
-     * 判断作业是否暂停.
+     * Judge job is pause or not.
      * 
-     * @return 作业是否暂停
+     * @return job is pause or not
      */
     public synchronized boolean isPaused() {
         try {
@@ -90,7 +90,7 @@ public final class JobScheduleController {
     }
     
     /**
-     * 暂停作业.
+     * Pause job.
      */
     public synchronized void pauseJob() {
         try {
@@ -103,7 +103,7 @@ public final class JobScheduleController {
     }
     
     /**
-     * 恢复作业.
+     * Resume job.
      */
     public synchronized void resumeJob() {
         try {
@@ -116,7 +116,7 @@ public final class JobScheduleController {
     }
     
     /**
-     * 立刻启动作业.
+     * Trigger job.
      */
     public synchronized void triggerJob() {
         try {
@@ -129,7 +129,7 @@ public final class JobScheduleController {
     }
     
     /**
-     * 关闭调度器.
+     * Shutdown scheduler.
      */
     public synchronized void shutdown() {
         try {

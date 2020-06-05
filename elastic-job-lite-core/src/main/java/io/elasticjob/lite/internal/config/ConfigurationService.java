@@ -26,7 +26,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.util.env.TimeService;
 
 /**
- * 弹性化分布式作业配置服务.
+ * Configuration service.
  */
 public final class ConfigurationService {
     
@@ -40,10 +40,10 @@ public final class ConfigurationService {
     }
     
     /**
-     * 读取作业配置.
+     * Load job configuration.
      * 
-     * @param fromCache 是否从缓存中读取
-     * @return 作业配置
+     * @param fromCache load from cache or not
+     * @return job configuration
      */
     public LiteJobConfiguration load(final boolean fromCache) {
         String result;
@@ -59,9 +59,9 @@ public final class ConfigurationService {
     }
     
     /**
-     * 持久化分布式作业配置信息.
+     * Persist job configuration.
      * 
-     * @param liteJobConfig 作业配置
+     * @param liteJobConfig job configuration
      */
     public void persist(final LiteJobConfiguration liteJobConfig) {
         checkConflictJob(liteJobConfig);
@@ -84,16 +84,16 @@ public final class ConfigurationService {
         }
         LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
         if (null == result) {
-            // TODO 应该删除整个job node,并非仅仅删除config node
+            // TODO 应该删除整个job node, 并非仅仅删除config node
             jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
         }
         return Optional.fromNullable(result);
     }
     
     /**
-     * 检查本机与注册中心的时间误差秒数是否在允许范围.
+     * Check max time different seconds tolerable between job server and registry center.
      * 
-     * @throws JobExecutionEnvironmentException 本机与注册中心的时间误差秒数不在允许范围所抛出的异常
+     * @throws JobExecutionEnvironmentException throe JobExecutionEnvironmentException if exceed max time different seconds
      */
     public void checkMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         int maxTimeDiffSeconds = load(true).getMaxTimeDiffSeconds();

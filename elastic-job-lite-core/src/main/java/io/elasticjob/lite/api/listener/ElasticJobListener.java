@@ -20,21 +20,21 @@ package io.elasticjob.lite.api.listener;
 import io.elasticjob.lite.executor.ShardingContexts;
 
 /**
- * 弹性化分布式作业监听器接口.
+ * ElasticJob listener.
  */
 public interface ElasticJobListener {
     
     /**
-     * 作业执行前的执行的方法.
+     * Called before job executed.
      * 
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void beforeJobExecuted(ShardingContexts shardingContexts);
     
     /**
-     * 作业执行后的执行的方法.
+     * Called after job executed.
      *
-     * @param shardingContexts 分片上下文
+     * @param shardingContexts sharding contexts
      */
     void afterJobExecuted(ShardingContexts shardingContexts);
 }

@@ -24,16 +24,16 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 作业分片策略工厂.
+ * Job sharding strategy factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobShardingStrategyFactory {
     
     /**
-     * 获取作业分片策略实例.
+     * Get strategy.
      * 
-     * @param jobShardingStrategyClassName 作业分片策略类名
-     * @return 作业分片策略实例
+     * @param jobShardingStrategyClassName job sharding strategy class name
+     * @return Job sharding strategy
      */
     public static JobShardingStrategy getStrategy(final String jobShardingStrategyClassName) {
         if (Strings.isNullOrEmpty(jobShardingStrategyClassName)) {

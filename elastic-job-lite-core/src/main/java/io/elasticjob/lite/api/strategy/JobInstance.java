@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import java.lang.management.ManagementFactory;
 
 /**
- * 作业运行实例.
+ * Job instance.
  */
 @RequiredArgsConstructor
 @Getter
@@ -35,7 +35,7 @@ public final class JobInstance {
     private static final String DELIMITER = "@-@";
     
     /**
-     * 作业实例主键.
+     * Job instance ID.
      */
     private final String jobInstanceId;
     
@@ -44,9 +44,9 @@ public final class JobInstance {
     }
     
     /**
-     * 获取作业服务器IP地址.
+     * Get server IP address.
      * 
-     * @return 作业服务器IP地址
+     * @return server IP address
      */
     public String getIp() {
         return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
