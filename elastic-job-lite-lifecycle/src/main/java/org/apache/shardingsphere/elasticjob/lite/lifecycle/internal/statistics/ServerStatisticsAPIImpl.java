@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 
 import java.util.ArrayList;
 import java.util.Collection;

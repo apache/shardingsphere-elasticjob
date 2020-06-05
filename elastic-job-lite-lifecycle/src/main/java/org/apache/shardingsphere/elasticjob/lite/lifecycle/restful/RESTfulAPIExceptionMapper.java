@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.restful;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

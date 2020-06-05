@@ -20,8 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderNode;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingNode;
 
 /**
  * Failover node.

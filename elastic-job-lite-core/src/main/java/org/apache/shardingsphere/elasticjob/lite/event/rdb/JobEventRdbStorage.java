@@ -18,16 +18,20 @@
 package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

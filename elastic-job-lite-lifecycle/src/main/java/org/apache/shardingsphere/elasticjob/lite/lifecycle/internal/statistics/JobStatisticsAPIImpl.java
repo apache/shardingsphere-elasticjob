@@ -17,16 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 
 import java.util.ArrayList;
 import java.util.Collection;

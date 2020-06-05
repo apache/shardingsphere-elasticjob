@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
 

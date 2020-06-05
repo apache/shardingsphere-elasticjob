@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;

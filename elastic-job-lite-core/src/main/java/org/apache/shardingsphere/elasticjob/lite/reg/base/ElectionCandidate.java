@@ -20,7 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.reg.base;
 /**
  * Election candidate.
  * 
- * Guarantee {@link #startLeadership()} and {@link #stopLeadership()} method run in same thread. 
+ * <p>
+ *     Guarantee {@link #startLeadership()} and {@link #stopLeadership()} method run in same thread.
+ * </p>
  */
 public interface ElectionCandidate {
     
