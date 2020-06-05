@@ -17,13 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
-import com.google.common.base.Optional;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;
+
+import java.util.Optional;
 
 /**
  * Configuration service.
@@ -80,14 +81,14 @@ public final class ConfigurationService {
     
     private Optional<LiteJobConfiguration> find() {
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)) {
-            return Optional.absent();
+            return Optional.empty();
         }
         LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
         if (null == result) {
             // TODO 应该删除整个job node, 并非仅仅删除config node
             jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
     
     /**

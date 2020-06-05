@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
 
-import com.google.common.base.Optional;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
@@ -29,6 +28,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -123,9 +123,10 @@ public class StatisticRdbRepositoryTest {
         for (StatisticInterval each : StatisticInterval.values()) {
             repository.add(new TaskResultStatistics(100, 2, each, new Date()));
             repository.add(new TaskResultStatistics(200, 5, each, new Date()));
-            Optional<TaskResultStatistics> po = repository.findLatestTaskResultStatistics(each);
-            assertThat(po.get().getSuccessCount(), is(200));
-            assertThat(po.get().getFailedCount(), is(5));
+            Optional<TaskResultStatistics> actual = repository.findLatestTaskResultStatistics(each);
+            assertTrue(actual.isPresent());
+            assertThat(actual.get().getSuccessCount(), is(200));
+            assertThat(actual.get().getFailedCount(), is(5));
         }
     }
     
@@ -153,8 +154,9 @@ public class StatisticRdbRepositoryTest {
     public void assertFindLatestTaskRunningStatistics() {
         repository.add(new TaskRunningStatistics(100, new Date()));
         repository.add(new TaskRunningStatistics(200, new Date()));
-        Optional<TaskRunningStatistics> po = repository.findLatestTaskRunningStatistics();
-        assertThat(po.get().getRunningCount(), is(200));
+        Optional<TaskRunningStatistics> actual = repository.findLatestTaskRunningStatistics();
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getRunningCount(), is(200));
     }
     
     @Test
@@ -181,8 +183,9 @@ public class StatisticRdbRepositoryTest {
     public void assertFindLatestJobRunningStatistics() {
         repository.add(new JobRunningStatistics(100, new Date()));
         repository.add(new JobRunningStatistics(200, new Date()));
-        Optional<JobRunningStatistics> po = repository.findLatestJobRunningStatistics();
-        assertThat(po.get().getRunningCount(), is(200));
+        Optional<JobRunningStatistics> actual = repository.findLatestJobRunningStatistics();
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getRunningCount(), is(200));
     }
     
     @Test
@@ -209,8 +212,9 @@ public class StatisticRdbRepositoryTest {
     public void assertFindLatestJobRegisterStatistics() {
         repository.add(new JobRegisterStatistics(100, new Date()));
         repository.add(new JobRegisterStatistics(200, new Date()));
-        Optional<JobRegisterStatistics> po = repository.findLatestJobRegisterStatistics();
-        assertThat(po.get().getRegisteredCount(), is(200));
+        Optional<JobRegisterStatistics> actual = repository.findLatestJobRegisterStatistics();
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getRegisteredCount(), is(200));
     }
     
     private Date getYesterday() {
