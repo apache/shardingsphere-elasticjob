@@ -36,7 +36,7 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * 基本作业的命名空间解析器.
+ * Job bean definition parser.
  */
 public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     

@@ -26,16 +26,16 @@ import org.springframework.aop.support.AopUtils;
 import java.lang.reflect.Field;
 
 /**
- * 基于Spring AOP获取目标对象.
+ * Aop target Utility.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AopTargetUtils {
     
     /**
-     * 获取目标对象.
+     * Get target object.
      * 
-     * @param proxy 代理对象
-     * @return 目标对象
+     * @param proxy proxy object
+     * @return target object
      */
     public static Object getTarget(final Object proxy) {
         if (!AopUtils.isAopProxy(proxy)) {

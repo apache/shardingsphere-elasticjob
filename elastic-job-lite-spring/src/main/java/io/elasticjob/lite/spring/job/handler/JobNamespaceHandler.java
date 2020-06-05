@@ -23,7 +23,7 @@ import io.elasticjob.lite.spring.job.parser.script.ScriptJobBeanDefinitionParser
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * 分布式作业的命名空间处理器.
+ * Job handler for spring namespace.
  */
 public final class JobNamespaceHandler extends NamespaceHandlerSupport {
     

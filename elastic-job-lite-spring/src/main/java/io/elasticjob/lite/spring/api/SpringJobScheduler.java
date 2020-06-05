@@ -29,7 +29,7 @@ import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.spring.job.util.AopTargetUtils;
 
 /**
- * 基于Spring的作业启动器.
+ * Job scheduler for spring.
  */
 public final class SpringJobScheduler extends JobScheduler implements DisposableBean {
     
