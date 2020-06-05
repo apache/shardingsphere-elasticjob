@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>elastic-job-lite</artifactId>
-        <groupId>io.elasticjob</groupId>
+        <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-lite-lifecycle</artifactId>
@@ -28,7 +28,7 @@
     
     <dependencies>
         <dependency>
-            <groupId>io.elasticjob</groupId>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elastic-job-lite-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
