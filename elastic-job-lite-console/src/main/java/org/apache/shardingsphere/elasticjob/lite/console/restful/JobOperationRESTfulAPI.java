@@ -83,7 +83,7 @@ public final class JobOperationRESTfulAPI {
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void disableJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().disable(jobName, null);
     }
     
     /**
@@ -95,7 +95,7 @@ public final class JobOperationRESTfulAPI {
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().enable(jobName, null);
     }
     
     /**

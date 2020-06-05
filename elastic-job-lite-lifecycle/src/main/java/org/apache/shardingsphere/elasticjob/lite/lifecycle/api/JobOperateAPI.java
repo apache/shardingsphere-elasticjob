@@ -41,7 +41,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void disable(Optional<String> jobName, Optional<String> serverIp);
+    void disable(String jobName, String serverIp);
     
     /**
      * Enable job.
@@ -49,7 +49,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void enable(Optional<String> jobName, Optional<String> serverIp);
+    void enable(String jobName, String serverIp);
     
     /**
      * Shutdown Job.

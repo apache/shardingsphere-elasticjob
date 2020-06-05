@@ -58,14 +58,14 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertDisableWithJobNameAndServerIp() {
-        jobOperateAPI.disable(Optional.of("test_job"), Optional.of("localhost"));
+        jobOperateAPI.disable("test_job", "localhost");
         verify(regCenter).persist("/test_job/servers/localhost", "DISABLED");
     }
 
     @Test
     public void assertDisableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.disable(Optional.of("test_job"), Optional.<String>absent());
+        jobOperateAPI.disable("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/servers");
         verify(regCenter).persist("/test_job/servers/ip1", "DISABLED");
         verify(regCenter).persist("/test_job/servers/ip2", "DISABLED");
@@ -76,7 +76,7 @@ public final class JobOperateAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
-        jobOperateAPI.disable(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.disable(null, "localhost");
         verify(regCenter).getChildrenKeys("/");
         verify(regCenter).persist("/test_job1/servers/localhost", "DISABLED");
         verify(regCenter).persist("/test_job2/servers/localhost", "DISABLED");
@@ -84,14 +84,14 @@ public final class JobOperateAPIImplTest {
 
     @Test
     public void assertEnableWithJobNameAndServerIp() {
-        jobOperateAPI.enable(Optional.of("test_job"), Optional.of("localhost"));
+        jobOperateAPI.enable("test_job", "localhost");
         verify(regCenter).persist("/test_job/servers/localhost", "");
     }
     
     @Test
     public void assertEnableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.enable(Optional.of("test_job"), Optional.<String>absent());
+        jobOperateAPI.enable("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/servers");
         verify(regCenter).persist("/test_job/servers/ip1", "");
         verify(regCenter).persist("/test_job/servers/ip2", "");
@@ -102,7 +102,7 @@ public final class JobOperateAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
-        jobOperateAPI.enable(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.enable(null, "localhost");
         verify(regCenter).getChildrenKeys("/");
         verify(regCenter).persist("/test_job1/servers/localhost", "");
         verify(regCenter).persist("/test_job2/servers/localhost", "");

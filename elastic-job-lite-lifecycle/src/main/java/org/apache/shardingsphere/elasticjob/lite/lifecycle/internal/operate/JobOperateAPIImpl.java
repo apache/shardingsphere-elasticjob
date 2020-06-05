@@ -38,7 +38,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     
     @Override
     public void trigger(final String jobName) {
-        Preconditions.checkNotNull(jobName, "Job name cannot be null.");
+        Preconditions.checkNotNull(jobName, "Job name cannot be null");
         JobNodePath jobNodePath = new JobNodePath(jobName);
         for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
             regCenter.persist(jobNodePath.getInstanceNodePath(each), "TRIGGER");
@@ -46,21 +46,21 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     }
     
     @Override
-    public void disable(final Optional<String> jobName, final Optional<String> serverIp) {
+    public void disable(final String jobName, final String serverIp) {
         disableOrEnableJobs(jobName, serverIp, true);
     }
     
     @Override
-    public void enable(final Optional<String> jobName, final Optional<String> serverIp) {
+    public void enable(final String jobName, final String serverIp) {
         disableOrEnableJobs(jobName, serverIp, false);
     }
     
-    private void disableOrEnableJobs(final Optional<String> jobName, final Optional<String> serverIp, final boolean disabled) {
-        Preconditions.checkArgument(jobName.isPresent() || serverIp.isPresent(), "At least indicate jobName or serverIp.");
-        if (jobName.isPresent() && serverIp.isPresent()) {
-            persistDisabledOrEnabledJob(jobName.get(), serverIp.get(), disabled);
-        } else if (jobName.isPresent()) {
-            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+    private void disableOrEnableJobs(final String jobName, final String serverIp, final boolean disabled) {
+        Preconditions.checkArgument(null != jobName || null != serverIp, "At least indicate jobName or serverIp.");
+        if (null != jobName && null != serverIp) {
+            persistDisabledOrEnabledJob(jobName, serverIp, disabled);
+        } else if (null != jobName) {
+            JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
                 if (disabled) {
                     regCenter.persist(jobNodePath.getServerNodePath(each), "DISABLED");
@@ -68,11 +68,11 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                     regCenter.persist(jobNodePath.getServerNodePath(each), "");
                 }
             }
-        } else if (serverIp.isPresent()) {
+        } else {
             List<String> jobNames = regCenter.getChildrenKeys("/");
             for (String each : jobNames) {
-                if (regCenter.isExisted(new JobNodePath(each).getServerNodePath(serverIp.get()))) {
-                    persistDisabledOrEnabledJob(each, serverIp.get(), disabled);
+                if (regCenter.isExisted(new JobNodePath(each).getServerNodePath(serverIp))) {
+                    persistDisabledOrEnabledJob(each, serverIp, disabled);
                 }
             }
         }

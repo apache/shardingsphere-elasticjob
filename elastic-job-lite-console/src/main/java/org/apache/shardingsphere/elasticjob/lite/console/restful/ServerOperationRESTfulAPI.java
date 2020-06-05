@@ -70,7 +70,7 @@ public final class ServerOperationRESTfulAPI {
     @POST
     @Path("/{serverIp}/disable")
     public void disableServer(@PathParam("serverIp") final String serverIp) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.<String>absent(), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().disable(null, serverIp);
     }
     
     /**
@@ -81,7 +81,7 @@ public final class ServerOperationRESTfulAPI {
     @DELETE
     @Path("/{serverIp}/disable")
     public void enableServer(@PathParam("serverIp") final String serverIp) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.<String>absent(), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().enable(null, serverIp);
     }
     
     /**
@@ -128,7 +128,7 @@ public final class ServerOperationRESTfulAPI {
     @POST
     @Path("/{serverIp}/jobs/{jobName}/disable")
     public void disableServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().disable(jobName, serverIp);
     }
     
     /**
@@ -140,7 +140,7 @@ public final class ServerOperationRESTfulAPI {
     @DELETE
     @Path("/{serverIp}/jobs/{jobName}/disable")
     public void enableServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.of(serverIp));
+        jobAPIService.getJobOperatorAPI().enable(jobName, serverIp);
     }
     
     /**
