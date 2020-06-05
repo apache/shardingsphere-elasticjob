@@ -73,6 +73,6 @@ public final class JobEventBusTest {
     }
     
     private void assertIsRegistered(final boolean actual) throws NoSuchFieldException {
-        assertThat((boolean) ReflectionUtils.getFieldValue(jobEventBus, JobEventBus.class.getDeclaredField("isRegistered")), is(actual));
+        assertThat(ReflectionUtils.getFieldValue(jobEventBus, JobEventBus.class.getDeclaredField("isRegistered")), is(actual));
     }
 }
