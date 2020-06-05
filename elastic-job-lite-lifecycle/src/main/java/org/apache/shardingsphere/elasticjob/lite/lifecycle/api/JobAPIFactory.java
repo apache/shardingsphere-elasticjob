@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
-import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.JobOperateAPIImpl;
@@ -42,8 +41,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job settings API
      */
-    public static JobSettingsAPI createJobSettingsAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new JobSettingsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static JobSettingsAPI createJobSettingsAPI(final String connectString, final String namespace, final String digest) {
+        return new JobSettingsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**
@@ -54,8 +53,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job operate API
      */
-    public static JobOperateAPI createJobOperateAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new JobOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static JobOperateAPI createJobOperateAPI(final String connectString, final String namespace, final String digest) {
+        return new JobOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**
@@ -66,8 +65,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job sharding operate API
      */
-    public static ShardingOperateAPI createShardingOperateAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new ShardingOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static ShardingOperateAPI createShardingOperateAPI(final String connectString, final String namespace, final String digest) {
+        return new ShardingOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**
@@ -78,8 +77,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job statistics API
      */
-    public static JobStatisticsAPI createJobStatisticsAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new JobStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static JobStatisticsAPI createJobStatisticsAPI(final String connectString, final String namespace, final String digest) {
+        return new JobStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**
@@ -90,8 +89,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job server statistics API
      */
-    public static ServerStatisticsAPI createServerStatisticsAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new ServerStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static ServerStatisticsAPI createServerStatisticsAPI(final String connectString, final String namespace, final String digest) {
+        return new ServerStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**
@@ -102,7 +101,7 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job sharding statistics API
      */
-    public static ShardingStatisticsAPI createShardingStatisticsAPI(final String connectString, final String namespace, final Optional<String> digest) {
-        return new ShardingStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest.orNull()));
+    public static ShardingStatisticsAPI createShardingStatisticsAPI(final String connectString, final String namespace, final String digest) {
+        return new ShardingStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
 }

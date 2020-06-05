@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.AbstractEmbedZookeeperBaseTest;
-import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -28,31 +27,31 @@ public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
     public void assertCreateJobSettingsAPI() {
-        assertThat(JobAPIFactory.createJobSettingsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobSettingsAPI.class));
+        assertThat(JobAPIFactory.createJobSettingsAPI(getConnectionString(), "namespace", null), instanceOf(JobSettingsAPI.class));
     }
     
     @Test
     public void assertCreateJobOperateAPI() {
-        assertThat(JobAPIFactory.createJobOperateAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobOperateAPI.class));
+        assertThat(JobAPIFactory.createJobOperateAPI(getConnectionString(), "namespace", null), instanceOf(JobOperateAPI.class));
     }
     
     @Test
     public void assertCreateServerOperateAPI() {
-        assertThat(JobAPIFactory.createShardingOperateAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ShardingOperateAPI.class));
+        assertThat(JobAPIFactory.createShardingOperateAPI(getConnectionString(), "namespace", null), instanceOf(ShardingOperateAPI.class));
     }
     
     @Test
     public void assertCreateJobStatisticsAPI() {
-        assertThat(JobAPIFactory.createJobStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
+        assertThat(JobAPIFactory.createJobStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(JobStatisticsAPI.class));
     }
     
     @Test
     public void assertCreateServerStatisticsAPI() {
-        assertThat(JobAPIFactory.createServerStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
+        assertThat(JobAPIFactory.createServerStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(ServerStatisticsAPI.class));
     }
     
     @Test
     public void assertCreateShardingStatisticsAPI() {
-        assertThat(JobAPIFactory.createShardingStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ShardingStatisticsAPI.class));
+        assertThat(JobAPIFactory.createShardingStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(ShardingStatisticsAPI.class));
     }
 }
