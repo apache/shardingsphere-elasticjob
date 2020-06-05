@@ -29,16 +29,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultEx
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -52,17 +42,18 @@ public final class LiteJobConfigurationGsonFactoryTest {
     private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
             + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
-    private String simpleJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
+    private String simpleJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,"
             + "\"jobShardingStrategyClass\":\"testClass\",\"reconcileIntervalMinutes\":15,\"disabled\":true,\"overwrite\":true}";
     
-    private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
+    private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob\","
+            + "\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"streamingProcess\":true,"
             + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";
     
-    private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
+    private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"scriptCommandLine\":\"test.sh\",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
             + "\"jobShardingStrategyClass\":\"\",\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";

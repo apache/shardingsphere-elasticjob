@@ -23,10 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironme
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -82,7 +78,7 @@ public final class ConfigurationServiceTest {
     @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("io.elasticjob.lite.api.script.api.ScriptJob"));
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob"));
         try {
             configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {
@@ -99,7 +95,7 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertPersistExistedJobConfiguration() throws NoSuchFieldException {
+    public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);

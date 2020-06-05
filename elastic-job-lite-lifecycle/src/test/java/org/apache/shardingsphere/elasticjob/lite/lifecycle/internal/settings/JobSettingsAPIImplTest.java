@@ -53,7 +53,7 @@ public class JobSettingsAPIImplTest {
     public void assertGetDataflowJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "DATAFLOW", "io.elasticjob.lite.fixture.TestDataflowJob");
+        assertJobSettings(actual, "DATAFLOW", "org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob");
         verify(regCenter).get("/test_job/config");
     }
     
@@ -61,7 +61,7 @@ public class JobSettingsAPIImplTest {
     public void assertGetScriptJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "SCRIPT", "io.elasticjob.lite.api.script.ScriptJob");
+        assertJobSettings(actual, "SCRIPT", "org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob");
         verify(regCenter).get("/test_job/config");
     }
     
@@ -96,7 +96,7 @@ public class JobSettingsAPIImplTest {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
-        jobSettings.setJobClass("io.elasticjob.lite.fixture.TestDataflowJob");
+        jobSettings.setJobClass("org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob");
         jobSettings.setShardingTotalCount(10);
         jobSettings.setMaxTimeDiffSeconds(-1);
         jobSettings.setMonitorExecution(true);
@@ -108,7 +108,7 @@ public class JobSettingsAPIImplTest {
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettings.setReconcileIntervalMinutes(70);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.fixture.TestDataflowJob\","
+        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
                 + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","

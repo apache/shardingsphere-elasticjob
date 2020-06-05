@@ -144,7 +144,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
          * Set job sharding strategy class.
          *
          * <p>
-         * Default for {@code io.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy}.
+         * Default for {@code org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy}.
          * </p>
          *
          * @param jobShardingStrategyClass job sharding strategy class

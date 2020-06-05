@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
@@ -35,7 +33,7 @@ public final class LiteJsonConstants {
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":%s,\"maxTimeDiffSeconds\":%s,"
             + "\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true, \"reconcileIntervalMinutes\": 15}";
     
-    private static final String DEFAULT_JOB_CLASS = "io.elasticjob.lite.fixture.TestSimpleJob";
+    private static final String DEFAULT_JOB_CLASS = "org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob";
     
     private static final boolean DEFAULT_FAILOVER = true;
     

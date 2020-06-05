@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
@@ -27,15 +26,16 @@ public final class APIJsonConstants {
     
     private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
-    private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+    private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003dA,1\\u003dB,2\\u003dC\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,"
             + "\"description\":\"desc\",\"jobProperties\":%s}";
     
-    private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.fixture.job.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
+    private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":%s,\"streamingProcess\":true}";
     
-    private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"io.elasticjob.lite.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
+    private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob\",\"jobType\":\"SCRIPT\","
+            + "\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":%s,\"scriptCommandLine\":\"test.sh\"}";
     

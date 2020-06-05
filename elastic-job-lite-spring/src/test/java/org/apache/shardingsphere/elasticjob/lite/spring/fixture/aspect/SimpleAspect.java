@@ -30,7 +30,7 @@ public class SimpleAspect {
     /**
      * Aspect.
      */
-    @Pointcut("execution(* io.elasticjob.lite.spring.fixture..*(..))")
+    @Pointcut("execution(* org.apache.shardingsphere.elasticjob.lite.spring.fixture..*(..))")
     public void aspect() {
     }
     
