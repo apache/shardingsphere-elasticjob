@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.instance;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -74,7 +73,7 @@ public final class ShutdownListenerManagerTest {
     @Test
     public void assertStart() {
         shutdownListenerManager.start();
-        verify(jobNodeStorage).addDataListener(ArgumentMatchers.<TreeCacheListener>any());
+        verify(jobNodeStorage).addDataListener(ArgumentMatchers.any());
     }
     
     @Test

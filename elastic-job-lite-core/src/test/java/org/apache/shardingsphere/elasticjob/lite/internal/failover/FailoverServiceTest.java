@@ -92,7 +92,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertFailoverIfUnnecessaryWhenItemsRootNodeIsEmpty() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Collections.<String>emptyList());
+        when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Collections.emptyList());
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage).getJobNodeChildrenKeys("leader/failover/items");

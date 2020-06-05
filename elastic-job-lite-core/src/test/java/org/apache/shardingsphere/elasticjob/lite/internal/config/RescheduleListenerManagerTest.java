@@ -66,19 +66,19 @@ public final class RescheduleListenerManagerTest {
     @Test
     public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
     }
     
     @Test

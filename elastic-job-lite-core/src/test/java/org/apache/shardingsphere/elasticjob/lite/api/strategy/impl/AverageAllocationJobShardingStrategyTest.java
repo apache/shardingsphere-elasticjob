@@ -36,7 +36,7 @@ public final class AverageAllocationJobShardingStrategyTest {
     
     @Test
     public void shardingForZeroServer() {
-        assertThat(jobShardingStrategy.sharding(Collections.<JobInstance>emptyList(), "test_job", 3), is(Collections.<JobInstance, List<Integer>>emptyMap()));
+        assertThat(jobShardingStrategy.sharding(Collections.emptyList(), "test_job", 3), is(Collections.<JobInstance, List<Integer>>emptyMap()));
     }
     
     @Test
@@ -51,7 +51,7 @@ public final class AverageAllocationJobShardingStrategyTest {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
         expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
-        expected.put(new JobInstance("host2@-@0"), Collections.<Integer>emptyList());
+        expected.put(new JobInstance("host2@-@0"), Collections.emptyList());
         assertThat(jobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "test_job", 2), is(expected));
     }
     

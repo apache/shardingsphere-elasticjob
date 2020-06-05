@@ -49,7 +49,7 @@ public final class ShardingItemsTest {
     
     @Test
     public void assertToItemsStringWhenEmpty() {
-        assertThat(ShardingItems.toItemsString(Collections.<Integer>emptyList()), is(""));
+        assertThat(ShardingItems.toItemsString(Collections.emptyList()), is(""));
     }
     
     @Test
