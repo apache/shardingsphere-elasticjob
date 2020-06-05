@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.config;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;

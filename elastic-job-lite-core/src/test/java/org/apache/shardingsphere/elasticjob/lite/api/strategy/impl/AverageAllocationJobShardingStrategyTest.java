@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.api.strategy.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobShardingStrategy;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobShardingStrategy;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;

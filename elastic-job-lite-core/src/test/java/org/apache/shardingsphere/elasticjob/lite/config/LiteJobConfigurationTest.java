@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.config;
 
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

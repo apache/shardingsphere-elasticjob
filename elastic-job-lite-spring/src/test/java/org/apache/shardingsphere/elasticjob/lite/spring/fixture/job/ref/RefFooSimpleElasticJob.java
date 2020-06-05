@@ -17,13 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooService;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooService;
 
 public class RefFooSimpleElasticJob implements SimpleJob {
 

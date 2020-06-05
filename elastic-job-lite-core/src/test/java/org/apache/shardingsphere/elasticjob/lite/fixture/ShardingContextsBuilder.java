@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;

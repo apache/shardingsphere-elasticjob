@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.fixture;
 
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;

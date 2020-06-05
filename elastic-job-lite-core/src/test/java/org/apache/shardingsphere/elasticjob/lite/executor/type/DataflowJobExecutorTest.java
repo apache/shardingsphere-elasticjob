@@ -23,8 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.JobCaller;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

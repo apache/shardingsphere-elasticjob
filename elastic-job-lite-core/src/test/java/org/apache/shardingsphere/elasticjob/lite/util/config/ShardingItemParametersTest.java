@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.util.config;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.junit.Test;
 
 import java.util.Collections;

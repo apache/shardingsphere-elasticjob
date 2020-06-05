@@ -20,9 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.config;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

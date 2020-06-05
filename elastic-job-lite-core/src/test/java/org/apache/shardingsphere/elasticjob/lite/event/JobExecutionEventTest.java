@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.event;
 
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

@@ -20,9 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.fixture.InvalidJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.fixture.InvalidJobShardingStrategy;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 

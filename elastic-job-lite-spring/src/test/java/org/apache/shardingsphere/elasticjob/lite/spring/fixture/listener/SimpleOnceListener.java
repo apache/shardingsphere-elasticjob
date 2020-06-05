@@ -17,11 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooService;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 
 import javax.annotation.Resource;
 

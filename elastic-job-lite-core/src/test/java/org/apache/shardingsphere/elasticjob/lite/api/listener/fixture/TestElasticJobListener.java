@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.listener.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;

@@ -19,15 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.util.json;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.apache.shardingsphere.elasticjob.lite.fixture.APIJsonConstants;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestJobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.APIJsonConstants;
@@ -40,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExcepti
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;

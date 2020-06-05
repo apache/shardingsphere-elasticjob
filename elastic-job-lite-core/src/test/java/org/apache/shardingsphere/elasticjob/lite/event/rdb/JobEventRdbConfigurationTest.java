@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
 import org.junit.Test;

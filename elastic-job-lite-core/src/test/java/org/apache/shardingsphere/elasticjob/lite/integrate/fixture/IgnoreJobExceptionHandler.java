@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.fixture;
 
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
 
 public final class IgnoreJobExceptionHandler implements JobExceptionHandler {
     

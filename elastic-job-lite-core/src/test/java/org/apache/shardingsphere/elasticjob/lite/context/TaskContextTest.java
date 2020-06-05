@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.context;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.lite.fixture.context.TaskNode;
-import org.apache.shardingsphere.elasticjob.lite.fixture.context.TaskNode;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.server;
 
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

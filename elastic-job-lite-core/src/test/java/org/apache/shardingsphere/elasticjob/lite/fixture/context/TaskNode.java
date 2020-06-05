@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.fixture.context;
 
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
 import lombok.Builder;
 import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
 

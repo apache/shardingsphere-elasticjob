@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
 import org.junit.Test;
 
 import java.io.IOException;

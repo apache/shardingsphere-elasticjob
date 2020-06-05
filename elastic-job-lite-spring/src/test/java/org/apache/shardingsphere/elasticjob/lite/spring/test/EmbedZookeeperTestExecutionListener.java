@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.test;
 
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.curator.test.TestingServer;
 import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
@@ -33,7 +31,7 @@ public final class EmbedZookeeperTestExecutionListener extends AbstractTestExecu
     private static volatile TestingServer testingServer;
     
     @Override
-    public void beforeTestClass(final TestContext testContext) throws Exception {
+    public void beforeTestClass(final TestContext testContext) {
         startEmbedTestingServer();
     }
     

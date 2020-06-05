@@ -28,10 +28,6 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExcept
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.OtherJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.SimpleJobExecutor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

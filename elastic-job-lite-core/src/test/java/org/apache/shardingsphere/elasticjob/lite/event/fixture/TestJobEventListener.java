@@ -17,9 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;

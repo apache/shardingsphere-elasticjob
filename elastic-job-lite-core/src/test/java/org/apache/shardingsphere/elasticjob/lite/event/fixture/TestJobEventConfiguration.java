@@ -17,13 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
 
 @RequiredArgsConstructor
 public final class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
@@ -31,7 +27,7 @@ public final class TestJobEventConfiguration extends TestJobEventIdentity implem
     private final JobEventCaller jobEventCaller;
     
     @Override
-    public JobEventListener createJobEventListener() throws JobEventListenerConfigurationException {
+    public JobEventListener createJobEventListener() {
         return new TestJobEventListener(jobEventCaller);
     }
 }
