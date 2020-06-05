@@ -24,7 +24,7 @@
         <artifactId>apache</artifactId>
         <version>21</version>
     </parent>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite</artifactId>
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
