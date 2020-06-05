@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg;
 
-import com.google.common.base.Optional;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.AbstractEmbedZookeeperBaseTest;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
@@ -34,22 +33,22 @@ public final class RegistryCenterFactoryTest extends AbstractEmbedZookeeperBaseT
     
     @Test
     public void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", Optional.<String>absent()));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", null));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertNull(zkConfig.getDigest());
     }
     
     @Test
     public void assertCreateCoordinatorRegistryCenterWithDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", Optional.of("digest")));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", "digest"));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertThat(zkConfig.getDigest(), is("digest"));
     }
     
     @Test
     public void assertCreateCoordinatorRegistryCenterFromCache() throws ReflectiveOperationException {
-        RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", Optional.<String>absent());
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", Optional.<String>absent()));
+        RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null);
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null));
         assertThat(zkConfig.getNamespace(), is("otherNamespace"));
         assertNull(zkConfig.getDigest());
     }

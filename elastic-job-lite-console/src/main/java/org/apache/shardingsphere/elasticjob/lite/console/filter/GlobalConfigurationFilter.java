@@ -82,7 +82,7 @@ public final class GlobalConfigurationFilter implements Filter {
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
         session.setAttribute(RegistryCenterRESTfulAPI.REG_CENTER_CONFIG_KEY, regCenterConfig);
         try {
-            RegistryCenterFactory.createCoordinatorRegistryCenter(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), Optional.fromNullable(regCenterConfig.getDigest()));
+            RegistryCenterFactory.createCoordinatorRegistryCenter(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), regCenterConfig.getDigest());
             SessionRegistryCenterConfiguration.setRegistryCenterConfiguration((RegistryCenterConfiguration) session.getAttribute(RegistryCenterRESTfulAPI.REG_CENTER_CONFIG_KEY));
         } catch (final RegException ex) {
             return false;
