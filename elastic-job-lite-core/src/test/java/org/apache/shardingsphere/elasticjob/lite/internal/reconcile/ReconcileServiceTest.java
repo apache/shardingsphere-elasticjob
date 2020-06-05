@@ -58,7 +58,7 @@ public class ReconcileServiceTest {
     }
     
     @Test
-    public void assertReconcile() throws Exception {
+    public void assertReconcile() {
         Mockito.when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).reconcileIntervalMinutes(1).build());
         Mockito.when(shardingService.isNeedSharding()).thenReturn(false);

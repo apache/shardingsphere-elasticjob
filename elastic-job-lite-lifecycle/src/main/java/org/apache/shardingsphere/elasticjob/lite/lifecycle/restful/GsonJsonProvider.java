@@ -57,7 +57,7 @@ public final class GsonJsonProvider implements MessageBodyWriter<Object>, Messag
     
     @Override
     public void writeTo(final Object object, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType,
-                        final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
+                        final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws WebApplicationException {
         try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
             GsonFactory.getGson().toJson(object, type.equals(genericType) ? type : genericType, writer);
         } catch (final IOException ex) {

@@ -41,7 +41,7 @@ public final class GsonFactoryTest {
         GsonFactory.registerTypeAdapter(GsonFactoryTest.class, new TypeAdapter() {
             
             @Override
-            public Object read(final JsonReader in) throws IOException {
+            public Object read(final JsonReader in) {
                 return null;
             }
             

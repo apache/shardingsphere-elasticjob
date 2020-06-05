@@ -43,13 +43,13 @@ public final class WrongJobExecutorTest {
     private SimpleJobExecutor wrongSimpleJobExecutor;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         wrongSimpleJobExecutor = new SimpleJobExecutor(new TestWrongJob(), jobFacade);
     }
     
     @Test(expected = RuntimeException.class)
-    public void assertWrongJobExecutorWithSingleItem() throws NoSuchFieldException {
+    public void assertWrongJobExecutorWithSingleItem() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
@@ -58,7 +58,7 @@ public final class WrongJobExecutorTest {
     }
     
     @Test
-    public void assertWrongJobExecutorWithMultipleItems() throws NoSuchFieldException {
+    public void assertWrongJobExecutorWithMultipleItems() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         map.put(1, "B");

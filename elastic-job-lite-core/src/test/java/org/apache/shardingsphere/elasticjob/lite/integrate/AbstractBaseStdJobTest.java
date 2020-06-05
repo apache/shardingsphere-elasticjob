@@ -48,7 +48,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -142,7 +141,7 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     @After
-    public void tearDown() throws SchedulerException, NoSuchFieldException {
+    public void tearDown() throws NoSuchFieldException {
         jobScheduler.getSchedulerFacade().shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
         
