@@ -77,7 +77,7 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.registerJobBegin(getShardingContext());
-        verify(jobNodeStorage, times(0)).fillEphemeralJobNode((String) any(), any());
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode(any(), any());
         assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
     }
     
@@ -97,9 +97,9 @@ public final class ExecutionServiceTest {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
-        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        verify(jobNodeStorage, times(0)).removeJobNodeIfExisted((String) any());
-        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded((String) any());
+        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
+        verify(jobNodeStorage, times(0)).removeJobNodeIfExisted(any());
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded(any());
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
     }
     

@@ -47,17 +47,13 @@ public abstract class AbstractEmbedZookeeperBaseTest {
             // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    testingServer.close();
+                } catch (final IOException ex) {
+                    RegExceptionHandler.handleException(ex);
                 }
-            });
+            }));
         }
     }
     

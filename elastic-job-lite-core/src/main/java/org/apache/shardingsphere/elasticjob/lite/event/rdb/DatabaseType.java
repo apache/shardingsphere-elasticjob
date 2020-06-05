@@ -17,11 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Database type.
@@ -43,16 +40,10 @@ public enum DatabaseType {
      * @return database type
      */
     public static DatabaseType valueFrom(final String databaseProductName) {
-        Optional<DatabaseType> databaseTypeOptional = Iterators.tryFind(Arrays.asList(DatabaseType.values()).iterator(), new Predicate<DatabaseType>() {
-            @Override
-            public boolean apply(final DatabaseType input) {
-                return input.productName.equals(databaseProductName);
-            }
-        });
-        if (databaseTypeOptional.isPresent()) {
-            return databaseTypeOptional.get();
-        } else {
-            throw new RuntimeException("Unsupported database:" + databaseProductName);
+        Optional<DatabaseType> result = Arrays.stream(DatabaseType.values()).filter(databaseType -> databaseType.productName.equals(databaseProductName)).findFirst();
+        if (result.isPresent()) {
+            return result.get();
         }
+        throw new RuntimeException("Unsupported database:" + databaseProductName);
     }
 }

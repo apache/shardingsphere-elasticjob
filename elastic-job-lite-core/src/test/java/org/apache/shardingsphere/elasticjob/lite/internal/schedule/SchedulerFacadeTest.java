@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
@@ -87,7 +86,7 @@ public class SchedulerFacadeTest {
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         MockitoAnnotations.initMocks(this);
-        schedulerFacade = new SchedulerFacade(null, "test_job", Collections.<ElasticJobListener>emptyList());
+        schedulerFacade = new SchedulerFacade(null, "test_job", Collections.emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);

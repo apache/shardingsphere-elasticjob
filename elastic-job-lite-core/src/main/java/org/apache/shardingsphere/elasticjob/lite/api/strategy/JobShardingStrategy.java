@@ -31,7 +31,7 @@ public interface JobShardingStrategy {
      * @param jobInstances all job instances which participate in sharding
      * @param jobName job name
      * @param shardingTotalCount sharding total count
-     * @return sharding reuslt
+     * @return sharding result
      */
     Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String jobName, int shardingTotalCount);
 }

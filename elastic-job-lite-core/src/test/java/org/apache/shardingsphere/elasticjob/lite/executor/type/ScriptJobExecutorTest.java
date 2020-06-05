@@ -29,8 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +41,7 @@ public final class ScriptJobExecutorTest {
     private ScriptJobExecutor scriptJobExecutor;
     
     @Test
-    public void assertExecuteWhenCommandLineIsEmpty() throws IOException {
+    public void assertExecuteWhenCommandLineIsEmpty() {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("", IgnoreJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
@@ -51,12 +49,12 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test(expected = JobSystemException.class)
-    public void assertExecuteWhenExecuteFailureForSingleShardingItems() throws IOException, NoSuchFieldException {
+    public void assertExecuteWhenExecuteFailureForSingleShardingItems() {
         assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getSingleShardingContexts());
     }
     
     @Test
-    public void assertExecuteWhenExecuteFailureForMultipleShardingItems() throws IOException, NoSuchFieldException {
+    public void assertExecuteWhenExecuteFailureForMultipleShardingItems() {
         assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getMultipleShardingContexts());
     }
     
@@ -68,16 +66,16 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test
-    public void assertExecuteSuccessForMultipleShardingItems() throws IOException, NoSuchFieldException {
+    public void assertExecuteSuccessForMultipleShardingItems() {
         assertExecuteSuccess(ShardingContextsBuilder.getMultipleShardingContexts());
     }
     
     @Test
-    public void assertExecuteSuccessForSingleShardingItems() throws IOException, NoSuchFieldException {
+    public void assertExecuteSuccessForSingleShardingItems() {
         assertExecuteSuccess(ShardingContextsBuilder.getSingleShardingContexts());
     }
     
-    private void assertExecuteSuccess(final ShardingContexts shardingContexts) throws IOException, NoSuchFieldException {
+    private void assertExecuteSuccess(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1", IgnoreJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);

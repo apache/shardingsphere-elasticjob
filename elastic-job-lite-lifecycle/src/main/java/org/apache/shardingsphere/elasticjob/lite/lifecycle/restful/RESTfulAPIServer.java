@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.restful;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +55,8 @@ public final class RESTfulAPIServer {
      * @param resourcePath resource path
      * @throws Exception server startup exception
      */
-    public void start(final String packages, final Optional<String> resourcePath) throws Exception {
-        start(packages, resourcePath, Optional.of("/api"));
+    public void start(final String packages, final String resourcePath) throws Exception {
+        start(packages, resourcePath, "/api");
     }
     
     /**
@@ -67,14 +67,14 @@ public final class RESTfulAPIServer {
      * @param servletPath servlet path
      * @throws Exception server startup exception
      */
-    public void start(final String packages, final Optional<String> resourcePath, final Optional<String> servletPath) throws Exception {
+    public void start(final String packages, final String resourcePath, final String servletPath) throws Exception {
         log.info("Elastic Job: Start RESTful server");
         HandlerList handlers = new HandlerList();
-        if (resourcePath.isPresent()) {
-            servletContextHandler.setBaseResource(Resource.newClassPathResource(resourcePath.get()));
+        if (!Strings.isNullOrEmpty(resourcePath)) {
+            servletContextHandler.setBaseResource(Resource.newClassPathResource(resourcePath));
             servletContextHandler.addServlet(new ServletHolder(DefaultServlet.class), "/*");
         }
-        String servletPathStr = (servletPath.isPresent() ? servletPath.get() : "") + "/*";
+        String servletPathStr = servletPath + "/*";
         servletContextHandler.addServlet(getServletHolder(packages), servletPathStr);
         handlers.addHandler(servletContextHandler);
         server.setHandler(handlers);

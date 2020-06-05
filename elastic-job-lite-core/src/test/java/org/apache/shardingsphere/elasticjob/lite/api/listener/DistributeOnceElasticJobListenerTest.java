@@ -54,7 +54,7 @@ public final class DistributeOnceElasticJobListenerTest {
     private TestDistributeOnceElasticJobListener distributeOnceElasticJobListener;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false), guaranteeService);

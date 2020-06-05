@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api;
 
-import com.google.common.base.Optional;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
@@ -45,6 +44,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -131,7 +131,7 @@ public class JobScheduler {
     }
     
     protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.absent();
+        return Optional.empty();
     }
     
     private Scheduler createScheduler() {

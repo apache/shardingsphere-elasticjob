@@ -18,15 +18,15 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,10 +46,10 @@ public final class RegistryCenterFactory {
      * @param digest registry center digest
      * @return registry center
      */
-    public static CoordinatorRegistryCenter createCoordinatorRegistryCenter(final String connectString, final String namespace, final Optional<String> digest) {
+    public static CoordinatorRegistryCenter createCoordinatorRegistryCenter(final String connectString, final String namespace, final String digest) {
         Hasher hasher = Hashing.md5().newHasher().putString(connectString, Charsets.UTF_8).putString(namespace, Charsets.UTF_8);
-        if (digest.isPresent()) {
-            hasher.putString(digest.get(), Charsets.UTF_8);
+        if (!Strings.isNullOrEmpty(digest)) {
+            hasher.putString(digest, Charsets.UTF_8);
         }
         HashCode hashCode = hasher.hash();
         CoordinatorRegistryCenter result = REG_CENTER_REGISTRY.get(hashCode);
@@ -57,8 +57,8 @@ public final class RegistryCenterFactory {
             return result;
         }
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
-        if (digest.isPresent()) {
-            zkConfig.setDigest(digest.get());
+        if (!Strings.isNullOrEmpty(digest)) {
+            zkConfig.setDigest(digest);
         }
         result = new ZookeeperRegistryCenter(zkConfig);
         result.init();

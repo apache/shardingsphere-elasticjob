@@ -46,18 +46,14 @@ public final class EmbedZookeeperTestExecutionListener extends AbstractTestExecu
             // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        BlockUtils.sleep(2000L);
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    BlockUtils.sleep(2000L);
+                    testingServer.close();
+                } catch (final IOException ex) {
+                    RegExceptionHandler.handleException(ex);
                 }
-            });
+            }));
         }
     }
 }

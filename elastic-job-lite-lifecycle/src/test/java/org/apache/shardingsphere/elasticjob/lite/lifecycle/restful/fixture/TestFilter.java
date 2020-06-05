@@ -30,7 +30,7 @@ import java.io.IOException;
 public final class TestFilter implements Filter {
     
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) {
     }
     
     @Override

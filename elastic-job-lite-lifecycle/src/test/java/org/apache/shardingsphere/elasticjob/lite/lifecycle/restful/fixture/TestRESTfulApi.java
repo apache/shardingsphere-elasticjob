@@ -17,35 +17,35 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.fixture;
 
-import com.google.common.collect.Maps;
 import lombok.Setter;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Path("/test")
-public final class TestRestfulApi {
+public final class TestRESTfulApi {
     
     @Setter
     private static Caller caller;
     
-    //CHECKSTYLE:OFF
+    /**
+     * For test.
+     * 
+     * @param map request parameters
+     * @return response
+     */
     @POST
-    //CHECKSTYLE:ON
     @Path("/call")
     @Consumes(MediaType.APPLICATION_JSON)
     public Map<String, String> call(final Map<String, String> map) {
         caller.call(map.get("string"));
         caller.call(Integer.valueOf(map.get("integer")));
-        return Maps.transformEntries(map, new Maps.EntryTransformer<String, String, String>() {
-            
-            @Override
-            public String transformEntry(final String key, final String value) {
-                return value + "_processed";
-            }
-        });
+        return map.entrySet().stream().collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue() + "_processed", (a, b) -> b, () -> new LinkedHashMap<>(map.size())));
     }
 }

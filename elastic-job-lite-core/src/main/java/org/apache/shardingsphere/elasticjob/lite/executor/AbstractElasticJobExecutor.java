@@ -175,15 +175,11 @@ public abstract class AbstractElasticJobExecutor {
             if (executorService.isShutdown()) {
                 return;
             }
-            executorService.submit(new Runnable() {
-                
-                @Override
-                public void run() {
-                    try {
-                        process(shardingContexts, each, jobExecutionEvent);
-                    } finally {
-                        latch.countDown();
-                    }
+            executorService.submit(() -> {
+                try {
+                    process(shardingContexts, each, jobExecutionEvent);
+                } finally {
+                    latch.countDown();
                 }
             });
         }

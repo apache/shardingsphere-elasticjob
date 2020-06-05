@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
-import com.google.common.base.Optional;
-
 /**
  * Job operate API.
  */
@@ -30,9 +28,8 @@ public interface JobOperateAPI {
      * <p>Job will not start until it does not conflict with the last running job, and this tag will be automatically cleaned up after it starts.</p>
      *
      * @param jobName job name
-     * @param serverIp server IP address
      */
-    void trigger(Optional<String> jobName, Optional<String> serverIp);
+    void trigger(String jobName);
     
     /**
      * Disable job.
@@ -42,7 +39,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void disable(Optional<String> jobName, Optional<String> serverIp);
+    void disable(String jobName, String serverIp);
     
     /**
      * Enable job.
@@ -50,7 +47,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void enable(Optional<String> jobName, Optional<String> serverIp);
+    void enable(String jobName, String serverIp);
     
     /**
      * Shutdown Job.
@@ -58,7 +55,7 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void shutdown(Optional<String> jobName, Optional<String> serverIp);
+    void shutdown(String jobName, String serverIp);
     
     /**
      * Remove job.
@@ -66,5 +63,5 @@ public interface JobOperateAPI {
      * @param jobName job name
      * @param serverIp server IP address
      */
-    void remove(Optional<String> jobName, Optional<String> serverIp);
+    void remove(String jobName, String serverIp);
 }

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
 
-import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
@@ -36,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Statistic RDB repository.
@@ -331,7 +331,7 @@ public class StatisticRdbRepository {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest taskResultStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
     
     /**
@@ -412,7 +412,7 @@ public class StatisticRdbRepository {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest taskRunningStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
     
     /**
@@ -437,7 +437,7 @@ public class StatisticRdbRepository {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest jobRunningStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
     
     /**
@@ -490,6 +490,6 @@ public class StatisticRdbRepository {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest jobRegisterStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 }

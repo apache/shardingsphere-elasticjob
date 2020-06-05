@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console;
 
-import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.console.filter.GlobalConfigurationFilter;
 import org.apache.shardingsphere.elasticjob.lite.console.restful.JobOperationRESTfulAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.RESTfulAPIServer;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.security.WwwAuthFilter;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Console bootstrap.
@@ -56,6 +55,6 @@ public final class ConsoleBootstrap {
         restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
                      .addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")
-                     .start(JobOperationRESTfulAPI.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+                     .start(JobOperationRESTfulAPI.class.getPackage().getName(), CONSOLE_PATH);
     }
 }

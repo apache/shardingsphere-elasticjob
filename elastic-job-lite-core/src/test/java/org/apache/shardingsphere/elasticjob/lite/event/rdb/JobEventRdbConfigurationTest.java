@@ -34,7 +34,7 @@ public final class JobEventRdbConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat((BasicDataSource) (new JobEventRdbConfiguration(dataSource).getDataSource()), is(dataSource));
+        assertThat(new JobEventRdbConfiguration(dataSource).getDataSource(), is(dataSource));
     }
     
     @Test

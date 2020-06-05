@@ -87,7 +87,7 @@ public final class ShardingListenerManagerTest {
     }
     
     @Test
-    public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() throws NoSuchFieldException {
+    public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 5);
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(shardingService).setReshardingFlag();

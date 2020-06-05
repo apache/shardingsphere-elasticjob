@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.RescheduleListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.ElectionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverListenerManager;
@@ -69,7 +68,7 @@ public class ListenerManagerTest {
     @Mock
     private RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
-    private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.<ElasticJobListener>emptyList());
+    private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.emptyList());
     
     @Before
     public void setUp() throws NoSuchFieldException {

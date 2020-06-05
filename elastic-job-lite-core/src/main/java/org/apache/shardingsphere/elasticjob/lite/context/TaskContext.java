@@ -17,11 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.context;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,7 @@ import lombok.ToString;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Task runtime context.
@@ -145,14 +144,8 @@ public final class TaskContext {
         public static MetaInfo from(final String value) {
             String[] result = value.split(DELIMITER);
             Preconditions.checkState(1 == result.length || 2 == result.length || 5 == result.length);
-            return new MetaInfo(result[0], 1 == result.length || "".equals(result[1]) ? Collections.<Integer>emptyList() : Lists.transform(Splitter.on(",").splitToList(result[1]), 
-                    new Function<String, Integer>() {
-                        
-                        @Override
-                        public Integer apply(final String input) {
-                            return Integer.parseInt(input);
-                        }
-                    }));
+            return new MetaInfo(result[0], 1 == result.length || "".equals(result[1])
+                    ? Collections.emptyList() : Splitter.on(",").splitToList(result[1]).stream().map(Integer::parseInt).collect(Collectors.toList()));
         }
         
         @Override

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.api;
 
-import com.google.common.base.Optional;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
@@ -26,6 +25,8 @@ import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.util.AopTargetUtils;
 import org.springframework.beans.factory.DisposableBean;
+
+import java.util.Optional;
 
 /**
  * Job scheduler for spring.
@@ -55,7 +56,7 @@ public final class SpringJobScheduler extends JobScheduler implements Disposable
     
     @Override
     protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.fromNullable(elasticJob);
+        return Optional.ofNullable(elasticJob);
     }
     
     @Override

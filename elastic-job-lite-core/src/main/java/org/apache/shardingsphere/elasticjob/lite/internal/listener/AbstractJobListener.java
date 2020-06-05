@@ -30,7 +30,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 public abstract class AbstractJobListener implements TreeCacheListener {
     
     @Override
-    public final void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
+    public final void childEvent(final CuratorFramework client, final TreeCacheEvent event) {
         ChildData childData = event.getData();
         if (null == childData) {
             return;

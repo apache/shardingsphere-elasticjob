@@ -48,7 +48,7 @@ public final class JobTriggerListenerTest {
     private JobTriggerListener jobTriggerListener;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         jobTriggerListener = new JobTriggerListener(executionService, shardingService);
     }

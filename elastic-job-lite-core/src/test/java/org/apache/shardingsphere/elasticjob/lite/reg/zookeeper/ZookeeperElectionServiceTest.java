@@ -44,7 +44,7 @@ public class ZookeeperElectionServiceTest {
     private ElectionCandidate electionCandidate;
     
     @BeforeClass
-    public static void init() throws InterruptedException {
+    public static void init() {
         EmbedTestingServer.start();
     }
     
