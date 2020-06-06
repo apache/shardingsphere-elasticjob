@@ -29,7 +29,6 @@
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
         <module>elastic-job-lite-core</module>
@@ -87,7 +86,6 @@
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
@@ -509,22 +507,6 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-             -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
@@ -654,34 +636,8 @@
         </plugins>
     </reporting>
     
-    <repositories>
-        <repository>
-            <id>alfresco-maven-repo</id>
-            <url>https://maven.alfresco.com/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>java-net</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>terracotta-releases</id>
-            <url>https://terracotta.org/download/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    
-    <url>https://github.com/elasticjob/elastic-job</url>
+    <url>http://shardingsphere.apache.org</url>
+    <description>Distributed scheduled job solution</description>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -691,45 +647,18 @@
     </licenses>
     
     <scm>
-        <connection>scm:git:https://github.com/elasticjob/elastic-job.git</connection>
-        <developerConnection>scm:git:git@github.com:elasticjob/elastic-job.git</developerConnection>
-        <url>https://github.com/elasticjob/elastic-job</url>
+        <connection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</developerConnection>
+        <url>https://github.com/apache/shardingsphere-elastic-job-lite.git</url>
+        <tag>HEAD</tag>
     </scm>
     
     <mailingLists>
         <mailingList>
-            <name>ZhangLiang</name>
-            <post>zhangliang@dangdang.com</post>
-        </mailingList>
-        <mailingList>
-            <name>CaoHao</name>
-            <post>caohao@dangdang.com</post>
+            <name>ShardingSphere Developer List</name>
+            <post>dev@shardingsphere.apache.org</post>
+            <subscribe>dev-subscribe@shardingsphere.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@shardingsphere.apache.org</unsubscribe>
         </mailingList>
     </mailingLists>
-    
-    <developers>
-        <developer>
-            <id>zhangliang</id>
-            <name>ZhangLiang</name>
-            <email>zhangliang@dangdang.com</email>
-            <timezone>8</timezone>
-        </developer>
-        <developer>
-            <id>caohao</id>
-            <name>CaoHao</name>
-            <email>caohao@dangdang.com</email>
-            <timezone>8</timezone>
-        </developer>
-    </developers>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-releases</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
 </project>
