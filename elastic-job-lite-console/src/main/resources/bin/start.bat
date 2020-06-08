@@ -14,7 +14,7 @@ set PORT=%1
 set CFG_DIR=%~dp0%..
 set CLASSPATH=%CFG_DIR%
 set CLASSPATH=%~dp0..\lib\*;%CLASSPATH%
-set CONSOLE_MAIN=ConsoleBootstrap
+set CONSOLE_MAIN=org.apache.shardingsphere.elasticjob.lite.console.ConsoleBootstrap
 echo on
 if ""%PORT%"" == """" set PORT=8899
 java  -cp "%CLASSPATH%" %CONSOLE_MAIN% %PORT%
