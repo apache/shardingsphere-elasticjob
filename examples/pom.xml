@@ -14,8 +14,6 @@
         <module>elastic-job-example-lite-java</module>
         <module>elastic-job-example-lite-spring</module>
         <module>elastic-job-example-lite-springboot</module>
-        
-        <module>elastic-job-example-cloud</module>
     </modules>
     
     <properties>
@@ -45,11 +43,6 @@
             </dependency>
             <dependency>
                 <artifactId>elastic-job-lite-spring</artifactId>
-                <groupId>com.dangdang</groupId>
-                <version>${elastic-job.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>elastic-job-cloud-executor</artifactId>
                 <groupId>com.dangdang</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>
