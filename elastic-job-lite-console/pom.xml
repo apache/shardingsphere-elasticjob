@@ -86,6 +86,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/main/resources/assembly/assembly.xml</descriptor>
