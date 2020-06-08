@@ -29,7 +29,7 @@ import java.util.Map;
  * 
  * <p>
  * IP address asc if job name' hashcode is odd;
- * IP address asc if job name' hashcode is even.
+ * IP address desc if job name' hashcode is even.
  * Used to average assign to job server.
  * 
  * For example: 
