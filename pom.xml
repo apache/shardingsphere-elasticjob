@@ -86,6 +86,7 @@
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
         
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
