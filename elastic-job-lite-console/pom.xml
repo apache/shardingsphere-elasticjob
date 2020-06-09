@@ -86,7 +86,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/main/resources/assembly/assembly.xml</descriptor>
@@ -94,6 +93,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>console-bin</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
