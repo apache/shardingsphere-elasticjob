@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
 public final class SensitiveInfoUtils {
     
     private static final String FAKE_IP_SAMPLE = "ip";
+
+    private static final Pattern IP_PATTERN = Pattern.compile(IpUtils.IP_REGEX);
     
     /**
      * Filter sensitive IP addresses.
@@ -48,7 +50,7 @@ public final class SensitiveInfoUtils {
         final Map<String, String> fakeIpMap = new HashMap<>();
         final AtomicInteger step = new AtomicInteger();
         return target.stream().map(input -> {
-            Matcher matcher = Pattern.compile(IpUtils.IP_REGEX).matcher(input);
+            Matcher matcher = IP_PATTERN.matcher(input);
             String result = input;
             while (matcher.find()) {
                 String realIp = matcher.group();
