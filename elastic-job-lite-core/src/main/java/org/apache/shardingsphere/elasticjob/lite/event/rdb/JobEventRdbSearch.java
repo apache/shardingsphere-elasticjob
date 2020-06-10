@@ -97,7 +97,7 @@ public final class JobEventRdbSearch {
                 result.add(jobExecutionEvent);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志, 未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch JobExecutionEvent from DB error:", ex);
         }
         return result;
@@ -117,7 +117,7 @@ public final class JobEventRdbSearch {
                 result.add(jobStatusTraceEvent);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志, 未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch JobStatusTraceEvent from DB error:", ex);
         }
         return result;
@@ -133,7 +133,7 @@ public final class JobEventRdbSearch {
             resultSet.next();
             result = resultSet.getInt(1);
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch EventCount from DB error:", ex);
         }
         return result;

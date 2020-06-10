@@ -174,7 +174,7 @@ public class StatisticRdbRepository {
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Insert taskResultStatistics to DB error:", ex);
         }
         return result;
@@ -198,7 +198,7 @@ public class StatisticRdbRepository {
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Insert taskRunningStatistics to DB error:", ex);
         }
         return result;
@@ -222,7 +222,7 @@ public class StatisticRdbRepository {
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Insert jobRunningStatistics to DB error:", ex);
         }
         return result;
@@ -246,7 +246,7 @@ public class StatisticRdbRepository {
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Insert jobRegisterStatistics to DB error:", ex);
         }
         return result;
@@ -275,7 +275,7 @@ public class StatisticRdbRepository {
                 result.add(taskResultStatistics);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch taskResultStatistics from DB error:", ex);
         }
         return result;
@@ -302,7 +302,7 @@ public class StatisticRdbRepository {
                 result = new TaskResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticInterval, new Date());
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch summed taskResultStatistics from DB error:", ex);
         }
         return result;
@@ -328,7 +328,7 @@ public class StatisticRdbRepository {
                         statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest taskResultStatistics from DB error:", ex);
         }
         return Optional.ofNullable(result);
@@ -356,7 +356,7 @@ public class StatisticRdbRepository {
                 result.add(taskRunningStatistics);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch taskRunningStatistics from DB error:", ex);
         }
         return result;
@@ -384,7 +384,7 @@ public class StatisticRdbRepository {
                 result.add(jobRunningStatistics);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch jobRunningStatistics from DB error:", ex);
         }
         return result;
@@ -409,7 +409,7 @@ public class StatisticRdbRepository {
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest taskRunningStatistics from DB error:", ex);
         }
         return Optional.ofNullable(result);
@@ -434,7 +434,7 @@ public class StatisticRdbRepository {
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest jobRunningStatistics from DB error:", ex);
         }
         return Optional.ofNullable(result);
@@ -462,7 +462,7 @@ public class StatisticRdbRepository {
                 result.add(jobRegisterStatistics);
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch jobRegisterStatistics from DB error:", ex);
         }
         return result;
@@ -487,7 +487,7 @@ public class StatisticRdbRepository {
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
-            // TODO 记录失败直接输出日志,未来可考虑配置化
+            // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest jobRegisterStatistics from DB error:", ex);
         }
         return Optional.ofNullable(result);

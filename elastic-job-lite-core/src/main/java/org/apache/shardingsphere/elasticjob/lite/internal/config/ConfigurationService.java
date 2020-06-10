@@ -85,7 +85,7 @@ public final class ConfigurationService {
         }
         LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
         if (null == result) {
-            // TODO 应该删除整个job node, 并非仅仅删除config node
+            // TODO should remove the job node, not only the config node
             jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
         }
         return Optional.ofNullable(result);
