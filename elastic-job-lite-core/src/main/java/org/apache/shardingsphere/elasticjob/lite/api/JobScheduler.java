@@ -60,7 +60,7 @@ public class JobScheduler {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    // TODO 为测试使用,测试用例不能反复new monitor service,以后需要把MonitorService重构为单例
+    // TODO Test use only. Should not create monitor service repeatedly. Will refactor MonitorService as singleton service in the future
     @Getter
     private final SchedulerFacade schedulerFacade;
     

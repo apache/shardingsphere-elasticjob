@@ -55,7 +55,7 @@ public final class TriggerListenerManager extends AbstractListenerManager {
             }
             instanceService.clearTriggerFlag();
             if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().isJobRunning(jobName)) {
-                // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
+                // TODO At present, it cannot be triggered when the job is running, and it will be changed to a stacked trigger in the future.
                 JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
             }
         }

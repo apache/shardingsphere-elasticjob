@@ -68,7 +68,7 @@ public final class ShardingItemParameters {
     }
     
     /**
-     * 分片项.
+     * sharding item.
      */
     @AllArgsConstructor
     private static final class ShardingItem {

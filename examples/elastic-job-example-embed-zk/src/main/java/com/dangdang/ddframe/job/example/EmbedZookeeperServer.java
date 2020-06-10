@@ -23,10 +23,10 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 内存版的内嵌Zookeeper.
+ * embed Zookeeper.
  * 
  * <p>
- *     仅用于运行Elastic-Job的例子时无需额外启动Zookeeper. 如有必要, 请使用本地环境可用的Zookeeper代替.
+ *     Only used for examples
  * </p>
  */
 public final class EmbedZookeeperServer {
@@ -34,9 +34,9 @@ public final class EmbedZookeeperServer {
     private static TestingServer testingServer;
     
     /**
-     * 内存版的内嵌Zookeeper.
+     * embed Zookeeper.
      * 
-     * @param port Zookeeper的通信端口号
+     * @param port Zookeeper port
      */
     public static void start(final int port) {
         try {

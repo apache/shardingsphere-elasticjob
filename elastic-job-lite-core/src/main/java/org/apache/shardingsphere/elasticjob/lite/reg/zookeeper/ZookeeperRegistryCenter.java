@@ -115,10 +115,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         CloseableUtils.closeQuietly(client);
     }
     
-    /* TODO 等待500ms, cache先关闭再关闭client, 否则会抛异常
-     * 因为异步处理, 可能会导致client先关闭而cache还未关闭结束.
-     * 等待Curator新版本解决这个bug.
-     * BUG地址：https://issues.apache.org/jira/browse/CURATOR-157
+    /*
+     * sleep 500ms, let cache client close first and then client, otherwise will throw exception
+     * reference：https://issues.apache.org/jira/browse/CURATOR-157
      */
     private void waitForCacheClose() {
         try {

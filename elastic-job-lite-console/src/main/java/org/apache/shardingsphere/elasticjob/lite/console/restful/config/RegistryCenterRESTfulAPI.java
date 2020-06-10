@@ -60,8 +60,8 @@ public final class RegistryCenterRESTfulAPI {
     }
     
     /**
-     * 读取注册中心配置集合.
-     * 
+     * load configuration from registry center
+     *
      * @param request HTTP request
      * @return registry center configurations
      */
@@ -76,7 +76,7 @@ public final class RegistryCenterRESTfulAPI {
     }
     
     /**
-     * 添加注册中心.
+     * add registry center
      * 
      * @param config registry center configuration
      * @return success to add or not

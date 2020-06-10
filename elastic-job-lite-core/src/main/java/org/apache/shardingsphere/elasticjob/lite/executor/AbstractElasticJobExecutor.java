@@ -90,7 +90,7 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     /**
-     * 执行作业.
+     * execute job.
      */
     public final void execute() {
         try {
@@ -147,7 +147,7 @@ public abstract class AbstractElasticJobExecutor {
         try {
             process(shardingContexts, executionSource);
         } finally {
-            // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
+            // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
             jobFacade.registerJobCompleted(shardingContexts);
             if (itemErrorMessages.isEmpty()) {
                 if (shardingContexts.isAllowSendJobEvent()) {

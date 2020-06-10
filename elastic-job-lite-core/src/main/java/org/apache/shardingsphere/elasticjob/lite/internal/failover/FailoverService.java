@@ -157,7 +157,7 @@ public final class FailoverService {
             log.debug("Failover job '{}' begin, crashed item '{}'", jobName, crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-            // TODO 不应使用triggerJob, 而是使用executor统一调度
+            // TODO Instead of using triggerJob, use executor for unified scheduling
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
             if (null != jobScheduleController) {
                 jobScheduleController.triggerJob();
