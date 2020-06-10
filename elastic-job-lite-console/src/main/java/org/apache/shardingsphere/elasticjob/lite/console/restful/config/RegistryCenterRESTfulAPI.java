@@ -60,7 +60,7 @@ public final class RegistryCenterRESTfulAPI {
     }
     
     /**
-     * load configuration from registry center
+     * Load configuration from registry center.
      *
      * @param request HTTP request
      * @return registry center configurations
@@ -76,7 +76,7 @@ public final class RegistryCenterRESTfulAPI {
     }
     
     /**
-     * add registry center
+     * Add registry center.
      * 
      * @param config registry center configuration
      * @return success to add or not

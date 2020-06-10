@@ -68,7 +68,7 @@ public final class ShardingItemParameters {
     }
     
     /**
-     * sharding item.
+     * Sharding item.
      */
     @AllArgsConstructor
     private static final class ShardingItem {

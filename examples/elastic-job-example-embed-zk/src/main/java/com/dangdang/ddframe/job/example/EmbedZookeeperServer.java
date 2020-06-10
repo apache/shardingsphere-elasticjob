@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * embed Zookeeper.
+ * Embed ZooKeeper.
  * 
  * <p>
  *     Only used for examples
@@ -34,9 +34,9 @@ public final class EmbedZookeeperServer {
     private static TestingServer testingServer;
     
     /**
-     * embed Zookeeper.
+     * Embed ZooKeeper.
      * 
-     * @param port Zookeeper port
+     * @param port ZooKeeper port
      */
     public static void start(final int port) {
         try {
