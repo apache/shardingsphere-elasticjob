@@ -555,6 +555,15 @@
                         <exclude>**/package-lock.json</exclude>
                         <!-- example files -->
                         <exclude>/examples/**</exclude>
+                        <!-- to be determined -->
+                        <exclude>**/AdminLTE/**</exclude>
+                        <exclude>**/bootstrap/**</exclude>
+                        <exclude>**/bootstrap-table/**</exclude>
+                        <exclude>**/daterangepicker/**</exclude>
+                        <exclude>**/font-awesome-4.5.0/**</exclude>
+                        <exclude>**/input-mask/**</exclude>
+                        <exclude>**/finput-mask/**</exclude>
+                        <exclude>**/jquery/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
