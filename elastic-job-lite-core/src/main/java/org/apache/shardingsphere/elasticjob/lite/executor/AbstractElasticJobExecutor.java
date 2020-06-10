@@ -90,7 +90,7 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     /**
-     * execute job.
+     * Execute job.
      */
     public final void execute() {
         try {

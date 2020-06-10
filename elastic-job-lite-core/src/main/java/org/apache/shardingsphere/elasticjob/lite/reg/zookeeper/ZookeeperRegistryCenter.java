@@ -116,6 +116,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     }
     
     /*
+     *  // TODO
      * sleep 500ms, let cache client close first and then client, otherwise will throw exception
      * reference：https://issues.apache.org/jira/browse/CURATOR-157
      */

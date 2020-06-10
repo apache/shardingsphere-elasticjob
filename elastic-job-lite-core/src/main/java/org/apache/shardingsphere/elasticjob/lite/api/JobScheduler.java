@@ -52,7 +52,7 @@ import java.util.Properties;
  */
 public class JobScheduler {
     
-    public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    private static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
