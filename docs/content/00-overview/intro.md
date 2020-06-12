@@ -54,7 +54,7 @@ Elastic-Job-Lite也提供最灵活的方式，最大限度的提高执行作业�
 
 # 整体架构图
 
-![Elastic-Job-Lite Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](https://shardingsphere.apache.org/elasticjob/lite/img/architecture/elastic_job_lite.png)
 
 
 # 快速入门
