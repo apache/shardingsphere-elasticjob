@@ -13,7 +13,7 @@ Before report a bug, make sure you have:
 - Read documentation: [ElasticJob Doc](http://elasticjob.io/docs/elastic-job-lite/00-overview/).
 
 Please pay attention on issues you submitted, because we maybe need more details. 
-If no response **more than 7 days** and we cannot reproduce it on current information, we will **close it**.
+If no response anymore and we cannot reproduce it on current information, we will **close it**.
 
 Please answer these questions before submitting your issue. Thanks!
 
