@@ -22,7 +22,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd 
                         http://elaticjob.shardingsphere.apache.org/schema/job
-                        http://elaticjob.shardingsphere.apache.org/job/job.xsd
+                        http://elaticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <import resource="base.xml" />
     <job:simple id="simpleElasticJob_namespace" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" 

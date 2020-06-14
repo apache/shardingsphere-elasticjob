@@ -22,7 +22,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://elaticjob.shardingsphere.apache.org/schema/job
-                        http://elaticjob.shardingsphere.apache.orgschema/job/job.xsd
+                        http://elaticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <import resource="base.xml"/>
     <job:simple id="${simpleJob.id}" class="${simpleJob.class}" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
