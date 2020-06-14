@@ -29,22 +29,22 @@
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-
+    
     <modules>
         <module>elastic-job-lite-core</module>
         <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-lifecycle</module>
         <module>elastic-job-lite-console</module>
     </modules>
-
+    
     <properties>
         <java.version>1.8</java.version>
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-
+        
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
-
+        
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
@@ -64,7 +64,7 @@
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>2.7.21</mockito.version>
-
+        
         <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
@@ -87,10 +87,10 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-
+        
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -286,7 +286,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    
     <build>
         <pluginManagement>
             <plugins>
@@ -312,15 +312,15 @@
                     <version>${maven-jar-plugin.version}</version>
                 </plugin>
                 <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                <!--<version>${maven-surefire-plugin.version}</version>-->
-                <!--<configuration>-->
-                <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
-                <!--<excludes>-->
-                <!--<exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>-->
-                <!--</excludes>-->
-                <!--</configuration>-->
+                    <!--<groupId>org.apache.maven.plugins</groupId>-->
+                    <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                    <!--<version>${maven-surefire-plugin.version}</version>-->
+                    <!--<configuration>-->
+                        <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
+                        <!--<excludes>-->
+                            <!--<exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>-->
+                        <!--</excludes>-->
+                    <!--</configuration>-->
                 <!--</plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -577,7 +577,7 @@
             </plugin>
         </plugins>
     </build>
-
+    
     <reporting>
         <plugins>
             <plugin>
@@ -645,7 +645,7 @@
             </plugin>
         </plugins>
     </reporting>
-
+    
     <url>http://shardingsphere.apache.org</url>
     <description>Distributed scheduled job solution</description>
     <licenses>
@@ -655,14 +655,14 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
+    
     <scm>
         <connection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</connection>
         <developerConnection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</developerConnection>
         <url>https://github.com/apache/shardingsphere-elastic-job-lite.git</url>
         <tag>HEAD</tag>
     </scm>
-
+    
     <mailingLists>
         <mailingList>
             <name>ShardingSphere Developer List</name>
