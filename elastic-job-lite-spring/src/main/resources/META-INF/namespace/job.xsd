@@ -20,8 +20,7 @@
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:beans="http://www.springframework.org/schema/beans"
         targetNamespace="http://elaticjob.shardingsphere.apache.org/schema/job"
-        elementFormDefault="qualified"
-        attributeFormDefault="unqualified">
+        elementFormDefault="qualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
     
     <xsd:element name="listener">
@@ -61,8 +60,8 @@
                 <xsd:attribute name="description" type="xsd:string" />
                 <xsd:attribute name="disabled" type="xsd:string" default="false"/>
                 <xsd:attribute name="overwrite" type="xsd:string" default="false"/>
-                <xsd:attribute name="executor-service-handler" type="xsd:string" default="io.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler"/>
-                <xsd:attribute name="job-exception-handler" type="xsd:string" default="io.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler"/>
+                <xsd:attribute name="executor-service-handler" type="xsd:string" default="org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler"/>
+                <xsd:attribute name="job-exception-handler" type="xsd:string" default="org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler"/>
                 <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
             </xsd:extension>
         </xsd:complexContent>

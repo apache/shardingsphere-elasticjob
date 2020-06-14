@@ -28,8 +28,9 @@
                            http://elaticjob.shardingsphere.apache.org/schema/reg/reg.xsd
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
-    <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
-    <bean id="foo" class="io.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
+    <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" 
+                   max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
+    <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
     <bean id="elasticJobLog" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:job_event_storage"/>

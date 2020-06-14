@@ -24,7 +24,12 @@
                         http://elaticjob.shardingsphere.apache.org/schema/job
                         http://elaticjob.shardingsphere.apache.org/job/job.xsd
                         ">
-    <import resource="base.xml"/>
-    <job:simple id="simpleElasticJob_namespace" class="io.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
-    <job:dataflow id="dataflowElasticJob_namespace" class="io.elasticjob.lite.spring.fixture.job.DataflowElasticJob" registry-center-ref="regCenter" sharding-total-count="${dataflowJob.shardingTotalCount}" cron="${dataflowJob.cron}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" monitor-execution="${dataflowJob.monitorExecution}" failover="${dataflowJob.failover}" description="${dataflowJob.description}" disabled="${dataflowJob.disabled}" overwrite="${dataflowJob.overwrite}" streaming-process="${dataflowJob.streamingProcess}" />
+    <import resource="base.xml" />
+    <job:simple id="simpleElasticJob_namespace" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" 
+                registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
+                disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
+    <job:dataflow id="dataflowElasticJob_namespace" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob" 
+                  registry-center-ref="regCenter" sharding-total-count="${dataflowJob.shardingTotalCount}" cron="${dataflowJob.cron}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" 
+                  monitor-execution="${dataflowJob.monitorExecution}" failover="${dataflowJob.failover}" description="${dataflowJob.description}" disabled="${dataflowJob.disabled}" 
+                  overwrite="${dataflowJob.overwrite}" streaming-process="${dataflowJob.streamingProcess}" />
 </beans>

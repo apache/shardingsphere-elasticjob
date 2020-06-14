@@ -24,28 +24,27 @@
         <artifactId>apache</artifactId>
         <version>21</version>
     </parent>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite</artifactId>
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    <description>Elastic-Job - distributed scheduled job solution</description>
-    
+
     <modules>
         <module>elastic-job-lite-core</module>
         <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-lifecycle</module>
         <module>elastic-job-lite-console</module>
     </modules>
-    
+
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-        
+
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
-        
+
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
@@ -65,7 +64,7 @@
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>2.7.21</mockito.version>
-        
+
         <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
@@ -87,11 +86,11 @@
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -287,7 +286,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -313,15 +312,15 @@
                     <version>${maven-jar-plugin.version}</version>
                 </plugin>
                 <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                    <!--<version>${maven-surefire-plugin.version}</version>-->
-                    <!--<configuration>-->
-                        <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
-                        <!--<excludes>-->
-                            <!--<exclude>io.elasticjob.lite.integrate.**</exclude>-->
-                        <!--</excludes>-->
-                    <!--</configuration>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                <!--<version>${maven-surefire-plugin.version}</version>-->
+                <!--<configuration>-->
+                <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
+                <!--<excludes>-->
+                <!--<exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>-->
+                <!--</excludes>-->
+                <!--</configuration>-->
                 <!--</plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -497,9 +496,9 @@
                             <ignoreMethodAnnotation>lombok.Generated</ignoreMethodAnnotation>
                         </ignoreMethodAnnotations>
                         <excludes>
-                            <exclude>io/elasticjob/**/*Test.class</exclude>
-                            <exclude>io/elasticjob/**/Test*.class</exclude>
-                            <exclude>io/elasticjob/job/lite/console/**/*.class</exclude>
+                            <exclude>org/apache/**/*Test.class</exclude>
+                            <exclude>org/apache/**/Test*.class</exclude>
+                            <exclude>org/apache/job/lite/console/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
@@ -509,22 +508,6 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-             -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
@@ -572,6 +555,15 @@
                         <exclude>**/package-lock.json</exclude>
                         <!-- example files -->
                         <exclude>/examples/**</exclude>
+                        <!-- to be determined -->
+                        <exclude>**/AdminLTE/**</exclude>
+                        <exclude>**/bootstrap/**</exclude>
+                        <exclude>**/bootstrap-table/**</exclude>
+                        <exclude>**/daterangepicker/**</exclude>
+                        <exclude>**/font-awesome-4.5.0/**</exclude>
+                        <exclude>**/input-mask/**</exclude>
+                        <exclude>**/finput-mask/**</exclude>
+                        <exclude>**/jquery/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -585,7 +577,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -653,35 +645,9 @@
             </plugin>
         </plugins>
     </reporting>
-    
-    <repositories>
-        <repository>
-            <id>alfresco-maven-repo</id>
-            <url>https://maven.alfresco.com/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>java-net</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>terracotta-releases</id>
-            <url>https://terracotta.org/download/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    
-    <url>https://github.com/apache/shardingsphere-elastic-job-lite</url>
+
+    <url>http://shardingsphere.apache.org</url>
+    <description>Distributed scheduled job solution</description>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -689,30 +655,20 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <scm>
-        <connection>scm:git:https://github.com/elasticjob/elastic-job.git</connection>
-        <developerConnection>scm:git:git@github.com:elasticjob/elastic-job.git</developerConnection>
-        <url>https://github.com/elasticjob/elastic-job</url>
+        <connection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/shardingsphere-elastic-job-lite.git</developerConnection>
+        <url>https://github.com/apache/shardingsphere-elastic-job-lite.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <mailingLists>
         <mailingList>
-            <name>ShardingSphere-elastic-job Developer List</name>
-            <post>dev@elasticjob.shardingsphere.apache.org</post>
-            <subscribe>dev-subscribe@elasticjob.shardingsphere.apache.org</subscribe>
-            <unsubscribe>dev-unsubscribe@elasticjob.shardingsphere.apache.org</unsubscribe>
+            <name>ShardingSphere Developer List</name>
+            <post>dev@shardingsphere.apache.org</post>
+            <subscribe>dev-subscribe@shardingsphere.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@shardingsphere.apache.org</unsubscribe>
         </mailingList>
     </mailingLists>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-releases</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
 </project>

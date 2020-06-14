@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:job_event_storage
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:

@@ -54,14 +54,14 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 ```xml
 <!-- import elastic-job lite core -->
 <dependency>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
 
 <!-- import other module if need -->
 <dependency>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
