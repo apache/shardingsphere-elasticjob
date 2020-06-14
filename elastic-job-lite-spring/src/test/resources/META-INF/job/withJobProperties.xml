@@ -18,11 +18,11 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xmlns:job="http://elaticjob.shardingsphere.apache.org/schema/job"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.dangdang.com/schema/ddframe/job 
-                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        http://elaticjob.shardingsphere.apache.org/schema/job
+                        http://elaticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <import resource="base.xml"/>
     <job:simple id="simpleElasticJob_namespace_job_properties" class="io.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" executor-service-handler="io.elasticjob.lite.spring.fixture.handler.SimpleExecutorServiceHandler" />

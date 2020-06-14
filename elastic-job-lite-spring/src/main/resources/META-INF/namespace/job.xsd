@@ -16,10 +16,10 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://www.dangdang.com/schema/ddframe/job"
+<xsd:schema xmlns="http://elaticjob.shardingsphere.apache.org/schema/job"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:beans="http://www.springframework.org/schema/beans"
-        targetNamespace="http://www.dangdang.com/schema/ddframe/job"
+        targetNamespace="http://elaticjob.shardingsphere.apache.org/schema/job"
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
