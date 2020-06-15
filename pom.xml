@@ -496,9 +496,9 @@
                             <ignoreMethodAnnotation>lombok.Generated</ignoreMethodAnnotation>
                         </ignoreMethodAnnotations>
                         <excludes>
-                            <exclude>com/dangdang/**/*Test.class</exclude>
-                            <exclude>com/dangdang/**/Test*.class</exclude>
-                            <exclude>com/dangdang/ddframe/job/lite/console/**/*.class</exclude>
+                            <exclude>org/apache/**/*Test.class</exclude>
+                            <exclude>org/apache/**/Test*.class</exclude>
+                            <exclude>org/apache/job/lite/console/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>

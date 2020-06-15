@@ -18,11 +18,11 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xmlns:job="http://elaticjob.shardingsphere.apache.org/schema/job"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.dangdang.com/schema/ddframe/job 
-                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        http://elaticjob.shardingsphere.apache.org/schema/job
+                        http://elaticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <import resource="base.xml"/>
     <bean id="refSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">

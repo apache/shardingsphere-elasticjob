@@ -19,13 +19,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+       xmlns:reg="http://elaticjob.shardingsphere.apache.org/schema/reg"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.dangdang.com/schema/ddframe/reg
-                           http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                           http://elaticjob.shardingsphere.apache.org/schema/reg
+                           http://elaticjob.shardingsphere.apache.org/schema/reg/reg.xsd
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
     <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" 
