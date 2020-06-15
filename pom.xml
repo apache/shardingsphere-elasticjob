@@ -311,17 +311,17 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
                 </plugin>
-                <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                    <!--<version>${maven-surefire-plugin.version}</version>-->
-                    <!--<configuration>-->
-                        <!--<argLine>-XX:-UseSplitVerifier</argLine>-->
-                        <!--<excludes>-->
-                            <!--<exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>-->
-                        <!--</excludes>-->
-                    <!--</configuration>-->
-                <!--</plugin>-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>-XX:-UseSplitVerifier</argLine>
+                        <excludes>
+                            <exclude>org.apache.shardingsphere.elasticjob.lite.integrate.**</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-report-plugin</artifactId>
