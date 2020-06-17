@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-http\://elaticjob.shardingsphere.apache.org/schema/reg=org.apache.shardingsphere.elasticjob.lite.spring.reg.handler.RegNamespaceHandler
-http\://elaticjob.shardingsphere.apache.org/schema/job=org.apache.shardingsphere.elasticjob.lite.spring.job.handler.JobNamespaceHandler
+http\://elasticjob.shardingsphere.apache.org/schema/reg=org.apache.shardingsphere.elasticjob.lite.spring.reg.handler.RegNamespaceHandler
+http\://elasticjob.shardingsphere.apache.org/schema/job=org.apache.shardingsphere.elasticjob.lite.spring.job.handler.JobNamespaceHandler
