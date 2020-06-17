@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-http\://elaticjob.shardingsphere.apache.org/schema/reg/reg.xsd=META-INF/namespace/reg.xsd
-http\://elaticjob.shardingsphere.apache.org/schema/job/job.xsd=META-INF/namespace/job.xsd
+http\://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd=META-INF/namespace/reg.xsd
+http\://elasticjob.shardingsphere.apache.org/schema/job/job.xsd=META-INF/namespace/job.xsd
