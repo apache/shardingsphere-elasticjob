@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Map;
@@ -167,6 +168,7 @@ public final class JobRegistry {
         CoordinatorRegistryCenter regCenter = regCenterMap.remove(jobName);
         if (null != regCenter) {
             regCenter.evictCacheData("/" + jobName);
+            new InstanceService(regCenter, jobName).removeInstance();
         }
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);
