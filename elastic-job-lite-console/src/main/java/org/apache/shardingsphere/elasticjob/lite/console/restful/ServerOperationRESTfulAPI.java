@@ -77,8 +77,8 @@ public final class ServerOperationRESTfulAPI {
      *
      * @param serverIp server IP address
      */
-    @DELETE
-    @Path("/{serverIp}/disable")
+    @POST
+    @Path("/{serverIp}/enable")
     public void enableServer(@PathParam("serverIp") final String serverIp) {
         jobAPIService.getJobOperatorAPI().enable(null, serverIp);
     }

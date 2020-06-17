@@ -90,8 +90,8 @@ public final class JobOperationRESTfulAPI {
      *
      * @param jobName job name
      */
-    @DELETE
-    @Path("/{jobName}/disable")
+    @POST
+    @Path("/{jobName}/enable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableJob(@PathParam("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().enable(jobName, null);
