@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -141,8 +140,8 @@ public final class JobOperationRESTfulAPI {
      * @param jobName job name
      * @param item sharding item
      */
-    @DELETE
-    @Path("/{jobName}/sharding/{item}/disable")
+    @POST
+    @Path("/{jobName}/sharding/{item}/enable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableSharding(@PathParam("jobName") final String jobName, @PathParam("item") final String item) {
         jobAPIService.getShardingOperateAPI().enable(jobName, item);
