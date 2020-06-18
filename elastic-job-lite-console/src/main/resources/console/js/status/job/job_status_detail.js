@@ -94,8 +94,8 @@ function bindEnableButton() {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
-            type: "DELETE",
+            url: "/api/jobs/" + jobName + "/sharding/" + item + "/enable",
+            type: "POST",
             success: function () {
                 showSuccessDialog();
                 $("#sharding").bootstrapTable("refresh");

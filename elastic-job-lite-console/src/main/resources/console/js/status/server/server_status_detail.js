@@ -91,8 +91,8 @@ function bindEnableButton() {
     $(document).off("click", "button[operation='enable-server-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='enable-server-job'][data-toggle!='modal']", function(event) {
         $.ajax({
-            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
-            type: "DELETE",
+            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/enable",
+            type: "POST",
             success: function() {
                 $("#server-jobs-tbl").bootstrapTable("refresh");
                 showSuccessDialog();
