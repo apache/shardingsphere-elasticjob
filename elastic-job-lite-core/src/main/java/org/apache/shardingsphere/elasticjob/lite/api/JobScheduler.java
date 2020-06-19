@@ -41,6 +41,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.Arrays;
 import java.util.List;
@@ -107,11 +108,28 @@ public class JobScheduler {
         jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
     }
     
-   /**
-    * Shutdown job.
-    */
-    public void shutdown() { 
-        schedulerFacade.shutdownInstance();
+    private Scheduler createScheduler() {
+        Scheduler result;
+        try {
+            StdSchedulerFactory factory = new StdSchedulerFactory();
+            factory.initialize(getQuartzProps());
+            result = factory.getScheduler();
+            result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
+        return result;
+    }
+    
+    private Properties getQuartzProps() {
+        Properties result = new Properties();
+        result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
+        result.put("org.quartz.threadPool.threadCount", "1");
+        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
+        result.put("org.quartz.jobStore.misfireThreshold", "1");
+        result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
+        return result;
     }
     
     private JobDetail createJobDetail(final String jobClass) {
@@ -134,27 +152,10 @@ public class JobScheduler {
         return Optional.empty();
     }
     
-    private Scheduler createScheduler() {
-        Scheduler result;
-        try {
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            factory.initialize(getBaseQuartzProperties());
-            result = factory.getScheduler();
-            result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
-        } catch (final SchedulerException ex) {
-            throw new JobSystemException(ex);
-        }
-        return result;
-    }
-    
-    private Properties getBaseQuartzProperties() {
-        Properties result = new Properties();
-        result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
-        result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
-        result.put("org.quartz.jobStore.misfireThreshold", "1");
-        result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
-        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
-        return result;
+   /**
+    * Shutdown job.
+    */
+    public void shutdown() { 
+        schedulerFacade.shutdownInstance();
     }
 }

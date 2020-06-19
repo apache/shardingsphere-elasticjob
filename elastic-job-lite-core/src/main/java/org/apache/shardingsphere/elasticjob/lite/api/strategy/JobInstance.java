@@ -34,9 +34,6 @@ public final class JobInstance {
     
     private static final String DELIMITER = "@-@";
     
-    /**
-     * Job instance ID.
-     */
     private final String jobInstanceId;
     
     public JobInstance() {
