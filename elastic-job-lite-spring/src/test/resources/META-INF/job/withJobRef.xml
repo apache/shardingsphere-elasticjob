@@ -26,10 +26,10 @@
                         ">
     <import resource="base.xml"/>
     <bean id="refSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">
-        <property name="fooService" ref="foo"/>
+        <property name="fooService" ref="foo" />
     </bean>
     <bean id="refDataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooDataflowElasticJob">
-        <property name="fooService" ref="foo"/>
+        <property name="fooService" ref="foo" />
     </bean>
     <job:simple id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" 
                 sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" 

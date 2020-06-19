@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.AbstractElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Dataflow job executor.
  */
-public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
+public final class DataflowJobExecutor extends ElasticJobExecutor {
     
     private final DataflowJob<Object> dataflowJob;
     

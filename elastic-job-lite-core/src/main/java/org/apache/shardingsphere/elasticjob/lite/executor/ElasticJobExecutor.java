@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
@@ -30,7 +31,7 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 
 import java.util.Collection;
 import java.util.Map;
@@ -42,7 +43,7 @@ import java.util.concurrent.ExecutorService;
  * ElasticJob executor.
  */
 @Slf4j
-public abstract class AbstractElasticJobExecutor {
+public abstract class ElasticJobExecutor {
     
     @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
@@ -58,16 +59,16 @@ public abstract class AbstractElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
+    protected ElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
-        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        jobExceptionHandler = (JobExceptionHandler) getHandler(JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
-    private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
+    private Object getHandler(final JobPropertiesEnum jobPropertiesEnum) {
         String handlerClassName = jobRootConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
         try {
             Class<?> handlerClass = Class.forName(handlerClassName);
@@ -80,7 +81,7 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    private Object getDefaultHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
+    private Object getDefaultHandler(final JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
         log.warn("Cannot instantiation class '{}', use default '{}' class.", handlerClassName, jobPropertiesEnum.getKey());
         try {
             return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
@@ -117,10 +118,10 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:ON
             jobExceptionHandler.handleException(jobName, cause);
         }
-        execute(shardingContexts, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
+        execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
             jobFacade.clearMisfire(shardingContexts.getShardingItemParameters().keySet());
-            execute(shardingContexts, JobExecutionEvent.ExecutionSource.MISFIRE);
+            execute(shardingContexts, ExecutionSource.MISFIRE);
         }
         jobFacade.failoverIfNecessary();
         try {
@@ -132,7 +133,7 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    private void execute(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
+    private void execute(final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         if (shardingContexts.getShardingItemParameters().isEmpty()) {
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format("Sharding item for job '%s' is empty.", jobName));
@@ -161,7 +162,7 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    private void process(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
+    private void process(final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
             int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
@@ -171,7 +172,7 @@ public abstract class AbstractElasticJobExecutor {
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
+            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
             if (executorService.isShutdown()) {
                 return;
             }
