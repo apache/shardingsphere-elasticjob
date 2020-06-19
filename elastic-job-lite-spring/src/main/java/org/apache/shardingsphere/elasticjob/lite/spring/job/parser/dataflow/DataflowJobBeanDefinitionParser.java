@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
 
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.lite.scheduler.InstanceProvidedDataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.InstanceProvidedDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag;
 import org.springframework.beans.factory.config.BeanDefinition;

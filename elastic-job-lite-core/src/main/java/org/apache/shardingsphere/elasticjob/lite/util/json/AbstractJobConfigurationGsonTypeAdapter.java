@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.scheduler.InstanceProvidedDataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.InstanceProvidedDataflowJobConfiguration;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.scheduler;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.provided;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
