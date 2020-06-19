@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 
 import java.util.Collection;
 import java.util.Map;
@@ -62,12 +62,12 @@ public abstract class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
-        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        jobExceptionHandler = (JobExceptionHandler) getHandler(JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
-    private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
+    private Object getHandler(final JobPropertiesEnum jobPropertiesEnum) {
         String handlerClassName = jobRootConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
         try {
             Class<?> handlerClass = Class.forName(handlerClassName);
@@ -80,7 +80,7 @@ public abstract class ElasticJobExecutor {
         }
     }
     
-    private Object getDefaultHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
+    private Object getDefaultHandler(final JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
         log.warn("Cannot instantiation class '{}', use default '{}' class.", handlerClassName, jobPropertiesEnum.getKey());
         try {
             return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
