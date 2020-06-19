@@ -40,7 +40,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](http://elasticjob.io/docs/elastic-job-lite/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](docs/static/img/architecture/elastic_job_lite.png)
 
 
 # [Release Notes](https://github.com/elasticjob/elastic-job/releases)
@@ -95,14 +95,14 @@ public class MyElasticJob implements SimpleJob {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://elaticjob.shardingsphere.apache.org/schema/reg"
-    xmlns:job="http://elaticjob.shardingsphere.apache.org/schema/job"
+    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
+    xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://elaticjob.shardingsphere.apache.org/schema/reg
-                        http://elaticjob.shardingsphere.apache.org/schema/reg/reg.xsd
-                        http://elaticjob.shardingsphere.apache.org/schema/job
-                        http://elaticjob.shardingsphere.apache.org/schema/job/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/reg
+                        http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/job
+                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <!--configure registry center -->
     <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
