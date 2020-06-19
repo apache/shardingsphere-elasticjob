@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
 
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.InstanceProvidedDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -33,7 +33,7 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     
     @Override
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
-        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(InstanceProvidedDataflowJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
         if (Strings.isNullOrEmpty(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
             result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE)).getBeanClassName());
@@ -41,6 +41,11 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
             result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE));
         }
         result.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
+        if (Strings.isNullOrEmpty(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
+            result.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
+        } else {
+            result.addConstructorArgValue(null);
+        }
         return result.getBeanDefinition();
     }
 }
