@@ -28,15 +28,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Executor service object.
+ * ElasticJob executor service.
  */
-public final class ExecutorServiceObject {
+public final class ElasticJobExecutorService {
     
     private final ThreadPoolExecutor threadPoolExecutor;
     
     private final BlockingQueue<Runnable> workQueue;
     
-    public ExecutorServiceObject(final String namingPattern, final int threadSize) {
+    public ElasticJobExecutorService(final String namingPattern, final int threadSize) {
         workQueue = new LinkedBlockingQueue<>();
         threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, workQueue, 
                 new BasicThreadFactory.Builder().namingPattern(Joiner.on("-").join(namingPattern, "%s")).build());
