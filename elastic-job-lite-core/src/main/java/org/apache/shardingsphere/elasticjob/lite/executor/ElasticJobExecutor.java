@@ -42,7 +42,7 @@ import java.util.concurrent.ExecutorService;
  * ElasticJob executor.
  */
 @Slf4j
-public abstract class AbstractElasticJobExecutor {
+public abstract class ElasticJobExecutor {
     
     @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
@@ -58,7 +58,7 @@ public abstract class AbstractElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
+    protected ElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();

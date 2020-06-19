@@ -41,7 +41,7 @@ public final class JobExecutorFactory {
      * @return job executor
      */
     @SuppressWarnings("unchecked")
-    public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
+    public static ElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
         if (null == elasticJob) {
             return new ScriptJobExecutor(jobFacade);
         }

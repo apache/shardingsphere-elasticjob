@@ -23,7 +23,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.AbstractElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
@@ -32,7 +32,7 @@ import java.io.IOException;
 /**
  * Script job executor.
  */
-public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
+public final class ScriptJobExecutor extends ElasticJobExecutor {
     
     public ScriptJobExecutor(final JobFacade jobFacade) {
         super(jobFacade);

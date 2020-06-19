@@ -19,13 +19,13 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.AbstractElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**
  * Simple job executor.
  */
-public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
+public final class SimpleJobExecutor extends ElasticJobExecutor {
     
     private final SimpleJob simpleJob;
     

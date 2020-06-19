@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.AbstractElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
@@ -66,9 +66,9 @@ public final class SimpleJobExecutorTest {
     public void assertNewExecutorWithDefaultHandlers() throws NoSuchFieldException {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration("ErrorHandler", Object.class.getName()));
         SimpleJobExecutor simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
-        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")), 
+        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, ElasticJobExecutor.class.getDeclaredField("executorService")), 
                 instanceOf(new DefaultExecutorServiceHandler().createExecutorService("test_job").getClass()));
-        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("jobExceptionHandler")),
+        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, ElasticJobExecutor.class.getDeclaredField("jobExceptionHandler")),
                 instanceOf(DefaultJobExceptionHandler.class));
     }
     
