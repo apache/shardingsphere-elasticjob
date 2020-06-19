@@ -172,7 +172,7 @@ public abstract class ElasticJobExecutor {
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
+            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
             if (executorService.isShutdown()) {
                 return;
             }
