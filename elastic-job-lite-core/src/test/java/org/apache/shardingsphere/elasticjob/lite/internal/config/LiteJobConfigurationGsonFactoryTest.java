@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
@@ -92,9 +92,8 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertTrue(actual.getTypeConfig().getCoreConfig().isFailover());
         assertFalse(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), 
-                is(DefaultExecutorServiceHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
@@ -117,9 +116,8 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
         assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER),
-                is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER),
                 is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
@@ -144,10 +142,8 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
         assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER),
-                is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER),
-                is(DefaultExecutorServiceHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));

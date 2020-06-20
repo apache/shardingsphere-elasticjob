@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -89,9 +90,9 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     private BeanDefinition createJobPropertiesBeanDefinition(final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobProperties.class);
-        EnumMap<JobProperties.JobPropertiesEnum, String> map = new EnumMap<>(JobProperties.JobPropertiesEnum.class);
-        map.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
-        map.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE));
+        EnumMap<JobPropertiesEnum, String> map = new EnumMap<>(JobPropertiesEnum.class);
+        map.put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
+        map.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE));
         result.addConstructorArgValue(map);
         return result.getBeanDefinition();
     }
