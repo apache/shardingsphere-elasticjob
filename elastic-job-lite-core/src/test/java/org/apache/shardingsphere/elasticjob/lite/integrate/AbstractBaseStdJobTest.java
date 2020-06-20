@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
@@ -75,10 +76,11 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
+    @SneakyThrows
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         this.disabled = disabled;
         liteJobConfig = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, liteJobConfig, new ElasticJobListener() {
+        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), liteJobConfig, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -103,10 +105,11 @@ public abstract class AbstractBaseStdJobTest {
         leaderService = new LeaderService(regCenter, jobName);
     }
     
+    @SneakyThrows
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
         this.monitorPort = monitorPort;
         liteJobConfig = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, liteJobConfig);
+        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), liteJobConfig);
         disabled = false;
         leaderService = new LeaderService(regCenter, jobName);
     }

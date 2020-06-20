@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
@@ -51,9 +50,6 @@ public final class JobSchedulerTest {
     @Mock
     private SchedulerFacade schedulerFacade;
     
-    @Mock
-    private ElasticJobListenerCaller caller;
-    
     private LiteJobConfiguration liteJobConfig;
     
     private JobScheduler jobScheduler;
@@ -63,7 +59,7 @@ public final class JobSchedulerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         liteJobConfig = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
-        jobScheduler = new JobScheduler(regCenter, liteJobConfig);
+        jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), liteJobConfig);
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);

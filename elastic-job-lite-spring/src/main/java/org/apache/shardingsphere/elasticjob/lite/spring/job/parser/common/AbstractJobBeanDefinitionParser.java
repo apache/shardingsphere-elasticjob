@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common;
 
 import com.google.common.base.Strings;
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
@@ -41,11 +42,13 @@ import java.util.List;
  */
 public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
+    @SneakyThrows
     @Override
-    protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
+    protected final AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobScheduler.class);
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
+        factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createLiteJobConfiguration(parserContext, element));
         BeanDefinition jobEventConfig = createJobEventConfig(element);
         if (null != jobEventConfig) {

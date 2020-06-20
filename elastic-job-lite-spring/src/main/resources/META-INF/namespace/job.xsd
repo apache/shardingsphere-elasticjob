@@ -40,10 +40,9 @@
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
                 <xsd:all>
-                    <xsd:element ref="listener" minOccurs="0" maxOccurs="1" />
-                    <xsd:element ref="distributed-listener" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="listener" minOccurs="0" />
+                    <xsd:element ref="distributed-listener" minOccurs="0" />
                 </xsd:all>
-                <xsd:attribute name="class" type="xsd:string" />
                 <xsd:attribute name="job-ref" type="xsd:string" />
                 <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
                 <xsd:attribute name="cron" type="xsd:string" use="required" />
