@@ -30,6 +30,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.InstanceProvidedDataflowJobConfiguration;
 
 import java.io.IOException;
@@ -120,10 +121,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         while (in.hasNext()) {
             switch (in.nextName()) {
                 case "job_exception_handler":
-                    result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
+                    result.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
                     break;
                 case "executor_service_handler":
-                    result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
+                    result.put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
                     break;
                 default:
                     break;
@@ -141,8 +142,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                                                          final JobProperties jobProperties) {
         return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire).description(description)
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobProperties.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER))
-                .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), jobProperties.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
+                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobProperties.get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER))
+                .jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), jobProperties.get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
                 .build();
     }
     

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public final class JobCoreConfigurationTest {
         assertTrue(actual.isFailover());
         assertFalse(actual.isMisfire());
         assertThat(actual.getDescription(), is("desc"));
-        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getName()));
+        assertThat(actual.getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getName()));
     }
     
     @Test
@@ -70,7 +70,7 @@ public final class JobCoreConfigurationTest {
         assertFalse(actual.isFailover());
         assertTrue(actual.isMisfire());
         assertThat(actual.getDescription(), is(""));
-        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getName()));
+        assertThat(actual.getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getName()));
     }
     
     @Test(expected = IllegalArgumentException.class)

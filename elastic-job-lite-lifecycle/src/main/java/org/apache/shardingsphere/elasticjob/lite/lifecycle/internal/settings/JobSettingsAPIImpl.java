@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
@@ -71,10 +71,10 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setReconcileIntervalMinutes(liteJobConfig.getReconcileIntervalMinutes());
-        result.getJobProperties().put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(),
-                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        result.getJobProperties().put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), 
-                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(),
+                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), 
+                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
     }
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
