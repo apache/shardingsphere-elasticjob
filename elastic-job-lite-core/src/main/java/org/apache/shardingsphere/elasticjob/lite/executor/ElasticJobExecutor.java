@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
@@ -44,6 +45,8 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public final class ElasticJobExecutor {
     
+    private final ElasticJob elasticJob;
+    
     private final JobFacade jobFacade;
     
     private final JobRootConfiguration jobRootConfig;
@@ -58,7 +61,8 @@ public final class ElasticJobExecutor {
     
     private final JobItemExecutor jobItemExecutor;
     
-    public ElasticJobExecutor(final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
+    public ElasticJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
+        this.elasticJob = elasticJob;
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
@@ -191,6 +195,7 @@ public final class ElasticJobExecutor {
         }
     }
     
+    @SuppressWarnings("unchecked")
     private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent startEvent) {
         if (shardingContexts.isAllowSendJobEvent()) {
             jobFacade.postJobExecutionEvent(startEvent);
@@ -198,7 +203,7 @@ public final class ElasticJobExecutor {
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         JobExecutionEvent completeEvent;
         try {
-            jobItemExecutor.process(jobRootConfig, jobFacade, new ShardingContext(shardingContexts, item));
+            jobItemExecutor.process(elasticJob, jobRootConfig, jobFacade, new ShardingContext(shardingContexts, item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             if (shardingContexts.isAllowSendJobEvent()) {

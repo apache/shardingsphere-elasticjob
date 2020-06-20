@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
@@ -29,44 +28,43 @@ import java.util.List;
 /**
  * Dataflow job executor.
  */
-@RequiredArgsConstructor
-public final class DataflowJobExecutor implements JobItemExecutor {
-    
-    private final DataflowJob<Object> dataflowJob;
+public final class DataflowJobExecutor implements JobItemExecutor<DataflowJob> {
     
     @Override
-    public void process(final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final DataflowJob elasticJob, final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) jobRootConfig.getTypeConfig();
         if (dataflowConfig.isStreamingProcess()) {
-            streamingExecute(jobFacade, shardingContext);
+            streamingExecute(elasticJob, jobFacade, shardingContext);
         } else {
-            oneOffExecute(shardingContext);
+            oneOffExecute(elasticJob, shardingContext);
         }
     }
     
-    private void streamingExecute(final JobFacade jobFacade, final ShardingContext shardingContext) {
-        List<Object> data = fetchData(shardingContext);
+    private void streamingExecute(final DataflowJob elasticJob, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        List<Object> data = fetchData(elasticJob, shardingContext);
         while (null != data && !data.isEmpty()) {
-            processData(shardingContext, data);
+            processData(elasticJob, shardingContext, data);
             if (!jobFacade.isEligibleForJobRunning()) {
                 break;
             }
-            data = fetchData(shardingContext);
+            data = fetchData(elasticJob, shardingContext);
         }
     }
     
-    private void oneOffExecute(final ShardingContext shardingContext) {
-        List<Object> data = fetchData(shardingContext);
+    private void oneOffExecute(final DataflowJob elasticJob, final ShardingContext shardingContext) {
+        List<Object> data = fetchData(elasticJob, shardingContext);
         if (null != data && !data.isEmpty()) {
-            processData(shardingContext, data);
+            processData(elasticJob, shardingContext, data);
         }
     }
     
-    private List<Object> fetchData(final ShardingContext shardingContext) {
-        return dataflowJob.fetchData(shardingContext);
+    @SuppressWarnings("unchecked")
+    private List<Object> fetchData(final DataflowJob elasticJob, final ShardingContext shardingContext) {
+        return elasticJob.fetchData(shardingContext);
     }
     
-    private void processData(final ShardingContext shardingContext, final List<Object> data) {
-        dataflowJob.processData(shardingContext, data);
+    @SuppressWarnings("unchecked")
+    private void processData(final DataflowJob elasticJob, final ShardingContext shardingContext, final List<Object> data) {
+        elasticJob.processData(shardingContext, data);
     }
 }
