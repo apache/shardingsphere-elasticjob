@@ -15,37 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.strategy;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.provided;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-
-import java.lang.management.ManagementFactory;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
 /**
- * Job instance.
+ * Dataflow job configuration.
  */
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode(of = "jobInstanceId")
-public final class JobInstance {
+public final class InstanceProvidedDataflowJobConfiguration implements JobTypeConfiguration, JobInstanceProvided {
     
-    private static final String DELIMITER = "@-@";
+    private final JobCoreConfiguration coreConfig;
     
-    private final String jobInstanceId;
+    private final JobType jobType = JobType.DATAFLOW;
     
-    public JobInstance() {
-        jobInstanceId = IpUtils.getIp() + DELIMITER + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-    }
+    private final String jobClass;
     
-    /**
-     * Get server IP address.
-     * 
-     * @return server IP address
-     */
-    public String getIp() {
-        return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
-    }
+    private final boolean streamingProcess;
+    
+    private final ElasticJob jobInstance;
 }

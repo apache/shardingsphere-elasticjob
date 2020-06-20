@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
@@ -49,7 +50,7 @@ public final class DataflowJobExecutorTest {
     
     private ShardingContexts shardingContexts;
     
-    private DataflowJobExecutor dataflowJobExecutor;
+    private ElasticJobExecutor elasticJobExecutor;
     
     @After
     public void tearDown() {
@@ -62,7 +63,7 @@ public final class DataflowJobExecutorTest {
         setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(null);
         when(jobCaller.fetchData(1)).thenReturn(Collections.emptyList());
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller).fetchData(0);
         verify(jobCaller).fetchData(1);
         verify(jobCaller, times(0)).processData(any());
@@ -72,7 +73,7 @@ public final class DataflowJobExecutorTest {
     public void assertExecuteWhenFetchDataIsNotEmptyForUnStreamingProcessAndSingleShardingItem() {
         setUp(false, ShardingContextsBuilder.getSingleShardingContexts());
         doThrow(new IllegalStateException()).when(jobCaller).fetchData(0);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller).fetchData(0);
         verify(jobCaller, times(0)).processData(any());
     }
@@ -83,7 +84,7 @@ public final class DataflowJobExecutorTest {
         when(jobCaller.fetchData(0)).thenReturn(Arrays.asList(1, 2));
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(3, 4));
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller).fetchData(0);
         verify(jobCaller).fetchData(1);
         verify(jobCaller).processData(1);
@@ -98,7 +99,7 @@ public final class DataflowJobExecutorTest {
         setUp(true, ShardingContextsBuilder.getSingleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.singletonList(1), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller).processData(1);
     }
@@ -110,7 +111,7 @@ public final class DataflowJobExecutorTest {
         when(jobCaller.fetchData(0)).thenReturn(Collections.singletonList(1), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Collections.singletonList(2), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller, times(2)).fetchData(1);
         verify(jobCaller).processData(1);
@@ -125,7 +126,7 @@ public final class DataflowJobExecutorTest {
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(2, 3), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         doThrow(new IllegalStateException()).when(jobCaller).processData(2);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller, times(1)).fetchData(1);
         verify(jobCaller).processData(1);
@@ -141,7 +142,7 @@ public final class DataflowJobExecutorTest {
         when(jobCaller.fetchData(0)).thenReturn(Arrays.asList(1, 2), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(3, 4), Collections.emptyList());
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller, times(1)).fetchData(1);
         verify(jobCaller).processData(1);
@@ -157,7 +158,7 @@ public final class DataflowJobExecutorTest {
         when(jobCaller.fetchData(0)).thenReturn(Arrays.asList(1, 2));
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(3, 4));
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
-        dataflowJobExecutor.execute();
+        elasticJobExecutor.execute();
         verify(jobCaller).fetchData(0);
         verify(jobCaller).fetchData(1);
         verify(jobCaller).processData(1);
@@ -170,7 +171,7 @@ public final class DataflowJobExecutorTest {
         this.shardingContexts = shardingContexts;
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(isStreamingProcess));
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
+        elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade, new DataflowJobExecutor());
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
     }
 }

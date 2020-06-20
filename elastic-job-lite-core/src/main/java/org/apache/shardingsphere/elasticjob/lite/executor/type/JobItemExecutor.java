@@ -15,20 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
+package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
-
-import java.util.concurrent.ExecutorService;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**
- * Default executor service handler.
+ * Job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
+public interface JobItemExecutor<T extends ElasticJob> {
     
-    @Override
-    public ExecutorService createExecutorService(final String jobName) {
-        return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
-    }
+    /**
+     * Process job item.
+     * 
+     * @param elasticJob elastic job
+     * @param jobRootConfig job root configuration
+     * @param jobFacade job facade
+     * @param shardingContext sharding context
+     */
+    void process(T elasticJob, JobRootConfiguration jobRootConfig, JobFacade jobFacade, ShardingContext shardingContext);
 }

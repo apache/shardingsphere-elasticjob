@@ -18,11 +18,12 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common;
 
 import com.google.common.base.Strings;
+import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.spring.api.SpringJobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -42,18 +43,8 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobScheduler.class);
         factory.setInitMethodName("init");
-        //TODO abstract subclass
-        if ("".equals(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE))) {
-            if ("".equals(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
-                factory.addConstructorArgValue(null);
-            } else {
-                factory.addConstructorArgValue(BeanDefinitionBuilder.rootBeanDefinition(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE)).getBeanDefinition());
-            }
-        } else {
-            factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
-        }
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createLiteJobConfiguration(parserContext, element));
         BeanDefinition jobEventConfig = createJobEventConfig(element);
@@ -99,9 +90,9 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     private BeanDefinition createJobPropertiesBeanDefinition(final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobProperties.class);
-        EnumMap<JobProperties.JobPropertiesEnum, String> map = new EnumMap<>(JobProperties.JobPropertiesEnum.class);
-        map.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
-        map.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE));
+        EnumMap<JobPropertiesEnum, String> map = new EnumMap<>(JobPropertiesEnum.class);
+        map.put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
+        map.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER, element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE));
         result.addConstructorArgValue(map);
         return result.getBeanDefinition();
     }

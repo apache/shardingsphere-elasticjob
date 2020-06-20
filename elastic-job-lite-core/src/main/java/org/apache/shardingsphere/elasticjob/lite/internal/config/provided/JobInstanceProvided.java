@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.provided;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
-
-import java.util.concurrent.ExecutorService;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 
 /**
- * Default executor service handler.
+ * Job instance provided.
  */
-public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
+public interface JobInstanceProvided {
     
-    @Override
-    public ExecutorService createExecutorService(final String jobName) {
-        return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
-    }
+    /**
+     * Get job instance.
+     *
+     * @return job instance
+     */
+    ElasticJob getJobInstance();
 }

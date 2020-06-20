@@ -32,7 +32,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
@@ -116,7 +116,7 @@ public abstract class AbstractBaseStdJobTest {
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount).shardingItemParameters(shardingParameters)
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build();
+                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
             jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName(), false);

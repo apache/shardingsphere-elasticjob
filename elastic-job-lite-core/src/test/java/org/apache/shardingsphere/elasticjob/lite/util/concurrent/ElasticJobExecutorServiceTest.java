@@ -26,11 +26,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class ExecutorServiceObjectTest {
+public final class ElasticJobExecutorServiceTest {
     
     @Test
     public void assertCreateExecutorService() {
-        ExecutorServiceObject executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
+        ElasticJobExecutorService executorServiceObject = new ElasticJobExecutorService("executor-service-test", 1);
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         assertFalse(executorServiceObject.isShutdown());

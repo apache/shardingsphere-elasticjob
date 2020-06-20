@@ -105,8 +105,8 @@ function bindEnableServerButton() {
     $(document).on("click", "button[operation='enable-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $.ajax({
-            url: "/api/servers/" + serverIp + "/disable",
-            type: "DELETE",
+            url: "/api/servers/" + serverIp + "/enable",
+            type: "POST",
             success: function() {
                 showSuccessDialog();
                 $("#servers-overview-tbl").bootstrapTable("refresh");

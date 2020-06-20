@@ -17,8 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
@@ -32,6 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.lang.reflect.Field;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -47,19 +51,19 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorForScriptJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
-        assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
+        assertThat(getJobItemExecutor(JobExecutorFactory.getJobExecutor(null, jobFacade)), instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), instanceOf(SimpleJobExecutor.class));
+        assertThat(getJobItemExecutor(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade)), instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
-        assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), instanceOf(DataflowJobExecutor.class));
+        assertThat(getJobItemExecutor(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade)), instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
@@ -70,8 +74,15 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorTwice() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
-        AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
-        AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
+        ElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
+        ElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         assertTrue(executor.hashCode() != anotherExecutor.hashCode());
+    }
+    
+    @SneakyThrows
+    private JobItemExecutor getJobItemExecutor(final ElasticJobExecutor elasticJobExecutor) {
+        Field field = ElasticJobExecutor.class.getDeclaredField("jobItemExecutor");
+        field.setAccessible(true);
+        return (JobItemExecutor) field.get(elasticJobExecutor);
     }
 }

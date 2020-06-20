@@ -36,21 +36,22 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.JobInstanceProvided;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
  * Job scheduler.
  */
-public class JobScheduler {
+public final class JobScheduler {
     
     private static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
     
@@ -107,19 +108,35 @@ public class JobScheduler {
         jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
     }
     
-   /**
-    * Shutdown job.
-    */
-    public void shutdown() { 
-        schedulerFacade.shutdownInstance();
+    private Scheduler createScheduler() {
+        Scheduler result;
+        try {
+            StdSchedulerFactory factory = new StdSchedulerFactory();
+            factory.initialize(getQuartzProps());
+            result = factory.getScheduler();
+            result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
+        return result;
+    }
+    
+    private Properties getQuartzProps() {
+        Properties result = new Properties();
+        result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
+        result.put("org.quartz.threadPool.threadCount", "1");
+        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
+        result.put("org.quartz.jobStore.misfireThreshold", "1");
+        result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
+        return result;
     }
     
     private JobDetail createJobDetail(final String jobClass) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-        Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
-        if (elasticJobInstance.isPresent()) {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
+        if (liteJobConfig.getTypeConfig() instanceof JobInstanceProvided && null != ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance()) {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance());
         } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
             try {
                 result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
@@ -130,31 +147,10 @@ public class JobScheduler {
         return result;
     }
     
-    protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.empty();
-    }
-    
-    private Scheduler createScheduler() {
-        Scheduler result;
-        try {
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            factory.initialize(getBaseQuartzProperties());
-            result = factory.getScheduler();
-            result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
-        } catch (final SchedulerException ex) {
-            throw new JobSystemException(ex);
-        }
-        return result;
-    }
-    
-    private Properties getBaseQuartzProperties() {
-        Properties result = new Properties();
-        result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
-        result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
-        result.put("org.quartz.jobStore.misfireThreshold", "1");
-        result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
-        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
-        return result;
+   /**
+    * Shutdown job.
+    */
+    public void shutdown() { 
+        schedulerFacade.shutdownInstance();
     }
 }

@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.event;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ExecutorServiceObject;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
 
 /**
  * Job event bus.
@@ -30,7 +30,7 @@ public final class JobEventBus {
     
     private final JobEventConfiguration jobEventConfig;
     
-    private final ExecutorServiceObject executorServiceObject;
+    private final ElasticJobExecutorService elasticJobExecutorService;
     
     private final EventBus eventBus;
     
@@ -38,14 +38,14 @@ public final class JobEventBus {
     
     public JobEventBus() {
         jobEventConfig = null;
-        executorServiceObject = null;
+        elasticJobExecutorService = null;
         eventBus = null;
     }
     
     public JobEventBus(final JobEventConfiguration jobEventConfig) {
         this.jobEventConfig = jobEventConfig;
-        executorServiceObject = new ExecutorServiceObject("job-event", Runtime.getRuntime().availableProcessors() * 2);
-        eventBus = new AsyncEventBus(executorServiceObject.createExecutorService());
+        elasticJobExecutorService = new ElasticJobExecutorService("job-event", Runtime.getRuntime().availableProcessors() * 2);
+        eventBus = new AsyncEventBus(elasticJobExecutorService.createExecutorService());
         register();
     }
     
@@ -64,7 +64,7 @@ public final class JobEventBus {
      * @param event job event
      */
     public void post(final JobEvent event) {
-        if (isRegistered && !executorServiceObject.isShutdown()) {
+        if (isRegistered && !elasticJobExecutorService.isShutdown()) {
             eventBus.post(event);
         }
     }

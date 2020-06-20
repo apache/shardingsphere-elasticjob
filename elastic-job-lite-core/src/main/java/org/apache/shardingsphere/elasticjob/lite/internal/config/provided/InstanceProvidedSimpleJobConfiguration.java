@@ -15,17 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.util.digest;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.provided;
 
-import org.junit.Test;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class EncryptionTest {
+/**
+ * Simple job configuration.
+ */
+@RequiredArgsConstructor
+@Getter
+public final class InstanceProvidedSimpleJobConfiguration implements JobTypeConfiguration, JobInstanceProvided {
     
-    @Test
-    public void assertMd5() {
-        assertThat(Encryption.md5("test"), is("98f6bcd4621d373cade4e832627b4f6"));
-    }
+    private final JobCoreConfiguration coreConfig;
+    
+    private final JobType jobType = JobType.SIMPLE;
+    
+    private final String jobClass;
+    
+    private final ElasticJob jobInstance;
 }

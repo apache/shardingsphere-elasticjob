@@ -27,12 +27,11 @@ import org.quartz.JobExecutionContext;
 /**
  * Lite job class.
  */
+@Setter
 public final class LiteJob implements Job {
     
-    @Setter
     private ElasticJob elasticJob;
     
-    @Setter
     private JobFacade jobFacade;
     
     @Override
