@@ -25,9 +25,9 @@ import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.JobInstanceProvided;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -36,7 +36,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.JobInstanceProvided;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -57,6 +56,8 @@ public final class JobScheduler {
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
+    private final ElasticJob elasticJob;
+    
     private final LiteJobConfiguration liteJobConfig;
     
     private final CoordinatorRegistryCenter regCenter;
@@ -67,17 +68,19 @@ public final class JobScheduler {
     
     private final JobFacade jobFacade;
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, liteJobConfig, new JobEventBus(), elasticJobListeners);
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
+        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
                         final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
+        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
     }
     
-    private JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
+    private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, 
+                         final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
         JobRegistry.getInstance().addJobInstance(liteJobConfig.getJobName(), new JobInstance());
+        this.elasticJob = elasticJob;
         this.liteJobConfig = liteJobConfig;
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
@@ -101,8 +104,7 @@ public final class JobScheduler {
     public void init() {
         LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(liteJobConfig);
         JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(), liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(
-                createScheduler(), createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass()), liteJobConfigFromRegCenter.getJobName());
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(elasticJob), liteJobConfigFromRegCenter.getJobName());
         JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
         schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());
         jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
@@ -132,17 +134,13 @@ public final class JobScheduler {
         return result;
     }
     
-    private JobDetail createJobDetail(final String jobClass) {
+    private JobDetail createJobDetail(final ElasticJob elasticJob) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         if (liteJobConfig.getTypeConfig() instanceof JobInstanceProvided && null != ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance()) {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance());
-        } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
-            try {
-                result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
-            } catch (final ReflectiveOperationException ex) {
-                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
-            }
+        } else if (!elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         }
         return result;
     }
