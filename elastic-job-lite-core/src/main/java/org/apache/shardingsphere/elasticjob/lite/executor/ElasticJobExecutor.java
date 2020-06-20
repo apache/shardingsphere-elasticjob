@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
@@ -32,6 +30,7 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServic
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
 
 import java.util.Collection;
 import java.util.Map;
@@ -43,12 +42,10 @@ import java.util.concurrent.ExecutorService;
  * ElasticJob executor.
  */
 @Slf4j
-public abstract class ElasticJobExecutor {
+public final class ElasticJobExecutor {
     
-    @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
     
-    @Getter(AccessLevel.PROTECTED)
     private final JobRootConfiguration jobRootConfig;
     
     private final String jobName;
@@ -59,13 +56,16 @@ public abstract class ElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    protected ElasticJobExecutor(final JobFacade jobFacade) {
+    private final JobItemExecutor jobItemExecutor;
+    
+    public ElasticJobExecutor(final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
+        this.jobItemExecutor = jobItemExecutor;
     }
     
     private Object getHandler(final JobPropertiesEnum jobPropertiesEnum) {
@@ -93,7 +93,7 @@ public abstract class ElasticJobExecutor {
     /**
      * Execute job.
      */
-    public final void execute() {
+    public void execute() {
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
@@ -198,7 +198,7 @@ public abstract class ElasticJobExecutor {
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         JobExecutionEvent completeEvent;
         try {
-            process(new ShardingContext(shardingContexts, item));
+            jobItemExecutor.process(jobRootConfig, jobFacade, new ShardingContext(shardingContexts, item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             if (shardingContexts.isAllowSendJobEvent()) {
@@ -213,6 +213,4 @@ public abstract class ElasticJobExecutor {
             jobExceptionHandler.handleException(jobName, cause);
         }
     }
-    
-    protected abstract void process(ShardingContext shardingContext);
 }

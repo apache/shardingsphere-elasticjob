@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
@@ -40,12 +41,12 @@ public final class WrongJobExecutorTest {
     @Mock
     private JobFacade jobFacade;
     
-    private SimpleJobExecutor wrongSimpleJobExecutor;
+    private ElasticJobExecutor wrongJobExecutor;
     
     @Before
     public void setUp() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        wrongSimpleJobExecutor = new SimpleJobExecutor(new TestWrongJob(), jobFacade);
+        wrongJobExecutor = new ElasticJobExecutor(jobFacade, new SimpleJobExecutor(new TestWrongJob()));
     }
     
     @Test(expected = RuntimeException.class)
@@ -54,7 +55,7 @@ public final class WrongJobExecutorTest {
         map.put(0, "A");
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        wrongSimpleJobExecutor.execute();
+        wrongJobExecutor.execute();
     }
     
     @Test
@@ -64,7 +65,7 @@ public final class WrongJobExecutorTest {
         map.put(1, "B");
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        wrongSimpleJobExecutor.execute();
+        wrongJobExecutor.execute();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).postJobStatusTraceEvent("fake_task_id", State.TASK_RUNNING, "");
     }

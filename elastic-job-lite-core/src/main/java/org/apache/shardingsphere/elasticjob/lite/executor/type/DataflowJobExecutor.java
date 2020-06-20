@@ -17,10 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 import java.util.List;
@@ -28,30 +29,26 @@ import java.util.List;
 /**
  * Dataflow job executor.
  */
-public final class DataflowJobExecutor extends ElasticJobExecutor {
+@RequiredArgsConstructor
+public final class DataflowJobExecutor implements JobItemExecutor {
     
     private final DataflowJob<Object> dataflowJob;
     
-    public DataflowJobExecutor(final DataflowJob<Object> dataflowJob, final JobFacade jobFacade) {
-        super(jobFacade);
-        this.dataflowJob = dataflowJob;
-    }
-    
     @Override
-    protected void process(final ShardingContext shardingContext) {
-        DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) getJobRootConfig().getTypeConfig();
+    public void process(final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) jobRootConfig.getTypeConfig();
         if (dataflowConfig.isStreamingProcess()) {
-            streamingExecute(shardingContext);
+            streamingExecute(jobFacade, shardingContext);
         } else {
             oneOffExecute(shardingContext);
         }
     }
     
-    private void streamingExecute(final ShardingContext shardingContext) {
+    private void streamingExecute(final JobFacade jobFacade, final ShardingContext shardingContext) {
         List<Object> data = fetchData(shardingContext);
         while (null != data && !data.isEmpty()) {
             processData(shardingContext, data);
-            if (!getJobFacade().isEligibleForJobRunning()) {
+            if (!jobFacade.isEligibleForJobRunning()) {
                 break;
             }
             data = fetchData(shardingContext);

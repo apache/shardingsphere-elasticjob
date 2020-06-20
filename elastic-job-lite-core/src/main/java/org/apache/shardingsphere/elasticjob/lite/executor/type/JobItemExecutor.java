@@ -17,22 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**
- * Simple job executor.
+ * Job item executor.
  */
-@RequiredArgsConstructor
-public final class SimpleJobExecutor implements JobItemExecutor {
+public interface JobItemExecutor {
     
-    private final SimpleJob simpleJob;
-    
-    @Override
-    public void process(final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        simpleJob.execute(shardingContext);
-    }
+    /**
+     * Process job item.
+     * 
+     * @param jobRootConfig job root configuration
+     * @param jobFacade job facade
+     * @param shardingContext sharding context
+     */
+    void process(JobRootConfiguration jobRootConfig, JobFacade jobFacade, ShardingContext shardingContext);
 }
