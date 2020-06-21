@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.example.config;
 
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,10 +27,10 @@ import javax.sql.DataSource;
 
 @Configuration
 public class JobEventConfig {
-
+    
     @Resource
     private DataSource dataSource;
-
+    
     @Bean
     public JobEventConfiguration jobEventConfiguration() {
         return new JobEventRdbConfiguration(dataSource);

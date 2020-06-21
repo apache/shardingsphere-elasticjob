@@ -17,20 +17,20 @@
 
 package com.dangdang.ddframe.job.example;
 
-import com.dangdang.ddframe.job.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
 import com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob;
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 
 public final class JavaMain {
     
-    private static final int EMBED_ZOOKEEPER_PORT = 4181;
+    private static final int EMBED_ZOOKEEPER_PORT = 2181;
     
     private static final String ZOOKEEPER_CONNECTION_STRING = "localhost:" + EMBED_ZOOKEEPER_PORT;
     
@@ -89,19 +89,19 @@ public final class JavaMain {
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, new JavaSimpleJob(), LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, new JavaDataflowJob(), LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfig).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, null, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfig).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {

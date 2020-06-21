@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.example.job.dataflow;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepositoryFactory;
+import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.example.job.simple;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
+import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
