@@ -30,7 +30,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.InstanceProvidedDataflowJobConfiguration;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,7 +54,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         String description = "";
         JobProperties jobProperties = new JobProperties();
         JobType jobType = null;
-        String jobClass = "";
         boolean streamingProcess = false;
         String scriptCommandLine = "";
         Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
@@ -92,9 +90,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                     break;
                 case "jobType":
                     jobType = JobType.valueOf(in.nextString());
-                    break;
-                case "jobClass":
-                    jobClass = in.nextString();
                     break;
                 case "streamingProcess":
                     streamingProcess = in.nextBoolean();
@@ -175,13 +170,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
         out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
-            boolean streamingProcess;
-            if (value.getTypeConfig() instanceof InstanceProvidedDataflowJobConfiguration) {
-                streamingProcess = ((InstanceProvidedDataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess();
-            } else {
-                streamingProcess = ((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess();
-            }
-            out.name("streamingProcess").value(streamingProcess);
+            out.name("streamingProcess").value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());

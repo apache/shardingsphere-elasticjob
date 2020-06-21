@@ -27,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.provided.JobInstanceProvided;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -137,9 +136,7 @@ public final class JobScheduler {
     private JobDetail createJobDetail(final ElasticJob elasticJob) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-        if (liteJobConfig.getTypeConfig() instanceof JobInstanceProvided && null != ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance()) {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance());
-        } else if (null != elasticJob && !elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
+        if (null != elasticJob && !elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         }
         return result;
