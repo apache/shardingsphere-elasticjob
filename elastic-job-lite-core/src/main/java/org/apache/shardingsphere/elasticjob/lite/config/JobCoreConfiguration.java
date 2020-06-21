@@ -46,6 +46,10 @@ public final class JobCoreConfiguration {
     
     private final boolean misfire;
     
+    private final String jobExceptionHandlerType;
+    
+    private final String jobExecutorServiceHandlerType;
+    
     private final String description;
     
     private final JobProperties jobProperties;
@@ -78,6 +82,10 @@ public final class JobCoreConfiguration {
         private boolean failover;
         
         private boolean misfire = true;
+    
+        private String jobExceptionHandlerType;
+    
+        private String jobExecutorServiceHandlerType;
         
         private String description = "";
         
@@ -148,6 +156,30 @@ public final class JobCoreConfiguration {
         }
         
         /**
+         * Set job exception handler type.
+         *
+         * @param jobExceptionHandlerType job exception handler type
+         *
+         * @return job configuration builder
+         */
+        public Builder jobExceptionHandlerType(final String jobExceptionHandlerType) {
+            this.jobExceptionHandlerType = jobExceptionHandlerType;
+            return this;
+        }
+        
+        /**
+         * Set job executor service handler type.
+         *
+         * @param jobExecutorServiceHandlerType job executor service handler type
+         *
+         * @return job configuration builder
+         */
+        public Builder jobExecutorServiceHandlerType(final String jobExecutorServiceHandlerType) {
+            this.jobExecutorServiceHandlerType = jobExecutorServiceHandlerType;
+            return this;
+        }
+        
+        /**
          * Set job description.
          *
          * @param description job description
@@ -183,7 +215,8 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+            return new JobCoreConfiguration(
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExceptionHandlerType, jobExecutorServiceHandlerType, description, jobProperties);
         }
     }
 }

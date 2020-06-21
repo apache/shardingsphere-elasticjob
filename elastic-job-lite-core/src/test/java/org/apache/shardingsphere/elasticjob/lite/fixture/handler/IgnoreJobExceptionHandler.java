@@ -24,4 +24,9 @@ public final class IgnoreJobExceptionHandler implements JobExceptionHandler {
     @Override
     public void handleException(final String jobName, final Throwable cause) {
     }
+    
+    @Override
+    public String getType() {
+        return "IGNORE";
+    }
 }

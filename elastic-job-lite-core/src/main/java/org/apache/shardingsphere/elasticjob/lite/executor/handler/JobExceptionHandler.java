@@ -29,4 +29,11 @@ public interface JobExceptionHandler {
      * @param cause cause
      */
     void handleException(String jobName, Throwable cause);
+    
+    /**
+     * Get job exception handler type.
+     *
+     * @return job exception handler type
+     */
+    String getType();
 }

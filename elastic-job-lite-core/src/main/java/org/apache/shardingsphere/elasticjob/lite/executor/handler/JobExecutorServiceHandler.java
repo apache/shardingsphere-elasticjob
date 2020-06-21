@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.executor.handler;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Executor service handler.
+ * Job executor service handler.
  */
-public interface ExecutorServiceHandler {
+public interface JobExecutorServiceHandler {
     
     /**
      * Create executor service.
@@ -32,4 +32,11 @@ public interface ExecutorServiceHandler {
      * @return executor service
      */
     ExecutorService createExecutorService(String jobName);
+    
+    /**
+     * Get job executor service handler type.
+     * 
+     * @return job executor service handler type
+     */
+    String getType();
 }

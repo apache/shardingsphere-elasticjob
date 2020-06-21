@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
 
 import java.util.concurrent.ExecutorService;
@@ -25,10 +25,15 @@ import java.util.concurrent.ExecutorService;
 /**
  * Default executor service handler.
  */
-public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
+public final class DefaultExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {
         return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
+    }
+    
+    @Override
+    public String getType() {
+        return "DEFAULT";
     }
 }

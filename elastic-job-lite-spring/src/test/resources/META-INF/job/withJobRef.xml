@@ -33,8 +33,7 @@
     </bean>
     
     <job:simple id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" 
-                sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" 
-                executor-service-handler="org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler.SimpleExecutorServiceHandler" />
+                sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" executor-service-handler="SIMPLE" />
     <job:dataflow id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" 
                   sharding-item-parameters="${dataflowJob.shardingItemParameters}" overwrite="${dataflowJob.overwrite}" streaming-process="${dataflowJob.streamingProcess}" />
 </beans>

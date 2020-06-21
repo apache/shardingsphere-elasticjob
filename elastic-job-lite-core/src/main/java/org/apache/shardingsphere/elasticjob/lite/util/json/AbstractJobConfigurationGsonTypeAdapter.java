@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.util.json;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -28,8 +29,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,8 +50,9 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         String jobParameter = "";
         boolean failover = false;
         boolean misfire = failover;
+        String jobExecutorServiceHandlerType = "";
+        String jobExceptionHandlerType = "";
         String description = "";
-        JobProperties jobProperties = new JobProperties();
         JobType jobType = null;
         boolean streamingProcess = false;
         String scriptCommandLine = "";
@@ -82,11 +82,14 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 case "misfire":
                     misfire = in.nextBoolean();
                     break;
+                case "jobExecutorServiceHandlerType":
+                    jobExecutorServiceHandlerType = in.nextString();
+                    break;
+                case "jobExceptionHandlerType":
+                    jobExceptionHandlerType = in.nextString();
+                    break;
                 case "description":
                     description = in.nextString();
-                    break;
-                case "jobProperties":
-                    jobProperties = getJobProperties(in);
                     break;
                 case "jobType":
                     jobType = JobType.valueOf(in.nextString());
@@ -103,40 +106,21 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
             }
         }
         in.endObject();
-        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+        JobCoreConfiguration coreConfig = getJobCoreConfiguration(
+                jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobExceptionHandlerType, description);
         JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
-    }
-    
-    private JobProperties getJobProperties(final JsonReader in) throws IOException {
-        JobProperties result = new JobProperties();
-        in.beginObject();
-        while (in.hasNext()) {
-            switch (in.nextName()) {
-                case "job_exception_handler":
-                    result.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
-                    break;
-                case "executor_service_handler":
-                    result.put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
-                    break;
-                default:
-                    break;
-            }
-        }
-        in.endObject();
-        return result;
     }
     
     protected abstract void addToCustomizedValueMap(String jsonName, JsonReader in, Map<String, Object> customizedValueMap) throws IOException;
     
     private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
                                                          final String shardingItemParameters, final String jobParameter, final boolean failover,
-                                                         final boolean misfire, final String description,
-                                                         final JobProperties jobProperties) {
+                                                         final boolean misfire, final String jobExecutorServiceHandlerType, final String jobExceptionHandlerType, final String description) {
         return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire).description(description)
-                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobProperties.get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER))
-                .jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), jobProperties.get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
+                .jobExecutorServiceHandlerType(jobExecutorServiceHandlerType)
+                .jobExceptionHandlerType(jobExceptionHandlerType)
                 .build();
     }
     
@@ -167,8 +151,13 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.name("jobParameter").value(value.getTypeConfig().getCoreConfig().getJobParameter());
         out.name("failover").value(value.getTypeConfig().getCoreConfig().isFailover());
         out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
+        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType())) {
+            out.name("jobExecutorServiceHandlerType").value(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
+        }
+        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExceptionHandlerType())) {
+            out.name("jobExceptionHandlerType").value(value.getTypeConfig().getCoreConfig().getJobExceptionHandlerType());
+        }
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
-        out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             out.name("streamingProcess").value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {

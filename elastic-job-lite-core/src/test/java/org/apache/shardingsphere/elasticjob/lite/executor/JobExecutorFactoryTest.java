@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.SimpleJobExecutor
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.OtherJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
@@ -50,7 +49,7 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForScriptJob() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", "IGNORE"));
         assertThat(getJobItemExecutor(JobExecutorFactory.getJobExecutor(null, jobFacade)), instanceOf(ScriptJobExecutor.class));
     }
     

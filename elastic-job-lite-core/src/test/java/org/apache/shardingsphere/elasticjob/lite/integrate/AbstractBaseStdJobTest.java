@@ -35,7 +35,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.IgnoreJobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -80,7 +80,7 @@ public abstract class AbstractBaseStdJobTest {
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         this.disabled = disabled;
         liteJobConfig = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), liteJobConfig, new ElasticJobListener() {
+        jobScheduler = new JobScheduler(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), liteJobConfig, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContexts shardingContexts) {

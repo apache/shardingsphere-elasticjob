@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.strategy;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler;
 
 import com.google.common.base.Strings;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 
 import java.util.LinkedHashMap;
@@ -27,34 +25,33 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 /**
- * Job sharding strategy factory.
+ * Job executor service handler factory.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobShardingStrategyFactory {
+public final class JobExecutorServiceHandlerFactory {
     
-    private static final Map<String, JobShardingStrategy> STRATEGIES = new LinkedHashMap<>();
+    private static final Map<String, JobExecutorServiceHandler> HANDLERS = new LinkedHashMap<>();
     
-    private static final String DEFAULT_STRATEGY = "AVG_ALLOCATION";
+    private static final String DEFAULT_HANDLER = "DEFAULT";
     
     static {
-        for (JobShardingStrategy each : ServiceLoader.load(JobShardingStrategy.class)) {
-            STRATEGIES.put(each.getType(), each);
+        for (JobExecutorServiceHandler each : ServiceLoader.load(JobExecutorServiceHandler.class)) {
+            HANDLERS.put(each.getType(), each);
         }
     }
     
     /**
-     * Get job sharding strategy.
-     * 
-     * @param type job sharding strategy type
-     * @return job sharding strategy
+     * Get job executor service handler.
+     *
+     * @param type executor service handler type
+     * @return executor service handler
      */
-    public static JobShardingStrategy getStrategy(final String type) {
+    public static JobExecutorServiceHandler getHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return STRATEGIES.get(DEFAULT_STRATEGY);
+            return HANDLERS.get(DEFAULT_HANDLER);
         }
-        if (!STRATEGIES.containsKey(type)) {
-            throw new JobConfigurationException("Can not find sharding strategy type '%s'.", type);
+        if (!HANDLERS.containsKey(type)) {
+            throw new JobConfigurationException("Can not find executor service handler type '%s'.", type);
         }
-        return STRATEGIES.get(type);
-    }
+        return HANDLERS.get(type);
+    } 
 }

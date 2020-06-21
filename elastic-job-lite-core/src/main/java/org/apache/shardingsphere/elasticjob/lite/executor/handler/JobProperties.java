@@ -90,7 +90,7 @@ public final class JobProperties {
         /**
          * Executor service handler.
          */
-        EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class.getCanonicalName());
+        EXECUTOR_SERVICE_HANDLER("executor_service_handler", JobExecutorServiceHandler.class, DefaultExecutorServiceHandler.class.getCanonicalName());
         
         private final String key;
     

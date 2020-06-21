@@ -59,8 +59,8 @@
                 <xsd:attribute name="description" type="xsd:string" />
                 <xsd:attribute name="disabled" type="xsd:string" default="false"/>
                 <xsd:attribute name="overwrite" type="xsd:string" default="false"/>
-                <xsd:attribute name="executor-service-handler" type="xsd:string" default="org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler"/>
-                <xsd:attribute name="job-exception-handler" type="xsd:string" default="org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler"/>
+                <xsd:attribute name="executor-service-handler" type="xsd:string" />
+                <xsd:attribute name="job-exception-handler" type="xsd:string" />
                 <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
             </xsd:extension>
         </xsd:complexContent>

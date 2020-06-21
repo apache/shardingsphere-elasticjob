@@ -26,11 +26,9 @@ import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.Ex
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandlerFactory;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExecutorServiceHandlerFactory;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
 
 import java.util.Collection;
@@ -66,32 +64,10 @@ public final class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
-        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        jobExceptionHandler = (JobExceptionHandler) getHandler(JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        executorService = JobExecutorServiceHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
+        jobExceptionHandler = JobExceptionHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobExceptionHandlerType());
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
         this.jobItemExecutor = jobItemExecutor;
-    }
-    
-    private Object getHandler(final JobPropertiesEnum jobPropertiesEnum) {
-        String handlerClassName = jobRootConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
-        try {
-            Class<?> handlerClass = Class.forName(handlerClassName);
-            if (jobPropertiesEnum.getClassType().isAssignableFrom(handlerClass)) {
-                return handlerClass.newInstance();
-            }
-            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
-        } catch (final ReflectiveOperationException ex) {
-            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
-        }
-    }
-    
-    private Object getDefaultHandler(final JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
-        log.warn("Cannot instantiation class '{}', use default '{}' class.", handlerClassName, jobPropertiesEnum.getKey());
-        try {
-            return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new JobSystemException(e);
-        }
     }
     
     /**

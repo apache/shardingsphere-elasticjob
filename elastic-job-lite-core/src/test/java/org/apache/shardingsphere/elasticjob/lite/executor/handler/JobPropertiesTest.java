@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.executor.handler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
@@ -71,11 +70,6 @@ public final class JobPropertiesTest {
         JobProperties actual = new JobProperties();
         actual.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName());
         assertThat(actual.get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getCanonicalName()));
-    }
-    
-    @Test
-    public void assertJson() {
-        assertThat(new JobProperties().json(), is(APIJsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test

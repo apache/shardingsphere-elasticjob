@@ -101,7 +101,7 @@ public final class JobScheduler {
      * Initialize job.
      */
     public void init() {
-        LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(elasticJob.getClass().getName(), liteJobConfig);
+        LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), liteJobConfig);
         JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(), liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(elasticJob), liteJobConfigFromRegCenter.getJobName());
         JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);

@@ -17,15 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExecutorServiceHandler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SimpleExecutorServiceHandler implements ExecutorServiceHandler {
+public class SimpleExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {
         return Executors.newFixedThreadPool(1);
+    }
+    
+    @Override
+    public String getType() {
+        return "SIMPLE";
     }
 }

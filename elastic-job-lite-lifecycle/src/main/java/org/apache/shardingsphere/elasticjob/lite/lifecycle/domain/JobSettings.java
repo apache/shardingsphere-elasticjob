@@ -60,6 +60,10 @@ public final class JobSettings implements Serializable {
     
     private String jobShardingStrategyType;
     
+    private String jobExceptionHandlerType;
+    
+    private String jobExecutorServiceHandlerType;
+    
     private String description;
     
     private Map<String, String> jobProperties = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);

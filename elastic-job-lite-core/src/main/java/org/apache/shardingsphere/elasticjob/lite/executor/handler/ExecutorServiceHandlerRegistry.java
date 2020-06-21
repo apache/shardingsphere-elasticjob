@@ -39,7 +39,7 @@ public final class ExecutorServiceHandlerRegistry {
      * @param executorServiceHandler executor service handler
      * @return executor service
      */
-    public static synchronized ExecutorService getExecutorServiceHandler(final String jobName, final ExecutorServiceHandler executorServiceHandler) {
+    public static synchronized ExecutorService getExecutorServiceHandler(final String jobName, final JobExecutorServiceHandler executorServiceHandler) {
         if (!REGISTRY.containsKey(jobName)) {
             REGISTRY.put(jobName, executorServiceHandler.createExecutorService(jobName));
         }

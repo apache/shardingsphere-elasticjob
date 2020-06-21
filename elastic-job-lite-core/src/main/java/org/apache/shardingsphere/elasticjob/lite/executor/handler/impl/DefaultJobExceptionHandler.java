@@ -30,4 +30,9 @@ public final class DefaultJobExceptionHandler implements JobExceptionHandler {
     public void handleException(final String jobName, final Throwable cause) {
         log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
+    
+    @Override
+    public String getType() {
+        return "DEFAULT";
+    }
 }
