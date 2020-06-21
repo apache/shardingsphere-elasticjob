@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
+import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.OdevitySortByNameJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.junit.Test;
 
@@ -38,6 +39,6 @@ public class JobShardingStrategyFactoryTest {
     
     @Test
     public void assertGetStrategySuccess() {
-        assertThat(JobShardingStrategyFactory.getStrategy("AVG_ALLOCATION"), instanceOf(AverageAllocationJobShardingStrategy.class));
+        assertThat(JobShardingStrategyFactory.getStrategy("ODEVITY"), instanceOf(OdevitySortByNameJobShardingStrategy.class));
     }
 }
