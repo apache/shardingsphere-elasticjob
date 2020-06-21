@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SimpleJobExecutorServiceHandler implements JobExecutorServiceHandler {
+/**
+ * Job executor service handler with single thread.
+ */
+public final class SingleThreadJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {
@@ -31,6 +34,6 @@ public class SimpleJobExecutorServiceHandler implements JobExecutorServiceHandle
     
     @Override
     public String getType() {
-        return "SIMPLE";
+        return "SINGLE_THREAD";
     }
 }

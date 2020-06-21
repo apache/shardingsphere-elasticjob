@@ -16,3 +16,4 @@
 #
 
 org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler
+org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler
