@@ -39,6 +39,6 @@
     <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbConfiguration" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.lite.event.JobEventBus" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.DefaultJobExceptionHandler" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.LogErrorJobExceptionHandler" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService" level="OFF" />
 </configuration>

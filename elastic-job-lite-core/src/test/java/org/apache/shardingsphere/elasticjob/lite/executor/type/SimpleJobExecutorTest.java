@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.DefaultJobExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.DefaultJobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.LogErrorJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.JobCaller;
@@ -69,7 +69,7 @@ public final class SimpleJobExecutorTest {
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, ElasticJobExecutor.class.getDeclaredField("executorService")), 
                 instanceOf(new DefaultJobExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, ElasticJobExecutor.class.getDeclaredField("jobExceptionHandler")),
-                instanceOf(DefaultJobExceptionHandler.class));
+                instanceOf(LogErrorJobExceptionHandler.class));
     }
     
     @Test(expected = JobSystemException.class)

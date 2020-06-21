@@ -34,7 +34,7 @@ public final class JobExceptionHandlerFactory {
     
     private static final Map<String, JobExceptionHandler> HANDLERS = new LinkedHashMap<>();
     
-    private static final String DEFAULT_HANDLER = "DEFAULT";
+    private static final String DEFAULT_HANDLER = "LOG_ERROR";
     
     static {
         for (JobExceptionHandler each : ServiceLoader.load(JobExceptionHandler.class)) {
