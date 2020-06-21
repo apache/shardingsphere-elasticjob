@@ -20,15 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.util.json;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestJobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
-import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -46,45 +42,39 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToSimpleJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
-                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig())),
-                CoreMatchers.is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+        System.out.println(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "LOG").getTypeConfig())));
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "LOG").getTypeConfig())), is(APIJsonConstants.getSimpleJobJson("LOG")));
     }
     
     @Test
     public void assertToDataflowJobJson() {
         assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig())),
-                is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
+                is(APIJsonConstants.getDataflowJobJson("IGNORE")));
     }
     
     @Test
     public void assertToScriptJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig())),
-                is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", "THROW").getTypeConfig())), is(APIJsonConstants.getScriptJobJson("THROW")));
     }
     
     @Test
     public void assertFromSimpleJobJson() {
-        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
-                APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(
-                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig());
+        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(APIJsonConstants.getSimpleJobJson("THROW"), TestJobRootConfiguration.class);
+        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "THROW").getTypeConfig());
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
     @Test
     public void assertFromDataflowJobJson() {
-        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
-                APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
+        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(APIJsonConstants.getDataflowJobJson("IGNORE"), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig());
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
     @Test
     public void assertFromScriptJobJson() {
-        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
-                APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig());
+        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(APIJsonConstants.getScriptJobJson("THROW"), TestJobRootConfiguration.class);
+        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", "THROW").getTypeConfig());
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     

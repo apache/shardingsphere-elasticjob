@@ -19,11 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Job settings.
@@ -60,9 +57,11 @@ public final class JobSettings implements Serializable {
     
     private String jobShardingStrategyType;
     
-    private String description;
+    private String jobExceptionHandlerType;
     
-    private Map<String, String> jobProperties = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
+    private String jobExecutorServiceHandlerType;
+    
+    private String description;
     
     private String scriptCommandLine;
     

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler;
-
-import java.util.concurrent.ExecutorService;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.error;
 
 /**
- * Executor service handler.
+ * Job exception handler.
  */
-public interface ExecutorServiceHandler {
+public interface JobExceptionHandler {
     
     /**
-     * Create executor service.
+     * Handle exception.
      * 
      * @param jobName job name
-     * 
-     * @return executor service
+     * @param cause cause
      */
-    ExecutorService createExecutorService(String jobName);
+    void handleException(String jobName, Throwable cause);
+    
+    /**
+     * Get job exception handler type.
+     *
+     * @return job exception handler type
+     */
+    String getType();
 }

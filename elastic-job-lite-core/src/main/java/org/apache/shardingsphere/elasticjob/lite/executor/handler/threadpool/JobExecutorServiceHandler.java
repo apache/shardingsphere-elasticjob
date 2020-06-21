@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
 
-import org.springframework.test.context.ContextConfiguration;
+import java.util.concurrent.ExecutorService;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withJobProperties.xml")
-public final class JobSpringNamespaceWithJobPropertiesTest extends AbstractJobSpringIntegrateTest {
+/**
+ * Job executor service handler.
+ */
+public interface JobExecutorServiceHandler {
     
-    public JobSpringNamespaceWithJobPropertiesTest() {
-        super("simpleElasticJob_namespace_job_properties", "dataflowElasticJob_namespace_job_properties");
-    }
+    /**
+     * Create executor service.
+     * 
+     * @param jobName job name
+     * 
+     * @return executor service
+     */
+    ExecutorService createExecutorService(String jobName);
+    
+    /**
+     * Get job executor service handler type.
+     * 
+     * @return job executor service handler type
+     */
+    String getType();
 }

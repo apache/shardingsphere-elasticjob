@@ -22,8 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 
 @RequiredArgsConstructor
@@ -31,11 +29,11 @@ public final class TestScriptJobConfiguration implements JobRootConfiguration {
     
     private final String scriptCommandLine;
     
-    private final Class<? extends JobExceptionHandler> jobExceptionHandlerClass;
+    private final String jobExceptionHandlerType;
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
-                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobExceptionHandlerClass.getCanonicalName()).build(), scriptCommandLine);
+        return new ScriptJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobExceptionHandlerType(jobExceptionHandlerType).build(), scriptCommandLine);
     }
 }

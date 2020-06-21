@@ -15,20 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
+package org.apache.shardingsphere.elasticjob.lite.spring.job;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
+import org.springframework.test.context.ContextConfiguration;
 
-import java.util.concurrent.ExecutorService;
-
-/**
- * Default executor service handler.
- */
-public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
+@ContextConfiguration(locations = "classpath:META-INF/job/withJobHandler.xml")
+public final class JobSpringNamespaceWithJobHandlerTest extends AbstractJobSpringIntegrateTest {
     
-    @Override
-    public ExecutorService createExecutorService(final String jobName) {
-        return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
+    public JobSpringNamespaceWithJobHandlerTest() {
+        super("simpleElasticJob_namespace_job_handler", "dataflowElasticJob_namespace_job_handler");
     }
 }

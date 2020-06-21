@@ -23,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 
 /**
  * Job core configuration.
@@ -46,9 +45,11 @@ public final class JobCoreConfiguration {
     
     private final boolean misfire;
     
-    private final String description;
+    private final String jobExecutorServiceHandlerType;
     
-    private final JobProperties jobProperties;
+    private final String jobExceptionHandlerType;
+    
+    private final String description;
     
     /**
      * Create simple job configuration builder.
@@ -78,10 +79,12 @@ public final class JobCoreConfiguration {
         private boolean failover;
         
         private boolean misfire = true;
+    
+        private String jobExecutorServiceHandlerType;
+    
+        private String jobExceptionHandlerType;
         
         private String description = "";
-        
-        private final JobProperties jobProperties = new JobProperties();
         
         /**
          * Set mapper of sharding items and sharding parameters.
@@ -148,6 +151,30 @@ public final class JobCoreConfiguration {
         }
         
         /**
+         * Set job exception handler type.
+         *
+         * @param jobExceptionHandlerType job exception handler type
+         *
+         * @return job configuration builder
+         */
+        public Builder jobExceptionHandlerType(final String jobExceptionHandlerType) {
+            this.jobExceptionHandlerType = jobExceptionHandlerType;
+            return this;
+        }
+        
+        /**
+         * Set job executor service handler type.
+         *
+         * @param jobExecutorServiceHandlerType job executor service handler type
+         *
+         * @return job configuration builder
+         */
+        public Builder jobExecutorServiceHandlerType(final String jobExecutorServiceHandlerType) {
+            this.jobExecutorServiceHandlerType = jobExecutorServiceHandlerType;
+            return this;
+        }
+        
+        /**
          * Set job description.
          *
          * @param description job description
@@ -162,19 +189,6 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * Set job properties.
-         *
-         * @param key property key
-         * @param value property value
-         *
-         * @return job configuration builder
-         */
-        public Builder jobProperties(final String key, final String value) {
-            jobProperties.put(key, value);
-            return this;
-        }
-        
-        /**
          * Build Job.
          *
          * @return job configuration builder
@@ -183,7 +197,8 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+            return new JobCoreConfiguration(
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobExceptionHandlerType, description);
         }
     }
 }

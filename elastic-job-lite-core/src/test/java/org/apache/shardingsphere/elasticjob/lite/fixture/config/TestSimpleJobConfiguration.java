@@ -17,40 +17,29 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.config;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration.Builder;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
 
+@AllArgsConstructor
 @NoArgsConstructor
 public final class TestSimpleJobConfiguration implements JobRootConfiguration {
     
-    private String jobExceptionHandlerClassName;
+    private String jobExecutorServiceHandlerType;
     
-    private String executorServiceHandlerClassName;
-    
-    public TestSimpleJobConfiguration(final String jobExceptionHandlerClassName, final String executorServiceHandlerClassName) {
-        this.jobExceptionHandlerClassName = jobExceptionHandlerClassName;
-        this.executorServiceHandlerClassName = executorServiceHandlerClassName;
-    }
+    private String jobExceptionHandlerType;
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
         Builder builder = JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).description("desc");
-        if (null == jobExceptionHandlerClassName) {
-            builder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class.getCanonicalName());
-        } else {
-            builder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobExceptionHandlerClassName);
-        }
-        if (null != executorServiceHandlerClassName) {
-            builder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), executorServiceHandlerClassName);
-        }
+        builder.jobExecutorServiceHandlerType(jobExecutorServiceHandlerType);
+        builder.jobExceptionHandlerType(jobExceptionHandlerType);
         return new SimpleJobConfiguration(builder.build());
     }
 }

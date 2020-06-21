@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
@@ -68,12 +67,10 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setFailover(liteJobConfig.getTypeConfig().getCoreConfig().isFailover());
         result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
         result.setJobShardingStrategyType(liteJobConfig.getJobShardingStrategyType());
-        result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
+        result.setJobExecutorServiceHandlerType(liteJobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
+        result.setJobExceptionHandlerType(liteJobConfig.getTypeConfig().getCoreConfig().getJobExceptionHandlerType());
         result.setReconcileIntervalMinutes(liteJobConfig.getReconcileIntervalMinutes());
-        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(),
-                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), 
-                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+        result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
     }
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {

@@ -17,9 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleJsonConstants;
@@ -53,7 +50,7 @@ public class JobSettingsAPIImplTest {
     public void assertGetDataflowJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "DATAFLOW", "org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob");
+        assertJobSettings(actual, "DATAFLOW");
         verify(regCenter).get("/test_job/config");
     }
     
@@ -61,11 +58,11 @@ public class JobSettingsAPIImplTest {
     public void assertGetScriptJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "SCRIPT", "org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob");
+        assertJobSettings(actual, "SCRIPT");
         verify(regCenter).get("/test_job/config");
     }
     
-    private void assertJobSettings(final JobSettings jobSettings, final String jobType, final String className) {
+    private void assertJobSettings(final JobSettings jobSettings, final String jobType) {
         assertThat(jobSettings.getJobName(), is("test_job"));
         assertThat(jobSettings.getJobType(), is(jobType));
         assertThat(jobSettings.getShardingTotalCount(), is(3));
@@ -79,8 +76,6 @@ public class JobSettingsAPIImplTest {
         assertTrue(jobSettings.isMisfire());
         assertThat(jobSettings.getJobShardingStrategyType(), is(""));
         assertThat(jobSettings.getReconcileIntervalMinutes(), is(10));
-        jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
-        jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         assertThat(jobSettings.getDescription(), is(""));
         if ("DATAFLOW".equals(jobType)) {
             assertTrue(jobSettings.isStreamingProcess());
@@ -102,15 +97,11 @@ public class JobSettingsAPIImplTest {
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
-        jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
-        jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettings.setReconcileIntervalMinutes(70);
         jobSettingsAPI.updateJobSettings(jobSettings);
         verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
-                + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
-                + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
-                + "\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"},\"reconcileIntervalMinutes\":70}");
+                + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,\"reconcileIntervalMinutes\":70}");
     }
     
     @Test(expected = IllegalArgumentException.class)

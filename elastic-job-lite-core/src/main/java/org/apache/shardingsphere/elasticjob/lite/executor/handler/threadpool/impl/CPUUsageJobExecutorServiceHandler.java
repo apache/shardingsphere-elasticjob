@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl;
+
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
+
+import java.util.concurrent.ExecutorService;
 
 /**
- * Job exception handler.
+ * Job executor service handler with use CPU available processors.
  */
-public interface JobExceptionHandler {
+public final class CPUUsageJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
-    /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause cause
-     */
-    void handleException(String jobName, Throwable cause);
+    @Override
+    public ExecutorService createExecutorService(final String jobName) {
+        return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
+    }
+    
+    @Override
+    public String getType() {
+        return "CPU";
+    }
 }

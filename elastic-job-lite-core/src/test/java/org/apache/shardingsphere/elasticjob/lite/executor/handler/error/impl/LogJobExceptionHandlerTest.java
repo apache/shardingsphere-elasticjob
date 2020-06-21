@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.JobEventCaller;
 import org.junit.Test;
@@ -27,14 +27,14 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class DefaultJobExceptionHandlerTest {
+public final class LogJobExceptionHandlerTest {
     
     @Mock
     private JobEventCaller caller;
     
     @Test
     public void assertHandleException() {
-        new DefaultJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
+        new LogJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
         verify(caller, atMost(1)).call();
     }
 }

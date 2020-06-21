@@ -17,12 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExceptionHandler;
 
 public class SimpleJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         throw new RuntimeException(cause);
+    }
+    
+    @Override
+    public String getType() {
+        return "SIMPLE";
     }
 }
