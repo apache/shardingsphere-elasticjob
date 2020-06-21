@@ -31,7 +31,7 @@
     
     <job:simple id="simpleElasticJob_namespace_event_trace_rdb" job-ref="fooJob" registry-center-ref="regCenter" 
                 cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" 
-                overwrite="${simpleJob.overwrite}" executor-service-handler="SIMPLE" event-trace-rdb-data-source="elasticJobLog" />
+                overwrite="${simpleJob.overwrite}" job-executor-service-handler="SIMPLE" event-trace-rdb-data-source="elasticJobLog" />
     <job:dataflow id="dataflowElasticJob_namespace_event_trace_rdb" job-ref="dataflowJob" registry-center-ref="regCenter" 
                   cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" overwrite="true" job-exception-handler="SIMPLE" />
 </beans>

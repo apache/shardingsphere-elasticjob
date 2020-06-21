@@ -23,9 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecu
 import java.util.concurrent.ExecutorService;
 
 /**
- * Default executor service handler.
+ * Default job executor service handler.
  */
-public final class DefaultExecutorServiceHandler implements JobExecutorServiceHandler {
+public final class DefaultJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {

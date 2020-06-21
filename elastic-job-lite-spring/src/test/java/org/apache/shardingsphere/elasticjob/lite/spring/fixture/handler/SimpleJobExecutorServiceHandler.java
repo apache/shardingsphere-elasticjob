@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExecutorSer
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SimpleExecutorServiceHandler implements JobExecutorServiceHandler {
+public class SimpleJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {

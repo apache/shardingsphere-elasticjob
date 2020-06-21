@@ -59,7 +59,7 @@
                 <xsd:attribute name="description" type="xsd:string" />
                 <xsd:attribute name="disabled" type="xsd:string" default="false"/>
                 <xsd:attribute name="overwrite" type="xsd:string" default="false"/>
-                <xsd:attribute name="executor-service-handler" type="xsd:string" />
+                <xsd:attribute name="job-executor-service-handler" type="xsd:string" />
                 <xsd:attribute name="job-exception-handler" type="xsd:string" />
                 <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
             </xsd:extension>
