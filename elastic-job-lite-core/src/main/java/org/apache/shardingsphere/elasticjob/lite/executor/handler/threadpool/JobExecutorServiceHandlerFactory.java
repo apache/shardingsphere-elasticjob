@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
 
 import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 
 import java.util.LinkedHashMap;
@@ -27,6 +29,7 @@ import java.util.ServiceLoader;
 /**
  * Job executor service handler factory.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorServiceHandlerFactory {
     
     private static final Map<String, JobExecutorServiceHandler> HANDLERS = new LinkedHashMap<>();
