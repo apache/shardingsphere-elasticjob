@@ -223,7 +223,6 @@ function bindRemoveButton() {
 function renderJob(data) {
     $("#job-name").attr("value", data.jobName);
     $("#job-type").attr("value", data.jobType);
-    $("#job-class").attr("value", data.jobClass);
     $("#sharding-total-count").attr("value", data.shardingTotalCount);
     $("#cron").attr("value", data.cron);
     $("#sharding-item-parameters").text(data.shardingItemParameters);
