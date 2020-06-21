@@ -139,7 +139,7 @@ public final class JobScheduler {
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         if (liteJobConfig.getTypeConfig() instanceof JobInstanceProvided && null != ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance()) {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, ((JobInstanceProvided) liteJobConfig.getTypeConfig()).getJobInstance());
-        } else if (!elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
+        } else if (null != elasticJob && !elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         }
         return result;
