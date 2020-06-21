@@ -21,10 +21,10 @@ import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExcep
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Log error job exception handler.
+ * Job exception handler for log error message.
  */
 @Slf4j
-public final class LogErrorJobExceptionHandler implements JobExceptionHandler {
+public final class LogJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
@@ -33,6 +33,6 @@ public final class LogErrorJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public String getType() {
-        return "LOG_ERROR";
+        return "LOG";
     }
 }

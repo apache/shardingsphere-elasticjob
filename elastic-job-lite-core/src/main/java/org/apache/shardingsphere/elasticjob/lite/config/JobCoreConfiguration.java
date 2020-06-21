@@ -45,9 +45,9 @@ public final class JobCoreConfiguration {
     
     private final boolean misfire;
     
-    private final String jobExceptionHandlerType;
-    
     private final String jobExecutorServiceHandlerType;
+    
+    private final String jobExceptionHandlerType;
     
     private final String description;
     
@@ -80,9 +80,9 @@ public final class JobCoreConfiguration {
         
         private boolean misfire = true;
     
-        private String jobExceptionHandlerType;
-    
         private String jobExecutorServiceHandlerType;
+    
+        private String jobExceptionHandlerType;
         
         private String description = "";
         
@@ -198,7 +198,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobCoreConfiguration(
-                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExceptionHandlerType, jobExecutorServiceHandlerType, description);
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobExceptionHandlerType, description);
         }
     }
 }

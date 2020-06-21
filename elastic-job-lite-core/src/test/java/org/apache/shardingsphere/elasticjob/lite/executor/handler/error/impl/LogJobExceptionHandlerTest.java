@@ -27,14 +27,14 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class LogErrorJobExceptionHandlerTest {
+public final class LogJobExceptionHandlerTest {
     
     @Mock
     private JobEventCaller caller;
     
     @Test
     public void assertHandleException() {
-        new LogErrorJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
+        new LogJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
         verify(caller, atMost(1)).call();
     }
 }

@@ -42,8 +42,8 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToSimpleJobJson() {
-        System.out.println(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "DEFAULT").getTypeConfig())));
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "DEFAULT").getTypeConfig())), is(APIJsonConstants.getSimpleJobJson("DEFAULT")));
+        System.out.println(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "LOG").getTypeConfig())));
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration(null, "LOG").getTypeConfig())), is(APIJsonConstants.getSimpleJobJson("LOG")));
     }
     
     @Test
