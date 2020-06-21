@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.job.example.config;
 
-import com.dangdang.ddframe.job.api.simple.SimpleJob;
-import com.dangdang.ddframe.job.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob;
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +48,7 @@ public class SimpleJobConfig {
     @Bean(initMethod = "init")
     public JobScheduler simpleJobScheduler(final SimpleJob simpleJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
                                            @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
-        return new SpringJobScheduler(simpleJob, regCenter, getLiteJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters), jobEventConfiguration);
+        return new JobScheduler(regCenter, simpleJob, getLiteJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters), jobEventConfiguration);
     }
     
     private LiteJobConfiguration getLiteJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.example.config;
 
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
