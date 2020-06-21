@@ -77,13 +77,13 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
-        when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob"));
+        when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
+        when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
         try {
             configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {
-            verify(jobNodeStorage).isJobNodeExisted(ConfigurationNode.ROOT);
-            verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.ROOT);
+            verify(jobNodeStorage).isJobRootNodeExisted();
+            verify(jobNodeStorage).getJobRootNodeData();
         }
     }
     

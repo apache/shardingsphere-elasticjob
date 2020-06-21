@@ -9,9 +9,9 @@
                         http://www.springframework.org/schema/context 
                         http://www.springframework.org/schema/context/spring-context.xsd 
                         http://elasticjob.shardingsphere.apache.org/schema/reg
-                        http://elasticjob.shardingsphere.apache.org/schema/reg.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
                         http://elasticjob.shardingsphere.apache.org/schema/job
-                        http://elasticjob.shardingsphere.apache.org/schema/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
     <context:property-placeholder location="classpath:conf/*.properties" />

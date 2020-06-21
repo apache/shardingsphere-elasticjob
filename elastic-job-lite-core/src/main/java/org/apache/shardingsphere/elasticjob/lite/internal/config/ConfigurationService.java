@@ -24,8 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;
 
-import java.util.Optional;
-
 /**
  * Configuration service.
  */
@@ -68,27 +66,19 @@ public final class ConfigurationService {
         checkConflictJob(liteJobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || liteJobConfig.isOverwrite()) {
             jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
+            jobNodeStorage.replaceJobRootNode(liteJobConfig.getTypeConfig().getJobClass());
         }
     }
     
     private void checkConflictJob(final LiteJobConfiguration liteJobConfig) {
-        Optional<LiteJobConfiguration> liteJobConfigFromZk = find();
-        if (liteJobConfigFromZk.isPresent() && !liteJobConfigFromZk.get().getTypeConfig().getJobClass().equals(liteJobConfig.getTypeConfig().getJobClass())) {
+        if (!jobNodeStorage.isJobRootNodeExisted()) {
+            return;
+        }
+        String jobClassName = jobNodeStorage.getJobRootNodeData();
+        if (null != jobClassName && !jobClassName.equals(liteJobConfig.getTypeConfig().getJobClass())) {
             throw new JobConfigurationException("Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", 
-                    liteJobConfig.getJobName(), liteJobConfigFromZk.get().getTypeConfig().getJobClass(), liteJobConfig.getTypeConfig().getJobClass());
+                    liteJobConfig.getJobName(), jobClassName, liteJobConfig.getTypeConfig().getJobClass());
         }
-    }
-    
-    private Optional<LiteJobConfiguration> find() {
-        if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)) {
-            return Optional.empty();
-        }
-        LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
-        if (null == result) {
-            // TODO should remove the job node, not only the config node
-            jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
-        }
-        return Optional.ofNullable(result);
     }
     
     /**
