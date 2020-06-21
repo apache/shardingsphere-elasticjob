@@ -20,8 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * Job sharding strategy factory.
@@ -29,24 +32,27 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationExcep
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobShardingStrategyFactory {
     
+    private static final Map<String, JobShardingStrategy> JOB_SHARDING_STRATEGIES = new LinkedHashMap<>();
+    
+    static {
+        for (JobShardingStrategy each : ServiceLoader.load(JobShardingStrategy.class)) {
+            JOB_SHARDING_STRATEGIES.put(each.getType(), each);
+        }
+    }
+    
     /**
-     * Get strategy.
+     * Get job sharding strategy.
      * 
-     * @param jobShardingStrategyClassName job sharding strategy class name
+     * @param type job sharding strategy type
      * @return Job sharding strategy
      */
-    public static JobShardingStrategy getStrategy(final String jobShardingStrategyClassName) {
-        if (Strings.isNullOrEmpty(jobShardingStrategyClassName)) {
-            return new AverageAllocationJobShardingStrategy();
+    public static JobShardingStrategy getStrategy(final String type) {
+        if (Strings.isNullOrEmpty(type)) {
+            return JOB_SHARDING_STRATEGIES.values().iterator().next();
         }
-        try {
-            Class<?> jobShardingStrategyClass = Class.forName(jobShardingStrategyClassName);
-            if (!JobShardingStrategy.class.isAssignableFrom(jobShardingStrategyClass)) {
-                throw new JobConfigurationException("Class '%s' is not job strategy class", jobShardingStrategyClassName);
-            }
-            return (JobShardingStrategy) jobShardingStrategyClass.newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            throw new JobConfigurationException("Sharding strategy class '%s' config error, message details are '%s'", jobShardingStrategyClassName, ex.getMessage());
+        if (!JOB_SHARDING_STRATEGIES.containsKey(type)) {
+            throw new JobConfigurationException("Can not find sharding strategy type '%s'.", type);
         }
+        return JOB_SHARDING_STRATEGIES.get(type);
     }
 }

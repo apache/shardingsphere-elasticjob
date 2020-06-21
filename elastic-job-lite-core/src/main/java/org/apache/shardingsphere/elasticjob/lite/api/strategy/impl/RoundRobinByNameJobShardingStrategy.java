@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sharding strategy which for rotate server by name job.
+ * Sharding strategy which for round robin by name job.
  */
-public final class RotateServerByNameJobShardingStrategy implements JobShardingStrategy {
+public final class RoundRobinByNameJobShardingStrategy implements JobShardingStrategy {
     
-    private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
+    private final AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
     public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
@@ -48,5 +48,10 @@ public final class RotateServerByNameJobShardingStrategy implements JobShardingS
             result.add(shardingUnits.get(index));
         }
         return result;
+    }
+    
+    @Override
+    public String getType() {
+        return "ROUND_ROBIN";
     }
 }

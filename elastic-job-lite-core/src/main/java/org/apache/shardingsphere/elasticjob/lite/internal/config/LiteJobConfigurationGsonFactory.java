@@ -86,7 +86,7 @@ public final class LiteJobConfigurationGsonFactory {
                 case LiteJobConfigurationConstants.MONITOR_PORT:
                     customizedValueMap.put(jsonName, in.nextInt());
                     break;
-                case LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS:
+                case LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_TYPE:
                     customizedValueMap.put(jsonName, in.nextString());
                     break;
                 case LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES:
@@ -116,8 +116,8 @@ public final class LiteJobConfigurationGsonFactory {
             if (customizedValueMap.containsKey(LiteJobConfigurationConstants.MONITOR_PORT)) {
                 builder.monitorPort((int) customizedValueMap.get(LiteJobConfigurationConstants.MONITOR_PORT));
             }
-            if (customizedValueMap.containsKey(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS)) {
-                builder.jobShardingStrategyClass((String) customizedValueMap.get(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS));
+            if (customizedValueMap.containsKey(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_TYPE)) {
+                builder.jobShardingStrategyType((String) customizedValueMap.get(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_TYPE));
             }
             if (customizedValueMap.containsKey(LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES)) {
                 builder.reconcileIntervalMinutes((int) customizedValueMap.get(LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES));
@@ -136,7 +136,7 @@ public final class LiteJobConfigurationGsonFactory {
             out.name(LiteJobConfigurationConstants.MONITOR_EXECUTION).value(value.isMonitorExecution());
             out.name(LiteJobConfigurationConstants.MAX_TIME_DIFF_SECONDS).value(value.getMaxTimeDiffSeconds());
             out.name(LiteJobConfigurationConstants.MONITOR_PORT).value(value.getMonitorPort());
-            out.name(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS).value(value.getJobShardingStrategyClass());
+            out.name(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_TYPE).value(value.getJobShardingStrategyType());
             out.name(LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES).value(value.getReconcileIntervalMinutes());
             out.name(LiteJobConfigurationConstants.DISABLED).value(value.isDisabled());
             out.name(LiteJobConfigurationConstants.OVERWRITE).value(value.isOverwrite());

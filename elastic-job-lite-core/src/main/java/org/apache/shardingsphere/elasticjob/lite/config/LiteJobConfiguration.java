@@ -37,7 +37,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
     
     private final int monitorPort;
     
-    private final String jobShardingStrategyClass;
+    private final String jobShardingStrategyType;
     
     private final int reconcileIntervalMinutes;
     
@@ -84,7 +84,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         
         private int monitorPort = -1;
         
-        private String jobShardingStrategyClass = "";
+        private String jobShardingStrategyType = "";
         
         private boolean disabled;
         
@@ -141,19 +141,19 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * Set job sharding strategy class.
+         * Set job sharding strategy type.
          *
          * <p>
          * Default for {@code org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy}.
          * </p>
          *
-         * @param jobShardingStrategyClass job sharding strategy class
+         * @param jobShardingStrategyType job sharding strategy type
          *
          * @return ElasticJob lite configuration builder
          */
-        public Builder jobShardingStrategyClass(final String jobShardingStrategyClass) {
-            if (null != jobShardingStrategyClass) {
-                this.jobShardingStrategyClass = jobShardingStrategyClass;
+        public Builder jobShardingStrategyType(final String jobShardingStrategyType) {
+            if (null != jobShardingStrategyType) {
+                this.jobShardingStrategyType = jobShardingStrategyType;
             }
             return this;
         }
@@ -212,7 +212,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
          * @return ElasticJob lite configuration
          */
         public final LiteJobConfiguration build() {
-            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, reconcileIntervalMinutes, disabled, overwrite);
+            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
         }
     }
 }

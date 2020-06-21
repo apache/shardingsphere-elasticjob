@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.fixture.InvalidJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.junit.Test;
@@ -33,22 +32,12 @@ public class JobShardingStrategyFactoryTest {
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void assertGetStrategyFailureWhenClassNotFound() {
-        JobShardingStrategyFactory.getStrategy("NotClass");
-    }
-    
-    @Test(expected = JobConfigurationException.class)
-    public void assertGetStrategyFailureWhenNotStrategyClass() {
-        JobShardingStrategyFactory.getStrategy(Object.class.getName());
-    }
-    
-    @Test(expected = JobConfigurationException.class)
-    public void assertGetStrategyFailureWhenStrategyClassInvalid() {
-        JobShardingStrategyFactory.getStrategy(InvalidJobShardingStrategy.class.getName());
+    public void assertGetStrategyFailureWhenTypeNotFound() {
+        JobShardingStrategyFactory.getStrategy("INVALID");
     }
     
     @Test
     public void assertGetStrategySuccess() {
-        assertThat(JobShardingStrategyFactory.getStrategy(AverageAllocationJobShardingStrategy.class.getName()), instanceOf(AverageAllocationJobShardingStrategy.class));
+        assertThat(JobShardingStrategyFactory.getStrategy("AVG_ALLOCATION"), instanceOf(AverageAllocationJobShardingStrategy.class));
     }
 }

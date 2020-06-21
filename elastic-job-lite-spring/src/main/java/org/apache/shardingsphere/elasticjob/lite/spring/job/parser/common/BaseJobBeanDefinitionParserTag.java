@@ -50,7 +50,7 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String MISFIRE_ATTRIBUTE = "misfire";
     
-    public static final String JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE = "job-sharding-strategy-class";
+    public static final String JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE = "job-sharding-strategy-type";
     
     public static final String DESCRIPTION_ATTRIBUTE = "description";
     

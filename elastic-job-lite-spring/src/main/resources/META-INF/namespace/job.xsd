@@ -55,7 +55,7 @@
                 <xsd:attribute name="failover" type="xsd:string" default="false"/>
                 <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10"/>
                 <xsd:attribute name="misfire" type="xsd:string" default="true"/>
-                <xsd:attribute name="job-sharding-strategy-class" type="xsd:string" />
+                <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
                 <xsd:attribute name="description" type="xsd:string" />
                 <xsd:attribute name="disabled" type="xsd:string" default="false"/>
                 <xsd:attribute name="overwrite" type="xsd:string" default="false"/>
