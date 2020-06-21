@@ -26,15 +26,15 @@ public final class APIJsonConstants {
     
     private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
-    private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+    private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003dA,1\\u003dB,2\\u003dC\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,"
             + "\"description\":\"desc\",\"jobProperties\":%s}";
     
-    private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
+    private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":%s,\"streamingProcess\":true}";
     
-    private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob\",\"jobType\":\"SCRIPT\","
+    private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SCRIPT\","
             + "\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":%s,\"scriptCommandLine\":\"test.sh\"}";

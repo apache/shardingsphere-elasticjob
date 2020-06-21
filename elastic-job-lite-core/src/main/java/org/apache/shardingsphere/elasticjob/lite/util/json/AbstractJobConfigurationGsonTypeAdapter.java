@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.util.json;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -152,10 +151,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
             case SIMPLE:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
                 return new SimpleJobConfiguration(coreConfig, jobClass);
             case DATAFLOW:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
                 return new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
             case SCRIPT:
                 return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
@@ -170,7 +167,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     public void write(final JsonWriter out, final T value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobClass").value(value.getTypeConfig().getJobClass());
         out.name("jobType").value(value.getTypeConfig().getJobType().name());
         out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
         out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
