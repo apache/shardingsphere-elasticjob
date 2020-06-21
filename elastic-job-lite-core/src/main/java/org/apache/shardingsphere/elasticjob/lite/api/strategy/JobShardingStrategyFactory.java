@@ -34,6 +34,8 @@ public final class JobShardingStrategyFactory {
     
     private static final Map<String, JobShardingStrategy> JOB_SHARDING_STRATEGIES = new LinkedHashMap<>();
     
+    private static final String DEFAULT_JOB_SHARDING_STRATEGY = "AVG_ALLOCATION";
+    
     static {
         for (JobShardingStrategy each : ServiceLoader.load(JobShardingStrategy.class)) {
             JOB_SHARDING_STRATEGIES.put(each.getType(), each);
@@ -48,7 +50,7 @@ public final class JobShardingStrategyFactory {
      */
     public static JobShardingStrategy getStrategy(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return JOB_SHARDING_STRATEGIES.values().iterator().next();
+            return JOB_SHARDING_STRATEGIES.get(DEFAULT_JOB_SHARDING_STRATEGY);
         }
         if (!JOB_SHARDING_STRATEGIES.containsKey(type)) {
             throw new JobConfigurationException("Can not find sharding strategy type '%s'.", type);
