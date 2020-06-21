@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.impl;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.JobEventCaller;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
 
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.verify;
+import java.util.concurrent.ExecutorService;
 
-@RunWith(MockitoJUnitRunner.class)
-public final class DefaultJobExceptionHandlerTest {
+/**
+ * Default job executor service handler.
+ */
+public final class DefaultJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
-    @Mock
-    private JobEventCaller caller;
+    @Override
+    public ExecutorService createExecutorService(final String jobName) {
+        return new ElasticJobExecutorService("inner-job-" + jobName, Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
+    }
     
-    @Test
-    public void assertHandleException() {
-        new DefaultJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
-        verify(caller, atMost(1)).call();
+    @Override
+    public String getType() {
+        return "DEFAULT";
     }
 }

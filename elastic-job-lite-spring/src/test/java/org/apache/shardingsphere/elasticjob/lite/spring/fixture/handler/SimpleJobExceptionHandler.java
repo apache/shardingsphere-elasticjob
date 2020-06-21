@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExceptionHandler;
 
 public class SimpleJobExceptionHandler implements JobExceptionHandler {
     

@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExecutorServiceHandler
+org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.DefaultJobExecutorServiceHandler

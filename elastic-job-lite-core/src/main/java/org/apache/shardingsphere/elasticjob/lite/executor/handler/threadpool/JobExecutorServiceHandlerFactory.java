@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
 
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
