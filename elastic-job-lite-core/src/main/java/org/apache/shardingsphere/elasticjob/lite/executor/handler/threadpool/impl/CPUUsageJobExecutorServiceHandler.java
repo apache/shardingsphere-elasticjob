@@ -23,9 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecu
 import java.util.concurrent.ExecutorService;
 
 /**
- * Default job executor service handler.
+ * Job executor service handler with use CPU available processors.
  */
-public final class DefaultJobExecutorServiceHandler implements JobExecutorServiceHandler {
+public final class CPUUsageJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {
@@ -34,6 +34,6 @@ public final class DefaultJobExecutorServiceHandler implements JobExecutorServic
     
     @Override
     public String getType() {
-        return "DEFAULT";
+        return "CPU";
     }
 }

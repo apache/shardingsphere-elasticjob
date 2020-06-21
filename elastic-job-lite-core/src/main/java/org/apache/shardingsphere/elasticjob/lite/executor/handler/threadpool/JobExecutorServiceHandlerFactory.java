@@ -34,7 +34,7 @@ public final class JobExecutorServiceHandlerFactory {
     
     private static final Map<String, JobExecutorServiceHandler> HANDLERS = new LinkedHashMap<>();
     
-    private static final String DEFAULT_HANDLER = "DEFAULT";
+    private static final String DEFAULT_HANDLER = "CPU";
     
     static {
         for (JobExecutorServiceHandler each : ServiceLoader.load(JobExecutorServiceHandler.class)) {
