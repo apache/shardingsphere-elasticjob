@@ -28,12 +28,10 @@ public final class LiteJsonConstants {
     private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
             + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
-    private static final String JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"%s\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
+    private static final String JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":%s,\"misfire\":false,\"description\":\"desc\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":%s,\"maxTimeDiffSeconds\":%s,"
             + "\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true, \"reconcileIntervalMinutes\": 15}";
-    
-    private static final String DEFAULT_JOB_CLASS = "org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob";
     
     private static final boolean DEFAULT_FAILOVER = true;
     
@@ -47,17 +45,7 @@ public final class LiteJsonConstants {
      * @return the string of job config
      */
     public static String getJobJson() {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
-    }
-    
-    /**
-     * Get the config of simple job in json format.
-     *
-     * @param jobClass the class name of job
-     * @return the string of job config
-     */
-    public static String getJobJson(final String jobClass) {
-        return String.format(JOB_JSON, jobClass, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     /**
@@ -67,7 +55,7 @@ public final class LiteJsonConstants {
      * @return the string of job config
      */
     public static String getJobJson(final int maxTimeDiffSeconds) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
+        return String.format(JOB_JSON, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
     /**
@@ -77,7 +65,7 @@ public final class LiteJsonConstants {
      * @return the string of job config
      */
     public static String getJobJsonWithFailover(final boolean failover) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     /**
@@ -87,6 +75,6 @@ public final class LiteJsonConstants {
      * @return the string of job config
      */
     public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
 }

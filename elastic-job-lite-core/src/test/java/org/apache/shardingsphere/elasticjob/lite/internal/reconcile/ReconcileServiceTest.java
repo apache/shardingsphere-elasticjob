@@ -21,7 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -59,8 +58,8 @@ public class ReconcileServiceTest {
     
     @Test
     public void assertReconcile() {
-        Mockito.when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestSimpleJob.class.getCanonicalName())).reconcileIntervalMinutes(1).build());
+        Mockito.when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).reconcileIntervalMinutes(1).build());
         Mockito.when(shardingService.isNeedSharding()).thenReturn(false);
         Mockito.when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
         Mockito.when(leaderService.isLeaderUntilBlock()).thenReturn(true);

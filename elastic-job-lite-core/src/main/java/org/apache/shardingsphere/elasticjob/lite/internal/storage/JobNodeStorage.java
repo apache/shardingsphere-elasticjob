@@ -57,6 +57,15 @@ public final class JobNodeStorage {
     }
     
     /**
+     * Judge is job root node existed or not.
+     *
+     * @return is job root node existed or not
+     */
+    public boolean isJobRootNodeExisted() {
+        return regCenter.isExisted("/" + jobName);
+    }
+    
+    /**
      * Get job node data.
      * 
      * @param node node
@@ -87,6 +96,15 @@ public final class JobNodeStorage {
     }
     
     /**
+     * Get job root node data.
+     *
+     * @return data of job node
+     */
+    public String getJobRootNodeData() {
+        return regCenter.get("/" + jobName);
+    }
+    
+    /**
      * Create job node if needed.
      * 
      * <p>Do not create node if root root not existed, which means job is shutdown.</p>
@@ -97,10 +115,6 @@ public final class JobNodeStorage {
         if (isJobRootNodeExisted() && !isJobNodeExisted(node)) {
             regCenter.persist(jobNodePath.getFullPath(node), "");
         }
-    }
-    
-    private boolean isJobRootNodeExisted() {
-        return regCenter.isExisted("/" + jobName);
     }
     
     /**
@@ -153,7 +167,16 @@ public final class JobNodeStorage {
     public void replaceJobNode(final String node, final Object value) {
         regCenter.persist(jobNodePath.getFullPath(node), value.toString());
     }
-
+    
+    /**
+     * Replace data to root node.
+     *
+     * @param value to be replaced data
+     */
+    public void replaceJobRootNode(final Object value) {
+        regCenter.persist("/" + jobName, value.toString());
+    }
+    
     /**
      * Execute operator in transaction.
      * 

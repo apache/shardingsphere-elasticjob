@@ -24,8 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;
 
-import java.util.Optional;
-
 /**
  * Configuration service.
  */
@@ -62,33 +60,26 @@ public final class ConfigurationService {
     /**
      * Persist job configuration.
      * 
+     * @param jobClassName job class name
      * @param liteJobConfig job configuration
      */
-    public void persist(final LiteJobConfiguration liteJobConfig) {
-        checkConflictJob(liteJobConfig);
+    public void persist(final String jobClassName, final LiteJobConfiguration liteJobConfig) {
+        checkConflictJob(jobClassName, liteJobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || liteJobConfig.isOverwrite()) {
             jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
+            jobNodeStorage.replaceJobRootNode(jobClassName);
         }
     }
     
-    private void checkConflictJob(final LiteJobConfiguration liteJobConfig) {
-        Optional<LiteJobConfiguration> liteJobConfigFromZk = find();
-        if (liteJobConfigFromZk.isPresent() && !liteJobConfigFromZk.get().getTypeConfig().getJobClass().equals(liteJobConfig.getTypeConfig().getJobClass())) {
-            throw new JobConfigurationException("Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", 
-                    liteJobConfig.getJobName(), liteJobConfigFromZk.get().getTypeConfig().getJobClass(), liteJobConfig.getTypeConfig().getJobClass());
+    private void checkConflictJob(final String newJobClassName, final LiteJobConfiguration liteJobConfig) {
+        if (!jobNodeStorage.isJobRootNodeExisted()) {
+            return;
         }
-    }
-    
-    private Optional<LiteJobConfiguration> find() {
-        if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)) {
-            return Optional.empty();
+        String originalJobClassName = jobNodeStorage.getJobRootNodeData();
+        if (null != originalJobClassName && !originalJobClassName.equals(newJobClassName)) {
+            throw new JobConfigurationException(
+                    "Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", liteJobConfig.getJobName(), originalJobClassName, newJobClassName);
         }
-        LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
-        if (null == result) {
-            // TODO should remove the job node, not only the config node
-            jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
-        }
-        return Optional.ofNullable(result);
     }
     
     /**

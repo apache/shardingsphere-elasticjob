@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
+import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -77,20 +78,20 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
-        when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob"));
+        when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
+        when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
         try {
-            configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
+            configService.persist(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {
-            verify(jobNodeStorage).isJobNodeExisted(ConfigurationNode.ROOT);
-            verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.ROOT);
+            verify(jobNodeStorage).isJobRootNodeExisted();
+            verify(jobNodeStorage).getJobRootNodeData();
         }
     }
     
     @Test
     public void assertPersistNewJobConfiguration() {
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-        configService.persist(liteJobConfig);
+        configService.persist(TestSimpleJob.class.getName(), liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     
@@ -99,7 +100,7 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
-        configService.persist(liteJobConfig);
+        configService.persist(TestSimpleJob.class.getName(), liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     

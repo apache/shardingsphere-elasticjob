@@ -94,11 +94,12 @@ public final class SchedulerFacade {
     /**
      * Update job configuration.
      *
+     * @param jobClassName job class name
      * @param liteJobConfig job configuration to be updated
      * @return updated job configuration
      */
-    public LiteJobConfiguration updateJobConfiguration(final LiteJobConfiguration liteJobConfig) {
-        configService.persist(liteJobConfig);
+    public LiteJobConfiguration updateJobConfiguration(final String jobClassName, final LiteJobConfiguration liteJobConfig) {
+        configService.persist(jobClassName, liteJobConfig);
         return configService.load(false);
     }
     

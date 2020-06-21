@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.IgnoreJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
 
 @RequiredArgsConstructor
 public final class TestDataflowJobConfiguration implements JobRootConfiguration {
@@ -35,7 +34,6 @@ public final class TestDataflowJobConfiguration implements JobRootConfiguration 
     @Override
     public JobTypeConfiguration getTypeConfig() {
         return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
-                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build(), 
-                TestDataflowJob.class.getCanonicalName(), streamingProcess);
+                .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build(), streamingProcess);
     }
 }

@@ -122,11 +122,11 @@ public abstract class AbstractBaseStdJobTest {
                 .jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName(), false);
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, false);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         } else {
-            jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName());
+            jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }
         return LiteJobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
     }

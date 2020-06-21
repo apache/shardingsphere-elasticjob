@@ -68,7 +68,6 @@ public class JobSettingsAPIImplTest {
     private void assertJobSettings(final JobSettings jobSettings, final String jobType, final String className) {
         assertThat(jobSettings.getJobName(), is("test_job"));
         assertThat(jobSettings.getJobType(), is(jobType));
-        assertThat(jobSettings.getJobClass(), is(className));
         assertThat(jobSettings.getShardingTotalCount(), is(3));
         assertThat(jobSettings.getCron(), is("0/1 * * * * ?"));
         assertThat(jobSettings.getShardingItemParameters(), is(""));
@@ -96,7 +95,6 @@ public class JobSettingsAPIImplTest {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
-        jobSettings.setJobClass("org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob");
         jobSettings.setShardingTotalCount(10);
         jobSettings.setMaxTimeDiffSeconds(-1);
         jobSettings.setMonitorExecution(true);
@@ -108,7 +106,7 @@ public class JobSettingsAPIImplTest {
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettings.setReconcileIntervalMinutes(70);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob\","
+        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
                 + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","

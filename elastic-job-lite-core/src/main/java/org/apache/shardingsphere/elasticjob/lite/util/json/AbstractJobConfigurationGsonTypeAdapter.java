@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.util.json;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -109,9 +108,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
             }
         }
         in.endObject();
-        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
-                jobParameter, failover, misfire, description, jobProperties);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
+        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -147,16 +145,13 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(
-            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
             case SIMPLE:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
-                return new SimpleJobConfiguration(coreConfig, jobClass);
+                return new SimpleJobConfiguration(coreConfig);
             case DATAFLOW:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
-                return new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
+                return new DataflowJobConfiguration(coreConfig, streamingProcess);
             case SCRIPT:
                 return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
             default:
@@ -170,7 +165,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     public void write(final JsonWriter out, final T value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobClass").value(value.getTypeConfig().getJobClass());
         out.name("jobType").value(value.getTypeConfig().getJobType().name());
         out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
         out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
