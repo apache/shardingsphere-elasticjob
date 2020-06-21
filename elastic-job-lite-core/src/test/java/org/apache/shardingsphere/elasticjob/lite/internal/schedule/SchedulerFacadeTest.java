@@ -102,10 +102,10 @@ public class SchedulerFacadeTest {
     @Test
     public void assertUpdateJobConfiguration() {
         LiteJobConfiguration jobConfig = LiteJobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestDataflowJob.class.getCanonicalName(), false)).build();
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestDataflowJob.class.getName(), false)).build();
         when(configService.load(false)).thenReturn(jobConfig);
-        assertThat(schedulerFacade.updateJobConfiguration(jobConfig), is(jobConfig));
-        verify(configService).persist(jobConfig);
+        assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
+        verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);
     }
     
     @Test

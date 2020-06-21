@@ -60,24 +60,25 @@ public final class ConfigurationService {
     /**
      * Persist job configuration.
      * 
+     * @param jobClassName job class name
      * @param liteJobConfig job configuration
      */
-    public void persist(final LiteJobConfiguration liteJobConfig) {
-        checkConflictJob(liteJobConfig);
+    public void persist(final String jobClassName, final LiteJobConfiguration liteJobConfig) {
+        checkConflictJob(jobClassName, liteJobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || liteJobConfig.isOverwrite()) {
             jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
-            jobNodeStorage.replaceJobRootNode(liteJobConfig.getTypeConfig().getJobClass());
+            jobNodeStorage.replaceJobRootNode(jobClassName);
         }
     }
     
-    private void checkConflictJob(final LiteJobConfiguration liteJobConfig) {
+    private void checkConflictJob(final String newJobClassName, final LiteJobConfiguration liteJobConfig) {
         if (!jobNodeStorage.isJobRootNodeExisted()) {
             return;
         }
-        String jobClassName = jobNodeStorage.getJobRootNodeData();
-        if (null != jobClassName && !jobClassName.equals(liteJobConfig.getTypeConfig().getJobClass())) {
-            throw new JobConfigurationException("Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", 
-                    liteJobConfig.getJobName(), jobClassName, liteJobConfig.getTypeConfig().getJobClass());
+        String originalJobClassName = jobNodeStorage.getJobRootNodeData();
+        if (null != originalJobClassName && !originalJobClassName.equals(newJobClassName)) {
+            throw new JobConfigurationException(
+                    "Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", liteJobConfig.getJobName(), originalJobClassName, newJobClassName);
         }
     }
     

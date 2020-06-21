@@ -51,7 +51,7 @@ public final class JobConfigurationUtil {
      * @return LiteJobConfiguration
      */
     public static LiteJobConfiguration createSimpleLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getName())).build();
     }
     
     /**
@@ -72,6 +72,6 @@ public final class JobConfigurationUtil {
      */
     public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
         return LiteJobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getCanonicalName(), false)).build();
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getName(), false)).build();
     }
 }
