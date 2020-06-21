@@ -41,30 +41,30 @@ public final class APIJsonConstants {
             + "\"scriptCommandLine\":\"test.sh\"}";
     
     /**
-     * Get the config of simple job in json format.
+     * Get configuration of simple job in json format.
      *
      * @param jobExceptionHandlerType the canonical name of the job exception handler
-     * @return the string of job properties
+     * @return configuration of simple job in json format
      */
     public static String getSimpleJobJson(final String jobExceptionHandlerType) {
         return String.format(SIMPLE_JOB_JSON, jobExceptionHandlerType);
     }
     
     /**
-     * Get the config of dataflow job in json format.
+     * Get configuration of dataflow job in json format.
      *
      * @param jobExceptionHandlerType the canonical name of the job exception handler
-     * @return the string of job properties
+     * @return configuration of dataflow job in json format
      */
     public static String getDataflowJobJson(final String jobExceptionHandlerType) {
         return String.format(DATAFLOW_JOB_JSON, jobExceptionHandlerType);
     }
     
     /**
-     * Get the config of script job in json format.
+     * Get configuration of script job in json format.
      *
      * @param jobExceptionHandlerType the canonical name of the job exception handler
-     * @return the string of job properties
+     * @return configuration of script job in json format
      */
     public static String getScriptJobJson(final String jobExceptionHandlerType) {
         return String.format(SCRIPT_JOB_JSON, jobExceptionHandlerType);

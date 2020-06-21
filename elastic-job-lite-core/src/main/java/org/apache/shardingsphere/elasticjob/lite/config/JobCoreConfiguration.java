@@ -23,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties;
 
 /**
  * Job core configuration.
@@ -51,8 +50,6 @@ public final class JobCoreConfiguration {
     private final String jobExecutorServiceHandlerType;
     
     private final String description;
-    
-    private final JobProperties jobProperties;
     
     /**
      * Create simple job configuration builder.
@@ -88,8 +85,6 @@ public final class JobCoreConfiguration {
         private String jobExecutorServiceHandlerType;
         
         private String description = "";
-        
-        private final JobProperties jobProperties = new JobProperties();
         
         /**
          * Set mapper of sharding items and sharding parameters.
@@ -194,19 +189,6 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * Set job properties.
-         *
-         * @param key property key
-         * @param value property value
-         *
-         * @return job configuration builder
-         */
-        public Builder jobProperties(final String key, final String value) {
-            jobProperties.put(key, value);
-            return this;
-        }
-        
-        /**
          * Build Job.
          *
          * @return job configuration builder
@@ -216,7 +198,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobCoreConfiguration(
-                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExceptionHandlerType, jobExecutorServiceHandlerType, description, jobProperties);
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExceptionHandlerType, jobExecutorServiceHandlerType, description);
         }
     }
 }
