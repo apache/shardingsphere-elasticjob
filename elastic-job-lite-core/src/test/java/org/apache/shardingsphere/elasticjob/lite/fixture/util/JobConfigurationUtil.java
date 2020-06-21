@@ -19,12 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.fixture.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.unitils.util.ReflectionUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -51,7 +49,7 @@ public final class JobConfigurationUtil {
      * @return LiteJobConfiguration
      */
     public static LiteJobConfiguration createSimpleLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getName())).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
     }
     
     /**
@@ -61,8 +59,7 @@ public final class JobConfigurationUtil {
      * @return LiteJobConfiguration
      */
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestSimpleJob.class.getCanonicalName())).overwrite(overwrite).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).overwrite(overwrite).build();
     }
     
     /**
@@ -71,7 +68,6 @@ public final class JobConfigurationUtil {
      * @return LiteJobConfiguration
      */
     public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getName(), false)).build();
+        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build();
     }
 }

@@ -57,8 +57,7 @@ public final class JobSchedulerTest {
     @Before
     public void initMocks() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        liteJobConfig = LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build(), TestSimpleJob.class.getName())).build();
+        liteJobConfig = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build())).build();
         jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), liteJobConfig);
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);

@@ -108,9 +108,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
             }
         }
         in.endObject();
-        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
-                jobParameter, failover, misfire, description, jobProperties);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
+        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -146,14 +145,13 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(
-            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
             case SIMPLE:
-                return new SimpleJobConfiguration(coreConfig, jobClass);
+                return new SimpleJobConfiguration(coreConfig);
             case DATAFLOW:
-                return new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
+                return new DataflowJobConfiguration(coreConfig, streamingProcess);
             case SCRIPT:
                 return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
             default:

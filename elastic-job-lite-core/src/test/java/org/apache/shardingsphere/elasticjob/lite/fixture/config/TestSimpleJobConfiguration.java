@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
 
 @NoArgsConstructor
 public final class TestSimpleJobConfiguration implements JobRootConfiguration {
@@ -52,6 +51,6 @@ public final class TestSimpleJobConfiguration implements JobRootConfiguration {
         if (null != executorServiceHandlerClassName) {
             builder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), executorServiceHandlerClassName);
         }
-        return new SimpleJobConfiguration(builder.build(), TestSimpleJob.class.getCanonicalName());
+        return new SimpleJobConfiguration(builder.build());
     }
 }

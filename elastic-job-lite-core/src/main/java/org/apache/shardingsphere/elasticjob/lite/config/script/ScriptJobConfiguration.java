@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.config.script;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
@@ -34,8 +33,6 @@ public final class ScriptJobConfiguration implements JobTypeConfiguration {
     private final JobCoreConfiguration coreConfig;
     
     private final JobType jobType = JobType.SCRIPT;
-    
-    private final String jobClass = ScriptJob.class.getCanonicalName();
     
     private final String scriptCommandLine;
 }

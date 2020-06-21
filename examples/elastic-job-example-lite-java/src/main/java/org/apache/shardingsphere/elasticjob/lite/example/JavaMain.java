@@ -88,13 +88,13 @@ public final class JavaMain {
     
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
+        SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig);
         new JobScheduler(regCenter, new JavaSimpleJob(), LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
+        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, true);
         new JobScheduler(regCenter, new JavaDataflowJob(), LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfig).init();
     }
     

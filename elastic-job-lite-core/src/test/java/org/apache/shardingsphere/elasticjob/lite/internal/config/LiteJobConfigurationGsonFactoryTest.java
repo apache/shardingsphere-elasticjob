@@ -26,8 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.executor.handler.impl.DefaultJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -59,16 +57,14 @@ public final class LiteJobConfigurationGsonFactoryTest {
     
     @Test
     public void assertToJsonForSimpleJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build(), 
-                TestSimpleJob.class.getCanonicalName()))
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalMinutes(15).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
     
     @Test
     public void assertToJsonForDataflowJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestDataflowJob.class.getCanonicalName(), true)).build();
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), true)).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
