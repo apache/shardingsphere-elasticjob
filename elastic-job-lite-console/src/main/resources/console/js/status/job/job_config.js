@@ -64,13 +64,13 @@ function bindSubmitJobSettingsForm() {
             var password = $("#password").val();
             var logLevel = $("#logLevel").val();
             var shardingItemParameters = $("#sharding-item-parameters").val();
-            var jobShardingStrategyClass = $("#job-sharding-strategy-class").val();
+            var jobShardingStrategyType = $("#job-sharding-strategy-type").val();
             var scriptCommandLine = $("#script-command-line").val();
             var executorServiceHandler = $("#executor-service-handler").val();
             var jobExceptionHandler = $("#job-exception-handler").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
-            var postJson = {jobName: jobName, jobType : jobType, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
+            var postJson = {jobName: jobName, jobType : jobType, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();

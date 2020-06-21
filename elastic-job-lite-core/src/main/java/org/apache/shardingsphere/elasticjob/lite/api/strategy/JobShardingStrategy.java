@@ -34,4 +34,11 @@ public interface JobShardingStrategy {
      * @return sharding result
      */
     Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String jobName, int shardingTotalCount);
+    
+    /**
+     * Get job sharding strategy type.
+     * 
+     * @return job sharding strategy type
+     */
+    String getType();
 }

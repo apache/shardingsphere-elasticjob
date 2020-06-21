@@ -49,4 +49,9 @@ public final class OdevitySortByNameJobShardingStrategy implements JobShardingSt
         }
         return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shardingTotalCount);
     }
+    
+    @Override
+    public String getType() {
+        return "ODEVITY";
+    }
 }

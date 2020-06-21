@@ -77,4 +77,9 @@ public final class AverageAllocationJobShardingStrategy implements JobShardingSt
             count++;
         }
     }
+    
+    @Override
+    public String getType() {
+        return "AVG_ALLOCATION";
+    }
 }

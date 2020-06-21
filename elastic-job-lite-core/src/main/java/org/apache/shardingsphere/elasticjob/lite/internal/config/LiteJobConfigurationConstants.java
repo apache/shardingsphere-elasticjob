@@ -28,7 +28,7 @@ public final class LiteJobConfigurationConstants {
     
     public static final String MONITOR_PORT = "monitorPort";
     
-    public static final String JOB_SHARDING_STRATEGY_CLASS = "jobShardingStrategyClass";
+    public static final String JOB_SHARDING_STRATEGY_TYPE = "jobShardingStrategyType";
     
     public static final String RECONCILE_INTERVAL_MINUTES = "reconcileIntervalMinutes";
     

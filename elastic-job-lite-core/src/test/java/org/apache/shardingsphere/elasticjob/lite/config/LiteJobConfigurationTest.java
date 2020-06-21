@@ -31,11 +31,11 @@ public final class LiteJobConfigurationTest {
     public void assertBuildAllProperties() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build()))
-                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
+                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
-        assertThat(actual.getJobShardingStrategyClass(), is("testClass"));
+        assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
         assertThat(actual.getReconcileIntervalMinutes(), is(60));
@@ -47,7 +47,7 @@ public final class LiteJobConfigurationTest {
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
-        assertThat(actual.getJobShardingStrategyClass(), is(""));
+        assertThat(actual.getJobShardingStrategyType(), is(""));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
     }
@@ -55,7 +55,7 @@ public final class LiteJobConfigurationTest {
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
         assertThat(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
-                "test_job", "0/1 * * * * ?", 3).build())).jobShardingStrategyClass(null).build().getJobShardingStrategyClass(), is(""));
+                "test_job", "0/1 * * * * ?", 3).build())).jobShardingStrategyType(null).build().getJobShardingStrategyType(), is(""));
     }
     
     @Test

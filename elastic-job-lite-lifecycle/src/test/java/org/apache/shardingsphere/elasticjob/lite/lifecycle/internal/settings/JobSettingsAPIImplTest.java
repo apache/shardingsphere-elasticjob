@@ -77,7 +77,7 @@ public class JobSettingsAPIImplTest {
         assertThat(jobSettings.getMonitorPort(), is(8888));
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
-        assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
+        assertThat(jobSettings.getJobShardingStrategyType(), is(""));
         assertThat(jobSettings.getReconcileIntervalMinutes(), is(10));
         jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());

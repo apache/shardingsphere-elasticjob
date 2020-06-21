@@ -67,7 +67,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMonitorPort(liteJobConfig.getMonitorPort());
         result.setFailover(liteJobConfig.getTypeConfig().getCoreConfig().isFailover());
         result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
-        result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
+        result.setJobShardingStrategyType(liteJobConfig.getJobShardingStrategyType());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setReconcileIntervalMinutes(liteJobConfig.getReconcileIntervalMinutes());
         result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(),

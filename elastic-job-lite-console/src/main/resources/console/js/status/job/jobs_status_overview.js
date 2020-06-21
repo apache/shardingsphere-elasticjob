@@ -233,7 +233,7 @@ function renderJob(data) {
     $("#streaming-process").attr("checked", data.streamingProcess);
     $("#max-time-diff-seconds").attr("value", data.maxTimeDiffSeconds);
     $("#monitor-port").attr("value", data.monitorPort);
-    $("#job-sharding-strategy-class").attr("value", data.jobShardingStrategyClass);
+    $("#job-sharding-strategy-type").attr("value", data.jobShardingStrategyType);
     $("#executor-service-handler").attr("value", data.jobProperties["executor_service_handler"]);
     $("#job-exception-handler").attr("value", data.jobProperties["job_exception_handler"]);
     $("#reconcile-interval-minutes").attr("value", data.reconcileIntervalMinutes);
