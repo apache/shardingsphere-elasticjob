@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
+package org.apache.shardingsphere.elasticjob.lite.handler.threadpool;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;

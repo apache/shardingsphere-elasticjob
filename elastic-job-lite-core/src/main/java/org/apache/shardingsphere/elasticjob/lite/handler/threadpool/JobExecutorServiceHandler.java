@@ -15,14 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.lite.handler.threadpool;
 
-import org.junit.Test;
+import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
-public final class IgnoreJobErrorHandlerTest {
+import java.util.concurrent.ExecutorService;
+
+/**
+ * Job executor service handler.
+ */
+public interface JobExecutorServiceHandler extends TypedSPI {
     
-    @Test
-    public void assertHandleException() {
-        new IgnoreJobErrorHandler().handleException("test_job", new RuntimeException("test"));
-    }
+    /**
+     * Create executor service.
+     * 
+     * @param jobName job name
+     * 
+     * @return executor service
+     */
+    ExecutorService createExecutorService(String jobName);
 }

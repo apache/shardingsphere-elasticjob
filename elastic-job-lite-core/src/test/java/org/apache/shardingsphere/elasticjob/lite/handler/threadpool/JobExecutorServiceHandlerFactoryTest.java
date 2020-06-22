@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
+package org.apache.shardingsphere.elasticjob.lite.handler.threadpool;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

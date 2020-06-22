@@ -15,23 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandler;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * Job error handler for throw exception.
+ * Job executor service handler with single thread.
  */
-public final class ThrowJobErrorHandler implements JobErrorHandler {
+public final class SingleThreadJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        throw new JobSystemException(cause);
+    public ExecutorService createExecutorService(final String jobName) {
+        return Executors.newFixedThreadPool(1);
     }
     
     @Override
     public String getType() {
-        return "THROW";
+        return "SINGLE_THREAD";
     }
 }

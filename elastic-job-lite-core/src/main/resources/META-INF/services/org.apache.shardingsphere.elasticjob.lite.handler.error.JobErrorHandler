@@ -15,5 +15,6 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler
-org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler
+org.apache.shardingsphere.elasticjob.lite.handler.error.impl.LogJobErrorHandler
+org.apache.shardingsphere.elasticjob.lite.handler.error.impl.IgnoreJobErrorHandler
+org.apache.shardingsphere.elasticjob.lite.handler.error.impl.ThrowJobErrorHandler

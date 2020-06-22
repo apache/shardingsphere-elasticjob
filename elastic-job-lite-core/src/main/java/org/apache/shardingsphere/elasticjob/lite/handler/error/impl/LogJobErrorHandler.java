@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.lite.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandler;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Job executor service handler with single thread.
+ * Job error handler for log error message.
  */
-public final class SingleThreadJobExecutorServiceHandler implements JobExecutorServiceHandler {
+@Slf4j
+public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public ExecutorService createExecutorService(final String jobName) {
-        return Executors.newFixedThreadPool(1);
+    public void handleException(final String jobName, final Throwable cause) {
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
     @Override
     public String getType() {
-        return "SINGLE_THREAD";
+        return "LOG";
     }
 }

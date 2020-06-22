@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
 
 import java.util.concurrent.ExecutorService;

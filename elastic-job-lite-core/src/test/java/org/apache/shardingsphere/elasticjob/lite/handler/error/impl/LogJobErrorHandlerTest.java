@@ -15,24 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.lite.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.event.fixture.JobEventCaller;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-/**
- * Job error handler for log error message.
- */
-@Slf4j
-public final class LogJobErrorHandler implements JobErrorHandler {
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class LogJobErrorHandlerTest {
     
-    @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
-    }
+    @Mock
+    private JobEventCaller caller;
     
-    @Override
-    public String getType() {
-        return "LOG";
+    @Test
+    public void assertHandleException() {
+        new LogJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+        verify(caller, atMost(1)).call();
     }
 }

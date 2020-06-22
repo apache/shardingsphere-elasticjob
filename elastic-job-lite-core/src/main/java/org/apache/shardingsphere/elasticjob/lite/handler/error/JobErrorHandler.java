@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error;
+package org.apache.shardingsphere.elasticjob.lite.handler.error;
 
 import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 

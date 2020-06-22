@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
+package org.apache.shardingsphere.elasticjob.lite.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
-
-import java.util.concurrent.ExecutorService;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
 
 /**
- * Job executor service handler.
+ * Job error handler for throw exception.
  */
-public interface JobExecutorServiceHandler extends TypedSPI {
+public final class ThrowJobErrorHandler implements JobErrorHandler {
     
-    /**
-     * Create executor service.
-     * 
-     * @param jobName job name
-     * 
-     * @return executor service
-     */
-    ExecutorService createExecutorService(String jobName);
+    @Override
+    public void handleException(final String jobName, final Throwable cause) {
+        throw new JobSystemException(cause);
+    }
+    
+    @Override
+    public String getType() {
+        return "THROW";
+    }
 }

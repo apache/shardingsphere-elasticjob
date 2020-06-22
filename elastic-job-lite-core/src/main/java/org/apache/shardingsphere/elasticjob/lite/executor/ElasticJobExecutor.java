@@ -26,9 +26,9 @@ import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.Ex
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
 
 import java.util.Collection;

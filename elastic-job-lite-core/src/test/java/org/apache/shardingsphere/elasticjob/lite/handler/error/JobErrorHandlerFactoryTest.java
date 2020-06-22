@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error;
+package org.apache.shardingsphere.elasticjob.lite.handler.error;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.LogJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl.ThrowJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.impl.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.lite.handler.error.impl.ThrowJobErrorHandler;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
