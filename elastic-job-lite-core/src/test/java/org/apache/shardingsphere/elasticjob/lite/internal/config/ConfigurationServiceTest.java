@@ -26,8 +26,9 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUt
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ConfigurationServiceTest {
     
     @Mock
@@ -44,7 +46,6 @@ public final class ConfigurationServiceTest {
     
     @Before
     public void initMocks() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(configService, "jobNodeStorage", jobNodeStorage);
     }
     
@@ -98,7 +99,6 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
         configService.persist(TestSimpleJob.class.getName(), liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
