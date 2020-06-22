@@ -27,15 +27,17 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ElectionListenerManagerTest {
     
     @Mock
@@ -58,7 +60,6 @@ public final class ElectionListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(electionListenerManager, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverService", serverService);
@@ -90,7 +91,6 @@ public final class ElectionListenerManagerTest {
     
     @Test
     public void assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServerButJobInstanceIsShutdown() {
-        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");
         verify(leaderService, times(0)).electLeader();
     }
@@ -112,7 +112,6 @@ public final class ElectionListenerManagerTest {
     
     @Test
     public void assertLeaderElectionWhenServerEnableWithLeader() {
-        when(leaderService.hasLeader()).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
         verify(leaderService, times(0)).electLeader();
     }

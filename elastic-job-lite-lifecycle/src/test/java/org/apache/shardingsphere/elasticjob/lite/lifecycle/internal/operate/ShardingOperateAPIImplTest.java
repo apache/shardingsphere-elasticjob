@@ -21,14 +21,13 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAP
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ShardingOperateAPIImplTest {
     
     private ShardingOperateAPI shardingOperateAPI;
@@ -38,22 +37,17 @@ public final class ShardingOperateAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         shardingOperateAPI = new ShardingOperateAPIImpl(regCenter);
     }
     
     @Test
     public void assertDisableSharding() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1"));
         shardingOperateAPI.disable("test_job", "0");
         verify(regCenter).persist("/test_job/sharding/0/disabled", "");
     }
 
     @Test
     public void assertEnableSharding() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1"));
         shardingOperateAPI.enable("test_job", "0");
         verify(regCenter).remove("/test_job/sharding/0/disabled");
     }

@@ -43,7 +43,6 @@ import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfigur
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -162,20 +161,20 @@ public abstract class AbstractBaseStdJobTest {
     
     private void assertRegCenterCommonInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
-        assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), CoreMatchers.is(IpUtils.getIp()));
+        assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         if (disabled) {
-            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), CoreMatchers.is(ServerStatus.DISABLED.name()));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
                 BlockUtils.waitingShortTime();
             }
             regCenter.persist("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp(), "");
         } else {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(""));
-            assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), CoreMatchers.is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
+            assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
         assertTrue(regCenter.isExisted("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         regCenter.remove("/" + jobName + "/leader/election");

@@ -24,8 +24,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ServerServiceTest {
     
     @Mock
@@ -54,7 +56,6 @@ public final class ServerServiceTest {
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         serverService = new ServerService(null, "test_job");
-        MockitoAnnotations.initMocks(this);
         ServerNode serverNode = new ServerNode("test_job");
         ReflectionUtils.setFieldValue(serverService, "serverNode", serverNode);
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);

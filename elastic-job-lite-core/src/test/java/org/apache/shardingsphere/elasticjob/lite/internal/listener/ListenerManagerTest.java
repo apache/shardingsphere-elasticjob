@@ -28,15 +28,17 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingListe
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
 
-public class ListenerManagerTest {
+@RunWith(MockitoJUnitRunner.class)
+public final class ListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -72,7 +74,6 @@ public class ListenerManagerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);

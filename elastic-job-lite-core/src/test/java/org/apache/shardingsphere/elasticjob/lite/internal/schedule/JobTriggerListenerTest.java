@@ -21,8 +21,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionServ
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.Trigger;
 
 import java.util.Collections;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class JobTriggerListenerTest {
     
     @Mock
@@ -49,7 +51,6 @@ public final class JobTriggerListenerTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         jobTriggerListener = new JobTriggerListener(executionService, shardingService);
     }
     
@@ -60,7 +61,6 @@ public final class JobTriggerListenerTest {
     
     @Test
     public void assertTriggerMisfiredWhenPreviousFireTimeIsNull() {
-        when(shardingService.getLocalShardingItems()).thenReturn(Collections.singletonList(0));
         jobTriggerListener.triggerMisfired(trigger);
         verify(executionService, times(0)).setMisfire(Collections.singletonList(0));
     }

@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
@@ -33,8 +33,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingServi
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
@@ -45,7 +46,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SchedulerFacadeTest {
+@RunWith(MockitoJUnitRunner.class)
+public final class SchedulerFacadeTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -82,10 +84,7 @@ public class SchedulerFacadeTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, "test_job", Collections.emptyList());
-        when(configService.load(true)).thenReturn(
-                LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -106,8 +105,6 @@ public class SchedulerFacadeTest {
     
     @Test
     public void assertRegisterStartUpInfo() {
-        when(configService.load(false)).thenReturn(
-                LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build());
         schedulerFacade.registerStartUpInfo(true);
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();

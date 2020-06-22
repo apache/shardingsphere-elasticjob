@@ -25,8 +25,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationSe
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class GuaranteeServiceTest {
     
     @Mock
@@ -48,7 +50,6 @@ public final class GuaranteeServiceTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
     }
@@ -104,9 +105,7 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertIsNotAllCompleted() {
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 10).build())).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
-        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllCompleted());
     }
     

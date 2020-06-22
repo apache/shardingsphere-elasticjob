@@ -17,22 +17,26 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.reconcile;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-public class ReconcileServiceTest {
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class ReconcileServiceTest {
     
     @Mock
     private ConfigurationService configService;
@@ -49,7 +53,6 @@ public class ReconcileServiceTest {
     public void setup() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         reconcileService = new ReconcileService(null, "test_job");
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(reconcileService, "lastReconcileTime", 1L);
         ReflectionUtils.setFieldValue(reconcileService, "configService", configService);
         ReflectionUtils.setFieldValue(reconcileService, "shardingService", shardingService);
@@ -58,15 +61,15 @@ public class ReconcileServiceTest {
     
     @Test
     public void assertReconcile() {
-        Mockito.when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).reconcileIntervalMinutes(1).build());
-        Mockito.when(shardingService.isNeedSharding()).thenReturn(false);
-        Mockito.when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
-        Mockito.when(leaderService.isLeaderUntilBlock()).thenReturn(true);
+        when(shardingService.isNeedSharding()).thenReturn(false);
+        when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
+        when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         reconcileService.runOneIteration();
-        Mockito.verify(shardingService).isNeedSharding();
-        Mockito.verify(shardingService).hasShardingInfoInOfflineServers();
-        Mockito.verify(shardingService).setReshardingFlag();
-        Mockito.verify(leaderService).isLeaderUntilBlock();
+        verify(shardingService).isNeedSharding();
+        verify(shardingService).hasShardingInfoInOfflineServers();
+        verify(shardingService).setReshardingFlag();
+        verify(leaderService).isLeaderUntilBlock();
     }
 }

@@ -22,8 +22,9 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInf
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ServerStatisticsAPIImplTest {
     
     private ServerStatisticsAPI serverStatisticsAPI;
@@ -42,7 +44,6 @@ public final class ServerStatisticsAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         serverStatisticsAPI = new ServerStatisticsAPIImpl(regCenter);
     }
     

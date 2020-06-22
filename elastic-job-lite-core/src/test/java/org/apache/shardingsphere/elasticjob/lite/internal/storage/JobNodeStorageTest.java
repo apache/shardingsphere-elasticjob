@@ -30,8 +30,9 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -44,16 +45,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class JobNodeStorageTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
-    private JobNodeStorage jobNodeStorage = new JobNodeStorage(regCenter, "test_job");
+    private JobNodeStorage jobNodeStorage;
     
     @Before
-    public void initMocks() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
+    public void setUp() throws NoSuchFieldException {
+        jobNodeStorage = new JobNodeStorage(regCenter, "test_job");
         ReflectionUtils.setFieldValue(jobNodeStorage, "regCenter", regCenter);
     }
     
@@ -98,7 +100,6 @@ public final class JobNodeStorageTest {
     @Test
     public void assertCreateJobNodeIfRootJobNodeIsNotExist() {
         when(regCenter.isExisted("/test_job")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.createJobNodeIfNeeded("config");
         verify(regCenter).isExisted("/test_job");
         verify(regCenter, times(0)).isExisted("/test_job/config");
@@ -194,9 +195,6 @@ public final class JobNodeStorageTest {
         when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
         when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
-        when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
-        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenThrow(new RuntimeException());
         jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
         verify(regCenter).getRawClient();
@@ -205,7 +203,6 @@ public final class JobNodeStorageTest {
         verify(transactionCheckBuilder).forPath("/");
         verify(curatorTransactionBridge, times(2)).and();
         verify(curatorTransactionFinal).create();
-        verify(transactionCreateBuilder).forPath("/test_transaction");
         verify(curatorTransactionFinal, times(0)).commit();
     }
     

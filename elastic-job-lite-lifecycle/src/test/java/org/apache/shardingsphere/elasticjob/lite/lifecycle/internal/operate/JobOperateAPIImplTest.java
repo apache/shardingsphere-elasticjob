@@ -21,8 +21,9 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class JobOperateAPIImplTest {
     
     private JobOperateAPI jobOperateAPI;
@@ -41,13 +43,11 @@ public final class JobOperateAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
     }
     
     @Test
     public void assertTriggerWithJobName() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         jobOperateAPI.trigger("test_job");
         verify(regCenter).getChildrenKeys("/test_job/instances");
@@ -109,7 +109,6 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertShutdownWithJobNameAndServerIp() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.singletonList("localhost"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         jobOperateAPI.shutdown("test_job", "localhost");
         verify(regCenter).remove("/test_job/instances/localhost@-@defaultInstance");
@@ -117,7 +116,6 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertShutdownWithJobName() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         jobOperateAPI.shutdown("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/instances");
@@ -137,7 +135,6 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertRemoveWithJobNameAndServerIp() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.remove("test_job", "ip1");
         verify(regCenter).remove("/test_job/servers/ip1");
         assertFalse(regCenter.isExisted("/test_job/servers/ip1"));
@@ -159,8 +156,6 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertRemoveWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        when(regCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.remove(null, "ip1");
         assertFalse(regCenter.isExisted("/test_job1/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job2/servers/ip1"));

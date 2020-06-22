@@ -23,13 +23,13 @@ import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -46,6 +46,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ExecutionServiceTest {
     
     @Mock
@@ -54,14 +55,10 @@ public final class ExecutionServiceTest {
     @Mock
     private ConfigurationService configService;
     
-    @Mock
-    private JobScheduleController jobScheduleController;
-    
     private final ExecutionService executionService = new ExecutionService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
     }
@@ -160,7 +157,6 @@ public final class ExecutionServiceTest {
     @Test
     public void assertHasRunningItemsForAll() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
         assertTrue(executionService.hasRunningItems());
