@@ -26,12 +26,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 
@@ -63,7 +63,7 @@ public final class RegistryCenterConnectionStateListenerTest {
     private RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         regCenterConnectionStateListener = new RegistryCenterConnectionStateListener(null, "test_job");
         ReflectionUtils.setFieldValue(regCenterConnectionStateListener, "serverService", serverService);

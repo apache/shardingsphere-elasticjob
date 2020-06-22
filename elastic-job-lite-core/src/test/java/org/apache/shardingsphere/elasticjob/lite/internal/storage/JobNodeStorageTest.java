@@ -28,12 +28,12 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 
@@ -54,7 +54,7 @@ public final class JobNodeStorageTest {
     private JobNodeStorage jobNodeStorage;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         jobNodeStorage = new JobNodeStorage(regCenter, "test_job");
         ReflectionUtils.setFieldValue(jobNodeStorage, "regCenter", regCenter);
     }

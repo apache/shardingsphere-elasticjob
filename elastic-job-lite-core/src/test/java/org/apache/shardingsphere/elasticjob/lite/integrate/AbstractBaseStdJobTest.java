@@ -41,12 +41,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -140,10 +140,9 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     @After
-    public void tearDown() throws NoSuchFieldException {
+    public void tearDown() {
         jobScheduler.getSchedulerFacade().shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-        
     }
     
     protected void initJob() {

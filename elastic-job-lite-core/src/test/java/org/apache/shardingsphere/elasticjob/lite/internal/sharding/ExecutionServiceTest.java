@@ -24,13 +24,13 @@ import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,11 +58,11 @@ public final class ExecutionServiceTest {
     private final ExecutionService executionService = new ExecutionService(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
     }
-
+    
     @After
     public void tearDown() {
         JobRegistry.getInstance().shutdown("test_job");

@@ -24,13 +24,13 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,8 +50,8 @@ public final class RescheduleListenerManagerTest {
     private final RescheduleListenerManager rescheduleListenerManager = new RescheduleListenerManager(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(rescheduleListenerManager, rescheduleListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+    public void setUp() {
+        ReflectionUtils.setSuperclassFieldValue(rescheduleListenerManager, "jobNodeStorage", jobNodeStorage);
     }
     
     @Test

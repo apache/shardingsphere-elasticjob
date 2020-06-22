@@ -21,27 +21,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.unitils.util.ReflectionUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfigurationUtil {
-    
-    /**
-     * Set the value of field.
-     *
-     * @param config config
-     * @param fieldName name of field
-     * @param fieldValue value of field
-     */
-    public static void setFieldValue(final Object config, final String fieldName, final Object fieldValue) {
-        try {
-            ReflectionUtils.setFieldValue(config, config.getClass().getDeclaredField(fieldName), fieldValue);
-        } catch (final NoSuchFieldException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
     
     /**
      * Create the configuration of simple lite job.
@@ -60,14 +43,5 @@ public final class JobConfigurationUtil {
      */
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
         return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).overwrite(overwrite).build();
-    }
-    
-    /**
-     * Create the configuration of dataflow lite job.
-     *
-     * @return LiteJobConfiguration
-     */
-    public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build();
     }
 }

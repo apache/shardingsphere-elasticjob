@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleCo
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,12 +58,12 @@ public final class ShutdownListenerManagerTest {
     private ShutdownListenerManager shutdownListenerManager;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         shutdownListenerManager = new ShutdownListenerManager(null, "test_job");
         ReflectionUtils.setFieldValue(shutdownListenerManager, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(shutdownListenerManager, "schedulerFacade", schedulerFacade);
-        ReflectionUtils.setFieldValue(shutdownListenerManager, shutdownListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setSuperclassFieldValue(shutdownListenerManager, "jobNodeStorage", jobNodeStorage);
     }
 
     @After

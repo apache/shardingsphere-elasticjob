@@ -25,12 +25,12 @@ import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.sql.SQLException;
 
@@ -52,7 +52,7 @@ public final class JobEventRdbListenerTest {
     private JobEventBus jobEventBus;
     
     @Before
-    public void setUp() throws JobEventListenerConfigurationException, SQLException, NoSuchFieldException {
+    public void setUp() throws JobEventListenerConfigurationException, SQLException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
