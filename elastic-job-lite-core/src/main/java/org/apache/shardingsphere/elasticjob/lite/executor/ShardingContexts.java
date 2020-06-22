@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -60,31 +59,4 @@ public final class ShardingContexts implements Serializable {
      * Sharding items and parameters map.
      */
     private final Map<Integer, String> shardingItemParameters;
-    
-    /**
-     * Job event sampling count.
-     */
-    private int jobEventSamplingCount;
-    
-    /**
-     * Current job event sampling count.
-     */
-    @Setter
-    private int currentJobEventSamplingCount;
-    
-    /**
-     * Whether allow send job event.
-     */
-    @Setter
-    private boolean allowSendJobEvent = true;
-    
-    public ShardingContexts(final String taskId, final String jobName, final int shardingTotalCount, final String jobParameter, 
-                            final Map<Integer, String> shardingItemParameters, final int jobEventSamplingCount) {
-        this.taskId = taskId;
-        this.jobName = jobName;
-        this.shardingTotalCount = shardingTotalCount;
-        this.jobParameter = jobParameter;
-        this.shardingItemParameters = shardingItemParameters;
-        this.jobEventSamplingCount = jobEventSamplingCount;
-    }
 }
