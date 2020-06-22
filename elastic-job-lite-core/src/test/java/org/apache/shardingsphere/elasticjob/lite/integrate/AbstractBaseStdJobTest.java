@@ -146,16 +146,16 @@ public abstract class AbstractBaseStdJobTest {
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
-    protected void initJob() {
+    protected final void initJob() {
         jobScheduler.init();
     }
     
-    void assertRegCenterCommonInfoWithEnabled() {
+    final void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
         assertTrue(leaderService.isLeaderUntilBlock());
     }
     
-    protected void assertRegCenterCommonInfoWithDisabled() {
+    protected final void assertRegCenterCommonInfoWithDisabled() {
         assertRegCenterCommonInfo();
     }
     
