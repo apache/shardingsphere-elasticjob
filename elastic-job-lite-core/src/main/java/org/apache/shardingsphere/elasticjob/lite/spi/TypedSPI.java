@@ -15,20 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error;
-
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+package org.apache.shardingsphere.elasticjob.lite.spi;
 
 /**
- * Job error handler.
+ * Type based SPI.
  */
-public interface JobErrorHandler extends TypedSPI {
+public interface TypedSPI {
     
     /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause cause
+     * Get type.
+     *
+     * @return type
      */
-    void handleException(String jobName, Throwable cause);
+    String getType();
 }
