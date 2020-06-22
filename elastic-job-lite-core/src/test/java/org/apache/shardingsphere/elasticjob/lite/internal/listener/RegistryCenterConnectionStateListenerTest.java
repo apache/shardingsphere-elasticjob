@@ -28,8 +28,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingServi
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class RegistryCenterConnectionStateListenerTest {
     
     @Mock
@@ -64,7 +66,6 @@ public final class RegistryCenterConnectionStateListenerTest {
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         regCenterConnectionStateListener = new RegistryCenterConnectionStateListener(null, "test_job");
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(regCenterConnectionStateListener, "serverService", serverService);
         ReflectionUtils.setFieldValue(regCenterConnectionStateListener, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(regCenterConnectionStateListener, "shardingService", shardingService);
@@ -100,8 +101,6 @@ public final class RegistryCenterConnectionStateListenerTest {
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedButIsShutdown() {
-        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.RECONNECTED);
         verify(jobScheduleController, times(0)).pauseJob();
         verify(jobScheduleController, times(0)).resumeJob();
