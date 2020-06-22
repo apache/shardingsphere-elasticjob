@@ -21,12 +21,12 @@ import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +49,7 @@ public final class InstanceServiceTest {
     private InstanceService instanceService;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         instanceService = new InstanceService(null, "test_job");
         InstanceNode instanceNode = new InstanceNode("test_job");
