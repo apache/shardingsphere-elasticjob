@@ -24,12 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -45,7 +45,7 @@ public final class ConfigurationServiceTest {
     private final ConfigurationService configService = new ConfigurationService(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(configService, "jobNodeStorage", jobNodeStorage);
     }
     
