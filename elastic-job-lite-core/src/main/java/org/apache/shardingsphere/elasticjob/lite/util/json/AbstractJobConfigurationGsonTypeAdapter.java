@@ -51,7 +51,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         boolean failover = false;
         boolean misfire = failover;
         String jobExecutorServiceHandlerType = "";
-        String jobExceptionHandlerType = "";
+        String jobErrorHandlerType = "";
         String description = "";
         JobType jobType = null;
         boolean streamingProcess = false;
@@ -85,8 +85,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 case "jobExecutorServiceHandlerType":
                     jobExecutorServiceHandlerType = in.nextString();
                     break;
-                case "jobExceptionHandlerType":
-                    jobExceptionHandlerType = in.nextString();
+                case "jobErrorHandlerType":
+                    jobErrorHandlerType = in.nextString();
                     break;
                 case "description":
                     description = in.nextString();
@@ -107,7 +107,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         }
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(
-                jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobExceptionHandlerType, description);
+                jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
         JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
@@ -116,11 +116,11 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     
     private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
                                                          final String shardingItemParameters, final String jobParameter, final boolean failover,
-                                                         final boolean misfire, final String jobExecutorServiceHandlerType, final String jobExceptionHandlerType, final String description) {
+                                                         final boolean misfire, final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
         return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire).description(description)
                 .jobExecutorServiceHandlerType(jobExecutorServiceHandlerType)
-                .jobExceptionHandlerType(jobExceptionHandlerType)
+                .jobErrorHandlerType(jobErrorHandlerType)
                 .build();
     }
     
@@ -154,8 +154,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType())) {
             out.name("jobExecutorServiceHandlerType").value(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
         }
-        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExceptionHandlerType())) {
-            out.name("jobExceptionHandlerType").value(value.getTypeConfig().getCoreConfig().getJobExceptionHandlerType());
+        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType())) {
+            out.name("jobErrorHandlerType").value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
         }
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {

@@ -235,7 +235,7 @@ function renderJob(data) {
     $("#monitor-port").attr("value", data.monitorPort);
     $("#job-sharding-strategy-type").attr("value", data.jobShardingStrategyType);
     $("#job-executor-service-handler").attr("value", data.jobExecutorServiceHandlerType);
-    $("#job-exception-handler").attr("value", data.jobExceptionHandlerType);
+    $("#job-error-handler").attr("value", data.jobErrorHandlerType);
     $("#reconcile-interval-minutes").attr("value", data.reconcileIntervalMinutes);
     $("#description").text(data.description);
     $("#script-command-line").attr("value", data.scriptCommandLine);

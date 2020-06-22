@@ -29,11 +29,11 @@ public final class TestScriptJobConfiguration implements JobRootConfiguration {
     
     private final String scriptCommandLine;
     
-    private final String jobExceptionHandlerType;
+    private final String jobErrorHandlerType;
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
         return new ScriptJobConfiguration(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobExceptionHandlerType(jobExceptionHandlerType).build(), scriptCommandLine);
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), scriptCommandLine);
     }
 }

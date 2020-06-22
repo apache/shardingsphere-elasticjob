@@ -32,14 +32,14 @@ public final class TestSimpleJobConfiguration implements JobRootConfiguration {
     
     private String jobExecutorServiceHandlerType;
     
-    private String jobExceptionHandlerType;
+    private String jobErrorHandlerType;
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
         Builder builder = JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).description("desc");
         builder.jobExecutorServiceHandlerType(jobExecutorServiceHandlerType);
-        builder.jobExceptionHandlerType(jobExceptionHandlerType);
+        builder.jobErrorHandlerType(jobErrorHandlerType);
         return new SimpleJobConfiguration(builder.build());
     }
 }

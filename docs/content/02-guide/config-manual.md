@@ -43,7 +43,7 @@ JobTypeConfiguration根据不同实现类型分为SimpleJobConfiguration，Dataf
 | failover                      | boolean | 否       | false  | 是否开启任务执行失效转移，开启表示如果作业在一次任务执行中途宕机，允许将该次未完成的任务在另一作业节点上补偿执行 |
 | misfire                       | boolean | 否       | true   | 是否开启错过任务重新执行 |
 | jobExecutorServiceHandlerType | String  | 否       |        | 配置作业线程池处理策略   |
-| jobExceptionHandlerType       | String  | 否       |        | 配置作业异常处理策略     |
+| jobErrorHandlerType       | String  | 否       |        | 配置作业异常处理策略     |
 | description                   | String  | 否       |        | 作业描述信息 |
 
 #### SimpleJobConfiguration属性详细说明
@@ -133,7 +133,7 @@ Spring命名空间与Java Code方式配置类似，大部分属性只是将命�
 | description                  | String  | 否      |                 | 作业描述信息                                                                 |
 | disabled                     | boolean | 否      | false           | 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 | overwrite                    | boolean | 否      | false           | 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
-| job-exception-handler        | String  | 否      |                 | 扩展异常处理类                                                               |
+| job-error-handler            | String  | 否      |                 | 扩展异常处理类                                                               |
 | job-executor-service-handler | String  | 否      |                 | 扩展作业处理线程池类                                                          |
 | reconcile-interval-minutes   | int     | 否      | 10              | 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复<br />单位：分钟 |
 | event-trace-rdb-data-source  | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                   |

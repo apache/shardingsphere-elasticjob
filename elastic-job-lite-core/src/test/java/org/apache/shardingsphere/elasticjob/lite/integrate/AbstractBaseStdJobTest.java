@@ -116,7 +116,7 @@ public abstract class AbstractBaseStdJobTest {
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobExceptionHandlerType("IGNORE").build();
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
             jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, false);
