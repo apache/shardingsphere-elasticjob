@@ -23,8 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleJson
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -33,7 +34,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class JobSettingsAPIImplTest {
+@RunWith(MockitoJUnitRunner.class)
+public final class JobSettingsAPIImplTest {
     
     private JobSettingsAPI jobSettingsAPI;
     
@@ -42,7 +44,6 @@ public class JobSettingsAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         jobSettingsAPI = new JobSettingsAPIImpl(regCenter);
     }
     
@@ -87,7 +88,6 @@ public class JobSettingsAPIImplTest {
     
     @Test
     public void assertUpdateJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
         jobSettings.setShardingTotalCount(10);
@@ -130,7 +130,6 @@ public class JobSettingsAPIImplTest {
     
     @Test
     public void assertRemoveJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
         jobSettingsAPI.removeJobSettings("test_job");
         verify(regCenter).remove("/test_job");
     }
