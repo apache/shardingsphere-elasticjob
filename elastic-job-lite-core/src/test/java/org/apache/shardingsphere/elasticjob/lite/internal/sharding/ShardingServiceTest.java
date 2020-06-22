@@ -21,10 +21,10 @@ import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
 import org.apache.curator.framework.api.transaction.TransactionDeleteBuilder;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
@@ -37,8 +37,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.TransactionExe
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -57,6 +58,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ShardingServiceTest {
     
     @Mock
@@ -87,7 +89,6 @@ public final class ShardingServiceTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingService, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(shardingService, "configService", configService);
@@ -242,7 +243,6 @@ public final class ShardingServiceTest {
         TransactionDeleteBuilder transactionDeleteBuilder = mock(TransactionDeleteBuilder.class);
         CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
         when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build());
         when(transactionCreateBuilder.forPath("/test_job/sharding/0/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
         when(transactionCreateBuilder.forPath("/test_job/sharding/1/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
         when(transactionCreateBuilder.forPath("/test_job/sharding/2/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
