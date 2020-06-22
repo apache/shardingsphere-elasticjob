@@ -23,12 +23,12 @@ import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventConfi
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventFailureConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -47,13 +47,13 @@ public final class JobEventBusTest {
     private JobEventBus jobEventBus;
     
     @Test
-    public void assertRegisterFailure() throws NoSuchFieldException {
+    public void assertRegisterFailure() {
         jobEventBus = new JobEventBus(new TestJobEventFailureConfiguration());
         assertIsRegistered(false);
     }
     
     @Test
-    public void assertPost() throws InterruptedException, NoSuchFieldException {
+    public void assertPost() throws InterruptedException {
         jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
         assertIsRegistered(true);
         jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
@@ -64,7 +64,7 @@ public final class JobEventBusTest {
     }
     
     @Test
-    public void assertPostWithoutListener() throws NoSuchFieldException {
+    public void assertPostWithoutListener() {
         jobEventBus = new JobEventBus();
         assertIsRegistered(false);
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
@@ -72,7 +72,7 @@ public final class JobEventBusTest {
         verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     
-    private void assertIsRegistered(final boolean actual) throws NoSuchFieldException {
-        assertThat(ReflectionUtils.getFieldValue(jobEventBus, JobEventBus.class.getDeclaredField("isRegistered")), is(actual));
+    private void assertIsRegistered(final boolean actual) {
+        assertThat(ReflectionUtils.getFieldValue(jobEventBus, "isRegistered"), is(actual));
     }
 }
