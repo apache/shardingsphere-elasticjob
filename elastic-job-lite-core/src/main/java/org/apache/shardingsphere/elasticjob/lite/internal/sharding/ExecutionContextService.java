@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;

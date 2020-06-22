@@ -21,7 +21,7 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.api.strategy.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
