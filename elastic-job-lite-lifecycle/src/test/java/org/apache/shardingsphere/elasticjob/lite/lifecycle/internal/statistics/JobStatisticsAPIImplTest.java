@@ -21,11 +21,11 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +34,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class JobStatisticsAPIImplTest {
     
     private JobStatisticsAPI jobStatisticsAPI;
@@ -43,7 +44,6 @@ public final class JobStatisticsAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         jobStatisticsAPI = new JobStatisticsAPIImpl(regCenter);
     }
     
@@ -55,7 +55,6 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetOKJobBriefInfo() {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
@@ -75,7 +74,6 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetOKJobBriefInfoWithPartialDisabledServer() {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
@@ -89,22 +87,17 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetDisabledJobBriefInfo() {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.get("/test_job/servers/ip2")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1"));
-        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
     }
     
     @Test
     public void assertGetShardingErrorJobBriefInfo() {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
@@ -118,9 +111,7 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetCrashedJobBriefInfo() {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.CRASHED));
     }
@@ -161,9 +152,6 @@ public final class JobStatisticsAPIImplTest {
     @Test
     public void assertGetJobsBriefInfoByIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2", "test_job_3"));
-        when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Collections.singletonList("ip1"));
-        when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Collections.singletonList("ip1"));
-        when(regCenter.getChildrenKeys("/test_job_3/servers")).thenReturn(Collections.singletonList("ip1"));
         when(regCenter.isExisted("/test_job_1/servers/ip1")).thenReturn(true);
         when(regCenter.isExisted("/test_job_2/servers/ip1")).thenReturn(true);
         when(regCenter.get("/test_job_2/servers/ip1")).thenReturn("DISABLED");

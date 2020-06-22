@@ -22,8 +22,9 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class ShardingStatisticsAPIImplTest {
     
     private ShardingStatisticsAPI shardingStatisticsAPI;
@@ -41,13 +43,11 @@ public final class ShardingStatisticsAPIImplTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         shardingStatisticsAPI = new ShardingStatisticsAPIImpl(regCenter);
     }
     
     @Test
     public void assertGetShardingInfo() {
-        when(regCenter.isExisted("/test_job/sharding")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2", "3"));
         when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@1234");
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@2341");
