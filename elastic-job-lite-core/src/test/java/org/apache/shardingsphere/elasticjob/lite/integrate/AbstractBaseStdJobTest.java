@@ -37,6 +37,7 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
@@ -141,7 +142,7 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() {
-        jobScheduler.getSchedulerFacade().shutdownInstance();
+        ((SchedulerFacade) ReflectionUtils.getFieldValue(jobScheduler, "schedulerFacade")).shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     

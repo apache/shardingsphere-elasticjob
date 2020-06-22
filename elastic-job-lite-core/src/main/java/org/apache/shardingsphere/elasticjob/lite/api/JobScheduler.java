@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api;
 
-import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
@@ -61,8 +60,6 @@ public final class JobScheduler {
     
     private final LiteJobConfiguration liteJobConfig;
     
-    // TODO Test use only. Should not create monitor service repeatedly. Will refactor MonitorService as singleton service in the future
-    @Getter
     private final SchedulerFacade schedulerFacade;
     
     private final JobFacade jobFacade;
