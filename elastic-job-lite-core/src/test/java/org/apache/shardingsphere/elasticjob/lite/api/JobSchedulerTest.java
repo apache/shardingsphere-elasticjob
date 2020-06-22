@@ -23,10 +23,10 @@ import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobTriggerListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -57,7 +56,7 @@ public final class JobSchedulerTest {
     private JobScheduler jobScheduler;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         liteJobConfig = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build())).build();
         jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), liteJobConfig);
@@ -66,17 +65,17 @@ public final class JobSchedulerTest {
     }
     
     @Test
-    public void assertInit() throws NoSuchFieldException, SchedulerException {
+    public void assertInit() throws SchedulerException {
         when(schedulerFacade.updateJobConfiguration(TestSimpleJob.class.getName(), liteJobConfig)).thenReturn(liteJobConfig);
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         jobScheduler.init();
         verify(schedulerFacade).registerStartUpInfo(true);
-        Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
+        Scheduler scheduler = (Scheduler) ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), "scheduler");
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
         jobScheduler.shutdown();
     }
-
+    
     @After
     public void tearDown() {
         JobRegistry.getInstance().shutdown("test_job");
