@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Test;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -70,7 +70,7 @@ public final class JobRegistryTest {
     }
     
     @Test
-    public void assertGetCurrentShardingTotalCountIfNotNull() throws NoSuchFieldException {
+    public void assertGetCurrentShardingTotalCountIfNotNull() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("exist_job_instance", 10);
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount("exist_job_instance"), is(10));
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
