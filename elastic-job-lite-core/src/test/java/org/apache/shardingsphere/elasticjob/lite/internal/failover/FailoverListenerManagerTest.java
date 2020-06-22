@@ -28,13 +28,13 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobLi
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,8 +61,8 @@ public final class FailoverListenerManagerTest {
     private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(failoverListenerManager, failoverListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+    public void setUp() {
+        ReflectionUtils.setSuperclassFieldValue(failoverListenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(failoverListenerManager, "configService", configService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "failoverService", failoverService);
