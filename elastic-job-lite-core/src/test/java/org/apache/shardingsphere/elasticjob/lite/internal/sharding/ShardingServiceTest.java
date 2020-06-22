@@ -35,12 +35,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.TransactionExecutionCallback;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public final class ShardingServiceTest {
     private final ShardingService shardingService = new ShardingService(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingService, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(shardingService, "configService", configService);
