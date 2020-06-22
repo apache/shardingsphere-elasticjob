@@ -34,7 +34,7 @@ public final class JobEventBus {
     
     private final EventBus eventBus;
     
-    private boolean isRegistered;
+    private volatile boolean isRegistered;
     
     public JobEventBus() {
         jobEventConfig = null;
