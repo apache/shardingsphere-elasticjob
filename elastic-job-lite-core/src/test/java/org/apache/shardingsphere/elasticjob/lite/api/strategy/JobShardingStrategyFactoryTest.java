@@ -25,7 +25,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public class JobShardingStrategyFactoryTest {
+public final class JobShardingStrategyFactoryTest {
     
     @Test
     public void assertGetDefaultStrategy() {
@@ -33,12 +33,12 @@ public class JobShardingStrategyFactoryTest {
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void assertGetStrategyFailureWhenTypeNotFound() {
+    public void assertGetInvalidStrategy() {
         JobShardingStrategyFactory.getStrategy("INVALID");
     }
     
     @Test
-    public void assertGetStrategySuccess() {
+    public void assertGetStrategy() {
         assertThat(JobShardingStrategyFactory.getStrategy("ODEVITY"), instanceOf(OdevitySortByNameJobShardingStrategy.class));
     }
 }
