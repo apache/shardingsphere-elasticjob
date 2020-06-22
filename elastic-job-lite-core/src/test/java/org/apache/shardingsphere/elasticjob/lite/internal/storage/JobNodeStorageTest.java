@@ -195,7 +195,6 @@ public final class JobNodeStorageTest {
         when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
         when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
         when(curatorTransactionBridge.and()).thenThrow(new RuntimeException());
         jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
         verify(regCenter).getRawClient();
@@ -204,7 +203,6 @@ public final class JobNodeStorageTest {
         verify(transactionCheckBuilder).forPath("/");
         verify(curatorTransactionBridge, times(2)).and();
         verify(curatorTransactionFinal).create();
-        verify(transactionCreateBuilder).forPath("/test_transaction");
         verify(curatorTransactionFinal, times(0)).commit();
     }
     
