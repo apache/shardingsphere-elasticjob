@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.SimpleJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
