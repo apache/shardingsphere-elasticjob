@@ -32,12 +32,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverServi
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public final class LiteJobFacadeTest {
     private LiteJobFacade liteJobFacade;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         liteJobFacade = new LiteJobFacade(null, "test_job", Collections.singletonList(new TestElasticJobListener(caller)), eventBus);
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
