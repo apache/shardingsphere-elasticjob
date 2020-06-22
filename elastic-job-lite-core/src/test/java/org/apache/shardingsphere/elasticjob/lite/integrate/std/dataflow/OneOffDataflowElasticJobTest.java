@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.OneOffDataflowElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +42,8 @@ public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoIn
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig().getCoreConfig(), "misfire", false);
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", false);
+        ReflectionUtils.setFieldValue(liteJobConfig.getTypeConfig().getCoreConfig(), "misfire", false);
+        ReflectionUtils.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", false);
     }
     
     @Test
