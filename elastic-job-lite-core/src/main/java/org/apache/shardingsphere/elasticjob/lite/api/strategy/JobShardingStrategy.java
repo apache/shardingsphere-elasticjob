@@ -17,13 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.strategy;
 
+import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+
 import java.util.List;
 import java.util.Map;
 
 /**
  * Job sharding strategy.
  */
-public interface JobShardingStrategy {
+public interface JobShardingStrategy extends TypedSPI {
     
     /**
      * Sharding job.
@@ -34,11 +36,4 @@ public interface JobShardingStrategy {
      * @return sharding result
      */
     Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String jobName, int shardingTotalCount);
-    
-    /**
-     * Get job sharding strategy type.
-     * 
-     * @return job sharding strategy type
-     */
-    String getType();
 }

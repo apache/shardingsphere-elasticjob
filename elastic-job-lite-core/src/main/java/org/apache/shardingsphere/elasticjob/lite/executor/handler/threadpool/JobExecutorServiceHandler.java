@@ -17,12 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.handler.threadpool;
 
+import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+
 import java.util.concurrent.ExecutorService;
 
 /**
  * Job executor service handler.
  */
-public interface JobExecutorServiceHandler {
+public interface JobExecutorServiceHandler extends TypedSPI {
     
     /**
      * Create executor service.
@@ -32,11 +34,4 @@ public interface JobExecutorServiceHandler {
      * @return executor service
      */
     ExecutorService createExecutorService(String jobName);
-    
-    /**
-     * Get job executor service handler type.
-     * 
-     * @return job executor service handler type
-     */
-    String getType();
 }
