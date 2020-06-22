@@ -45,7 +45,7 @@ public final class ConfigurationServiceTest {
     private final ConfigurationService configService = new ConfigurationService(null, "test_job");
     
     @Before
-    public void initMocks() throws NoSuchFieldException {
+    public void setUp() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(configService, "jobNodeStorage", jobNodeStorage);
     }
     

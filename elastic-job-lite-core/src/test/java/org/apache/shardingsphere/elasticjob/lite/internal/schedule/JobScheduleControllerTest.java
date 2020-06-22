@@ -53,7 +53,7 @@ public final class JobScheduleControllerTest {
     private JobScheduleController jobScheduleController;
     
     @Before
-    public void initMocks() {
+    public void setUp() {
         jobScheduleController = new JobScheduleController(scheduler, jobDetail, "test_job_Trigger");
     }
     
