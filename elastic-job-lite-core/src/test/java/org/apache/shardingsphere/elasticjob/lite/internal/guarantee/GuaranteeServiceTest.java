@@ -23,12 +23,12 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 
@@ -49,7 +49,7 @@ public final class GuaranteeServiceTest {
     private final GuaranteeService guaranteeService = new GuaranteeService(null, "test_job");
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
     }
