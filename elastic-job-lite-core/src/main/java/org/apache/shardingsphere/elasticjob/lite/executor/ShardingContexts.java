@@ -59,9 +59,4 @@ public final class ShardingContexts implements Serializable {
      * Sharding items and parameters map.
      */
     private final Map<Integer, String> shardingItemParameters;
-    
-    /**
-     * Job event sampling count.
-     */
-    private int jobEventSamplingCount;
 }
