@@ -31,6 +31,6 @@ public final class TestDataflowJobConfiguration implements JobRootConfiguration 
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobExceptionHandlerType("IGNORE").build(), streamingProcess);
+        return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), streamingProcess);
     }
 }

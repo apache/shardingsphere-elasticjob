@@ -29,7 +29,7 @@ public final class JobCoreConfigurationTest {
     @Test
     public void assertBuildAllProperties() {
         JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).jobExceptionHandlerType("IGNORE").description("desc").build();
+                .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("IGNORE").description("desc").build();
         assertRequiredProperties(actual);
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(actual.getJobParameter(), is("param"));

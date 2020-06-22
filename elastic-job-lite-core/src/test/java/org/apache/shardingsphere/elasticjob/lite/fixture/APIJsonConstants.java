@@ -25,48 +25,48 @@ public final class APIJsonConstants {
     
     private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003dA,1\\u003dB,2\\u003dC\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,"
-            + "\"jobExceptionHandlerType\":\"%s\","
+            + "\"jobErrorHandlerType\":\"%s\","
             + "\"description\":\"desc\"}";
     
     private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,"
-            + "\"jobExceptionHandlerType\":\"%s\","
+            + "\"jobErrorHandlerType\":\"%s\","
             + "\"description\":\"\",\"streamingProcess\":true}";
     
     private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SCRIPT\","
             + "\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,"
-            + "\"jobExceptionHandlerType\":\"%s\","
+            + "\"jobErrorHandlerType\":\"%s\","
             + "\"description\":\"\","
             + "\"scriptCommandLine\":\"test.sh\"}";
     
     /**
      * Get configuration of simple job in json format.
      *
-     * @param jobExceptionHandlerType the canonical name of the job exception handler
+     * @param jobErrorHandlerType job error handler type
      * @return configuration of simple job in json format
      */
-    public static String getSimpleJobJson(final String jobExceptionHandlerType) {
-        return String.format(SIMPLE_JOB_JSON, jobExceptionHandlerType);
+    public static String getSimpleJobJson(final String jobErrorHandlerType) {
+        return String.format(SIMPLE_JOB_JSON, jobErrorHandlerType);
     }
     
     /**
      * Get configuration of dataflow job in json format.
      *
-     * @param jobExceptionHandlerType the canonical name of the job exception handler
+     * @param jobErrorHandlerType job error handler type
      * @return configuration of dataflow job in json format
      */
-    public static String getDataflowJobJson(final String jobExceptionHandlerType) {
-        return String.format(DATAFLOW_JOB_JSON, jobExceptionHandlerType);
+    public static String getDataflowJobJson(final String jobErrorHandlerType) {
+        return String.format(DATAFLOW_JOB_JSON, jobErrorHandlerType);
     }
     
     /**
      * Get configuration of script job in json format.
      *
-     * @param jobExceptionHandlerType the canonical name of the job exception handler
+     * @param jobErrorHandlerType job error handler type
      * @return configuration of script job in json format
      */
-    public static String getScriptJobJson(final String jobExceptionHandlerType) {
-        return String.format(SCRIPT_JOB_JSON, jobExceptionHandlerType);
+    public static String getScriptJobJson(final String jobErrorHandlerType) {
+        return String.format(SCRIPT_JOB_JSON, jobErrorHandlerType);
     }
 }

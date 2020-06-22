@@ -17,22 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
 
 /**
- * Job exception handler for log error message.
+ * Job error handler for ignore exception.
  */
-@Slf4j
-public final class LogJobExceptionHandler implements JobExceptionHandler {
+public final class IgnoreJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
     @Override
     public String getType() {
-        return "LOG";
+        return "IGNORE";
     }
 }

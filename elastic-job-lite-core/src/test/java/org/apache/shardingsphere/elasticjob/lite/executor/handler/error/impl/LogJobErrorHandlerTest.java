@@ -17,19 +17,24 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.event.fixture.JobEventCaller;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-/**
- * Job exception handler for ignore exception.
- */
-public final class IgnoreJobExceptionHandler implements JobExceptionHandler {
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class LogJobErrorHandlerTest {
     
-    @Override
-    public void handleException(final String jobName, final Throwable cause) {
-    }
+    @Mock
+    private JobEventCaller caller;
     
-    @Override
-    public String getType() {
-        return "IGNORE";
+    @Test
+    public void assertHandleException() {
+        new LogJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+        verify(caller, atMost(1)).call();
     }
 }

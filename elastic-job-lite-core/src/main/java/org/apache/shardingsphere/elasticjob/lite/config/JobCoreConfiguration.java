@@ -47,7 +47,7 @@ public final class JobCoreConfiguration {
     
     private final String jobExecutorServiceHandlerType;
     
-    private final String jobExceptionHandlerType;
+    private final String jobErrorHandlerType;
     
     private final String description;
     
@@ -82,7 +82,7 @@ public final class JobCoreConfiguration {
     
         private String jobExecutorServiceHandlerType;
     
-        private String jobExceptionHandlerType;
+        private String jobErrorHandlerType;
         
         private String description = "";
         
@@ -151,14 +151,14 @@ public final class JobCoreConfiguration {
         }
         
         /**
-         * Set job exception handler type.
+         * Set job error handler type.
          *
-         * @param jobExceptionHandlerType job exception handler type
+         * @param jobErrorHandlerType job error handler type
          *
          * @return job configuration builder
          */
-        public Builder jobExceptionHandlerType(final String jobExceptionHandlerType) {
-            this.jobExceptionHandlerType = jobExceptionHandlerType;
+        public Builder jobErrorHandlerType(final String jobErrorHandlerType) {
+            this.jobErrorHandlerType = jobErrorHandlerType;
             return this;
         }
         
@@ -198,7 +198,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobCoreConfiguration(
-                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobExceptionHandlerType, description);
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
         }
     }
 }

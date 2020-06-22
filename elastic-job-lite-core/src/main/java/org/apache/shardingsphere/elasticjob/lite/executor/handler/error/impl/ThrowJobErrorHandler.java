@@ -15,25 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.handler.error;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
+
+import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
 
 /**
- * Job exception handler.
+ * Job error handler for throw exception.
  */
-public interface JobExceptionHandler {
+public final class ThrowJobErrorHandler implements JobErrorHandler {
     
-    /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause cause
-     */
-    void handleException(String jobName, Throwable cause);
+    @Override
+    public void handleException(final String jobName, final Throwable cause) {
+        throw new JobSystemException(cause);
+    }
     
-    /**
-     * Get job exception handler type.
-     *
-     * @return job exception handler type
-     */
-    String getType();
+    @Override
+    public String getType() {
+        return "THROW";
+    }
 }

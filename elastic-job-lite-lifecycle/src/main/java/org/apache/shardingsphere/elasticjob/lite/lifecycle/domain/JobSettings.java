@@ -57,7 +57,7 @@ public final class JobSettings implements Serializable {
     
     private String jobShardingStrategyType;
     
-    private String jobExceptionHandlerType;
+    private String jobErrorHandlerType;
     
     private String jobExecutorServiceHandlerType;
     

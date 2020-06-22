@@ -27,33 +27,33 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 /**
- * Job exception handler factory.
+ * Job error handler factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobExceptionHandlerFactory {
+public final class JobErrorHandlerFactory {
     
-    private static final Map<String, JobExceptionHandler> HANDLERS = new LinkedHashMap<>();
+    private static final Map<String, JobErrorHandler> HANDLERS = new LinkedHashMap<>();
     
     private static final String DEFAULT_HANDLER = "LOG";
     
     static {
-        for (JobExceptionHandler each : ServiceLoader.load(JobExceptionHandler.class)) {
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
             HANDLERS.put(each.getType(), each);
         }
     }
     
     /**
-     * Get job exception handler.
+     * Get job error handler.
      *
-     * @param type job exception handler type
-     * @return job exception handler
+     * @param type job error handler type
+     * @return job error handler
      */
-    public static JobExceptionHandler getHandler(final String type) {
+    public static JobErrorHandler getHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
             return HANDLERS.get(DEFAULT_HANDLER);
         }
         if (!HANDLERS.containsKey(type)) {
-            throw new JobConfigurationException("Can not find job exception handler type '%s'.", type);
+            throw new JobConfigurationException("Can not find job error handler type '%s'.", type);
         }
         return HANDLERS.get(type);
     } 

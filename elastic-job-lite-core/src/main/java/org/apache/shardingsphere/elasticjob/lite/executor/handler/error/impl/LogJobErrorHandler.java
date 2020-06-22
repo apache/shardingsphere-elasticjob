@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.fixture.handler;
+package org.apache.shardingsphere.elasticjob.lite.executor.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobExceptionHandler;
+import org.apache.shardingsphere.elasticjob.lite.executor.handler.error.JobErrorHandler;
+import lombok.extern.slf4j.Slf4j;
 
-public class SimpleJobExceptionHandler implements JobExceptionHandler {
+/**
+ * Job error handler for log error message.
+ */
+@Slf4j
+public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        throw new RuntimeException(cause);
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
     @Override
     public String getType() {
-        return "SIMPLE";
+        return "LOG";
     }
 }
