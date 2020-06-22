@@ -22,13 +22,15 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class MonitorExecutionListenerManagerTest {
     
     @Mock
@@ -41,7 +43,6 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(monitorExecutionListenerManager, monitorExecutionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(monitorExecutionListenerManager, "executionService", executionService);
     }
