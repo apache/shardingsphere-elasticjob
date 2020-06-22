@@ -26,12 +26,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.instance.TriggerListen
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.MonitorExecutionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
@@ -73,7 +73,7 @@ public final class ListenerManagerTest {
     private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.emptyList());
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
