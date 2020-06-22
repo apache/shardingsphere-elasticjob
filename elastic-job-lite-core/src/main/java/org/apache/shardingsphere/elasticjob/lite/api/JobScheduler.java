@@ -21,12 +21,12 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -55,11 +55,11 @@ public final class JobScheduler {
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
+    private final CoordinatorRegistryCenter regCenter;
+    
     private final ElasticJob elasticJob;
     
     private final LiteJobConfiguration liteJobConfig;
-    
-    private final CoordinatorRegistryCenter regCenter;
     
     // TODO Test use only. Should not create monitor service repeatedly. Will refactor MonitorService as singleton service in the future
     @Getter
@@ -78,10 +78,10 @@ public final class JobScheduler {
     
     private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, 
                          final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
-        JobRegistry.getInstance().addJobInstance(liteJobConfig.getJobName(), new JobInstance());
+        this.regCenter = regCenter;
         this.elasticJob = elasticJob;
         this.liteJobConfig = liteJobConfig;
-        this.regCenter = regCenter;
+        JobRegistry.getInstance().addJobInstance(liteJobConfig.getJobName(), new JobInstance());
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
         schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
