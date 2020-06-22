@@ -62,7 +62,6 @@
         <mysql-connector-java.version>5.1.30</mysql-connector-java.version>
         <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
-        <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>2.7.21</mockito.version>
         
         <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
@@ -246,12 +245,6 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.unitils</groupId>
-                <artifactId>unitils-core</artifactId>
-                <version>${unitils.core.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
