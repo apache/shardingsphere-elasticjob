@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.util.env;
 
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class HostExceptionTest {
@@ -29,6 +29,6 @@ public final class HostExceptionTest {
     @Test
     public void assertGetCause() {
         IOException cause = new IOException();
-        assertThat(new HostException(cause).getCause(), Is.is(cause));
+        assertThat(new HostException(cause).getCause(), is(cause));
     }
 }

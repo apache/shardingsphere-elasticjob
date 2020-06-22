@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.fixture.TestR
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
-import org.hamcrest.core.Is;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -78,7 +77,7 @@ public final class RestfulServerTest {
     @Test
     public void assertCallFailure() throws Exception {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":\"invalid_number\"}");
-        assertThat(actual.getResponseStatus(), Is.is(500));
+        assertThat(actual.getResponseStatus(), is(500));
         assertThat(actual.getResponseContent(), StringStartsWith.startsWith("java.lang.NumberFormatException"));
         verify(caller).call("test");
     }
