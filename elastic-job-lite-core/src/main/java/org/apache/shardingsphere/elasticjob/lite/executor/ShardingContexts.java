@@ -67,12 +67,6 @@ public final class ShardingContexts implements Serializable {
     private int jobEventSamplingCount;
     
     /**
-     * Current job event sampling count.
-     */
-    @Setter
-    private int currentJobEventSamplingCount;
-    
-    /**
      * Whether allow send job event.
      */
     @Setter
