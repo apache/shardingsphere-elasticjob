@@ -64,14 +64,4 @@ public final class ShardingContexts implements Serializable {
      * Job event sampling count.
      */
     private int jobEventSamplingCount;
-    
-    public ShardingContexts(final String taskId, final String jobName, final int shardingTotalCount, final String jobParameter, 
-                            final Map<Integer, String> shardingItemParameters, final int jobEventSamplingCount) {
-        this.taskId = taskId;
-        this.jobName = jobName;
-        this.shardingTotalCount = shardingTotalCount;
-        this.jobParameter = jobParameter;
-        this.shardingItemParameters = shardingItemParameters;
-        this.jobEventSamplingCount = jobEventSamplingCount;
-    }
 }
