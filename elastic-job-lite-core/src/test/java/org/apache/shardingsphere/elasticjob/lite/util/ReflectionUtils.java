@@ -56,4 +56,18 @@ public final class ReflectionUtils {
         field.setAccessible(true);
         field.set(target, fieldValue);
     }
+    
+    /**
+     * Set superclass field value.
+     *
+     * @param target target object
+     * @param fieldName field name
+     * @param fieldValue field value
+     */
+    @SneakyThrows
+    public static void setSuperclassFieldValue(final Object target, final String fieldName, final Object fieldValue) {
+        Field field = target.getClass().getSuperclass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, fieldValue);
+    }
 }
