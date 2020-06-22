@@ -25,14 +25,16 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class TriggerListenerManagerTest {
     
     @Mock
@@ -53,7 +55,6 @@ public final class TriggerListenerManagerTest {
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         triggerListenerManager = new TriggerListenerManager(null, "test_job");
-        MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(triggerListenerManager, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(triggerListenerManager, triggerListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
