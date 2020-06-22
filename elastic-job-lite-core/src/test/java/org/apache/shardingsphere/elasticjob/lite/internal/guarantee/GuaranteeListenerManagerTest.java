@@ -24,9 +24,10 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobLi
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class GuaranteeListenerManagerTest {
     
     @Mock
@@ -49,7 +51,6 @@ public final class GuaranteeListenerManagerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         guaranteeListenerManager = new GuaranteeListenerManager(null, "test_job", Arrays.asList(elasticJobListener, distributeOnceElasticJobListener));
         ReflectionUtils.setFieldValue(guaranteeListenerManager, guaranteeListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
