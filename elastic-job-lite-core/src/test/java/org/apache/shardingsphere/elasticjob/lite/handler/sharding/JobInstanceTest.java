@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.strategy;
+package org.apache.shardingsphere.elasticjob.lite.handler.sharding;
 
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-/**
- * Job sharding strategy.
- */
-public interface JobShardingStrategy extends TypedSPI {
+public final class JobInstanceTest {
     
-    /**
-     * Sharding job.
-     * 
-     * @param jobInstances all job instances which participate in sharding
-     * @param jobName job name
-     * @param shardingTotalCount sharding total count
-     * @return sharding result
-     */
-    Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String jobName, int shardingTotalCount);
+    @Test
+    public void assertGetJobInstanceId() {
+        assertThat(new JobInstance("127.0.0.1@-@0").getJobInstanceId(), is("127.0.0.1@-@0"));
+    }
+    
+    @Test
+    public void assertGetIp() {
+        assertThat(new JobInstance().getIp(), CoreMatchers.is(IpUtils.getIp()));
+    }
 }
