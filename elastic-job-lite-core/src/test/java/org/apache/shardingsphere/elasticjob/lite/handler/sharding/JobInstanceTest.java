@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.handler.sharding;
 
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,6 +32,6 @@ public final class JobInstanceTest {
     
     @Test
     public void assertGetIp() {
-        assertThat(new JobInstance().getIp(), CoreMatchers.is(IpUtils.getIp()));
+        assertThat(new JobInstance().getIp(), is(IpUtils.getIp()));
     }
 }

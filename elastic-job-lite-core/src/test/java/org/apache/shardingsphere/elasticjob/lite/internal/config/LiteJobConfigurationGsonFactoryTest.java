@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -75,7 +74,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     public void assertFromJsonForSimpleJob() {
         LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobType(), CoreMatchers.is(JobType.SIMPLE));
+        assertThat(actual.getTypeConfig().getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
