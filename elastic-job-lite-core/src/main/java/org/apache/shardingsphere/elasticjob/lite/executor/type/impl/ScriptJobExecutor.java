@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.type;
+package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
@@ -26,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
 import java.io.IOException;
