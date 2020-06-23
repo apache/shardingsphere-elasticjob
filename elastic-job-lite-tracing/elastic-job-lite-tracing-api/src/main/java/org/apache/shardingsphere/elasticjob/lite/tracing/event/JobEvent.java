@@ -15,33 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
-
-import com.google.common.eventbus.AllowConcurrentEvents;
-import com.google.common.eventbus.Subscribe;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
+package org.apache.shardingsphere.elasticjob.lite.tracing.event;
 
 /**
- * Job event listener.
+ * Job event.
  */
-public interface JobEventListener extends JobEventIdentity {
+public interface JobEvent {
     
     /**
-     * Listen job execution event.
-     *
-     * @param jobExecutionEvent job execution event
+     * Get job name.
+     * 
+     * @return job name
      */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobExecutionEvent jobExecutionEvent);
-    
-    /**
-     * Listen job status trace event.
-     *
-     * @param jobStatusTraceEvent job status trace event
-     */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobStatusTraceEvent jobStatusTraceEvent);
+    String getJobName();
 }

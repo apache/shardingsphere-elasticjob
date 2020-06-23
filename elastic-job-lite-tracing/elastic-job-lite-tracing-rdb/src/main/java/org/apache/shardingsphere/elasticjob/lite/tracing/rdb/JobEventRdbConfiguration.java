@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListenerConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -39,11 +39,11 @@ public final class JobEventRdbConfiguration extends JobEventRdbIdentity implemen
     private final transient DataSource dataSource;
     
     @Override
-    public JobEventListener createJobEventListener() throws JobEventListenerConfigurationException {
+    public JobEventListener createJobEventListener() throws TracingConfigurationException {
         try {
             return new JobEventRdbListener(dataSource);
         } catch (final SQLException ex) {
-            throw new JobEventListenerConfigurationException(ex);
+            throw new TracingConfigurationException(ex);
         }
     }
 }

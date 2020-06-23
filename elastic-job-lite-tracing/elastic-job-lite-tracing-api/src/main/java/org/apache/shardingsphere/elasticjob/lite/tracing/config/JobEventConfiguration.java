@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
+package org.apache.shardingsphere.elasticjob.lite.tracing.config;
+
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
 /**
  * Job event configuration.
@@ -26,7 +30,7 @@ public interface JobEventConfiguration extends JobEventIdentity {
      * Create job event listener.
      * 
      * @return Job event listener
-     * @throws JobEventListenerConfigurationException job event listener configuration exception
+     * @throws TracingConfigurationException tracing configuration exception
      */
-    JobEventListener createJobEventListener() throws JobEventListenerConfigurationException;
+    JobEventListener createJobEventListener() throws TracingConfigurationException;
 }

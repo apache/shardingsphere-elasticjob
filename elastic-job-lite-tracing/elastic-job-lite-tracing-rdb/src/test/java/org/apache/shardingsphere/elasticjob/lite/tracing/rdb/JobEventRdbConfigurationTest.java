@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListenerConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public final class JobEventRdbConfigurationTest {
     }
     
     @Test
-    public void assertCreateJobEventListenerSuccess() throws JobEventListenerConfigurationException {
+    public void assertCreateJobEventListenerSuccess() throws TracingConfigurationException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
@@ -47,8 +47,8 @@ public final class JobEventRdbConfigurationTest {
         assertThat(new JobEventRdbConfiguration(dataSource).createJobEventListener(), instanceOf(JobEventRdbListener.class));
     }
     
-    @Test(expected = JobEventListenerConfigurationException.class)
-    public void assertCreateJobEventListenerFailure() throws JobEventListenerConfigurationException {
+    @Test(expected = TracingConfigurationException.class)
+    public void assertCreateJobEventListenerFailure() throws TracingConfigurationException {
         new JobEventRdbConfiguration(new BasicDataSource()).createJobEventListener();
     }
 }

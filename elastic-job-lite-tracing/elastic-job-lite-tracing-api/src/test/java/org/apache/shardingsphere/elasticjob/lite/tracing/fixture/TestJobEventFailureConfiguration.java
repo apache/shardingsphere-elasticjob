@@ -17,14 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListenerConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
 public final class TestJobEventFailureConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     
     @Override
-    public JobEventListener createJobEventListener() throws JobEventListenerConfigurationException {
-        throw new JobEventListenerConfigurationException(new RuntimeException("assert failure"));
+    public JobEventListener createJobEventListener() throws TracingConfigurationException {
+        throw new TracingConfigurationException(new RuntimeException("assert failure"));
     }
 }

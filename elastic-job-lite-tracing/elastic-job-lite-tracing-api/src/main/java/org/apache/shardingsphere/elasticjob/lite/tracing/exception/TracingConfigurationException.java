@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
+package org.apache.shardingsphere.elasticjob.lite.tracing.exception;
 
 /**
- * Job event listener configuration exception.
+ * Tracing configuration exception.
  */
-public final class JobEventListenerConfigurationException extends Exception {
+public final class TracingConfigurationException extends Exception {
     
     private static final long serialVersionUID = 4069519372148227761L;
     
-    public JobEventListenerConfigurationException(final Exception ex) {
+    public TracingConfigurationException(final Exception ex) {
         super(ex);
     }
 }

@@ -23,6 +23,9 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -67,7 +70,7 @@ public final class JobEventBus {
         try {
             eventBus.register(jobEventConfig.createJobEventListener());
             isRegistered = true;
-        } catch (final JobEventListenerConfigurationException ex) {
+        } catch (final TracingConfigurationException ex) {
             log.error("Elastic job: create JobEventListener failure, error is: ", ex);
         }
     }
