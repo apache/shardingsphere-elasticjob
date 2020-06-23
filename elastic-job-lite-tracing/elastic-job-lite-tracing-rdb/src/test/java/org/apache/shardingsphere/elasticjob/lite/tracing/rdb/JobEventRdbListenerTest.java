@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListenerConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.Source;
@@ -52,7 +52,7 @@ public final class JobEventRdbListenerTest {
     private JobEventBus jobEventBus;
     
     @Before
-    public void setUp() throws JobEventListenerConfigurationException, SQLException {
+    public void setUp() throws TracingConfigurationException, SQLException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");

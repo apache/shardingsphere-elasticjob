@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing;
 
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
+
 /**
  * Job event configuration.
  */
@@ -26,7 +28,7 @@ public interface JobEventConfiguration extends JobEventIdentity {
      * Create job event listener.
      * 
      * @return Job event listener
-     * @throws JobEventListenerConfigurationException job event listener configuration exception
+     * @throws TracingConfigurationException tracing configuration exception
      */
-    JobEventListener createJobEventListener() throws JobEventListenerConfigurationException;
+    JobEventListener createJobEventListener() throws TracingConfigurationException;
 }
