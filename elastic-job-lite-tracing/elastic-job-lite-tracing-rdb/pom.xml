@@ -27,4 +27,12 @@
     </parent>
     <artifactId>elastic-job-lite-tracing-rdb</artifactId>
     <name>${project.artifactId}</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elastic-job-lite-tracing-rdb</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 </project>
