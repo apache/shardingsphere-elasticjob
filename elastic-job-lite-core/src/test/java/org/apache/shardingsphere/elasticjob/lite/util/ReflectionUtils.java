@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Reflection utilities.
@@ -54,6 +55,23 @@ public final class ReflectionUtils {
     public static void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
         Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
+        field.set(target, fieldValue);
+    }
+    
+    /**
+     * Set static field value.
+     *
+     * @param target target object
+     * @param fieldName field name
+     * @param fieldValue field value
+     */
+    @SneakyThrows
+    public static void setStaticFieldValue(final Object target, final String fieldName, final Object fieldValue) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        Field modifiers = field.getClass().getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(target, fieldValue);
     }
     

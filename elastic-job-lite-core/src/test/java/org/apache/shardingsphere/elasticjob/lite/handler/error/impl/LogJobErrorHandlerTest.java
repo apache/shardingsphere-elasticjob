@@ -17,12 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.error.impl;
 
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
 public final class LogJobErrorHandlerTest {
+    
+    @Mock
+    private Logger log;
     
     @Test
     public void assertHandleException() {
-        new LogJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+        LogJobErrorHandler actual = new LogJobErrorHandler();
+        ReflectionUtils.setStaticFieldValue(actual, "log", log);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException("test_job", cause);
+        verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
 }
