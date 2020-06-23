@@ -23,20 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracing
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class RDBTracingConfigurationTest {
-    
-    @Test
-    public void assertGetDataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(org.h2.Driver.class.getName());
-        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
-        assertThat(new RDBTracingConfiguration(dataSource).getDataSource(), is(dataSource));
-    }
     
     @Test
     public void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
