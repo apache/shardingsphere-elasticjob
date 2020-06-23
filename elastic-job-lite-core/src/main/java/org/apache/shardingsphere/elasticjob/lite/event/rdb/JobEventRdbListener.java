@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;

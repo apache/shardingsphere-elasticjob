@@ -15,17 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event;
+package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-/**
- * Job event identity.
- */
-public interface JobEventIdentity {
+public interface JobEventCaller {
     
     /**
-     * Get identity.
-     * 
-     * @return identity
+     * Execute call.
      */
-    String getIdentity();
+    void call();
 }

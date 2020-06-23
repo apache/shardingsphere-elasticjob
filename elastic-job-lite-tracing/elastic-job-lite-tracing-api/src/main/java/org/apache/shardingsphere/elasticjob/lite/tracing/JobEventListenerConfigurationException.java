@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.fixture;
+package org.apache.shardingsphere.elasticjob.lite.tracing;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventIdentity;
-
-public class TestJobEventIdentity implements JobEventIdentity {
+/**
+ * Job event listener configuration exception.
+ */
+public final class JobEventListenerConfigurationException extends Exception {
     
-    @Override
-    public String getIdentity() {
-        return "test";
+    private static final long serialVersionUID = 4069519372148227761L;
+    
+    public JobEventListenerConfigurationException(final Exception ex) {
+        super(ex);
     }
 }

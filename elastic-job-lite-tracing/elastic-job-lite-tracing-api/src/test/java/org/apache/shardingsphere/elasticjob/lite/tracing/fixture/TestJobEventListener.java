@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.fixture;
+package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
 
 @RequiredArgsConstructor
 public final class TestJobEventListener extends TestJobEventIdentity implements JobEventListener {

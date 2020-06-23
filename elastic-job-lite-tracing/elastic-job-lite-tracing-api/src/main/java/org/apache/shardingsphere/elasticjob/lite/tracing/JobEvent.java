@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.fixture;
+package org.apache.shardingsphere.elasticjob.lite.tracing;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-
-@RequiredArgsConstructor
-public final class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
+/**
+ * Job event.
+ */
+public interface JobEvent {
     
-    private final JobEventCaller jobEventCaller;
-    
-    @Override
-    public JobEventListener createJobEventListener() {
-        return new TestJobEventListener(jobEventCaller);
-    }
+    /**
+     * Get job name.
+     * 
+     * @return job name
+     */
+    String getJobName();
 }

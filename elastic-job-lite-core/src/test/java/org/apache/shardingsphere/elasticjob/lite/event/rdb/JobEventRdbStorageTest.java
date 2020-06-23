@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.Before;
 import org.junit.Test;

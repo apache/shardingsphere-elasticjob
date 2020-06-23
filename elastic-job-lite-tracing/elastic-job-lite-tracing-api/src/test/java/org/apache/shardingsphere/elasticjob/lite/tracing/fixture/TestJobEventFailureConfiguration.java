@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.fixture;
+package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventListenerConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListenerConfigurationException;
 
 public final class TestJobEventFailureConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     

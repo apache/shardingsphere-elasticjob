@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event;
+package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-/**
- * Job event configuration.
- */
-public interface JobEventConfiguration extends JobEventIdentity {
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+
+@RequiredArgsConstructor
+public final class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     
-    /**
-     * Create job event listener.
-     * 
-     * @return Job event listener
-     * @throws JobEventListenerConfigurationException job event listener configuration exception
-     */
-    JobEventListener createJobEventListener() throws JobEventListenerConfigurationException;
+    private final JobEventCaller jobEventCaller;
+    
+    @Override
+    public JobEventListener createJobEventListener() {
+        return new TestJobEventListener(jobEventCaller);
+    }
 }

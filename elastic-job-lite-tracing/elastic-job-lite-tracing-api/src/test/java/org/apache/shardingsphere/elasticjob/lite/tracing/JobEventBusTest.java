@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event;
+package org.apache.shardingsphere.elasticjob.lite.tracing;
 
 import com.google.common.eventbus.EventBus;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.JobEventCaller;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventFailureConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
+import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.JobEventCaller;
+import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventFailureConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.is;
+import java.lang.reflect.Field;
+
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +58,7 @@ public final class JobEventBusTest {
     public void assertPost() throws InterruptedException {
         jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
         assertIsRegistered(true);
-        jobEventBus.post(new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
@@ -65,15 +66,20 @@ public final class JobEventBusTest {
     }
     
     @Test
-    public void assertPostWithoutListener() {
+    public void assertPostWithoutListener() throws ReflectiveOperationException {
         jobEventBus = new JobEventBus();
         assertIsRegistered(false);
-        ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
-        jobEventBus.post(new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
-        verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
+        Field field = JobEventBus.class.getDeclaredField("eventBus");
+        field.setAccessible(true);
+        field.set(jobEventBus, eventBus);
+        jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        verify(eventBus, Mockito.times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     
+    @SneakyThrows
     private void assertIsRegistered(final boolean actual) {
-        assertThat(ReflectionUtils.getFieldValue(jobEventBus, "isRegistered"), is(actual));
+        Field field = JobEventBus.class.getDeclaredField("isRegistered");
+        field.setAccessible(true);
+        assertThat(field.get(jobEventBus), CoreMatchers.is(actual));
     }
 }

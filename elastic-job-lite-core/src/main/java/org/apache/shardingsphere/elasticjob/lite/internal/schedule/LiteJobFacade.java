@@ -23,11 +23,11 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;

@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.type;
+package org.apache.shardingsphere.elasticjob.lite.tracing.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEvent;
 
 import java.util.Date;
 import java.util.UUID;

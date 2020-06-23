@@ -23,8 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataS
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.rdb.JobEventRdbSearch;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;

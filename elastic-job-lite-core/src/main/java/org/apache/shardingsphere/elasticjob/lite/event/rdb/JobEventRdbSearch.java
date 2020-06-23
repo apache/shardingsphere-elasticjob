@@ -23,11 +23,11 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent.ExecutionSource;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

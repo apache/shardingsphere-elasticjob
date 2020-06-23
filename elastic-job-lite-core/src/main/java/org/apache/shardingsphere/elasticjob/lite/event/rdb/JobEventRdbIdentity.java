@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.event.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.event.JobEventIdentity;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
 
 /**
  * Job event RDB identity.
