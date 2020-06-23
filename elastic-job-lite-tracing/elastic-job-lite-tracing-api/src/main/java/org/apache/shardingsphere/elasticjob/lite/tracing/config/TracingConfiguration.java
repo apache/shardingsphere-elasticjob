@@ -18,18 +18,18 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.config;
 
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
 /**
- * Job event configuration.
+ * Tracing configuration.
  */
-public interface JobEventConfiguration {
+public interface TracingConfiguration {
     
     /**
-     * Create job event listener.
+     * Create tracing listener.
      * 
-     * @return Job event listener
+     * @return tracing listener
      * @throws TracingConfigurationException tracing configuration exception
      */
-    JobEventListener createJobEventListener() throws TracingConfigurationException;
+    TracingListener createTracingListener() throws TracingConfigurationException;
 }

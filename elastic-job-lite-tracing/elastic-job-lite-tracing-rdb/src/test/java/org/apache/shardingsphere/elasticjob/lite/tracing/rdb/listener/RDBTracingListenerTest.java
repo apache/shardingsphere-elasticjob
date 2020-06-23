@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEve
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.JobEventRdbConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +40,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class JobEventRdbListenerTest {
+public final class RDBTracingListenerTest {
     
     private static final String JOB_NAME = "test_rdb_event_listener";
     
     @Mock
-    private JobEventRdbConfiguration jobEventRdbConfiguration;
+    private RDBTracingConfiguration rdbTracingConfiguration;
     
     @Mock
     private JobEventRdbStorage repository;
@@ -59,17 +59,17 @@ public final class JobEventRdbListenerTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        JobEventRdbListener jobEventRdbListener = new JobEventRdbListener(dataSource);
-        setRepository(jobEventRdbListener);
-        when(jobEventRdbConfiguration.createJobEventListener()).thenReturn(jobEventRdbListener);
-        jobEventBus = new JobEventBus(jobEventRdbConfiguration);
+        RDBTracingListener tracingListener = new RDBTracingListener(dataSource);
+        setRepository(tracingListener);
+        when(rdbTracingConfiguration.createTracingListener()).thenReturn(tracingListener);
+        jobEventBus = new JobEventBus(rdbTracingConfiguration);
     }
     
     @SneakyThrows
-    private void setRepository(final JobEventRdbListener jobEventRdbListener) {
-        Field field = JobEventRdbListener.class.getDeclaredField("repository");
+    private void setRepository(final RDBTracingListener tracingListener) {
+        Field field = RDBTracingListener.class.getDeclaredField("repository");
         field.setAccessible(true);
-        field.set(jobEventRdbListener, repository);
+        field.set(tracingListener, repository);
     }
     
     @Test

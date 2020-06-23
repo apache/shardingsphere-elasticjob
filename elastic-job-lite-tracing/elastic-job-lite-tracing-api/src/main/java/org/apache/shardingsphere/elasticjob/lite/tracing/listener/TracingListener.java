@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,37 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.Subscribe;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 
-@RequiredArgsConstructor
-public final class TestJobEventListener implements JobEventListener {
-    
-    @Getter
-    private static volatile boolean executionEventCalled;
-    
-    private final JobEventCaller jobEventCaller;
-    
-    @Override
-    public void listen(final JobExecutionEvent jobExecutionEvent) {
-        jobEventCaller.call();
-        executionEventCalled = true;
-    }
-    
-    @Override
-    public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
-        jobEventCaller.call();
-    }
+/**
+ * Tracing listener.
+ */
+public interface TracingListener {
     
     /**
-     * Set executionEventCalled to false.
+     * Listen job execution event.
+     *
+     * @param jobExecutionEvent job execution event
      */
-    public static void reset() {
-        executionEventCalled = false;
-    }
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(JobExecutionEvent jobExecutionEvent);
+    
+    /**
+     * Listen job status trace event.
+     *
+     * @param jobStatusTraceEvent job status trace event
+     */
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(JobStatusTraceEvent jobStatusTraceEvent);
 }
