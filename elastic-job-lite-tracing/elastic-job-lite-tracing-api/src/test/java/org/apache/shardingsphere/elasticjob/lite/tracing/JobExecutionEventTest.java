@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 

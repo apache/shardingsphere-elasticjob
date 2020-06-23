@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;

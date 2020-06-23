@@ -19,11 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.tracing;
 
 import com.google.common.eventbus.EventBus;
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.JobEventCaller;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventFailureConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
+package org.apache.shardingsphere.elasticjob.lite.tracing.event;
 
 /**
  * Job event.
