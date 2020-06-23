@@ -23,6 +23,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 

@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

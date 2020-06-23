@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
+package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 

@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;

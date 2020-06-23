@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.JobEventRdbConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;

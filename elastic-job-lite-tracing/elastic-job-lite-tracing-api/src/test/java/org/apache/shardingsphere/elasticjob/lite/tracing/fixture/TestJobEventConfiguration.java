@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 
 @RequiredArgsConstructor
 public final class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {

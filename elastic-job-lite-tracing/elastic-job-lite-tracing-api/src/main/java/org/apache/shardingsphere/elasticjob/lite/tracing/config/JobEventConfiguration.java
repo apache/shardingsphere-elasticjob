@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing;
+package org.apache.shardingsphere.elasticjob.lite.tracing.config;
 
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
 /**

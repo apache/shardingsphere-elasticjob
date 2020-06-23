@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 
