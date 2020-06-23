@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 
 @RequiredArgsConstructor
-public final class TestJobEventListener extends TestJobEventIdentity implements JobEventListener {
+public final class TestJobEventListener implements JobEventListener {
     
     @Getter
     private static volatile boolean executionEventCalled;

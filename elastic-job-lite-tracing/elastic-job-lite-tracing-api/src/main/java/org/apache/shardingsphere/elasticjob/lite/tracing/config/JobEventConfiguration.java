@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.config;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 
 /**
  * Job event configuration.
  */
-public interface JobEventConfiguration extends JobEventIdentity {
+public interface JobEventConfiguration {
     
     /**
      * Create job event listener.
