@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics.type.job;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

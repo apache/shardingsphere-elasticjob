@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.rdb;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.StatisticInterval;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRegisterStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskResultStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskRunningStatistics;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
