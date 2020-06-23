@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
+import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandlerFactory;
@@ -174,7 +174,7 @@ public final class ElasticJobExecutor {
             // CHECKSTYLE:ON
             completeEvent = startEvent.executionFailure(cause);
             jobFacade.postJobExecutionEvent(completeEvent);
-            itemErrorMessages.put(item, ExceptionUtil.transform(cause));
+            itemErrorMessages.put(item, ExceptionUtils.transform(cause));
             jobErrorHandler.handleException(jobName, cause);
         }
     }

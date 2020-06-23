@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEvent;
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
+import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
 import java.util.Date;
@@ -92,7 +92,7 @@ public final class JobExecutionEvent implements JobEvent {
      * @return failure cause
      */
     public String getFailureCause() {
-        return ExceptionUtil.transform(failureCause == null ? null : failureCause.getThrowable());
+        return ExceptionUtils.transform(failureCause == null ? null : failureCause.getThrowable());
     }
     
     /**

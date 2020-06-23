@@ -24,10 +24,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Exception utility.
+ * Exception utilities.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ExceptionUtil {
+public final class ExceptionUtils {
     
     /**
      * Transform throwable to string.

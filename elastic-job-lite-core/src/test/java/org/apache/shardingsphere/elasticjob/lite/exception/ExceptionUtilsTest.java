@@ -23,20 +23,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class ExceptionUtilTest {
+public final class ExceptionUtilsTest {
     
     @Test
     public void assertTransformWithError() {
-        assertTrue(ExceptionUtil.transform(new Error("Error")).startsWith("java.lang.Error"));
+        assertTrue(ExceptionUtils.transform(new Error("Error")).startsWith("java.lang.Error"));
     }
     
     @Test
     public void assertTransformWithException() {
-        assertTrue(ExceptionUtil.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
+        assertTrue(ExceptionUtils.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
     }
     
     @Test
     public void assertTransformWithNull() {
-        assertThat(ExceptionUtil.transform(null), is(""));
+        assertThat(ExceptionUtils.transform(null), is(""));
     }
 }
