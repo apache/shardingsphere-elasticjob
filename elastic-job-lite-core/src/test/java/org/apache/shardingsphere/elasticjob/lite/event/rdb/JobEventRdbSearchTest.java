@@ -60,9 +60,8 @@ public class JobEventRdbSearchTest {
                 JobExecutionEvent successEvent = startEvent.executionSuccess();
                 storage.addJobExecutionEvent(successEvent);
             }
-            storage.addJobStatusTraceEvent(
-                    new JobStatusTraceEvent("test_job_" + i, "fake_failed_failover_task_id", "fake_slave_id", 
-                            Source.LITE_EXECUTOR, ExecutionType.FAILOVER, "0", State.TASK_FAILED, "message is empty."));
+            storage.addJobStatusTraceEvent(new JobStatusTraceEvent(
+                    "test_job_" + i, "fake_failed_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.FAILOVER.name(), "0", State.TASK_FAILED, "message is empty."));
         }
     }
     

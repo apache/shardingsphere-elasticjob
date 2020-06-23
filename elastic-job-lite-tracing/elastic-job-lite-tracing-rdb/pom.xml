@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elastic-job-lite-tracing-rdb</artifactId>
+            <artifactId>elastic-job-lite-tracing-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

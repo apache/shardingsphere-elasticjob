@@ -23,7 +23,6 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEventThrowable;
@@ -113,7 +112,7 @@ public final class JobEventRdbSearch {
                 ) {
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), Source.valueOf(resultSet.getString(6)), ExecutionType.valueOf(resultSet.getString(7)), resultSet.getString(8),
+                        resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
                         State.valueOf(resultSet.getString(9)), resultSet.getString(10), new Date(resultSet.getTimestamp(11).getTime()));
                 result.add(jobStatusTraceEvent);
             }
