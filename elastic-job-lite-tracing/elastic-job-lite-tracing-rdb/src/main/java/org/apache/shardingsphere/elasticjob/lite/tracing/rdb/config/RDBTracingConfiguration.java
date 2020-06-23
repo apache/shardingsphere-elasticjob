@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListene
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
 
 import javax.sql.DataSource;
-import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
@@ -33,11 +32,9 @@ import java.sql.SQLException;
  */
 @RequiredArgsConstructor
 @Getter
-public final class RDBTracingConfiguration implements TracingConfiguration, Serializable {
+public final class RDBTracingConfiguration implements TracingConfiguration {
     
-    private static final long serialVersionUID = 3344410699286435226L;
-    
-    private final transient DataSource dataSource;
+    private final DataSource dataSource;
     
     @Override
     public TracingListener createTracingListener() throws TracingConfigurationException {

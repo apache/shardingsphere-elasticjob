@@ -20,10 +20,10 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class RDBTracingConfigurationTest {
@@ -35,7 +35,7 @@ public final class RDBTracingConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new RDBTracingConfiguration(dataSource).getDataSource(), CoreMatchers.is(dataSource));
+        assertThat(new RDBTracingConfiguration(dataSource).getDataSource(), is(dataSource));
     }
     
     @Test

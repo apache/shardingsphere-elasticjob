@@ -20,12 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.tracing;
 import com.google.common.eventbus.EventBus;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.JobEventCaller;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingFailureConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -35,6 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -81,6 +81,6 @@ public final class JobEventBusTest {
     private void assertIsRegistered(final boolean actual) {
         Field field = JobEventBus.class.getDeclaredField("isRegistered");
         field.setAccessible(true);
-        assertThat(field.get(jobEventBus), CoreMatchers.is(actual));
+        assertThat(field.get(jobEventBus), is(actual));
     }
 }
