@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics.rdb;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.rdb;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.lite.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.StatisticInterval;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRegisterStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskResultStatistics;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskRunningStatistics;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics.type.job;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task;
 
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.StatisticInterval;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,20 @@ import lombok.RequiredArgsConstructor;
 import java.util.Date;
 
 /**
- * Job register statistics.
+ * Task result statistics.
  */
 @Getter
-@RequiredArgsConstructor
 @AllArgsConstructor
-public final class JobRegisterStatistics {
+@RequiredArgsConstructor
+public final class TaskResultStatistics {
     
     private long id;
     
-    private final int registeredCount;
+    private final int successCount;
+    
+    private final int failedCount;
+    
+    private final StatisticInterval statisticInterval;
     
     private final Date statisticsTime;
     

@@ -15,19 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics.type.job;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Job execution type statistics.
+ * Job type statistics.
  */
 @Getter
 @AllArgsConstructor
-public final class JobExecutionTypeStatistics {
+public final class JobTypeStatistics {
     
-    private int transientJobCount;
+    private int scriptJobCount;
     
-    private int daemonJobCount;
+    private int simpleJobCount;
+    
+    private int dataflowJobCount;
 }

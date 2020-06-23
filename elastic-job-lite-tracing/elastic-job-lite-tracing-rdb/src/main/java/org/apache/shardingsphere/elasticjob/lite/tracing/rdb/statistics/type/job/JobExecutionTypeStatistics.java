@@ -15,23 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.statistics;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
- * statistic interval.
+ * Job execution type statistics.
  */
 @Getter
-@RequiredArgsConstructor
-public enum StatisticInterval {
+@AllArgsConstructor
+public final class JobExecutionTypeStatistics {
     
-    MINUTE("0 * * * * ?"),
+    private int transientJobCount;
     
-    HOUR("0 0 * * * ?"), 
-    
-    DAY("0 0 0 * * ?");
-    
-    private final String cron;
+    private int daemonJobCount;
 }
