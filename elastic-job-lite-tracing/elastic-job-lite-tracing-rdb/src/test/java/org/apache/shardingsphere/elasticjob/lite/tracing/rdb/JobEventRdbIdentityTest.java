@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.event.rdb;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventIdentity;
+import org.junit.Test;
 
-/**
- * Job event RDB identity.
- */
-public class JobEventRdbIdentity implements JobEventIdentity {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobEventRdbIdentityTest {
     
-    @Override
-    public final String getIdentity() {
-        return "rdb";
+    @Test
+    public void assertGetIdentity() {
+        assertThat(new JobEventRdbIdentity().getIdentity(), is("rdb"));
     }
 }
