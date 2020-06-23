@@ -15,35 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.JobEventRdbIdentity;
 
 import javax.sql.DataSource;
-import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
- * Job event RDB configuration.
+ * Job event RDB listener.
  */
-@RequiredArgsConstructor
-@Getter
-public final class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration, Serializable {
+public final class JobEventRdbListener extends JobEventRdbIdentity implements JobEventListener {
     
-    private static final long serialVersionUID = 3344410699286435226L;
+    private final JobEventRdbStorage repository;
     
-    private final transient DataSource dataSource;
+    public JobEventRdbListener(final DataSource dataSource) throws SQLException {
+        repository = new JobEventRdbStorage(dataSource);
+    }
     
     @Override
-    public JobEventListener createJobEventListener() throws TracingConfigurationException {
-        try {
-            return new JobEventRdbListener(dataSource);
-        } catch (final SQLException ex) {
-            throw new TracingConfigurationException(ex);
-        }
+    public void listen(final JobExecutionEvent executionEvent) {
+        repository.addJobExecutionEvent(executionEvent);
+    }
+    
+    @Override
+    public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
+        repository.addJobStatusTraceEvent(jobStatusTraceEvent);
     }
 }

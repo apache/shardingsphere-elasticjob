@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.DatabaseType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -41,7 +42,7 @@ import java.util.UUID;
  * Job event RDB storage.
  */
 @Slf4j
-final class JobEventRdbStorage {
+public final class JobEventRdbStorage {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
@@ -53,7 +54,7 @@ final class JobEventRdbStorage {
     
     private DatabaseType databaseType;
     
-    JobEventRdbStorage(final DataSource dataSource) throws SQLException {
+    public JobEventRdbStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         initTablesAndIndexes();
     }
@@ -151,7 +152,13 @@ final class JobEventRdbStorage {
         }
     }
     
-    boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
+    /**
+     * Add job execution event.
+     * 
+     * @param jobExecutionEvent job execution event
+     * @return add success or not
+     */
+    public boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         if (null == jobExecutionEvent.getCompleteTime()) {
             return insertJobExecutionEvent(jobExecutionEvent);
         } else {
@@ -295,7 +302,13 @@ final class JobEventRdbStorage {
         return result;
     }
     
-    boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
+    /**
+     * Add job status trace event.
+     * 
+     * @param jobStatusTraceEvent job status trace event
+     * @return add success or not
+     */
+    public boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         String originalTaskId = jobStatusTraceEvent.getOriginalTaskId();
         if (State.TASK_STAGING != jobStatusTraceEvent.getState()) {
             originalTaskId = getOriginalTaskId(jobStatusTraceEvent.getTaskId());
