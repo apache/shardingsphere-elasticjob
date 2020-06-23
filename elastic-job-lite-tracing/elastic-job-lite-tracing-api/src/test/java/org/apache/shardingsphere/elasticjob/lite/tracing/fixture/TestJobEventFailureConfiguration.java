@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfigur
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
-public final class TestJobEventFailureConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
+public final class TestJobEventFailureConfiguration implements JobEventConfiguration {
     
     @Override
     public JobEventListener createJobEventListener() throws TracingConfigurationException {

@@ -17,10 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.JobEventRdbIdentity;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ import java.sql.SQLException;
 /**
  * Job event RDB listener.
  */
-public final class JobEventRdbListener extends JobEventRdbIdentity implements JobEventListener {
+public final class JobEventRdbListener implements JobEventListener {
     
     private final JobEventRdbStorage repository;
     
