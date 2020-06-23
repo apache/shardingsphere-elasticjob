@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.event;
 
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,7 +33,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertNewJobExecutionEvent() {
-        JobExecutionEvent actual = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent actual = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getSource(), is(JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER));
         assertThat(actual.getShardingItem(), is(0));
@@ -45,7 +46,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertExecutionSuccess() {
-        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent successEvent = startEvent.executionSuccess();
         assertNotNull(successEvent.getCompleteTime());
         assertTrue(successEvent.isSuccess());
@@ -53,7 +54,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertExecutionFailure() {
-        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
         assertNotNull(failureEvent.getCompleteTime());
         assertFalse(failureEvent.isSuccess());

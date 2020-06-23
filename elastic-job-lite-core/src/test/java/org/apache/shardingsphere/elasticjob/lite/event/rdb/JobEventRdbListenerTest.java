@@ -26,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +67,7 @@ public final class JobEventRdbListenerTest {
     
     @Test
     public void assertPostJobExecutionEvent() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobEventBus.post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
     }

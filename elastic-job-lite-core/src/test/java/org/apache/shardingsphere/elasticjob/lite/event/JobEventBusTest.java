@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventFailu
 import org.apache.shardingsphere.elasticjob.lite.event.fixture.TestJobEventListener;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -56,7 +57,7 @@ public final class JobEventBusTest {
     public void assertPost() throws InterruptedException {
         jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
         assertIsRegistered(true);
-        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
@@ -68,7 +69,7 @@ public final class JobEventBusTest {
         jobEventBus = new JobEventBus();
         assertIsRegistered(false);
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
-        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     

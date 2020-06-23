@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -54,7 +55,7 @@ public class JobEventRdbSearchTest {
     
     private static void initStorage() {
         for (int i = 1; i <= 500; i++) {
-            JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job_" + i, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+            JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job_" + i, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
             storage.addJobExecutionEvent(startEvent);
             if (i % 2 == 0) {
                 JobExecutionEvent successEvent = startEvent.executionSuccess();

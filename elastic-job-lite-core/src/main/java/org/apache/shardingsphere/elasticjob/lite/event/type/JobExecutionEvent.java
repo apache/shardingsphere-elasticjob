@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -38,9 +37,9 @@ public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     
-    private String hostname = IpUtils.getHostName();
+    private final String hostname;
     
-    private String ip = IpUtils.getIp();
+    private final String ip;
     
     private final String taskId;
     
