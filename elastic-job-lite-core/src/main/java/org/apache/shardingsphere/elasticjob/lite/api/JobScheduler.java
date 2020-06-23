@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
@@ -68,7 +68,7 @@ public final class JobScheduler {
         this(regCenter, elasticJob, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final TracingConfiguration jobEventConfig, 
                         final ElasticJobListener... elasticJobListeners) {
         this(regCenter, elasticJob, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
     }

@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ public class DataflowJobConfig {
     private ZookeeperRegistryCenter regCenter;
     
     @Resource
-    private JobEventConfiguration jobEventConfiguration;
+    private TracingConfiguration tracingConfiguration;
     
     @Bean
     public DataflowJob dataflowJob() {
@@ -48,7 +48,7 @@ public class DataflowJobConfig {
     @Bean(initMethod = "init")
     public JobScheduler dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
                                              @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
-        return new JobScheduler(regCenter, dataflowJob, getLiteJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), jobEventConfiguration);
+        return new JobScheduler(regCenter, dataflowJob, getLiteJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfiguration);
     }
     
     private LiteJobConfiguration getLiteJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {

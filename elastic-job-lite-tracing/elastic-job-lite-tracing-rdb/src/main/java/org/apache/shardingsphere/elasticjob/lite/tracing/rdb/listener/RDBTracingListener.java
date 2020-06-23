@@ -15,33 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
-import com.google.common.eventbus.Subscribe;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
- * Job event listener.
+ * RDB tracing listener.
  */
-public interface JobEventListener {
+public final class RDBTracingListener implements TracingListener {
     
-    /**
-     * Listen job execution event.
-     *
-     * @param jobExecutionEvent job execution event
-     */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobExecutionEvent jobExecutionEvent);
+    private final JobEventRdbStorage repository;
     
-    /**
-     * Listen job status trace event.
-     *
-     * @param jobStatusTraceEvent job status trace event
-     */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobStatusTraceEvent jobStatusTraceEvent);
+    public RDBTracingListener(final DataSource dataSource) throws SQLException {
+        repository = new JobEventRdbStorage(dataSource);
+    }
+    
+    @Override
+    public void listen(final JobExecutionEvent executionEvent) {
+        repository.addJobExecutionEvent(executionEvent);
+    }
+    
+    @Override
+    public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
+        repository.addJobStatusTraceEvent(jobStatusTraceEvent);
+    }
 }

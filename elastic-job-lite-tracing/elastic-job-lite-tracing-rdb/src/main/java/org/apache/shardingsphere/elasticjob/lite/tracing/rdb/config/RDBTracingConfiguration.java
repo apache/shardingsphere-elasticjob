@@ -19,30 +19,30 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.JobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.JobEventRdbListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
- * Job event RDB configuration.
+ * RDB tracing configuration.
  */
 @RequiredArgsConstructor
 @Getter
-public final class JobEventRdbConfiguration implements JobEventConfiguration, Serializable {
+public final class RDBTracingConfiguration implements TracingConfiguration, Serializable {
     
     private static final long serialVersionUID = 3344410699286435226L;
     
     private final transient DataSource dataSource;
     
     @Override
-    public JobEventListener createJobEventListener() throws TracingConfigurationException {
+    public TracingListener createTracingListener() throws TracingConfigurationException {
         try {
-            return new JobEventRdbListener(dataSource);
+            return new RDBTracingListener(dataSource);
         } catch (final SQLException ex) {
             throw new TracingConfigurationException(ex);
         }

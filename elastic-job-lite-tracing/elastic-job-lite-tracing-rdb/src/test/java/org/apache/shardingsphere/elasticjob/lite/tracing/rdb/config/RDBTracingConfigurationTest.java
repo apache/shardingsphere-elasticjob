@@ -19,14 +19,14 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.JobEventRdbListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public final class JobEventRdbConfigurationTest {
+public final class RDBTracingConfigurationTest {
     
     @Test
     public void assertGetDataSource() {
@@ -35,21 +35,21 @@ public final class JobEventRdbConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new JobEventRdbConfiguration(dataSource).getDataSource(), CoreMatchers.is(dataSource));
+        assertThat(new RDBTracingConfiguration(dataSource).getDataSource(), CoreMatchers.is(dataSource));
     }
     
     @Test
-    public void assertCreateJobEventListenerSuccess() throws TracingConfigurationException {
+    public void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new JobEventRdbConfiguration(dataSource).createJobEventListener(), instanceOf(JobEventRdbListener.class));
+        assertThat(new RDBTracingConfiguration(dataSource).createTracingListener(), instanceOf(RDBTracingListener.class));
     }
     
     @Test(expected = TracingConfigurationException.class)
-    public void assertCreateJobEventListenerFailure() throws TracingConfigurationException {
-        new JobEventRdbConfiguration(new BasicDataSource()).createJobEventListener();
+    public void assertCreateTracingListenerFailure() throws TracingConfigurationException {
+        new RDBTracingConfiguration(new BasicDataSource()).createTracingListener();
     }
 }
