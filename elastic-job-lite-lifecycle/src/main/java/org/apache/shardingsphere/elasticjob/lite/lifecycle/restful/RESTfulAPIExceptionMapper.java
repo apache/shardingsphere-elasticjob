@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.restful;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtil;
+import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,6 +32,6 @@ public final class RESTfulAPIExceptionMapper implements ExceptionMapper<Throwabl
     
     @Override
     public Response toResponse(final Throwable cause) {
-        return Response.ok(ExceptionUtil.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        return Response.ok(ExceptionUtils.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }
