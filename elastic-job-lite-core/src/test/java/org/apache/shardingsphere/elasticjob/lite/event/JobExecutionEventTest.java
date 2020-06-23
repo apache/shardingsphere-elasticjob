@@ -22,7 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -41,7 +40,7 @@ public final class JobExecutionEventTest {
         assertNotNull(actual.getStartTime());
         assertNull(actual.getCompleteTime());
         assertFalse(actual.isSuccess());
-        assertThat(actual.getFailureCause(), is(""));
+        assertNull(actual.getFailureCause());
     }
     
     @Test
@@ -55,9 +54,9 @@ public final class JobExecutionEventTest {
     @Test
     public void assertExecutionFailure() {
         JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
         assertNotNull(failureEvent.getCompleteTime());
         assertFalse(failureEvent.isSuccess());
-        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        assertThat(failureEvent.getFailureCause(), is("java.lang.RuntimeException: failure"));
     }
 }

@@ -100,9 +100,9 @@ public class JobEventRdbStorageTest {
     public void assertUpdateJobExecutionEventWhenFailure() {
         JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         assertTrue(storage.addJobExecutionEvent(startEvent));
-        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
         assertTrue(storage.addJobExecutionEvent(failureEvent));
-        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        assertThat(failureEvent.getFailureCause(), is("java.lang.RuntimeException: failure"));
         assertNotNull(failureEvent.getCompleteTime());
     }
     
@@ -117,9 +117,9 @@ public class JobEventRdbStorageTest {
     @Test
     public void assertUpdateJobExecutionEventWhenFailureAndConflict() {
         JobExecutionEvent startEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
         assertTrue(storage.addJobExecutionEvent(failureEvent));
-        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        assertThat(failureEvent.getFailureCause(), is("java.lang.RuntimeException: failure"));
         assertFalse(storage.addJobExecutionEvent(startEvent));
     }
     
@@ -131,7 +131,7 @@ public class JobEventRdbStorageTest {
         for (int i = 0; i < 600; i++) {
             failureMsg.append(i);
         }
-        JobExecutionEvent failEvent = startEvent.executionFailure(new RuntimeException("failure" + failureMsg.toString()));
+        JobExecutionEvent failEvent = startEvent.executionFailure("java.lang.RuntimeException: failure" + failureMsg.toString());
         assertTrue(storage.addJobExecutionEvent(failEvent));
         assertThat(failEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }

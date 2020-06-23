@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.event.JobEvent;
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -58,7 +57,7 @@ public final class JobExecutionEvent implements JobEvent {
     private boolean success;
     
     @Setter
-    private JobExecutionEventThrowable failureCause;
+    private String failureCause;
     
     /**
      * Execution success.
@@ -78,20 +77,12 @@ public final class JobExecutionEvent implements JobEvent {
      * @param failureCause failure cause
      * @return job execution event
      */
-    public JobExecutionEvent executionFailure(final Throwable failureCause) {
-        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, new JobExecutionEventThrowable(failureCause));
+    public JobExecutionEvent executionFailure(final String failureCause) {
+        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
         result.setCompleteTime(new Date());
         result.setSuccess(false);
+        result.setFailureCause(failureCause);
         return result;
-    }
-    
-    /**
-     * Get failure cause.
-     * 
-     * @return failure cause
-     */
-    public String getFailureCause() {
-        return ExceptionUtils.transform(failureCause == null ? null : failureCause.getThrowable());
     }
     
     /**

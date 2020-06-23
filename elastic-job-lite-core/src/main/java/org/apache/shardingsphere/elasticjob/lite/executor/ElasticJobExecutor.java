@@ -173,7 +173,7 @@ public final class ElasticJobExecutor {
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            completeEvent = startEvent.executionFailure(cause);
+            completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
             jobErrorHandler.handleException(jobName, cause);

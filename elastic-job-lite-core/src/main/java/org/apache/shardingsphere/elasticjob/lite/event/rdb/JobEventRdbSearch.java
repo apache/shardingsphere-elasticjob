@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.lite.event.type.JobExecutionEventThrowable;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.event.type.JobStatusTraceEvent.State;
@@ -92,8 +91,7 @@ public final class JobEventRdbSearch {
                 JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), ExecutionSource.valueOf(resultSet.getString(6)), Integer.valueOf(resultSet.getString(7)), 
                         new Date(resultSet.getTimestamp(8).getTime()), resultSet.getTimestamp(9) == null ? null : new Date(resultSet.getTimestamp(9).getTime()), 
-                        resultSet.getBoolean(10), new JobExecutionEventThrowable(null, resultSet.getString(11)) 
-                        );
+                        resultSet.getBoolean(10), resultSet.getString(11));
                 result.add(jobExecutionEvent);
             }
         } catch (final SQLException ex) {
