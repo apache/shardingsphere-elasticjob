@@ -35,8 +35,6 @@ public final class TracingListenerFactory {
     
     private static final Map<String, TracingListenerConfiguration> LISTENER_CONFIGS = new HashMap<>();
     
-    private static final String DEFAULT_LISTENER = "NONE";
-    
     static {
         for (TracingListenerConfiguration each : ServiceLoader.load(TracingListenerConfiguration.class)) {
             LISTENER_CONFIGS.put(each.getType(), each);
@@ -52,10 +50,7 @@ public final class TracingListenerFactory {
      */
     @SuppressWarnings("unchecked")
     public static TracingListener getListener(final TracingConfiguration tracingConfig) throws TracingConfigurationException {
-        if (Strings.isNullOrEmpty(tracingConfig.getType())) {
-            return LISTENER_CONFIGS.get(DEFAULT_LISTENER).createTracingListener(tracingConfig.getStorage());
-        }
-        if (!LISTENER_CONFIGS.containsKey(tracingConfig.getType())) {
+        if (Strings.isNullOrEmpty(tracingConfig.getType()) || !LISTENER_CONFIGS.containsKey(tracingConfig.getType())) {
             throw new TracingConfigurationException(String.format("Can not find executor service handler type '%s'.", tracingConfig.getType()));
         }
         return LISTENER_CONFIGS.get(tracingConfig.getType()).createTracingListener(tracingConfig.getStorage());
