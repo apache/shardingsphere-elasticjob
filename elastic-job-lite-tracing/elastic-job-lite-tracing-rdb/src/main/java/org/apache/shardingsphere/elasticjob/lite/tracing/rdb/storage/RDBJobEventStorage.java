@@ -191,16 +191,16 @@ public final class RDBJobEventStorage {
         } catch (final SQLException ex) {
             if (!isDuplicateRecord(ex)) {
                 // TODO log failure directly to output log, consider to be configurable in the future
-                log.error(ex.getMessage());    
+                log.error(ex.getMessage());
             }
         }
         return result;
     }
     
     private boolean isDuplicateRecord(final SQLException ex) {
-        return DatabaseType.MySQL.equals(databaseType) && 1062 == ex.getErrorCode() || DatabaseType.H2.equals(databaseType) && 23505 == ex.getErrorCode() 
-                || DatabaseType.SQLServer.equals(databaseType) && 1 == ex.getErrorCode() || DatabaseType.DB2.equals(databaseType) && -803 == ex.getErrorCode()
-                || DatabaseType.PostgreSQL.equals(databaseType) && 0 == ex.getErrorCode() || DatabaseType.Oracle.equals(databaseType) && 1 == ex.getErrorCode();
+        return DatabaseType.MySQL == databaseType && 1062 == ex.getErrorCode() || DatabaseType.H2 == databaseType && 23505 == ex.getErrorCode() 
+                || DatabaseType.SQLServer == databaseType && 1 == ex.getErrorCode() || DatabaseType.DB2 == databaseType && -803 == ex.getErrorCode()
+                || DatabaseType.PostgreSQL == databaseType && 0 == ex.getErrorCode() || DatabaseType.Oracle == databaseType && 1 == ex.getErrorCode();
     }
     
     private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
