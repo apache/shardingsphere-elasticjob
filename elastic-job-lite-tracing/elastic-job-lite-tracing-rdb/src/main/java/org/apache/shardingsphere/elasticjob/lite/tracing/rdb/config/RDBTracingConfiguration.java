@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
@@ -30,7 +30,7 @@ import java.sql.SQLException;
  * RDB tracing configuration.
  */
 @RequiredArgsConstructor
-public final class RDBTracingConfiguration implements TracingConfiguration {
+public final class RDBTracingConfiguration implements TracingListenerConfiguration {
     
     private final DataSource dataSource;
     

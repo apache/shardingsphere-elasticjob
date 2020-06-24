@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
 @RequiredArgsConstructor
-public final class TestTracingConfiguration implements TracingConfiguration {
+public final class TestTracingConfiguration implements TracingListenerConfiguration {
     
     private final JobEventCaller jobEventCaller;
     

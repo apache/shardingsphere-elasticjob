@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,7 @@ public class JobEventConfig {
     private DataSource dataSource;
     
     @Bean
-    public TracingConfiguration tracingConfiguration() {
+    public TracingListenerConfiguration tracingConfiguration() {
         return new RDBTracingConfiguration(dataSource);
     }
 }

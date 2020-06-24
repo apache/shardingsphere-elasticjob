@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ public class SimpleJobConfig {
     private ZookeeperRegistryCenter regCenter;
     
     @Resource
-    private TracingConfiguration tracingConfiguration;
+    private TracingListenerConfiguration tracingConfiguration;
     
     @Bean
     public SimpleJob simpleJob() {

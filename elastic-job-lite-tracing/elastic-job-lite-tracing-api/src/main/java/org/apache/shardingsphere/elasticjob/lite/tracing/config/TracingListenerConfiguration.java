@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListene
 /**
  * Tracing configuration.
  */
-public interface TracingConfiguration {
+public interface TracingListenerConfiguration {
     
     /**
      * Create tracing listener.
