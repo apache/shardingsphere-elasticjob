@@ -24,7 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfig
 public final class TestTracingFailureConfiguration implements TracingListenerConfiguration {
     
     @Override
-    public TracingListener createTracingListener() throws TracingConfigurationException {
+    public TracingListener createTracingListener(final Object storage) throws TracingConfigurationException {
         throw new TracingConfigurationException(new RuntimeException("assert failure"));
+    }
+    
+    @Override
+    public String getType() {
+        return "FAIL";
     }
 }

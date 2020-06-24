@@ -17,17 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
-@RequiredArgsConstructor
-public final class TestTracingListenerConfiguration implements TracingListenerConfiguration {
-    
-    private final JobEventCaller jobEventCaller;
+public final class TestTracingListenerConfiguration implements TracingListenerConfiguration<JobEventCaller> {
     
     @Override
-    public TracingListener createTracingListener() {
-        return new TestTracingListener(jobEventCaller);
+    public TracingListener createTracingListener(final JobEventCaller storage) {
+        return new TestTracingListener(storage);
+    }
+    
+    @Override
+    public String getType() {
+        return "TEST";
     }
 }

@@ -34,11 +34,11 @@ public final class RDBTracingListenerConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new RDBTracingListenerConfiguration(dataSource).createTracingListener(), instanceOf(RDBTracingListener.class));
+        assertThat(new RDBTracingListenerConfiguration().createTracingListener(dataSource), instanceOf(RDBTracingListener.class));
     }
     
     @Test(expected = TracingConfigurationException.class)
     public void assertCreateTracingListenerFailure() throws TracingConfigurationException {
-        new RDBTracingListenerConfiguration(new BasicDataSource()).createTracingListener();
+        new RDBTracingListenerConfiguration().createTracingListener(new BasicDataSource());
     }
 }

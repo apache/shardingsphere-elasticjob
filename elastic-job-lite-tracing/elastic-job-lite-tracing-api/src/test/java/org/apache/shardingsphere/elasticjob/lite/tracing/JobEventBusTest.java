@@ -19,11 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.tracing;
 
 import com.google.common.eventbus.EventBus;
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.JobEventCaller;
-import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingListenerConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingFailureConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,13 +50,13 @@ public final class JobEventBusTest {
     
     @Test
     public void assertRegisterFailure() {
-        jobEventBus = new JobEventBus(new TestTracingFailureConfiguration());
+        jobEventBus = new JobEventBus(new TracingConfiguration<>("FAIL", null));
         assertIsRegistered(false);
     }
     
     @Test
     public void assertPost() throws InterruptedException {
-        jobEventBus = new JobEventBus(new TestTracingListenerConfiguration(jobEventCaller));
+        jobEventBus = new JobEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
         assertIsRegistered(true);
         jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestTracingListener.isExecutionEventCalled()) {

@@ -21,15 +21,25 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfig
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
 /**
- * Tracing configuration.
+ * Tracing listener configuration.
+ * 
+ * @param <T> type of tracing storage
  */
-public interface TracingListenerConfiguration {
+public interface TracingListenerConfiguration<T> {
     
     /**
      * Create tracing listener.
      * 
+     * @param storage storage
      * @return tracing listener
      * @throws TracingConfigurationException tracing configuration exception
      */
-    TracingListener createTracingListener() throws TracingConfigurationException;
+    TracingListener createTracingListener(T storage) throws TracingConfigurationException;
+    
+    /**
+     * Get tracing type.
+     * 
+     * @return tracing type
+     */
+    String getType();
 }

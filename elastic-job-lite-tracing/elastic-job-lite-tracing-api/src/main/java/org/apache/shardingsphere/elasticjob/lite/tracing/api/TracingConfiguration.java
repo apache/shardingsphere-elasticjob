@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.exception;
+package org.apache.shardingsphere.elasticjob.lite.tracing.api;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Tracing configuration exception.
+ * Tracing configuration.
+ * 
+ * @param <T> type of tracing storage
  */
-public final class TracingConfigurationException extends Exception {
+@RequiredArgsConstructor
+@Getter
+public final class TracingConfiguration<T> {
     
-    private static final long serialVersionUID = 4069519372148227761L;
+    private final String type;
     
-    public TracingConfigurationException(final Exception ex) {
-        super(ex);
-    }
-    
-    public TracingConfigurationException(final String errorMessage) {
-        super(errorMessage);
-    }
+    private final T storage;
 }

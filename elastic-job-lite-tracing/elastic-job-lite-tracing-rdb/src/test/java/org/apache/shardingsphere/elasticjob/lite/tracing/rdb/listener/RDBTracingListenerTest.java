@@ -20,11 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +32,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RDBTracingListenerTest {
@@ -53,7 +53,7 @@ public final class RDBTracingListenerTest {
     private JobEventBus jobEventBus;
     
     @Before
-    public void setUp() throws TracingConfigurationException, SQLException {
+    public void setUp() throws SQLException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
@@ -61,8 +61,7 @@ public final class RDBTracingListenerTest {
         dataSource.setPassword("");
         RDBTracingListener tracingListener = new RDBTracingListener(dataSource);
         setRepository(tracingListener);
-        when(rdbTracingListenerConfig.createTracingListener()).thenReturn(tracingListener);
-        jobEventBus = new JobEventBus(rdbTracingListenerConfig);
+        jobEventBus = new JobEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
     }
     
     @SneakyThrows
