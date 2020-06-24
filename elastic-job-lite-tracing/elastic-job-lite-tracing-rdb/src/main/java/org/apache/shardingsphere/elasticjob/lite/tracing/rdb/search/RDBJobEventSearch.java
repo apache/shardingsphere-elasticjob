@@ -83,8 +83,8 @@ public final class RDBJobEventSearch {
     private List<JobExecutionEvent> getJobExecutionEvents(final Condition condition) {
         List<JobExecutionEvent> result = new LinkedList<>();
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {

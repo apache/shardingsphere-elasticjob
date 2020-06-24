@@ -59,11 +59,11 @@ public class RDBStatisticRepository {
     }
     
     private void initTables() throws SQLException {
-        try (Connection conn = dataSource.getConnection()) {
-            createTaskResultTableIfNeeded(conn);
-            createTaskRunningTableIfNeeded(conn);
-            createJobRunningTableIfNeeded(conn);
-            createJobRegisterTableIfNeeded(conn);
+        try (Connection connection = dataSource.getConnection()) {
+            createTaskResultTableIfNeeded(connection);
+            createTaskRunningTableIfNeeded(connection);
+            createJobRunningTableIfNeeded(connection);
+            createJobRegisterTableIfNeeded(connection);
         }
     }
     
@@ -165,8 +165,8 @@ public class RDBStatisticRepository {
         String sql = "INSERT INTO `" + TABLE_TASK_RESULT_STATISTICS + "_" + taskResultStatistics.getStatisticInterval()
                 + "` (`success_count`, `failed_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, taskResultStatistics.getSuccessCount());
             preparedStatement.setInt(2, taskResultStatistics.getFailedCount());
             preparedStatement.setTimestamp(3, new Timestamp(taskResultStatistics.getStatisticsTime().getTime()));
@@ -190,8 +190,8 @@ public class RDBStatisticRepository {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_TASK_RUNNING_STATISTICS + "` (`running_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, taskRunningStatistics.getRunningCount());
             preparedStatement.setTimestamp(2, new Timestamp(taskRunningStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(taskRunningStatistics.getCreationTime().getTime()));
@@ -214,8 +214,8 @@ public class RDBStatisticRepository {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_RUNNING_STATISTICS + "` (`running_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, jobRunningStatistics.getRunningCount());
             preparedStatement.setTimestamp(2, new Timestamp(jobRunningStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(jobRunningStatistics.getCreationTime().getTime()));
@@ -238,8 +238,8 @@ public class RDBStatisticRepository {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_REGISTER_STATISTICS + "` (`registered_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, jobRegisterStatistics.getRegisteredCount());
             preparedStatement.setTimestamp(2, new Timestamp(jobRegisterStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(jobRegisterStatistics.getCreationTime().getTime()));
@@ -265,8 +265,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -294,8 +294,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT sum(success_count), sum(failed_count) FROM %s WHERE statistics_time >= '%s'", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -319,8 +319,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval);
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -346,8 +346,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_TASK_RUNNING_STATISTICS, formatter.format(from));
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -374,8 +374,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_JOB_RUNNING_STATISTICS, formatter.format(from));
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -400,8 +400,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_TASK_RUNNING_STATISTICS);
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -425,8 +425,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_JOB_RUNNING_STATISTICS);
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -452,8 +452,8 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_JOB_REGISTER_STATISTICS, formatter.format(from));
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -478,13 +478,12 @@ public class RDBStatisticRepository {
         String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_JOB_REGISTER_STATISTICS);
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
-                result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
-                        new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
+                result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
             // TODO log failure directly to output log, consider to be configurable in the future

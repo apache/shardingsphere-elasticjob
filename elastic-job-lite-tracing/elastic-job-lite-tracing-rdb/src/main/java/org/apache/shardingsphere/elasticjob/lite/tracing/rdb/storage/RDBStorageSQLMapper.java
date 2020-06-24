@@ -61,6 +61,5 @@ public final class RDBStorageSQLMapper {
         insertForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.INSERT");
         selectForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT");
         selectOriginalTaskIdForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT_ORIGINAL_TASK_ID");
-        
     }
 }
