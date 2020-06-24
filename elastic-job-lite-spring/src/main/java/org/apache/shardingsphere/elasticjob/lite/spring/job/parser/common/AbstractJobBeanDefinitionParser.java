@@ -22,7 +22,7 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -47,9 +47,9 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createLiteJobConfiguration(parserContext, element));
-        BeanDefinition jobEventConfig = createJobEventConfig(element);
-        if (null != jobEventConfig) {
-            factory.addConstructorArgValue(jobEventConfig);
+        BeanDefinition tracingConfig = createTracingConfiguration(element);
+        if (null != tracingConfig) {
+            factory.addConstructorArgValue(tracingConfig);
         }
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
@@ -89,12 +89,13 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         return jobCoreBeanDefinitionBuilder.getBeanDefinition();
     }
     
-    private BeanDefinition createJobEventConfig(final Element element) {
+    private BeanDefinition createTracingConfiguration(final Element element) {
         String eventTraceDataSourceName = element.getAttribute(BaseJobBeanDefinitionParserTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
         if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
             return null;
         }
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(RDBTracingConfiguration.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(TracingConfiguration.class);
+        factory.addConstructorArgValue("RDB");
         factory.addConstructorArgReference(eventTraceDataSourceName);
         return factory.getBeanDefinition();
     }

@@ -17,14 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
-public final class TestTracingFailureConfiguration implements TracingConfiguration {
+public final class TestTracingFailureConfiguration implements TracingListenerConfiguration {
     
     @Override
-    public TracingListener createTracingListener() throws TracingConfigurationException {
+    public TracingListener createTracingListener(final Object storage) throws TracingConfigurationException {
         throw new TracingConfigurationException(new RuntimeException("assert failure"));
+    }
+    
+    @Override
+    public String getType() {
+        return "FAIL";
     }
 }

@@ -24,13 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -64,7 +63,7 @@ public final class JavaMain {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
-        TracingConfiguration tracingConfig = new RDBTracingConfiguration(setUpEventTraceDataSource());
+        TracingConfiguration tracingConfig = new TracingConfiguration<>("RDB", setUpEventTraceDataSource());
         setUpSimpleJob(regCenter, tracingConfig);
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
@@ -86,22 +85,22 @@ public final class JavaMain {
         return result;
     }
     
-    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration jobEventConfig) {
+    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig);
-        new JobScheduler(regCenter, new JavaSimpleJob(), LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, new JavaSimpleJob(), LiteJobConfiguration.newBuilder(simpleJobConfig).build(), tracingConfig).init();
     }
     
-    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration jobEventConfig) {
+    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, true);
-        new JobScheduler(regCenter, new JavaDataflowJob(), LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, new JavaDataflowJob(), LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
     }
     
-    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration jobEventConfig) throws IOException {
+    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-        new JobScheduler(regCenter, null, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfig).init();
+        new JobScheduler(regCenter, null, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {

@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerConfiguration;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * RDB tracing configuration.
+ * RDB tracing listener configuration.
  */
-@RequiredArgsConstructor
-public final class RDBTracingConfiguration implements TracingConfiguration {
-    
-    private final DataSource dataSource;
+public final class RDBTracingListenerConfiguration implements TracingListenerConfiguration<DataSource> {
     
     @Override
-    public TracingListener createTracingListener() throws TracingConfigurationException {
+    public TracingListener createTracingListener(final DataSource storage) throws TracingConfigurationException {
         try {
-            return new RDBTracingListener(dataSource);
+            return new RDBTracingListener(storage);
         } catch (final SQLException ex) {
             throw new TracingConfigurationException(ex);
         }
+    }
+    
+    @Override
+    public String getType() {
+        return "RDB";
     }
 }

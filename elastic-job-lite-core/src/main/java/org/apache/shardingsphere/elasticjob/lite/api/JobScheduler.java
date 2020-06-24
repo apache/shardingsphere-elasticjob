@@ -21,8 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistribute
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
@@ -34,6 +32,8 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -68,9 +68,9 @@ public final class JobScheduler {
         this(regCenter, elasticJob, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final TracingConfiguration jobEventConfig, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final TracingConfiguration tracingConfig, 
                         final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
+        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(tracingConfig), elasticJobListeners);
     }
     
     private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, 

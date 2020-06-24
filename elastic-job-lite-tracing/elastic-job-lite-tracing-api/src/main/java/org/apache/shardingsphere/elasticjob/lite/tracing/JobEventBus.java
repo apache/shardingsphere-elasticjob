@@ -23,7 +23,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerFactory;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
@@ -38,8 +39,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public final class JobEventBus {
     
-    private final TracingConfiguration jobEventConfig;
-    
     private final ExecutorService executorService;
     
     private final EventBus eventBus;
@@ -47,16 +46,14 @@ public final class JobEventBus {
     private volatile boolean isRegistered;
     
     public JobEventBus() {
-        jobEventConfig = null;
         executorService = null;
         eventBus = null;
     }
     
-    public JobEventBus(final TracingConfiguration jobEventConfig) {
-        this.jobEventConfig = jobEventConfig;
+    public JobEventBus(final TracingConfiguration tracingConfig) {
         executorService = createExecutorService(Runtime.getRuntime().availableProcessors() * 2);
         eventBus = new AsyncEventBus(executorService);
-        register();
+        register(tracingConfig);
     }
     
     private ExecutorService createExecutorService(final int threadSize) {
@@ -66,9 +63,9 @@ public final class JobEventBus {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
     
-    private void register() {
+    private void register(final TracingConfiguration tracingConfig) {
         try {
-            eventBus.register(jobEventConfig.createTracingListener());
+            eventBus.register(TracingListenerFactory.getListener(tracingConfig));
             isRegistered = true;
         } catch (final TracingConfigurationException ex) {
             log.error("Elastic job: create tracing listener failure, error is: ", ex);

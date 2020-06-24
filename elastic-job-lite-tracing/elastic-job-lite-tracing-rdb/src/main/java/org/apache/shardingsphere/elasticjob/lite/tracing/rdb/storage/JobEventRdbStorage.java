@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.config;
+package org.apache.shardingsphere.elasticjob.lite.tracing.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
-/**
- * Tracing configuration.
- */
-public interface TracingConfiguration {
+public final class TestTracingListenerConfiguration implements TracingListenerConfiguration<JobEventCaller> {
     
-    /**
-     * Create tracing listener.
-     * 
-     * @return tracing listener
-     * @throws TracingConfigurationException tracing configuration exception
-     */
-    TracingListener createTracingListener() throws TracingConfigurationException;
+    @Override
+    public TracingListener createTracingListener(final JobEventCaller storage) {
+        return new TestTracingListener(storage);
+    }
+    
+    @Override
+    public String getType() {
+        return "TEST";
+    }
 }

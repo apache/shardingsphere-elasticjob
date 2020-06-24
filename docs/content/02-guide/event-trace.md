@@ -17,7 +17,7 @@ Elastic-Job-Lite 在配置中提供了 TracingConfiguration，目前支持数据
     // 初始化数据源
     DataSource dataSource = ...;
     // 定义日志数据库事件溯源配置
-    TracingConfiguration tracingConfig = new RDBTracingConfiguration(dataSource);
+    TracingConfiguration tracingConfig = new TracingConfiguration<>("RDB", dataSource);
     // 初始化注册中心
     CoordinatorRegistryCenter regCenter = ...;
     // 初始化作业配置

@@ -15,20 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.exception;
+package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
+
+import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 
 /**
- * Tracing configuration exception.
+ * Tracing listener configuration.
+ * 
+ * @param <T> type of tracing storage
  */
-public final class TracingConfigurationException extends Exception {
+public interface TracingListenerConfiguration<T> {
     
-    private static final long serialVersionUID = 4069519372148227761L;
+    /**
+     * Create tracing listener.
+     * 
+     * @param storage storage
+     * @return tracing listener
+     * @throws TracingConfigurationException tracing configuration exception
+     */
+    TracingListener createTracingListener(T storage) throws TracingConfigurationException;
     
-    public TracingConfigurationException(final Exception ex) {
-        super(ex);
-    }
-    
-    public TracingConfigurationException(final String errorMessage) {
-        super(errorMessage);
-    }
+    /**
+     * Get tracing type.
+     * 
+     * @return tracing type
+     */
+    String getType();
 }
