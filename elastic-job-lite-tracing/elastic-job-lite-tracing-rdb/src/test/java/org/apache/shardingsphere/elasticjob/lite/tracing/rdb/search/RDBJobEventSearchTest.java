@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.RDBJobEventSearch.Result;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.JobEventRdbStorage;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,11 +35,11 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class JobEventRdbSearchTest {
+public final class RDBJobEventSearchTest {
     
     private static JobEventRdbStorage storage;
     
-    private static JobEventRdbSearch repository;
+    private static RDBJobEventSearch repository;
     
     @BeforeClass
     public static void setUpClass() throws SQLException {
@@ -48,7 +49,7 @@ public final class JobEventRdbSearchTest {
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         storage = new JobEventRdbStorage(dataSource);
-        repository = new JobEventRdbSearch(dataSource);
+        repository = new RDBJobEventSearch(dataSource);
         initStorage();
     }
     
@@ -67,34 +68,34 @@ public final class JobEventRdbSearchTest {
     
     @Test
     public void assertFindJobExecutionEventsWithPageSizeAndNumber() {
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, null));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(50, 1, null, null, null, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(50, 1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(50));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(100, 5, null, null, null, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(100, 5, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(100));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(100, 6, null, null, null, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(100, 6, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(0));
     }
     
     @Test
     public void assertFindJobExecutionEventsWithErrorPageSizeAndNumber() {
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(-1, -1, null, null, null, null, null));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(-1, -1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
     
     @Test
     public void assertFindJobExecutionEventsWithSort() {
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "ASC", null, null, null));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "ASC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_1"));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "DESC", null, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "DESC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_99"));
@@ -102,11 +103,11 @@ public final class JobEventRdbSearchTest {
     
     @Test
     public void assertFindJobExecutionEventsWithErrorSort() {
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "ERROR_SORT", null, null, null));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "ERROR_SORT", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_1"));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, "notExistField", "ASC", null, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, "notExistField", "ASC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
@@ -115,19 +116,19 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobExecutionEventsWithTime() {
         Date now = new Date();
         Date tenMinutesBefore = new Date(now.getTime() - 10 * 60 * 1000);
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, tenMinutesBefore, null, null));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, tenMinutesBefore, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, now, null, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, now, null, null));
         assertThat(result.getTotal(), is(0));
         assertThat(result.getRows().size(), is(0));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, tenMinutesBefore, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, tenMinutesBefore, null));
         assertThat(result.getTotal(), is(0));
         assertThat(result.getRows().size(), is(0));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, now, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, now, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, tenMinutesBefore, now, null));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, tenMinutesBefore, now, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
@@ -136,12 +137,12 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobExecutionEventsWithFields() {
         Map<String, Object> fields = new HashMap<>();
         fields.put("isSuccess", "1");
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, fields));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(250));
         assertThat(result.getRows().size(), is(10));
         fields.put("isSuccess", null);
         fields.put("jobName", "test_job_1");
-        result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, fields));
+        result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(1));
         assertThat(result.getRows().size(), is(1));
     }
@@ -150,41 +151,41 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobExecutionEventsWithErrorFields() {
         Map<String, Object> fields = new HashMap<>();
         fields.put("notExistField", "some value");
-        JobEventRdbSearch.Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, fields));
+        Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
     
     @Test
     public void assertFindJobStatusTraceEventsWithPageSizeAndNumber() {
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, null));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(50, 1, null, null, null, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(50, 1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(50));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(100, 5, null, null, null, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(100, 5, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(100));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(100, 6, null, null, null, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(100, 6, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(0));
     }
     
     @Test
     public void assertFindJobStatusTraceEventsWithErrorPageSizeAndNumber() {
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(-1, -1, null, null, null, null, null));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(-1, -1, null, null, null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
     
     @Test
     public void assertFindJobStatusTraceEventsWithSort() {
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "ASC", null, null, null));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "ASC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_1"));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "DESC", null, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "DESC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_99"));
@@ -192,11 +193,11 @@ public final class JobEventRdbSearchTest {
     
     @Test
     public void assertFindJobStatusTraceEventsWithErrorSort() {
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, "jobName", "ERROR_SORT", null, null, null));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, "jobName", "ERROR_SORT", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
         assertThat(result.getRows().get(0).getJobName(), is("test_job_1"));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, "notExistField", "ASC", null, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, "notExistField", "ASC", null, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
@@ -205,19 +206,19 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobStatusTraceEventsWithTime() {
         Date now = new Date();
         Date tenMinutesBefore = new Date(now.getTime() - 10 * 60 * 1000);
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, tenMinutesBefore, null, null));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, tenMinutesBefore, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, now, null, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, now, null, null));
         assertThat(result.getTotal(), is(0));
         assertThat(result.getRows().size(), is(0));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, tenMinutesBefore, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, tenMinutesBefore, null));
         assertThat(result.getTotal(), is(0));
         assertThat(result.getRows().size(), is(0));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, now, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, now, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
-        result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, tenMinutesBefore, now, null));
+        result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, tenMinutesBefore, now, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }
@@ -226,7 +227,7 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobStatusTraceEventsWithFields() {
         Map<String, Object> fields = new HashMap<>();
         fields.put("jobName", "test_job_1");
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, fields));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(1));
         assertThat(result.getRows().size(), is(1));
     }
@@ -235,7 +236,7 @@ public final class JobEventRdbSearchTest {
     public void assertFindJobStatusTraceEventsWithErrorFields() {
         Map<String, Object> fields = new HashMap<>();
         fields.put("notExistField", "some value");
-        JobEventRdbSearch.Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new JobEventRdbSearch.Condition(10, 1, null, null, null, null, fields));
+        Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
     }

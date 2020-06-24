@@ -18,14 +18,15 @@
 package org.apache.shardingsphere.elasticjob.lite.console.restful;
 
 import com.google.common.base.Strings;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionEventTraceDataSourceConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.RDBJobEventSearch;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.RDBJobEventSearch.Result;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -63,12 +64,11 @@ public final class EventTraceHistoryRESTfulAPI {
     @Path("/execution")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public JobEventRdbSearch.Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo uriInfo) throws ParseException {
+    public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo uriInfo) throws ParseException {
         if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new JobEventRdbSearch.Result<>(0, new ArrayList<JobExecutionEvent>());
+            return new Result<>(0, new ArrayList<JobExecutionEvent>());
         }
-        JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(uriInfo, new String[]{"jobName", "ip", "isSuccess"}));
+        return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobExecutionEvents(buildCondition(uriInfo, new String[]{"jobName", "ip", "isSuccess"}));
     }
     
     /**
@@ -82,12 +82,11 @@ public final class EventTraceHistoryRESTfulAPI {
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public JobEventRdbSearch.Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo uriInfo) throws ParseException {
+    public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo uriInfo) throws ParseException {
         if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new JobEventRdbSearch.Result<>(0, new ArrayList<JobStatusTraceEvent>());
+            return new Result<>(0, new ArrayList<JobStatusTraceEvent>());
         }
-        JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(uriInfo, new String[]{"jobName", "source", "executionType", "state"}));
+        return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobStatusTraceEvents(buildCondition(uriInfo, new String[]{"jobName", "source", "executionType", "state"}));
     }
     
     private DataSource setUpEventTraceDataSource() {
@@ -99,7 +98,7 @@ public final class EventTraceHistoryRESTfulAPI {
         return result;
     }
     
-    private JobEventRdbSearch.Condition buildCondition(final UriInfo info, final String[] params) throws ParseException {
+    private RDBJobEventSearch.Condition buildCondition(final UriInfo info, final String[] params) throws ParseException {
         int perPage = 10;
         int page = 1;
         if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("per_page"))) {
@@ -120,7 +119,7 @@ public final class EventTraceHistoryRESTfulAPI {
         if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("endTime"))) {
             endTime = simpleDateFormat.parse(info.getQueryParameters().getFirst("endTime"));
         }
-        return new JobEventRdbSearch.Condition(perPage, page, sort, order, startTime, endTime, fields);
+        return new RDBJobEventSearch.Condition(perPage, page, sort, order, startTime, endTime, fields);
     }
     
     private Map<String, Object> getQueryParameters(final UriInfo info, final String[] params) {
