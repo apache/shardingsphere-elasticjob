@@ -17,21 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * Database type.
  */
+@RequiredArgsConstructor
 public enum DatabaseType {
     
     H2("H2"), MySQL("MySQL"), Oracle("Oracle"), SQLServer("Microsoft SQL Server"), DB2("DB2"), PostgreSQL("PostgreSQL");
     
     private final String productName;
-    
-    DatabaseType(final String productName) {
-        this.productName = productName;
-    }
     
     /**
      * Get database type.
