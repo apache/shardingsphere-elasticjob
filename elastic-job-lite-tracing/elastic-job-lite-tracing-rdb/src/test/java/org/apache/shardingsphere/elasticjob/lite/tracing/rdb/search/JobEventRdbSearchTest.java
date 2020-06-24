@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.JobEventRdbStorage;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.JobEventRdbStorage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
