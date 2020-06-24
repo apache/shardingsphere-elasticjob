@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
@@ -36,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -52,11 +54,21 @@ public final class RDBJobEventStorage {
     
     private final DataSource dataSource;
     
+    private final RDBStorageSQLMapper sqlMapper;
+    
     private DatabaseType databaseType;
     
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
+        sqlMapper = new RDBStorageSQLMapper(loadProps());
         initTablesAndIndexes();
+    }
+    
+    @SneakyThrows
+    private Properties loadProps() {
+        Properties result = new Properties();
+        result.load(RDBJobEventStorage.class.getClassLoader().getResourceAsStream("META-INF/sql/storage/mysql.properties"));
+        return result;
     }
     
     private void initTablesAndIndexes() throws SQLException {
@@ -92,62 +104,29 @@ public final class RDBJobEventStorage {
             boolean hasTaskIdIndex = false;
             while (resultSet.next()) {
                 if (indexName.equals(resultSet.getString("INDEX_NAME"))) {
-                    hasTaskIdIndex = true;    
+                    hasTaskIdIndex = true;
                 }
             }
             if (!hasTaskIdIndex) {
-                createTaskIdAndStateIndex(connection, tableName);
+                createTaskIdAndStateIndex(connection);
             }
         }
     }
     
     private void createJobExecutionTable(final Connection connection) throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`task_id` VARCHAR(255) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`sharding_item` INT NOT NULL, "
-                + "`execution_source` VARCHAR(20) NOT NULL, "
-                + "`failure_cause` VARCHAR(4000) NULL, "
-                + "`is_success` INT NOT NULL, "
-                + "`start_time` TIMESTAMP NULL, "
-                + "`complete_time` TIMESTAMP NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(dbSchema)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getCreateTableForJobExecutionLog())) {
             preparedStatement.execute();
         }
     }
     
     private void createJobStatusTraceTable(final Connection connection) throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_STATUS_TRACE_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`original_task_id` VARCHAR(255) NOT NULL, "
-                + "`task_id` VARCHAR(255) NOT NULL, "
-                + "`slave_id` VARCHAR(50) NOT NULL, "
-                + "`source` VARCHAR(50) NOT NULL, "
-                + "`execution_type` VARCHAR(20) NOT NULL, "
-                + "`sharding_item` VARCHAR(100) NOT NULL, "
-                + "`state` VARCHAR(20) NOT NULL, "
-                + "`message` VARCHAR(4000) NULL, "
-                + "`creation_time` TIMESTAMP NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(dbSchema)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getCreateTableForJobStatusTraceLog())) {
             preparedStatement.execute();
         }
     }
     
-    private void createTaskIdAndStateIndex(final Connection connection, final String tableName) throws SQLException {
-        String sql;
-        DatabaseMetaData dbMetaData = connection.getMetaData();
-        if ("MySQL".equalsIgnoreCase(dbMetaData.getDatabaseProductName())) {
-            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`(128), `state`);";
-        } else {
-            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
-        }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+    private void createTaskIdAndStateIndex(final Connection connection) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getCreateIndexForTaskIdStateIndex())) {
             preparedStatement.execute();
         }
     }
@@ -172,11 +151,9 @@ public final class RDBJobEventStorage {
     
     private boolean insertJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLog())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -205,10 +182,9 @@ public final class RDBJobEventStorage {
     
     private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getUpdateForJobExecutionLog())) {
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
             preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.setString(3, jobExecutionEvent.getId());
@@ -225,11 +201,9 @@ public final class RDBJobEventStorage {
     
     private boolean insertJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`, `complete_time`) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForComplete())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -254,10 +228,9 @@ public final class RDBJobEventStorage {
     
     private boolean updateJobExecutionEventFailure(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ?, `failure_cause` = ? WHERE id = ?";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getUpdateForJobExecutionLogForFailure())) {
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
             preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.setString(3, truncateString(jobExecutionEvent.getFailureCause()));
@@ -275,11 +248,9 @@ public final class RDBJobEventStorage {
     
     private boolean insertJobExecutionEventWhenFailure(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `failure_cause`, `is_success`, `start_time`) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForFailure())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -314,11 +285,9 @@ public final class RDBJobEventStorage {
             originalTaskId = getOriginalTaskId(jobStatusTraceEvent.getTaskId());
         }
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `original_task_id`, `task_id`, `slave_id`, `source`, `execution_type`, `sharding_item`,  " 
-                + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobStatusTraceLog())) {
             preparedStatement.setString(1, UUID.randomUUID().toString());
             preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
             preparedStatement.setString(3, originalTaskId);
@@ -340,15 +309,15 @@ public final class RDBJobEventStorage {
     }
     
     private String getOriginalTaskId(final String taskId) {
-        String sql = String.format("SELECT original_task_id FROM %s WHERE task_id = '%s' and state='%s' LIMIT 1", TABLE_JOB_STATUS_TRACE_LOG, taskId, State.TASK_STAGING);
         String result = "";
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-        ) {
-            if (resultSet.next()) {
-                return resultSet.getString("original_task_id");
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getSelectOriginalTaskIdForJobStatusTraceLog())) {
+            preparedStatement.setString(1, taskId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("original_task_id");
+                }
             }
         } catch (final SQLException ex) {
             // TODO log failure directly to output log, consider to be configurable in the future
@@ -362,18 +331,18 @@ public final class RDBJobEventStorage {
     }
     
     List<JobStatusTraceEvent> getJobStatusTraceEvents(final String taskId) {
-        String sql = String.format("SELECT * FROM %s WHERE task_id = '%s'", TABLE_JOB_STATUS_TRACE_LOG, taskId);
         List<JobStatusTraceEvent> result = new ArrayList<>();
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
-            while (resultSet.next()) {
-                JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
-                        State.valueOf(resultSet.getString(9)), resultSet.getString(10), new SimpleDateFormat("yyyy-mm-dd HH:MM:SS").parse(resultSet.getString(11)));
-                result.add(jobStatusTraceEvent);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getSelectForJobStatusTraceLog())) {
+            preparedStatement.setString(1, taskId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                            resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
+                            State.valueOf(resultSet.getString(9)), resultSet.getString(10), new SimpleDateFormat("yyyy-mm-dd HH:MM:SS").parse(resultSet.getString(11)));
+                    result.add(jobStatusTraceEvent);
+                }
             }
         } catch (final SQLException | ParseException ex) {
             // TODO log failure directly to output log, consider to be configurable in the future
