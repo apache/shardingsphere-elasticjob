@@ -39,10 +39,10 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Job event RDB storage.
+ * RDB job event storage.
  */
 @Slf4j
-public final class JobEventRdbStorage {
+public final class RDBJobEventStorage {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
@@ -54,41 +54,41 @@ public final class JobEventRdbStorage {
     
     private DatabaseType databaseType;
     
-    public JobEventRdbStorage(final DataSource dataSource) throws SQLException {
+    public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         initTablesAndIndexes();
     }
     
     private void initTablesAndIndexes() throws SQLException {
-        try (Connection conn = dataSource.getConnection()) {
-            createJobExecutionTableAndIndexIfNeeded(conn);
-            createJobStatusTraceTableAndIndexIfNeeded(conn);
-            databaseType = DatabaseType.valueFrom(conn.getMetaData().getDatabaseProductName());
+        try (Connection connection = dataSource.getConnection()) {
+            createJobExecutionTableAndIndexIfNeeded(connection);
+            createJobStatusTraceTableAndIndexIfNeeded(connection);
+            databaseType = DatabaseType.valueFrom(connection.getMetaData().getDatabaseProductName());
         }
     }
     
-    private void createJobExecutionTableAndIndexIfNeeded(final Connection conn) throws SQLException {
-        DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(conn.getCatalog(), null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
+    private void createJobExecutionTableAndIndexIfNeeded(final Connection connection) throws SQLException {
+        DatabaseMetaData dbMetaData = connection.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
-                createJobExecutionTable(conn);
+                createJobExecutionTable(connection);
             }
         }
     }
     
-    private void createJobStatusTraceTableAndIndexIfNeeded(final Connection conn) throws SQLException {
-        DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(conn.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
+    private void createJobStatusTraceTableAndIndexIfNeeded(final Connection connection) throws SQLException {
+        DatabaseMetaData dbMetaData = connection.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
-                createJobStatusTraceTable(conn);
+                createJobStatusTraceTable(connection);
             }
         }
-        createTaskIdIndexIfNeeded(conn, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_STATE_INDEX);
+        createTaskIdIndexIfNeeded(connection, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_STATE_INDEX);
     }
     
-    private void createTaskIdIndexIfNeeded(final Connection conn, final String tableName, final String indexName) throws SQLException {
-        DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getIndexInfo(conn.getCatalog(), null, tableName, false, false)) {
+    private void createTaskIdIndexIfNeeded(final Connection connection, final String tableName, final String indexName) throws SQLException {
+        DatabaseMetaData dbMetaData = connection.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getIndexInfo(connection.getCatalog(), null, tableName, false, false)) {
             boolean hasTaskIdIndex = false;
             while (resultSet.next()) {
                 if (indexName.equals(resultSet.getString("INDEX_NAME"))) {
@@ -96,12 +96,12 @@ public final class JobEventRdbStorage {
                 }
             }
             if (!hasTaskIdIndex) {
-                createTaskIdAndStateIndex(conn, tableName);
+                createTaskIdAndStateIndex(connection, tableName);
             }
         }
     }
     
-    private void createJobExecutionTable(final Connection conn) throws SQLException {
+    private void createJobExecutionTable(final Connection connection) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
@@ -115,12 +115,12 @@ public final class JobEventRdbStorage {
                 + "`start_time` TIMESTAMP NULL, "
                 + "`complete_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(dbSchema)) {
             preparedStatement.execute();
         }
     }
     
-    private void createJobStatusTraceTable(final Connection conn) throws SQLException {
+    private void createJobStatusTraceTable(final Connection connection) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_STATUS_TRACE_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
@@ -134,20 +134,20 @@ public final class JobEventRdbStorage {
                 + "`message` VARCHAR(4000) NULL, "
                 + "`creation_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(dbSchema)) {
             preparedStatement.execute();
         }
     }
     
-    private void createTaskIdAndStateIndex(final Connection conn, final String tableName) throws SQLException {
+    private void createTaskIdAndStateIndex(final Connection connection, final String tableName) throws SQLException {
         String sql;
-        DatabaseMetaData dbMetaData = conn.getMetaData();
+        DatabaseMetaData dbMetaData = connection.getMetaData();
         if ("MySQL".equalsIgnoreCase(dbMetaData.getDatabaseProductName())) {
             sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`(128), `state`);";
         } else {
             sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
         }
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.execute();
         }
     }

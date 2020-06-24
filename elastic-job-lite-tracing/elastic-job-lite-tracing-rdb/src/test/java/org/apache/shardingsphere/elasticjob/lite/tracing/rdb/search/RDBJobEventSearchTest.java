@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEve
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.RDBJobEventSearch.Result;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.JobEventRdbStorage;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.RDBJobEventStorage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
 
 public final class RDBJobEventSearchTest {
     
-    private static JobEventRdbStorage storage;
+    private static RDBJobEventStorage storage;
     
     private static RDBJobEventSearch repository;
     
@@ -48,7 +48,7 @@ public final class RDBJobEventSearchTest {
         dataSource.setUrl("jdbc:h2:mem:");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        storage = new JobEventRdbStorage(dataSource);
+        storage = new RDBJobEventStorage(dataSource);
         repository = new RDBJobEventSearch(dataSource);
         initStorage();
     }
