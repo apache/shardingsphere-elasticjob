@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConf
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -64,10 +64,10 @@ public final class JavaMain {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
-        TracingListenerConfiguration tracingConfig = new RDBTracingConfiguration(setUpEventTraceDataSource());
-        setUpSimpleJob(regCenter, tracingConfig);
-        setUpDataflowJob(regCenter, tracingConfig);
-        setUpScriptJob(regCenter, tracingConfig);
+        TracingListenerConfiguration tracingListenerConfig = new RDBTracingListenerConfiguration(setUpEventTraceDataSource());
+        setUpSimpleJob(regCenter, tracingListenerConfig);
+        setUpDataflowJob(regCenter, tracingListenerConfig);
+        setUpScriptJob(regCenter, tracingListenerConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {

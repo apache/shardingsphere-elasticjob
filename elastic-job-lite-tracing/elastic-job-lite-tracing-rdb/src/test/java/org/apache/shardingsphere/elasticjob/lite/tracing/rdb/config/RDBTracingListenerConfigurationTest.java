@@ -25,7 +25,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public final class RDBTracingConfigurationTest {
+public final class RDBTracingListenerConfigurationTest {
     
     @Test
     public void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
@@ -34,11 +34,11 @@ public final class RDBTracingConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new RDBTracingConfiguration(dataSource).createTracingListener(), instanceOf(RDBTracingListener.class));
+        assertThat(new RDBTracingListenerConfiguration(dataSource).createTracingListener(), instanceOf(RDBTracingListener.class));
     }
     
     @Test(expected = TracingConfigurationException.class)
     public void assertCreateTracingListenerFailure() throws TracingConfigurationException {
-        new RDBTracingConfiguration(new BasicDataSource()).createTracingListener();
+        new RDBTracingListenerConfiguration(new BasicDataSource()).createTracingListener();
     }
 }

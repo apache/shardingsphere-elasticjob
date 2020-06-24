@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEve
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public final class RDBTracingListenerTest {
     private static final String JOB_NAME = "test_rdb_event_listener";
     
     @Mock
-    private RDBTracingConfiguration rdbTracingConfiguration;
+    private RDBTracingListenerConfiguration rdbTracingListenerConfig;
     
     @Mock
     private JobEventRdbStorage repository;
@@ -61,8 +61,8 @@ public final class RDBTracingListenerTest {
         dataSource.setPassword("");
         RDBTracingListener tracingListener = new RDBTracingListener(dataSource);
         setRepository(tracingListener);
-        when(rdbTracingConfiguration.createTracingListener()).thenReturn(tracingListener);
-        jobEventBus = new JobEventBus(rdbTracingConfiguration);
+        when(rdbTracingListenerConfig.createTracingListener()).thenReturn(tracingListener);
+        jobEventBus = new JobEventBus(rdbTracingListenerConfig);
     }
     
     @SneakyThrows

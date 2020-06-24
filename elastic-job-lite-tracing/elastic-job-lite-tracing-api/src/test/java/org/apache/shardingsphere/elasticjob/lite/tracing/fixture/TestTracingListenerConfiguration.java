@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.config.TracingListenerC
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
 @RequiredArgsConstructor
-public final class TestTracingConfiguration implements TracingListenerConfiguration {
+public final class TestTracingListenerConfiguration implements TracingListenerConfiguration {
     
     private final JobEventCaller jobEventCaller;
     

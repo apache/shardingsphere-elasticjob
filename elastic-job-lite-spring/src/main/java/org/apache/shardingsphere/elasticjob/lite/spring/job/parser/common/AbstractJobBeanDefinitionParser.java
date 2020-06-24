@@ -22,7 +22,7 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -94,7 +94,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
             return null;
         }
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(RDBTracingConfiguration.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(RDBTracingListenerConfiguration.class);
         factory.addConstructorArgReference(eventTraceDataSourceName);
         return factory.getBeanDefinition();
     }

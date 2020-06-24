@@ -27,10 +27,10 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * RDB tracing configuration.
+ * RDB tracing listener configuration.
  */
 @RequiredArgsConstructor
-public final class RDBTracingConfiguration implements TracingListenerConfiguration {
+public final class RDBTracingListenerConfiguration implements TracingListenerConfiguration {
     
     private final DataSource dataSource;
     

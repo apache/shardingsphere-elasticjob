@@ -38,7 +38,7 @@ public class DataflowJobConfig {
     private ZookeeperRegistryCenter regCenter;
     
     @Resource
-    private TracingListenerConfiguration tracingConfiguration;
+    private TracingListenerConfiguration tracingListenerConfig;
     
     @Bean
     public DataflowJob dataflowJob() {
@@ -48,7 +48,7 @@ public class DataflowJobConfig {
     @Bean(initMethod = "init")
     public JobScheduler dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
                                              @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
-        return new JobScheduler(regCenter, dataflowJob, getLiteJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfiguration);
+        return new JobScheduler(regCenter, dataflowJob, getLiteJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingListenerConfig);
     }
     
     private LiteJobConfiguration getLiteJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
