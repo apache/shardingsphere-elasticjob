@@ -35,9 +35,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class StatisticRdbRepositoryTest {
+public class RDBStatisticRepositoryTest {
     
-    private StatisticRdbRepository repository;
+    private RDBStatisticRepository repository;
     
     @Before
     public void setup() throws SQLException {
@@ -46,7 +46,7 @@ public class StatisticRdbRepositoryTest {
         dataSource.setUrl("jdbc:h2:mem:");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        repository = new StatisticRdbRepository(dataSource);
+        repository = new RDBStatisticRepository(dataSource);
     }
     
     @Test
