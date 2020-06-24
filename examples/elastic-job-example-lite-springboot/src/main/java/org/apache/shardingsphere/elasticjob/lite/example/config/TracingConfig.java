@@ -15,31 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.config;
+package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * Tracing listener configuration.
- * 
- * @param <T> type of tracing storage
- */
-public interface TracingListenerConfiguration<T> {
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+@Configuration
+public class TracingConfig {
     
-    /**
-     * Create tracing listener.
-     * 
-     * @param storage storage
-     * @return tracing listener
-     * @throws TracingConfigurationException tracing configuration exception
-     */
-    TracingListener createTracingListener(T storage) throws TracingConfigurationException;
+    @Resource
+    private DataSource dataSource;
     
-    /**
-     * Get tracing type.
-     * 
-     * @return tracing type
-     */
-    String getType();
+    @Bean
+    public TracingConfiguration tracingConfiguration() {
+        return new TracingConfiguration<>("RDB", dataSource);
+    }
 }

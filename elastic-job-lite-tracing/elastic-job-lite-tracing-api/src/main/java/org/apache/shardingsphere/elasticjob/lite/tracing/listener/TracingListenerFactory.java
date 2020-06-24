@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.config;
+package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
 
 import java.util.HashMap;
 import java.util.Map;
