@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.JobEventRdbStorage;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.RDBJobEventStorage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public final class RDBTracingListenerTest {
     private RDBTracingListenerConfiguration rdbTracingListenerConfig;
     
     @Mock
-    private JobEventRdbStorage repository;
+    private RDBJobEventStorage repository;
     
     private JobEventBus jobEventBus;
     

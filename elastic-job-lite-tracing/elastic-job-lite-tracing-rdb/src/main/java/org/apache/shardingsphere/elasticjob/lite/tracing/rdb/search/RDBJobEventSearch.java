@@ -42,11 +42,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Job event RDB search.
+ * RDB job event search.
  */
 @RequiredArgsConstructor
 @Slf4j
-public final class JobEventRdbSearch {
+public final class RDBJobEventSearch {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     

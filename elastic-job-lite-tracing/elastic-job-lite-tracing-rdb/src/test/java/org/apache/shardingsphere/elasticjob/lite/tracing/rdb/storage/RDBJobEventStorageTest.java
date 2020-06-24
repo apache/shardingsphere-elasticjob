@@ -35,9 +35,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class JobEventRdbStorageTest {
+public final class RDBJobEventStorageTest {
     
-    private JobEventRdbStorage storage;
+    private RDBJobEventStorage storage;
     
     @Before
     public void setup() throws SQLException {
@@ -46,7 +46,7 @@ public final class JobEventRdbStorageTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        storage = new JobEventRdbStorage(dataSource);
+        storage = new RDBJobEventStorage(dataSource);
     }
     
     @Test

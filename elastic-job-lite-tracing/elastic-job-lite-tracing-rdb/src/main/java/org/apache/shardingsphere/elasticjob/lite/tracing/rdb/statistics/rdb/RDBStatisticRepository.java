@@ -38,10 +38,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Statistic RDB repository.
+ * RDB statistic repository.
  */
 @Slf4j
-public class StatisticRdbRepository {
+public class RDBStatisticRepository {
     
     private static final String TABLE_TASK_RESULT_STATISTICS = "TASK_RESULT_STATISTICS";
     
@@ -53,7 +53,7 @@ public class StatisticRdbRepository {
     
     private final DataSource dataSource;
     
-    public StatisticRdbRepository(final DataSource dataSource) throws SQLException {
+    public RDBStatisticRepository(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         initTables();
     }
