@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

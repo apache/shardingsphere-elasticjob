@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration
+org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListenerConfiguration

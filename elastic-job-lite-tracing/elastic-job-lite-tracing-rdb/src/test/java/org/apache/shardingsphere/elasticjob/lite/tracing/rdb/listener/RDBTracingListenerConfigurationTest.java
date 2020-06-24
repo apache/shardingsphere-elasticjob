@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListenerConfiguration;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

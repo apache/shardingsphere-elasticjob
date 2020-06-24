@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config;
+package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListener;
+import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListenerConfiguration;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
