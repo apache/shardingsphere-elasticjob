@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search;
+package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
@@ -83,8 +83,8 @@ public final class RDBJobEventSearch {
     private List<JobExecutionEvent> getJobExecutionEvents(final Condition condition) {
         List<JobExecutionEvent> result = new LinkedList<>();
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -104,8 +104,8 @@ public final class RDBJobEventSearch {
     private List<JobStatusTraceEvent> getJobStatusTraceEvents(final Condition condition) {
         List<JobStatusTraceEvent> result = new LinkedList<>();
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
@@ -124,8 +124,8 @@ public final class RDBJobEventSearch {
     private int getEventCount(final String tableName, final Collection<String> tableFields, final Condition condition) {
         int result = 0;
         try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createCountPreparedStatement(conn, tableName, tableFields, condition);
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = createCountPreparedStatement(connection, tableName, tableFields, condition);
                 ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             resultSet.next();

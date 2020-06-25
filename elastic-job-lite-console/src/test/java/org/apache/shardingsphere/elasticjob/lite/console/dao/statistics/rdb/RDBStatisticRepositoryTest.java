@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.rdb;
+package org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.rdb;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRegisterStatistics;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.task.TaskRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.StatisticInterval;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.type.job.JobRegisterStatistics;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.type.job.JobRunningStatistics;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.type.task.TaskResultStatistics;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.type.task.TaskRunningStatistics;
 import org.junit.Before;
 import org.junit.Test;
 

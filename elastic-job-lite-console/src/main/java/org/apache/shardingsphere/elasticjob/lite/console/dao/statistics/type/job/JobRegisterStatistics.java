@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.statistics.type.job;
+package org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.type.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Date;
 
 /**
- * Job execution type statistics.
+ * Job register statistics.
  */
 @Getter
+@RequiredArgsConstructor
 @AllArgsConstructor
-public final class JobExecutionTypeStatistics {
+public final class JobRegisterStatistics {
     
-    private int transientJobCount;
+    private long id;
     
-    private int daemonJobCount;
+    private final int registeredCount;
+    
+    private final Date statisticsTime;
+    
+    private Date creationTime = new Date();
 }
