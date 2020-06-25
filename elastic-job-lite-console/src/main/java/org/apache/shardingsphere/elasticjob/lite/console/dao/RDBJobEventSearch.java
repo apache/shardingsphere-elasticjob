@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search;
+package org.apache.shardingsphere.elasticjob.lite.console.dao;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;

@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search;
+package org.apache.shardingsphere.elasticjob.lite.console.dao;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.RDBJobEventSearch.Result;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.search.RDBJobEventSearch.Result;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.RDBJobEventStorage;
 import org.junit.BeforeClass;
 import org.junit.Test;
