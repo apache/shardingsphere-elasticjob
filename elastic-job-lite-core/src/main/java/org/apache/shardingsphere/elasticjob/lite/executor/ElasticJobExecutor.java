@@ -20,16 +20,22 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
 import java.util.Collection;
@@ -48,6 +54,8 @@ public final class ElasticJobExecutor {
     
     private final JobFacade jobFacade;
     
+    private final JobItemExecutor jobItemExecutor;
+    
     private final JobRootConfiguration jobRootConfig;
     
     private final String jobName;
@@ -58,17 +66,29 @@ public final class ElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    private final JobItemExecutor jobItemExecutor;
-    
-    public ElasticJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
+    public ElasticJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
         this.elasticJob = elasticJob;
         this.jobFacade = jobFacade;
+        jobItemExecutor = getJobItemExecutor(elasticJob);
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
         jobErrorHandler = JobErrorHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
         itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
-        this.jobItemExecutor = jobItemExecutor;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static JobItemExecutor getJobItemExecutor(final ElasticJob elasticJob) {
+        if (null == elasticJob) {
+            return new ScriptJobExecutor();
+        }
+        if (elasticJob instanceof SimpleJob) {
+            return new SimpleJobExecutor();
+        }
+        if (elasticJob instanceof DataflowJob) {
+            return new DataflowJobExecutor();
+        }
+        throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass().getCanonicalName());
     }
     
     /**

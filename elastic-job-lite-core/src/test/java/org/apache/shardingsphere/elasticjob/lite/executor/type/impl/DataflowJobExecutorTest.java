@@ -171,7 +171,7 @@ public final class DataflowJobExecutorTest {
         this.shardingContexts = shardingContexts;
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(isStreamingProcess));
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade, new DataflowJobExecutor());
+        elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
     }
 }
