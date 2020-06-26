@@ -33,6 +33,12 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0755</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>src/main/resources/ext-lib</directory>
+            <outputDirectory>ext-lib</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0755</fileMode>
+        </fileSet>
     </fileSets>
     
     <dependencySets>
