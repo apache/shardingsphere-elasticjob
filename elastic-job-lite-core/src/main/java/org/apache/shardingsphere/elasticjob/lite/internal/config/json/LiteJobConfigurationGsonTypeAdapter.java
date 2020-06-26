@@ -128,34 +128,34 @@ public final class LiteJobConfigurationGsonTypeAdapter extends TypeAdapter<LiteJ
     @Override
     public void write(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
         out.beginObject();
-        out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobType").value(value.getTypeConfig().getJobType().name());
-        out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
-        out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        out.name("shardingItemParameters").value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
-        out.name("jobParameter").value(value.getTypeConfig().getCoreConfig().getJobParameter());
-        out.name("failover").value(value.getTypeConfig().getCoreConfig().isFailover());
-        out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
+        out.name(JobConfigurationJsonEnum.JOB_NAME.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobName());
+        out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getTypeConfig().getJobType().name());
+        out.name(JobConfigurationJsonEnum.CRON.getJsonName()).value(value.getTypeConfig().getCoreConfig().getCron());
+        out.name(JobConfigurationJsonEnum.SHARDING_TOTAL_COUNT.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        out.name(JobConfigurationJsonEnum.SHARDING_ITEM_PARAMETERS.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
+        out.name(JobConfigurationJsonEnum.JOB_PARAMETER.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobParameter());
+        out.name(JobConfigurationJsonEnum.FAILOVER.getJsonName()).value(value.getTypeConfig().getCoreConfig().isFailover());
+        out.name(JobConfigurationJsonEnum.MISFIRE.getJsonName()).value(value.getTypeConfig().getCoreConfig().isMisfire());
         if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType())) {
-            out.name("jobExecutorServiceHandlerType").value(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
+            out.name(JobConfigurationJsonEnum.JOB_EXECUTOR_SERVICE_HANDLER_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
         }
         if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType())) {
-            out.name("jobErrorHandlerType").value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
+            out.name(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
         }
-        out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
+        out.name(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()).value(value.getTypeConfig().getCoreConfig().getDescription());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
-            out.name("streamingProcess").value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
+            out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
-            out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
+            out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(scriptJobConfig.getScriptCommandLine());
         }
-        out.name(LiteJobConfigurationConstants.MONITOR_EXECUTION).value(value.isMonitorExecution());
-        out.name(LiteJobConfigurationConstants.MAX_TIME_DIFF_SECONDS).value(value.getMaxTimeDiffSeconds());
-        out.name(LiteJobConfigurationConstants.MONITOR_PORT).value(value.getMonitorPort());
-        out.name(LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_TYPE).value(value.getJobShardingStrategyType());
-        out.name(LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES).value(value.getReconcileIntervalMinutes());
-        out.name(LiteJobConfigurationConstants.DISABLED).value(value.isDisabled());
-        out.name(LiteJobConfigurationConstants.OVERWRITE).value(value.isOverwrite());
+        out.name(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()).value(value.isMonitorExecution());
+        out.name(JobConfigurationJsonEnum.MAX_TIME_DIFF_SECONDS.getJsonName()).value(value.getMaxTimeDiffSeconds());
+        out.name(JobConfigurationJsonEnum.MONITOR_PORT.getJsonName()).value(value.getMonitorPort());
+        out.name(JobConfigurationJsonEnum.JOB_SHARDING_STRATEGY_TYPE.getJsonName()).value(value.getJobShardingStrategyType());
+        out.name(JobConfigurationJsonEnum.RECONCILE_INTERVAL_MINUTES.getJsonName()).value(value.getReconcileIntervalMinutes());
+        out.name(JobConfigurationJsonEnum.DISABLED.getJsonName()).value(value.isDisabled());
+        out.name(JobConfigurationJsonEnum.OVERWRITE.getJsonName()).value(value.isOverwrite());
         out.endObject();
     }
 }
