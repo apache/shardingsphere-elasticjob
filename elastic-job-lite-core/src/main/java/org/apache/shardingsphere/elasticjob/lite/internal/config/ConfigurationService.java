@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;

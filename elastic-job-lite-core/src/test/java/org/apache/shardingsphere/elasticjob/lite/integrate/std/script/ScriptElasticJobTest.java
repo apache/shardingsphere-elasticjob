@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfigur
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
 import org.junit.Test;
 
 import java.io.IOException;
