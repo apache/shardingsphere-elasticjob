@@ -18,7 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -49,7 +51,8 @@ public final class RDBStorageSQLMapper {
     
     private final String selectOriginalTaskIdForJobStatusTraceLog;
     
-    public RDBStorageSQLMapper(final Properties props) {
+    public RDBStorageSQLMapper(final String sqlPropertiesFileName) {
+        Properties props = loadProps(sqlPropertiesFileName);
         createTableForJobExecutionLog = props.getProperty("JOB_EXECUTION_LOG.TABLE.CREATE");
         createTableForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.TABLE.CREATE");
         createIndexForTaskIdStateIndex = props.getProperty("TASK_ID_STATE_INDEX.INDEX.CREATE");
@@ -61,5 +64,17 @@ public final class RDBStorageSQLMapper {
         insertForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.INSERT");
         selectForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT");
         selectOriginalTaskIdForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT_ORIGINAL_TASK_ID");
+    }
+    
+    @SneakyThrows
+    private Properties loadProps(final String sqlPropertiesFileName) {
+        Properties result = new Properties();
+        result.load(getPropertiesInputStream(sqlPropertiesFileName));
+        return result;
+    }
+    
+    private InputStream getPropertiesInputStream(final String sqlPropertiesFileName) {
+        InputStream sqlPropertiesFile = RDBJobEventStorage.class.getClassLoader().getResourceAsStream(String.format("META-INF/sql/%s.properties", sqlPropertiesFileName));
+        return null == sqlPropertiesFile ? RDBJobEventStorage.class.getClassLoader().getResourceAsStream("META-INF/sql/sql92.properties") : sqlPropertiesFile;
     }
 }
