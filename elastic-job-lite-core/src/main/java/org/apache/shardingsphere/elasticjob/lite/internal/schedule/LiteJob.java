@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobExecutorFactory;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import lombok.Setter;
 import org.quartz.Job;
@@ -36,6 +36,6 @@ public final class LiteJob implements Job {
     
     @Override
     public void execute(final JobExecutionContext context) {
-        JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+        new ElasticJobExecutor(elasticJob, jobFacade).execute();
     }
 }
