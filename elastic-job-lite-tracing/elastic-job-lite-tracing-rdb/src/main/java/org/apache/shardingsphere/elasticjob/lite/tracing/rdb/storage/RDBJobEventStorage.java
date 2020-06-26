@@ -70,7 +70,7 @@ public final class RDBJobEventStorage {
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         databaseType = getDatabaseType(dataSource);
-        sqlMapper = new RDBStorageSQLMapper("mysql");
+        sqlMapper = new RDBStorageSQLMapper(null == databaseType ? "sql92" : databaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
     
