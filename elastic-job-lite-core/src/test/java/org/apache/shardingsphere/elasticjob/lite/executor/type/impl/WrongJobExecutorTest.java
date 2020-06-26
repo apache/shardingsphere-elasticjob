@@ -46,7 +46,7 @@ public final class WrongJobExecutorTest {
     @Before
     public void setUp() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration(null, "THROW"));
-        wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade, new SimpleJobExecutor());
+        wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade);
     }
     
     @Test(expected = RuntimeException.class)

@@ -20,13 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.SimpleJobExecutor;
 
 /**
  * Job executor factory.
@@ -43,20 +36,6 @@ public final class JobExecutorFactory {
      */
     @SuppressWarnings("unchecked")
     public static ElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
-        return new ElasticJobExecutor(elasticJob, jobFacade, getJobItemExecutor(elasticJob));
-    }
-    
-    @SuppressWarnings("unchecked")
-    private static JobItemExecutor getJobItemExecutor(final ElasticJob elasticJob) {
-        if (null == elasticJob) {
-            return new ScriptJobExecutor();
-        }
-        if (elasticJob instanceof SimpleJob) {
-            return new SimpleJobExecutor();
-        }
-        if (elasticJob instanceof DataflowJob) {
-            return new DataflowJobExecutor();
-        }
-        throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass().getCanonicalName());
+        return new ElasticJobExecutor(elasticJob, jobFacade);
     }
 }

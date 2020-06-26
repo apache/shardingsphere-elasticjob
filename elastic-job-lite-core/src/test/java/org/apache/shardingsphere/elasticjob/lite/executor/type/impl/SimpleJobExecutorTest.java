@@ -59,13 +59,13 @@ public final class SimpleJobExecutorTest {
     @Before
     public void setUp() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration(null, "THROW"));
-        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade, new SimpleJobExecutor());
+        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
     }
     
     @Test
     public void assertNewExecutorWithDefaultHandlers() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade, new SimpleJobExecutor());
+        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "executorService"), instanceOf(new CPUUsageJobExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "jobErrorHandler"), instanceOf(LogJobErrorHandler.class));
     }
