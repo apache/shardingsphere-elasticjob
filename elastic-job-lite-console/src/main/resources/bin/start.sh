@@ -28,8 +28,7 @@ fi
 cd `dirname $0`
 cd ..
 DEPLOY_DIR=`pwd`
-LIB_DIR=${DEPLOY_DIR}/lib/*
-LIB_DIR=${LIB_DIR}:${DEPLOY_DIR}/ext-lib/*
+LIB_DIR=${DEPLOY_DIR}/lib/*:${DEPLOY_DIR}/ext-lib/*
 CONSOLE_MAIN=org.apache.shardingsphere.elasticjob.lite.console.ConsoleBootstrap
 
 java -classpath ${LIB_DIR}:. ${CONSOLE_MAIN} $port
