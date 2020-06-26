@@ -17,12 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestScriptJobConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -42,7 +44,7 @@ public final class ScriptJobExecutorTest {
     @Test
     public void assertExecuteWhenCommandLineIsEmpty() {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, ShardingContextsBuilder.getMultipleShardingContexts());
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("", "IGNORE"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(createLiteJobConfiguration("", "IGNORE"));
         elasticJobExecutor = new ElasticJobExecutor(null, jobFacade);
         elasticJobExecutor.execute();
     }
@@ -59,7 +61,7 @@ public final class ScriptJobExecutorTest {
     
     private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file", "THROW"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(createLiteJobConfiguration("not_exists_file", "THROW"));
         elasticJobExecutor = new ElasticJobExecutor(null, jobFacade);
         elasticJobExecutor.execute();
     }
@@ -76,9 +78,14 @@ public final class ScriptJobExecutorTest {
     
     private void assertExecuteSuccess(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1", "IGNORE"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(createLiteJobConfiguration("exists_file param0 param1", "IGNORE"));
         elasticJobExecutor = new ElasticJobExecutor(null, jobFacade);
         elasticJobExecutor.execute();
         verify(jobFacade).loadJobRootConfiguration(true);
+    }
+    
+    private LiteJobConfiguration createLiteJobConfiguration(final String scriptCommandLine, final String jobErrorHandlerType) {
+        return LiteJobConfiguration.newBuilder(new ScriptJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), scriptCommandLine)).build();
     }
 }

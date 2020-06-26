@@ -17,12 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestWrongJob;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,8 +48,14 @@ public final class WrongJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration(null, "THROW"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(createLiteJobConfiguration());
         wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade);
+    }
+    
+    private LiteJobConfiguration createLiteJobConfiguration() {
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
+                        .failover(true).misfire(false).jobExecutorServiceHandlerType(null).jobErrorHandlerType("THROW").description("desc").build())).build();
     }
     
     @Test(expected = RuntimeException.class)
