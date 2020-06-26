@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
@@ -37,7 +36,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -60,15 +58,8 @@ public final class RDBJobEventStorage {
     
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
-        sqlMapper = new RDBStorageSQLMapper(loadProps());
+        sqlMapper = new RDBStorageSQLMapper("mysql");
         initTablesAndIndexes();
-    }
-    
-    @SneakyThrows
-    private Properties loadProps() {
-        Properties result = new Properties();
-        result.load(RDBJobEventStorage.class.getClassLoader().getResourceAsStream("META-INF/sql/storage/mysql.properties"));
-        return result;
     }
     
     private void initTablesAndIndexes() throws SQLException {
