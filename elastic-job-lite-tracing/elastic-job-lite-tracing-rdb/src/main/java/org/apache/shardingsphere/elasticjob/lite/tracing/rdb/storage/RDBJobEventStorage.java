@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.DatabaseType;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.type.DatabaseType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -35,7 +35,10 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /**
@@ -50,23 +53,43 @@ public final class RDBJobEventStorage {
     
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
-    private final DataSource dataSource;
+    private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
     
-    private final RDBStorageSQLMapper sqlMapper;
+    private final DataSource dataSource;
     
     private DatabaseType databaseType;
     
+    private final RDBStorageSQLMapper sqlMapper;
+    
+    static {
+        for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
+            DATABASE_TYPES.put(each.getType(), each);
+        }
+    }
+    
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
+        databaseType = getDatabaseType(dataSource);
         sqlMapper = new RDBStorageSQLMapper("mysql");
         initTablesAndIndexes();
+    }
+    
+    private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            String databaseProductName = connection.getMetaData().getDatabaseProductName();
+            for (DatabaseType each : DATABASE_TYPES.values()) {
+                if (each.getDatabaseProductName().equals(databaseProductName)) {
+                    return each;
+                }
+            }
+        }
+        return null;
     }
     
     private void initTablesAndIndexes() throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             createJobExecutionTableAndIndexIfNeeded(connection);
             createJobStatusTraceTableAndIndexIfNeeded(connection);
-            databaseType = DatabaseType.valueFrom(connection.getMetaData().getDatabaseProductName());
         }
     }
     
@@ -165,12 +188,6 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean isDuplicateRecord(final SQLException ex) {
-        return DatabaseType.MySQL == databaseType && 1062 == ex.getErrorCode() || DatabaseType.H2 == databaseType && 23505 == ex.getErrorCode() 
-                || DatabaseType.SQLServer == databaseType && 1 == ex.getErrorCode() || DatabaseType.DB2 == databaseType && -803 == ex.getErrorCode()
-                || DatabaseType.PostgreSQL == databaseType && 0 == ex.getErrorCode() || DatabaseType.Oracle == databaseType && 1 == ex.getErrorCode();
-    }
-    
     private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         try (
@@ -262,6 +279,10 @@ public final class RDBJobEventStorage {
             log.error(ex.getMessage());
         }
         return result;
+    }
+    
+    private boolean isDuplicateRecord(final SQLException ex) {
+        return null != databaseType && databaseType.getDuplicateRecordErrorCode() == ex.getErrorCode();
     }
     
     /**
