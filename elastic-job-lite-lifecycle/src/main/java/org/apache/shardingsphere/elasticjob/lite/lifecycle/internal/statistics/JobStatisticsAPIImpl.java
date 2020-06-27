@@ -69,10 +69,10 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
             return null;
         }
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(jobConfigJson);
-        result.setDescription(jobConfig.getCoreConfig().getDescription());
-        result.setCron(jobConfig.getCoreConfig().getCron());
+        result.setDescription(jobConfig.getDescription());
+        result.setCron(jobConfig.getCron());
         result.setInstanceCount(getJobInstanceCount(jobName));
-        result.setShardingTotalCount(jobConfig.getCoreConfig().getShardingTotalCount());
+        result.setShardingTotalCount(jobConfig.getShardingTotalCount());
         result.setStatus(getJobStatus(jobName));
         return result;
     }

@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistribute
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration.Builder;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
@@ -112,18 +112,17 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
-        JobType jobType = getJobType(elasticJobClass);
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(
-                jobName, jobType, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
+        Builder builder = JobConfiguration.newBuilder(jobName, getJobType(elasticJobClass), cron, totalShardingCount).shardingItemParameters(shardingParameters).monitorPort(monitorPort)
+                .jobErrorHandlerType("IGNORE").disabled(disabled).overwrite(true);
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobCoreConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+            builder.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
-            jobCoreConfig.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            builder.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         }
-        return JobConfiguration.newBuilder(jobCoreConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+        return builder.build();
     }
     
     private JobType getJobType(final Class<? extends ElasticJob> elasticJobClass) {
@@ -171,9 +170,9 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
-        assertThat(jobConfig.getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(jobConfig.getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(jobConfig.getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(jobConfig.getShardingTotalCount(), is(3));
+        assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
         if (disabled) {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {

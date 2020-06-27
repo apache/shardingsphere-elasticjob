@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
@@ -171,9 +170,8 @@ public final class DataflowJobExecutorTest {
     
     private void setUp(final boolean isStreamingProcess, final ShardingContexts shardingContexts) {
         this.shardingContexts = shardingContexts;
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE")
-                        .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess)).build()).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, "0/1 * * * * ?", 3)
+                .jobErrorHandlerType("IGNORE").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess)).build();
         when(jobFacade.loadJobConfiguration(true)).thenReturn(jobConfig);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade);

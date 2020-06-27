@@ -43,8 +43,8 @@ public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoIn
     
     @Override
     protected void setJobConfiguration(final JobConfiguration jobConfig) {
-        ReflectionUtils.setFieldValue(jobConfig.getCoreConfig(), "misfire", false);
-        jobConfig.getCoreConfig().getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString());
+        ReflectionUtils.setFieldValue(jobConfig, "misfire", false);
+        jobConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString());
     }
     
     @Test

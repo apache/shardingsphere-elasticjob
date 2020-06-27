@@ -55,8 +55,8 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         JobConfiguration actual = configService.load(false);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getShardingTotalCount(), is(3));
     }
     
     @Test
@@ -64,8 +64,8 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getShardingTotalCount(), is(3));
     }
     
     @Test
@@ -74,8 +74,8 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getShardingTotalCount(), is(3));
     }
     
     @Test(expected = JobConfigurationException.class)

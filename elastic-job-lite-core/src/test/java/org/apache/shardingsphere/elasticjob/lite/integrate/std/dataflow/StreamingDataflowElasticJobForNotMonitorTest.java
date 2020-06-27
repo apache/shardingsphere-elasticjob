@@ -44,7 +44,7 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
     @Override
     protected void setJobConfiguration(final JobConfiguration jobConfig) {
         ReflectionUtils.setFieldValue(jobConfig, "monitorExecution", false);
-        jobConfig.getCoreConfig().getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+        jobConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
     }
     
     @Test
