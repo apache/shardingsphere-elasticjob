@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -42,13 +43,13 @@ public final class JobConfigurationGsonFactoryTest {
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,"
             + "\"description\":\"\","
             + "\"streamingProcess\":true,"
-            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyType\":\"\",\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";
+            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";
     
     private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,"
             + "\"description\":\"\","
             + "\"scriptCommandLine\":\"test.sh\",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
-            + "\"jobShardingStrategyType\":\"\",\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";
+            + "\"reconcileIntervalMinutes\":10,\"disabled\":false,\"overwrite\":false}";
     
     @Test
     public void assertToJsonForSimpleJob() {
@@ -66,7 +67,7 @@ public final class JobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForScriptJob() {
         JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh").build();
-        assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
+        assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson));
     }
     
     @Test
@@ -105,7 +106,7 @@ public final class JobConfigurationGsonFactoryTest {
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
-        assertThat(actual.getJobShardingStrategyType(), is(""));
+        assertNull(actual.getJobShardingStrategyType());
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
@@ -127,7 +128,7 @@ public final class JobConfigurationGsonFactoryTest {
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
-        assertThat(actual.getJobShardingStrategyType(), is(""));
+        assertNull(actual.getJobShardingStrategyType());
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
