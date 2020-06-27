@@ -72,10 +72,11 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_EXECUTOR_SERVICE_HANDLER_TYPE.getJsonName()), 
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()), 
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()));
-        JobTypeConfiguration typeConfig = createJobTypeConfiguration(coreConfig, JobType.valueOf((String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_TYPE.getJsonName())), 
+        JobType jobType = JobType.valueOf((String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()));
+        JobTypeConfiguration typeConfig = createJobTypeConfiguration(coreConfig, jobType, 
                 (boolean) jsonValueMap.getOrDefault(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName(), false), 
                 (String) jsonValueMap.getOrDefault(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName(), ""));
-        return createJobRootConfiguration(typeConfig, jsonValueMap);
+        return createJobRootConfiguration(jobType, typeConfig, jsonValueMap);
     }
     
     private JobCoreConfiguration createJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
@@ -105,8 +106,8 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
         }
     }
     
-    private JobConfiguration createJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> jsonValueMap) {
-        JobConfiguration.Builder builder = JobConfiguration.newBuilder(typeConfig);
+    private JobConfiguration createJobRootConfiguration(final JobType jobType, final JobTypeConfiguration typeConfig, final Map<String, Object> jsonValueMap) {
+        JobConfiguration.Builder builder = JobConfiguration.newBuilder(jobType, typeConfig);
         if (jsonValueMap.containsKey(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName())) {
             builder.monitorExecution((boolean) jsonValueMap.get(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()));
         }

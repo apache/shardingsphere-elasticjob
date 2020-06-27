@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public final class JobConfigurationTest {
     @Test
     public void assertBuildAllProperties() {
         JobConfiguration actual = JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build()))
+                JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
@@ -43,7 +44,7 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -54,19 +55,19 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
-        assertThat(JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
+        assertThat(JobConfiguration.newBuilder(JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
                 "test_job", "0/1 * * * * ?", 3).build())).jobShardingStrategyType(null).build().getJobShardingStrategyType(), is(""));
     }
     
     @Test
     public void assertIsNotFailover() {
         assertFalse(JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build())).monitorExecution(false).build().isFailover());
+                JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build())).monitorExecution(false).build().isFailover());
     }
     
     @Test
     public void assertIsFailover() {
         assertTrue(JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build())).monitorExecution(true).build().isFailover());
+                JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build())).monitorExecution(true).build().isFailover());
     }
 }

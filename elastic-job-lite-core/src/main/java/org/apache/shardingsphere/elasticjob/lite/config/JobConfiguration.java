@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 
 /**
  * ElasticJob configuration.
@@ -28,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfiguration {
+    
+    private final JobType jobType;
     
     private final JobTypeConfiguration typeConfig;
     
@@ -66,15 +69,18 @@ public final class JobConfiguration {
     /**
      * Create ElasticJob lite configuration builder.
      * 
+     * @param jobType job type
      * @param jobConfig job configuration
      * @return ElasticJob lite configuration builder
      */
-    public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
-        return new Builder(jobConfig);
+    public static Builder newBuilder(final JobType jobType, final JobTypeConfiguration jobConfig) {
+        return new Builder(jobType, jobConfig);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
+    
+        private final JobType jobType;
         
         private final JobTypeConfiguration jobConfig;
     
@@ -212,7 +218,7 @@ public final class JobConfiguration {
          * @return ElasticJob lite configuration
          */
         public final JobConfiguration build() {
-            return new JobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
+            return new JobConfiguration(jobType, jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
         }
     }
 }

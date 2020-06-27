@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.simple;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,5 +35,10 @@ public final class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefiniti
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(SimpleJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
         return result.getBeanDefinition();
+    }
+    
+    @Override
+    protected JobType getJobType() {
+        return JobType.SIMPLE;
     }
 }

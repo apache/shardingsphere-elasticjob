@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
@@ -89,7 +90,7 @@ public final class ScriptJobExecutorTest {
     private JobConfiguration createJobConfiguration(final String scriptCommandLine, final String jobErrorHandlerType) {
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
-        return JobConfiguration.newBuilder(new ScriptJobConfiguration(
+        return JobConfiguration.newBuilder(JobType.SCRIPT, new ScriptJobConfiguration(
                 JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), props)).build();
     }
 }

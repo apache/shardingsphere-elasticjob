@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
@@ -91,7 +92,7 @@ public final class JavaMain {
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig);
-        new JobScheduler(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder(simpleJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder(JobType.SIMPLE, simpleJobConfig).build(), tracingConfig).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
@@ -99,7 +100,7 @@ public final class JavaMain {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, props);
-        new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(JobType.DATAFLOW, dataflowJobConfig).build(), tracingConfig).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
@@ -107,7 +108,7 @@ public final class JavaMain {
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine());
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, props);
-        new JobScheduler(regCenter, null, JobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, null, JobConfiguration.newBuilder(JobType.SCRIPT, scriptJobConfig).build(), tracingConfig).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {

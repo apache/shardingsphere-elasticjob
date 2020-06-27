@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
@@ -40,5 +41,10 @@ public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefiniti
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
         result.addConstructorArgValue(props);
         return result.getBeanDefinition();
+    }
+    
+    @Override
+    protected JobType getJobType() {
+        return JobType.SCRIPT;
     }
 }
