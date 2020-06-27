@@ -41,7 +41,7 @@ next = "/02-guide/operation-manual/"
 public class JobMain {
     public static void main(final String[] args) {
         // ...
-        LiteJobConfiguration.newBuilder(simpleJobConfig).reconcileIntervalMinutes(10).build();
+        JobConfiguration.newBuilder(simpleJobConfig).reconcileIntervalMinutes(10).build();
         // ...
     }
 }

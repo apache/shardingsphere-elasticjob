@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
@@ -62,7 +62,7 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (configNode.isConfigPath(path) && 0 != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
-                int newShardingTotalCount = LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getShardingTotalCount();
+                int newShardingTotalCount = JobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getShardingTotalCount();
                 if (newShardingTotalCount != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                     shardingService.setReshardingFlag();
                     JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, newShardingTotalCount);

@@ -25,7 +25,7 @@ import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
@@ -38,10 +38,10 @@ import java.util.Optional;
 /**
  * Job configuration gson type adapter.
  */
-public final class LiteJobConfigurationGsonTypeAdapter extends TypeAdapter<LiteJobConfiguration> {
+public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfiguration> {
     
     @Override
-    public LiteJobConfiguration read(final JsonReader in) throws IOException {
+    public JobConfiguration read(final JsonReader in) throws IOException {
         Map<String, Object> jsonValueMap = new HashMap<>(32, 1);
         in.beginObject();
         while (in.hasNext()) {
@@ -99,8 +99,8 @@ public final class LiteJobConfigurationGsonTypeAdapter extends TypeAdapter<LiteJ
         }
     }
     
-    private LiteJobConfiguration createJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> jsonValueMap) {
-        LiteJobConfiguration.Builder builder = LiteJobConfiguration.newBuilder(typeConfig);
+    private JobConfiguration createJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> jsonValueMap) {
+        JobConfiguration.Builder builder = JobConfiguration.newBuilder(typeConfig);
         if (jsonValueMap.containsKey(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName())) {
             builder.monitorExecution((boolean) jsonValueMap.get(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()));
         }
@@ -126,7 +126,7 @@ public final class LiteJobConfigurationGsonTypeAdapter extends TypeAdapter<LiteJ
     }
     
     @Override
-    public void write(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
+    public void write(final JsonWriter out, final JobConfiguration value) throws IOException {
         out.beginObject();
         out.name(JobConfigurationJsonEnum.JOB_NAME.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobName());
         out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getTypeConfig().getJobType().name());

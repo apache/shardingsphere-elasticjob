@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
@@ -65,7 +65,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     }
     
     private boolean isFailoverEnabled() {
-        LiteJobConfiguration jobConfig = configService.load(true);
+        JobConfiguration jobConfig = configService.load(true);
         return null != jobConfig && jobConfig.isFailover();
     }
     
@@ -98,7 +98,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !LiteJobConfigurationGsonFactory.fromJson(data).isFailover()) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !JobConfigurationGsonFactory.fromJson(data).isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }

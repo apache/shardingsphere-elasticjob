@@ -28,13 +28,13 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
@@ -61,7 +61,7 @@ public abstract class AbstractBaseStdJobTest {
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     @Getter(AccessLevel.PROTECTED)
-    private final LiteJobConfiguration liteJobConfig;
+    private final JobConfiguration jobConfiguration;
     
     private final JobScheduler jobScheduler;
     
@@ -77,8 +77,8 @@ public abstract class AbstractBaseStdJobTest {
     @SneakyThrows
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         this.disabled = disabled;
-        liteJobConfig = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), liteJobConfig, new ElasticJobListener() {
+        jobConfiguration = initJobConfig(elasticJobClass);
+        jobScheduler = new JobScheduler(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), jobConfiguration, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -106,13 +106,13 @@ public abstract class AbstractBaseStdJobTest {
     @SneakyThrows
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
         this.monitorPort = monitorPort;
-        liteJobConfig = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), liteJobConfig);
+        jobConfiguration = initJobConfig(elasticJobClass);
+        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), jobConfiguration);
         disabled = false;
         leaderService = new LeaderService(regCenter, jobName);
     }
     
-    private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
+    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
@@ -125,7 +125,7 @@ public abstract class AbstractBaseStdJobTest {
         } else {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }
-        return LiteJobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
     }
     
     @BeforeClass
@@ -162,10 +162,10 @@ public abstract class AbstractBaseStdJobTest {
     private void assertRegCenterCommonInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
-        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
+        assertThat(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(jobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         if (disabled) {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {

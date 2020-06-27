@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.dataflow;
 
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
@@ -41,9 +41,9 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
     }
     
     @Override
-    protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        ReflectionUtils.setFieldValue(liteJobConfig, "monitorExecution", false);
-        ReflectionUtils.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", true);
+    protected void setJobConfiguration(final JobConfiguration jobConfig) {
+        ReflectionUtils.setFieldValue(jobConfig, "monitorExecution", false);
+        ReflectionUtils.setFieldValue(jobConfig.getTypeConfig(), "streamingProcess", true);
     }
     
     @Test

@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
@@ -72,7 +72,7 @@ public final class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public LiteJobConfiguration loadJobRootConfiguration(final boolean fromCache) {
+    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
         return configService.load(fromCache);
     }
     
@@ -136,9 +136,9 @@ public final class LiteJobFacade implements JobFacade {
     
     @Override
     public boolean isEligibleForJobRunning() {
-        LiteJobConfiguration liteJobConfig = configService.load(true);
-        if (liteJobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            return !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getTypeConfig()).isStreamingProcess();    
+        JobConfiguration jobConfig = configService.load(true);
+        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
+            return !shardingService.isNeedSharding() && ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess();    
         }
         return !shardingService.isNeedSharding();
     }

@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -46,7 +46,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
-        factory.addConstructorArgValue(createLiteJobConfiguration(parserContext, element));
+        factory.addConstructorArgValue(createJobConfiguration(parserContext, element));
         BeanDefinition tracingConfig = createTracingConfiguration(element);
         if (null != tracingConfig) {
             factory.addConstructorArgValue(tracingConfig);
@@ -57,12 +57,12 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     protected abstract BeanDefinition getJobTypeConfigurationBeanDefinition(ParserContext parserContext, BeanDefinition jobCoreConfigurationBeanDefinition, Element element);
     
-    private BeanDefinition createLiteJobConfiguration(final ParserContext parserContext, final Element element) {
-        return createLiteJobConfigurationBeanDefinition(parserContext, element, createJobCoreBeanDefinition(element));
+    private BeanDefinition createJobConfiguration(final ParserContext parserContext, final Element element) {
+        return createJobConfigurationBeanDefinition(parserContext, element, createJobCoreBeanDefinition(element));
     }
     
-    private BeanDefinition createLiteJobConfigurationBeanDefinition(final ParserContext parserContext, final Element element, final BeanDefinition jobCoreBeanDefinition) {
-        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(LiteJobConfiguration.class);
+    private BeanDefinition createJobConfigurationBeanDefinition(final ParserContext parserContext, final Element element, final BeanDefinition jobCoreBeanDefinition) {
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
         result.addConstructorArgValue(getJobTypeConfigurationBeanDefinition(parserContext, jobCoreBeanDefinition, element));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.MONITOR_EXECUTION_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE));

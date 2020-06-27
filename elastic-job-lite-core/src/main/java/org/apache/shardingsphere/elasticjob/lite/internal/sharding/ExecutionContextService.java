@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import com.google.common.base.Joiner;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -57,20 +57,20 @@ public final class ExecutionContextService {
      * @return job sharding context
      */
     public ShardingContexts getJobShardingContext(final List<Integer> shardingItems) {
-        LiteJobConfiguration liteJobConfig = configService.load(false);
-        removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
+        JobConfiguration jobConfig = configService.load(false);
+        removeRunningIfMonitorExecution(jobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContexts(buildTaskId(liteJobConfig, shardingItems), liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
-                    liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), Collections.emptyMap());
+            return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+                    jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), Collections.emptyMap());
         }
-        Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
-        return new ShardingContexts(buildTaskId(liteJobConfig, shardingItems), liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
-                liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
+        Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
+        return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
     }
     
-    private String buildTaskId(final LiteJobConfiguration liteJobConfig, final List<Integer> shardingItems) {
+    private String buildTaskId(final JobConfiguration jobConfig, final List<Integer> shardingItems) {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
-        return Joiner.on("@-@").join(liteJobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", 
+        return Joiner.on("@-@").join(jobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", 
                 null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId()); 
     }
     

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -49,7 +49,7 @@ public final class RescheduleListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !JobRegistry.getInstance().isShutdown(jobName)) {
-                JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getCron());
+                JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(JobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getCron());
             }
         }
     }

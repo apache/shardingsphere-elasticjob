@@ -21,10 +21,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
@@ -42,35 +42,35 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     public JobSettings getJobSettings(final String jobName) {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
-        String jobType = liteJobConfig.getTypeConfig().getJobType().name();
-        buildSimpleJobSettings(jobName, result, liteJobConfig);
+        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
+        String jobType = jobConfig.getTypeConfig().getJobType().name();
+        buildSimpleJobSettings(jobName, result, jobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, (DataflowJobConfiguration) liteJobConfig.getTypeConfig());
+            buildDataflowJobSettings(result, (DataflowJobConfiguration) jobConfig.getTypeConfig());
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, (ScriptJobConfiguration) liteJobConfig.getTypeConfig());
+            buildScriptJobSettings(result, (ScriptJobConfiguration) jobConfig.getTypeConfig());
         }
         return result;
     }
     
-    private void buildSimpleJobSettings(final String jobName, final JobSettings result, final LiteJobConfiguration liteJobConfig) {
-        result.setJobName(jobName);
-        result.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
-        result.setShardingTotalCount(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
-        result.setShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters());
-        result.setJobParameter(liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter());
-        result.setMonitorExecution(liteJobConfig.isMonitorExecution());
-        result.setMaxTimeDiffSeconds(liteJobConfig.getMaxTimeDiffSeconds());
-        result.setMonitorPort(liteJobConfig.getMonitorPort());
-        result.setFailover(liteJobConfig.getTypeConfig().getCoreConfig().isFailover());
-        result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
-        result.setJobShardingStrategyType(liteJobConfig.getJobShardingStrategyType());
-        result.setJobExecutorServiceHandlerType(liteJobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
-        result.setJobErrorHandlerType(liteJobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        result.setReconcileIntervalMinutes(liteJobConfig.getReconcileIntervalMinutes());
-        result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
+    private void buildSimpleJobSettings(final String jobName, final JobSettings jobSettings, final JobConfiguration jobConfig) {
+        jobSettings.setJobName(jobName);
+        jobSettings.setJobType(jobConfig.getTypeConfig().getJobType().name());
+        jobSettings.setShardingTotalCount(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        jobSettings.setCron(jobConfig.getTypeConfig().getCoreConfig().getCron());
+        jobSettings.setShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters());
+        jobSettings.setJobParameter(jobConfig.getTypeConfig().getCoreConfig().getJobParameter());
+        jobSettings.setMonitorExecution(jobConfig.isMonitorExecution());
+        jobSettings.setMaxTimeDiffSeconds(jobConfig.getMaxTimeDiffSeconds());
+        jobSettings.setMonitorPort(jobConfig.getMonitorPort());
+        jobSettings.setFailover(jobConfig.getTypeConfig().getCoreConfig().isFailover());
+        jobSettings.setMisfire(jobConfig.getTypeConfig().getCoreConfig().isMisfire());
+        jobSettings.setJobShardingStrategyType(jobConfig.getJobShardingStrategyType());
+        jobSettings.setJobExecutorServiceHandlerType(jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
+        jobSettings.setJobErrorHandlerType(jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
+        jobSettings.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
+        jobSettings.setDescription(jobConfig.getTypeConfig().getCoreConfig().getDescription());
     }
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
@@ -87,7 +87,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobSettings.getCron()), "cron can not be empty.");
         Preconditions.checkArgument(jobSettings.getShardingTotalCount() > 0, "shardingTotalCount should larger than zero.");
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
-        regCenter.update(jobNodePath.getConfigNodePath(), LiteJobConfigurationGsonFactory.toJsonForObject(jobSettings));
+        regCenter.update(jobNodePath.getConfigNodePath(), JobConfigurationGsonFactory.toJsonForObject(jobSettings));
     }
     
     @Override
