@@ -112,14 +112,14 @@ public final class JobConfiguration {
         
         private int monitorPort = -1;
         
-        private String jobShardingStrategyType = "";
+        private String jobShardingStrategyType;
         
         private String jobExecutorServiceHandlerType;
         
         private String jobErrorHandlerType;
         
         private String description = "";
-    
+        
         private final Properties props = new Properties();
         
         private boolean disabled;
@@ -366,8 +366,8 @@ public final class JobConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
-                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes, monitorPort, jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, 
-                    description, props, disabled, overwrite);
+                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes, monitorPort, 
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
         }
     }
 }

@@ -73,7 +73,7 @@ public final class JobConfigurationTest {
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertThat(actual.getMonitorPort(), is(-1));
-        assertThat(actual.getJobShardingStrategyType(), is(""));
+        assertNull(actual.getJobShardingStrategyType());
         assertNull(actual.getJobExecutorServiceHandlerType());
         assertNull(actual.getJobErrorHandlerType());
         assertThat(actual.getDescription(), is(""));
