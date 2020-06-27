@@ -30,9 +30,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
@@ -125,13 +122,10 @@ public abstract class AbstractBaseStdJobTest {
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
             jobCoreConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
             jobCoreConfig.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
-            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig);
-        } else {
-            jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }
+        jobTypeConfig = new JobTypeConfiguration(jobCoreConfig);
         return JobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
     }
     

@@ -20,9 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
@@ -57,21 +55,21 @@ public final class JobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForSimpleJob() {
         JobConfiguration actual = JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
+                new JobTypeConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(15).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
     
     @Test
     public void assertToJsonForDataflowJob() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new DataflowJobConfiguration(
+        JobConfiguration actual = JobConfiguration.newBuilder(new JobTypeConfiguration(
                 JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
     @Test
     public void assertToJsonForScriptJob() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new ScriptJobConfiguration(
+        JobConfiguration actual = JobConfiguration.newBuilder(new JobTypeConfiguration(
                 JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh").build())).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
     }

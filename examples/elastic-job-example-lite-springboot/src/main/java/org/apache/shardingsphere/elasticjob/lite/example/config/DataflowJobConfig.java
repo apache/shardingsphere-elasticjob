@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
@@ -54,7 +54,7 @@ public class DataflowJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(
+        return JobConfiguration.newBuilder(new JobTypeConfiguration(JobCoreConfiguration.newBuilder(
                 jobClass.getName(), JobType.DATAFLOW, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters)
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).overwrite(true).build();
     }

@@ -17,15 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Job type configuration.
  */
-public interface JobTypeConfiguration {
+@RequiredArgsConstructor
+@Getter
+public final class JobTypeConfiguration {
     
-    /**
-     * Get job core configuration.
-     * 
-     * @return job core configuration
-     */
-    JobCoreConfiguration getCoreConfig();
+    private final JobCoreConfiguration coreConfig;
 }

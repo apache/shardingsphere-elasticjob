@@ -22,8 +22,7 @@ import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
@@ -48,10 +47,10 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         String jobType = jobConfig.getTypeConfig().getCoreConfig().getJobType().name();
         buildSimpleJobSettings(jobName, result, jobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, (DataflowJobConfiguration) jobConfig.getTypeConfig());
+            buildDataflowJobSettings(result, jobConfig.getTypeConfig());
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, (ScriptJobConfiguration) jobConfig.getTypeConfig());
+            buildScriptJobSettings(result, jobConfig.getTypeConfig());
         }
         return result;
     }
@@ -75,11 +74,11 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         jobSettings.setDescription(jobConfig.getTypeConfig().getCoreConfig().getDescription());
     }
     
-    private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
+    private void buildDataflowJobSettings(final JobSettings result, final JobTypeConfiguration config) {
         result.setStreamingProcess(Boolean.parseBoolean(config.getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
     }
     
-    private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {
+    private void buildScriptJobSettings(final JobSettings result, final JobTypeConfiguration config) {
         result.setScriptCommandLine(config.getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
     }
     

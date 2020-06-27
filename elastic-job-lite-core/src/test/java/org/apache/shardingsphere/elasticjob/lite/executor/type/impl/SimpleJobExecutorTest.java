@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
@@ -66,7 +66,7 @@ public final class SimpleJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration(final String jobExecutorServiceHandlerType, final String jobErrorHandlerType) {
-        return JobConfiguration.newBuilder(new SimpleJobConfiguration(
+        return JobConfiguration.newBuilder(new JobTypeConfiguration(
                 JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SIMPLE, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                         .failover(true).misfire(false).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description("desc").build())).build();
     }

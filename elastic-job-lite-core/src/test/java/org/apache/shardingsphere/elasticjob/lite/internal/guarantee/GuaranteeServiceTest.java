@@ -20,8 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -71,7 +70,7 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertIsNotAllStarted() {
-        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder(new JobTypeConfiguration(
                 JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1"));
@@ -82,7 +81,7 @@ public final class GuaranteeServiceTest {
     public void assertIsAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(configService.load(false)).thenReturn(
-                JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build())).build());
+                JobConfiguration.newBuilder(new JobTypeConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build())).build());
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllStarted());
     }
@@ -116,7 +115,7 @@ public final class GuaranteeServiceTest {
     public void assertIsAllCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
         when(configService.load(false)).thenReturn(
-                JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build())).build());
+                JobConfiguration.newBuilder(new JobTypeConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build())).build());
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllCompleted());
     }

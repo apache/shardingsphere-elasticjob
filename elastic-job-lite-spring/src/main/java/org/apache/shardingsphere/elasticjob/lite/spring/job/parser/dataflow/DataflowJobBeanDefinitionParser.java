@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,7 +35,7 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     
     @Override
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
-        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobTypeConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
         return result.getBeanDefinition();
     }
