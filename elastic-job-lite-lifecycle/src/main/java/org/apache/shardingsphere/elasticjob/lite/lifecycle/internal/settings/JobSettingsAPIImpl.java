@@ -76,11 +76,11 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     }
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
-        result.setStreamingProcess(Boolean.parseBoolean(config.getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
+        result.setStreamingProcess(Boolean.parseBoolean(config.getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
     }
     
     private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {
-        result.setScriptCommandLine(config.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
+        result.setScriptCommandLine(config.getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
     }
     
     @Override

@@ -139,7 +139,8 @@ public final class LiteJobFacade implements JobFacade {
     public boolean isEligibleForJobRunning() {
         JobConfiguration jobConfig = configService.load(true);
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            return !shardingService.isNeedSharding() && Boolean.parseBoolean(jobConfig.getTypeConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString());
+            return !shardingService.isNeedSharding()
+                    && Boolean.parseBoolean(jobConfig.getTypeConfig().getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString());
         }
         return !shardingService.isNeedSharding();
     }

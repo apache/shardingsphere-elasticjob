@@ -41,7 +41,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
-import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -100,10 +99,8 @@ public final class SchedulerFacadeTest {
     
     @Test
     public void assertUpdateJobConfiguration() {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).build(), props)).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build();
         when(configService.load(false)).thenReturn(jobConfig);
         assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);

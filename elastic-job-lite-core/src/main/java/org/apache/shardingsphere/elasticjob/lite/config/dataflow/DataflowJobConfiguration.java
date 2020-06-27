@@ -22,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
-import java.util.Properties;
-
 /**
  * Dataflow job configuration.
  */
@@ -32,6 +30,4 @@ import java.util.Properties;
 public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
-    
-    private final Properties props;
 }

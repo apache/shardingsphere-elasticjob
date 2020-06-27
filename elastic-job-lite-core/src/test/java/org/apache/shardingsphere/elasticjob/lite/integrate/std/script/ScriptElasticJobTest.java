@@ -41,8 +41,8 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     public void assertJobInit() throws IOException {
         ScriptElasticJobUtil.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
-        String scriptCommandLine = getJobConfiguration().getTypeConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
+        String scriptCommandLine = getJobConfiguration().getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(getRegCenter().get("/" + getJobName() + "/config"));
-        assertThat(jobConfig.getTypeConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
+        assertThat(jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
     }
 }

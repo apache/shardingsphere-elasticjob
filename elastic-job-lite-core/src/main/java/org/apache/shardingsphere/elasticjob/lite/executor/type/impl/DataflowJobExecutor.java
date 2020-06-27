@@ -36,7 +36,7 @@ public final class DataflowJobExecutor implements JobItemExecutor<DataflowJob> {
     @Override
     public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) jobConfig.getTypeConfig();
-        if (Boolean.parseBoolean(dataflowConfig.getProps().getOrDefault(STREAM_PROCESS_KEY, false).toString())) {
+        if (Boolean.parseBoolean(dataflowConfig.getCoreConfig().getProps().getOrDefault(STREAM_PROCESS_KEY, false).toString())) {
             streamingExecute(elasticJob, jobFacade, shardingContext);
         } else {
             oneOffExecute(elasticJob, shardingContext);

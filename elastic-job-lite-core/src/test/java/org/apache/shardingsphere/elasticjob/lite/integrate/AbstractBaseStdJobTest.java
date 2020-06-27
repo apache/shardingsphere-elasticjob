@@ -52,8 +52,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import java.util.Properties;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -126,13 +124,11 @@ public abstract class AbstractBaseStdJobTest {
                 jobName, jobType, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            Properties props = new Properties();
-            props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, props);
+            jobCoreConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
-            Properties props = new Properties();
-            props.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
-            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, props);
+            jobCoreConfig.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig);
         } else {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }

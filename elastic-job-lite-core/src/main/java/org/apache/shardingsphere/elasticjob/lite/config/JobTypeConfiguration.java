@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
-import java.util.Properties;
-
 /**
  * Job type configuration.
  */
@@ -30,11 +28,4 @@ public interface JobTypeConfiguration {
      * @return job core configuration
      */
     JobCoreConfiguration getCoreConfig();
-    
-    /**
-     * Get properties.
-     * 
-     * @return properties
-     */
-    Properties getProps();
 }

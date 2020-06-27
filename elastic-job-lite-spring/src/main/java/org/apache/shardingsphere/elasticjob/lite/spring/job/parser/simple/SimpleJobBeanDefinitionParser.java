@@ -25,6 +25,8 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+
 /**
  * Simple job bean definition parser.
  */
@@ -35,6 +37,11 @@ public final class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefiniti
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(SimpleJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
         return result.getBeanDefinition();
+    }
+    
+    @Override
+    protected Properties getProps(final Element element) {
+        return new Properties();
     }
     
     @Override

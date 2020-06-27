@@ -37,10 +37,14 @@ public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefiniti
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(ScriptJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
-        result.addConstructorArgValue(props);
         return result.getBeanDefinition();
+    }
+    
+    @Override
+    protected Properties getProps(final Element element) {
+        Properties result = new Properties();
+        result.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
+        return result;
     }
     
     @Override

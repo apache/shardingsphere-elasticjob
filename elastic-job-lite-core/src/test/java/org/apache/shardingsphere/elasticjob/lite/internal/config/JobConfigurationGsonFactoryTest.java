@@ -28,8 +28,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExe
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.junit.Test;
 
-import java.util.Properties;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -66,17 +64,15 @@ public final class JobConfigurationGsonFactoryTest {
     
     @Test
     public void assertToJsonForDataflowJob() {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        JobConfiguration actual = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).build(), props)).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
     @Test
     public void assertToJsonForScriptJob() {
-        Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh");
-        JobConfiguration actual = JobConfiguration.newBuilder(new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).build(), props)).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(new ScriptJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh").build())).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
     }
     
@@ -120,7 +116,7 @@ public final class JobConfigurationGsonFactoryTest {
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertTrue(Boolean.parseBoolean(actual.getTypeConfig().getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
+        assertTrue(Boolean.parseBoolean(actual.getTypeConfig().getCoreConfig().getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
     }
     
     @Test
@@ -142,6 +138,6 @@ public final class JobConfigurationGsonFactoryTest {
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertThat(actual.getTypeConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("test.sh"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("test.sh"));
     }
 }

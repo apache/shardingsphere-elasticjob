@@ -31,8 +31,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Properties;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -88,9 +86,8 @@ public final class ScriptJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration(final String scriptCommandLine, final String jobErrorHandlerType) {
-        Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
         return JobConfiguration.newBuilder(new ScriptJobConfiguration(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SCRIPT, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), props)).build();
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SCRIPT, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType)
+                        .setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine).build())).build();
     }
 }

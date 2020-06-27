@@ -40,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Properties;
 
 public final class JavaMain {
     
@@ -96,18 +95,17 @@ public final class JavaMain {
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", JobType.DATAFLOW, "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, props);
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder(
+                "javaDataflowElasticJob", JobType.DATAFLOW, "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
+                .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig);
         new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", JobType.SCRIPT, "0/5 * * * * ?", 3).build();
-        Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine());
-        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, props);
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder(
+                "scriptElasticJob", JobType.SCRIPT, "0/5 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine()).build();
+        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig);
         new JobScheduler(regCenter, null, JobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
     }
     

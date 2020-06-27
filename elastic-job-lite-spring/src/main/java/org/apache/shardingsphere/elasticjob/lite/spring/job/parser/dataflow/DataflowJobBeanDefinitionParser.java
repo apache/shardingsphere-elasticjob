@@ -37,10 +37,14 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
-        result.addConstructorArgValue(props);
         return result.getBeanDefinition();
+    }
+    
+    @Override
+    protected Properties getProps(final Element element) {
+        Properties result = new Properties();
+        result.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
+        return result;
     }
     
     @Override

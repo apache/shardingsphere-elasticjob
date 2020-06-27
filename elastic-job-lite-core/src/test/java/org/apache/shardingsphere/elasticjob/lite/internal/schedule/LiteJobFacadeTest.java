@@ -43,7 +43,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -222,10 +221,8 @@ public final class LiteJobFacadeTest {
     
     @Test
     public void assertNotEligibleForJobRunningWhenNeedSharding() {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build(), props)).build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build());
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
         verify(shardingService).isNeedSharding();
@@ -233,21 +230,17 @@ public final class LiteJobFacadeTest {
     
     @Test
     public void assertNotEligibleForJobRunningWhenUnStreamingProcess() {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString());
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).build(), props)).build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build())).build());
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
         verify(configService).load(true);
     }
     
     @Test
     public void assertEligibleForJobRunningWhenNotNeedShardingAndStreamingProcess() {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         when(shardingService.isNeedSharding()).thenReturn(false);
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).build(), props)).build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build());
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(true));
         verify(shardingService).isNeedSharding();
         verify(configService).load(true);

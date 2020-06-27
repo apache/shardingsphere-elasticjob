@@ -25,6 +25,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 
+import java.util.Properties;
+
 /**
  * Job core configuration.
  */
@@ -54,6 +56,8 @@ public final class JobCoreConfiguration {
     
     private final String description;
     
+    private final Properties props;
+    
     /**
      * Create simple job configuration builder.
      *
@@ -77,6 +81,8 @@ public final class JobCoreConfiguration {
         private final String cron;
         
         private final int shardingTotalCount;
+    
+        private final Properties props = new Properties();
         
         private String shardingItemParameters = "";
         
@@ -193,6 +199,19 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
+    
+        /**
+         * Set property.
+         *
+         * @param key property key
+         * @param value property value
+         *
+         * @return job configuration builder
+         */
+        public Builder setProperty(final String key, final String value) {
+            props.setProperty(key, value);
+            return this;
+        }
         
         /**
          * Build Job.
@@ -205,7 +224,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobCoreConfiguration(
-                    jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
+                    jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props);
         }
     }
 }

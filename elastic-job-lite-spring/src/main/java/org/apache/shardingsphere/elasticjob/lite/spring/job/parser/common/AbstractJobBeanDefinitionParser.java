@@ -34,6 +34,7 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Job bean definition parser.
@@ -88,6 +89,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         jobCoreBeanDefinitionBuilder.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
         jobCoreBeanDefinitionBuilder.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_ERROR_HANDLER_ATTRIBUTE));
         jobCoreBeanDefinitionBuilder.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DESCRIPTION_ATTRIBUTE));
+        jobCoreBeanDefinitionBuilder.addConstructorArgValue(getProps(element));
         return jobCoreBeanDefinitionBuilder.getBeanDefinition();
     }
     
@@ -125,6 +127,8 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     protected boolean shouldGenerateId() {
         return true;
     }
+    
+    protected abstract Properties getProps(Element element);
     
     protected abstract JobType getJobType();
 }

@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
-import java.util.Properties;
 
 @Configuration
 public class DataflowJobConfig {
@@ -55,9 +54,8 @@ public class DataflowJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        Properties props = new Properties();
-        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         return JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(
-                jobClass.getName(), JobType.DATAFLOW, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build(), props)).overwrite(true).build();
+                jobClass.getName(), JobType.DATAFLOW, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters)
+                .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).overwrite(true).build();
     }
 }
