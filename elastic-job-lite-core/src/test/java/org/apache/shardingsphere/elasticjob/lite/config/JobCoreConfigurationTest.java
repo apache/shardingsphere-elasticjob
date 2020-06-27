@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -28,7 +29,7 @@ public final class JobCoreConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
+        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("IGNORE").description("desc").build();
         assertRequiredProperties(actual);
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
@@ -40,7 +41,7 @@ public final class JobCoreConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build();
+        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
         assertRequiredProperties(actual);
         assertDefaultValues(actual);
     }
@@ -48,7 +49,7 @@ public final class JobCoreConfigurationTest {
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
         //noinspection NullArgumentToVariableArgMethod
-        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).shardingItemParameters(null).jobParameter(null).description(null).build();
+        JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).shardingItemParameters(null).jobParameter(null).description(null).build();
         assertRequiredProperties(actual);
         assertDefaultValues(actual);
     }
@@ -69,16 +70,16 @@ public final class JobCoreConfigurationTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWhenJobNameIsNull() {
-        JobCoreConfiguration.newBuilder(null, "0/1 * * * * ?", 3).build();
+        JobCoreConfiguration.newBuilder(null, JobType.SIMPLE, "0/1 * * * * ?", 3).build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWhenCronIsNull() {
-        JobCoreConfiguration.newBuilder("test_job", null, 3).build();
+        JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, null, 3).build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWhenTotalSHardingCountIsNegative() {
-        JobCoreConfiguration.newBuilder(null, "0/1 * * * * ?", -1).build();
+        JobCoreConfiguration.newBuilder(null, JobType.SIMPLE, "0/1 * * * * ?", -1).build();
     }
 }

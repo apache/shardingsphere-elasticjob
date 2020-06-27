@@ -21,7 +21,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 
 /**
  * ElasticJob configuration.
@@ -29,8 +28,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfiguration {
-    
-    private final JobType jobType;
     
     private final JobTypeConfiguration typeConfig;
     
@@ -67,21 +64,18 @@ public final class JobConfiguration {
     }
     
     /**
-     * Create ElasticJob lite configuration builder.
+     * Create ElasticJob configuration builder.
      * 
-     * @param jobType job type
      * @param jobConfig job configuration
-     * @return ElasticJob lite configuration builder
+     * @return ElasticJob configuration builder
      */
-    public static Builder newBuilder(final JobType jobType, final JobTypeConfiguration jobConfig) {
-        return new Builder(jobType, jobConfig);
+    public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
+        return new Builder(jobConfig);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
     
-        private final JobType jobType;
-        
         private final JobTypeConfiguration jobConfig;
     
         private boolean monitorExecution = true;
@@ -110,7 +104,7 @@ public final class JobConfiguration {
          *
          * @param monitorExecution monitor job execution status 
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder monitorExecution(final boolean monitorExecution) {
             this.monitorExecution = monitorExecution;
@@ -127,7 +121,7 @@ public final class JobConfiguration {
          *
          * @param maxTimeDiffSeconds max tolerate time different seconds between job server and registry center
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder maxTimeDiffSeconds(final int maxTimeDiffSeconds) {
             this.maxTimeDiffSeconds = maxTimeDiffSeconds;
@@ -139,7 +133,7 @@ public final class JobConfiguration {
          * 
          * @param monitorPort job monitor port
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder monitorPort(final int monitorPort) {
             this.monitorPort = monitorPort;
@@ -155,7 +149,7 @@ public final class JobConfiguration {
          *
          * @param jobShardingStrategyType job sharding sharding type
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder jobShardingStrategyType(final String jobShardingStrategyType) {
             if (null != jobShardingStrategyType) {
@@ -173,7 +167,7 @@ public final class JobConfiguration {
          *
          * @param reconcileIntervalMinutes reconcile interval minutes for job sharding status
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder reconcileIntervalMinutes(final int reconcileIntervalMinutes) {
             this.reconcileIntervalMinutes = reconcileIntervalMinutes;
@@ -189,7 +183,7 @@ public final class JobConfiguration {
          *
          * @param disabled whether disable job when start
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder disabled(final boolean disabled) {
             this.disabled = disabled;
@@ -205,7 +199,7 @@ public final class JobConfiguration {
          *
          * @param overwrite whether overwrite local configuration to registry center when job startup
          *
-         * @return ElasticJob lite configuration builder
+         * @return ElasticJob configuration builder
          */
         public Builder overwrite(final boolean overwrite) {
             this.overwrite = overwrite;
@@ -213,12 +207,12 @@ public final class JobConfiguration {
         }
         
         /**
-         * Build ElasticJob lite configuration.
+         * Build ElasticJob configuration.
          * 
-         * @return ElasticJob lite configuration
+         * @return ElasticJob configuration
          */
         public final JobConfiguration build() {
-            return new JobConfiguration(jobType, jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
+            return new JobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
         }
     }
 }

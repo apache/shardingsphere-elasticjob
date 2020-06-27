@@ -58,7 +58,7 @@ public final class JobSchedulerTest {
     @Before
     public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        jobConfig = JobConfiguration.newBuilder(JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build())).build();
+        jobConfig = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "* * 0/10 * * ? 2050", 3).build())).build();
         jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), jobConfig);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);

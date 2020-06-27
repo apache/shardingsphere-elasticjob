@@ -66,8 +66,8 @@ public final class SimpleJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration(final String jobExecutorServiceHandlerType, final String jobErrorHandlerType) {
-        return JobConfiguration.newBuilder(JobType.SIMPLE, new SimpleJobConfiguration(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
+        return JobConfiguration.newBuilder(new SimpleJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SIMPLE, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                         .failover(true).misfire(false).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description("desc").build())).build();
     }
     

@@ -23,6 +23,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 
 /**
  * Job core configuration.
@@ -32,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 public final class JobCoreConfiguration {
     
     private final String jobName;
+    
+    private final JobType jobType;
     
     private final String cron;
     
@@ -55,18 +58,21 @@ public final class JobCoreConfiguration {
      * Create simple job configuration builder.
      *
      * @param jobName job name
+     * @param jobType job type
      * @param cron cron expression for job trigger
      * @param shardingTotalCount sharding total count
      * @return simple job configuration builder
      */
-    public static Builder newBuilder(final String jobName, final String cron, final int shardingTotalCount) {
-        return new Builder(jobName, cron, shardingTotalCount);
+    public static Builder newBuilder(final String jobName, final JobType jobType, final String cron, final int shardingTotalCount) {
+        return new Builder(jobName, jobType, cron, shardingTotalCount);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
         
         private final String jobName;
+    
+        private final JobType jobType;
         
         private final String cron;
         
@@ -195,10 +201,11 @@ public final class JobCoreConfiguration {
          */
         public final JobCoreConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
+            Preconditions.checkNotNull(jobType, "jobType can not be null.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobCoreConfiguration(
-                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
+                    jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
         }
     }
 }

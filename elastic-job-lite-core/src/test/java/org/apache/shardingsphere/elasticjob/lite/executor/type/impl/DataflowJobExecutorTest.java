@@ -175,8 +175,8 @@ public final class DataflowJobExecutorTest {
         this.shardingContexts = shardingContexts;
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess));
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(JobType.DATAFLOW, new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), props)).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), props)).build();
         when(jobFacade.loadJobConfiguration(true)).thenReturn(jobConfig);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade);

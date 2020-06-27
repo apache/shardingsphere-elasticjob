@@ -63,7 +63,7 @@ public final class ReconcileServiceTest {
     @Test
     public void assertReconcile() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder(
-                JobType.SIMPLE, new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).reconcileIntervalMinutes(1).build());
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build())).reconcileIntervalMinutes(1).build());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);

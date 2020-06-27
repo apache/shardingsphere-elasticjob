@@ -118,27 +118,35 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
+        JobType jobType = getJobType(elasticJobClass);
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
-        JobType jobType;
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(
+                jobName, jobType, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobType = JobType.DATAFLOW;
             Properties props = new Properties();
             props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
             jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, props);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
-            jobType = JobType.SCRIPT;
             Properties props = new Properties();
             props.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, props);
         } else {
-            jobType = JobType.SIMPLE;
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }
-        return JobConfiguration.newBuilder(jobType, jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+    }
+    
+    private JobType getJobType(final Class<? extends ElasticJob> elasticJobClass) {
+        if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
+            return JobType.DATAFLOW;
+        }
+        if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
+            return JobType.SCRIPT;
+        }
+        return JobType.SIMPLE;
     }
     
     @BeforeClass

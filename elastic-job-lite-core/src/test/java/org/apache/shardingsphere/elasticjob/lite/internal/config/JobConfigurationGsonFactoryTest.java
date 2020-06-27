@@ -58,8 +58,8 @@ public final class JobConfigurationGsonFactoryTest {
     
     @Test
     public void assertToJsonForSimpleJob() {
-        JobConfiguration actual = JobConfiguration.newBuilder(JobType.SIMPLE, 
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
+        JobConfiguration actual = JobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(15).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
@@ -68,7 +68,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertToJsonForDataflowJob() {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        JobConfiguration actual = JobConfiguration.newBuilder(JobType.DATAFLOW, new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props)).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).build(), props)).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
@@ -76,7 +76,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertToJsonForScriptJob() {
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh");
-        JobConfiguration actual = JobConfiguration.newBuilder(JobType.SCRIPT, new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props)).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).build(), props)).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
     }
     
@@ -84,7 +84,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForSimpleJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SIMPLE));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
@@ -105,7 +105,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForDataflowJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(dataflowJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.DATAFLOW));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.DATAFLOW));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
@@ -127,7 +127,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForScriptJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(scriptJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SCRIPT));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.SCRIPT));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
