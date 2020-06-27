@@ -98,7 +98,7 @@ public final class JavaMain {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, props, true);
+        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, props);
         new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
     }
     
@@ -106,7 +106,7 @@ public final class JavaMain {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine());
-        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, props, buildScriptCommandLine());
+        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, props);
         new JobScheduler(regCenter, null, JobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
     }
     

@@ -68,7 +68,7 @@ public final class ExecutionContextServiceTest {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         when(configService.load(false)).thenReturn(
-                JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props, true)).monitorExecution(false).build());
+                JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props)).monitorExecution(false).build());
         ShardingContexts shardingContexts = executionContextService.getJobShardingContext(Collections.emptyList());
         assertTrue(shardingContexts.getTaskId().startsWith("test_job@-@@-@READY@-@"));
         assertThat(shardingContexts.getShardingTotalCount(), is(3));
@@ -79,7 +79,7 @@ public final class ExecutionContextServiceTest {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").build(), props, true)).monitorExecution(false).build());
+                JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").build(), props)).monitorExecution(false).build());
         Map<Integer, String> map = new HashMap<>(3);
         map.put(0, "A");
         map.put(1, "B");
@@ -92,7 +92,7 @@ public final class ExecutionContextServiceTest {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder(new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").build(), props, true)).monitorExecution(true).build());
+                JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").build(), props)).monitorExecution(true).build());
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
         Map<Integer, String> map = new HashMap<>(1, 1);

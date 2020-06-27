@@ -96,10 +96,10 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
                 return new SimpleJobConfiguration(coreConfig);
             case DATAFLOW:
                 props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.valueOf(streamingProcess).toString());
-                return new DataflowJobConfiguration(coreConfig, props, streamingProcess);
+                return new DataflowJobConfiguration(coreConfig, props);
             case SCRIPT:
                 props.setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
-                return new ScriptJobConfiguration(coreConfig, props, scriptCommandLine);
+                return new ScriptJobConfiguration(coreConfig, props);
             default:
                 throw new UnsupportedOperationException(String.valueOf(jobType));
         }
@@ -150,7 +150,8 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
         }
         out.name(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()).value(value.getTypeConfig().getCoreConfig().getDescription());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
-            out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
+            out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(
+                    Boolean.valueOf(value.getTypeConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(scriptJobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));

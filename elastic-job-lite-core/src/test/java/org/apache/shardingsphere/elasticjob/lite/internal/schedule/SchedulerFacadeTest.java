@@ -101,7 +101,7 @@ public final class SchedulerFacadeTest {
     public void assertUpdateJobConfiguration() {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props, false)).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props)).build();
         when(configService.load(false)).thenReturn(jobConfig);
         assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);

@@ -57,6 +57,6 @@ public class DataflowJobConfig {
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
         return JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(
-                jobClass.getName(), cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build(), props, true)).overwrite(true).build();
+                jobClass.getName(), cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build(), props)).overwrite(true).build();
     }
 }

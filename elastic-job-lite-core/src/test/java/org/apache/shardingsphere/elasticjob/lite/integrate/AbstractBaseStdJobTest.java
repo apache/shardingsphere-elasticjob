@@ -125,11 +125,11 @@ public abstract class AbstractBaseStdJobTest {
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
             Properties props = new Properties();
             props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, props, false);
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, props);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
             Properties props = new Properties();
             props.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
-            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, props, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, props);
         } else {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }

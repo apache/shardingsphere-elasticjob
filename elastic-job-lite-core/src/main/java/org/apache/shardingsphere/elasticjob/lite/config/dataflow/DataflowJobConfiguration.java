@@ -37,6 +37,4 @@ public final class DataflowJobConfiguration implements JobTypeConfiguration {
     private final JobType jobType = JobType.DATAFLOW;
     
     private final Properties props;
-    
-    private final boolean streamingProcess;
 }

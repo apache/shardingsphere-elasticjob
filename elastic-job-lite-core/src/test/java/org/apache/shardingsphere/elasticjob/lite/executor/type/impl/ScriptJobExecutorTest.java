@@ -90,6 +90,6 @@ public final class ScriptJobExecutorTest {
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
         return JobConfiguration.newBuilder(new ScriptJobConfiguration(
-                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), props, scriptCommandLine)).build();
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType(jobErrorHandlerType).build(), props)).build();
     }
 }
