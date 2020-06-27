@@ -26,13 +26,15 @@ import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -48,6 +50,8 @@ import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+
+import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -119,9 +123,13 @@ public abstract class AbstractBaseStdJobTest {
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount).shardingItemParameters(shardingParameters).jobErrorHandlerType("IGNORE").build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, false);
+            Properties props = new Properties();
+            props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, props, false);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
-            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            Properties props = new Properties();
+            props.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, props, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         } else {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig);
         }

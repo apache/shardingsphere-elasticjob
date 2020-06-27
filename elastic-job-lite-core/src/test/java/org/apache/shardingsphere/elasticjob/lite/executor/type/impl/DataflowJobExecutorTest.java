@@ -34,6 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Properties;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -171,8 +172,10 @@ public final class DataflowJobExecutorTest {
     
     private void setUp(final boolean isStreamingProcess, final ShardingContexts shardingContexts) {
         this.shardingContexts = shardingContexts;
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), isStreamingProcess)).build();
+        Properties props = new Properties();
+        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess));
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(
+                JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), props, isStreamingProcess)).build();
         when(jobFacade.loadJobConfiguration(true)).thenReturn(jobConfig);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade);

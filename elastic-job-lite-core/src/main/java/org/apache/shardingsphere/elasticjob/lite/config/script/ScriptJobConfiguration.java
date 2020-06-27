@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
+import java.util.Properties;
+
 /**
  * Script job configuration.
  */
@@ -33,6 +35,8 @@ public final class ScriptJobConfiguration implements JobTypeConfiguration {
     private final JobCoreConfiguration coreConfig;
     
     private final JobType jobType = JobType.SCRIPT;
+    
+    private final Properties props;
     
     private final String scriptCommandLine;
 }

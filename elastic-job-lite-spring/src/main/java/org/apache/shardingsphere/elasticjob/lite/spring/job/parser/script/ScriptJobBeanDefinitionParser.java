@@ -18,11 +18,14 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script;
 
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
 
 /**
  * Script job bean definition parser.
@@ -33,6 +36,9 @@ public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefiniti
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(ScriptJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
+        Properties props = new Properties();
+        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
+        result.addConstructorArgValue(props);
         result.addConstructorArgValue(element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
         return result.getBeanDefinition();
     }

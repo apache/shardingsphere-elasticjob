@@ -29,11 +29,14 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Job configuration gson type adapter.
@@ -87,13 +90,16 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
     
     private JobTypeConfiguration createJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
+        Properties props = new Properties();
         switch (jobType) {
             case SIMPLE:
                 return new SimpleJobConfiguration(coreConfig);
             case DATAFLOW:
-                return new DataflowJobConfiguration(coreConfig, streamingProcess);
+                props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.valueOf(streamingProcess).toString());
+                return new DataflowJobConfiguration(coreConfig, props, streamingProcess);
             case SCRIPT:
-                return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
+                props.setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
+                return new ScriptJobConfiguration(coreConfig, props, scriptCommandLine);
             default:
                 throw new UnsupportedOperationException(String.valueOf(jobType));
         }
@@ -147,7 +153,7 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
             out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
-            out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(scriptJobConfig.getScriptCommandLine());
+            out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(scriptJobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
         }
         out.name(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()).value(value.isMonitorExecution());
         out.name(JobConfigurationJsonEnum.MAX_TIME_DIFF_SECONDS.getJsonName()).value(value.getMaxTimeDiffSeconds());

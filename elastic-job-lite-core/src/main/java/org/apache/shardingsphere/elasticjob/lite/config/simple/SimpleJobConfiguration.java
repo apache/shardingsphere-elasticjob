@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
+import java.util.Properties;
+
 /**
  * Simple job configuration.
  */
@@ -33,4 +35,6 @@ public final class SimpleJobConfiguration implements JobTypeConfiguration {
     private final JobCoreConfiguration coreConfig;
     
     private final JobType jobType = JobType.SIMPLE;
+    
+    private final Properties props = new Properties();
 }

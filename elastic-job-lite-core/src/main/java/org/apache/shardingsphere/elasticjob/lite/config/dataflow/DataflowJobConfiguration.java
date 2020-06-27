@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
+import java.util.Properties;
+
 /**
  * Dataflow job configuration.
  */
@@ -33,6 +35,8 @@ public final class DataflowJobConfiguration implements JobTypeConfiguration {
     private final JobCoreConfiguration coreConfig;
     
     private final JobType jobType = JobType.DATAFLOW;
+    
+    private final Properties props;
     
     private final boolean streamingProcess;
 }

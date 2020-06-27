@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
@@ -39,6 +40,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -97,7 +99,9 @@ public final class SchedulerFacadeTest {
     
     @Test
     public void assertUpdateJobConfiguration() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build();
+        Properties props = new Properties();
+        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), props, false)).build();
         when(configService.load(false)).thenReturn(jobConfig);
         assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);

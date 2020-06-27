@@ -19,13 +19,15 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
@@ -37,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Properties;
 
 public final class JavaMain {
     
@@ -93,13 +96,17 @@ public final class JavaMain {
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, true);
+        Properties props = new Properties();
+        props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, props, true);
         new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
-        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
+        Properties props = new Properties();
+        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine());
+        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, props, buildScriptCommandLine());
         new JobScheduler(regCenter, null, JobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
     }
     

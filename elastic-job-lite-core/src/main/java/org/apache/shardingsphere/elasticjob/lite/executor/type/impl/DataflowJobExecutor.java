@@ -31,10 +31,12 @@ import java.util.List;
  */
 public final class DataflowJobExecutor implements JobItemExecutor<DataflowJob> {
     
+    public static final String STREAM_PROCESS_KEY = "streaming.process";
+    
     @Override
     public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) jobConfig.getTypeConfig();
-        if (dataflowConfig.isStreamingProcess()) {
+        if (Boolean.parseBoolean(dataflowConfig.getProps().getOrDefault(STREAM_PROCESS_KEY, false).toString())) {
             streamingExecute(elasticJob, jobFacade, shardingContext);
         } else {
             oneOffExecute(elasticJob, shardingContext);
