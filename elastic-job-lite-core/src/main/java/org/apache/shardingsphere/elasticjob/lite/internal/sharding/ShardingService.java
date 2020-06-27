@@ -109,7 +109,7 @@ public final class ShardingService {
         }
         waitingOtherShardingItemCompleted();
         JobConfiguration jobConfig = configService.load(false);
-        int shardingTotalCount = jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = jobConfig.getCoreConfig().getShardingTotalCount();
         log.debug("Job '{}' sharding begin.", jobName);
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);
@@ -157,7 +157,7 @@ public final class ShardingService {
             return Collections.emptyList();
         }
         List<Integer> result = new LinkedList<>();
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
@@ -185,7 +185,7 @@ public final class ShardingService {
      */
     public boolean hasShardingInfoInOfflineServers() {
         List<String> onlineInstances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (!onlineInstances.contains(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 return true;

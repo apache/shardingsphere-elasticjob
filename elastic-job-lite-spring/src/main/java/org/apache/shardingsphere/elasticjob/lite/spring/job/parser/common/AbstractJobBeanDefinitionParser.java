@@ -48,7 +48,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
-        factory.addConstructorArgValue(createJobConfiguration(parserContext, element));
+        factory.addConstructorArgValue(createJobConfiguration(element));
         BeanDefinition tracingConfig = createTracingConfiguration(element);
         if (null != tracingConfig) {
             factory.addConstructorArgValue(tracingConfig);
@@ -57,15 +57,13 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         return factory.getBeanDefinition();
     }
     
-    protected abstract BeanDefinition getJobTypeConfigurationBeanDefinition(ParserContext parserContext, BeanDefinition jobCoreConfigurationBeanDefinition, Element element);
-    
-    private BeanDefinition createJobConfiguration(final ParserContext parserContext, final Element element) {
-        return createJobConfigurationBeanDefinition(parserContext, element, createJobCoreBeanDefinition(element));
+    private BeanDefinition createJobConfiguration(final Element element) {
+        return createJobConfigurationBeanDefinition(element, createJobCoreBeanDefinition(element));
     }
     
-    private BeanDefinition createJobConfigurationBeanDefinition(final ParserContext parserContext, final Element element, final BeanDefinition jobCoreBeanDefinition) {
+    private BeanDefinition createJobConfigurationBeanDefinition(final Element element, final BeanDefinition jobCoreBeanDefinition) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
-        result.addConstructorArgValue(getJobTypeConfigurationBeanDefinition(parserContext, jobCoreBeanDefinition, element));
+        result.addConstructorArgValue(jobCoreBeanDefinition);
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.MONITOR_EXECUTION_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.MONITOR_PORT_ATTRIBUTE));

@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
@@ -55,22 +54,22 @@ public final class JobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForSimpleJob() {
         JobConfiguration actual = JobConfiguration.newBuilder(
-                new JobTypeConfiguration(JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
+                JobCoreConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).failover(true).misfire(false).build())
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(15).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
     
     @Test
     public void assertToJsonForDataflowJob() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new JobTypeConfiguration(
-                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build())).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(
+                JobCoreConfiguration.newBuilder("test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build()).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
     @Test
     public void assertToJsonForScriptJob() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new JobTypeConfiguration(
-                JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh").build())).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(
+                JobCoreConfiguration.newBuilder("test_job", JobType.SCRIPT, "0/1 * * * * ?", 3).setProperty(ScriptJobExecutor.SCRIPT_KEY, "test.sh").build()).build();
         assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
     }
     
@@ -78,14 +77,14 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForSimpleJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.SIMPLE));
-        assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobParameter(), is(""));
-        assertTrue(actual.getTypeConfig().getCoreConfig().isFailover());
-        assertFalse(actual.getTypeConfig().getCoreConfig().isMisfire());
-        assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
+        assertThat(actual.getCoreConfig().getJobType(), is(JobType.SIMPLE));
+        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCoreConfig().getShardingItemParameters(), is(""));
+        assertThat(actual.getCoreConfig().getJobParameter(), is(""));
+        assertTrue(actual.getCoreConfig().isFailover());
+        assertFalse(actual.getCoreConfig().isMisfire());
+        assertThat(actual.getCoreConfig().getDescription(), is(""));
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
@@ -99,14 +98,14 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForDataflowJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(dataflowJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.DATAFLOW));
-        assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobParameter(), is(""));
-        assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
-        assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
-        assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
+        assertThat(actual.getCoreConfig().getJobType(), is(JobType.DATAFLOW));
+        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCoreConfig().getShardingItemParameters(), is(""));
+        assertThat(actual.getCoreConfig().getJobParameter(), is(""));
+        assertFalse(actual.getCoreConfig().isFailover());
+        assertTrue(actual.getCoreConfig().isMisfire());
+        assertThat(actual.getCoreConfig().getDescription(), is(""));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -114,21 +113,21 @@ public final class JobConfigurationGsonFactoryTest {
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertTrue(Boolean.parseBoolean(actual.getTypeConfig().getCoreConfig().getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
+        assertTrue(Boolean.parseBoolean(actual.getCoreConfig().getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
     }
     
     @Test
     public void assertFromJsonForScriptJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(scriptJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobType(), is(JobType.SCRIPT));
-        assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobParameter(), is(""));
-        assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
-        assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
-        assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
+        assertThat(actual.getCoreConfig().getJobType(), is(JobType.SCRIPT));
+        assertThat(actual.getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getCoreConfig().getShardingItemParameters(), is(""));
+        assertThat(actual.getCoreConfig().getJobParameter(), is(""));
+        assertFalse(actual.getCoreConfig().isFailover());
+        assertTrue(actual.getCoreConfig().isMisfire());
+        assertThat(actual.getCoreConfig().getDescription(), is(""));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -136,6 +135,6 @@ public final class JobConfigurationGsonFactoryTest {
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertThat(actual.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("test.sh"));
+        assertThat(actual.getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("test.sh"));
     }
 }

@@ -71,10 +71,10 @@ public final class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         jobItemExecutor = getJobItemExecutor(elasticJob);
         jobConfig = jobFacade.loadJobConfiguration(true);
-        jobName = jobConfig.getTypeConfig().getCoreConfig().getJobName();
-        executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
-        jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
+        jobName = jobConfig.getCoreConfig().getJobName();
+        executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
+        jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getCoreConfig().getJobErrorHandlerType());
+        itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getCoreConfig().getShardingTotalCount(), 1);
     }
     
     @SuppressWarnings("unchecked")

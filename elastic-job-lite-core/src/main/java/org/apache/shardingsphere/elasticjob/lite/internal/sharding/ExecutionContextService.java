@@ -60,12 +60,12 @@ public final class ExecutionContextService {
         JobConfiguration jobConfig = configService.load(false);
         removeRunningIfMonitorExecution(jobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
-                    jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), Collections.emptyMap());
+            return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getCoreConfig().getShardingTotalCount(), 
+                    jobConfig.getCoreConfig().getJobParameter(), Collections.emptyMap());
         }
-        Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
-        return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
-                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
+        Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).getMap();
+        return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getCoreConfig().getShardingTotalCount(), 
+                jobConfig.getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
     }
     
     private String buildTaskId(final JobConfiguration jobConfig, final List<Integer> shardingItems) {

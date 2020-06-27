@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
@@ -44,42 +44,42 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
-        String jobType = jobConfig.getTypeConfig().getCoreConfig().getJobType().name();
+        String jobType = jobConfig.getCoreConfig().getJobType().name();
         buildSimpleJobSettings(jobName, result, jobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, jobConfig.getTypeConfig());
+            buildDataflowJobSettings(result, jobConfig.getCoreConfig());
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, jobConfig.getTypeConfig());
+            buildScriptJobSettings(result, jobConfig.getCoreConfig());
         }
         return result;
     }
     
     private void buildSimpleJobSettings(final String jobName, final JobSettings jobSettings, final JobConfiguration jobConfig) {
         jobSettings.setJobName(jobName);
-        jobSettings.setJobType(jobConfig.getTypeConfig().getCoreConfig().getJobType().name());
-        jobSettings.setShardingTotalCount(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        jobSettings.setCron(jobConfig.getTypeConfig().getCoreConfig().getCron());
-        jobSettings.setShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters());
-        jobSettings.setJobParameter(jobConfig.getTypeConfig().getCoreConfig().getJobParameter());
+        jobSettings.setJobType(jobConfig.getCoreConfig().getJobType().name());
+        jobSettings.setShardingTotalCount(jobConfig.getCoreConfig().getShardingTotalCount());
+        jobSettings.setCron(jobConfig.getCoreConfig().getCron());
+        jobSettings.setShardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters());
+        jobSettings.setJobParameter(jobConfig.getCoreConfig().getJobParameter());
         jobSettings.setMonitorExecution(jobConfig.isMonitorExecution());
         jobSettings.setMaxTimeDiffSeconds(jobConfig.getMaxTimeDiffSeconds());
         jobSettings.setMonitorPort(jobConfig.getMonitorPort());
-        jobSettings.setFailover(jobConfig.getTypeConfig().getCoreConfig().isFailover());
-        jobSettings.setMisfire(jobConfig.getTypeConfig().getCoreConfig().isMisfire());
+        jobSettings.setFailover(jobConfig.getCoreConfig().isFailover());
+        jobSettings.setMisfire(jobConfig.getCoreConfig().isMisfire());
         jobSettings.setJobShardingStrategyType(jobConfig.getJobShardingStrategyType());
-        jobSettings.setJobExecutorServiceHandlerType(jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
-        jobSettings.setJobErrorHandlerType(jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
+        jobSettings.setJobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobExecutorServiceHandlerType());
+        jobSettings.setJobErrorHandlerType(jobConfig.getCoreConfig().getJobErrorHandlerType());
         jobSettings.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
-        jobSettings.setDescription(jobConfig.getTypeConfig().getCoreConfig().getDescription());
+        jobSettings.setDescription(jobConfig.getCoreConfig().getDescription());
     }
     
-    private void buildDataflowJobSettings(final JobSettings result, final JobTypeConfiguration config) {
-        result.setStreamingProcess(Boolean.parseBoolean(config.getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
+    private void buildDataflowJobSettings(final JobSettings jobSettings, final JobCoreConfiguration config) {
+        jobSettings.setStreamingProcess(Boolean.parseBoolean(config.getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
     }
     
-    private void buildScriptJobSettings(final JobSettings result, final JobTypeConfiguration config) {
-        result.setScriptCommandLine(config.getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
+    private void buildScriptJobSettings(final JobSettings jobSettings, final JobCoreConfiguration config) {
+        jobSettings.setScriptCommandLine(config.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
     }
     
     @Override

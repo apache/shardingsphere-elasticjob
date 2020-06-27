@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config.json;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -25,7 +24,6 @@ import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 
@@ -69,10 +67,12 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_EXECUTOR_SERVICE_HANDLER_TYPE.getJsonName()), 
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()), 
                 (String) jsonValueMap.get(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()));
-        JobTypeConfiguration typeConfig = createJobTypeConfiguration(coreConfig, jobType, 
-                (boolean) jsonValueMap.getOrDefault(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName(), false), 
-                (String) jsonValueMap.getOrDefault(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName(), ""));
-        return createJobRootConfiguration(typeConfig, jsonValueMap);
+        if (JobType.DATAFLOW == jobType) {
+            coreConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, jsonValueMap.getOrDefault(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName(), false).toString());
+        } else if (JobType.SCRIPT == jobType) {
+            coreConfig.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, jsonValueMap.getOrDefault(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName(), "").toString());
+        }
+        return createJobRootConfiguration(coreConfig, jsonValueMap);
     }
     
     private JobCoreConfiguration createJobCoreConfiguration(final String jobName, final JobType jobType, final String cron, final int shardingTotalCount,
@@ -85,24 +85,8 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
                 .build();
     }
     
-    private JobTypeConfiguration createJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
-        Preconditions.checkNotNull(jobType, "jobType cannot be null.");
-        switch (jobType) {
-            case SIMPLE:
-                return new JobTypeConfiguration(coreConfig);
-            case DATAFLOW:
-                coreConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.valueOf(streamingProcess).toString());
-                return new JobTypeConfiguration(coreConfig);
-            case SCRIPT:
-                coreConfig.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
-                return new JobTypeConfiguration(coreConfig);
-            default:
-                throw new UnsupportedOperationException(String.valueOf(jobType));
-        }
-    }
-    
-    private JobConfiguration createJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> jsonValueMap) {
-        JobConfiguration.Builder builder = JobConfiguration.newBuilder(typeConfig);
+    private JobConfiguration createJobRootConfiguration(final JobCoreConfiguration coreConfig, final Map<String, Object> jsonValueMap) {
+        JobConfiguration.Builder builder = JobConfiguration.newBuilder(coreConfig);
         if (jsonValueMap.containsKey(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName())) {
             builder.monitorExecution((boolean) jsonValueMap.get(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()));
         }
@@ -130,26 +114,26 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
     @Override
     public void write(final JsonWriter out, final JobConfiguration value) throws IOException {
         out.beginObject();
-        out.name(JobConfigurationJsonEnum.JOB_NAME.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobType().name());
-        out.name(JobConfigurationJsonEnum.CRON.getJsonName()).value(value.getTypeConfig().getCoreConfig().getCron());
-        out.name(JobConfigurationJsonEnum.SHARDING_TOTAL_COUNT.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        out.name(JobConfigurationJsonEnum.SHARDING_ITEM_PARAMETERS.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
-        out.name(JobConfigurationJsonEnum.JOB_PARAMETER.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobParameter());
-        out.name(JobConfigurationJsonEnum.FAILOVER.getJsonName()).value(value.getTypeConfig().getCoreConfig().isFailover());
-        out.name(JobConfigurationJsonEnum.MISFIRE.getJsonName()).value(value.getTypeConfig().getCoreConfig().isMisfire());
-        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType())) {
-            out.name(JobConfigurationJsonEnum.JOB_EXECUTOR_SERVICE_HANDLER_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
+        out.name(JobConfigurationJsonEnum.JOB_NAME.getJsonName()).value(value.getCoreConfig().getJobName());
+        out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getCoreConfig().getJobType().name());
+        out.name(JobConfigurationJsonEnum.CRON.getJsonName()).value(value.getCoreConfig().getCron());
+        out.name(JobConfigurationJsonEnum.SHARDING_TOTAL_COUNT.getJsonName()).value(value.getCoreConfig().getShardingTotalCount());
+        out.name(JobConfigurationJsonEnum.SHARDING_ITEM_PARAMETERS.getJsonName()).value(value.getCoreConfig().getShardingItemParameters());
+        out.name(JobConfigurationJsonEnum.JOB_PARAMETER.getJsonName()).value(value.getCoreConfig().getJobParameter());
+        out.name(JobConfigurationJsonEnum.FAILOVER.getJsonName()).value(value.getCoreConfig().isFailover());
+        out.name(JobConfigurationJsonEnum.MISFIRE.getJsonName()).value(value.getCoreConfig().isMisfire());
+        if (!Strings.isNullOrEmpty(value.getCoreConfig().getJobExecutorServiceHandlerType())) {
+            out.name(JobConfigurationJsonEnum.JOB_EXECUTOR_SERVICE_HANDLER_TYPE.getJsonName()).value(value.getCoreConfig().getJobExecutorServiceHandlerType());
         }
-        if (!Strings.isNullOrEmpty(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType())) {
-            out.name(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
+        if (!Strings.isNullOrEmpty(value.getCoreConfig().getJobErrorHandlerType())) {
+            out.name(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()).value(value.getCoreConfig().getJobErrorHandlerType());
         }
-        out.name(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()).value(value.getTypeConfig().getCoreConfig().getDescription());
-        if (JobType.DATAFLOW == value.getTypeConfig().getCoreConfig().getJobType()) {
+        out.name(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()).value(value.getCoreConfig().getDescription());
+        if (JobType.DATAFLOW == value.getCoreConfig().getJobType()) {
             out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(
-                    Boolean.valueOf(value.getTypeConfig().getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
-        } else if (JobType.SCRIPT == value.getTypeConfig().getCoreConfig().getJobType()) {
-            out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
+                    Boolean.valueOf(value.getCoreConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
+        } else if (JobType.SCRIPT == value.getCoreConfig().getJobType()) {
+            out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(value.getCoreConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
         }
         out.name(JobConfigurationJsonEnum.MONITOR_EXECUTION.getJsonName()).value(value.isMonitorExecution());
         out.name(JobConfigurationJsonEnum.MAX_TIME_DIFF_SECONDS.getJsonName()).value(value.getMaxTimeDiffSeconds());

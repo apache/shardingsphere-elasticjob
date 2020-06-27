@@ -39,7 +39,7 @@ public final class ScriptJobExecutor implements JobItemExecutor<ScriptJob> {
     
     @Override
     public void process(final ScriptJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        String scriptCommandLine = jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(SCRIPT_KEY);
+        String scriptCommandLine = jobConfig.getCoreConfig().getProps().getProperty(SCRIPT_KEY);
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
             throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName());
         }

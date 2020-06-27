@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfiguration {
     
-    private final JobTypeConfiguration typeConfig;
+    private final JobCoreConfiguration coreConfig;
     
     private final boolean monitorExecution;
     
@@ -51,7 +51,7 @@ public final class JobConfiguration {
      * @return job name
      */
     public String getJobName() {
-        return typeConfig.getCoreConfig().getJobName();
+        return coreConfig.getJobName();
     }
     
     /**
@@ -60,7 +60,7 @@ public final class JobConfiguration {
      * @return is enable failover
      */
     public boolean isFailover() {
-        return typeConfig.getCoreConfig().isFailover();
+        return coreConfig.isFailover();
     }
     
     /**
@@ -69,14 +69,14 @@ public final class JobConfiguration {
      * @param jobConfig job configuration
      * @return ElasticJob configuration builder
      */
-    public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
+    public static Builder newBuilder(final JobCoreConfiguration jobConfig) {
         return new Builder(jobConfig);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
     
-        private final JobTypeConfiguration jobConfig;
+        private final JobCoreConfiguration jobConfig;
     
         private boolean monitorExecution = true;
         

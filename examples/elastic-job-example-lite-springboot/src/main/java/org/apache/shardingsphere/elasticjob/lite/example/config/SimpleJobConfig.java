@@ -22,7 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
@@ -53,7 +52,7 @@ public class SimpleJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(new JobTypeConfiguration(
-                JobCoreConfiguration.newBuilder(jobClass.getName(), JobType.SIMPLE, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build())).overwrite(true).build();
+        return JobConfiguration.newBuilder(
+                JobCoreConfiguration.newBuilder(jobClass.getName(), JobType.SIMPLE, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build()).overwrite(true).build();
     }
 }
