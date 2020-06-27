@@ -42,23 +42,23 @@ public enum JobConfigurationJsonEnum {
     
     JOB_PARAMETER("jobParameter", String.class),
     
+    MONITOR_EXECUTION("monitorExecution", boolean.class),
+    
     FAILOVER("failover", boolean.class),
     
     MISFIRE("misfire", boolean.class),
     
-    JOB_EXECUTOR_SERVICE_HANDLER_TYPE("jobExecutorServiceHandlerType", String.class),
-    
-    JOB_ERROR_HANDLER_TYPE("jobErrorHandlerType", String.class),
-    
-    MONITOR_EXECUTION("monitorExecution", boolean.class),
-    
     MAX_TIME_DIFF_SECONDS("maxTimeDiffSeconds", int.class),
+    
+    RECONCILE_INTERVAL_MINUTES("reconcileIntervalMinutes", int.class),
     
     MONITOR_PORT("monitorPort", int.class),
     
     JOB_SHARDING_STRATEGY_TYPE("jobShardingStrategyType", String.class),
     
-    RECONCILE_INTERVAL_MINUTES("reconcileIntervalMinutes", int.class),
+    JOB_EXECUTOR_SERVICE_HANDLER_TYPE("jobExecutorServiceHandlerType", String.class),
+    
+    JOB_ERROR_HANDLER_TYPE("jobErrorHandlerType", String.class),
     
     DESCRIPTION("description", String.class),
     

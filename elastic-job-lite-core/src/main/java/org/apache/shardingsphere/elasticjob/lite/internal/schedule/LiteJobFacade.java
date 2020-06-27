@@ -19,24 +19,25 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 import java.util.List;
@@ -131,14 +132,15 @@ public final class LiteJobFacade implements JobFacade {
     
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
-        return isEligibleForJobRunning() && configService.load(true).getTypeConfig().getCoreConfig().isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+        return isEligibleForJobRunning() && configService.load(true).isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
     @Override
     public boolean isEligibleForJobRunning() {
         JobConfiguration jobConfig = configService.load(true);
-        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            return !shardingService.isNeedSharding() && ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess();    
+        if (JobType.DATAFLOW == jobConfig.getJobType()) {
+            return !shardingService.isNeedSharding()
+                    && Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString());
         }
         return !shardingService.isNeedSharding();
     }

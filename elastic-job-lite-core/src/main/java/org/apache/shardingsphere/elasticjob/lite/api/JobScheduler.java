@@ -99,11 +99,11 @@ public final class JobScheduler {
      */
     public void init() {
         JobConfiguration jobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfigFromRegCenter.getJobName(), jobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfigFromRegCenter.getJobName(), jobConfigFromRegCenter.getShardingTotalCount());
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(elasticJob), jobConfigFromRegCenter.getJobName());
         JobRegistry.getInstance().registerJob(jobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
         schedulerFacade.registerStartUpInfo(!jobConfigFromRegCenter.isDisabled());
-        jobScheduleController.scheduleJob(jobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
+        jobScheduleController.scheduleJob(jobConfigFromRegCenter.getCron());
     }
     
     private Scheduler createScheduler() {

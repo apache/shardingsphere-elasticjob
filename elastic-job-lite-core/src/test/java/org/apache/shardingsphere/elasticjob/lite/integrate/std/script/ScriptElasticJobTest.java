@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.std.script;
 
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
@@ -41,8 +41,8 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     public void assertJobInit() throws IOException {
         ScriptElasticJobUtil.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
-        String scriptCommandLine = ((ScriptJobConfiguration) getJobConfiguration().getTypeConfig()).getScriptCommandLine();
+        String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(getRegCenter().get("/" + getJobName() + "/config"));
-        assertThat(((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine(), is(scriptCommandLine));
+        assertThat(jobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
     }
 }

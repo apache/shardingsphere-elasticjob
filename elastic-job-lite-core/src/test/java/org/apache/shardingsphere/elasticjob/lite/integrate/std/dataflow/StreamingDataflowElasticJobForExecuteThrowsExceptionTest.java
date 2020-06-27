@@ -42,7 +42,7 @@ public final class StreamingDataflowElasticJobForExecuteThrowsExceptionTest exte
     
     @Override
     protected void setJobConfiguration(final JobConfiguration jobConfig) {
-        ReflectionUtils.setFieldValue(jobConfig.getTypeConfig(), "streamingProcess", true);
+        ReflectionUtils.setFieldValue(jobConfig, "streamingProcess", true);
     }
     
     @Test

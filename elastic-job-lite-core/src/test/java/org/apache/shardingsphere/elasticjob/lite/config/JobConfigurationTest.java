@@ -17,11 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -29,44 +30,75 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build()))
-                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3)
+                .shardingItemParameters("0=a,1=b,2=c").jobParameter("param")
+                .monitorExecution(false).failover(true).misfire(false)
+                .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60).monitorPort(8888)
+                .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("SINGLE_THREAD").jobErrorHandlerType("IGNORE")
+                .description("desc").setProperty("key", "value")
+                .disabled(true).overwrite(true).build();
+        assertThat(actual.getJobName(), is("test_job"));
+        assertThat(actual.getJobType(), is(JobType.SIMPLE));
+        assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
+        assertThat(actual.getJobParameter(), is("param"));
         assertFalse(actual.isMonitorExecution());
+        assertTrue(actual.isFailover());
+        assertFalse(actual.isMisfire());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
+        assertThat(actual.getReconcileIntervalMinutes(), is(60));
         assertThat(actual.getMonitorPort(), is(8888));
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
+        assertThat(actual.getJobExecutorServiceHandlerType(), is("SINGLE_THREAD"));
+        assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
+        assertThat(actual.getDescription(), is("desc"));
+        assertThat(actual.getProps().getProperty("key"), is("value"));
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
-        assertThat(actual.getReconcileIntervalMinutes(), is(60));
     }
     
     @Test
     public void assertBuildRequiredProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
+        assertThat(actual.getJobName(), is("test_job"));
+        assertThat(actual.getJobType(), is(JobType.SIMPLE));
+        assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getShardingItemParameters(), is(""));
+        assertThat(actual.getJobParameter(), is(""));
         assertTrue(actual.isMonitorExecution());
+        assertFalse(actual.isFailover());
+        assertTrue(actual.isMisfire());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
+        assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertThat(actual.getMonitorPort(), is(-1));
         assertThat(actual.getJobShardingStrategyType(), is(""));
+        assertNull(actual.getJobExecutorServiceHandlerType());
+        assertNull(actual.getJobErrorHandlerType());
+        assertThat(actual.getDescription(), is(""));
+        assertTrue(actual.getProps().isEmpty());
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
     }
     
-    @Test
-    public void assertBuildWhenOptionalParametersIsNull() {
-        assertThat(JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
-                "test_job", "0/1 * * * * ?", 3).build())).jobShardingStrategyType(null).build().getJobShardingStrategyType(), is(""));
+    @Test(expected = IllegalArgumentException.class)
+    public void assertBuildWithEmptyJobName() {
+        JobConfiguration.newBuilder("", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
     }
     
-    @Test
-    public void assertIsNotFailover() {
-        assertFalse(JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build())).monitorExecution(false).build().isFailover());
+    @Test(expected = NullPointerException.class)
+    public void assertBuildWithNullJobType() {
+        JobConfiguration.newBuilder("test_job", null, "0/1 * * * * ?", 3).build();
     }
     
-    @Test
-    public void assertIsFailover() {
-        assertTrue(JobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build())).monitorExecution(true).build().isFailover());
+    @Test(expected = IllegalArgumentException.class)
+    public void assertBuildWithEmptyCron() {
+        JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "", 3).build();
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void assertBuildWithInvalidShardingTotalCount() {
+        JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", -1).build();
     }
 }
