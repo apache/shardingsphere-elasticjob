@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
@@ -78,7 +79,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     }
     
     private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {
-        result.setScriptCommandLine(config.getScriptCommandLine());
+        result.setScriptCommandLine(config.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
     }
     
     @Override

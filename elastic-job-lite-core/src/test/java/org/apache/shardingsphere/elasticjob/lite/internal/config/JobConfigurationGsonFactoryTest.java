@@ -141,6 +141,6 @@ public final class JobConfigurationGsonFactoryTest {
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertThat(((ScriptJobConfiguration) actual.getTypeConfig()).getScriptCommandLine(), is("test.sh"));
+        assertThat(actual.getTypeConfig().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("test.sh"));
     }
 }

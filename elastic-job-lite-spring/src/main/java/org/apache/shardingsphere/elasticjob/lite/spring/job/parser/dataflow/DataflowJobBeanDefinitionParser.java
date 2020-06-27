@@ -39,7 +39,6 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
         Properties props = new Properties();
         props.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
         result.addConstructorArgValue(props);
-        result.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
         return result.getBeanDefinition();
     }
 }

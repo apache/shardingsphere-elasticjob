@@ -39,7 +39,6 @@ public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefiniti
         Properties props = new Properties();
         props.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
         result.addConstructorArgValue(props);
-        result.addConstructorArgValue(element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
         return result.getBeanDefinition();
     }
 }
