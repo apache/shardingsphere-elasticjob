@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
@@ -32,7 +32,7 @@ import java.util.List;
 public final class DataflowJobExecutor implements JobItemExecutor<DataflowJob> {
     
     @Override
-    public void process(final DataflowJob elasticJob, final LiteJobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) jobConfig.getTypeConfig();
         if (dataflowConfig.isStreamingProcess()) {
             streamingExecute(elasticJob, jobFacade, shardingContext);

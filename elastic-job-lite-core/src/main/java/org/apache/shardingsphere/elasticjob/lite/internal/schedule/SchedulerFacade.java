@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
@@ -95,11 +95,11 @@ public final class SchedulerFacade {
      * Update job configuration.
      *
      * @param jobClassName job class name
-     * @param liteJobConfig job configuration to be updated
+     * @param jobConfig job configuration to be updated
      * @return updated job configuration
      */
-    public LiteJobConfiguration updateJobConfiguration(final String jobClassName, final LiteJobConfiguration liteJobConfig) {
-        configService.persist(jobClassName, liteJobConfig);
+    public JobConfiguration updateJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
+        configService.persist(jobClassName, jobConfig);
         return configService.load(false);
     }
     

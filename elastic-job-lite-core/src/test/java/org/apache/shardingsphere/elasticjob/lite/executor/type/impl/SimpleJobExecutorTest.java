@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
@@ -60,19 +60,19 @@ public final class SimpleJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(createLiteJobConfiguration(null, "THROW"));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration(null, "THROW"));
         elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
     }
     
-    private LiteJobConfiguration createLiteJobConfiguration(final String jobExecutorServiceHandlerType, final String jobErrorHandlerType) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(
+    private JobConfiguration createJobConfiguration(final String jobExecutorServiceHandlerType, final String jobErrorHandlerType) {
+        return JobConfiguration.newBuilder(new SimpleJobConfiguration(
                 JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                         .failover(true).misfire(false).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description("desc").build())).build();
     }
     
     @Test
     public void assertNewExecutorWithDefaultHandlers() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(createLiteJobConfiguration(null, null));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration(null, null));
         elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "executorService"), instanceOf(new CPUUsageJobExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "jobErrorHandler"), instanceOf(LogJobErrorHandler.class));

@@ -17,13 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadDirectly() {
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
-        LiteJobConfiguration actual = configService.load(false);
+        JobConfiguration actual = configService.load(false);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -62,7 +62,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadFromCache() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
-        LiteJobConfiguration actual = configService.load(true);
+        JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -72,7 +72,7 @@ public final class ConfigurationServiceTest {
     public void assertLoadFromCacheButNull() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(null);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
-        LiteJobConfiguration actual = configService.load(true);
+        JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -83,7 +83,7 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
         when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
         try {
-            configService.persist(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
+            configService.persist(null, JobConfigurationUtil.createSimpleJobConfiguration());
         } finally {
             verify(jobNodeStorage).isJobRootNodeExisted();
             verify(jobNodeStorage).getJobRootNodeData();
@@ -92,17 +92,17 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertPersistNewJobConfiguration() {
-        LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-        configService.persist(TestSimpleJob.class.getName(), liteJobConfig);
-        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
+        JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration();
+        configService.persist(TestSimpleJob.class.getName(), jobConfig);
+        verify(jobNodeStorage).replaceJobNode("config", JobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     @Test
     public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
-        configService.persist(TestSimpleJob.class.getName(), liteJobConfig);
-        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
+        JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration(true);
+        configService.persist(TestSimpleJob.class.getName(), jobConfig);
+        verify(jobNodeStorage).replaceJobNode("config", JobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     @Test

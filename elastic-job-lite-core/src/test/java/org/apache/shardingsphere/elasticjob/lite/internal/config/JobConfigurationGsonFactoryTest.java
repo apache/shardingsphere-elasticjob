@@ -19,11 +19,11 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class LiteJobConfigurationGsonFactoryTest {
+public final class JobConfigurationGsonFactoryTest {
     
     private String simpleJobJson = "{\"jobName\":\"test_job\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,"
@@ -54,26 +54,26 @@ public final class LiteJobConfigurationGsonFactoryTest {
     
     @Test
     public void assertToJsonForSimpleJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
+        JobConfiguration actual = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(15).build();
-        assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
+        assertThat(JobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
     
     @Test
     public void assertToJsonForDataflowJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), true)).build();
-        assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
+        JobConfiguration actual = JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), true)).build();
+        assertThat(JobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
     @Test
     public void assertToJsonForScriptJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), "test.sh")).build();
-        assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
+        JobConfiguration actual = JobConfiguration.newBuilder(new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), "test.sh")).build();
+        assertThat(JobConfigurationGsonFactory.toJson(actual), is(scriptJobJson)); 
     }
     
     @Test
     public void assertFromJsonForSimpleJob() {
-        LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(simpleJobJson);
+        JobConfiguration actual = JobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
@@ -94,7 +94,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     
     @Test
     public void assertFromJsonForDataflowJob() {
-        LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(dataflowJobJson);
+        JobConfiguration actual = JobConfigurationGsonFactory.fromJson(dataflowJobJson);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.DATAFLOW));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
@@ -116,7 +116,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     
     @Test
     public void assertFromJsonForScriptJob() {
-        LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(scriptJobJson);
+        JobConfiguration actual = JobConfigurationGsonFactory.fromJson(scriptJobJson);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.SCRIPT));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));

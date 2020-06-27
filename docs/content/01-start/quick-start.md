@@ -47,10 +47,10 @@ public class MyElasticJob implements SimpleJob {
 ```java
     // 定义作业核心配置
     JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("demoSimpleJob", "0/15 * * * * ?", 10).build();
-    // 定义SIMPLE类型配置
+    // 定义 SIMPLE 类型配置
     SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName());
-    // 定义Lite作业根配置
-    LiteJobConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
+    // 定义作业根配置
+    JobConfiguration jobConfig = JobConfiguration.newBuilder(simpleJobConfig).build();
 ```
 
 ### 启动作业
@@ -68,7 +68,7 @@ public class JobDemo {
         return regCenter;
     }
     
-    private static LiteJobConfiguration createJobConfiguration() {
+    private static JobConfiguration createJobConfiguration() {
         // 创建作业配置
         // ...
     }

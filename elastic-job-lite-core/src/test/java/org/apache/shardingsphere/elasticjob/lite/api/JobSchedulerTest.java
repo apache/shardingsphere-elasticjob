@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.api;
 
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
@@ -51,22 +51,22 @@ public final class JobSchedulerTest {
     @Mock
     private SchedulerFacade schedulerFacade;
     
-    private LiteJobConfiguration liteJobConfig;
+    private JobConfiguration jobConfig;
     
     private JobScheduler jobScheduler;
     
     @Before
     public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        liteJobConfig = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build())).build();
-        jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), liteJobConfig);
+        jobConfig = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build())).build();
+        jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), jobConfig);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
     }
     
     @Test
     public void assertInit() throws SchedulerException {
-        when(schedulerFacade.updateJobConfiguration(TestSimpleJob.class.getName(), liteJobConfig)).thenReturn(liteJobConfig);
+        when(schedulerFacade.updateJobConfiguration(TestSimpleJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         jobScheduler.init();
         verify(schedulerFacade).registerStartUpInfo(true);

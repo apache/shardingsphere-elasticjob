@@ -23,11 +23,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * ElasticJob lite configuration.
+ * ElasticJob configuration.
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LiteJobConfiguration {
+public final class JobConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     
@@ -211,8 +211,8 @@ public final class LiteJobConfiguration {
          * 
          * @return ElasticJob lite configuration
          */
-        public final LiteJobConfiguration build() {
-            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
+        public final JobConfiguration build() {
+            return new JobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyType, reconcileIntervalMinutes, disabled, overwrite);
         }
     }
 }

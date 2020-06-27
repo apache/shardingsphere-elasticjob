@@ -25,11 +25,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class LiteJobConfigurationTest {
+public final class JobConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
+        JobConfiguration actual = JobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyType("AVG_ALLOCATION").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
         assertFalse(actual.isMonitorExecution());
@@ -43,7 +43,7 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
+        JobConfiguration actual = JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build())).build();
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -54,19 +54,19 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
-        assertThat(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
+        assertThat(JobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
                 "test_job", "0/1 * * * * ?", 3).build())).jobShardingStrategyType(null).build().getJobShardingStrategyType(), is(""));
     }
     
     @Test
     public void assertIsNotFailover() {
-        assertFalse(LiteJobConfiguration.newBuilder(
+        assertFalse(JobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build())).monitorExecution(false).build().isFailover());
     }
     
     @Test
     public void assertIsFailover() {
-        assertTrue(LiteJobConfiguration.newBuilder(
+        assertTrue(JobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build())).monitorExecution(true).build().isFailover());
     }
 }

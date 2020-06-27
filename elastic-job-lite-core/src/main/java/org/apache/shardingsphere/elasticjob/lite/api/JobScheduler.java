@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.api;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
@@ -58,35 +58,35 @@ public final class JobScheduler {
     
     private final ElasticJob elasticJob;
     
-    private final LiteJobConfiguration liteJobConfig;
+    private final JobConfiguration jobConfig;
     
     private final SchedulerFacade schedulerFacade;
     
     private final JobFacade jobFacade;
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(), elasticJobListeners);
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        this(regCenter, elasticJob, jobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final LiteJobConfiguration liteJobConfig, final TracingConfiguration tracingConfig, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                         final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, elasticJob, liteJobConfig, new JobEventBus(tracingConfig), elasticJobListeners);
+        this(regCenter, elasticJob, jobConfig, new JobEventBus(tracingConfig), elasticJobListeners);
     }
     
-    private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, 
-                         final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
+    private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob,
+                         final JobConfiguration jobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
         this.regCenter = regCenter;
         this.elasticJob = elasticJob;
-        this.liteJobConfig = liteJobConfig;
-        JobRegistry.getInstance().addJobInstance(liteJobConfig.getJobName(), new JobInstance());
+        this.jobConfig = jobConfig;
+        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
-        schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
-        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName(), elasticJobListenerList);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig.getJobName());
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig.getJobName());
         for (ElasticJobListener each : elasticJobListeners) {
             if (each instanceof AbstractDistributeOnceElasticJobListener) {
                 ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
@@ -98,12 +98,12 @@ public final class JobScheduler {
      * Initialize job.
      */
     public void init() {
-        LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), liteJobConfig);
-        JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(), liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(elasticJob), liteJobConfigFromRegCenter.getJobName());
-        JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
-        schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());
-        jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
+        JobConfiguration jobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfigFromRegCenter.getJobName(), jobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(elasticJob), jobConfigFromRegCenter.getJobName());
+        JobRegistry.getInstance().registerJob(jobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
+        schedulerFacade.registerStartUpInfo(!jobConfigFromRegCenter.isDisabled());
+        jobScheduleController.scheduleJob(jobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
     }
     
     private Scheduler createScheduler() {
@@ -123,7 +123,7 @@ public final class JobScheduler {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
+        result.put("org.quartz.scheduler.instanceName", jobConfig.getJobName());
         result.put("org.quartz.jobStore.misfireThreshold", "1");
         result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
@@ -131,7 +131,7 @@ public final class JobScheduler {
     }
     
     private JobDetail createJobDetail(final ElasticJob elasticJob) {
-        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
+        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(jobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         if (null != elasticJob && !elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);

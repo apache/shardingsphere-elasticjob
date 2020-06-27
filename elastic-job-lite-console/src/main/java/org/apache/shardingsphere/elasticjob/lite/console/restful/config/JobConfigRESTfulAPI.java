@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
  * Job configuration RESTful API.
  */
 @Path("/jobs/config")
-public final class LiteJobConfigRESTfulAPI {
+public final class JobConfigRESTfulAPI {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     

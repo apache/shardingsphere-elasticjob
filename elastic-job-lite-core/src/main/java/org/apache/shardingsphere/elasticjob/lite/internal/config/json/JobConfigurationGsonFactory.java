@@ -19,46 +19,46 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config.json;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
 /**
  * Job configuration gson factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LiteJobConfigurationGsonFactory {
+public final class JobConfigurationGsonFactory {
     
     static {
-        GsonFactory.registerTypeAdapter(LiteJobConfiguration.class, new LiteJobConfigurationGsonTypeAdapter());
+        GsonFactory.registerTypeAdapter(JobConfiguration.class, new JobConfigurationGsonTypeAdapter());
     }
     
     /**
      * Transform job configuration to json.
      * 
-     * @param liteJobConfig job configuration
+     * @param jobConfig job configuration
      * @return job configuration json string
      */
-    public static String toJson(final LiteJobConfiguration liteJobConfig) {
-        return GsonFactory.getGson().toJson(liteJobConfig);
+    public static String toJson(final JobConfiguration jobConfig) {
+        return GsonFactory.getGson().toJson(jobConfig);
     }
     
     /**
      * Transform job configuration to json.
      *
-     * @param liteJobConfig job configuration
+     * @param jobConfig job configuration
      * @return job configuration json string
      */
-    public static String toJsonForObject(final Object liteJobConfig) {
-        return GsonFactory.getGson().toJson(liteJobConfig);
+    public static String toJsonForObject(final Object jobConfig) {
+        return GsonFactory.getGson().toJson(jobConfig);
     }
     
     /**
      * Transform json string to job configuration.
      *
-     * @param liteJobConfigJson job configuration json string
+     * @param jobConfigJson job configuration json string
      * @return job configuration
      */
-    public static LiteJobConfiguration fromJson(final String liteJobConfigJson) {
-        return GsonFactory.getGson().fromJson(liteJobConfigJson, LiteJobConfiguration.class);
+    public static JobConfiguration fromJson(final String jobConfigJson) {
+        return GsonFactory.getGson().fromJson(jobConfigJson, JobConfiguration.class);
     }
 }
