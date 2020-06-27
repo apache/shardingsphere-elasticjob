@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
@@ -56,7 +56,7 @@ public final class ElasticJobExecutor {
     
     private final JobItemExecutor jobItemExecutor;
     
-    private final JobRootConfiguration jobRootConfig;
+    private final LiteJobConfiguration jobConfig;
     
     private final String jobName;
     
@@ -70,11 +70,11 @@ public final class ElasticJobExecutor {
         this.elasticJob = elasticJob;
         this.jobFacade = jobFacade;
         jobItemExecutor = getJobItemExecutor(elasticJob);
-        jobRootConfig = jobFacade.loadJobRootConfiguration(true);
-        jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
-        executorService = JobExecutorServiceHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
-        jobErrorHandler = JobErrorHandlerFactory.getHandler(jobRootConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
+        jobConfig = jobFacade.loadJobConfiguration(true);
+        jobName = jobConfig.getTypeConfig().getCoreConfig().getJobName();
+        executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType()).createExecutorService(jobName);
+        jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
+        itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
     @SuppressWarnings("unchecked")
@@ -186,7 +186,7 @@ public final class ElasticJobExecutor {
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         JobExecutionEvent completeEvent;
         try {
-            jobItemExecutor.process(elasticJob, jobRootConfig, jobFacade, new ShardingContext(shardingContexts, item));
+            jobItemExecutor.process(elasticJob, jobConfig, jobFacade, new ShardingContext(shardingContexts, item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             jobFacade.postJobExecutionEvent(completeEvent);

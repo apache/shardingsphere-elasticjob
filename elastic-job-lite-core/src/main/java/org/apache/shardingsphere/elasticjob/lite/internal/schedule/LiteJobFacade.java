@@ -72,7 +72,7 @@ public final class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public LiteJobConfiguration loadJobRootConfiguration(final boolean fromCache) {
+    public LiteJobConfiguration loadJobConfiguration(final boolean fromCache) {
         return configService.load(fromCache);
     }
     

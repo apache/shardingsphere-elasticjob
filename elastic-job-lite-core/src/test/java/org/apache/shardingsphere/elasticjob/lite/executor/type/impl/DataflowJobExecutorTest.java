@@ -56,7 +56,7 @@ public final class DataflowJobExecutorTest {
     
     @After
     public void tearDown() {
-        verify(jobFacade).loadJobRootConfiguration(true);
+        verify(jobFacade).loadJobConfiguration(true);
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
     }
     
@@ -173,7 +173,7 @@ public final class DataflowJobExecutorTest {
         this.shardingContexts = shardingContexts;
         LiteJobConfiguration liteJobConfig = LiteJobConfiguration.newBuilder(
                 new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).jobErrorHandlerType("IGNORE").build(), isStreamingProcess)).build();
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(liteJobConfig);
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(liteJobConfig);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);

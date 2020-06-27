@@ -48,7 +48,7 @@ public final class WrongJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(createLiteJobConfiguration());
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(createLiteJobConfiguration());
         wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade);
     }
     

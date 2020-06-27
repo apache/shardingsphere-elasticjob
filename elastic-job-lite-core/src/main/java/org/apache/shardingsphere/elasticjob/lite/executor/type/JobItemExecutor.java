@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**
@@ -33,9 +33,9 @@ public interface JobItemExecutor<T extends ElasticJob> {
      * Process job item.
      * 
      * @param elasticJob elastic job
-     * @param jobRootConfig job root configuration
+     * @param jobConfig job configuration
      * @param jobFacade job facade
      * @param shardingContext sharding context
      */
-    void process(T elasticJob, JobRootConfiguration jobRootConfig, JobFacade jobFacade, ShardingContext shardingContext);
+    void process(T elasticJob, LiteJobConfiguration jobConfig, JobFacade jobFacade, ShardingContext shardingContext);
 }
