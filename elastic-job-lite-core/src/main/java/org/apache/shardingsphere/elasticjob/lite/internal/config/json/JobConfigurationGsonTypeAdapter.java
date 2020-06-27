@@ -136,7 +136,7 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
     public void write(final JsonWriter out, final JobConfiguration value) throws IOException {
         out.beginObject();
         out.name(JobConfigurationJsonEnum.JOB_NAME.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getTypeConfig().getJobType().name());
+        out.name(JobConfigurationJsonEnum.JOB_TYPE.getJsonName()).value(value.getJobType().name());
         out.name(JobConfigurationJsonEnum.CRON.getJsonName()).value(value.getTypeConfig().getCoreConfig().getCron());
         out.name(JobConfigurationJsonEnum.SHARDING_TOTAL_COUNT.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
         out.name(JobConfigurationJsonEnum.SHARDING_ITEM_PARAMETERS.getJsonName()).value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
@@ -150,10 +150,10 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
             out.name(JobConfigurationJsonEnum.JOB_ERROR_HANDLER_TYPE.getJsonName()).value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
         }
         out.name(JobConfigurationJsonEnum.DESCRIPTION.getJsonName()).value(value.getTypeConfig().getCoreConfig().getDescription());
-        if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
+        if (JobType.DATAFLOW == value.getJobType()) {
             out.name(JobConfigurationJsonEnum.STREAMING_PROCESS.getJsonName()).value(
                     Boolean.valueOf(value.getTypeConfig().getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
-        } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
+        } else if (JobType.SCRIPT == value.getJobType()) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name(JobConfigurationJsonEnum.SCRIPT_COMMAND_LINE.getJsonName()).value(scriptJobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
         }

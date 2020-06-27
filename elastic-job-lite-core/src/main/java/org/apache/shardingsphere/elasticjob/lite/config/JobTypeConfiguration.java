@@ -17,21 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-
 import java.util.Properties;
 
 /**
  * Job type configuration.
  */
 public interface JobTypeConfiguration {
-    
-    /**
-     * Get job type.
-     * 
-     * @return job type
-     */
-    JobType getJobType();
     
     /**
      * Get job core configuration.

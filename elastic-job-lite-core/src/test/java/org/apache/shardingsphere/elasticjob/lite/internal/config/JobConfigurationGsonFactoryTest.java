@@ -84,7 +84,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForSimpleJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobType(), is(JobType.SIMPLE));
+        assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
@@ -105,7 +105,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForDataflowJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(dataflowJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobType(), is(JobType.DATAFLOW));
+        assertThat(actual.getJobType(), is(JobType.DATAFLOW));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
@@ -127,7 +127,7 @@ public final class JobConfigurationGsonFactoryTest {
     public void assertFromJsonForScriptJob() {
         JobConfiguration actual = JobConfigurationGsonFactory.fromJson(scriptJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobType(), is(JobType.SCRIPT));
+        assertThat(actual.getJobType(), is(JobType.SCRIPT));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));

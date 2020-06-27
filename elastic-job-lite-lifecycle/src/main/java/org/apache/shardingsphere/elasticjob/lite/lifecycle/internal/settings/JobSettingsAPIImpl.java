@@ -45,7 +45,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
-        String jobType = jobConfig.getTypeConfig().getJobType().name();
+        String jobType = jobConfig.getJobType().name();
         buildSimpleJobSettings(jobName, result, jobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
             buildDataflowJobSettings(result, (DataflowJobConfiguration) jobConfig.getTypeConfig());
@@ -58,7 +58,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     
     private void buildSimpleJobSettings(final String jobName, final JobSettings jobSettings, final JobConfiguration jobConfig) {
         jobSettings.setJobName(jobName);
-        jobSettings.setJobType(jobConfig.getTypeConfig().getJobType().name());
+        jobSettings.setJobType(jobConfig.getJobType().name());
         jobSettings.setShardingTotalCount(jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
         jobSettings.setCron(jobConfig.getTypeConfig().getCoreConfig().getCron());
         jobSettings.setShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters());

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.config.simple;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobTypeConfiguration;
 
@@ -33,8 +32,6 @@ import java.util.Properties;
 public final class SimpleJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
-    
-    private final JobType jobType = JobType.SIMPLE;
     
     private final Properties props = new Properties();
 }
