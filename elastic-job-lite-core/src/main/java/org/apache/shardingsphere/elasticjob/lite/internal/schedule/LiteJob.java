@@ -47,6 +47,8 @@ public final class LiteJob implements Job {
     
     @Override
     public void execute(final JobExecutionContext context) {
-        new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig).execute();
+        ElasticJobExecutor executor = null == tracingConfig
+                ? new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners) : new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig);
+        executor.execute();
     }
 }
