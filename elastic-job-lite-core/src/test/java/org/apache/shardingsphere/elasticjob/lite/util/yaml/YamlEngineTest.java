@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobCon
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -98,6 +99,9 @@ public final class YamlEngineTest {
         assertThat(yamlJobConfiguration.getShardingTotalCount(), is(3));
         assertThat(yamlJobConfiguration.getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(yamlJobConfiguration.getJobParameter(), is("param"));
+        assertFalse(yamlJobConfiguration.isMonitorExecution());
+        assertFalse(yamlJobConfiguration.isFailover());
+        assertFalse(yamlJobConfiguration.isMisfire());
         assertThat(yamlJobConfiguration.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertThat(yamlJobConfiguration.getJobExecutorServiceHandlerType(), is("CPU"));
         assertThat(yamlJobConfiguration.getJobErrorHandlerType(), is("IGNORE"));
@@ -114,10 +118,15 @@ public final class YamlEngineTest {
         assertThat(yamlJobConfiguration.getShardingTotalCount(), is(3));
         assertNull(yamlJobConfiguration.getShardingItemParameters());
         assertNull(yamlJobConfiguration.getJobParameter());
+        assertFalse(yamlJobConfiguration.isMonitorExecution());
+        assertFalse(yamlJobConfiguration.isFailover());
+        assertFalse(yamlJobConfiguration.isMisfire());
         assertNull(yamlJobConfiguration.getJobShardingStrategyType());
         assertNull(yamlJobConfiguration.getJobExecutorServiceHandlerType());
         assertNull(yamlJobConfiguration.getJobErrorHandlerType());
         assertNull(yamlJobConfiguration.getDescription());
         assertTrue(yamlJobConfiguration.getProps().isEmpty());
+        assertFalse(yamlJobConfiguration.isDisabled());
+        assertFalse(yamlJobConfiguration.isOverwrite());
     }
 }
