@@ -187,12 +187,12 @@ public final class JobScheduleControllerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertShutdownFailure() throws SchedulerException {
-        doThrow(SchedulerException.class).when(scheduler).shutdown();
+        doThrow(SchedulerException.class).when(scheduler).shutdown(false);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         try {
             jobScheduleController.shutdown();
         } finally {
-            verify(scheduler).shutdown();
+            verify(scheduler).shutdown(false);
         }
     }
     
@@ -200,7 +200,7 @@ public final class JobScheduleControllerTest {
     public void assertShutdownSuccess() throws SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         jobScheduleController.shutdown();
-        verify(scheduler).shutdown();
+        verify(scheduler).shutdown(false);
     }
     
     @Test
