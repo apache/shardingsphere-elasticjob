@@ -23,7 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExe
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
         ScriptElasticJobUtil.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
         String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
-        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(getRegCenter().get("/" + getJobName() + "/config"));
+        JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), YamlJobConfiguration.class).toJobConfiguration();
         assertThat(jobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
     }
 }

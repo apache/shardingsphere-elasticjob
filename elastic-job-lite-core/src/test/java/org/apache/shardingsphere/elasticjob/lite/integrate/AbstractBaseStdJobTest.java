@@ -33,7 +33,7 @@ import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
@@ -44,6 +44,7 @@ import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistry
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -169,7 +170,7 @@ public abstract class AbstractBaseStdJobTest {
     private void assertRegCenterCommonInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
-        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
+        JobConfiguration jobConfig = YamlEngine.unmarshal(regCenter.get("/" + jobName + "/config"), YamlJobConfiguration.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));

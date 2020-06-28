@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
+import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", TreeCacheEvent.Type.NODE_ADDED, LiteJsonConstants.getJobJson());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", TreeCacheEvent.Type.NODE_ADDED, LiteYamlConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
@@ -61,14 +61,14 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteYamlConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
         monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged(
-                "/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteJsonConstants.getJobJsonWithMonitorExecution(false));
+                "/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteYamlConstants.getJobYamlWithMonitorExecution(false));
         verify(executionService).clearAllRunningInfo();
     }
 }

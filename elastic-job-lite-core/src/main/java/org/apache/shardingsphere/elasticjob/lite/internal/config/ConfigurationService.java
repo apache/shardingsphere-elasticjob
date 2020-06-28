@@ -20,10 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
 /**
  * Configuration service.
@@ -55,7 +56,8 @@ public final class ConfigurationService {
         } else {
             result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
         }
-        return JobConfigurationGsonFactory.fromJson(result);
+        // TODO investigate why sometimes result is null
+        return YamlEngine.unmarshal(result, YamlJobConfiguration.class).toJobConfiguration();
     }
     
     /**
@@ -67,7 +69,7 @@ public final class ConfigurationService {
     public void persist(final String jobClassName, final JobConfiguration jobConfig) {
         checkConflictJob(jobClassName, jobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || jobConfig.isOverwrite()) {
-            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, JobConfigurationGsonFactory.toJson(jobConfig));
+            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
             jobNodeStorage.replaceJobRootNode(jobClassName);
         }
     }

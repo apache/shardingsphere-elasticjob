@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleJsonConstants;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -49,7 +51,7 @@ public final class JobSettingsAPIImplTest {
     
     @Test
     public void assertGetDataflowJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual, "DATAFLOW");
         verify(regCenter).get("/test_job/config");
@@ -57,7 +59,7 @@ public final class JobSettingsAPIImplTest {
     
     @Test
     public void assertGetScriptJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual, "SCRIPT");
         verify(regCenter).get("/test_job/config");
@@ -75,7 +77,7 @@ public final class JobSettingsAPIImplTest {
         assertThat(jobSettings.getMonitorPort(), is(8888));
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
-        assertThat(jobSettings.getJobShardingStrategyType(), is(""));
+        assertNull(jobSettings.getJobShardingStrategyType());
         assertThat(jobSettings.getReconcileIntervalMinutes(), is(10));
         assertThat(jobSettings.getDescription(), is(""));
         if ("DATAFLOW".equals(jobType)) {
@@ -90,18 +92,20 @@ public final class JobSettingsAPIImplTest {
     public void assertUpdateJobSettings() {
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
-        jobSettings.setShardingTotalCount(10);
-        jobSettings.setMaxTimeDiffSeconds(-1);
-        jobSettings.setMonitorExecution(true);
+        jobSettings.setJobType(JobType.DATAFLOW.toString());
         jobSettings.setCron("0/1 * * * * ?");
-        jobSettings.setStreamingProcess(true);
+        jobSettings.setShardingTotalCount(3);
+        jobSettings.setJobParameter("param");
+        jobSettings.setMonitorExecution(true);
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
-        jobSettings.setReconcileIntervalMinutes(70);
+        jobSettings.setMaxTimeDiffSeconds(-1);
+        jobSettings.setReconcileIntervalMinutes(10);
+        jobSettings.setMonitorPort(8888);
+        jobSettings.setDescription("");
+        jobSettings.setStreamingProcess(true);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\","
-                + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
-                + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,\"reconcileIntervalMinutes\":70}");
+        verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
     
     @Test(expected = IllegalArgumentException.class)

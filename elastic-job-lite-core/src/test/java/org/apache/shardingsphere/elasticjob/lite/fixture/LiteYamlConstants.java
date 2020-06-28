@@ -21,12 +21,22 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LiteJsonConstants {
+public final class LiteYamlConstants {
     
-    private static final String JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":%s,\"misfire\":false,\"description\":\"desc\","
-            + "\"monitorExecution\":%s,\"maxTimeDiffSeconds\":%s,"
-            + "\"monitorPort\":8888,\"jobShardingStrategyType\":\"testClass\",\"disabled\":true,\"overwrite\":true, \"reconcileIntervalMinutes\": 15}";
+    private static final String JOB_YAML = "jobName: test_job\n"
+            + "jobType: SIMPLE\n"
+            + "cron: 0/1 * * * * ?\n"
+            + "shardingTotalCount: 3\n"
+            + "jobParameter: 'param'\n"
+            + "failover: %s\n"
+            + "monitorExecution: %s\n"
+            + "misfire: false\n"
+            + "maxTimeDiffSeconds: %s\n"
+            + "reconcileIntervalMinutes: 15\n"
+            + "monitorPort: 8888\n"
+            + "description: 'desc'\n"
+            + "disabled: true\n"
+            + "overwrite: true";
     
     private static final boolean DEFAULT_FAILOVER = true;
     
@@ -35,41 +45,41 @@ public final class LiteJsonConstants {
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @return the string of job config
      */
-    public static String getJobJson() {
-        return String.format(JOB_JSON, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+    public static String getJobYaml() {
+        return String.format(JOB_YAML, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param maxTimeDiffSeconds max different time in seconds
      * @return the string of job config
      */
-    public static String getJobJson(final int maxTimeDiffSeconds) {
-        return String.format(JOB_JSON, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
+    public static String getJobYaml(final int maxTimeDiffSeconds) {
+        return String.format(JOB_YAML, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param failover Whether to enable failover
      * @return the string of job config
      */
-    public static String getJobJsonWithFailover(final boolean failover) {
-        return String.format(JOB_JSON, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+    public static String getJobYamlWithFailover(final boolean failover) {
+        return String.format(JOB_YAML, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param monitorExecution Whether to enable monitor execution
      * @return the string of job config
      */
-    public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
-        return String.format(JOB_JSON, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
+    public static String getJobYamlWithMonitorExecution(final boolean monitorExecution) {
+        return String.format(JOB_YAML, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
 }

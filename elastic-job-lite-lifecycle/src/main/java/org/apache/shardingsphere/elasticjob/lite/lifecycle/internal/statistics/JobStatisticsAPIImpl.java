@@ -19,11 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,11 +65,11 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
-        String jobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
-        if (null == jobConfigJson) {
+        String jobConfigYaml = regCenter.get(jobNodePath.getConfigNodePath());
+        if (null == jobConfigYaml) {
             return null;
         }
-        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(jobConfigJson);
+        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigYaml, YamlJobConfiguration.class).toJobConfiguration();
         result.setDescription(jobConfig.getDescription());
         result.setCron(jobConfig.getCron());
         result.setInstanceCount(getJobInstanceCount(jobName));

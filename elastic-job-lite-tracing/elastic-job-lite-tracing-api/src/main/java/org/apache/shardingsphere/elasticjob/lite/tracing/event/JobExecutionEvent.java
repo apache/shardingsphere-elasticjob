@@ -71,7 +71,7 @@ public final class JobExecutionEvent implements JobEvent {
     }
     
     /**
-     * execution failure.
+     * Execution failure.
      * 
      * @param failureCause failure cause
      * @return job execution event

@@ -20,12 +20,13 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.fixture.LiteJsonConstants;
+import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.JobConfigurationUtil;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +53,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertLoadDirectly() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
         JobConfiguration actual = configService.load(false);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -61,7 +62,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertLoadFromCache() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
         JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -71,7 +72,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadFromCacheButNull() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(null);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
         JobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -94,7 +95,7 @@ public final class ConfigurationServiceTest {
     public void assertPersistNewJobConfiguration() {
         JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration();
         configService.persist(TestSimpleJob.class.getName(), jobConfig);
-        verify(jobNodeStorage).replaceJobNode("config", JobConfigurationGsonFactory.toJson(jobConfig));
+        verify(jobNodeStorage).replaceJobNode("config", YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
     }
     
     @Test
@@ -102,18 +103,18 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration(true);
         configService.persist(TestSimpleJob.class.getName(), jobConfig);
-        verify(jobNodeStorage).replaceJobNode("config", JobConfigurationGsonFactory.toJson(jobConfig));
+        verify(jobNodeStorage).replaceJobNode("config", YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
     }
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson(-1));
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml(-1));
         configService.checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(System.currentTimeMillis());
         configService.checkMaxTimeDiffSecondsTolerable();
         verify(jobNodeStorage).getRegistryCenterTime();
@@ -121,7 +122,7 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertIsNotMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
         try {
             configService.checkMaxTimeDiffSecondsTolerable();

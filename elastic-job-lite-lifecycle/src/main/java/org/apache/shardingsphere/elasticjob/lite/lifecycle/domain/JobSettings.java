@@ -19,6 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 
 import java.io.Serializable;
 
@@ -45,25 +49,55 @@ public final class JobSettings implements Serializable {
     
     private boolean monitorExecution;
     
-    private boolean streamingProcess;
-    
-    private int maxTimeDiffSeconds;
-    
-    private int monitorPort = -1;
-    
     private boolean failover;
     
     private boolean misfire;
     
-    private String jobShardingStrategyType;
+    private int maxTimeDiffSeconds;
     
-    private String jobErrorHandlerType;
+    private int reconcileIntervalMinutes;
+    
+    private int monitorPort = -1;
+    
+    private String jobShardingStrategyType;
     
     private String jobExecutorServiceHandlerType;
     
+    private String jobErrorHandlerType;
+    
     private String description;
+    
+    private boolean streamingProcess;
     
     private String scriptCommandLine;
     
-    private int reconcileIntervalMinutes;
+    /**
+     * To YAML job configuration.
+     * 
+     * @return YAML job configuration
+     */
+    public YamlJobConfiguration toYamlJobConfiguration() {
+        YamlJobConfiguration result = new YamlJobConfiguration();
+        result.setJobName(jobName);
+        result.setJobType(JobType.valueOf(jobType));
+        result.setCron(cron);
+        result.setShardingTotalCount(shardingTotalCount);
+        result.setShardingItemParameters(shardingItemParameters);
+        result.setJobParameter(jobParameter);
+        result.setMonitorExecution(monitorExecution);
+        result.setFailover(failover);
+        result.setMisfire(misfire);
+        result.setMaxTimeDiffSeconds(maxTimeDiffSeconds);
+        result.setReconcileIntervalMinutes(reconcileIntervalMinutes);
+        result.setMonitorPort(monitorPort);
+        result.setJobShardingStrategyType(jobShardingStrategyType);
+        result.setJobExecutorServiceHandlerType(jobExecutorServiceHandlerType);
+        result.setJobErrorHandlerType(jobErrorHandlerType);
+        result.setDescription(description);
+        result.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.valueOf(streamingProcess).toString());
+        if (null != scriptCommandLine) {
+            result.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
+        }
+        return result;
+    }
 }
