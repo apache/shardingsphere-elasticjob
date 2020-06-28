@@ -66,7 +66,7 @@ public final class LiteJobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
-    private JobEventBus eventBus;
+    private JobEventBus jobEventBus;
     
     @Mock
     private ElasticJobListenerCaller caller;
@@ -75,12 +75,13 @@ public final class LiteJobFacadeTest {
     
     @Before
     public void setUp() {
-        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.singletonList(new TestElasticJobListener(caller)), eventBus);
+        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(liteJobFacade, "jobEventBus", jobEventBus);
     }
     
     @Test
@@ -238,6 +239,6 @@ public final class LiteJobFacadeTest {
     @Test
     public void assertPostJobExecutionEvent() {
         liteJobFacade.postJobExecutionEvent(null);
-        verify(eventBus).post(null);
+        verify(jobEventBus).post(null);
     }
 }

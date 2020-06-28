@@ -32,7 +32,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -65,16 +64,6 @@ public final class JobScheduler {
     private final JobFacade jobFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, elasticJob, jobConfig, new JobEventBus(), elasticJobListeners);
-    }
-    
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
-                        final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, elasticJob, jobConfig, new JobEventBus(tracingConfig), elasticJobListeners);
-    }
-    
-    private JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob,
-                         final JobConfiguration jobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
         this.regCenter = regCenter;
         this.elasticJob = elasticJob;
         this.jobConfig = jobConfig;
@@ -82,7 +71,19 @@ public final class JobScheduler {
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName(), elasticJobListenerList);
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), Arrays.asList(elasticJobListeners));
+    }
+    
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                        final ElasticJobListener... elasticJobListeners) {
+        this.regCenter = regCenter;
+        this.elasticJob = elasticJob;
+        this.jobConfig = jobConfig;
+        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
+        List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName(), elasticJobListenerList);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), Arrays.asList(elasticJobListeners), tracingConfig);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
