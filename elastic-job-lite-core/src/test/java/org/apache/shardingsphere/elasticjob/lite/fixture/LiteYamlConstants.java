@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LiteJsonConstants {
+public final class LiteYamlConstants {
     
     private static final String JOB_YAML = "jobName: test_job\n"
             + "jobType: SIMPLE\n"
@@ -45,7 +45,7 @@ public final class LiteJsonConstants {
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @return the string of job config
      */
@@ -54,32 +54,32 @@ public final class LiteJsonConstants {
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param maxTimeDiffSeconds max different time in seconds
      * @return the string of job config
      */
-    public static String getJobJson(final int maxTimeDiffSeconds) {
+    public static String getJobYaml(final int maxTimeDiffSeconds) {
         return String.format(JOB_YAML, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param failover Whether to enable failover
      * @return the string of job config
      */
-    public static String getJobJsonWithFailover(final boolean failover) {
+    public static String getJobYamlWithFailover(final boolean failover) {
         return String.format(JOB_YAML, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param monitorExecution Whether to enable monitor execution
      * @return the string of job config
      */
-    public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
+    public static String getJobYamlWithMonitorExecution(final boolean monitorExecution) {
         return String.format(JOB_YAML, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
 }

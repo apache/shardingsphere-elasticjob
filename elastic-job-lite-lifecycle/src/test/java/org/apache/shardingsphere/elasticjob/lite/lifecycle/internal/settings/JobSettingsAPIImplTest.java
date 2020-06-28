@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleJsonConstants;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public final class JobSettingsAPIImplTest {
     
     @Test
     public void assertGetDataflowJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual, "DATAFLOW");
         verify(regCenter).get("/test_job/config");
@@ -59,7 +59,7 @@ public final class JobSettingsAPIImplTest {
     
     @Test
     public void assertGetScriptJobSettings() {
-        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual, "SCRIPT");
         verify(regCenter).get("/test_job/config");
@@ -105,7 +105,7 @@ public final class JobSettingsAPIImplTest {
         jobSettings.setDescription("");
         jobSettings.setStreamingProcess(true);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", LifecycleJsonConstants.getDataflowJobJson());
+        verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
     
     @Test(expected = IllegalArgumentException.class)
