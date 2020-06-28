@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
@@ -33,12 +34,16 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.SimpleJobExe
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -66,12 +71,13 @@ public final class ElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    public ElasticJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
+    public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter, 
+                              final ElasticJob elasticJob, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
         this.elasticJob = elasticJob;
-        this.jobFacade = jobFacade;
-        jobItemExecutor = getJobItemExecutor(elasticJob);
-        jobConfig = jobFacade.loadJobConfiguration(true);
+        this.jobConfig = jobConfig;
         jobName = jobConfig.getJobName();
+        jobFacade = null == tracingConfig ? new LiteJobFacade(regCenter, jobName, elasticJobListeners) : new LiteJobFacade(regCenter, jobName, elasticJobListeners, tracingConfig);
+        jobItemExecutor = getJobItemExecutor(elasticJob);
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobName);
         jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getJobErrorHandlerType());
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
@@ -160,7 +166,7 @@ public final class ElasticJobExecutor {
             return;
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
-        for (final int each : items) {
+        for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobName, executionSource, each);
             if (executorService.isShutdown()) {
                 return;
