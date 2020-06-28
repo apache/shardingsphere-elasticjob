@@ -29,6 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.job.JobCaller;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.impl.LogJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
@@ -50,6 +51,9 @@ import static org.mockito.Mockito.when;
 public final class SimpleJobExecutorTest {
     
     @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
     private JobCaller jobCaller;
     
     @Mock
@@ -59,8 +63,8 @@ public final class SimpleJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration(null, "THROW"));
-        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, "THROW"), Collections.emptyList());
+        ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
     }
     
     private JobConfiguration createJobConfiguration(final String jobExecutorServiceHandlerType, final String jobErrorHandlerType) {
@@ -71,8 +75,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertNewExecutorWithDefaultHandlers() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration(null, null));
-        elasticJobExecutor = new ElasticJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, null), Collections.emptyList());
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "executorService"), instanceOf(new CPUUsageJobExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "jobErrorHandler"), instanceOf(LogJobErrorHandler.class));
     }

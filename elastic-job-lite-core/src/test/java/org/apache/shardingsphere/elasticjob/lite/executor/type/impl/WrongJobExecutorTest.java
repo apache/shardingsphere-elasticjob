@@ -24,13 +24,16 @@ import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestWrongJob;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,14 +44,17 @@ import static org.mockito.Mockito.when;
 public final class WrongJobExecutorTest {
     
     @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
     private JobFacade jobFacade;
     
     private ElasticJobExecutor wrongJobExecutor;
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration());
-        wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade);
+        wrongJobExecutor = new ElasticJobExecutor(regCenter, new TestWrongJob(), createJobConfiguration(), Collections.emptyList());
+        ReflectionUtils.setFieldValue(wrongJobExecutor, "jobFacade", jobFacade);
     }
     
     private JobConfiguration createJobConfiguration() {
