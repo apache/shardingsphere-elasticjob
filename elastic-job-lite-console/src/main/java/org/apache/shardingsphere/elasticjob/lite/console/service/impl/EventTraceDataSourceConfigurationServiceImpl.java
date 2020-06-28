@@ -24,10 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.console.repository.Configuratio
 import org.apache.shardingsphere.elasticjob.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
 import com.google.common.base.Optional;
+import org.springframework.stereotype.Service;
 
 /**
  * Event trace data source configuration service implementation.
  */
+@Service
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();

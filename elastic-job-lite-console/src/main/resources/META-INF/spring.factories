@@ -1,0 +1,3 @@
+# SpringApplicationRunListener
+org.springframework.boot.SpringApplicationRunListener=\
+  org.apache.shardingsphere.elasticjob.lite.console.listener.StartingSpringApplicationRunListener

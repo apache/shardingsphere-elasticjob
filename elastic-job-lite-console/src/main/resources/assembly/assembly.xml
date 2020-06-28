@@ -22,7 +22,11 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>src/main/resources/conf</directory>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>application.properties</include>
+                <include>logback.xml</include>
+            </includes>
             <outputDirectory>conf</outputDirectory>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>

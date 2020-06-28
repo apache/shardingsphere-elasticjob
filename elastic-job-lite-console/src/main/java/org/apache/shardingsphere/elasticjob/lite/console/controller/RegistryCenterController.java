@@ -15,108 +15,105 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console.restful.config;
+package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
 import com.google.common.base.Optional;
+import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
-import org.apache.shardingsphere.elasticjob.lite.console.service.impl.RegistryCenterConfigurationServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionRegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg.RegistryCenterFactory;
 import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Registry center RESTful API.
  */
-@Path("/registry-center")
-public final class RegistryCenterRESTfulAPI {
-    
+@RestController
+@RequestMapping("/registry-center")
+public final class RegistryCenterController {
+
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
-    
-    private RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
-    
+
+    private RegistryCenterConfigurationService regCenterService;
+
+    @Autowired
+    public RegistryCenterController(final RegistryCenterConfigurationService regCenterService) {
+        this.regCenterService = regCenterService;
+    }
+
     /**
      * Judge whether registry center is activated.
      *
-     * @param request HTTP request
      * @return registry center is activated or not
      */
-    @GET
-    @Path("/activated")
-    public boolean activated(final @Context HttpServletRequest request) {
+    @GetMapping("/activated")
+    public boolean activated() {
         return regCenterService.loadActivated().isPresent();
     }
-    
+
     /**
      * Load configuration from registry center.
      *
      * @param request HTTP request
      * @return registry center configurations
      */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<RegistryCenterConfiguration> load(final @Context HttpServletRequest request) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
+    public Collection<RegistryCenterConfiguration> load(final HttpServletRequest request) {
         Optional<RegistryCenterConfiguration> regCenterConfig = regCenterService.loadActivated();
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), request.getSession());
         }
         return regCenterService.loadAll().getRegistryCenterConfiguration();
     }
-    
+
     /**
      * Add registry center.
-     * 
+     *
      * @param config registry center configuration
      * @return success to add or not
      */
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public boolean add(final RegistryCenterConfiguration config) {
+    @PostMapping(produces = MediaType.APPLICATION_JSON)
+    public boolean add(@RequestBody final RegistryCenterConfiguration config) {
         return regCenterService.add(config);
     }
-    
+
     /**
      * Delete registry center.
      *
      * @param config registry center configuration
      */
-    @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void delete(final RegistryCenterConfiguration config) {
+    @DeleteMapping(consumes = MediaType.APPLICATION_JSON)
+    public void delete(@RequestBody final RegistryCenterConfiguration config) {
         regCenterService.delete(config.getName());
     }
 
     /**
      * Connect to registry center.
      *
-     * @param config config of registry center
+     * @param config  config of registry center
      * @param request HTTP request
      * @return connected or not
      */
-    @POST
-    @Path("/connect")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public boolean connect(final RegistryCenterConfiguration config, final @Context HttpServletRequest request) {
+    @PostMapping(value = "/connect", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    public boolean connect(@RequestBody final RegistryCenterConfiguration config, @Context final HttpServletRequest request) {
         boolean isConnected = setRegistryCenterNameToSession(regCenterService.find(config.getName(), regCenterService.loadAll()), request.getSession());
         if (isConnected) {
             regCenterService.load(config.getName());
         }
         return isConnected;
     }
-    
+
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
         session.setAttribute(REG_CENTER_CONFIG_KEY, regCenterConfig);
         try {
