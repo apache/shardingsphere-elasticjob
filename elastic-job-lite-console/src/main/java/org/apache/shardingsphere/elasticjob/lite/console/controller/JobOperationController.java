@@ -15,37 +15,40 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console.restful;
+package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
+import java.util.Collection;
+import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
-import org.apache.shardingsphere.elasticjob.lite.console.service.impl.JobAPIServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Job operation RESTful API.
  */
-@Path("/jobs")
-public final class JobOperationRESTfulAPI {
+@RestController
+@RequestMapping("/jobs")
+public final class JobOperationController {
     
-    private JobAPIService jobAPIService = new JobAPIServiceImpl();
-    
+    private JobAPIService jobAPIService;
+
+    @Autowired
+    public JobOperationController(final JobAPIService jobAPIService) {
+        this.jobAPIService = jobAPIService;
+    }
+
     /**
      * Get jobs total count.
      * 
      * @return jobs total count
      */
-    @GET
-    @Path("/count")
+    @GetMapping("/count")
     public int getJobsTotalCount() {
         return jobAPIService.getJobStatisticsAPI().getJobsTotalCount();
     }
@@ -55,8 +58,7 @@ public final class JobOperationRESTfulAPI {
      * 
      * @return all jobs brief info
      */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();
     }
@@ -66,9 +68,8 @@ public final class JobOperationRESTfulAPI {
      * 
      * @param jobName job name
      */
-    @POST
-    @Path("/{jobName}/trigger")
-    public void triggerJob(@PathParam("jobName") final String jobName) {
+    @PostMapping("/{jobName}/trigger")
+    public void triggerJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().trigger(jobName);
     }
     
@@ -77,10 +78,8 @@ public final class JobOperationRESTfulAPI {
      * 
      * @param jobName job name
      */
-    @POST
-    @Path("/{jobName}/disable")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void disableJob(@PathParam("jobName") final String jobName) {
+    @PostMapping(value = "/{jobName}/disable", consumes = MediaType.APPLICATION_JSON)
+    public void disableJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().disable(jobName, null);
     }
     
@@ -89,10 +88,8 @@ public final class JobOperationRESTfulAPI {
      *
      * @param jobName job name
      */
-    @POST
-    @Path("/{jobName}/enable")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void enableJob(@PathParam("jobName") final String jobName) {
+    @PostMapping(value = "/{jobName}/enable", consumes = MediaType.APPLICATION_JSON)
+    public void enableJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().enable(jobName, null);
     }
     
@@ -101,10 +98,8 @@ public final class JobOperationRESTfulAPI {
      * 
      * @param jobName job name
      */
-    @POST
-    @Path("/{jobName}/shutdown")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void shutdownJob(@PathParam("jobName") final String jobName) {
+    @PostMapping(value = "/{jobName}/shutdown", consumes = MediaType.APPLICATION_JSON)
+    public void shutdownJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(jobName, null);
     }
     
@@ -114,10 +109,8 @@ public final class JobOperationRESTfulAPI {
      * @param jobName job name
      * @return sharding info
      */
-    @GET
-    @Path("/{jobName}/sharding")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ShardingInfo> getShardingInfo(@PathParam("jobName") final String jobName) {
+    @GetMapping(value = "/{jobName}/sharding", produces = MediaType.APPLICATION_JSON)
+    public Collection<ShardingInfo> getShardingInfo(@PathVariable("jobName") final String jobName) {
         return jobAPIService.getShardingStatisticsAPI().getShardingInfo(jobName);
     }
 
@@ -127,10 +120,8 @@ public final class JobOperationRESTfulAPI {
      * @param jobName job name
      * @param item sharding item
      */
-    @POST
-    @Path("/{jobName}/sharding/{item}/disable")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void disableSharding(@PathParam("jobName") final String jobName, @PathParam("item") final String item) {
+    @PostMapping(value = "/{jobName}/sharding/{item}/disable", consumes = MediaType.APPLICATION_JSON)
+    public void disableSharding(@PathVariable("jobName") final String jobName, @PathVariable("item") final String item) {
         jobAPIService.getShardingOperateAPI().disable(jobName, item);
     }
 
@@ -140,10 +131,8 @@ public final class JobOperationRESTfulAPI {
      * @param jobName job name
      * @param item sharding item
      */
-    @POST
-    @Path("/{jobName}/sharding/{item}/enable")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void enableSharding(@PathParam("jobName") final String jobName, @PathParam("item") final String item) {
+    @PostMapping(value = "/{jobName}/sharding/{item}/enable", consumes = MediaType.APPLICATION_JSON)
+    public void enableSharding(@PathVariable("jobName") final String jobName, @PathVariable("item") final String item) {
         jobAPIService.getShardingOperateAPI().enable(jobName, item);
     }
 }

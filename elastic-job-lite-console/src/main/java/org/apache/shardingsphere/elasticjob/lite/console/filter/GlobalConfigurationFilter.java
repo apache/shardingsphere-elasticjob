@@ -21,8 +21,8 @@ import com.google.common.base.Optional;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceFactory;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.console.restful.config.EventTraceDataSourceRESTfulAPI;
-import org.apache.shardingsphere.elasticjob.lite.console.restful.config.RegistryCenterRESTfulAPI;
+import org.apache.shardingsphere.elasticjob.lite.console.controller.EventTraceDataSourceController;
+import org.apache.shardingsphere.elasticjob.lite.console.controller.RegistryCenterController;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
@@ -59,10 +59,10 @@ public final class GlobalConfigurationFilter implements Filter {
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpSession httpSession = httpRequest.getSession();
-        if (null == httpSession.getAttribute(RegistryCenterRESTfulAPI.REG_CENTER_CONFIG_KEY)) {
+        if (null == httpSession.getAttribute(RegistryCenterController.REG_CENTER_CONFIG_KEY)) {
             loadActivatedRegCenter(httpSession);
         }
-        if (null == httpSession.getAttribute(EventTraceDataSourceRESTfulAPI.DATA_SOURCE_CONFIG_KEY)) {
+        if (null == httpSession.getAttribute(EventTraceDataSourceController.DATA_SOURCE_CONFIG_KEY)) {
             loadActivatedEventTraceDataSource(httpSession);
         }
         filterChain.doFilter(servletRequest, servletResponse);
@@ -80,10 +80,10 @@ public final class GlobalConfigurationFilter implements Filter {
     }
     
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
-        session.setAttribute(RegistryCenterRESTfulAPI.REG_CENTER_CONFIG_KEY, regCenterConfig);
+        session.setAttribute(RegistryCenterController.REG_CENTER_CONFIG_KEY, regCenterConfig);
         try {
             RegistryCenterFactory.createCoordinatorRegistryCenter(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), regCenterConfig.getDigest());
-            SessionRegistryCenterConfiguration.setRegistryCenterConfiguration((RegistryCenterConfiguration) session.getAttribute(RegistryCenterRESTfulAPI.REG_CENTER_CONFIG_KEY));
+            SessionRegistryCenterConfiguration.setRegistryCenterConfiguration((RegistryCenterConfiguration) session.getAttribute(RegistryCenterController.REG_CENTER_CONFIG_KEY));
         } catch (final RegException ex) {
             return false;
         }
@@ -102,11 +102,11 @@ public final class GlobalConfigurationFilter implements Filter {
     }
     
     private boolean setEventTraceDataSourceNameToSession(final EventTraceDataSourceConfiguration dataSourceConfig, final HttpSession session) {
-        session.setAttribute(EventTraceDataSourceRESTfulAPI.DATA_SOURCE_CONFIG_KEY, dataSourceConfig);
+        session.setAttribute(EventTraceDataSourceController.DATA_SOURCE_CONFIG_KEY, dataSourceConfig);
         try {
             EventTraceDataSourceFactory.createEventTraceDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(),
                     dataSourceConfig.getUsername(), Optional.fromNullable(dataSourceConfig.getPassword()));
-            SessionEventTraceDataSourceConfiguration.setDataSourceConfiguration((EventTraceDataSourceConfiguration) session.getAttribute(EventTraceDataSourceRESTfulAPI.DATA_SOURCE_CONFIG_KEY));
+            SessionEventTraceDataSourceConfiguration.setDataSourceConfiguration((EventTraceDataSourceConfiguration) session.getAttribute(EventTraceDataSourceController.DATA_SOURCE_CONFIG_KEY));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON

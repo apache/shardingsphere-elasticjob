@@ -24,10 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.console.repository.Configuratio
 import org.apache.shardingsphere.elasticjob.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
 import com.google.common.base.Optional;
+import org.springframework.stereotype.Service;
 
 /**
  * Registry center configuration service implementation.
  */
+@Service
 public final class RegistryCenterConfigurationServiceImpl implements RegistryCenterConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();

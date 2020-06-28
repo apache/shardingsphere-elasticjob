@@ -15,37 +15,41 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console.restful;
+package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
+import java.util.Collection;
+import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
-import org.apache.shardingsphere.elasticjob.lite.console.service.impl.JobAPIServiceImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Server operation RESTful API.
  */
-@Path("/servers")
-public final class ServerOperationRESTfulAPI {
+@RestController
+@RequestMapping("/servers")
+public final class ServerOperationController {
     
-    private JobAPIService jobAPIService = new JobAPIServiceImpl();
-    
+    private JobAPIService jobAPIService;
+
+    @Autowired
+    public ServerOperationController(final JobAPIService jobAPIService) {
+        this.jobAPIService = jobAPIService;
+    }
+
     /**
      * Get servers total count.
      * 
      * @return servers total count
      */
-    @GET
-    @Path("/count")
+    @GetMapping("/count")
     public int getServersTotalCount() {
         return jobAPIService.getServerStatisticsAPI().getServersTotalCount();
     }
@@ -55,8 +59,7 @@ public final class ServerOperationRESTfulAPI {
      * 
      * @return all servers brief info
      */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
     }
@@ -66,9 +69,8 @@ public final class ServerOperationRESTfulAPI {
      *
      * @param serverIp server IP address
      */
-    @POST
-    @Path("/{serverIp}/disable")
-    public void disableServer(@PathParam("serverIp") final String serverIp) {
+    @PostMapping("/{serverIp}/disable")
+    public void disableServer(@PathVariable("serverIp") final String serverIp) {
         jobAPIService.getJobOperatorAPI().disable(null, serverIp);
     }
     
@@ -77,9 +79,8 @@ public final class ServerOperationRESTfulAPI {
      *
      * @param serverIp server IP address
      */
-    @POST
-    @Path("/{serverIp}/enable")
-    public void enableServer(@PathParam("serverIp") final String serverIp) {
+    @PostMapping("/{serverIp}/enable")
+    public void enableServer(@PathVariable("serverIp") final String serverIp) {
         jobAPIService.getJobOperatorAPI().enable(null, serverIp);
     }
     
@@ -88,9 +89,8 @@ public final class ServerOperationRESTfulAPI {
      *
      * @param serverIp server IP address
      */
-    @POST
-    @Path("/{serverIp}/shutdown")
-    public void shutdownServer(@PathParam("serverIp") final String serverIp) {
+    @PostMapping("/{serverIp}/shutdown")
+    public void shutdownServer(@PathVariable("serverIp") final String serverIp) {
         jobAPIService.getJobOperatorAPI().shutdown(null, serverIp);
     }
     
@@ -99,9 +99,8 @@ public final class ServerOperationRESTfulAPI {
      *
      * @param serverIp server IP address
      */
-    @DELETE
-    @Path("/{serverIp}")
-    public void removeServer(@PathParam("serverIp") final String serverIp) {
+    @DeleteMapping("/{serverIp}")
+    public void removeServer(@PathVariable("serverIp") final String serverIp) {
         jobAPIService.getJobOperatorAPI().remove(null, serverIp);
     }
     
@@ -111,10 +110,8 @@ public final class ServerOperationRESTfulAPI {
      * @param serverIp server IP address
      * @return Job brief info
      */
-    @GET
-    @Path("/{serverIp}/jobs")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<JobBriefInfo> getJobs(@PathParam("serverIp") final String serverIp) {
+    @GetMapping(value = "/{serverIp}/jobs", produces = MediaType.APPLICATION_JSON)
+    public Collection<JobBriefInfo> getJobs(@PathVariable("serverIp") final String serverIp) {
         return jobAPIService.getJobStatisticsAPI().getJobsBriefInfo(serverIp);
     }
     
@@ -124,9 +121,8 @@ public final class ServerOperationRESTfulAPI {
      * @param serverIp server IP address
      * @param jobName job name
      */
-    @POST
-    @Path("/{serverIp}/jobs/{jobName}/disable")
-    public void disableServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
+    @PostMapping(value = "/{serverIp}/jobs/{jobName}/disable")
+    public void disableServerJob(@PathVariable("serverIp") final String serverIp, @PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().disable(jobName, serverIp);
     }
     
@@ -136,9 +132,8 @@ public final class ServerOperationRESTfulAPI {
      * @param serverIp server IP address
      * @param jobName job name
      */
-    @POST
-    @Path("/{serverIp}/jobs/{jobName}/enable")
-    public void enableServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
+    @PostMapping("/{serverIp}/jobs/{jobName}/enable")
+    public void enableServerJob(@PathVariable("serverIp") final String serverIp, @PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().enable(jobName, serverIp);
     }
     
@@ -148,9 +143,8 @@ public final class ServerOperationRESTfulAPI {
      * @param serverIp server IP address
      * @param jobName job name
      */
-    @POST
-    @Path("/{serverIp}/jobs/{jobName}/shutdown")
-    public void shutdownServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
+    @PostMapping("/{serverIp}/jobs/{jobName}/shutdown")
+    public void shutdownServerJob(@PathVariable("serverIp") final String serverIp, @PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(jobName, serverIp);
     }
     
@@ -160,9 +154,8 @@ public final class ServerOperationRESTfulAPI {
      * @param serverIp server IP address
      * @param jobName job name
      */
-    @DELETE
-    @Path("/{serverIp}/jobs/{jobName}")
-    public void removeServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
+    @DeleteMapping("/{serverIp}/jobs/{jobName}")
+    public void removeServerJob(@PathVariable("serverIp") final String serverIp, @PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().remove(jobName, serverIp);
     }
 }

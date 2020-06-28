@@ -15,61 +15,62 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console.restful.config;
+package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
-import org.apache.shardingsphere.elasticjob.lite.console.service.impl.JobAPIServiceImpl;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Job configuration RESTful API.
  */
-@Path("/jobs/config")
-public final class JobConfigRESTfulAPI {
-    
-    private JobAPIService jobAPIService = new JobAPIServiceImpl();
-    
+@RestController
+@RequestMapping("/jobs/config")
+public final class JobConfigController {
+
+    private JobAPIService jobAPIService;
+
+    @Autowired
+    public JobConfigController(final JobAPIService jobAPIService) {
+        this.jobAPIService = jobAPIService;
+    }
+
     /**
      * get job settings.
-     * 
+     *
      * @param jobName job name
      * @return job settings
      */
-    @GET
-    @Path("/{jobName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public JobSettings getJobSettings(@PathParam("jobName") final String jobName) {
+    @GetMapping(value = "/{jobName}", produces = MediaType.APPLICATION_JSON)
+    public JobSettings getJobSettings(@PathVariable("jobName") final String jobName) {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
     }
-    
+
     /**
      * Update job settings.
-     * 
+     *
      * @param jobSettings job settings
      */
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void updateJobSettings(final JobSettings jobSettings) {
+    @PutMapping(consumes = MediaType.APPLICATION_JSON)
+    public void updateJobSettings(@RequestBody final JobSettings jobSettings) {
         jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
-    
+
     /**
      * Remove job settings.
-     * 
+     *
      * @param jobName job name
      */
-    @DELETE
-    @Path("/{jobName}")
-    public void removeJob(@PathParam("jobName") final String jobName) {
+    @DeleteMapping("/{jobName}")
+    public void removeJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobSettingsAPI().removeJobSettings(jobName);
     }
 }

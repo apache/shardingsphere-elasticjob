@@ -15,25 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console;
+package org.apache.shardingsphere.elasticjob.lite.console.security;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
- * Console bootstrap.
- */
-@SpringBootApplication
-public class ConsoleBootstrap {
+ * Authentication result.
+ **/
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class AuthenticationResult {
 
-    /**
-     * Startup RESTful server.
-     *
-     * @param args arguments
-     */
-    //CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    //CHECKSTYLE:ON
-        SpringApplication.run(ConsoleBootstrap.class, args);
-    }
+    private final boolean success;
+
+    private final boolean isGuest;
+
 }

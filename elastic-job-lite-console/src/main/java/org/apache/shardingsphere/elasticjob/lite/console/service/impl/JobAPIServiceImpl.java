@@ -27,10 +27,12 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
+import org.springframework.stereotype.Service;
 
 /**
  * Job API service implementation.
  */
+@Service
 public final class JobAPIServiceImpl implements JobAPIService {
     
     @Override
