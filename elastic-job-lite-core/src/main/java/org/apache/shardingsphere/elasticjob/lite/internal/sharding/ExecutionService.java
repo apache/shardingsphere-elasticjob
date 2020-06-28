@@ -122,7 +122,7 @@ public final class ExecutionService {
     }
     
     private List<Integer> getAllItems() {
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
         List<Integer> result = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             result.add(i);

@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +52,7 @@ public class DataflowJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(
-                jobClass.getName(), cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build(), true)).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobClass.getName(), JobType.DATAFLOW, cron, shardingTotalCount)
+                .shardingItemParameters(shardingItemParameters).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).overwrite(true).build();
     }
 }

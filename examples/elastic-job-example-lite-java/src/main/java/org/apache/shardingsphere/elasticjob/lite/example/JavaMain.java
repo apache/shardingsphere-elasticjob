@@ -19,13 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
@@ -86,21 +85,18 @@ public final class JavaMain {
     }
     
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig);
-        new JobScheduler(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder(simpleJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaSimpleJob", JobType.SIMPLE, "0/5 * * * * ?", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build(), tracingConfig).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
-        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, true);
-        new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder(dataflowJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder("javaDataflowElasticJob", JobType.DATAFLOW, "0/5 * * * * ?", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build(), tracingConfig).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
-        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-        new JobScheduler(regCenter, null, JobConfiguration.newBuilder(scriptJobConfig).build(), tracingConfig).init();
+        new JobScheduler(regCenter, null, JobConfiguration.newBuilder("scriptElasticJob", JobType.SCRIPT, "0/5 * * * * ?", 3)
+                .setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {
