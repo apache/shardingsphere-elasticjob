@@ -53,7 +53,7 @@ public final class WrongJobExecutorTest {
     
     @Before
     public void setUp() {
-        wrongJobExecutor = new ElasticJobExecutor(regCenter, new TestWrongJob(), createJobConfiguration(), Collections.emptyList(), null);
+        wrongJobExecutor = new ElasticJobExecutor(regCenter, new TestWrongJob(), createJobConfiguration(), Collections.emptyList());
         ReflectionUtils.setFieldValue(wrongJobExecutor, "jobFacade", jobFacade);
     }
     

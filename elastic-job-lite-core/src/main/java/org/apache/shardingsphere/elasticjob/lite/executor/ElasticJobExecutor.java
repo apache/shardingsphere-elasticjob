@@ -57,13 +57,13 @@ public final class ElasticJobExecutor {
     
     private final ElasticJob elasticJob;
     
-    private final JobFacade jobFacade;
-    
-    private final JobItemExecutor jobItemExecutor;
-    
     private final JobConfiguration jobConfig;
     
     private final String jobName;
+    
+    private final JobFacade jobFacade;
+    
+    private final JobItemExecutor jobItemExecutor;
     
     private final ExecutorService executorService;
     
@@ -71,12 +71,20 @@ public final class ElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
+    public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        this(elasticJob, jobConfig, new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners));
+    }
+    
     public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter, 
                               final ElasticJob elasticJob, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
+        this(elasticJob, jobConfig, new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig));
+    }
+    
+    private ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade) {
         this.elasticJob = elasticJob;
         this.jobConfig = jobConfig;
         jobName = jobConfig.getJobName();
-        jobFacade = null == tracingConfig ? new LiteJobFacade(regCenter, jobName, elasticJobListeners) : new LiteJobFacade(regCenter, jobName, elasticJobListeners, tracingConfig);
+        this.jobFacade = jobFacade;
         jobItemExecutor = getJobItemExecutor(elasticJob);
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobName);
         jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getJobErrorHandlerType());

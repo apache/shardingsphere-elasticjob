@@ -63,7 +63,7 @@ public final class SimpleJobExecutorTest {
     
     @Before
     public void setUp() {
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, "THROW"), Collections.emptyList(), null);
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, "THROW"), Collections.emptyList());
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
     }
     
@@ -75,7 +75,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertNewExecutorWithDefaultHandlers() {
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, null), Collections.emptyList(), null);
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestSimpleJob(jobCaller), createJobConfiguration(null, null), Collections.emptyList());
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "executorService"), instanceOf(new CPUUsageJobExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(elasticJobExecutor, "jobErrorHandler"), instanceOf(LogJobErrorHandler.class));
     }
