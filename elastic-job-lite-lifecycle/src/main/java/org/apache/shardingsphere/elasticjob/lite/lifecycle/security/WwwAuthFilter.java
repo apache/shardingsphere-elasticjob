@@ -88,7 +88,7 @@ public final class WwwAuthFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String authorization = httpRequest.getHeader("authorization");
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
-            authorization = authorization.substring(AUTH_PREFIX.length(), authorization.length());
+            authorization = authorization.substring(AUTH_PREFIX.length());
             if ((rootUsername + ":" + rootPassword).equals(new String(Base64.decodeBase64(authorization)))) {
                 authenticateSuccess(httpResponse, false);
                 chain.doFilter(httpRequest, httpResponse);
