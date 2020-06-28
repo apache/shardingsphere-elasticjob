@@ -23,22 +23,54 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LifecycleJsonConstants {
     
-    private static final String SIMPLE_JOB_JSON = "{\"jobName\":\"%s\","
-            + "\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"%s\","
-            + "\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,\"jobShardingStrategyType\":\"testClass\","
-            + "\"disabled\":true,\"overwrite\":true}";
+    private static final String SIMPLE_JOB_YAML = "jobName: %s\n"
+            + "jobType: SIMPLE\n"
+            + "cron: 0/1 * * * * ?\n"
+            + "shardingTotalCount: 3\n"
+            + "jobParameter: param\n"
+            + "monitorExecution: false\n"
+            + "failover: true\n"
+            + "misfire: false\n"
+            + "maxTimeDiffSeconds: 100\n"
+            + "monitorPort: 8888\n"
+            + "jobShardingStrategyType: AVG_ALLOCATION\n"
+            + "description: %s\n"
+            + "disabled: false\n"
+            + "overwrite: false\n";
     
-    private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobType\":\"DATAFLOW\","
-            + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyType\":\"\",\"disabled\":false,"
-            + "\"overwrite\":false,\"streamingProcess\":true}";
+    private static final String DATAFLOW_JOB_YAML = "cron: 0/1 * * * * ?\n"
+            + "description: ''\n"
+            + "disabled: false\n"
+            + "failover: false\n"
+            + "jobName: test_job\n"
+            + "jobParameter: param\n"
+            + "jobType: DATAFLOW\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "misfire: true\n"
+            + "monitorExecution: true\n"
+            + "monitorPort: 8888\n"
+            + "overwrite: false\n"
+            + "props:\n"
+            + "  streaming.process: 'true'\n"
+            + "reconcileIntervalMinutes: 10\n"
+            + "shardingTotalCount: 3\n";
     
-    private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"%s\","
-            + "\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyType\":\"\","
-            + "\"disabled\":false,\"overwrite\":false,\"scriptCommandLine\":\"test.sh\"}";
+    private static final String SCRIPT_JOB_YAML = "jobName: test_job\n"
+            + "jobType: SCRIPT\n"
+            + "cron: 0/1 * * * * ?\n"
+            + "shardingTotalCount: 3\n"
+            + "jobParameter: param\n"
+            + "monitorExecution: true\n"
+            + "failover: false\n"
+            + "misfire: true\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "reconcileIntervalMinutes: 10\n"
+            + "monitorPort: 8888\n"
+            + "description: ''\n"
+            + "props:\n"
+            + "  script.command.line: test.sh\n"
+            + "disabled: false\n"
+            + "overwrite: false\n";
     
     /**
      * Get the config of simple job in json format.
@@ -48,24 +80,24 @@ public final class LifecycleJsonConstants {
      * @return the string of job config
      */
     public static String getSimpleJobJson(final String jobName, final String desc) {
-        return String.format(SIMPLE_JOB_JSON, jobName, desc);
+        return String.format(SIMPLE_JOB_YAML, jobName, desc);
     }
-
+    
     /**
      * Get the config of dataflow job in json format.
      *
      * @return the string of job config
      */
     public static String getDataflowJobJson() {
-        return DATAFLOW_JOB_JSON;
+        return DATAFLOW_JOB_YAML;
     }
-
+    
     /**
      * Get the config of script job in json format.
      *
      * @return the string of job config
      */
     public static String getScriptJobJson() {
-        return SCRIPT_JOB_JSON;
+        return SCRIPT_JOB_YAML;
     }
 }

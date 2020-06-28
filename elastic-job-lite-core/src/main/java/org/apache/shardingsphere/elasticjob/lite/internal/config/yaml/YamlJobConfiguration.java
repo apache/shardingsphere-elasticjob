@@ -106,6 +106,7 @@ public final class YamlJobConfiguration {
         result.setMisfire(jobConfiguration.isMisfire());
         result.setMaxTimeDiffSeconds(jobConfiguration.getMaxTimeDiffSeconds());
         result.setReconcileIntervalMinutes(jobConfiguration.getReconcileIntervalMinutes());
+        result.setMonitorPort(jobConfiguration.getMonitorPort());
         result.setJobShardingStrategyType(jobConfiguration.getJobShardingStrategyType());
         result.setJobExecutorServiceHandlerType(jobConfiguration.getJobExecutorServiceHandlerType());
         result.setJobErrorHandlerType(jobConfiguration.getJobErrorHandlerType());

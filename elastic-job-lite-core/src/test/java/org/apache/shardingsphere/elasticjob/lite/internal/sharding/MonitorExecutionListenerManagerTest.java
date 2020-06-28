@@ -49,7 +49,7 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", TreeCacheEvent.Type.NODE_ADDED, LiteJsonConstants.getJobJson());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", TreeCacheEvent.Type.NODE_ADDED, LiteJsonConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
@@ -61,7 +61,7 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteJsonConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     

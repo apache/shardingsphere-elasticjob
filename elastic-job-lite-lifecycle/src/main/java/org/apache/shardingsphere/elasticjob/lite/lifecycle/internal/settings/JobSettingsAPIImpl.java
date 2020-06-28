@@ -24,11 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
 /**
  * Job settings API implementation class.
@@ -42,7 +43,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     public JobSettings getJobSettings(final String jobName) {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        JobConfiguration jobConfig = JobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
+        JobConfiguration jobConfig = YamlEngine.unmarshal(regCenter.get(jobNodePath.getConfigNodePath()), YamlJobConfiguration.class).toJobConfiguration();
         String jobType = jobConfig.getJobType().name();
         buildSimpleJobSettings(jobName, result, jobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
@@ -87,7 +88,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobSettings.getCron()), "cron can not be empty.");
         Preconditions.checkArgument(jobSettings.getShardingTotalCount() > 0, "shardingTotalCount should larger than zero.");
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
-        regCenter.update(jobNodePath.getConfigNodePath(), JobConfigurationGsonFactory.toJsonForObject(jobSettings));
+        regCenter.update(jobNodePath.getConfigNodePath(), YamlEngine.marshal(jobSettings.toYamlJobConfiguration()));
     }
     
     @Override
