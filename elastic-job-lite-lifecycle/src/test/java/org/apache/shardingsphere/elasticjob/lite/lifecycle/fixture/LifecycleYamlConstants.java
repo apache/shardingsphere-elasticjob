@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LifecycleJsonConstants {
+public final class LifecycleYamlConstants {
     
     private static final String SIMPLE_JOB_YAML = "jobName: %s\n"
             + "jobType: SIMPLE\n"
@@ -73,31 +73,31 @@ public final class LifecycleJsonConstants {
             + "overwrite: false\n";
     
     /**
-     * Get the config of simple job in json format.
+     * Get the config of simple job in YAML format.
      *
      * @param jobName name of the job
      * @param desc description of the job
      * @return the string of job config
      */
-    public static String getSimpleJobJson(final String jobName, final String desc) {
+    public static String getSimpleJobYaml(final String jobName, final String desc) {
         return String.format(SIMPLE_JOB_YAML, jobName, desc);
     }
     
     /**
-     * Get the config of dataflow job in json format.
+     * Get the config of dataflow job in YAML format.
      *
      * @return the string of job config
      */
-    public static String getDataflowJobJson() {
+    public static String getDataflowJobYaml() {
         return DATAFLOW_JOB_YAML;
     }
     
     /**
-     * Get the config of script job in json format.
+     * Get the config of script job in YAML format.
      *
      * @return the string of job config
      */
-    public static String getScriptJobJson() {
+    public static String getScriptJobYaml() {
         return SCRIPT_JOB_YAML;
     }
 }

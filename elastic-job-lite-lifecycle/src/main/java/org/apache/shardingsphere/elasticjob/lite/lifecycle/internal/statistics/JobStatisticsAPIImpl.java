@@ -65,11 +65,11 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
-        String jobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
-        if (null == jobConfigJson) {
+        String jobConfigYaml = regCenter.get(jobNodePath.getConfigNodePath());
+        if (null == jobConfigYaml) {
             return null;
         }
-        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigJson, YamlJobConfiguration.class).toJobConfiguration();
+        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigYaml, YamlJobConfiguration.class).toJobConfiguration();
         result.setDescription(jobConfig.getDescription());
         result.setCron(jobConfig.getCron());
         result.setInstanceCount(getJobInstanceCount(jobName));
