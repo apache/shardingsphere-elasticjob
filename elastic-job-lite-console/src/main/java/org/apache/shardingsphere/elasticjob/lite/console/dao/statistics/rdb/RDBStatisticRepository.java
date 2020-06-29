@@ -46,7 +46,7 @@ public class RDBStatisticRepository {
     private static final String TABLE_TASK_RESULT_STATISTICS = "TASK_RESULT_STATISTICS";
     
     private static final String TABLE_TASK_RUNNING_STATISTICS = "TASK_RUNNING_STATISTICS";
-
+    
     private static final String TABLE_JOB_RUNNING_STATISTICS = "JOB_RUNNING_STATISTICS";
     
     private static final String TABLE_JOB_REGISTER_STATISTICS = "JOB_REGISTER_STATISTICS";

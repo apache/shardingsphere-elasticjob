@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 FROM adoptopenjdk:8-jre-hotspot
 CMD bin/start.sh -p $CONSOLE_PORT
 ENV CONSOLE_PORT=8899

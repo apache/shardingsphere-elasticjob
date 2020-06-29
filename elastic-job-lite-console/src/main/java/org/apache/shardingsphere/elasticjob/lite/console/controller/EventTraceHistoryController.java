@@ -18,16 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
 import com.google.common.base.Strings;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-import javax.ws.rs.core.MediaType;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch;
+import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Condition;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Result;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
@@ -41,22 +34,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
+import javax.ws.rs.core.MediaType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Event trace history RESTful API.
  */
 @RestController
 @RequestMapping("/event-trace")
 public final class EventTraceHistoryController {
-
+    
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
-
+    
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService;
-
+    
     @Autowired
     public EventTraceHistoryController(final EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService) {
         this.eventTraceDataSourceConfigurationService = eventTraceDataSourceConfigurationService;
     }
-
+    
     /**
      * Find job execution events.
      *
@@ -71,7 +73,7 @@ public final class EventTraceHistoryController {
         }
         return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "ip", "isSuccess"}));
     }
-
+    
     /**
      * Find job status trace events.
      *
@@ -86,7 +88,7 @@ public final class EventTraceHistoryController {
         }
         return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "source", "executionType", "state"}));
     }
-
+    
     private DataSource setUpEventTraceDataSource() {
         BasicDataSource result = new BasicDataSource();
         result.setDriverClassName(eventTraceDataSourceConfiguration.getDriver());
@@ -95,8 +97,8 @@ public final class EventTraceHistoryController {
         result.setPassword(eventTraceDataSourceConfiguration.getPassword());
         return result;
     }
-
-    private RDBJobEventSearch.Condition buildCondition(final MultiValueMap<String, String> requestParams, final String[] params) throws ParseException {
+    
+    private Condition buildCondition(final MultiValueMap<String, String> requestParams, final String[] params) throws ParseException {
         int perPage = 10;
         int page = 1;
         if (!Strings.isNullOrEmpty(requestParams.getFirst("per_page"))) {
@@ -117,9 +119,9 @@ public final class EventTraceHistoryController {
         if (!Strings.isNullOrEmpty(requestParams.getFirst("endTime"))) {
             endTime = simpleDateFormat.parse(requestParams.getFirst("endTime"));
         }
-        return new RDBJobEventSearch.Condition(perPage, page, sort, order, startTime, endTime, fields);
+        return new Condition(perPage, page, sort, order, startTime, endTime, fields);
     }
-
+    
     private Map<String, Object> getQueryParameters(final MultiValueMap<String, String> requestParams, final String[] params) {
         final Map<String, Object> result = new HashMap<>();
         for (String each : params) {

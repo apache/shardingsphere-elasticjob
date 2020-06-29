@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import java.util.Collection;
-import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
@@ -30,6 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.core.MediaType;
+import java.util.Collection;
+
 /**
  * Server operation RESTful API.
  */
@@ -38,12 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
 public final class ServerOperationController {
     
     private JobAPIService jobAPIService;
-
+    
     @Autowired
     public ServerOperationController(final JobAPIService jobAPIService) {
         this.jobAPIService = jobAPIService;
     }
-
+    
     /**
      * Get servers total count.
      * 

@@ -30,15 +30,15 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class UserAuthenticationService {
-
+    
     private String rootUsername;
-
+    
     private String rootPassword;
-
+    
     private String guestUsername;
-
+    
     private String guestPassword;
-
+    
     /**
      * Check user.
      *

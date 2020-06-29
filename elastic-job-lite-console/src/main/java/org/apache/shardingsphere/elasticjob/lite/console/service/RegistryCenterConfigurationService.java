@@ -19,7 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.console.service;
 
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfigurations;
-import com.google.common.base.Optional;
+
+import java.util.Optional;
 
 /**
  * Registry center configuration service.

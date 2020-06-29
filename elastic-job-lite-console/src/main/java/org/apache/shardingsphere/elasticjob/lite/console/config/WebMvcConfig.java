@@ -30,18 +30,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  **/
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-
+    
     @Override
     public void configurePathMatch(final PathMatchConfigurer configurer) {
         HandlerTypePredicate handlerTypePredicate = HandlerTypePredicate.forAnnotation(RestController.class);
         configurer.addPathPrefix("/api", handlerTypePredicate);
     }
-
+    
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("classpath:/console/");
     }
-
+    
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("/index.html");
