@@ -17,6 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
+import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionRegistryCenterConfiguration;
@@ -30,28 +35,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import java.util.Collection;
-
 /**
  * Registry center RESTful API.
  */
 @RestController
 @RequestMapping("/registry-center")
 public final class RegistryCenterController {
-    
+
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
-    
+
     private RegistryCenterConfigurationService regCenterService;
-    
+
     @Autowired
     public RegistryCenterController(final RegistryCenterConfigurationService regCenterService) {
         this.regCenterService = regCenterService;
     }
-    
+
     /**
      * Judge whether registry center is activated.
      *
@@ -61,7 +60,7 @@ public final class RegistryCenterController {
     public boolean activated() {
         return regCenterService.loadActivated().isPresent();
     }
-    
+
     /**
      * Load configuration from registry center.
      *
@@ -73,7 +72,7 @@ public final class RegistryCenterController {
         regCenterService.loadActivated().ifPresent(regCenterConfig -> setRegistryCenterNameToSession(regCenterConfig, request.getSession()));
         return regCenterService.loadAll().getRegistryCenterConfiguration();
     }
-    
+
     /**
      * Add registry center.
      *
@@ -94,7 +93,7 @@ public final class RegistryCenterController {
     public void delete(@RequestBody final RegistryCenterConfiguration config) {
         regCenterService.delete(config.getName());
     }
-    
+
     /**
      * Connect to registry center.
      *
@@ -110,7 +109,7 @@ public final class RegistryCenterController {
         }
         return isConnected;
     }
-    
+
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
         session.setAttribute(REG_CENTER_CONFIG_KEY, regCenterConfig);
         try {
