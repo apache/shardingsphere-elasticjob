@@ -50,6 +50,7 @@ public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public synchronized E load() {
         if (!file.exists()) {
@@ -60,9 +61,7 @@ public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
             }
         }
         try {
-            @SuppressWarnings("unchecked")
-            E result = (E) jaxbContext.createUnmarshaller().unmarshal(file);
-            return result;
+            return (E) jaxbContext.createUnmarshaller().unmarshal(file);
         } catch (final JAXBException ex) {
             throw new JobConsoleException(ex);
         }

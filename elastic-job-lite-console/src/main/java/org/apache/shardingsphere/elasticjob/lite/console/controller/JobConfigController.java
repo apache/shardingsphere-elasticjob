@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +28,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.core.MediaType;
+
 /**
  * Job configuration RESTful API.
  */
 @RestController
 @RequestMapping("/jobs/config")
 public final class JobConfigController {
-
+    
     private JobAPIService jobAPIService;
-
+    
     @Autowired
     public JobConfigController(final JobAPIService jobAPIService) {
         this.jobAPIService = jobAPIService;
     }
-
+    
     /**
-     * get job settings.
+     * Get job settings.
      *
      * @param jobName job name
      * @return job settings
@@ -53,7 +54,7 @@ public final class JobConfigController {
     public JobSettings getJobSettings(@PathVariable("jobName") final String jobName) {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
     }
-
+    
     /**
      * Update job settings.
      *
@@ -63,7 +64,7 @@ public final class JobConfigController {
     public void updateJobSettings(@RequestBody final JobSettings jobSettings) {
         jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
-
+    
     /**
      * Remove job settings.
      *

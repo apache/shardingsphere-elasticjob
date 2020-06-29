@@ -25,12 +25,12 @@
     <artifactId>elastic-job-lite-console</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-
+    
     <properties>
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <springframework.version>5.2.7.RELEASE</springframework.version>
     </properties>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>

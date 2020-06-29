@@ -27,10 +27,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class AuthenticationResult {
-
+public final class AuthenticationResult {
+    
     private final boolean success;
-
+    
     private final boolean isGuest;
-
 }

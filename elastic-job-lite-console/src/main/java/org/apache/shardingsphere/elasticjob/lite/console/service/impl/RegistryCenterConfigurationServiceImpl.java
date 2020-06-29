@@ -23,8 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterCo
 import org.apache.shardingsphere.elasticjob.lite.console.repository.ConfigurationsXmlRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
-import com.google.common.base.Optional;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Registry center configuration service implementation.
@@ -70,7 +71,7 @@ public final class RegistryCenterConfigurationServiceImpl implements RegistryCen
     
     @Override
     public Optional<RegistryCenterConfiguration> loadActivated() {
-        return Optional.fromNullable(findActivatedRegistryCenterConfiguration(loadGlobal()));
+        return Optional.ofNullable(findActivatedRegistryCenterConfiguration(loadGlobal()));
     }
     
     private RegistryCenterConfiguration findActivatedRegistryCenterConfiguration(final GlobalConfiguration configs) {

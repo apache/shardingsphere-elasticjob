@@ -17,12 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import com.google.common.base.Optional;
-import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceFactory;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
@@ -35,22 +29,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.Collection;
+
 /**
  * Event trace data source RESTful API.
  */
 @RestController
 @RequestMapping("/data-source")
 public final class EventTraceDataSourceController {
-
+    
     public static final String DATA_SOURCE_CONFIG_KEY = "data_source_config_key";
-
+    
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService;
-
+    
     @Autowired
     public EventTraceDataSourceController(final EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService) {
         this.eventTraceDataSourceConfigurationService = eventTraceDataSourceConfigurationService;
     }
-
+    
     /**
      * Judge whether event trace data source is activated.
      *
@@ -61,7 +61,7 @@ public final class EventTraceDataSourceController {
     public boolean activated(@Context final HttpServletRequest request) {
         return eventTraceDataSourceConfigurationService.loadActivated().isPresent();
     }
-
+    
     /**
      * Load event trace data source configuration.
      *
@@ -70,13 +70,10 @@ public final class EventTraceDataSourceController {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON)
     public Collection<EventTraceDataSourceConfiguration> load(@Context final HttpServletRequest request) {
-        Optional<EventTraceDataSourceConfiguration> dataSourceConfig = eventTraceDataSourceConfigurationService.loadActivated();
-        if (dataSourceConfig.isPresent()) {
-            setDataSourceNameToSession(dataSourceConfig.get(), request.getSession());
-        }
+        eventTraceDataSourceConfigurationService.loadActivated().ifPresent(eventTraceDataSourceConfig -> setDataSourceNameToSession(eventTraceDataSourceConfig, request.getSession()));
         return eventTraceDataSourceConfigurationService.loadAll().getEventTraceDataSourceConfiguration();
     }
-
+    
     /**
      * Add event trace data source configuration.
      *
@@ -87,7 +84,7 @@ public final class EventTraceDataSourceController {
     public boolean add(@RequestBody final EventTraceDataSourceConfiguration config) {
         return eventTraceDataSourceConfigurationService.add(config);
     }
-
+    
     /**
      * Delete event trace data source configuration.
      *
@@ -97,7 +94,7 @@ public final class EventTraceDataSourceController {
     public void delete(@RequestBody final EventTraceDataSourceConfiguration config) {
         eventTraceDataSourceConfigurationService.delete(config.getName());
     }
-
+    
     /**
      * Test event trace data source connection.
      *
@@ -109,7 +106,7 @@ public final class EventTraceDataSourceController {
     public boolean connectTest(@RequestBody final EventTraceDataSourceConfiguration config, @Context final HttpServletRequest request) {
         return setDataSourceNameToSession(config, request.getSession());
     }
-
+    
     /**
      * Connect event trace data source.
      *
@@ -125,12 +122,11 @@ public final class EventTraceDataSourceController {
         }
         return isConnected;
     }
-
+    
     private boolean setDataSourceNameToSession(final EventTraceDataSourceConfiguration dataSourceConfig, final HttpSession session) {
         session.setAttribute(DATA_SOURCE_CONFIG_KEY, dataSourceConfig);
         try {
-            EventTraceDataSourceFactory.createEventTraceDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(),
-                    dataSourceConfig.getUsername(), Optional.fromNullable(dataSourceConfig.getPassword()));
+            EventTraceDataSourceFactory.createEventTraceDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(), dataSourceConfig.getUsername(), dataSourceConfig.getPassword());
             SessionEventTraceDataSourceConfiguration.setDataSourceConfiguration((EventTraceDataSourceConfiguration) session.getAttribute(DATA_SOURCE_CONFIG_KEY));
         // CHECKSTYLE:OFF
         } catch (final Exception ex) {

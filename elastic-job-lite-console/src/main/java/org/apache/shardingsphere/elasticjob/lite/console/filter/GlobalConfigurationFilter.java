@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.filter;
 
-import com.google.common.base.Optional;
+import org.apache.shardingsphere.elasticjob.lite.console.controller.EventTraceDataSourceController;
+import org.apache.shardingsphere.elasticjob.lite.console.controller.RegistryCenterController;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceFactory;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.console.controller.EventTraceDataSourceController;
-import org.apache.shardingsphere.elasticjob.lite.console.controller.RegistryCenterController;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
@@ -41,6 +40,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Global configuration filter.
@@ -104,8 +104,7 @@ public final class GlobalConfigurationFilter implements Filter {
     private boolean setEventTraceDataSourceNameToSession(final EventTraceDataSourceConfiguration dataSourceConfig, final HttpSession session) {
         session.setAttribute(EventTraceDataSourceController.DATA_SOURCE_CONFIG_KEY, dataSourceConfig);
         try {
-            EventTraceDataSourceFactory.createEventTraceDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(),
-                    dataSourceConfig.getUsername(), Optional.fromNullable(dataSourceConfig.getPassword()));
+            EventTraceDataSourceFactory.createEventTraceDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(), dataSourceConfig.getUsername(), dataSourceConfig.getPassword());
             SessionEventTraceDataSourceConfiguration.setDataSourceConfiguration((EventTraceDataSourceConfiguration) session.getAttribute(EventTraceDataSourceController.DATA_SOURCE_CONFIG_KEY));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {

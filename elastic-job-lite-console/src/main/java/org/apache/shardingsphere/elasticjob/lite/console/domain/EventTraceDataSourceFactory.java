@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
@@ -45,13 +44,13 @@ public final class EventTraceDataSourceFactory {
      * @param password database password
      * @return event trace data source
      */
-    public static EventTraceDataSource createEventTraceDataSource(final String driverClassName, final String url, final String username, final Optional<String> password) {
+    public static EventTraceDataSource createEventTraceDataSource(final String driverClassName, final String url, final String username, final String password) {
         Hasher hasher = Hashing.md5().newHasher().putString(driverClassName, Charsets.UTF_8).putString(url, Charsets.UTF_8);
         if (!Strings.isNullOrEmpty(username)) {
             hasher.putString(username, Charsets.UTF_8);
         }
-        if (password.isPresent()) {
-            hasher.putString(password.get(), Charsets.UTF_8);
+        if (null != password) {
+            hasher.putString(password, Charsets.UTF_8);
         }
         HashCode hashCode = hasher.hash();
         EventTraceDataSource result = DATA_SOURCE_REGISTRY.get(hashCode);
@@ -59,8 +58,8 @@ public final class EventTraceDataSourceFactory {
             return result;
         }
         EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driverClassName, url, username);
-        if (password.isPresent()) {
-            eventTraceDataSourceConfiguration.setPassword(password.get());
+        if (null != password) {
+            eventTraceDataSourceConfiguration.setPassword(password);
         }
         result = new EventTraceDataSource(eventTraceDataSourceConfiguration);
         result.init();

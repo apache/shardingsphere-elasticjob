@@ -19,7 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.console.service;
 
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfigurations;
-import com.google.common.base.Optional;
+
+import java.util.Optional;
 
 /**
  * Event trace data source configuration service.
