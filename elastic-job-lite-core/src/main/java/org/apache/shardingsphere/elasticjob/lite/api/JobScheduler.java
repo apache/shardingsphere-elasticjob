@@ -70,14 +70,7 @@ public final class JobScheduler {
     private final SchedulerFacade schedulerFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        this.regCenter = regCenter;
-        this.elasticJob = elasticJob;
-        this.jobConfig = jobConfig;
-        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
-        this.elasticJobListeners = Arrays.asList(elasticJobListeners);
-        tracingConfig = null;
-        setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
+        this(regCenter, elasticJob, jobConfig, null, elasticJobListeners);
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
