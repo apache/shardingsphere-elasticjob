@@ -43,17 +43,17 @@
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-
-        <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
-
+        
+        <springframework.version>[3.1.0.RELEASE,5.2.7.RELEASE]</springframework.version>
+        <springboot.version>2.3.1.RELEASE</springboot.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.0</quartz.version>
         <curator.version>2.10.0</curator.version>
-        <lombok.version>1.16.4</lombok.version>
-        <aspectj.version>1.8.0</aspectj.version>
+        <lombok.version>1.18.12</lombok.version>
+        <aspectj.version>1.9.1</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <logback.version>1.1.2</logback.version>
+        <logback.version>1.2.3</logback.version>
         <commons-codec.version>1.10</commons-codec.version>
         <commons-exec.version>1.3</commons-exec.version>
         <snakeyaml.version>1.26</snakeyaml.version>
@@ -93,6 +93,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

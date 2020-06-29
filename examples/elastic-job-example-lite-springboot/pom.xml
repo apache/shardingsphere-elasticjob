@@ -13,9 +13,9 @@
     <name>${project.artifactId}</name>
     
     <properties>
-        <springboot.version>1.4.2.RELEASE</springboot.version>
+        <springboot.version>2.3.1.RELEASE</springboot.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
