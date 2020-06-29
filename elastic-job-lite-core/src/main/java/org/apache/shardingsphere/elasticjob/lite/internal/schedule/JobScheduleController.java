@@ -132,9 +132,17 @@ public final class JobScheduleController {
      * Shutdown scheduler.
      */
     public synchronized void shutdown() {
+        shutdown(false);
+    }
+
+    /**
+     * Shutdown scheduler graceful.
+     * @param isCleanShutdown if wait jobs complete
+     */
+    public synchronized void shutdown(final boolean isCleanShutdown) {
         try {
             if (!scheduler.isShutdown()) {
-                scheduler.shutdown();
+                scheduler.shutdown(isCleanShutdown);
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
