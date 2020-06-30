@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,11 +81,11 @@ public final class ConfigurationServiceTest {
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void assertPersistJobConfigurationForJobConflict() {
+    public void assertSetUpJobConfigurationJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
         when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
         try {
-            configService.persist(null, JobConfigurationUtil.createSimpleJobConfiguration());
+            configService.setUpJobConfiguration(null, JobConfigurationUtil.createSimpleJobConfiguration());
         } finally {
             verify(jobNodeStorage).isJobRootNodeExisted();
             verify(jobNodeStorage).getJobRootNodeData();
@@ -92,18 +93,28 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertPersistNewJobConfiguration() {
+    public void assertSetUpJobConfigurationNewJobConfiguration() {
         JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration();
-        configService.persist(TestSimpleJob.class.getName(), jobConfig);
+        assertThat(configService.setUpJobConfiguration(TestSimpleJob.class.getName(), jobConfig), is(jobConfig));
         verify(jobNodeStorage).replaceJobNode("config", YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
     }
     
     @Test
-    public void assertPersistExistedJobConfiguration() {
+    public void assertSetUpJobConfigurationExistedJobConfigurationAndOverwrite() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration(true);
-        configService.persist(TestSimpleJob.class.getName(), jobConfig);
+        assertThat(configService.setUpJobConfiguration(TestSimpleJob.class.getName(), jobConfig), is(jobConfig));
         verify(jobNodeStorage).replaceJobNode("config", YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
+    }
+    
+    @Test
+    public void assertSetUpJobConfigurationExistedJobConfigurationAndNotOverwrite() {
+        when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+                YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(JobConfigurationUtil.createSimpleJobConfiguration())));
+        JobConfiguration jobConfig = JobConfigurationUtil.createSimpleJobConfiguration(false);
+        JobConfiguration actual = configService.setUpJobConfiguration(TestSimpleJob.class.getName(), jobConfig);
+        assertThat(actual, not(jobConfig));
     }
     
     @Test

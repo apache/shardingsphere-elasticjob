@@ -17,20 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
-import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-
-import java.util.List;
 
 /**
  * Scheduler facade.
@@ -39,13 +31,7 @@ public final class SchedulerFacade {
     
     private final String jobName;
     
-    private final ConfigurationService configService;
-    
     private final LeaderService leaderService;
-    
-    private final ServerService serverService;
-    
-    private final InstanceService instanceService;
     
     private final ShardingService shardingService;
     
@@ -55,31 +41,13 @@ public final class SchedulerFacade {
     
     private final ReconcileService reconcileService;
     
-    private ListenerManager listenerManager;
-    
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
-        configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
-        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
-    }
-    
-    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
-        this.jobName = jobName;
-        configService = new ConfigurationService(regCenter, jobName);
-        leaderService = new LeaderService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
-        instanceService = new InstanceService(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
-        executionService = new ExecutionService(regCenter, jobName);
-        monitorService = new MonitorService(regCenter, jobName);
-        reconcileService = new ReconcileService(regCenter, jobName);
-        listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
     }
     
     /**
@@ -89,35 +57,6 @@ public final class SchedulerFacade {
      */
     public JobTriggerListener newJobTriggerListener() {
         return new JobTriggerListener(executionService, shardingService);
-    }
-    
-    /**
-     * Update job configuration.
-     *
-     * @param jobClassName job class name
-     * @param jobConfig job configuration to be updated
-     * @return updated job configuration
-     */
-    public JobConfiguration updateJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
-        configService.persist(jobClassName, jobConfig);
-        return configService.load(false);
-    }
-    
-    /**
-     * Register start up info.
-     * 
-     * @param enabled enable job on startup
-     */
-    public void registerStartUpInfo(final boolean enabled) {
-        listenerManager.startAllListeners();
-        leaderService.electLeader();
-        serverService.persistOnline(enabled);
-        instanceService.persistOnline();
-        shardingService.setReshardingFlag();
-        monitorService.listen();
-        if (!reconcileService.isRunning()) {
-            reconcileService.startAsync();
-        }
     }
     
     /**

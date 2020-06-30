@@ -61,17 +61,20 @@ public final class ConfigurationService {
     }
     
     /**
-     * Persist job configuration.
+     * Set up job configuration.
      * 
      * @param jobClassName job class name
-     * @param jobConfig job configuration
+     * @param jobConfig job configuration to be updated
+     * @return accepted job configuration
      */
-    public void persist(final String jobClassName, final JobConfiguration jobConfig) {
+    public JobConfiguration setUpJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
         checkConflictJob(jobClassName, jobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || jobConfig.isOverwrite()) {
             jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, YamlEngine.marshal(YamlJobConfiguration.fromJobConfiguration(jobConfig)));
             jobNodeStorage.replaceJobRootNode(jobClassName);
+            return jobConfig;
         }
+        return load(false);
     }
     
     private void checkConflictJob(final String newJobClassName, final JobConfiguration jobConfig) {

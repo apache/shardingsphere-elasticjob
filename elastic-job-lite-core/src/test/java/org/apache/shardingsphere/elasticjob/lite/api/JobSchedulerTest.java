@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobTriggerListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
+import org.apache.shardingsphere.elasticjob.lite.internal.setup.SetUpFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
@@ -47,6 +48,9 @@ public final class JobSchedulerTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
+    private SetUpFacade setUpFacade;
+    
+    @Mock
     private SchedulerFacade schedulerFacade;
     
     private JobConfiguration jobConfig;
@@ -59,15 +63,15 @@ public final class JobSchedulerTest {
         jobConfig = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "* * 0/10 * * ? 2050", 3).build();
         jobScheduler = new JobScheduler(regCenter, new TestSimpleJob(), jobConfig);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
+        ReflectionUtils.setFieldValue(jobScheduler, "setUpFacade", setUpFacade);
         ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
     }
     
     @Test
     public void assertInit() throws SchedulerException {
-        when(schedulerFacade.updateJobConfiguration(TestSimpleJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         jobScheduler.init();
-        verify(schedulerFacade).registerStartUpInfo(true);
+        verify(setUpFacade).registerStartUpInfo(true);
         Scheduler scheduler = (Scheduler) ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), "scheduler");
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
