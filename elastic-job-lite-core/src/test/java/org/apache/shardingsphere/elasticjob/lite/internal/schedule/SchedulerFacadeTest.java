@@ -101,7 +101,7 @@ public final class SchedulerFacadeTest {
                 "test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
         when(configService.load(false)).thenReturn(jobConfig);
         assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
-        verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);
+        verify(configService).setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig);
     }
     
     @Test

@@ -99,7 +99,7 @@ public final class SchedulerFacade {
      * @return updated job configuration
      */
     public JobConfiguration updateJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
-        configService.persist(jobClassName, jobConfig);
+        configService.setUpJobConfiguration(jobClassName, jobConfig);
         return configService.load(false);
     }
     
