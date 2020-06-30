@@ -64,7 +64,7 @@ public final class ConfigurationService {
      * Set up job configuration.
      * 
      * @param jobClassName job class name
-     * @param jobConfig job configuration
+     * @param jobConfig job configuration to be updated
      * @return accepted job configuration
      */
     public JobConfiguration setUpJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
