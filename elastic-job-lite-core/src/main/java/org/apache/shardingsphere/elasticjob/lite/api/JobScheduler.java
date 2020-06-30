@@ -73,28 +73,20 @@ public final class JobScheduler {
     private final SchedulerFacade schedulerFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        this.regCenter = regCenter;
-        this.elasticJob = elasticJob;
-        this.jobConfig = jobConfig;
-        this.elasticJobListeners = Arrays.asList(elasticJobListeners);
-        tracingConfig = null;
-        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
-        setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
-        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
+        this(regCenter, elasticJob, jobConfig, null, elasticJobListeners);
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                         final ElasticJobListener... elasticJobListeners) {
         this.regCenter = regCenter;
         this.elasticJob = elasticJob;
-        this.jobConfig = jobConfig;
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
         this.tracingConfig = tracingConfig;
         JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
-        setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
+        this.jobConfig = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
+        setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
@@ -110,12 +102,15 @@ public final class JobScheduler {
      * Initialize job.
      */
     public void init() {
-        JobConfiguration jobConfigFromRegCenter = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfigFromRegCenter.getJobName(), jobConfigFromRegCenter.getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(jobConfigFromRegCenter), jobConfigFromRegCenter.getJobName());
-        JobRegistry.getInstance().registerJob(jobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
-        setUpFacade.registerStartUpInfo(!jobConfigFromRegCenter.isDisabled());
-        jobScheduleController.scheduleJob(jobConfigFromRegCenter.getCron());
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
+        JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController, regCenter);
+        registerStartUpInfo();
+        jobScheduleController.scheduleJob(jobConfig.getCron());
+    }
+    
+    private void registerStartUpInfo() {
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
+        setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
     }
     
     private Scheduler createScheduler() {
@@ -142,7 +137,7 @@ public final class JobScheduler {
         return result;
     }
     
-    private JobDetail createJobDetail(final JobConfiguration jobConfig) {
+    private JobDetail createJobDetail() {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(jobConfig.getJobName()).build();
         result.getJobDataMap().put(REG_CENTER_DATA_MAP_KEY, regCenter);
         result.getJobDataMap().put(JOB_CONFIG_DATA_MAP_KEY, jobConfig);

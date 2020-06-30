@@ -69,7 +69,6 @@ public final class JobSchedulerTest {
     
     @Test
     public void assertInit() throws SchedulerException {
-        when(setUpFacade.setUpJobConfiguration(TestSimpleJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         jobScheduler.init();
         verify(setUpFacade).registerStartUpInfo(true);
