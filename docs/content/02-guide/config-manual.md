@@ -75,7 +75,6 @@ JobTypeConfiguration 根据不同实现类型分为 SimpleJobConfiguration，Dat
 | -------------------------|:---------------------|:---------|:----------------|:-------------------------------------------------------|
 | jobConfig                | JobTypeConfiguration | 是       |                 |                                                        |
 | monitorExecution         | boolean              | 否       |true             | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。 |
-| monitorPort              | int                  | 否       |-1               | 作业监控端口<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888 |
 | maxTimeDiffSeconds       | int                  | 否       |-1               | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为-1表示不校验时间误差 |
 | jobShardingStrategyType  | String               | 否       |-1               | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](/02-guide/job-sharding-strategy) |
 | reconcileIntervalMinutes | int                  | 否       |10               | 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复<br />单位：分钟 |
@@ -87,7 +86,7 @@ Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将�
 
 ```xml
 <dependency>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
@@ -138,6 +137,17 @@ Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将�
 | job-executor-service-handler | String  | 否      |                 | 扩展作业处理线程池类                                                          |
 | reconcile-interval-minutes   | int     | 否      | 10              | 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复<br />单位：分钟 |
 | event-trace-rdb-data-source  | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                   |
+
+
+### c. 监控配置
+
+#### monitor:embed命名空间属性详细说明
+
+| 属性名                           | 类型   | 是否必填 | 缺省值 | 描述                                                                                              |
+| ------------------------------- |:-------|:-------|:------|:--------------------------------------------------------------------------------------------------|
+| id                              | String | 是     |       | 监控服务在Spring容器中的主键                                                                          |
+| registry-center-ref             | String | 是     |       | 注册中心Bean的引用，需引用reg:zookeeper的声明                                                          |
+| monitor-port                    | int    | 否     | -1    | 作业监控端口<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump@jobName" \| nc 127.0.0.1 9888|
 
 #### job:dataflow命名空间属性详细说明
 
