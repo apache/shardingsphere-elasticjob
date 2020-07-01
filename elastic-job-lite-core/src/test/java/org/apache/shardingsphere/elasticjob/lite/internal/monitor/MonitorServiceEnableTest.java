@@ -33,13 +33,13 @@ public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     public MonitorServiceEnableTest() {
         super(TestSimpleJob.class);
     }
-
+    
     @Before
     public void setUp() {
         super.setUp();
         getMonitorService().listen();
     }
-
+    
     @After
     public void tearDown() {
         super.tearDown();
@@ -48,7 +48,7 @@ public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     
     @Test
     public void assertMonitorWithCommand() throws IOException {
-        initJob();
+        scheduleJob();
         assertNotNull(SocketUtils.sendCommand(MonitorService.DUMP_COMMAND + getJobName(), MONITOR_PORT));
         assertNull(SocketUtils.sendCommand("unknown_command", MONITOR_PORT));
     }

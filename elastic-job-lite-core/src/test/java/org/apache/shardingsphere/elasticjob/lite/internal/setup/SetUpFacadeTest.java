@@ -93,8 +93,8 @@ public final class SetUpFacadeTest {
     
     @Test
     public void assertSetUpJobConfiguration() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(
-                "test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", JobType.DATAFLOW, 3)
+                .cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
         when(configService.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         assertThat(setUpFacade.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig);

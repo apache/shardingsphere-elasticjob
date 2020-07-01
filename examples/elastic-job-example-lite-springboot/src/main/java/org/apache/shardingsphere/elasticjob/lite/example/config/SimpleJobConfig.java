@@ -51,6 +51,6 @@ public class SimpleJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(jobClass.getName(), JobType.SIMPLE, cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobClass.getName(), JobType.SIMPLE, shardingTotalCount).cron(cron).shardingItemParameters(shardingItemParameters).overwrite(true).build();
     }
 }

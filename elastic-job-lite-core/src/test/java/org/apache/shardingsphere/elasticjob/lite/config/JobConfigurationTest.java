@@ -30,7 +30,8 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3)
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3)
+                .cron("0/1 * * * * ?")
                 .shardingItemParameters("0=a,1=b,2=c").jobParameter("param")
                 .monitorExecution(false).failover(true).misfire(false)
                 .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60)
@@ -59,7 +60,7 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build();
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -82,16 +83,16 @@ public final class JobConfigurationTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyJobName() {
-        JobConfiguration.newBuilder("", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
+        JobConfiguration.newBuilder("", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build();
     }
     
     @Test(expected = NullPointerException.class)
     public void assertBuildWithNullJobType() {
-        JobConfiguration.newBuilder("test_job", null, "0/1 * * * * ?", 3).build();
+        JobConfiguration.newBuilder("test_job", null, 3).cron("0/1 * * * * ?").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithInvalidShardingTotalCount() {
-        JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", -1).build();
+        JobConfiguration.newBuilder("test_job", JobType.SIMPLE, -1).cron("0/1 * * * * ?").build();
     }
 }
