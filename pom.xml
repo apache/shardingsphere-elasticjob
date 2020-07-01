@@ -48,7 +48,7 @@
         <springboot.version>2.3.1.RELEASE</springboot.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <curator.version>2.10.0</curator.version>
         <lombok.version>1.18.12</lombok.version>
         <aspectj.version>1.9.1</aspectj.version>
