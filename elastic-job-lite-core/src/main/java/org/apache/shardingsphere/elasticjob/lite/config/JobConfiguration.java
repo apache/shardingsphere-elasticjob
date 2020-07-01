@@ -56,8 +56,6 @@ public final class JobConfiguration {
     
     private final int reconcileIntervalMinutes;
     
-    private final int monitorPort;
-    
     private final String jobShardingStrategyType;
     
     private final String jobExecutorServiceHandlerType;
@@ -109,8 +107,6 @@ public final class JobConfiguration {
         private int maxTimeDiffSeconds = -1;
         
         private int reconcileIntervalMinutes = 10;
-        
-        private int monitorPort = -1;
         
         private String jobShardingStrategyType;
         
@@ -243,18 +239,6 @@ public final class JobConfiguration {
         }
         
         /**
-         * Set job monitor port.
-         *
-         * @param monitorPort job monitor port
-         *
-         * @return ElasticJob configuration builder
-         */
-        public Builder monitorPort(final int monitorPort) {
-            this.monitorPort = monitorPort;
-            return this;
-        }
-        
-        /**
          * Set job sharding sharding type.
          *
          * <p>
@@ -366,7 +350,7 @@ public final class JobConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
-                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes, monitorPort, 
+                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
         }
     }

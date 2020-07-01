@@ -42,8 +42,6 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String MONITOR_EXECUTION_ATTRIBUTE = "monitor-execution";
     
-    public static final String MONITOR_PORT_ATTRIBUTE = "monitor-port";
-    
     public static final String FAILOVER_ATTRIBUTE = "failover";
     
     public static final String MAX_TIME_DIFF_SECONDS_ATTRIBUTE = "max-time-diff-seconds";

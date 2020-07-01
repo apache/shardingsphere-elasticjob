@@ -33,7 +33,6 @@ public final class LiteYamlConstants {
             + "misfire: false\n"
             + "maxTimeDiffSeconds: %s\n"
             + "reconcileIntervalMinutes: 15\n"
-            + "monitorPort: 8888\n"
             + "description: 'desc'\n"
             + "disabled: true\n"
             + "overwrite: true";
