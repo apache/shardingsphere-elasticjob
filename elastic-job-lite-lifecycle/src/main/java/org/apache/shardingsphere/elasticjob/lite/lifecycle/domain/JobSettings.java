@@ -57,8 +57,6 @@ public final class JobSettings implements Serializable {
     
     private int reconcileIntervalMinutes;
     
-    private int monitorPort = -1;
-    
     private String jobShardingStrategyType;
     
     private String jobExecutorServiceHandlerType;
@@ -89,7 +87,6 @@ public final class JobSettings implements Serializable {
         result.setMisfire(misfire);
         result.setMaxTimeDiffSeconds(maxTimeDiffSeconds);
         result.setReconcileIntervalMinutes(reconcileIntervalMinutes);
-        result.setMonitorPort(monitorPort);
         result.setJobShardingStrategyType(jobShardingStrategyType);
         result.setJobExecutorServiceHandlerType(jobExecutorServiceHandlerType);
         result.setJobErrorHandlerType(jobErrorHandlerType);

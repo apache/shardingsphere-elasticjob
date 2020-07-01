@@ -35,6 +35,7 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExe
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
+import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -53,11 +54,16 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest {
+
+    protected static final int MONITOR_PORT = 9000;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
+
+    @Getter(value = AccessLevel.PROTECTED)
+    private static MonitorService monitorService = new MonitorService(regCenter, MONITOR_PORT);
     
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
@@ -65,8 +71,6 @@ public abstract class AbstractBaseStdJobTest {
     private final ScheduleJobBootstrap scheduleJobBootstrap;
     
     private final boolean disabled;
-    
-    private final int monitorPort;
     
     private final LeaderService leaderService;
     
@@ -98,13 +102,11 @@ public abstract class AbstractBaseStdJobTest {
             public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
             }
         });
-        monitorPort = -1;
         leaderService = new LeaderService(regCenter, jobName);
     }
     
     @SneakyThrows
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
-        this.monitorPort = monitorPort;
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass) {
         jobConfiguration = initJobConfig(elasticJobClass);
         scheduleJobBootstrap = new ScheduleJobBootstrap(regCenter, elasticJobClass.newInstance(), jobConfiguration);
         disabled = false;
@@ -115,7 +117,7 @@ public abstract class AbstractBaseStdJobTest {
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
-        Builder builder = JobConfiguration.newBuilder(jobName, getJobType(elasticJobClass), cron, totalShardingCount).shardingItemParameters(shardingParameters).monitorPort(monitorPort)
+        Builder builder = JobConfiguration.newBuilder(jobName, getJobType(elasticJobClass), cron, totalShardingCount).shardingItemParameters(shardingParameters)
                 .jobErrorHandlerType("IGNORE").disabled(disabled).overwrite(true);
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
             builder.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());

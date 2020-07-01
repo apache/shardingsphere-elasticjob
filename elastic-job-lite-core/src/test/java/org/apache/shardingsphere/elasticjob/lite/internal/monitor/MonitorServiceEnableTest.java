@@ -19,6 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
 import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,16 +30,26 @@ import static org.junit.Assert.assertNull;
 
 public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     
-    private static final int MONITOR_PORT = 9000;
-    
     public MonitorServiceEnableTest() {
-        super(TestSimpleJob.class, MONITOR_PORT);
+        super(TestSimpleJob.class);
+    }
+
+    @Before
+    public void setUp() {
+        super.setUp();
+        getMonitorService().listen();
+    }
+
+    @After
+    public void tearDown() {
+        super.tearDown();
+        getMonitorService().close();
     }
     
     @Test
     public void assertMonitorWithCommand() throws IOException {
-        scheduleJob();
-        assertNotNull(SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, MONITOR_PORT));
+        initJob();
+        assertNotNull(SocketUtils.sendCommand(MonitorService.DUMP_COMMAND + getJobName(), MONITOR_PORT));
         assertNull(SocketUtils.sendCommand("unknown_command", MONITOR_PORT));
     }
 }

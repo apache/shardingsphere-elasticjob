@@ -15,22 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.spring.monitor.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
-import org.junit.Test;
+import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.EmbedMonitorBeanDefinitionParser;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-import java.io.IOException;
-
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+/**
+ * Monitor spring namespace handler.
+ */
+public final class MonitorNamespaceHandler extends NamespaceHandlerSupport {
     
-    public MonitorServiceDisableTest() {
-        super(TestSimpleJob.class);
-    }
-    
-    @Test(expected = IOException.class)
-    public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000 - 1);
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("embed", new EmbedMonitorBeanDefinitionParser());
     }
 }
