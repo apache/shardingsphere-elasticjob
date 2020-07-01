@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoScheduleTest;
+import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
@@ -33,7 +33,7 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoScheduleTest {
+public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     
     public ScriptElasticJobTest() {
         super(null);
