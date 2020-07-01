@@ -19,14 +19,13 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
+import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration.Builder;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
@@ -54,7 +53,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest {
-
+    
     protected static final int MONITOR_PORT = 9000;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
@@ -68,7 +67,7 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
-    private final ScheduleJobBootstrap scheduleJobBootstrap;
+    private final ScheduleJobBootstrap bootstrap;
     
     private final boolean disabled;
     
@@ -77,11 +76,10 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    @SneakyThrows
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
+    protected AbstractBaseStdJobTest(final ElasticJob elasticJob, final boolean disabled) {
         this.disabled = disabled;
-        jobConfiguration = initJobConfig(elasticJobClass);
-        scheduleJobBootstrap = new ScheduleJobBootstrap(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), jobConfiguration, new ElasticJobListener() {
+        jobConfiguration = createJobConfiguration(elasticJob);
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -105,36 +103,33 @@ public abstract class AbstractBaseStdJobTest {
         leaderService = new LeaderService(regCenter, jobName);
     }
     
-    @SneakyThrows
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass) {
-        jobConfiguration = initJobConfig(elasticJobClass);
-        scheduleJobBootstrap = new ScheduleJobBootstrap(regCenter, elasticJobClass.newInstance(), jobConfiguration);
+    protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
+        jobConfiguration = createJobConfiguration(elasticJob);
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration);
         disabled = false;
         leaderService = new LeaderService(regCenter, jobName);
     }
     
-    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
-        String cron = "0/1 * * * * ?";
-        int totalShardingCount = 3;
-        String shardingParameters = "0=A,1=B,2=C";
-        Builder builder = JobConfiguration.newBuilder(jobName, getJobType(elasticJobClass), totalShardingCount).cron(cron).shardingItemParameters(shardingParameters)
-                .jobErrorHandlerType("IGNORE").disabled(disabled).overwrite(true);
-        if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
+    private JobConfiguration createJobConfiguration(final ElasticJob elasticJob) {
+        JobType jobType = getJobType(elasticJob);
+        Builder builder = JobConfiguration.newBuilder(jobName, jobType, 3)
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").disabled(disabled).overwrite(true);
+        if (JobType.DATAFLOW == jobType) {
             builder.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
+        } else if (JobType.SCRIPT == jobType) {
             builder.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         }
         return builder.build();
     }
     
-    private JobType getJobType(final Class<? extends ElasticJob> elasticJobClass) {
-        if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
+    private JobType getJobType(final ElasticJob elasticJob) {
+        if (elasticJob instanceof SimpleJob) {
+            return JobType.SIMPLE;
+        }
+        if (elasticJob instanceof DataflowJob) {
             return JobType.DATAFLOW;
         }
-        if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
-            return JobType.SCRIPT;
-        }
-        return JobType.SIMPLE;
+        return JobType.SCRIPT;
     }
     
     @BeforeClass
@@ -151,15 +146,15 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() {
-        scheduleJobBootstrap.shutdown();
+        bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
     protected final void scheduleJob() {
-        scheduleJobBootstrap.schedule();
+        bootstrap.schedule();
     }
     
-    final void assertRegCenterCommonInfoWithEnabled() {
+    protected final void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
         assertTrue(leaderService.isLeaderUntilBlock());
     }

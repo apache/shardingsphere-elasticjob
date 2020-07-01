@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public OneOffDataflowElasticJobTest() {
-        super(OneOffDataflowElasticJob.class);
+        super(new OneOffDataflowElasticJob());
     }
     
     @Before

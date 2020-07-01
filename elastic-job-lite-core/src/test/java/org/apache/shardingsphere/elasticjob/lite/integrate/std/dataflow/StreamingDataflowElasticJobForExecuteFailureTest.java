@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 public final class StreamingDataflowElasticJobForExecuteFailureTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingDataflowElasticJobForExecuteFailureTest() {
-        super(StreamingDataflowElasticJobForExecuteFailure.class);
+        super(new StreamingDataflowElasticJobForExecuteFailure());
     }
     
     @Before

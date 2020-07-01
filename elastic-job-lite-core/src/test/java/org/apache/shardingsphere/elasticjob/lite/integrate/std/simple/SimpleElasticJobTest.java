@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public SimpleElasticJobTest() {
-        super(FooSimpleElasticJob.class);
+        super(new FooSimpleElasticJob());
     }
     
     @Before

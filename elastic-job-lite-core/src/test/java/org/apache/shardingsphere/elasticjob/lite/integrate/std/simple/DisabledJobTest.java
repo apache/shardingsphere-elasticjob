@@ -26,7 +26,7 @@ import org.junit.Test;
 public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     public DisabledJobTest() {
-        super(FooSimpleElasticJob.class, true);
+        super(new FooSimpleElasticJob(), true);
     }
     
     @Before

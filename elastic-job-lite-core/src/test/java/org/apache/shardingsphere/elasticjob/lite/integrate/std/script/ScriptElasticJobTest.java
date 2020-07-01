@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.script;
 
-import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
@@ -35,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public ScriptElasticJobTest() {
-        super(ScriptJob.class);
+        super(null);
     }
     
     @Test

@@ -23,15 +23,15 @@ import org.junit.Before;
 
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
     
-    protected AbstractBaseStdJobAutoInitTest(final Class<? extends ElasticJob> elasticJobClass) {
-        super(elasticJobClass, false);
+    protected AbstractBaseStdJobAutoInitTest(final ElasticJob elasticJob) {
+        super(elasticJob, false);
     }
     
     protected void setJobConfiguration(final JobConfiguration jobConfig) {
     }
     
     @Before
-    public void autoJobInit() {
+    public void autoSchedule() {
         setJobConfiguration(getJobConfiguration());
         scheduleJob();
         assertRegCenterCommonInfoWithEnabled();
