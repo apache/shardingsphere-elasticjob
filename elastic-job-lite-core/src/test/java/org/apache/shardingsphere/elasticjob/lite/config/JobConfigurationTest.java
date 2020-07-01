@@ -33,7 +33,7 @@ public final class JobConfigurationTest {
         JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=a,1=b,2=c").jobParameter("param")
                 .monitorExecution(false).failover(true).misfire(false)
-                .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60).monitorPort(8888)
+                .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60)
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("SINGLE_THREAD").jobErrorHandlerType("IGNORE")
                 .description("desc").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
@@ -48,7 +48,6 @@ public final class JobConfigurationTest {
         assertFalse(actual.isMisfire());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getReconcileIntervalMinutes(), is(60));
-        assertThat(actual.getMonitorPort(), is(8888));
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertThat(actual.getJobExecutorServiceHandlerType(), is("SINGLE_THREAD"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
@@ -72,7 +71,6 @@ public final class JobConfigurationTest {
         assertTrue(actual.isMisfire());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getReconcileIntervalMinutes(), is(10));
-        assertThat(actual.getMonitorPort(), is(-1));
         assertNull(actual.getJobShardingStrategyType());
         assertNull(actual.getJobExecutorServiceHandlerType());
         assertNull(actual.getJobErrorHandlerType());

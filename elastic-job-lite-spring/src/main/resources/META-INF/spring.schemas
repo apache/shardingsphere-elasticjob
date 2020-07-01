@@ -17,3 +17,4 @@
 
 http\://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd=META-INF/namespace/reg.xsd
 http\://elasticjob.shardingsphere.apache.org/schema/job/job.xsd=META-INF/namespace/job.xsd
+http\://elasticjob.shardingsphere.apache.org/schema/monitor/monitor.xsd=META-INF/namespace/monitor.xsd

@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
@@ -37,8 +36,6 @@ public final class SchedulerFacade {
     
     private final ExecutionService executionService;
     
-    private final MonitorService monitorService;
-    
     private final ReconcileService reconcileService;
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
@@ -46,7 +43,6 @@ public final class SchedulerFacade {
         leaderService = new LeaderService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
-        monitorService = new MonitorService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
     }
     
@@ -66,7 +62,6 @@ public final class SchedulerFacade {
         if (leaderService.isLeader()) {
             leaderService.removeLeader();
         }
-        monitorService.close();
         if (reconcileService.isRunning()) {
             reconcileService.stopAsync();
         }

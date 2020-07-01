@@ -15,22 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
-import org.junit.Test;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import java.io.IOException;
-
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+/**
+ * Monitor bean definition parser tag.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MonitorBeanDefinitionParserTag {
     
-    public MonitorServiceDisableTest() {
-        super(TestSimpleJob.class);
-    }
+    public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
     
-    @Test(expected = IOException.class)
-    public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000 - 1);
-    }
+    public static final String MONITOR_PORT_ATTRIBUTE = "monitor-port";
 }

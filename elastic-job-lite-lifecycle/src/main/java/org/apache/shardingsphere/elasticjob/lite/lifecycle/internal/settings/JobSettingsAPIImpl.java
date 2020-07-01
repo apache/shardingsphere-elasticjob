@@ -64,7 +64,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         jobSettings.setJobParameter(jobConfig.getJobParameter());
         jobSettings.setMonitorExecution(jobConfig.isMonitorExecution());
         jobSettings.setMaxTimeDiffSeconds(jobConfig.getMaxTimeDiffSeconds());
-        jobSettings.setMonitorPort(jobConfig.getMonitorPort());
         jobSettings.setFailover(jobConfig.isFailover());
         jobSettings.setMisfire(jobConfig.isMisfire());
         jobSettings.setJobShardingStrategyType(jobConfig.getJobShardingStrategyType());
