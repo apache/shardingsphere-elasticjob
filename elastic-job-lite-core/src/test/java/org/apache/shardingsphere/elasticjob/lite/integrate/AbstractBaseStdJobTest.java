@@ -64,27 +64,7 @@ public abstract class AbstractBaseStdJobTest {
     
     protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
         jobConfiguration = getJobConfiguration(elasticJob, jobName);
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new ElasticJobListener() {
-            
-            @Override
-            public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-                regCenter.persist("/" + jobName + "/listener/every", "test");
-            }
-            
-            @Override
-            public void afterJobExecuted(final ShardingContexts shardingContexts) {
-            }
-        }, new AbstractDistributeOnceElasticJobListener(-1L, -1L) {
-            
-            @Override
-            public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-                regCenter.persist("/" + jobName + "/listener/once", "test");
-            }
-            
-            @Override
-            public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-            }
-        });
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
         leaderService = new LeaderService(regCenter, jobName);
     }
     
@@ -137,5 +117,33 @@ public abstract class AbstractBaseStdJobTest {
         }
         assertTrue(regCenter.isExisted("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         regCenter.remove("/" + jobName + "/leader/election");
+    }
+    
+    private class TestElasticJobListener implements ElasticJobListener {
+        
+        @Override
+        public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+            regCenter.persist("/" + jobName + "/listener/every", "test");
+        }
+        
+        @Override
+        public void afterJobExecuted(final ShardingContexts shardingContexts) {
+        }
+    }
+    
+    private class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+        
+        public TestDistributeOnceElasticJobListener() {
+            super(-1L, -1L);
+        }
+        
+        @Override
+        public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
+            regCenter.persist("/" + jobName + "/listener/once", "test");
+        }
+    
+        @Override
+        public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
+        }
     }
 }
