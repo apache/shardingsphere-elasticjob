@@ -38,11 +38,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "TASK_RUNNING_STATISTICS")
 public class TaskRunningStatistics {
 
-    public TaskRunningStatistics(Integer runningCount, Date statisticsTime) {
-        this.runningCount = runningCount;
-        this.statisticsTime = statisticsTime;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,4 +50,9 @@ public class TaskRunningStatistics {
 
     @Column(name = "creation_time", nullable = false)
     private Date creationTime = new Date();
+
+    public TaskRunningStatistics(final Integer runningCount, final Date statisticsTime) {
+        this.runningCount = runningCount;
+        this.statisticsTime = statisticsTime;
+    }
 }

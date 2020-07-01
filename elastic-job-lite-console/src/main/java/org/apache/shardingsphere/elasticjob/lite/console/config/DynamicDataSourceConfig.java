@@ -34,29 +34,42 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 @Configuration
 public class DynamicDataSourceConfig {
 
-    public static DataSource createDefaultDs(Environment environment) {
-        String driverName = environment.getProperty("spring.datasource.default.driver-class-name");
-        String url = environment.getProperty("spring.datasource.default.url");
-        String username = environment.getProperty("spring.datasource.default.username");
-        String password = environment.getProperty("spring.datasource.default.password");
-        return DataSourceBuilder.create().driverClassName(driverName).type(BasicDataSource.class).url(url)
-            .username(username).password(password).build();
-    }
+    public static final String DRIVER_CLASS_NAME = "spring.datasource.default.driver-class-name";
 
+    public static final String DATASOURCE_URL = "spring.datasource.default.url";
+
+    public static final String DATASOURCE_USERNAME = "spring.datasource.default.username";
+
+    public static final String DATASOURCE_PASSWORD = "spring.datasource.default.password";
+
+    /**
+     * Declare dynamicDataSource instead of default dataSource.
+     * @param environment spring environment
+     * @return A subClass of AbstractRoutingDataSource
+     */
     @Bean(name = "dynamicDataSource")
     @Primary
-    public DynamicDataSource dynamicDataSource(Environment environment) {
-        DataSource defaultDataSource = createDefaultDs(environment);
+    public DynamicDataSource dynamicDataSource(final Environment environment) {
+        DataSource defaultDataSource = createDefaultDataSource(environment);
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        dynamicDataSource.dsMap.put("default", defaultDataSource);
-        dynamicDataSource.setTargetDataSources(dynamicDataSource.dsMap);
+        dynamicDataSource.dataSourceMap.put("default", defaultDataSource);
+        dynamicDataSource.setTargetDataSources(dynamicDataSource.dataSourceMap);
         dynamicDataSource.setDefaultTargetDataSource(defaultDataSource);
         return dynamicDataSource;
     }
 
+    private static DataSource createDefaultDataSource(final Environment environment) {
+        String driverName = environment.getProperty(DRIVER_CLASS_NAME);
+        String url = environment.getProperty(DATASOURCE_URL);
+        String username = environment.getProperty(DATASOURCE_USERNAME);
+        String password = environment.getProperty(DATASOURCE_PASSWORD);
+        return DataSourceBuilder.create().driverClassName(driverName).type(BasicDataSource.class).url(url)
+            .username(username).password(password).build();
+    }
+
     public static class DynamicDataSource extends AbstractRoutingDataSource {
 
-        private final Map<Object, Object> dsMap = new HashMap<>();
+        private final Map<Object, Object> dataSourceMap = new HashMap<>();
 
         @Override
         protected Object determineCurrentLookupKey() {
@@ -66,14 +79,22 @@ public class DynamicDataSourceConfig {
 
     public static class DynamicDataSourceContextHolder {
 
-        private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();
+        private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
 
-        public static void setDataSourceName(String dsName) {
-            contextHolder.set(dsName);
+        /**
+         * Specify a dataSource.
+         * @param dataSourceName data source name
+         */
+        public static void setDataSourceName(final String dataSourceName) {
+            CONTEXT_HOLDER.set(dataSourceName);
         }
 
+        /**
+         * Get the specify dataSource.
+         * @return data source name
+         */
         public static String getDataSourceName() {
-            return contextHolder.get();
+            return CONTEXT_HOLDER.get();
         }
     }
 }

@@ -18,12 +18,14 @@
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,11 +40,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "JOB_RUNNING_STATISTICS")
 public class JobRunningStatistics {
 
-    public JobRunningStatistics(Integer runningCount, Date statisticsTime) {
-        this.runningCount = runningCount;
-        this.statisticsTime = statisticsTime;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,4 +52,9 @@ public class JobRunningStatistics {
 
     @Column(name = "creation_time", nullable = false)
     private Date creationTime = new Date();
+
+    public JobRunningStatistics(final Integer runningCount, final Date statisticsTime) {
+        this.runningCount = runningCount;
+        this.statisticsTime = statisticsTime;
+    }
 }

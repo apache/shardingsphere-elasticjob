@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.shardingsphere.elasticjob.lite.console.dao.statistics;
 
 import java.util.Date;

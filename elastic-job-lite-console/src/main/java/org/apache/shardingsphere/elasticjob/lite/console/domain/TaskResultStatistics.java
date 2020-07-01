@@ -18,12 +18,14 @@
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,18 +39,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TASK_RESULT_STATISTICS")
 public final class TaskResultStatistics {
-
-    public TaskResultStatistics(Long successCount, Long failedCount) {
-        this.successCount = successCount;
-        this.failedCount = failedCount;
-    }
-
-    public TaskResultStatistics(Long successCount, Long failedCount, String statisticInterval, Date statisticsTime) {
-        this.successCount = successCount;
-        this.failedCount = failedCount;
-        this.statisticInterval = statisticInterval;
-        this.statisticsTime = statisticsTime;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,4 +58,16 @@ public final class TaskResultStatistics {
 
     @Column(name = "creation_time", nullable = false)
     private Date creationTime = new Date();
+
+    public TaskResultStatistics(final Long successCount, final Long failedCount) {
+        this.successCount = successCount;
+        this.failedCount = failedCount;
+    }
+
+    public TaskResultStatistics(final Long successCount, final Long failedCount, final String statisticInterval, final Date statisticsTime) {
+        this.successCount = successCount;
+        this.failedCount = failedCount;
+        this.statisticInterval = statisticInterval;
+        this.statisticsTime = statisticsTime;
+    }
 }

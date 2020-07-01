@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.JobRegisterStatisticsRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.JobRunningStatisticsRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.StatisticInterval;
@@ -44,10 +45,13 @@ public class RDBStatisticRepositoryTest {
 
     @Autowired
     private TaskResultStatisticsRepository taskResultStatisticsRepository;
+
     @Autowired
     private TaskRunningStatisticsRepository taskRunningStatisticsRepository;
+
     @Autowired
     private JobRegisterStatisticsRepository jobRegisterStatisticsRepository;
+
     @Autowired
     private JobRunningStatisticsRepository jobRunningStatisticsRepository;
 
@@ -118,7 +122,6 @@ public class RDBStatisticRepositoryTest {
         }
     }
 
-    
     @Test
     public void assertFindTaskRunningStatisticsWhenTableIsEmpty() {
         assertThat(taskRunningStatisticsRepository.findTaskRunningStatistics(new Date()).size(), is(0));
