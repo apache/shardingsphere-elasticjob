@@ -67,6 +67,7 @@ public final class ScheduleJobBootstrap extends JobBootstrap {
     public void schedule() {
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), getJobConfig().getJobName());
         JobRegistry.getInstance().registerJob(getJobConfig().getJobName(), jobScheduleController);
+        registerStartUpInfo();
         jobScheduleController.scheduleJob(getJobConfig().getCron());
     }
     

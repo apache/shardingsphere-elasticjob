@@ -36,6 +36,7 @@ public final class OneOffJobBootstrap extends JobBootstrap {
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
+        registerStartUpInfo();
     }
     
     /**
