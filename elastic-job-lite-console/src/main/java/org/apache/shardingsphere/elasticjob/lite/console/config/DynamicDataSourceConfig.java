@@ -19,7 +19,9 @@ package org.apache.shardingsphere.elasticjob.lite.console.config;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -52,13 +54,12 @@ public class DynamicDataSourceConfig {
     public DynamicDataSource dynamicDataSource(final Environment environment) {
         DataSource defaultDataSource = createDefaultDataSource(environment);
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        dynamicDataSource.dataSourceMap.put("default", defaultDataSource);
-        dynamicDataSource.setTargetDataSources(dynamicDataSource.dataSourceMap);
+        dynamicDataSource.addDataSource("default", defaultDataSource);
         dynamicDataSource.setDefaultTargetDataSource(defaultDataSource);
         return dynamicDataSource;
     }
 
-    private static DataSource createDefaultDataSource(final Environment environment) {
+    private DataSource createDefaultDataSource(final Environment environment) {
         String driverName = environment.getProperty(DRIVER_CLASS_NAME);
         String url = environment.getProperty(DATASOURCE_URL);
         String username = environment.getProperty(DATASOURCE_USERNAME);
@@ -69,11 +70,22 @@ public class DynamicDataSourceConfig {
 
     public static class DynamicDataSource extends AbstractRoutingDataSource {
 
-        private final Map<Object, Object> dataSourceMap = new HashMap<>();
+        private final Map<Object, Object> dataSourceMap = new HashMap<>(10);
 
         @Override
         protected Object determineCurrentLookupKey() {
             return DynamicDataSourceContextHolder.getDataSourceName();
+        }
+
+        /**
+         * Add a data source.
+         * @param dataSourceName data source name
+         * @param dataSource data source
+         */
+        public void addDataSource(final String dataSourceName, final DataSource dataSource) {
+            dataSourceMap.put(dataSourceName, dataSource);
+            setTargetDataSources(dataSourceMap);
+            afterPropertiesSet();
         }
     }
 
@@ -82,19 +94,19 @@ public class DynamicDataSourceConfig {
         private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
 
         /**
-         * Specify a dataSource.
-         * @param dataSourceName data source name
-         */
-        public static void setDataSourceName(final String dataSourceName) {
-            CONTEXT_HOLDER.set(dataSourceName);
-        }
-
-        /**
          * Get the specify dataSource.
          * @return data source name
          */
         public static String getDataSourceName() {
             return CONTEXT_HOLDER.get();
+        }
+
+        /**
+         * Specify a dataSource.
+         * @param dataSourceName data source name
+         */
+        public static void setDataSourceName(final String dataSourceName) {
+            CONTEXT_HOLDER.set(dataSourceName);
         }
     }
 }
