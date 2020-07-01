@@ -39,13 +39,13 @@ public final class JobShutdownHookPlugin implements SchedulerPlugin {
     
     @Setter
     private boolean cleanShutdown = true;
-
+    
     @Override
     public void initialize(final String name, final Scheduler scheduler, final ClassLoadHelper classLoadHelper) throws SchedulerException {
         jobName = scheduler.getSchedulerName();
         registerShutdownHook();
     }
-
+    
     /**
      * <p>
      * Called when the associated <code>Scheduler</code> is started, in order
@@ -70,7 +70,7 @@ public final class JobShutdownHookPlugin implements SchedulerPlugin {
         }
         new InstanceService(regCenter, jobName).removeInstance();
     }
-
+    
     private void registerShutdownHook() {
         log.info("Registering Quartz shutdown hook. {}", jobName);
         Thread t = new Thread("Quartz Shutdown-Hook " + jobName) {
