@@ -45,7 +45,7 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?")
-                .shardingItemParameters("0=A,1=B,2=C").monitorExecution(false).jobErrorHandlerType("IGNORE").overwrite(true)
+                .shardingItemParameters("0=A,1=B,2=C").monitorExecution(false).overwrite(true)
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
     }
     

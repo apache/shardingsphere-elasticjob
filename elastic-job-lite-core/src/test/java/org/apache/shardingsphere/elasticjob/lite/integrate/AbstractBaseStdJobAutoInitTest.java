@@ -23,7 +23,7 @@ import org.junit.Before;
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
     
     protected AbstractBaseStdJobAutoInitTest(final ElasticJob elasticJob) {
-        super(elasticJob, false);
+        super(elasticJob);
     }
     
     @Before

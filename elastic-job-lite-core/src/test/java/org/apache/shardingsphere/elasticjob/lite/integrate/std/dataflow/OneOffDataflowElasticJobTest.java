@@ -44,8 +44,7 @@ public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoIn
     
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?")
-                .shardingItemParameters("0=A,1=B,2=C").misfire(false).jobErrorHandlerType("IGNORE").overwrite(true)
+        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     

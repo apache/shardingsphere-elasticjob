@@ -41,8 +41,7 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SCRIPT, 3).cron("0/1 * * * * ?")
-                .shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").overwrite(true)
+        return JobConfiguration.newBuilder(jobName, JobType.SCRIPT, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true)
                 .setProperty(ScriptJobExecutor.SCRIPT_KEY, ScriptElasticJobTest.class.getResource("/script/test.sh").getPath()).build();
     }
     

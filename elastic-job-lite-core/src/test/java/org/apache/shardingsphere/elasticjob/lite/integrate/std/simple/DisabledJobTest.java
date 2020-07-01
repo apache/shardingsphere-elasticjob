@@ -29,7 +29,7 @@ import org.junit.Test;
 public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     public DisabledJobTest() {
-        super(new FooSimpleElasticJob(), true);
+        super(new FooSimpleElasticJob());
     }
     
     @Before
@@ -40,8 +40,7 @@ public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3)
-                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").disabled(true).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
     }
     
     @Test

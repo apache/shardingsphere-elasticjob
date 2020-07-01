@@ -28,7 +28,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -48,15 +47,10 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest {
     
-    protected static final int MONITOR_PORT = 9000;
-    
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-
-    @Getter(value = AccessLevel.PROTECTED)
-    private static MonitorService monitorService = new MonitorService(regCenter, MONITOR_PORT);
     
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
@@ -68,7 +62,7 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected AbstractBaseStdJobTest(final ElasticJob elasticJob, final boolean disabled) {
+    protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
         jobConfiguration = getJobConfiguration(elasticJob, jobName);
         bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new ElasticJobListener() {
             
@@ -91,12 +85,6 @@ public abstract class AbstractBaseStdJobTest {
             public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
             }
         });
-        leaderService = new LeaderService(regCenter, jobName);
-    }
-    
-    protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
-        jobConfiguration = getJobConfiguration(elasticJob, jobName);
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration);
         leaderService = new LeaderService(regCenter, jobName);
     }
     
