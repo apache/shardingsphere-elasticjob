@@ -150,6 +150,11 @@ public abstract class JobBootstrap {
         return result;
     }
     
+    /**
+     * Schedule job.
+     */
+    public abstract void schedule();
+    
    /**
     * Shutdown job.
     */

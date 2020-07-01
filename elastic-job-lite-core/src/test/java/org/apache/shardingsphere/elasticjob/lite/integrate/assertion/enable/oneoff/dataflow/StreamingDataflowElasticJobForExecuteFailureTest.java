@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.simple;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.oneoff.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJobForExecuteFailure;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -29,26 +30,27 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class SimpleElasticJobTest extends EnabledJobIntegrateTest {
+public final class StreamingDataflowElasticJobForExecuteFailureTest extends EnabledJobIntegrateTest {
     
-    public SimpleElasticJobTest() {
-        super(new FooSimpleElasticJob());
+    public StreamingDataflowElasticJobForExecuteFailureTest() {
+        super(TestType.ONE_OFF, new StreamingDataflowElasticJobForExecuteFailure());
     }
     
     @Before
     @After
     public void reset() {
-        FooSimpleElasticJob.reset();
+        StreamingDataflowElasticJobForExecuteFailure.reset();
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3)
+                .shardingItemParameters("0=A,1=B,2=C").overwrite(true).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
     }
     
     @Test
     public void assertJobInit() {
-        while (!FooSimpleElasticJob.isCompleted()) {
+        while (!StreamingDataflowElasticJobForExecuteFailure.isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

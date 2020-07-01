@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.oneoff.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest {
     
     public OneOffDataflowElasticJobTest() {
-        super(new OneOffDataflowElasticJob());
+        super(TestType.ONE_OFF, new OneOffDataflowElasticJob());
     }
     
     @Before
@@ -44,7 +44,7 @@ public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest 
     
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
+        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     

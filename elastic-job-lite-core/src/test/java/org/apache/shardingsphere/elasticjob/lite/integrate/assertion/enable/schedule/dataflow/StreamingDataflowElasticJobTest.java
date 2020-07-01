@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
@@ -30,10 +30,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingDataflowElasticJobForNotMonitorTest extends EnabledJobIntegrateTest {
+public final class StreamingDataflowElasticJobTest extends EnabledJobIntegrateTest {
     
-    public StreamingDataflowElasticJobForNotMonitorTest() {
-        super(new StreamingDataflowElasticJob());
+    public StreamingDataflowElasticJobTest() {
+        super(TestType.SCHEDULE, new StreamingDataflowElasticJob());
     }
     
     @Before
@@ -45,8 +45,7 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends EnabledJ
     @Override
     protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?")
-                .shardingItemParameters("0=A,1=B,2=C").monitorExecution(false).overwrite(true)
-                .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+                .shardingItemParameters("0=A,1=B,2=C").overwrite(true).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
     }
     
     @Test

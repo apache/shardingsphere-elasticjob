@@ -17,18 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public final class DisabledJobIntegrateTest extends BaseIntegrateTest {
+public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
-    public DisabledJobIntegrateTest() {
-        super(new FooSimpleElasticJob());
+    public DisabledJobIntegrateTest(final TestType type) {
+        super(type, new FooSimpleElasticJob());
     }
     
     @Before
@@ -37,13 +34,8 @@ public final class DisabledJobIntegrateTest extends BaseIntegrateTest {
         FooSimpleElasticJob.reset();
     }
     
-    @Override
-    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
-    }
-    
     @Test
-    public void assertJobInit() {
+    public final void assertJobRunning() {
         assertRegCenterCommonInfoWithDisabled();
     }
 }

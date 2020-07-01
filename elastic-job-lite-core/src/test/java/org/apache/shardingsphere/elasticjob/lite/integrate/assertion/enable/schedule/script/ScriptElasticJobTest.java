@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.script;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.script;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertThat;
 public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     
     public ScriptElasticJobTest() {
-        super(null);
+        super(TestType.SCHEDULE, null);
     }
     
     @Override

@@ -20,6 +20,8 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
@@ -42,6 +44,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -55,20 +58,31 @@ public abstract class BaseIntegrateTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
-    private final ScheduleJobBootstrap bootstrap;
+    private final JobBootstrap bootstrap;
     
     private final LeaderService leaderService;
     
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected BaseIntegrateTest(final ElasticJob elasticJob) {
+    protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
         jobConfiguration = getJobConfiguration(elasticJob, jobName);
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+        bootstrap = createJobBootstrap(type, elasticJob);
         leaderService = new LeaderService(regCenter, jobName);
     }
     
     protected abstract JobConfiguration getJobConfiguration(ElasticJob elasticJob, String jobName);
+    
+    private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
+        switch (type) {
+            case SCHEDULE:
+                return new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+            case ONE_OFF:
+                return new OneOffJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+            default:
+                throw new RuntimeException(String.format("Cannot support `%s`", type));
+        }
+    }
     
     @BeforeClass
     public static void init() {
@@ -103,8 +117,12 @@ public abstract class BaseIntegrateTest {
         assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(regCenter.get("/" + jobName + "/config"), YamlJobConfiguration.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
+        if (bootstrap instanceof ScheduleJobBootstrap) {
+            assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
+        } else {
+            assertNull(jobConfig.getCron());
+        }
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
         if (jobConfiguration.isDisabled()) {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
@@ -119,7 +137,12 @@ public abstract class BaseIntegrateTest {
         regCenter.remove("/" + jobName + "/leader/election");
     }
     
-    private class TestElasticJobListener implements ElasticJobListener {
+    public enum TestType {
+        
+        SCHEDULE, ONE_OFF
+    }
+    
+    private final class TestElasticJobListener implements ElasticJobListener {
         
         @Override
         public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -131,9 +154,9 @@ public abstract class BaseIntegrateTest {
         }
     }
     
-    private class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
-        
-        public TestDistributeOnceElasticJobListener() {
+    private final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+    
+        private TestDistributeOnceElasticJobListener() {
             super(-1L, -1L);
         }
         

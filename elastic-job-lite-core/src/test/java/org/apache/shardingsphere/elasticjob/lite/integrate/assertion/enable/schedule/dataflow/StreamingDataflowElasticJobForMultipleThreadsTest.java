@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJobForExecuteFailure;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -30,16 +30,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingDataflowElasticJobForExecuteFailureTest extends EnabledJobIntegrateTest {
+public final class StreamingDataflowElasticJobForMultipleThreadsTest extends EnabledJobIntegrateTest {
     
-    public StreamingDataflowElasticJobForExecuteFailureTest() {
-        super(new StreamingDataflowElasticJobForExecuteFailure());
+    public StreamingDataflowElasticJobForMultipleThreadsTest() {
+        super(TestType.SCHEDULE, new StreamingDataflowElasticJob());
     }
     
     @Before
     @After
     public void reset() {
-        StreamingDataflowElasticJobForExecuteFailure.reset();
+        StreamingDataflowElasticJob.reset();
     }
     
     @Override
@@ -50,7 +50,7 @@ public final class StreamingDataflowElasticJobForExecuteFailureTest extends Enab
     
     @Test
     public void assertJobInit() {
-        while (!StreamingDataflowElasticJobForExecuteFailure.isCompleted()) {
+        while (!StreamingDataflowElasticJob.isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
