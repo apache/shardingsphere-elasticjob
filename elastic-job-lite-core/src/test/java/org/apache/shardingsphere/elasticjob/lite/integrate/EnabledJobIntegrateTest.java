@@ -15,29 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.std.simple;
+package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
-import org.junit.After;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.junit.Before;
-import org.junit.Test;
 
-public final class DisabledJobTest extends AbstractBaseStdJobTest {
+public abstract class EnabledJobIntegrateTest extends BaseIntegrateTest {
     
-    public DisabledJobTest() {
-        super(FooSimpleElasticJob.class, true);
+    protected EnabledJobIntegrateTest(final TestType type, final ElasticJob elasticJob) {
+        super(type, elasticJob);
     }
     
     @Before
-    @After
-    public void reset() {
-        FooSimpleElasticJob.reset();
-    }
-    
-    @Test
-    public void assertJobInit() {
-        scheduleJob();
-        assertRegCenterCommonInfoWithDisabled();
+    public final void autoSchedule() {
+        assertRegCenterCommonInfoWithEnabled();
     }
 }

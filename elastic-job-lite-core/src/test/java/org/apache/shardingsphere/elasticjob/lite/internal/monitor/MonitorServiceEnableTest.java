@@ -17,8 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +27,10 @@ import java.io.IOException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
+public final class MonitorServiceEnableTest extends BaseMonitorServiceTest {
     
     public MonitorServiceEnableTest() {
-        super(TestSimpleJob.class);
+        super(new FooSimpleElasticJob());
     }
     
     @Before

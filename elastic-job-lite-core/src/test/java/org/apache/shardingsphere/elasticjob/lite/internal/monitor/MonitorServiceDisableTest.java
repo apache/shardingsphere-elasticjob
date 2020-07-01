@@ -17,16 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.Test;
 
 import java.io.IOException;
 
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+public final class MonitorServiceDisableTest extends BaseMonitorServiceTest {
     
     public MonitorServiceDisableTest() {
-        super(TestSimpleJob.class);
+        super(new FooSimpleElasticJob());
     }
     
     @Test(expected = IOException.class)

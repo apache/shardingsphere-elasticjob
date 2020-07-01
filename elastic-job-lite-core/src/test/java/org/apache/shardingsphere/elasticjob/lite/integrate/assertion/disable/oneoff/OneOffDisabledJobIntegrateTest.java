@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,26 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable.oneoff;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.integrate.DisabledJobIntegrateTest;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class WaitingUtils {
+public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
     
-    /**
-     * Wait for a short time.
-     */
-    public static void waitingShortTime() {
-        sleep(300L);
+    public OneOffDisabledJobIntegrateTest() {
+        super(TestType.ONE_OFF);
     }
     
-    private static void sleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+    @Override
+    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
     }
 }

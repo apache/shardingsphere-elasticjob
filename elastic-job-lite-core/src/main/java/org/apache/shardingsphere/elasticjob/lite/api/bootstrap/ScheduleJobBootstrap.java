@@ -39,9 +39,7 @@ public final class ScheduleJobBootstrap extends JobBootstrap {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
-    /**
-     * Schedule job.
-     */
+    @Override
     public void schedule() {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(getJobConfig().getCron()), "Cron can not be empty.");
         createJobScheduleController().scheduleJob(getJobConfig().getCron());
