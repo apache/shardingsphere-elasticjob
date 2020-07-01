@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.api.bootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
@@ -36,13 +35,12 @@ public final class OneOffJobBootstrap extends JobBootstrap {
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
-        registerStartUpInfo();
     }
     
     /**
      * Execute job.
      */
     public void execute() {
-        new ElasticJobExecutor(getRegCenter(), getElasticJob(), getJobConfig(), getElasticJobListeners(), getTracingConfig()).execute();
+        createJobScheduleController().executeJob();
     }
 }

@@ -93,11 +93,6 @@ public final class JobConfigurationTest {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void assertBuildWithEmptyCron() {
-        JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "", 3).build();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithInvalidShardingTotalCount() {
         JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", -1).build();
     }
