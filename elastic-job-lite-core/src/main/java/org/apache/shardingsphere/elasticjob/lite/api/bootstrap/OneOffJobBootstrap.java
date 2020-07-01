@@ -37,8 +37,10 @@ public final class OneOffJobBootstrap extends JobBootstrap {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
-    @Override
-    public void schedule() {
+    /**
+     * Execute job.
+     */
+    public void execute() {
         createJobScheduleController().executeJob();
     }
 }
