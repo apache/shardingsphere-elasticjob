@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCen
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     private void assertSimpleElasticJobBean() {
         while (!FooSimpleElasticJob.isCompleted()) {
-            sleep(100L);
+            BlockUtils.waitingShortTime();
         }
         assertTrue(FooSimpleElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
@@ -70,17 +71,9 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     private void assertThroughputDataflowElasticJobBean() {
         while (!DataflowElasticJob.isCompleted()) {
-            sleep(100L);
+            BlockUtils.waitingShortTime();
         }
         assertTrue(DataflowElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + throughputDataflowJobName + "/sharding"));
-    }
-    
-    private static void sleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
     }
 }
