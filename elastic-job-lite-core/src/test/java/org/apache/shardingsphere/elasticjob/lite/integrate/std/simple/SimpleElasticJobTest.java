@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.simple;
 
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     @Test
     public void assertJobInit() {
         while (!FooSimpleElasticJob.isCompleted()) {
-            WaitingUtils.waitingShortTime();
+            BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }

@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.std.dataflow;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJobForExecuteFailure;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public final class StreamingDataflowElasticJobForExecuteFailureTest extends Abst
     @Test
     public void assertJobInit() {
         while (!StreamingDataflowElasticJobForExecuteFailure.isCompleted()) {
-            WaitingUtils.waitingShortTime();
+            BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
