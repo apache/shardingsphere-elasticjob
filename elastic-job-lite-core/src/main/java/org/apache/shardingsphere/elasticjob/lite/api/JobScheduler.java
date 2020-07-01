@@ -101,9 +101,9 @@ public final class JobScheduler {
      * Initialize job.
      */
     public void init() {
+        registerStartUpInfo();
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
         JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController);
-        registerStartUpInfo();
         jobScheduleController.scheduleJob(jobConfig.getCron());
     }
     
