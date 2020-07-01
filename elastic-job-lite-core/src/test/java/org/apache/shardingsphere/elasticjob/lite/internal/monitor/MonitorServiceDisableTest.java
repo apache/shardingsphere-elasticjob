@@ -17,24 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.Test;
 
 import java.io.IOException;
 
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+public final class MonitorServiceDisableTest extends BaseMonitorServiceTest {
     
     public MonitorServiceDisableTest() {
         super(new FooSimpleElasticJob());
-    }
-    
-    @Override
-    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").overwrite(true).build();
     }
     
     @Test(expected = IOException.class)
