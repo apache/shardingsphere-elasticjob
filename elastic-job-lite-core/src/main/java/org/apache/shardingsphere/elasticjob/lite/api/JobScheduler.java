@@ -82,7 +82,6 @@ public final class JobScheduler {
         this.elasticJob = elasticJob;
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
         this.tracingConfig = tracingConfig;
-        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         this.jobConfig = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
@@ -109,6 +108,7 @@ public final class JobScheduler {
     }
     
     private void registerStartUpInfo() {
+        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
         setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
     }
