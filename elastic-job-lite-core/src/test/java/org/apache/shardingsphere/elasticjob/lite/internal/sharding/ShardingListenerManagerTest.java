@@ -115,7 +115,8 @@ public final class ShardingListenerManagerTest {
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");
@@ -123,7 +124,8 @@ public final class ShardingListenerManagerTest {
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");

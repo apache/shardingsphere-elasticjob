@@ -179,7 +179,8 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertGetShardingItemsWithEnabledServer() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
@@ -196,14 +197,16 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertGetLocalShardingItemsWithDisabledServer() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
         JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
     public void assertGetLocalShardingItemsWithEnabledServer() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");

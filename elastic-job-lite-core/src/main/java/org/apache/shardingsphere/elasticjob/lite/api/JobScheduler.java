@@ -82,11 +82,11 @@ public final class JobScheduler {
         this.elasticJob = elasticJob;
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
         this.tracingConfig = tracingConfig;
-        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         this.jobConfig = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
+        registerStartUpInfo();
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
@@ -98,19 +98,20 @@ public final class JobScheduler {
         }
     }
     
+    private void registerStartUpInfo() {
+        JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
+        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
+        setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
+    }
+    
     /**
      * Initialize job.
      */
     public void init() {
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
-        JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController, regCenter);
-        registerStartUpInfo();
+        JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController);
         jobScheduleController.scheduleJob(jobConfig.getCron());
-    }
-    
-    private void registerStartUpInfo() {
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
-        setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
     }
     
     private Scheduler createScheduler() {
