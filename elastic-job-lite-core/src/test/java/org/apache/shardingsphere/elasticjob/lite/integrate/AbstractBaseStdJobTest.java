@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
@@ -63,7 +63,7 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
-    private final JobScheduler jobScheduler;
+    private final ScheduleJobBootstrap scheduleJobBootstrap;
     
     private final boolean disabled;
     
@@ -78,7 +78,7 @@ public abstract class AbstractBaseStdJobTest {
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         this.disabled = disabled;
         jobConfiguration = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), jobConfiguration, new ElasticJobListener() {
+        scheduleJobBootstrap = new ScheduleJobBootstrap(regCenter, ScriptJob.class == elasticJobClass ? null : elasticJobClass.newInstance(), jobConfiguration, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -107,7 +107,7 @@ public abstract class AbstractBaseStdJobTest {
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
         this.monitorPort = monitorPort;
         jobConfiguration = initJobConfig(elasticJobClass);
-        jobScheduler = new JobScheduler(regCenter, elasticJobClass.newInstance(), jobConfiguration);
+        scheduleJobBootstrap = new ScheduleJobBootstrap(regCenter, elasticJobClass.newInstance(), jobConfiguration);
         disabled = false;
         leaderService = new LeaderService(regCenter, jobName);
     }
@@ -150,12 +150,12 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() {
-        ((SchedulerFacade) ReflectionUtils.getFieldValue(jobScheduler, "schedulerFacade")).shutdownInstance();
+        ((SchedulerFacade) ReflectionUtils.getFieldValue(scheduleJobBootstrap, "schedulerFacade")).shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
     protected final void initJob() {
-        jobScheduler.init();
+        scheduleJobBootstrap.init();
     }
     
     final void assertRegCenterCommonInfoWithEnabled() {

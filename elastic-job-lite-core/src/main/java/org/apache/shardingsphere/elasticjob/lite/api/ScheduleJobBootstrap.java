@@ -44,9 +44,9 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Job scheduler.
+ * Schedule job bootstrap.
  */
-public final class JobScheduler {
+public final class ScheduleJobBootstrap {
     
     private static final String REG_CENTER_DATA_MAP_KEY = "regCenter";
     
@@ -72,12 +72,12 @@ public final class JobScheduler {
     
     private final SchedulerFacade schedulerFacade;
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+    public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         this(regCenter, elasticJob, jobConfig, null, elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
-                        final ElasticJobListener... elasticJobListeners) {
+    public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                                final ElasticJobListener... elasticJobListeners) {
         this.regCenter = regCenter;
         this.elasticJob = elasticJob;
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common;
 
 import com.google.common.base.Strings;
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
@@ -43,7 +43,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     @SneakyThrows
     @Override
     protected final AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobScheduler.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));

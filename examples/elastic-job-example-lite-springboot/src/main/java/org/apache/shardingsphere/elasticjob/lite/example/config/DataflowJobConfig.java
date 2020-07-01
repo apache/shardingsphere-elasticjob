@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
@@ -46,9 +46,9 @@ public class DataflowJobConfig {
     }
     
     @Bean(initMethod = "init")
-    public JobScheduler dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
-                                             @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
-        return new JobScheduler(regCenter, dataflowJob, getJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfig);
+    public ScheduleJobBootstrap dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
+                                                     @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
+        return new ScheduleJobBootstrap(regCenter, dataflowJob, getJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfig);
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
