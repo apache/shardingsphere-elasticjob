@@ -60,16 +60,24 @@ public final class JobRegistry {
     }
     
     /**
+     * Register registry center.
+     *
+     * @param jobName job name
+     * @param regCenter registry center
+     */
+    public void registerRegistryCenter(final String jobName, final CoordinatorRegistryCenter regCenter) {
+        regCenterMap.put(jobName, regCenter);
+        regCenter.addCacheData("/" + jobName);
+    }
+    
+    /**
      * Register job.
      * 
      * @param jobName job name
      * @param jobScheduleController job schedule controller
-     * @param regCenter registry center
      */
-    public void registerJob(final String jobName, final JobScheduleController jobScheduleController, final CoordinatorRegistryCenter regCenter) {
+    public void registerJob(final String jobName, final JobScheduleController jobScheduleController) {
         schedulerMap.put(jobName, jobScheduleController);
-        regCenterMap.put(jobName, regCenter);
-        regCenter.addCacheData("/" + jobName);
     }
     
     /**

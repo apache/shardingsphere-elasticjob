@@ -72,7 +72,8 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertIsLeaderUntilBlockWithLeader() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
@@ -96,7 +97,8 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertIsLeaderUntilBlockWhenHasLeader() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         when(serverService.hasAvailableServers()).thenReturn(true);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
@@ -108,7 +110,8 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertIsLeader() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeader());
         JobRegistry.getInstance().shutdown("test_job");

@@ -81,7 +81,8 @@ public final class RescheduleListenerManagerTest {
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteYamlConstants.getJobYaml());
         verify(jobScheduleController).rescheduleJob("0/1 * * * * ?");
         JobRegistry.getInstance().shutdown("test_job");
