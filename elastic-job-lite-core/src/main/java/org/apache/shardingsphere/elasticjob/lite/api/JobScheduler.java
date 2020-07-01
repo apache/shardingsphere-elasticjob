@@ -101,7 +101,6 @@ public final class JobScheduler {
      * Initialize job.
      */
     public void init() {
-        JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
         JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController);
         registerStartUpInfo();
@@ -109,6 +108,7 @@ public final class JobScheduler {
     }
     
     private void registerStartUpInfo() {
+        JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
         JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
         setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
