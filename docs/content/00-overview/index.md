@@ -45,4 +45,4 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
  - **源码交流群：** 658634669（仅限于讨论与Elastic-Job源码实现相关的话题。我们欢迎您在这里与我们交流Elastic-Job的架构设计、代码实现以及未来线路规划。此群需要对Elastic-Job有先期了解。入群资格：请发布一篇关于Elastic-Job的源码分析的文章并将链接通过官方交流群发送给我们。）
  - 报告确定的bug，提交增强功能建议和提交补丁等，请阅读[如何进行贡献](/00-overview/contribution)。
  
- **使用Elastic-Job的公司如果方便请留下公司+网址** https://github.com/elasticjob/elastic-job/issues/254
+ **使用Elastic-Job的公司如果方便请留下公司+网址** https://github.com/apache/shardingsphere-elasticjob-lite/issues/254

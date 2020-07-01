@@ -18,11 +18,11 @@ next = "/01-start"
  - 确定在最新版本中该bug存在。我们将不会持续维护所有的发布版本，所有的修改仅根据当前版本。
  - 确认该bug是可以复现的。请尽量提供完整的重现步骤。
  - 请确定这不是一个重复的bug。
-   查看[Issue Page](https://github.com/elasticjob/elastic-job/issues)列表，搜索您要提交的bug是否已经被报告过。
+   查看[Issue Page](https://github.com/apache/shardingsphere-elasticjob-lite/issues)列表，搜索您要提交的bug是否已经被报告过。
 
 ### 如何提交一个有质量的bug
 
-请在[Issue Page](https://github.com/elasticjob/elastic-job/issues)页面中提交bug。
+请在[Issue Page](https://github.com/apache/shardingsphere-elasticjob-lite/issues)页面中提交bug。
 
  - 使用一个清晰并有描述性的标题来定义bug。
  - 详细的描述复现bug的步骤。包括您使用的SQL，配置情况，预计产生的结果，实际产生的结果。并附加详细的TRACE日志。
@@ -68,11 +68,11 @@ next = "/01-start"
 ### 提交一个功能增强建议之前
  
  - 请确定这不是一个重复的功能增强建议。
-   查看[Issue Page](https://github.com/elasticjob/elastic-job/issues)列表，搜索您要提交的功能增强建议是否已经被提交过。
+   查看[Issue Page](https://github.com/apache/shardingsphere-elasticjob-lite/issues)列表，搜索您要提交的功能增强建议是否已经被提交过。
 
 ### 如何提交一个好的功能增强建议
 
-请在[Issue Page](https://github.com/elasticjob/elastic-job/issues)页面中提交功能增强建议。
+请在[Issue Page](https://github.com/apache/shardingsphere-elasticjob-lite/issues)页面中提交功能增强建议。
 
  - 使用一个清晰并有描述性的标题来定义增强建议。
  - 详细描述增强功能的行为模式。
@@ -168,7 +168,7 @@ Elastic-Job的代码编译需要[Maven](http://maven.apache.org/)，请保证IDE
 
 请按照规范贡献代码，示例和文档。
 
- - 所有的问题与新功能请使用[Issue Page](https://github.com/elasticjob/elastic-job/issues)进行管理。
+ - 所有的问题与新功能请使用[Issue Page](https://github.com/apache/shardingsphere-elasticjob-lite/issues)进行管理。
  - 任何人想要开发任何功能，请先回复该功能所关联的Issue，表明您当前正在这个Issue上工作。
    并在回复的时候为自己设置一个deadline，并添加的回复内容中。
  - 在核心贡献者找到一个导师(shepherd)，导师会在设计与功能实现上给予即时的反馈。

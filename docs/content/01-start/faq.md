@@ -15,17 +15,7 @@ Elastic-Job使用lombok实现极简代码。关于更多使用和安装细节，
 
 ***
 
-### 2. 使用Spring命名空间时在网上相应地址找不到xsd?
-
-回答：
-
-Spring命名空间使用规范并未强制要求将xsd文件部署至公网地址，因此我们并未将`http://www.dangdang.com/schema/ddframe/reg/reg.xsd`和`http://www.dangdang.com/schema/ddframe/job/job.xsd`部署至公网，但不影响正常使用。
-
-elastic-job-lite-spring的jar包中`META-INF\spring.schemas`配置了xsd文件的位置：http\://www.dangdang.com/schema/ddframe/reg/reg.xsd=META-INF/namespace/reg.xsd http\://www.dangdang.com/schema/ddframe/job/job.xsd=META-INF/namespace/job.xsd，需确保jar包中该文件存在。
-
-***
-
-### 3. 为什么在代码或Spring配置文件中修改了作业配置，注册中心配置却没有更新?
+### 2. 为什么在代码或Spring配置文件中修改了作业配置，注册中心配置却没有更新?
 
 回答：
 
@@ -35,7 +25,7 @@ Elastic-Job-Lite提出了overwrite概念，可通过JobConfiguration或Spring命
 
 ***
 
-### 4. 怀疑Elastic-Job-Lite在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
+### 3. 怀疑Elastic-Job-Lite在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
 
 回答：
 
@@ -45,7 +35,7 @@ Elastic-Job-Lite提出了overwrite概念，可通过JobConfiguration或Spring命
 
 ***
 
-### 5. Elastic-Job有何使用限制?
+### 4. Elastic-Job有何使用限制?
 
 回答：
 
@@ -59,7 +49,7 @@ Elastic-Job-Lite提出了overwrite概念，可通过JobConfiguration或Spring命
 
 ***
 
-### 6. 是否支持动态添加作业?
+### 5. 是否支持动态添加作业?
 
 回答：
 
@@ -76,7 +66,7 @@ elastic-job-cloud为mesos框架，由mesos负责作业启动和分发。
 
 ***
 
-### 7. 使用Spring版本有何限制?
+### 6. 使用Spring版本有何限制?
 
 回答：
 
@@ -84,7 +74,7 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 ***
 
-### 8. Zookeeper版本不是3.4.6会有什么问题?
+### 7. Zookeeper版本不是3.4.6会有什么问题?
 
 回答：
 
@@ -92,7 +82,7 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 ***
 
-### 9. Elastic-Job 2.0.5及之前版本的作业暂停(Pause)与作业失效(Disable)的区别是什么?
+### 8. Elastic-Job 2.0.5及之前版本的作业暂停(Pause)与作业失效(Disable)的区别是什么?
 
 回答：
 
@@ -100,26 +90,26 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 ***
 
-### 10. Elastic-Job 2.1.0版本支持单节点运行多个相同的作业实例，是否兼容原来的数据结构?
+### 9. Elastic-Job 2.1.0版本支持单节点运行多个相同的作业实例，是否兼容原来的数据结构?
 
 回答：
 
 是的。新Elastic-Job Lite的数据结构和原有结构完全兼容。
 
-### 11. 界面Console无法正常显示?
+### 10. 界面Console无法正常显示?
 
 回答：
 
 使用Web Console时应确保与Elastic-Job相关jar包版本保持一致，否则会导致不可用。
 
-### 12. 作业与注册中心无法通信会如何?
+### 11. 作业与注册中心无法通信会如何?
 
 回答：
 
 为了保证作业的在分布式场景下的一致性，一旦作业与注册中心无法通信，运行中的作业会立刻停止执行，但作业的进程不会退出，这样做的目的是为了防止作业重分片时，将与注册中心失去联系的节点执行的分片分配给另外节点，导致同一分片在两个节点中同时执行。
 当作业节点恢复与注册中心联系时，将重新参与分片并恢复执行新的分配到的分片。
 
-### 13. 为什么界面Console中的作业状态是分片待调整?
+### 12. 为什么界面Console中的作业状态是分片待调整?
 
 回答：
 
