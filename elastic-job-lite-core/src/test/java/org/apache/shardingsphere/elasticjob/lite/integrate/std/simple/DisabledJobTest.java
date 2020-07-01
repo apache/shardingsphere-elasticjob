@@ -37,7 +37,7 @@ public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     @Test
     public void assertJobInit() {
-        initJob();
+        scheduleJob();
         assertRegCenterCommonInfoWithDisabled();
     }
 }

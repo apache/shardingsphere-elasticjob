@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,38 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
+package org.apache.shardingsphere.elasticjob.lite.api.bootstrap;
 
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-
-import java.util.List;
 
 /**
- * Lite job class.
+ * One off job bootstrap.
  */
-@Setter
-public final class LiteJob implements Job {
+public final class OneOffJobBootstrap extends JobBootstrap {
     
-    private CoordinatorRegistryCenter regCenter;
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJob, jobConfig, elasticJobListeners);
+    }
     
-    private ElasticJob elasticJob;
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                              final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
+    }
     
-    private JobConfiguration jobConfig;
-    
-    private List<ElasticJobListener> elasticJobListeners;
-    
-    private TracingConfiguration tracingConfig;
-    
-    @Override
-    public void execute(final JobExecutionContext context) {
-        new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig).execute();
+    /**
+     * Execute job.
+     */
+    public void execute() {
+        createJobScheduleController().executeJob();
     }
 }

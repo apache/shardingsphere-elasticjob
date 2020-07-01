@@ -47,7 +47,7 @@ public final class ScriptJobExecutorTest {
     @Test
     public void assertExecuteWhenCommandLineIsEmpty() {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, ShardingContextsBuilder.getMultipleShardingContexts());
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("", "IGNORE"), Collections.emptyList());
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("", "IGNORE"), Collections.emptyList(), null);
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
         elasticJobExecutor.execute();
     }
@@ -64,7 +64,7 @@ public final class ScriptJobExecutorTest {
     
     private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("not_exists_file", "THROW"), Collections.emptyList());
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("not_exists_file", "THROW"), Collections.emptyList(), null);
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
         elasticJobExecutor.execute();
     }
@@ -81,7 +81,7 @@ public final class ScriptJobExecutorTest {
     
     private void assertExecuteSuccess(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("exists_file param0 param1", "IGNORE"), Collections.emptyList());
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, null, createJobConfiguration("exists_file param0 param1", "IGNORE"), Collections.emptyList(), null);
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
         elasticJobExecutor.execute();
     }
