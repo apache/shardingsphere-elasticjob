@@ -33,7 +33,7 @@ public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobT
     @Before
     public void autoJobInit() {
         setJobConfiguration(getJobConfiguration());
-        initJob();
+        scheduleJob();
         assertRegCenterCommonInfoWithEnabled();
     }
 }

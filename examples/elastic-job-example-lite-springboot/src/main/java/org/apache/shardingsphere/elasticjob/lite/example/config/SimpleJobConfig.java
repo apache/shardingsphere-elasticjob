@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob;
@@ -44,7 +44,7 @@ public class SimpleJobConfig {
         return new SpringSimpleJob(); 
     }
     
-    @Bean(initMethod = "init")
+    @Bean(initMethod = "schedule")
     public ScheduleJobBootstrap simpleJobScheduler(final SimpleJob simpleJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
                                                    @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
         return new ScheduleJobBootstrap(regCenter, simpleJob, getJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfig);

@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
@@ -45,8 +45,9 @@ public class DataflowJobConfig {
         return new SpringDataflowJob(); 
     }
     
-    @Bean(initMethod = "init")
-    public ScheduleJobBootstrap dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
+    @Bean(initMethod = "schedule")
+    public ScheduleJobBootstrap dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, 
+                                                     @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
                                                      @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
         return new ScheduleJobBootstrap(regCenter, dataflowJob, getJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfig);
     }

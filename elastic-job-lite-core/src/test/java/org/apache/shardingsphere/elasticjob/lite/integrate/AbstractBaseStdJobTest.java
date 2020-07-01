@@ -21,8 +21,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
@@ -36,7 +36,6 @@ import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
@@ -150,12 +149,12 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() {
-        ((SchedulerFacade) ReflectionUtils.getFieldValue(scheduleJobBootstrap, "schedulerFacade")).shutdownInstance();
+        scheduleJobBootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
-    protected final void initJob() {
-        scheduleJobBootstrap.init();
+    protected final void scheduleJob() {
+        scheduleJobBootstrap.schedule();
     }
     
     final void assertRegCenterCommonInfoWithEnabled() {

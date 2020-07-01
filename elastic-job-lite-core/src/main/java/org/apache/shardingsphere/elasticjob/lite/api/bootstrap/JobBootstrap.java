@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api;
+package org.apache.shardingsphere.elasticjob.lite.api.bootstrap;
 
+import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -34,9 +35,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * One off job bootstrap.
+ * Schedule job bootstrap.
  */
-public final class OneOffJobBootstrap {
+@Getter
+public abstract class JobBootstrap {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -52,12 +54,12 @@ public final class OneOffJobBootstrap {
     
     private final SchedulerFacade schedulerFacade;
     
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+    public JobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         this(regCenter, elasticJob, jobConfig, null, elasticJobListeners);
     }
     
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
-                              final ElasticJobListener... elasticJobListeners) {
+    public JobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                        final ElasticJobListener... elasticJobListeners) {
         this.regCenter = regCenter;
         this.elasticJob = elasticJob;
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
@@ -85,17 +87,10 @@ public final class OneOffJobBootstrap {
         setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
     }
     
-    /**
-     * Execute job.
-     */
-    public void execute() {
-        new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig).execute();
-    }
-    
    /**
     * Shutdown job.
     */
-    public void shutdown() { 
+    public final void shutdown() { 
         schedulerFacade.shutdownInstance();
     }
 }
