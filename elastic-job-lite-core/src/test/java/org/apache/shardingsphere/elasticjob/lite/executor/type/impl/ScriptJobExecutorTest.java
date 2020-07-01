@@ -87,7 +87,7 @@ public final class ScriptJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration(final String scriptCommandLine, final String jobErrorHandlerType) {
-        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SCRIPT, "0/1 * * * * ?", 3)
-                .jobErrorHandlerType(jobErrorHandlerType).setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine).build();
+        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SCRIPT, 3)
+                .cron("0/1 * * * * ?").jobErrorHandlerType(jobErrorHandlerType).setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine).build();
     }
 }

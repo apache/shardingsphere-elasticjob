@@ -53,7 +53,7 @@ public class DataflowJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(jobClass.getName(), JobType.DATAFLOW, cron, shardingTotalCount)
-                .shardingItemParameters(shardingItemParameters).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobClass.getName(), JobType.DATAFLOW, shardingTotalCount)
+                .cron(cron).shardingItemParameters(shardingItemParameters).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).overwrite(true).build();
     }
 }

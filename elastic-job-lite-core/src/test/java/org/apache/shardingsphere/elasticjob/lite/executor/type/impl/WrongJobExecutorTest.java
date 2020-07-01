@@ -58,8 +58,8 @@ public final class WrongJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration() {
-        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SIMPLE, "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
+        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SIMPLE, 3)
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
     }
     
     @Test(expected = RuntimeException.class)
