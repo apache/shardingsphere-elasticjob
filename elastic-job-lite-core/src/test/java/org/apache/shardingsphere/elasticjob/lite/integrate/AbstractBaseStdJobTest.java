@@ -100,16 +100,13 @@ public abstract class AbstractBaseStdJobTest {
     @Before
     public void setUp() {
         regCenter.init();
+        bootstrap.schedule();
     }
     
     @After
     public void tearDown() {
         bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-    }
-    
-    protected final void scheduleJob() {
-        bootstrap.schedule();
     }
     
     protected final void assertRegCenterCommonInfoWithEnabled() {

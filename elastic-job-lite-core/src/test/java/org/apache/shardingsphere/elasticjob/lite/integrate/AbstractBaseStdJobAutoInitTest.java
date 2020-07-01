@@ -28,7 +28,6 @@ public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobT
     
     @Before
     public void autoSchedule() {
-        scheduleJob();
         assertRegCenterCommonInfoWithEnabled();
     }
 }
