@@ -63,22 +63,14 @@ public final class LiteJobFacade implements JobFacade {
     
     private final JobEventBus jobEventBus;
     
-    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
-        this(regCenter, jobName, elasticJobListeners, new JobEventBus());
-    }
-    
     public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
-        this(regCenter, jobName, elasticJobListeners, new JobEventBus(tracingConfig));
-    }
-    
-    private LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final JobEventBus jobEventBus) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionContextService = new ExecutionContextService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
         this.elasticJobListeners = elasticJobListeners;
-        this.jobEventBus = jobEventBus;
+        this.jobEventBus = null == tracingConfig ? new JobEventBus() : new JobEventBus(tracingConfig);
     }
     
     @Override
