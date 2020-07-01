@@ -48,8 +48,10 @@ public final class JobScheduleController {
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
                 scheduler.scheduleJob(jobDetail, createOneOffTrigger());
+                scheduler.start();
+            } else {
+                scheduler.triggerJob(jobDetail.getKey());
             }
-            scheduler.start();
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
