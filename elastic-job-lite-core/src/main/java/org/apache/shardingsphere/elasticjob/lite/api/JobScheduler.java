@@ -86,6 +86,7 @@ public final class JobScheduler {
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         this.jobConfig = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
+        registerStartUpInfo();
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
@@ -97,21 +98,20 @@ public final class JobScheduler {
         }
     }
     
-    /**
-     * Initialize job.
-     */
-    public void init() {
-        registerStartUpInfo();
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
-        JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController);
-        jobScheduleController.scheduleJob(jobConfig.getCron());
-    }
-    
     private void registerStartUpInfo() {
         JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
         JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
         JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
         setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
+    }
+    
+    /**
+     * Initialize job.
+     */
+    public void init() {
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(), jobConfig.getJobName());
+        JobRegistry.getInstance().registerJob(jobConfig.getJobName(), jobScheduleController);
+        jobScheduleController.scheduleJob(jobConfig.getCron());
     }
     
     private Scheduler createScheduler() {
