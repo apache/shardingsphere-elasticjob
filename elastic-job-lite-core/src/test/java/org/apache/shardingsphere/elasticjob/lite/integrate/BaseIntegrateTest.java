@@ -45,7 +45,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractBaseStdJobTest {
+public abstract class BaseIntegrateTest {
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
@@ -62,7 +62,7 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
+    protected BaseIntegrateTest(final ElasticJob elasticJob) {
         jobConfiguration = getJobConfiguration(elasticJob, jobName);
         bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
         leaderService = new LeaderService(regCenter, jobName);

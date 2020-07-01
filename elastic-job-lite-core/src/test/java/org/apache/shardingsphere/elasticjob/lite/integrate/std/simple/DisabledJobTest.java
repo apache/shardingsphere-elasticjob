@@ -20,13 +20,13 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.std.simple;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobTest;
+import org.apache.shardingsphere.elasticjob.lite.integrate.BaseIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public final class DisabledJobTest extends AbstractBaseStdJobTest {
+public final class DisabledJobTest extends BaseIntegrateTest {
     
     public DisabledJobTest() {
         super(new FooSimpleElasticJob());

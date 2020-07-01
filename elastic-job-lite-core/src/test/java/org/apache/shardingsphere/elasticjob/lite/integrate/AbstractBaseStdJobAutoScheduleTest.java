@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.junit.Before;
 
-public abstract class AbstractBaseStdJobAutoScheduleTest extends AbstractBaseStdJobTest {
+public abstract class AbstractBaseStdJobAutoScheduleTest extends BaseIntegrateTest {
     
     protected AbstractBaseStdJobAutoScheduleTest(final ElasticJob elasticJob) {
         super(elasticJob);
