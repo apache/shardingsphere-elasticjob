@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.junit.Before;
 
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
@@ -27,12 +26,8 @@ public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobT
         super(elasticJob, false);
     }
     
-    protected void setJobConfiguration(final JobConfiguration jobConfig) {
-    }
-    
     @Before
     public void autoSchedule() {
-        setJobConfiguration(getJobConfiguration());
         scheduleJob();
         assertRegCenterCommonInfoWithEnabled();
     }

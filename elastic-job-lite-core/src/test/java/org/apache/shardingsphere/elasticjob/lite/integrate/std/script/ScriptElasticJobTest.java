@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.script;
 
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
@@ -35,6 +37,13 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public ScriptElasticJobTest() {
         super(null);
+    }
+    
+    @Override
+    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+        return JobConfiguration.newBuilder(jobName, JobType.SCRIPT, 3).cron("0/1 * * * * ?")
+                .shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").overwrite(true)
+                .setProperty(ScriptJobExecutor.SCRIPT_KEY, ScriptElasticJobTest.class.getResource("/script/test.sh").getPath()).build();
     }
     
     @Test

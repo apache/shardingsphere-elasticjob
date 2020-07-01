@@ -17,11 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.std.dataflow;
 
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -42,9 +43,10 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
     }
     
     @Override
-    protected void setJobConfiguration(final JobConfiguration jobConfig) {
-        ReflectionUtils.setFieldValue(jobConfig, "monitorExecution", false);
-        jobConfig.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
+    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+        return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?")
+                .shardingItemParameters("0=A,1=B,2=C").monitorExecution(false).jobErrorHandlerType("IGNORE").overwrite(true)
+                .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
     }
     
     @Test

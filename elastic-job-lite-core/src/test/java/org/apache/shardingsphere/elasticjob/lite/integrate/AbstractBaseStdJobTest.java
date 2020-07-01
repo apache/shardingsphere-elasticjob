@@ -20,17 +20,11 @@ package org.apache.shardingsphere.elasticjob.lite.integrate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration.Builder;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -69,16 +63,13 @@ public abstract class AbstractBaseStdJobTest {
     
     private final ScheduleJobBootstrap bootstrap;
     
-    private final boolean disabled;
-    
     private final LeaderService leaderService;
     
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
     protected AbstractBaseStdJobTest(final ElasticJob elasticJob, final boolean disabled) {
-        this.disabled = disabled;
-        jobConfiguration = createJobConfiguration(elasticJob);
+        jobConfiguration = getJobConfiguration(elasticJob, jobName);
         bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new ElasticJobListener() {
             
             @Override
@@ -104,33 +95,12 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected AbstractBaseStdJobTest(final ElasticJob elasticJob) {
-        jobConfiguration = createJobConfiguration(elasticJob);
+        jobConfiguration = getJobConfiguration(elasticJob, jobName);
         bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration);
-        disabled = false;
         leaderService = new LeaderService(regCenter, jobName);
     }
     
-    private JobConfiguration createJobConfiguration(final ElasticJob elasticJob) {
-        JobType jobType = getJobType(elasticJob);
-        Builder builder = JobConfiguration.newBuilder(jobName, jobType, 3)
-                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").disabled(disabled).overwrite(true);
-        if (JobType.DATAFLOW == jobType) {
-            builder.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString());
-        } else if (JobType.SCRIPT == jobType) {
-            builder.setProperty(ScriptJobExecutor.SCRIPT_KEY, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
-        }
-        return builder.build();
-    }
-    
-    private JobType getJobType(final ElasticJob elasticJob) {
-        if (elasticJob instanceof SimpleJob) {
-            return JobType.SIMPLE;
-        }
-        if (elasticJob instanceof DataflowJob) {
-            return JobType.DATAFLOW;
-        }
-        return JobType.SCRIPT;
-    }
+    protected abstract JobConfiguration getJobConfiguration(ElasticJob elasticJob, String jobName);
     
     @BeforeClass
     public static void init() {
@@ -170,7 +140,7 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
-        if (disabled) {
+        if (jobConfiguration.isDisabled()) {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
                 BlockUtils.waitingShortTime();
