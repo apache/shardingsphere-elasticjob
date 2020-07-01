@@ -94,7 +94,11 @@ public abstract class BaseIntegrateTest {
     @Before
     public void setUp() {
         regCenter.init();
-        bootstrap.schedule();
+        if (bootstrap instanceof ScheduleJobBootstrap) {
+            ((ScheduleJobBootstrap) bootstrap).schedule();
+        } else {
+            ((OneOffJobBootstrap) bootstrap).execute();
+        }
     }
     
     @After
