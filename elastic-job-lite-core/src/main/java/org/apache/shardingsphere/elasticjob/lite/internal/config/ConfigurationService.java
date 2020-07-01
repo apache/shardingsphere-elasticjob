@@ -56,7 +56,6 @@ public final class ConfigurationService {
         } else {
             result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
         }
-        // TODO investigate why sometimes result is null
         return YamlEngine.unmarshal(result, YamlJobConfiguration.class).toJobConfiguration();
     }
     
