@@ -19,12 +19,14 @@ package org.apache.shardingsphere.elasticjob.lite.console.util;
 
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class HomeFolderUtilsTest {
     
-    private static final String HOME_FOLDER = System.getProperty("user.home") + System.lineSeparator() + ".elastic-job-console" + System.lineSeparator();
+    private static final String HOME_FOLDER = System.getProperty("user.home") + File.separator + ".elastic-job-console" + File.separator;
     
     @Test
     public void assertGetFilePathInHomeFolder() {
