@@ -25,9 +25,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Job register statistics repository.
+ */
 @Repository
 public interface JobRegisterStatisticsRepository extends JpaRepository<JobRegisterStatistics, Long> {
-
+    
     /**
      * Find job register statistics.
      *

@@ -17,10 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.service.impl;
 
-import java.util.Optional;
-
-import javax.sql.DataSource;
-
 import org.apache.shardingsphere.elasticjob.lite.console.config.DynamicDataSourceConfig.DynamicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.console.config.DynamicDataSourceConfig.DynamicDataSourceContextHolder;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.DataSourceFactory;
@@ -33,6 +29,9 @@ import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataS
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import java.util.Optional;
+
 /**
  * Event trace data source configuration service implementation.
  */
@@ -40,7 +39,7 @@ import org.springframework.stereotype.Service;
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
-
+    
     @Autowired
     private DynamicDataSource dynamicDataSource;
     

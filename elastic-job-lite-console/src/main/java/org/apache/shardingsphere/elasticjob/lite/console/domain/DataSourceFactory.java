@@ -17,16 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
-import javax.sql.DataSource;
-
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+
+import javax.sql.DataSource;
 
 /**
  * Dynamic data source factory.
  */
 public final class DataSourceFactory {
-
+    
     /**
      * Create a DataSource.
      * @param config event trace data source config
