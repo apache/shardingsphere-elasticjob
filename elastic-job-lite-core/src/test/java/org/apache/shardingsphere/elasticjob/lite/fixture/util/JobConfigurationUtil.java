@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.fixture.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
