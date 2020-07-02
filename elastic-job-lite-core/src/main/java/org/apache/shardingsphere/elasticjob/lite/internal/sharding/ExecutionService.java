@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -100,7 +100,7 @@ public final class ExecutionService {
      * @return has running items or not
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
-        LiteJobConfiguration jobConfig = configService.load(true);
+        JobConfiguration jobConfig = configService.load(true);
         if (null == jobConfig || !jobConfig.isMonitorExecution()) {
             return false;
         }
@@ -122,7 +122,7 @@ public final class ExecutionService {
     }
     
     private List<Integer> getAllItems() {
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
         List<Integer> result = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             result.add(i);

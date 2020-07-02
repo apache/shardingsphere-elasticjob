@@ -22,8 +22,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
@@ -36,9 +35,11 @@ import java.io.IOException;
  */
 public final class ScriptJobExecutor implements JobItemExecutor<ScriptJob> {
     
+    public static final String SCRIPT_KEY = "script.command.line";
+    
     @Override
-    public void process(final ScriptJob elasticJob, final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        String scriptCommandLine = ((ScriptJobConfiguration) jobRootConfig.getTypeConfig()).getScriptCommandLine();
+    public void process(final ScriptJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        String scriptCommandLine = jobConfig.getProps().getProperty(SCRIPT_KEY);
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
             throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName());
         }

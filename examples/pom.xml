@@ -34,7 +34,7 @@
     </modules>
     
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <elastic-job.version>3.0.0.M1-SNAPSHOT</elastic-job.version>
         <curator.version>2.10.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
@@ -42,7 +42,7 @@
         <logback.version>1.1.2</logback.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <h2.version>1.4.184</h2.version>
-        <mysql.version>5.1.30</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     </properties>
     

@@ -26,13 +26,58 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     
+    <properties>
+        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
+        <springframework.version>5.2.7.RELEASE</springframework.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elastic-job-lite-lifecycle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${springframework.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${springframework.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${springframework.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-web</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-context</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -62,8 +107,8 @@
             <artifactId>commons-dbcp</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
     
@@ -73,7 +118,6 @@
                <directory>src/main/resources</directory>
                <excludes>
                    <exclude>bin/*</exclude>
-                   <exclude>conf/*</exclude>
                    <exclude>assembly/*</exclude>
                </excludes>
             </resource>

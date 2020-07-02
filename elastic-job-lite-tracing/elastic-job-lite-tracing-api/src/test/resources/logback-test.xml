@@ -36,6 +36,6 @@
         <appender-ref ref="STDOUT" />
     </root>
     
-    <logger name="org.apache.shardingsphere.elasticjob.lite.tracing.rdb.JobEventRdbConfiguration" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.tracing.rdb.config.RDBTracingListenerConfiguration" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus" level="OFF" />
 </configuration>

@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
 /**
  * Monitor execution listener manager.
@@ -48,7 +49,7 @@ public final class MonitorExecutionListenerManager extends AbstractListenerManag
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !LiteJobConfigurationGsonFactory.fromJson(data).isMonitorExecution()) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !YamlEngine.unmarshal(data, YamlJobConfiguration.class).toJobConfiguration().isMonitorExecution()) {
                 executionService.clearAllRunningInfo();
             }
         }

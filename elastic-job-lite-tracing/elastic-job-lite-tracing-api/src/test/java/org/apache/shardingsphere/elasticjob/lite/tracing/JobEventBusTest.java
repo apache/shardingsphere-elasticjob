@@ -19,12 +19,11 @@ package org.apache.shardingsphere.elasticjob.lite.tracing;
 
 import com.google.common.eventbus.EventBus;
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.JobEventCaller;
-import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventFailureConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestJobEventListener;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
-import org.hamcrest.CoreMatchers;
+import org.apache.shardingsphere.elasticjob.lite.tracing.fixture.TestTracingListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -34,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -50,16 +50,16 @@ public final class JobEventBusTest {
     
     @Test
     public void assertRegisterFailure() {
-        jobEventBus = new JobEventBus(new TestJobEventFailureConfiguration());
+        jobEventBus = new JobEventBus(new TracingConfiguration<>("FAIL", null));
         assertIsRegistered(false);
     }
     
     @Test
     public void assertPost() throws InterruptedException {
-        jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
+        jobEventBus = new JobEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
         assertIsRegistered(true);
         jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
-        while (!TestJobEventListener.isExecutionEventCalled()) {
+        while (!TestTracingListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
         verify(jobEventCaller).call();
@@ -80,6 +80,6 @@ public final class JobEventBusTest {
     private void assertIsRegistered(final boolean actual) {
         Field field = JobEventBus.class.getDeclaredField("isRegistered");
         field.setAccessible(true);
-        assertThat(field.get(jobEventBus), CoreMatchers.is(actual));
+        assertThat(field.get(jobEventBus), is(actual));
     }
 }

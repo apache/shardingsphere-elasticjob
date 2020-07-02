@@ -18,12 +18,13 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,15 +65,15 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
-        String liteJobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
-        if (null == liteJobConfigJson) {
+        String jobConfigYaml = regCenter.get(jobNodePath.getConfigNodePath());
+        if (null == jobConfigYaml) {
             return null;
         }
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(liteJobConfigJson);
-        result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
-        result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
+        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigYaml, YamlJobConfiguration.class).toJobConfiguration();
+        result.setDescription(jobConfig.getDescription());
+        result.setCron(jobConfig.getCron());
         result.setInstanceCount(getJobInstanceCount(jobName));
-        result.setShardingTotalCount(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        result.setShardingTotalCount(jobConfig.getShardingTotalCount());
         result.setStatus(getJobStatus(jobName));
         return result;
     }

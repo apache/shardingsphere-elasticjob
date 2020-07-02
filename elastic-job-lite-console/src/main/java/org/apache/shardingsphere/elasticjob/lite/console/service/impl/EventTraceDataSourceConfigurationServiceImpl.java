@@ -23,11 +23,14 @@ import org.apache.shardingsphere.elasticjob.lite.console.domain.GlobalConfigurat
 import org.apache.shardingsphere.elasticjob.lite.console.repository.ConfigurationsXmlRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
-import com.google.common.base.Optional;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Event trace data source configuration service implementation.
  */
+@Service
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
@@ -68,7 +71,7 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     
     @Override
     public Optional<EventTraceDataSourceConfiguration> loadActivated() {
-        return Optional.fromNullable(findActivatedDataSourceConfiguration(loadGlobal()));
+        return Optional.ofNullable(findActivatedDataSourceConfiguration(loadGlobal()));
     }
     
     private EventTraceDataSourceConfiguration findActivatedDataSourceConfiguration(final GlobalConfiguration configs) {

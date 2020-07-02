@@ -13,7 +13,7 @@ next = "/02-guide/event-trace/"
 
 **全路径：**
 
-io.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy
+org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.AverageAllocationJobShardingStrategy
 
 **策略说明：**
 
@@ -32,7 +32,7 @@ io.elasticjob.lite.api.strategy.impl.AverageAllocationJobShardingStrategy
 
 **全路径：**
 
-io.elasticjob.lite.api.strategy.impl.OdevitySortByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.OdevitySortByNameJobShardingStrategy
 
 **策略说明：**
 
@@ -54,7 +54,7 @@ AverageAllocationJobShardingStrategy的缺点是，一旦分片数小于作业�
 
 **全路径：**
 
-io.elasticjob.lite.api.strategy.impl.RotateServerByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.RotateServerByNameJobShardingStrategy
 
 **策略说明：**
 
@@ -64,7 +64,7 @@ io.elasticjob.lite.api.strategy.impl.RotateServerByNameJobShardingStrategy
 
 实现JobShardingStrategy接口并实现sharding方法，接口方法参数为作业服务器IP列表和分片策略选项，分片策略选项包括作业名称，分片总数以及分片序列号和个性化参数对照表，可以根据需求定制化自己的分片策略。
 
-欢迎将分片策略以插件的形式贡献至io.elasticjob.lite.api.strategy包。
+欢迎将分片策略以插件的形式贡献至org.apache.shardingsphere.elasticjob.lite.handler.sharding包。
 
 ## 配置分片策略
 

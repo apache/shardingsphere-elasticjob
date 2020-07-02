@@ -17,18 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
-import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
-import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -38,10 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Collections;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,69 +43,31 @@ public final class SchedulerFacadeTest {
     private JobScheduleController jobScheduleController;
     
     @Mock
-    private ConfigurationService configService;
-    
-    @Mock
     private LeaderService leaderService;
-    
-    @Mock
-    private ServerService serverService;
-    
-    @Mock
-    private InstanceService instanceService;
     
     @Mock
     private ShardingService shardingService;
     
     @Mock
-    private MonitorService monitorService;
-    
-    @Mock
     private ReconcileService reconcileService;
-    
-    @Mock
-    private ListenerManager listenerManager;
     
     private SchedulerFacade schedulerFacade;
     
     @Before
     public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        schedulerFacade = new SchedulerFacade(null, "test_job", Collections.emptyList());
-        ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
+        schedulerFacade = new SchedulerFacade(null, "test_job");
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
         ReflectionUtils.setFieldValue(schedulerFacade, "reconcileService", reconcileService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
-    }
-    
-    @Test
-    public void assertUpdateJobConfiguration() {
-        LiteJobConfiguration jobConfig = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), false)).build();
-        when(configService.load(false)).thenReturn(jobConfig);
-        assertThat(schedulerFacade.updateJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
-        verify(configService).persist(TestDataflowJob.class.getName(), jobConfig);
-    }
-    
-    @Test
-    public void assertRegisterStartUpInfo() {
-        schedulerFacade.registerStartUpInfo(true);
-        verify(listenerManager).startAllListeners();
-        verify(leaderService).electLeader();
-        verify(serverService).persistOnline(true);
-        verify(shardingService).setReshardingFlag();
-        verify(monitorService).listen();
     }
     
     @Test
     public void assertShutdownInstanceIfNotLeaderAndReconcileServiceIsNotRunning() {
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         schedulerFacade.shutdownInstance();
         verify(leaderService, times(0)).removeLeader();
-        verify(monitorService).close();
         verify(reconcileService, times(0)).stopAsync();
         verify(jobScheduleController).shutdown();
     }
@@ -127,10 +76,10 @@ public final class SchedulerFacadeTest {
     public void assertShutdownInstanceIfLeaderAndReconcileServiceIsRunning() {
         when(leaderService.isLeader()).thenReturn(true);
         when(reconcileService.isRunning()).thenReturn(true);
-        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         schedulerFacade.shutdownInstance();
         verify(leaderService).removeLeader();
-        verify(monitorService).close();
         verify(reconcileService).stopAsync();
         verify(jobScheduleController).shutdown();
     }

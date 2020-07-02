@@ -111,13 +111,13 @@ sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCo
 
 ## 2. 作业配置
 
-Elastic-Job配置分为3个层级，分别是Core, Type和Root。每个层级使用相似于装饰者模式的方式装配。
+ElasticJob 配置分为3个层级，分别是Core, Type和Root。每个层级使用相似于装饰者模式的方式装配。
 
-Core对应JobCoreConfiguration，用于提供作业核心配置信息，如：作业名称、分片总数、CRON表达式等。
+Core 对应 JobCoreConfiguration，用于提供作业核心配置信息，如：作业名称、分片总数、CRON表达式等。
 
-Type对应JobTypeConfiguration，有3个子类分别对应SIMPLE, DATAFLOW和SCRIPT类型作业，提供3种作业需要的不同配置，如：DATAFLOW类型是否流式处理或SCRIPT类型的命令行等。
+Type 对应 JobTypeConfiguration，有3个子类分别对应SIMPLE, DATAFLOW和SCRIPT类型作业，提供3种作业需要的不同配置，如：DATAFLOW类型是否流式处理或SCRIPT类型的命令行等。
 
-Root对应JobRootConfiguration，有2个子类分别对应Lite和Cloud部署类型，提供不同部署类型所需的配置，如：Lite类型的是否需要覆盖本地配置或Cloud占用CPU或Memory数量等。
+Root 对应 JobConfiguration，有2个子类分别对应Lite和Cloud部署类型，提供不同部署类型所需的配置，如：Lite类型的是否需要覆盖本地配置或Cloud占用CPU或Memory数量等。
 
 ### a. 使用Java代码配置
 
@@ -126,24 +126,24 @@ Root对应JobRootConfiguration，有2个子类分别对应Lite和Cloud部署类�
 ```java
     // 定义作业核心配置
     JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("demoSimpleJob", "0/15 * * * * ?", 10).build();
-    // 定义SIMPLE类型配置
+    // 定义 SIMPLE 类型配置
     SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName());
-    // 定义Lite作业根配置
-    JobRootConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
+    // 定义作业根配置
+    JobConfiguration simpleJJobRootConfig = JobConfiguration.newBuilder(simpleJobConfig).build();
     
     // 定义作业核心配置
     JobCoreConfiguration dataflowCoreConfig = JobCoreConfiguration.newBuilder("demoDataflowJob", "0/30 * * * * ?", 10).build();
-    // 定义DATAFLOW类型配置
+    // 定义 DATAFLOW 类型配置
     DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName(), true);
     // 定义Lite作业根配置
-    JobRootConfiguration dataflowJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfig).build();
+    JobConfiguration dataflowJobRootConfig = JobConfiguration.newBuilder(dataflowJobConfig).build();
     
     // 定义作业核心配置配置
     JobCoreConfiguration scriptCoreConfig = JobCoreConfiguration.newBuilder("demoScriptJob", "0/45 * * * * ?", 10).build();
-    // 定义SCRIPT类型配置
+    // 定义 SCRIPT 类型配置
     ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh");
-    // 定义Lite作业根配置
-    JobRootConfiguration scriptJobRootConfig = LiteJobConfiguration.newBuilder(scriptCoreConfig).build();
+    // 定义作业根配置
+    JobConfiguration scriptJobRootConfig = JobConfiguration.newBuilder(scriptCoreConfig).build();
 ```
 
 ### b. Spring命名空间配置
@@ -198,7 +198,7 @@ Root对应JobRootConfiguration，有2个子类分别对应Lite和Cloud部署类�
 
 ## 3. 作业启动
 
-### a. Java启动方式
+### a. Java 启动方式
 
 ```java
 public class JobDemo {
@@ -213,13 +213,13 @@ public class JobDemo {
         return regCenter;
     }
     
-    private static LiteJobConfiguration createJobConfiguration() {
+    private static JobConfiguration createJobConfiguration() {
         // 创建作业配置
         ...
     }
 }
 ```
 
-### b. Spring启动方式
+### b. Spring 启动方式
 
-将配置Spring命名空间的xml通过Spring启动，作业将自动加载。
+将配置 Spring 命名空间的 xml 通过 Spring 启动，作业将自动加载。

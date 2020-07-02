@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 
@@ -30,12 +30,12 @@ import java.util.Collection;
 public interface JobFacade {
     
     /**
-     * Load job root configuration.
+     * Load job configuration.
      * 
      * @param fromCache load from cache or not
-     * @return job root configuration
+     * @return job configuration
      */
-    JobRootConfiguration loadJobRootConfiguration(boolean fromCache);
+    JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
      * check job execution environment.

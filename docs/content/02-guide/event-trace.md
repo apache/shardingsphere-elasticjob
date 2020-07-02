@@ -11,18 +11,18 @@ Elastic-Job提供了事件追踪功能，可通过事件订阅的方式处理调
 
 ## 通过代码配置开启事件追踪
 
-Elastic-Job-Lite在配置中提供了JobEventConfiguration，目前支持数据库方式配置。
+Elastic-Job-Lite 在配置中提供了 TracingConfiguration，目前支持数据库方式配置。
 
 ```java
     // 初始化数据源
     DataSource dataSource = ...;
     // 定义日志数据库事件溯源配置
-    JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+    TracingConfiguration tracingConfig = new TracingConfiguration<>("RDB", dataSource);
     // 初始化注册中心
     CoordinatorRegistryCenter regCenter = ...;
     // 初始化作业配置
-    LiteJobConfiguration liteJobConfig = ...;
-    new JobScheduler(regCenter, liteJobConfig, jobEventRdbConfig).init(); 
+    JobConfiguration jobConfig = ...;
+    new JobScheduler(regCenter, jobConfig, tracingConfig).init(); 
 ```
 
 具体配置方式请参见[开发指南](/01-start/dev-guide/).

@@ -17,44 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.console.filter.GlobalConfigurationFilter;
-import org.apache.shardingsphere.elasticjob.lite.console.restful.JobOperationRESTfulAPI;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.restful.RESTfulAPIServer;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.security.WwwAuthFilter;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Console bootstrap.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
-public final class ConsoleBootstrap {
-    
-    private static final String CONSOLE_PATH = "console";
+@SpringBootApplication
+public class ConsoleBootstrap {
     
     /**
      * Startup RESTful server.
-     * 
+     *
      * @param args arguments
-     * @throws Exception exception
      */
     //CHECKSTYLE:OFF
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
     //CHECKSTYLE:ON
-        int port = 8899;
-        if (1 == args.length) {
-            try {
-                port = Integer.parseInt(args[0]);
-            } catch (final NumberFormatException ex) {
-                log.warn("Wrong port format, using default port 8899 instead.");
-            }
-        }
-        RESTfulAPIServer restfulServer = new RESTfulAPIServer(port);
-        restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
-                     .addFilter(WwwAuthFilter.class, "/")
-                     .addFilter(WwwAuthFilter.class, "*.html")
-                     .start(JobOperationRESTfulAPI.class.getPackage().getName(), CONSOLE_PATH);
+        SpringApplication.run(ConsoleBootstrap.class, args);
     }
 }

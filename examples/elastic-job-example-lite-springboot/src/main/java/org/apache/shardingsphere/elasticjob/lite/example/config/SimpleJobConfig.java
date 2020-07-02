@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,21 +37,20 @@ public class SimpleJobConfig {
     private ZookeeperRegistryCenter regCenter;
     
     @Resource
-    private JobEventConfiguration jobEventConfiguration;
+    private TracingConfiguration tracingConfig;
     
     @Bean
     public SimpleJob simpleJob() {
         return new SpringSimpleJob(); 
     }
     
-    @Bean(initMethod = "init")
-    public JobScheduler simpleJobScheduler(final SimpleJob simpleJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
-                                           @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
-        return new JobScheduler(regCenter, simpleJob, getLiteJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters), jobEventConfiguration);
+    @Bean(initMethod = "schedule")
+    public ScheduleJobBootstrap simpleJobScheduler(final SimpleJob simpleJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
+                                                   @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
+        return new ScheduleJobBootstrap(regCenter, simpleJob, getJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters), tracingConfig);
     }
     
-    private LiteJobConfiguration getLiteJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(
-                JobCoreConfiguration.newBuilder(jobClass.getName(), cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build())).overwrite(true).build();
+    private JobConfiguration getJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
+        return JobConfiguration.newBuilder(jobClass.getName(), JobType.SIMPLE, shardingTotalCount).cron(cron).shardingItemParameters(shardingItemParameters).overwrite(true).build();
     }
 }

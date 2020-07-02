@@ -17,13 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.JobCaller;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +46,9 @@ import static org.mockito.Mockito.when;
 public final class DataflowJobExecutorTest {
     
     @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
     private JobCaller jobCaller;
     
     @Mock
@@ -54,7 +60,6 @@ public final class DataflowJobExecutorTest {
     
     @After
     public void tearDown() {
-        verify(jobFacade).loadJobRootConfiguration(true);
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
     }
     
@@ -169,9 +174,11 @@ public final class DataflowJobExecutorTest {
     
     private void setUp(final boolean isStreamingProcess, final ShardingContexts shardingContexts) {
         this.shardingContexts = shardingContexts;
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(isStreamingProcess));
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, 3)
+                .cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess)).build();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        elasticJobExecutor = new ElasticJobExecutor(new TestDataflowJob(jobCaller), jobFacade, new DataflowJobExecutor());
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestDataflowJob(jobCaller), jobConfig, Collections.emptyList(), null);
+        ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
     }
 }

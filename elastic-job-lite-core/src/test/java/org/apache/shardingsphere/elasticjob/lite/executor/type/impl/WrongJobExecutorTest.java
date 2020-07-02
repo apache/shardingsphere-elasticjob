@@ -17,18 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.type.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.fixture.config.TestSimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.TestWrongJob;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,14 +44,22 @@ import static org.mockito.Mockito.when;
 public final class WrongJobExecutorTest {
     
     @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
     private JobFacade jobFacade;
     
     private ElasticJobExecutor wrongJobExecutor;
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration(null, "THROW"));
-        wrongJobExecutor = new ElasticJobExecutor(new TestWrongJob(), jobFacade, new SimpleJobExecutor());
+        wrongJobExecutor = new ElasticJobExecutor(regCenter, new TestWrongJob(), createJobConfiguration(), Collections.emptyList(), null);
+        ReflectionUtils.setFieldValue(wrongJobExecutor, "jobFacade", jobFacade);
+    }
+    
+    private JobConfiguration createJobConfiguration() {
+        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.SIMPLE, 3)
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
     }
     
     @Test(expected = RuntimeException.class)

@@ -56,5 +56,5 @@ public final class JobExecutorServiceHandlerFactory {
             throw new JobConfigurationException("Can not find executor service handler type '%s'.", type);
         }
         return HANDLERS.get(type);
-    } 
+    }
 }
