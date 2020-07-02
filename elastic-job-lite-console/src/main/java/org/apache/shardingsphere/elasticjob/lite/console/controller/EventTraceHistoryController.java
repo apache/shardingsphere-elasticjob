@@ -54,9 +54,13 @@ public final class EventTraceHistoryController {
     
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService;
     
+    private final RDBJobEventSearch rdbJobEventSearch;
+    
     @Autowired
-    public EventTraceHistoryController(final EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService) {
+    public EventTraceHistoryController(final EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService,
+                                       final RDBJobEventSearch rdbJobEventSearch) {
         this.eventTraceDataSourceConfigurationService = eventTraceDataSourceConfigurationService;
+        this.rdbJobEventSearch = rdbJobEventSearch;
     }
     
     /**
@@ -69,9 +73,9 @@ public final class EventTraceHistoryController {
     @GetMapping(value = "/execution", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
         if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new Result<>(0, new ArrayList<JobExecutionEvent>());
+            return new Result<>(0L, new ArrayList<JobExecutionEvent>());
         }
-        return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "ip", "isSuccess"}));
+        return rdbJobEventSearch.findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "ip", "isSuccess"}));
     }
     
     /**
@@ -84,9 +88,9 @@ public final class EventTraceHistoryController {
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
         if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new Result<>(0, new ArrayList<JobStatusTraceEvent>());
+            return new Result<>(0L, new ArrayList<JobStatusTraceEvent>());
         }
-        return new RDBJobEventSearch(setUpEventTraceDataSource()).findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "source", "executionType", "state"}));
+        return rdbJobEventSearch.findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "source", "executionType", "state"}));
     }
     
     private DataSource setUpEventTraceDataSource() {
