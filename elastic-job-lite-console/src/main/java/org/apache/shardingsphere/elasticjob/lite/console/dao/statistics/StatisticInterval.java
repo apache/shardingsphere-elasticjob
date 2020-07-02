@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * statistic interval.
+ * Statistic interval.
  */
 @Getter
 @RequiredArgsConstructor

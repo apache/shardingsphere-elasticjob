@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,20 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.simple;
-
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+package org.apache.shardingsphere.elasticjob.lite.api.type;
 
 /**
- * Simple job.
+ * Job type.
  */
-public interface SimpleJob extends ElasticJob {
+public enum JobType {
     
-    /**
-     * Execute job.
-     *
-     * @param shardingContext sharding context
-     */
-    void execute(ShardingContext shardingContext);
+    SIMPLE, DATAFLOW, SCRIPT
 }

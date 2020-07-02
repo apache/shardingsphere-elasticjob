@@ -25,9 +25,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Task result statistics repository.
+ */
 @Repository
 public interface TaskResultStatisticsRepository extends JpaRepository<TaskResultStatistics, Long> {
-
+    
     /**
      * Find task result statistics.
      *
@@ -37,7 +40,7 @@ public interface TaskResultStatisticsRepository extends JpaRepository<TaskResult
      */
     @Query("FROM TaskResultStatistics WHERE statisticInterval = :statisticInterval AND statisticsTime >= :fromTime ORDER BY id ASC")
     List<TaskResultStatistics> findTaskResultStatistics(@Param("fromTime") Date fromTime, @Param("statisticInterval") String statisticInterval);
-
+    
     /**
      * Get summed task result statistics.
      *

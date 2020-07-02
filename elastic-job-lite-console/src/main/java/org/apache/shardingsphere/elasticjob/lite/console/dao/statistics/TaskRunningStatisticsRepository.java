@@ -25,9 +25,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Task running statistics repository.
+ */
 @Repository
 public interface TaskRunningStatisticsRepository extends JpaRepository<TaskRunningStatistics, Long> {
-
+    
     /**
      * Find task running statistics.
      *

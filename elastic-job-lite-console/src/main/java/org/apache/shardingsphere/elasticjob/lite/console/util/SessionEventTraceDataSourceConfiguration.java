@@ -32,15 +32,6 @@ public final class SessionEventTraceDataSourceConfiguration {
     private static EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration;
     
     /**
-     * Get event trace data source configuration.
-     * 
-     * @return event trace data source configuration
-     */
-    public static EventTraceDataSourceConfiguration getEventTraceDataSourceConfiguration() {
-        return eventTraceDataSourceConfiguration;
-    }
-    
-    /**
      * Set event trace data source configuration.
      *
      * @param eventTraceDataSourceConfiguration event trace data source configuration

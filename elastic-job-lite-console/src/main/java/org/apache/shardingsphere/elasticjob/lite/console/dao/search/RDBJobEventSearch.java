@@ -17,252 +17,167 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
-import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.console.util.BeanUtils;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import javax.persistence.criteria.Predicate;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * RDB job event search.
  */
-@RequiredArgsConstructor
 @Slf4j
+@Component
 public final class RDBJobEventSearch {
     
-    private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
+    private final JobExecutionLogRepository jobExecutionLogRepository;
     
-    private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
+    private final JobStatusTraceLogRepository jobStatusTraceLogRepository;
     
-    private static final List<String> FIELDS_JOB_EXECUTION_LOG = Arrays.asList(
-            "id", "hostname", "ip", "task_id", "job_name", "execution_source", "sharding_item", "start_time", "complete_time", "is_success", "failure_cause");
-    
-    private static final List<String> FIELDS_JOB_STATUS_TRACE_LOG = Arrays.asList(
-            "id", "job_name", "original_task_id", "task_id", "slave_id", "source", "execution_type", "sharding_item", "state", "message", "creation_time");
-    
-    private final DataSource dataSource;
+    @Autowired
+    public RDBJobEventSearch(final JobExecutionLogRepository jobExecutionLogRepository,
+                             final JobStatusTraceLogRepository jobStatusTraceLogRepository) {
+        this.jobExecutionLogRepository = jobExecutionLogRepository;
+        this.jobStatusTraceLogRepository = jobStatusTraceLogRepository;
+    }
     
     /**
      * Find job execution events.
-     * 
+     *
      * @param condition query condition
      * @return job execution events
      */
     public Result<JobExecutionEvent> findJobExecutionEvents(final Condition condition) {
-        return new Result<>(getEventCount(TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition), getJobExecutionEvents(condition));
+        dealFields(condition.getFields());
+        Page<JobExecutionEvent> jobExecutionEvents = getJobExecutionEvents(condition);
+        return new Result<>(jobExecutionEvents.getTotalElements(), jobExecutionEvents.getContent());
+    }
+    
+    private void dealFields(final Map<String, Object> fields) {
+        if (Objects.isNull(fields)) {
+            return;
+        }
+        Object isSuccessField = fields.get("isSuccess");
+        if (!Objects.isNull(isSuccessField)) {
+            fields.put("isSuccess", Objects.equals(isSuccessField, "1"));
+        }
     }
     
     /**
      * Find job status trace events.
-     * 
+     *
      * @param condition query condition
      * @return job status trace events
      */
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(final Condition condition) {
-        return new Result<>(getEventCount(TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition), getJobStatusTraceEvents(condition));
+        Page<JobStatusTraceEvent> jobStatusTraceEvents = getJobStatusTraceEvents(condition);
+        return new Result<>(jobStatusTraceEvents.getTotalElements(), jobStatusTraceEvents.getContent());
     }
     
-    private List<JobExecutionEvent> getJobExecutionEvents(final Condition condition) {
-        List<JobExecutionEvent> result = new LinkedList<>();
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
-            while (resultSet.next()) {
-                JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), ExecutionSource.valueOf(resultSet.getString(6)), Integer.valueOf(resultSet.getString(7)), 
-                        new Date(resultSet.getTimestamp(8).getTime()), resultSet.getTimestamp(9) == null ? null : new Date(resultSet.getTimestamp(9).getTime()), 
-                        resultSet.getBoolean(10), resultSet.getString(11));
-                result.add(jobExecutionEvent);
+    private Page<JobExecutionEvent> getJobExecutionEvents(final Condition condition) {
+        Specification<JobExecutionLog> specification =
+                getSpecification(JobExecutionLog.class, condition, "startTime");
+        Page<JobExecutionLog> page =
+                jobExecutionLogRepository.findAll(specification, getPageable(condition, JobExecutionLog.class));
+        return new PageImpl<>(
+                page.get().map(JobExecutionLog::toJobExecutionEvent).collect(Collectors.toList()),
+                page.getPageable(),
+                page.getTotalElements()
+        );
+    }
+    
+    private <T> Pageable getPageable(final Condition condition, final Class<T> clazz) {
+        int page = 0;
+        int perPage = Condition.DEFAULT_PAGE_SIZE;
+        if (condition.getPage() > 0 && condition.getPerPage() > 0) {
+            page = condition.getPage() - 1;
+            perPage = condition.getPerPage();
+        }
+        return PageRequest.of(page, perPage, getSort(condition, clazz));
+    }
+    
+    private <T> Sort getSort(final Condition condition, final Class<T> clazz) {
+        Sort sort = Sort.unsorted();
+        boolean sortFieldIsPresent = Arrays.stream(clazz.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(e -> e.equals(condition.getSort()));
+        if (!sortFieldIsPresent) {
+            return sort;
+        }
+        if (!Strings.isNullOrEmpty(condition.getSort())) {
+            Sort.Direction order = Sort.Direction.ASC;
+            try {
+                order = Sort.Direction.valueOf(condition.getOrder());
+            } catch (IllegalArgumentException ignored) {
             }
-        } catch (final SQLException ex) {
-            // TODO log failure directly to output log, consider to be configurable in the future
-            log.error("Fetch JobExecutionEvent from DB error:", ex);
+            sort = Sort.by(order, condition.getSort());
         }
-        return result;
+        return sort;
     }
     
-    private List<JobStatusTraceEvent> getJobStatusTraceEvents(final Condition condition) {
-        List<JobStatusTraceEvent> result = new LinkedList<>();
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
-            while (resultSet.next()) {
-                JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
-                        State.valueOf(resultSet.getString(9)), resultSet.getString(10), new Date(resultSet.getTimestamp(11).getTime()));
-                result.add(jobStatusTraceEvent);
+    private Page<JobStatusTraceEvent> getJobStatusTraceEvents(final Condition condition) {
+        Specification<JobStatusTraceLog> specification =
+                getSpecification(JobStatusTraceLog.class, condition, "creationTime");
+        Page<JobStatusTraceLog> page =
+                jobStatusTraceLogRepository.findAll(specification, getPageable(condition, JobStatusTraceLog.class));
+        return new PageImpl<>(
+                page.get().map(JobStatusTraceLog::toJobStatusTraceEvent).collect(Collectors.toList()),
+                page.getPageable(),
+                page.getTotalElements()
+        );
+    }
+    
+    private <T> Specification<T> getSpecification(final Class<T> clazz, final Condition condition, final String dateField) {
+        Example<T> example = getExample(condition.getFields(), clazz);
+        return getSpecWithExampleAndDate(
+                example, condition.getStartTime(), condition.getEndTime(), dateField
+        );
+    }
+    
+    private <T> Specification<T> getSpecWithExampleAndDate(
+            final Example<T> example, final Date from, final Date to, final String field
+    ) {
+        return (Specification<T>) (root, query, builder) -> {
+            final List<Predicate> predicates = new ArrayList<>();
+            if (from != null) {
+                predicates.add(builder.greaterThan(root.get(field), from));
             }
-        } catch (final SQLException ex) {
-            // TODO log failure directly to output log, consider to be configurable in the future
-            log.error("Fetch JobStatusTraceEvent from DB error:", ex);
-        }
-        return result;
-    }
-    
-    private int getEventCount(final String tableName, final Collection<String> tableFields, final Condition condition) {
-        int result = 0;
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = createCountPreparedStatement(connection, tableName, tableFields, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
-            resultSet.next();
-            result = resultSet.getInt(1);
-        } catch (final SQLException ex) {
-            // TODO log failure directly to output log, consider to be configurable in the future
-            log.error("Fetch EventCount from DB error:", ex);
-        }
-        return result;
-    }
-    
-    private PreparedStatement createDataPreparedStatement(final Connection conn, final String tableName, final Collection<String> tableFields, final Condition condition) throws SQLException {
-        String sql = buildDataSql(tableName, tableFields, condition);
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        setBindValue(preparedStatement, tableFields, condition);
-        return preparedStatement;
-    }
-    
-    private PreparedStatement createCountPreparedStatement(final Connection conn, final String tableName, final Collection<String> tableFields, final Condition condition) throws SQLException {
-        String sql = buildCountSql(tableName, tableFields, condition);
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        setBindValue(preparedStatement, tableFields, condition);
-        return preparedStatement;
-    }
-    
-    private String buildDataSql(final String tableName, final Collection<String> tableFields, final Condition condition) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        String selectSql = buildSelect(tableName, tableFields);
-        String whereSql = buildWhere(tableName, tableFields, condition);
-        String orderSql = buildOrder(tableFields, condition.getSort(), condition.getOrder());
-        String limitSql = buildLimit(condition.getPage(), condition.getPerPage());
-        sqlBuilder.append(selectSql).append(whereSql).append(orderSql).append(limitSql);
-        return sqlBuilder.toString();
-    }
-    
-    private String buildCountSql(final String tableName, final Collection<String> tableFields, final Condition condition) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        String selectSql = buildSelectCount(tableName);
-        String whereSql = buildWhere(tableName, tableFields, condition);
-        sqlBuilder.append(selectSql).append(whereSql);
-        return sqlBuilder.toString();
-    }
-    
-    private String buildSelectCount(final String tableName) {
-        return String.format("SELECT COUNT(1) FROM %s", tableName);
-    }
-    
-    private String buildSelect(final String tableName, final Collection<String> tableFields) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append("SELECT ");
-        for (String each : tableFields) {
-            sqlBuilder.append(each).append(",");
-        }
-        sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
-        sqlBuilder.append(" FROM ").append(tableName);
-        return sqlBuilder.toString();
-    }
-    
-    private String buildWhere(final String tableName, final Collection<String> tableFields, final Condition condition) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append(" WHERE 1=1");
-        if (null != condition.getFields() && !condition.getFields().isEmpty()) {
-            for (Map.Entry<String, Object> entry : condition.getFields().entrySet()) {
-                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey());
-                if (null != entry.getValue() && tableFields.contains(lowerUnderscore)) {
-                    sqlBuilder.append(" AND ").append(lowerUnderscore).append("=?");
-                }
+            if (to != null) {
+                predicates.add(builder.lessThan(root.get(field), to));
             }
-        }
-        if (null != condition.getStartTime()) {
-            sqlBuilder.append(" AND ").append(getTableTimeField(tableName)).append(">=?");
-        }
-        if (null != condition.getEndTime()) {
-            sqlBuilder.append(" AND ").append(getTableTimeField(tableName)).append("<=?");
-        }
-        return sqlBuilder.toString();
+            predicates.add(QueryByExamplePredicateBuilder.getPredicate(root, builder, example));
+            return builder.and(predicates.toArray(new Predicate[0]));
+        };
     }
     
-    private void setBindValue(final PreparedStatement preparedStatement, final Collection<String> tableFields, final Condition condition) throws SQLException {
-        int index = 1;
-        if (null != condition.getFields() && !condition.getFields().isEmpty()) {
-            for (Map.Entry<String, Object> entry : condition.getFields().entrySet()) {
-                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey());
-                if (null != entry.getValue() && tableFields.contains(lowerUnderscore)) {
-                    preparedStatement.setString(index++, String.valueOf(entry.getValue()));
-                }
-            }
+    private <T> Example<T> getExample(final Map<String, Object> fields, final Class<T> clazz) {
+        T bean = BeanUtils.toBean(fields, clazz);
+        if (Objects.isNull(bean)) {
+            bean = BeanUtils.newInstance(clazz);
         }
-        if (null != condition.getStartTime()) {
-            preparedStatement.setTimestamp(index++, new Timestamp(condition.getStartTime().getTime()));
-        }
-        if (null != condition.getEndTime()) {
-            preparedStatement.setTimestamp(index, new Timestamp(condition.getEndTime().getTime()));
-        }
-    }
-    
-    private String getTableTimeField(final String tableName) {
-        String result = "";
-        if (TABLE_JOB_EXECUTION_LOG.equals(tableName)) {
-            result = "start_time";
-        } else if (TABLE_JOB_STATUS_TRACE_LOG.equals(tableName)) {
-            result = "creation_time";
-        }
-        return result;
-    }
-    
-    private String buildOrder(final Collection<String> tableFields, final String sortName, final String sortOrder) {
-        if (Strings.isNullOrEmpty(sortName)) {
-            return "";
-        }
-        String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortName);
-        if (!tableFields.contains(lowerUnderscore)) {
-            return "";
-        }
-        StringBuilder sqlBuilder = new StringBuilder();
-        sqlBuilder.append(" ORDER BY ").append(lowerUnderscore);
-        switch (sortOrder.toUpperCase()) {
-            case "ASC":
-                sqlBuilder.append(" ASC");
-                break;
-            case "DESC":
-                sqlBuilder.append(" DESC");
-                break;
-            default :
-                sqlBuilder.append(" ASC");
-        }
-        return sqlBuilder.toString();
-    }
-    
-    private String buildLimit(final int page, final int perPage) {
-        StringBuilder sqlBuilder = new StringBuilder();
-        if (page > 0 && perPage > 0) {
-            sqlBuilder.append(" LIMIT ").append((page - 1) * perPage).append(",").append(perPage);
-        } else {
-            sqlBuilder.append(" LIMIT ").append(Condition.DEFAULT_PAGE_SIZE);
-        }
-        return sqlBuilder.toString();
+        return Example.of(bean);
     }
     
     /**
@@ -293,7 +208,7 @@ public final class RDBJobEventSearch {
     @Getter
     public static class Result<T> {
         
-        private final Integer total;
+        private final Long total;
         
         private final List<T> rows;
     }
