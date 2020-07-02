@@ -36,7 +36,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice
 @Slf4j
 public final class ConsoleRestControllerAdvice implements ResponseBodyAdvice<Object> {
-
+    
     @Override
     public boolean supports(final MethodParameter returnType, final Class<? extends HttpMessageConverter<?>> converterType) {
         //only advice return void method.
@@ -45,14 +45,14 @@ public final class ConsoleRestControllerAdvice implements ResponseBodyAdvice<Obj
         }
         return void.class.isAssignableFrom(returnType.getMethod().getReturnType());
     }
-
+    
     @Override
     public Object beforeBodyWrite(final Object body, final MethodParameter returnType, final MediaType selectedContentType,
                                   final Class<? extends HttpMessageConverter<?>> selectedConverterType, final ServerHttpRequest request, final ServerHttpResponse response) {
         //if the method return void, then the value is true and returns.
         return null == body ? true : body;
     }
-
+    
     /**
      * Handle exception.
      *

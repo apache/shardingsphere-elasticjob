@@ -114,7 +114,7 @@ public final class JobOperationController {
     public Collection<ShardingInfo> getShardingInfo(@PathVariable("jobName") final String jobName) {
         return jobAPIService.getShardingStatisticsAPI().getShardingInfo(jobName);
     }
-
+    
     /**
      * Disable sharding.
      *
@@ -125,7 +125,7 @@ public final class JobOperationController {
     public void disableSharding(@PathVariable("jobName") final String jobName, @PathVariable("item") final String item) {
         jobAPIService.getShardingOperateAPI().disable(jobName, item);
     }
-
+    
     /**
      * Enable sharding.
      *

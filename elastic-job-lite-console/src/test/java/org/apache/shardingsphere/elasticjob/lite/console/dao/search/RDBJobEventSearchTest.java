@@ -28,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sql.DataSource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +42,6 @@ public final class RDBJobEventSearchTest {
     
     @Autowired
     private RDBJobEventSearch repository;
-    
-    @Autowired
-    private DataSource dataSource;
     
     @Test
     public void assertFindJobExecutionEventsWithPageSizeAndNumber() {
@@ -221,5 +217,4 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotal(), is(500L));
         assertThat(result.getRows().size(), is(10));
     }
-
 }
