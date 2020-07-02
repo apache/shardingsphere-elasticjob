@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.type.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;

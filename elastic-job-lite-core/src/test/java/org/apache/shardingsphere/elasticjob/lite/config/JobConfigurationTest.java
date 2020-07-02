@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

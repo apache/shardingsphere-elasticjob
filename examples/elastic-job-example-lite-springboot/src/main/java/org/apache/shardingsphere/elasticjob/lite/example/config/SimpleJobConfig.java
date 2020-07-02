@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.api.type.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
