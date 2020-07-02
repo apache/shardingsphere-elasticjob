@@ -83,5 +83,8 @@ chapter = true
 1. <a href="http://www.wxsbank.com/" rel="nofollow">无锡锡商银行</a>
 1. <a href="http://changemax.cn/" rel="nofollow">松鼠白菜</a>
 1. <a href="https://willclass.com/" rel="nofollow">会通教育</a>
+1. <a href="https://www.homedo.com/" rel="nofollow">河姆渡</a>
+1. <a href="http://www.eavic.com/" rel="nofollow">中航电子采购平台</a>
+1. <a href="https://www.motie.com/" rel="nofollow">磨铁文学</a>
 
 <img src="https://shardingsphere.apache.org/community/image/powered-by.png" width = "30%" height = "30%" align="right" alt="Powered By ShardingSphere" />
