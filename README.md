@@ -8,9 +8,9 @@
 [![GitHub release](https://img.shields.io/github/release/elasticjob/elastic-job.svg)](https://github.com/elasticjob/elastic-job/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-# [Homepage](http://elasticjob.io/)
+# [Homepage](http://shardingsphere.apache.org/elasticjob/)
 
-# [中文主页](http://elasticjob.io/index_zh.html)
+# [中文主页](http://shardingsphere.apache.org/elasticjob/index_zh.html)
 
 # Elastic-Job-Lite Console [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://elasticjob.io/dist/elastic-job-lite-console-2.1.5.tar.gz)
 
