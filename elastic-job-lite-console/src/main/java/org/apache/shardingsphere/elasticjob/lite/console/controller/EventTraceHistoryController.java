@@ -18,13 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
 import com.google.common.base.Strings;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Condition;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Result;
-import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
-import org.apache.shardingsphere.elasticjob.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.sql.DataSource;
 import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,8 +45,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/event-trace")
 public final class EventTraceHistoryController {
-    
-    private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService;
     
@@ -91,15 +85,6 @@ public final class EventTraceHistoryController {
             return new Result<>(0L, new ArrayList<JobStatusTraceEvent>());
         }
         return rdbJobEventSearch.findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "source", "executionType", "state"}));
-    }
-    
-    private DataSource setUpEventTraceDataSource() {
-        BasicDataSource result = new BasicDataSource();
-        result.setDriverClassName(eventTraceDataSourceConfiguration.getDriver());
-        result.setUrl(eventTraceDataSourceConfiguration.getUrl());
-        result.setUsername(eventTraceDataSourceConfiguration.getUsername());
-        result.setPassword(eventTraceDataSourceConfiguration.getPassword());
-        return result;
     }
     
     private Condition buildCondition(final MultiValueMap<String, String> requestParams, final String[] params) throws ParseException {
