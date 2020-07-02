@@ -44,6 +44,8 @@ public class DynamicDataSourceConfig {
 
     public static final String DATASOURCE_PASSWORD = "spring.datasource.default.password";
 
+    public static final String DEFAULT_DATASOURCE_NAME = "default";
+
     /**
      * Declare dynamicDataSource instead of default dataSource.
      * @param environment spring environment
@@ -54,7 +56,7 @@ public class DynamicDataSourceConfig {
     public DynamicDataSource dynamicDataSource(final Environment environment) {
         DataSource defaultDataSource = createDefaultDataSource(environment);
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        dynamicDataSource.addDataSource("default", defaultDataSource);
+        dynamicDataSource.addDataSource(DEFAULT_DATASOURCE_NAME, defaultDataSource);
         dynamicDataSource.setDefaultTargetDataSource(defaultDataSource);
         return dynamicDataSource;
     }
