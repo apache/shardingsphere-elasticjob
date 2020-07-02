@@ -232,7 +232,6 @@ function renderJob(data) {
     $("#misfire").attr("checked", data.misfire);
     $("#streaming-process").attr("checked", data.streamingProcess);
     $("#max-time-diff-seconds").attr("value", data.maxTimeDiffSeconds);
-    $("#monitor-port").attr("value", data.monitorPort);
     $("#job-sharding-strategy-type").attr("value", data.jobShardingStrategyType);
     $("#job-executor-service-handler").attr("value", data.jobExecutorServiceHandlerType);
     $("#job-error-handler").attr("value", data.jobErrorHandlerType);
