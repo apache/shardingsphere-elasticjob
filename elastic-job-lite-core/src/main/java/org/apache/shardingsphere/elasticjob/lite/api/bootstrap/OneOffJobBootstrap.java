@@ -37,6 +37,15 @@ public final class OneOffJobBootstrap extends JobBootstrap {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJobType, jobConfig, elasticJobListeners);
+    }
+    
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                              final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+    }
+    
     /**
      * Execute job.
      */

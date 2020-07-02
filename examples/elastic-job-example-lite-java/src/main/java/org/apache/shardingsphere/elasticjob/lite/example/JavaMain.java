@@ -96,7 +96,7 @@ public final class JavaMain {
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
-        new ScheduleJobBootstrap(regCenter, null, JobConfiguration.newBuilder("scriptElasticJob", JobType.SCRIPT, 3)
+        new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", JobType.SCRIPT, 3)
                 .cron("0/5 * * * * ?").setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
     }
     

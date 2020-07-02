@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.oneoff.script;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
@@ -40,7 +39,7 @@ public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     }
     
     @Override
-    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+    protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.SCRIPT, 3).shardingItemParameters("0=A,1=B,2=C").overwrite(true)
                 .setProperty(ScriptJobExecutor.SCRIPT_KEY, ScriptElasticJobTest.class.getResource("/script/test.sh").getPath()).build();
     }

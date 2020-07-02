@@ -66,12 +66,12 @@ public abstract class BaseIntegrateTest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
-        jobConfiguration = getJobConfiguration(elasticJob, jobName);
+        jobConfiguration = getJobConfiguration(jobName);
         bootstrap = createJobBootstrap(type, elasticJob);
         leaderService = new LeaderService(regCenter, jobName);
     }
     
-    protected abstract JobConfiguration getJobConfiguration(ElasticJob elasticJob, String jobName);
+    protected abstract JobConfiguration getJobConfiguration(String jobName);
     
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
