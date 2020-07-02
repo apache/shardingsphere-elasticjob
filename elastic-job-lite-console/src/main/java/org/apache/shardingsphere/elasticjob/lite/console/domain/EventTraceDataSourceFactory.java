@@ -17,15 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Event trace data source factory.
@@ -57,10 +58,7 @@ public final class EventTraceDataSourceFactory {
         if (null != result) {
             return result;
         }
-        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driverClassName, url, username);
-        if (null != password) {
-            eventTraceDataSourceConfiguration.setPassword(password);
-        }
+        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driverClassName, url, username, password);
         result = new EventTraceDataSource(eventTraceDataSourceConfiguration);
         result.init();
         DATA_SOURCE_REGISTRY.put(hashCode, result);

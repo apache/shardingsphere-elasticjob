@@ -13,7 +13,7 @@ fi
 port="8899"
 
 if [ $# -eq 2 ]; then
-  while getopts p: arg 
+  while getopts p: arg
   do    case "$arg" in
           p) port="$OPTARG";;
           [?]) show_usage;;
@@ -31,4 +31,4 @@ DEPLOY_DIR=`pwd`
 CLASS_PATH=.:${DEPLOY_DIR}/conf:${DEPLOY_DIR}/lib/*:${DEPLOY_DIR}/ext-lib/*
 CONSOLE_MAIN=org.apache.shardingsphere.elasticjob.lite.console.ConsoleBootstrap
 
-java -classpath ${CLASS_PATH}:. ${CONSOLE_MAIN} ${port}
+exec java -classpath ${CLASS_PATH}:. ${CONSOLE_MAIN} ${port}

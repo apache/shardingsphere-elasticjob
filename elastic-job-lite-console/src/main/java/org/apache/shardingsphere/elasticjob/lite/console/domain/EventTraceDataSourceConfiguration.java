@@ -57,9 +57,10 @@ public final class EventTraceDataSourceConfiguration implements Serializable {
     @XmlAttribute
     private boolean activated;
     
-    public EventTraceDataSourceConfiguration(final String driver, final String url, final String username) {
+    public EventTraceDataSourceConfiguration(final String driver, final String url, final String username, final String password) {
         this.driver = driver;
         this.url = url;
         this.username = username;
+        this.password = password;
     }
 }
