@@ -1,0 +1,83 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="index-content">
+    <section class="content-header">
+        <h4 data-lang="sidebar-event-trace-data-source"></h4>
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-cogs" data-lang="sidebar-global-settings"></i></li>
+            <li class="active" data-lang="sidebar-event-trace-data-source"></li>
+        </ol>
+    </section>
+    <section class="content">
+        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true">
+            <thead>
+            <tr>
+                <th data-field="name" data-sortable="true"><span data-lang="event-trace-data-source-name"></span></th>
+                <th data-field="driver" data-sortable="true"><span data-lang="event-trace-data-source-driver"></span></th>
+                <th data-field="url" data-sortable="true"><span data-lang="event-trace-data-source-url"></span></th>
+                <th data-field="username"><span data-lang="event-trace-data-source-username"></span></th>
+                <th data-field="operation" data-formatter="generateOperationButtons"><span data-lang="operation"></span></th>
+            </tr>
+            </thead>
+        </table>
+        <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-data-source" data-lang="operation-add"></button>
+    </section>
+</div>
+<div id="add-data-source-center" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="close-add-data-source-form" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" data-lang="add-event-trace-data-source"></h4>
+            </div>
+            <form id="data-source-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="control-label" data-lang="event-trace-data-source-name"></label>
+                        <input type="text" class="form-control" id="name" name="name" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver" class="control-label" data-lang="event-trace-data-source-driver"></label>
+                        <input type="text" class="form-control" id="driver" name="driver" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="url" class="control-label" data-lang="event-trace-data-source-url"></label>
+                        <input type="text" class="form-control" id="url" name="url" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="control-label" data-lang="event-trace-data-source-username"></label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label" data-lang="event-trace-data-source-password"></label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="connect-test" type="button" class="btn-xs btn-info" data-lang="operation-test-connect"></button>
+                    <button id="add-data-source-btn" type="button" class="btn-xs btn-primary" data-lang="operation-submit"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/util/common.js"></script>
+<script src="js/global/event_trace_data_source.js"></script>

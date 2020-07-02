@@ -1,0 +1,91 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="index-content">
+    <section class="content-header">
+        <h4 data-lang="sidebar-history-status"></h4>
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-history" data-lang="sidebar-job-history"></i></li>
+            <li class="active" data-lang="sidebar-history-status"></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div id="jobExecStatusToolbar">
+            <div class="form-inline" role="form">
+                <div class="form-group toolbar">
+                    <label for="job-name" data-lang="job-name"></label>
+                    <input type="text" class="form-control" id="job-name" placeholder="">
+                </div>
+                <div class="form-group toolbar">
+                    <label for="state" data-lang="status"></label>
+                    <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                        <option value="" data-lang="execute-result-all"></option>
+                        <option value="TASK_STAGING" data-lang="status-staging"></option>
+                        <option value="TASK_FAILED" data-lang="status-task-failed"></option>
+                        <option value="TASK_FINISHED" data-lang="status-task-finished"></option>
+                        <option value="TASK_RUNNING" data-lang="status-running"></option>
+                        <option value="TASK_ERROR" data-lang="status-task-error"></option>
+                        <option value="TASK_KILLED" data-lang="status-task-killed"></option>
+                    </select>
+                </div>
+                <br/>
+                <div class="form-group toolbar">
+                    <label for="start-time" data-lang="creation-start-time"></label>
+                    <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
+                </div>
+                <div class="form-group toolbar">
+                    <label for="end-time" data-lang="creation-end-time"></label>
+                    <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
+                </div>
+            </div>
+        </div>
+        <table id="job-exec-status-table"
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-striped="true"
+               data-toggle="table"
+               data-url="/api/event-trace/status"
+               data-flat="true"
+               data-click-to-select="true"
+               data-row-style="rowStyle"
+               data-query-params="queryParams"
+               data-query-params-type="notLimit"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-page-list="[10, 20, 50, 100]"
+               data-show-columns="true"
+               data-toolbar="#jobExecStatusToolbar">
+            <thead>
+                <tr>
+                    <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                    <th data-field="shardingItems"><span data-lang="job-sharding-item"></span></th>
+                    <th data-field="state" data-sortable="true" data-formatter="stateFormatter"><span data-lang="status"></span></th>
+                    <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="creation-time"></span></th>
+                    <th data-field="message" data-formatter="splitRemarkFormatter"><span data-lang="comments"></span></th>
+                </tr>
+            </thead>
+        </table>
+    </section>
+</div>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
+<script src="lib/daterangepicker/moment.min.js"></script>
+<script src="lib/daterangepicker/daterangepicker.js"></script>
+<script src="lib/input-mask/jquery.inputmask.js"></script>
+<script src="lib/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="lib/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="js/util/formatter.js"></script>
+<script src="js/history/job_status_history.js"></script>
