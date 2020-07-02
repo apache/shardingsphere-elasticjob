@@ -13,7 +13,7 @@ next = "/01-start/faq/"
 
 ```xml
 <dependency>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
@@ -79,7 +79,7 @@ public class JobDemo {
 
 ```xml
 <dependency>
-    <groupId>io.elasticjob</groupId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
@@ -94,20 +94,29 @@ public class JobDemo {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
-    xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
+    xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
+    xmlns:monitor="http://elasticjob.shardingsphere.apache.org/schema/monitor"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.dangdang.com/schema/ddframe/reg
-                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
-                        http://www.dangdang.com/schema/ddframe/job
-                        http://www.dangdang.com/schema/ddframe/job/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/reg
+                        http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/job
+                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/monitor
+                        http://elasticjob.shardingsphere.apache.org/schema/monitor/monitor.xsd
                         ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+   
+    <!--配置任务监控 -->
+    <monitor:embed id="monitor1" registry-center-ref="regCenter" monitor-port="9999"/>    
+
+    <!--配置作业类 -->
+    <bean id="simpleJob" class="xxx.MyElasticJob" />
     
-    <!-- 配置作业-->
-    <job:simple id="demoSimpleSpringJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    <!--配置作业 -->
+    <job:simple id="oneOffElasticJob" job-ref="simpleJob" registry-center-ref="regCenter" reconcile-interval-minutes="10" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
 

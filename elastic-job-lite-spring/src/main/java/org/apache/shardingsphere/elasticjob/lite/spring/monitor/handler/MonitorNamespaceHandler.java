@@ -15,25 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate;
+package org.apache.shardingsphere.elasticjob.lite.spring.monitor.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.junit.Before;
+import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.EmbedMonitorBeanDefinitionParser;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
+/**
+ * Monitor spring namespace handler.
+ */
+public final class MonitorNamespaceHandler extends NamespaceHandlerSupport {
     
-    protected AbstractBaseStdJobAutoInitTest(final Class<? extends ElasticJob> elasticJobClass) {
-        super(elasticJobClass, false);
-    }
-    
-    protected void setJobConfiguration(final JobConfiguration jobConfig) {
-    }
-    
-    @Before
-    public void autoJobInit() {
-        setJobConfiguration(getJobConfiguration());
-        initJob();
-        assertRegCenterCommonInfoWithEnabled();
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("embed", new EmbedMonitorBeanDefinitionParser());
     }
 }

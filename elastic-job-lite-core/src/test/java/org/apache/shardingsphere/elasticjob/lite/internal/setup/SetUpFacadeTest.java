@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationSe
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
-import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -72,9 +71,6 @@ public final class SetUpFacadeTest {
     private ShardingService shardingService;
     
     @Mock
-    private MonitorService monitorService;
-    
-    @Mock
     private ReconcileService reconcileService;
     
     @Mock
@@ -91,15 +87,14 @@ public final class SetUpFacadeTest {
         ReflectionUtils.setFieldValue(setUpFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(setUpFacade, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(setUpFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(setUpFacade, "monitorService", monitorService);
         ReflectionUtils.setFieldValue(setUpFacade, "reconcileService", reconcileService);
         ReflectionUtils.setFieldValue(setUpFacade, "listenerManager", listenerManager);
     }
     
     @Test
     public void assertSetUpJobConfiguration() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(
-                "test_job", JobType.DATAFLOW, "0/1 * * * * ?", 3).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", JobType.DATAFLOW, 3)
+                .cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
         when(configService.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         assertThat(setUpFacade.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig);
@@ -112,6 +107,5 @@ public final class SetUpFacadeTest {
         verify(leaderService).electLeader();
         verify(serverService).persistOnline(true);
         verify(shardingService).setReshardingFlag();
-        verify(monitorService).listen();
     }
 }

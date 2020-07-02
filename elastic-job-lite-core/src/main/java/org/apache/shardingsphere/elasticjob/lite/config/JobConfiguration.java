@@ -56,8 +56,6 @@ public final class JobConfiguration {
     
     private final int reconcileIntervalMinutes;
     
-    private final int monitorPort;
-    
     private final String jobShardingStrategyType;
     
     private final String jobExecutorServiceHandlerType;
@@ -77,12 +75,11 @@ public final class JobConfiguration {
      *
      * @param jobName job name
      * @param jobType job type
-     * @param cron cron expression for job trigger
      * @param shardingTotalCount sharding total count
      * @return ElasticJob configuration builder
      */
-    public static Builder newBuilder(final String jobName, final JobType jobType, final String cron, final int shardingTotalCount) {
-        return new Builder(jobName, jobType, cron, shardingTotalCount);
+    public static Builder newBuilder(final String jobName, final JobType jobType, final int shardingTotalCount) {
+        return new Builder(jobName, jobType, shardingTotalCount);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -92,7 +89,7 @@ public final class JobConfiguration {
         
         private final JobType jobType;
         
-        private final String cron;
+        private String cron;
         
         private final int shardingTotalCount;
         
@@ -110,8 +107,6 @@ public final class JobConfiguration {
         
         private int reconcileIntervalMinutes = 10;
         
-        private int monitorPort = -1;
-        
         private String jobShardingStrategyType;
         
         private String jobExecutorServiceHandlerType;
@@ -125,6 +120,19 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
+    
+        /**
+         * Cron expression.
+         *
+         * @param cron cron expression
+         * @return job configuration builder
+         */
+        public Builder cron(final String cron) {
+            if (null != cron) {
+                this.cron = cron;
+            }
+            return this;
+        }
         
         /**
          * Set mapper of sharding items and sharding parameters.
@@ -138,7 +146,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param shardingItemParameters mapper of sharding items and sharding parameters
-         *
          * @return job configuration builder
          */
         public Builder shardingItemParameters(final String shardingItemParameters) {
@@ -173,7 +180,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param monitorExecution monitor job execution status 
-         *
          * @return ElasticJob configuration builder
          */
         public Builder monitorExecution(final boolean monitorExecution) {
@@ -189,7 +195,6 @@ public final class JobConfiguration {
          * </p> 
          *
          * @param failover enable or disable failover
-         *
          * @return job configuration builder
          */
         public Builder failover(final boolean failover) {
@@ -201,7 +206,6 @@ public final class JobConfiguration {
          * Set enable misfire.
          *
          * @param misfire enable or disable misfire
-         *
          * @return job configuration builder
          */
         public Builder misfire(final boolean misfire) {
@@ -218,7 +222,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param maxTimeDiffSeconds max tolerate time different seconds between job server and registry center
-         *
          * @return ElasticJob configuration builder
          */
         public Builder maxTimeDiffSeconds(final int maxTimeDiffSeconds) {
@@ -234,23 +237,10 @@ public final class JobConfiguration {
          * </p>
          *
          * @param reconcileIntervalMinutes reconcile interval minutes for job sharding status
-         *
          * @return ElasticJob configuration builder
          */
         public Builder reconcileIntervalMinutes(final int reconcileIntervalMinutes) {
             this.reconcileIntervalMinutes = reconcileIntervalMinutes;
-            return this;
-        }
-        
-        /**
-         * Set job monitor port.
-         *
-         * @param monitorPort job monitor port
-         *
-         * @return ElasticJob configuration builder
-         */
-        public Builder monitorPort(final int monitorPort) {
-            this.monitorPort = monitorPort;
             return this;
         }
         
@@ -262,7 +252,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param jobShardingStrategyType job sharding sharding type
-         *
          * @return ElasticJob configuration builder
          */
         public Builder jobShardingStrategyType(final String jobShardingStrategyType) {
@@ -276,7 +265,6 @@ public final class JobConfiguration {
          * Set job executor service handler type.
          *
          * @param jobExecutorServiceHandlerType job executor service handler type
-         *
          * @return job configuration builder
          */
         public Builder jobExecutorServiceHandlerType(final String jobExecutorServiceHandlerType) {
@@ -288,7 +276,6 @@ public final class JobConfiguration {
          * Set job error handler type.
          *
          * @param jobErrorHandlerType job error handler type
-         *
          * @return job configuration builder
          */
         public Builder jobErrorHandlerType(final String jobErrorHandlerType) {
@@ -300,7 +287,6 @@ public final class JobConfiguration {
          * Set job description.
          *
          * @param description job description
-         *
          * @return job configuration builder
          */
         public Builder description(final String description) {
@@ -315,7 +301,6 @@ public final class JobConfiguration {
          *
          * @param key property key
          * @param value property value
-         *
          * @return job configuration builder
          */
         public Builder setProperty(final String key, final String value) {
@@ -331,7 +316,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param disabled whether disable job when start
-         *
          * @return ElasticJob configuration builder
          */
         public Builder disabled(final boolean disabled) {
@@ -347,7 +331,6 @@ public final class JobConfiguration {
          * </p>
          *
          * @param overwrite whether overwrite local configuration to registry center when job startup
-         *
          * @return ElasticJob configuration builder
          */
         public Builder overwrite(final boolean overwrite) {
@@ -363,10 +346,9 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkNotNull(jobType, "jobType can not be null.");
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
-                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes, monitorPort, 
+                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
         }
     }

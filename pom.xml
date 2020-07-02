@@ -48,7 +48,7 @@
         <springboot.version>2.3.1.RELEASE</springboot.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <curator.version>2.10.0</curator.version>
         <lombok.version>1.18.12</lombok.version>
         <aspectj.version>1.9.1</aspectj.version>
@@ -60,7 +60,7 @@
         <gson.version>2.6.1</gson.version>
         <jersey.version>1.19</jersey.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <mysql-connector-java.version>5.1.30</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.7.21</mockito.version>

@@ -31,7 +31,7 @@ public final class JobConfigurationUtil {
      * @return job configuration
      */
     public static JobConfiguration createSimpleJobConfiguration() {
-        return JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).build();
+        return JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build();
     }
     
     /**
@@ -41,6 +41,6 @@ public final class JobConfigurationUtil {
      * @return job configuration
      */
     public static JobConfiguration createSimpleJobConfiguration(final boolean overwrite) {
-        return JobConfiguration.newBuilder("test_job", JobType.SIMPLE, "0/1 * * * * ?", 3).overwrite(overwrite).build();
+        return JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").overwrite(overwrite).build();
     }
 }

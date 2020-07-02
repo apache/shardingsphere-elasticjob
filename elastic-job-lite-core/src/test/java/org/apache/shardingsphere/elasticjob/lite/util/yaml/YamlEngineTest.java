@@ -42,7 +42,6 @@ public final class YamlEngineTest {
             + "maxTimeDiffSeconds: 0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
-            + "monitorPort: 0\n"
             + "overwrite: false\n"
             + "props:\n"
             + "  key: value\n"
@@ -58,7 +57,6 @@ public final class YamlEngineTest {
             + "maxTimeDiffSeconds: 0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
-            + "monitorPort: 0\n"
             + "overwrite: false\n"
             + "reconcileIntervalMinutes: 0\n"
             + "shardingTotalCount: 3\n";

@@ -74,7 +74,6 @@ public final class JobSettingsAPIImplTest {
         assertThat(jobSettings.getJobParameter(), is("param"));
         assertThat(jobSettings.isMonitorExecution(), is(true));
         assertThat(jobSettings.getMaxTimeDiffSeconds(), is(-1));
-        assertThat(jobSettings.getMonitorPort(), is(8888));
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
         assertNull(jobSettings.getJobShardingStrategyType());
@@ -101,7 +100,6 @@ public final class JobSettingsAPIImplTest {
         jobSettings.setMisfire(true);
         jobSettings.setMaxTimeDiffSeconds(-1);
         jobSettings.setReconcileIntervalMinutes(10);
-        jobSettings.setMonitorPort(8888);
         jobSettings.setDescription("");
         jobSettings.setStreamingProcess(true);
         jobSettingsAPI.updateJobSettings(jobSettings);

@@ -174,10 +174,10 @@ public final class DataflowJobExecutorTest {
     
     private void setUp(final boolean isStreamingProcess, final ShardingContexts shardingContexts) {
         this.shardingContexts = shardingContexts;
-        JobConfiguration jobConfig = JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, "0/1 * * * * ?", 3)
-                .jobErrorHandlerType("IGNORE").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess)).build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, JobType.DATAFLOW, 3)
+                .cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.toString(isStreamingProcess)).build();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestDataflowJob(jobCaller), jobConfig, Collections.emptyList());
+        elasticJobExecutor = new ElasticJobExecutor(regCenter, new TestDataflowJob(jobCaller), jobConfig, Collections.emptyList(), null);
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
     }

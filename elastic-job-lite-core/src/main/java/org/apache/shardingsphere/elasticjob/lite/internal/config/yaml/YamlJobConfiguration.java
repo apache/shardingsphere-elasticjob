@@ -53,8 +53,6 @@ public final class YamlJobConfiguration {
     
     private int reconcileIntervalMinutes;
     
-    private int monitorPort;
-    
     private String jobShardingStrategyType;
     
     private String jobExecutorServiceHandlerType;
@@ -75,10 +73,10 @@ public final class YamlJobConfiguration {
      * @return job configuration
      */
     public JobConfiguration toJobConfiguration() {
-        JobConfiguration result = JobConfiguration.newBuilder(jobName, jobType, cron, shardingTotalCount)
-                .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
+        JobConfiguration result = JobConfiguration.newBuilder(jobName, jobType, shardingTotalCount)
+                .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
-                .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes).monitorPort(monitorPort)
+                .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
                 .description(description).disabled(disabled).overwrite(overwrite).build();
         for (Object each : props.keySet()) {
@@ -106,7 +104,6 @@ public final class YamlJobConfiguration {
         result.setMisfire(jobConfiguration.isMisfire());
         result.setMaxTimeDiffSeconds(jobConfiguration.getMaxTimeDiffSeconds());
         result.setReconcileIntervalMinutes(jobConfiguration.getReconcileIntervalMinutes());
-        result.setMonitorPort(jobConfiguration.getMonitorPort());
         result.setJobShardingStrategyType(jobConfiguration.getJobShardingStrategyType());
         result.setJobExecutorServiceHandlerType(jobConfiguration.getJobExecutorServiceHandlerType());
         result.setJobErrorHandlerType(jobConfiguration.getJobErrorHandlerType());

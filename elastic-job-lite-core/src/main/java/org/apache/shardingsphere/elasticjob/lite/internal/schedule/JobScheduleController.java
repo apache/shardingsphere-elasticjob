@@ -24,6 +24,7 @@ import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -41,6 +42,26 @@ public final class JobScheduleController {
     private final String triggerIdentity;
     
     /**
+     * Execute job.
+     */
+    public void executeJob() {
+        try {
+            if (!scheduler.checkExists(jobDetail.getKey())) {
+                scheduler.scheduleJob(jobDetail, createOneOffTrigger());
+                scheduler.start();
+            } else {
+                scheduler.triggerJob(jobDetail.getKey());
+            }
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
+    }
+    
+    private Trigger createOneOffTrigger() {
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(SimpleScheduleBuilder.simpleSchedule()).build();
+    }
+    
+    /**
      * Schedule job.
      * 
      * @param cron CRON expression
@@ -48,7 +69,7 @@ public final class JobScheduleController {
     public void scheduleJob(final String cron) {
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
-                scheduler.scheduleJob(jobDetail, createTrigger(cron));
+                scheduler.scheduleJob(jobDetail, createCronTrigger(cron));
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
@@ -65,14 +86,14 @@ public final class JobScheduleController {
         try {
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
             if (!scheduler.isShutdown() && null != trigger && !cron.equals(trigger.getCronExpression())) {
-                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createTrigger(cron));
+                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createCronTrigger(cron));
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
     }
     
-    private CronTrigger createTrigger(final String cron) {
+    private Trigger createCronTrigger(final String cron) {
         return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
     }
     

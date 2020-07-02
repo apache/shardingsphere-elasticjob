@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.std.simple;
+package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import org.apache.shardingsphere.elasticjob.lite.integrate.AbstractBaseStdJobAutoInitTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.WaitingUtils;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
-public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
+public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
-    public SimpleElasticJobTest() {
-        super(FooSimpleElasticJob.class);
+    public DisabledJobIntegrateTest(final TestType type) {
+        super(type, new FooSimpleElasticJob());
     }
     
     @Before
@@ -39,10 +35,7 @@ public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     }
     
     @Test
-    public void assertJobInit() {
-        while (!FooSimpleElasticJob.isCompleted()) {
-            WaitingUtils.waitingShortTime();
-        }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
+    public final void assertJobRunning() {
+        assertRegCenterCommonInfoWithDisabled();
     }
 }

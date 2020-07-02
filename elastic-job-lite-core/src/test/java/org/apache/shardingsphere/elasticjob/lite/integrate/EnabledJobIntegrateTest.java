@@ -17,24 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.junit.Before;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class WaitingUtils {
+public abstract class EnabledJobIntegrateTest extends BaseIntegrateTest {
     
-    /**
-     * Wait for a short time.
-     */
-    public static void waitingShortTime() {
-        sleep(300L);
+    protected EnabledJobIntegrateTest(final TestType type, final ElasticJob elasticJob) {
+        super(type, elasticJob);
     }
     
-    private static void sleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+    @Before
+    public final void autoSchedule() {
+        assertRegCenterCommonInfoWithEnabled();
     }
 }
