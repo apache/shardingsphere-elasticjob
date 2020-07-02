@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.one
 
 import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.util.ScriptElasticJobUtil;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 import org.junit.Test;
@@ -35,21 +35,21 @@ import static org.junit.Assert.assertThat;
 public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     
     public ScriptElasticJobTest() {
-        super(TestType.ONE_OFF, null);
+        super(TestType.ONE_OFF, new ScriptJob());
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.SCRIPT, 3).shardingItemParameters("0=A,1=B,2=C").overwrite(true)
-                .setProperty(ScriptJobExecutor.SCRIPT_KEY, ScriptElasticJobTest.class.getResource("/script/test.sh").getPath()).build();
+                .setProperty(ScriptJob.SCRIPT_KEY, ScriptElasticJobTest.class.getResource("/script/test.sh").getPath()).build();
     }
     
     @Test
     public void assertJobInit() throws IOException {
         ScriptElasticJobUtil.buildScriptCommandLine();
         BlockUtils.waitingShortTime();
-        String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
+        String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJob.SCRIPT_KEY);
         JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), YamlJobConfiguration.class).toJobConfiguration();
-        assertThat(jobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
+        assertThat(jobConfig.getProps().getProperty(ScriptJob.SCRIPT_KEY), is(scriptCommandLine));
     }
 }

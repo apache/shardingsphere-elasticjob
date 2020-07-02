@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.job.impl;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -40,7 +39,7 @@ public final class ScriptJobTest {
     public void assertExecuteWhenExecuteFailure() {
         ScriptJob scriptJob = new ScriptJob();
         Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, "not_exists_file");
+        props.setProperty(ScriptJob.SCRIPT_KEY, "not_exists_file");
         scriptJob.setProps(props);
         scriptJob.execute(mock(ShardingContext.class));
     }
@@ -49,7 +48,7 @@ public final class ScriptJobTest {
     public void assertExecuteWhenExecuteSuccess() {
         ScriptJob scriptJob = new ScriptJob();
         Properties props = new Properties();
-        props.setProperty(ScriptJobExecutor.SCRIPT_KEY, "echo");
+        props.setProperty(ScriptJob.SCRIPT_KEY, "echo");
         scriptJob.setProps(props);
         scriptJob.execute(mock(ShardingContext.class));
     }
