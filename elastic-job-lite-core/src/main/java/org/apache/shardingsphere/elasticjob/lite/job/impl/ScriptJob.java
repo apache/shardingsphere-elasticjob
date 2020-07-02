@@ -24,6 +24,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.job.TypedJob;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
@@ -48,7 +49,7 @@ public final class ScriptJob implements TypedJob {
         try {
             new DefaultExecutor().execute(commandLine);
         } catch (final IOException ex) {
-            throw new JobConfigurationException("Execute script failure.", ex);
+            throw new JobSystemException("Execute script failure.", ex);
         }
     }
     

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class ElasticJobVerify {
     
-    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
+    static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
