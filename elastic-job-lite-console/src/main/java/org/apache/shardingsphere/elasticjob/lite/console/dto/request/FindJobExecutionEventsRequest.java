@@ -50,6 +50,8 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
 
     /**
      * Create new FindJobExecutionEventsRequest with pageSize and pageNumber.
+     * @param pageNumber page number
+     * @param pageSize page size
      */
     public FindJobExecutionEventsRequest(final Integer pageSize, final Integer pageNumber) {
         this.pageSize = pageSize;
@@ -58,6 +60,12 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
 
     /**
      * Create new FindJobExecutionEventsRequest with properties.
+     * @param pageNumber page number
+     * @param pageSize page size
+     * @param sortBy the field name sort by
+     * @param orderType order type, asc or desc
+     * @param startTime start time
+     * @param endTime end time
      */
     public FindJobExecutionEventsRequest(final Integer pageSize, final Integer pageNumber, final String sortBy,
         final String orderType, final Date startTime, final Date endTime) {

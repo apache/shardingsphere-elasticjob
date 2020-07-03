@@ -35,6 +35,8 @@ public class FindJobStatusTraceEventsRequest extends BasePageRequest {
 
     /**
      * Create new FindJobStatusTraceEventsRequest with pageSize and pageNumber.
+     * @param pageNumber page number.
+     * @param pageSize page size.
      */
     public FindJobStatusTraceEventsRequest(final Integer pageSize, final Integer pageNumber) {
         this.pageSize = pageSize;
@@ -43,6 +45,12 @@ public class FindJobStatusTraceEventsRequest extends BasePageRequest {
 
     /**
      * Create new FindJobStatusTraceEventsRequest with properties.
+     * @param pageNumber page number
+     * @param pageSize page size
+     * @param sortBy the field name sort by
+     * @param orderType order type, asc or desc
+     * @param startTime start time
+     * @param endTime end time
      */
     public FindJobStatusTraceEventsRequest(final Integer pageSize, final Integer pageNumber, final String sortBy,
         final String orderType, final Date startTime, final Date endTime) {

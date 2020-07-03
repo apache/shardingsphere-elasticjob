@@ -46,7 +46,6 @@ public final class EventTraceHistoryController {
      *
      * @param requestParams query criteria
      * @return job execution event trace result
-     * @throws ParseException parse exception
      */
     @GetMapping(value = "/execution", produces = MediaType.APPLICATION_JSON)
     public BasePageResponse<JobExecutionEvent> findJobExecutionEvents(final FindJobExecutionEventsRequest requestParams) {
@@ -59,7 +58,6 @@ public final class EventTraceHistoryController {
      *
      * @param requestParams query criteria
      * @return job status trace result
-     * @throws ParseException parse exception
      */
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     public BasePageResponse<JobStatusTraceEvent> findJobStatusTraceEvents(final FindJobStatusTraceEventsRequest requestParams) {
