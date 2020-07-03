@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.w3c.dom.Element;
@@ -34,10 +33,5 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
         Properties result = new Properties();
         result.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
         return result;
-    }
-    
-    @Override
-    protected JobType getJobType() {
-        return JobType.DATAFLOW;
     }
 }

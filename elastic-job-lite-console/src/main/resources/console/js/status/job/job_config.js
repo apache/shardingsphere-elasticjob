@@ -48,7 +48,6 @@ function bindSubmitJobSettingsForm() {
         bootstrapValidator.validate();
         if (bootstrapValidator.isValid()) {
             var jobName = $("#job-name").val();
-            var jobType = $("#job-type").val();
             var shardingTotalCount = $("#sharding-total-count").val();
             var jobParameter = $("#job-parameter").val();
             var cron = $("#cron").val();
@@ -69,7 +68,7 @@ function bindSubmitJobSettingsForm() {
             var jobErrorHandler = $("#job-error-handler").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
-            var postJson = {jobName: jobName, jobType : jobType, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobExecutorServiceHandler: jobExecutorServiceHandler, jobErrorHandler: jobErrorHandler, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
+            var postJson = {jobName: jobName, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobExecutorServiceHandler: jobExecutorServiceHandler, jobErrorHandler: jobErrorHandler, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();

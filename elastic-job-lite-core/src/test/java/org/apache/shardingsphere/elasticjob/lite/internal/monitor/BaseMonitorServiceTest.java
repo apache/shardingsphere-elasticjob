@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
@@ -50,7 +49,7 @@ public abstract class BaseMonitorServiceTest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     public BaseMonitorServiceTest(final ElasticJob elasticJob) {
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").overwrite(true).build());
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
     @BeforeClass
