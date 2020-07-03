@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
@@ -86,7 +85,6 @@ public final class JobSettingsAPIImplTest {
     public void assertUpdateJobSettings() {
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
-        jobSettings.setJobType(JobType.DATAFLOW.toString());
         jobSettings.setCron("0/1 * * * * ?");
         jobSettings.setShardingTotalCount(3);
         jobSettings.setJobParameter("param");
