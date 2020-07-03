@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.job.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.junit.Test;

@@ -15,41 +15,50 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.bootstrap;
+package org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.scheduler.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
 /**
  * One off job bootstrap.
  */
-public final class OneOffJobBootstrap extends JobBootstrap {
+public final class OneOffJobBootstrap implements JobBootstrap {
+    
+    private final JobScheduler jobScheduler;
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     /**
      * Execute job.
      */
     public void execute() {
-        createJobScheduleController().executeJob();
+        jobScheduler.getJobScheduleController().executeJob();
+    }
+    
+    @Override
+    public void shutdown() {
+        jobScheduler.shutdown();
     }
 }

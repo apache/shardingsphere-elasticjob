@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.type.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.api.job.type;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 
 import java.util.List;
 

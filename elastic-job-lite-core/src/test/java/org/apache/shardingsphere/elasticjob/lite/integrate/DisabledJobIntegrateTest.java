@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,5 +38,8 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     @Test
     public final void assertJobRunning() {
         assertRegCenterCommonInfoWithDisabled();
+        while (!FooSimpleElasticJob.isCompleted()) {
+            BlockUtils.waitingShortTime();
+        }
     }
 }
