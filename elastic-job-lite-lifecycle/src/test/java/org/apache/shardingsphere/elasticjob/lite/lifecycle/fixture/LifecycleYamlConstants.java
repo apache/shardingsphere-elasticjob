@@ -65,7 +65,7 @@ public final class LifecycleYamlConstants {
             + "reconcileIntervalMinutes: 10\n"
             + "description: ''\n"
             + "props:\n"
-            + "  script.command.line: test.sh\n"
+            + "  script.command.line: echo\n"
             + "disabled: false\n"
             + "overwrite: false\n";
     

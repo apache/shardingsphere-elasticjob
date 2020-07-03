@@ -83,7 +83,7 @@ public final class JobSettingsAPIImplTest {
             assertTrue(jobSettings.isStreamingProcess());
         }
         if ("SCRIPT".equals(jobType)) {
-            assertThat(jobSettings.getScriptCommandLine(), is("test.sh"));
+            assertThat(jobSettings.getScriptCommandLine(), is("echo"));
         }
     }
     
