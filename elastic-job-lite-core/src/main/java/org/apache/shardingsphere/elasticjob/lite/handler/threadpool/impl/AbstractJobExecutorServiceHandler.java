@@ -17,18 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
 
+import java.util.concurrent.ExecutorService;
+import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.ElasticJobExecutorService;
+
 /**
- * Job executor service handler with use CPU available processors.
- */
-public final class CPUUsageJobExecutorServiceHandler extends AbstractJobExecutorServiceHandler {
+ * Abstract job executor service handler.
+ **/
+public abstract class AbstractJobExecutorServiceHandler implements JobExecutorServiceHandler {
     
     @Override
-    protected int getPoolSize() {
-        return Runtime.getRuntime().availableProcessors() * 2;
+    public ExecutorService createExecutorService(final String jobName) {
+        return new ElasticJobExecutorService("elastic-job-" + jobName, getPoolSize()).createExecutorService();
     }
     
-    @Override
-    public String getType() {
-        return "CPU";
-    }
+    protected abstract int getPoolSize();
 }

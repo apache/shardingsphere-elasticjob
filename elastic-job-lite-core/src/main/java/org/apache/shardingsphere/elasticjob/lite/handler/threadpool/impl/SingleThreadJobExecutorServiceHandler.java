@@ -17,19 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandler;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * Job executor service handler with single thread.
  */
-public final class SingleThreadJobExecutorServiceHandler implements JobExecutorServiceHandler {
+public final class SingleThreadJobExecutorServiceHandler extends AbstractJobExecutorServiceHandler {
     
     @Override
-    public ExecutorService createExecutorService(final String jobName) {
-        return Executors.newFixedThreadPool(1);
+    protected int getPoolSize() {
+        return 1;
     }
     
     @Override
