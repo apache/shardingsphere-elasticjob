@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
@@ -83,7 +83,7 @@ public final class JobSettingsAPIImplTest {
             assertTrue(jobSettings.isStreamingProcess());
         }
         if ("SCRIPT".equals(jobType)) {
-            assertThat(jobSettings.getScriptCommandLine(), is("test.sh"));
+            assertThat(jobSettings.getScriptCommandLine(), is("echo"));
         }
     }
     

@@ -17,8 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable.oneoff;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.DisabledJobIntegrateTest;
 
@@ -29,7 +28,7 @@ public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTe
     }
     
     @Override
-    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+    protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
     }
 }

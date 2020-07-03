@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 
 import java.io.Serializable;
 
@@ -93,7 +93,7 @@ public final class JobSettings implements Serializable {
         result.setDescription(description);
         result.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.valueOf(streamingProcess).toString());
         if (null != scriptCommandLine) {
-            result.getProps().setProperty(ScriptJobExecutor.SCRIPT_KEY, scriptCommandLine);
+            result.getProps().setProperty(ScriptJob.SCRIPT_KEY, scriptCommandLine);
         }
         return result;
     }

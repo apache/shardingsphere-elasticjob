@@ -20,12 +20,12 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
+import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -78,7 +78,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     }
     
     private void buildScriptJobSettings(final JobSettings jobSettings, final JobConfiguration config) {
-        jobSettings.setScriptCommandLine(config.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
+        jobSettings.setScriptCommandLine(config.getProps().getProperty(ScriptJob.SCRIPT_KEY));
     }
     
     @Override

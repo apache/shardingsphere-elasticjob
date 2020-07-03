@@ -17,13 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.rdb;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.JobRegisterStatisticsRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.JobRunningStatisticsRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.statistics.StatisticInterval;
@@ -39,22 +32,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RDBStatisticRepositoryTest {
-
+    
     @Autowired
     private TaskResultStatisticsRepository taskResultStatisticsRepository;
-
+    
     @Autowired
     private TaskRunningStatisticsRepository taskRunningStatisticsRepository;
-
+    
     @Autowired
     private JobRegisterStatisticsRepository jobRegisterStatisticsRepository;
-
+    
     @Autowired
     private JobRunningStatisticsRepository jobRunningStatisticsRepository;
-
+    
     @Test
     public void assertAddTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {

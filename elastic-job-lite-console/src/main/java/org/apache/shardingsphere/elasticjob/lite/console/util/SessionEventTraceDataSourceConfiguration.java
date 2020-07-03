@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.util;
 
+import org.apache.shardingsphere.elasticjob.lite.console.config.DynamicDataSourceConfig.DynamicDataSourceContextHolder;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 
 import lombok.AccessLevel;
@@ -31,20 +32,12 @@ public final class SessionEventTraceDataSourceConfiguration {
     private static EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration;
     
     /**
-     * Get event trace data source configuration.
-     * 
-     * @return event trace data source configuration
-     */
-    public static EventTraceDataSourceConfiguration getEventTraceDataSourceConfiguration() {
-        return eventTraceDataSourceConfiguration;
-    }
-    
-    /**
      * Set event trace data source configuration.
      *
      * @param eventTraceDataSourceConfiguration event trace data source configuration
      */
     public static void setDataSourceConfiguration(final EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration) {
+        DynamicDataSourceContextHolder.setDataSourceName(eventTraceDataSourceConfiguration.getName());
         SessionEventTraceDataSourceConfiguration.eventTraceDataSourceConfiguration = eventTraceDataSourceConfiguration;
     }
 }
