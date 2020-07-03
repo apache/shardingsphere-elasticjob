@@ -222,7 +222,6 @@ function bindRemoveButton() {
 
 function renderJob(data) {
     $("#job-name").attr("value", data.jobName);
-    $("#job-type").attr("value", data.jobType);
     $("#sharding-total-count").attr("value", data.shardingTotalCount);
     $("#cron").attr("value", data.cron);
     $("#sharding-item-parameters").text(data.shardingItemParameters);
@@ -230,18 +229,14 @@ function renderJob(data) {
     $("#monitor-execution").attr("checked", data.monitorExecution);
     $("#failover").attr("checked", data.failover);
     $("#misfire").attr("checked", data.misfire);
-    $("#streaming-process").attr("checked", data.streamingProcess);
     $("#max-time-diff-seconds").attr("value", data.maxTimeDiffSeconds);
     $("#job-sharding-strategy-type").attr("value", data.jobShardingStrategyType);
     $("#job-executor-service-handler").attr("value", data.jobExecutorServiceHandlerType);
     $("#job-error-handler").attr("value", data.jobErrorHandlerType);
     $("#reconcile-interval-minutes").attr("value", data.reconcileIntervalMinutes);
     $("#description").text(data.description);
+    $("#streaming-process").attr("checked", data.streamingProcess);
+    $("#streaming-process-group").show();
     $("#script-command-line").attr("value", data.scriptCommandLine);
-    if ("DATAFLOW" === $("#job-type").val()) {
-        $("#streaming-process-group").show();
-    }
-    if ("SCRIPT" === $("#job-type").val()) {
-        $("#script-commandLine-group").show();
-    }
+    $("#script-commandLine-group").show();
 }

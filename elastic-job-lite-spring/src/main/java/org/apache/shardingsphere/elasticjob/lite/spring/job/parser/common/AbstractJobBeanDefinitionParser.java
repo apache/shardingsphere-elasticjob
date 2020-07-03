@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common;
 
 import com.google.common.base.Strings;
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
@@ -69,7 +68,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     private BeanDefinition createJobConfigurationBeanDefinition(final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
         result.addConstructorArgValue(element.getAttribute(ID_ATTRIBUTE));
-        result.addConstructorArgValue(getJobType());
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.CRON_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.SHARDING_TOTAL_COUNT_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE));
@@ -125,6 +123,4 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     }
     
     protected abstract Properties getProps(Element element);
-    
-    protected abstract JobType getJobType();
 }

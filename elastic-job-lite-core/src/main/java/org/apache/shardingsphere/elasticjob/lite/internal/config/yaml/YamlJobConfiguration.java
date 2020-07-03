@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 
 import java.util.Properties;
@@ -32,8 +31,6 @@ import java.util.Properties;
 public final class YamlJobConfiguration {
     
     private String jobName;
-    
-    private JobType jobType;
     
     private String cron;
     
@@ -73,7 +70,7 @@ public final class YamlJobConfiguration {
      * @return job configuration
      */
     public JobConfiguration toJobConfiguration() {
-        JobConfiguration result = JobConfiguration.newBuilder(jobName, jobType, shardingTotalCount)
+        JobConfiguration result = JobConfiguration.newBuilder(jobName, shardingTotalCount)
                 .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
@@ -94,7 +91,6 @@ public final class YamlJobConfiguration {
     public static YamlJobConfiguration fromJobConfiguration(final JobConfiguration jobConfiguration) {
         YamlJobConfiguration result = new YamlJobConfiguration();
         result.setJobName(jobConfiguration.getJobName());
-        result.setJobType(jobConfiguration.getJobType());
         result.setCron(jobConfiguration.getCron());
         result.setShardingTotalCount(jobConfiguration.getShardingTotalCount());
         result.setShardingItemParameters(jobConfiguration.getShardingItemParameters());

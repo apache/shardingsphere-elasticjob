@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.DisabledJobIntegrateTest;
 
@@ -29,6 +28,6 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
     }
 }

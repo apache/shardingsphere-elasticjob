@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
@@ -44,20 +43,18 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobConfiguration jobConfig = YamlEngine.unmarshal(regCenter.get(jobNodePath.getConfigNodePath()), YamlJobConfiguration.class).toJobConfiguration();
-        String jobType = jobConfig.getJobType().name();
         buildSimpleJobSettings(jobName, result, jobConfig);
-        if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, jobConfig);
+        if (jobConfig.getProps().containsKey(DataflowJobExecutor.STREAM_PROCESS_KEY)) {
+            result.setStreamingProcess(Boolean.parseBoolean(jobConfig.getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
         }
-        if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, jobConfig);
+        if (jobConfig.getProps().containsKey(ScriptJob.SCRIPT_KEY)) {
+            result.setScriptCommandLine(jobConfig.getProps().getProperty(ScriptJob.SCRIPT_KEY));
         }
         return result;
     }
     
     private void buildSimpleJobSettings(final String jobName, final JobSettings jobSettings, final JobConfiguration jobConfig) {
         jobSettings.setJobName(jobName);
-        jobSettings.setJobType(jobConfig.getJobType().name());
         jobSettings.setShardingTotalCount(jobConfig.getShardingTotalCount());
         jobSettings.setCron(jobConfig.getCron());
         jobSettings.setShardingItemParameters(jobConfig.getShardingItemParameters());
@@ -71,14 +68,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         jobSettings.setJobErrorHandlerType(jobConfig.getJobErrorHandlerType());
         jobSettings.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
         jobSettings.setDescription(jobConfig.getDescription());
-    }
-    
-    private void buildDataflowJobSettings(final JobSettings jobSettings, final JobConfiguration config) {
-        jobSettings.setStreamingProcess(Boolean.parseBoolean(config.getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString()));
-    }
-    
-    private void buildScriptJobSettings(final JobSettings jobSettings, final JobConfiguration config) {
-        jobSettings.setScriptCommandLine(config.getProps().getProperty(ScriptJob.SCRIPT_KEY));
     }
     
     @Override

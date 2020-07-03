@@ -21,7 +21,6 @@ import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
 import org.apache.curator.framework.api.transaction.TransactionDeleteBuilder;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
@@ -137,7 +136,7 @@ public final class ShardingServiceTest {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").monitorExecution(true).build());
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
         when(executionService.hasRunningItems()).thenReturn(true, false);
         when(jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)).thenReturn(Arrays.asList("0", "1"));
         shardingService.shardingIfNecessary();
@@ -157,7 +156,7 @@ public final class ShardingServiceTest {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").monitorExecution(false).build());
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
         when(jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)).thenReturn(Arrays.asList("0", "1", "2", "3"));
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
@@ -182,7 +181,7 @@ public final class ShardingServiceTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
-        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
@@ -208,7 +207,7 @@ public final class ShardingServiceTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
-        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
@@ -219,7 +218,7 @@ public final class ShardingServiceTest {
     @Test
     public void assertHasShardingInfoInOfflineServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
-        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(0))).thenReturn("host0@-@0");
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(1))).thenReturn("host0@-@1");
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(2))).thenReturn("host0@-@2");
@@ -229,7 +228,7 @@ public final class ShardingServiceTest {
     @Test
     public void assertHasNotShardingInfoInOfflineServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
-        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(0))).thenReturn("host0@-@0");
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(1))).thenReturn("host0@-@1");
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(2))).thenReturn("host0@-@0");

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
@@ -85,18 +84,18 @@ public final class JavaMain {
     }
     
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        new ScheduleJobBootstrap(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaSimpleJob", JobType.SIMPLE, 3)
+        new ScheduleJobBootstrap(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaSimpleJob", 3)
                 .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build(), tracingConfig).schedule();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        new ScheduleJobBootstrap(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder("javaDataflowElasticJob", JobType.DATAFLOW, 3)
+        new ScheduleJobBootstrap(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder("javaDataflowElasticJob", 3)
                 .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build(), tracingConfig).schedule();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
-        new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", JobType.SCRIPT, 3)
+        new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", 3)
                 .cron("0/5 * * * * ?").setProperty(ScriptJob.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
     }
     
