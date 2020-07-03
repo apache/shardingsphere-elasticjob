@@ -97,7 +97,7 @@ public abstract class JobBootstrap {
     
     public JobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                         final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, TypedJobFactory.getJob(elasticJobType, jobConfig.getProps()), jobConfig, tracingConfig, elasticJobListeners);
+        this(regCenter, TypedJobFactory.createJobInstance(elasticJobType, jobConfig.getProps()), jobConfig, tracingConfig, elasticJobListeners);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {

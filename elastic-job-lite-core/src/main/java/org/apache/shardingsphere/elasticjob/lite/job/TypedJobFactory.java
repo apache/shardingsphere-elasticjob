@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.job;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 
 import java.util.HashMap;
@@ -41,17 +42,18 @@ public final class TypedJobFactory {
     }
     
     /**
-     * Get job.
+     * Create new job instance.
      * 
      * @param type job type
      * @param props job properties
-     * @return job
+     * @return new job instance
      */
-    public static TypedJob getJob(final String type, final Properties props) {
+    @SneakyThrows
+    public static TypedJob createJobInstance(final String type, final Properties props) {
         if (!JOBS.containsKey(type)) {
             throw new JobConfigurationException("Can not find job type `%s`.", type);
         }
-        TypedJob result = JOBS.get(type);
+        TypedJob result = JOBS.get(type).getClass().newInstance();
         result.init(props);
         return result; 
     }

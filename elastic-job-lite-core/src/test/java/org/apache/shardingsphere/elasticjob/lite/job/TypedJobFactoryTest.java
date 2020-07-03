@@ -29,15 +29,15 @@ import static org.junit.Assert.assertThat;
 public final class TypedJobFactoryTest {
     
     @Test(expected = JobConfigurationException.class)
-    public void assertGetJobFailureWhenJobTypeNotExisted() {
-        TypedJobFactory.getJob("INVALID", new Properties());
+    public void assertCreateJobInstanceFailureWhenJobTypeNotExisted() {
+        TypedJobFactory.createJobInstance("INVALID", new Properties());
     }
     
     @Test
-    public void assertGetJobSuccess() {
+    public void assertCreateJobInstanceSuccess() {
         Properties props = new Properties();
         props.setProperty("foo", "foo");
-        FooTypedJob actual = (FooTypedJob) TypedJobFactory.getJob("FOO", props);
+        FooTypedJob actual = (FooTypedJob) TypedJobFactory.createJobInstance("FOO", props);
         assertThat(actual.getFoo(), is("foo"));
     }
 }
