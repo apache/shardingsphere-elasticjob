@@ -39,6 +39,15 @@ public final class ScheduleJobBootstrap extends JobBootstrap {
         super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
+    public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJobType, jobConfig, elasticJobListeners);
+    }
+    
+    public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                                final ElasticJobListener... elasticJobListeners) {
+        super(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+    }
+    
     /**
      * Schedule job.
      */

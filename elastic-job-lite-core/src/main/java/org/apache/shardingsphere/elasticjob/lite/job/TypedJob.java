@@ -15,20 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable.oneoff;
+package org.apache.shardingsphere.elasticjob.lite.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.integrate.DisabledJobIntegrateTest;
+import org.apache.shardingsphere.elasticjob.lite.api.type.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
-public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
+import java.util.Properties;
+
+/**
+ * Typed job.
+ */
+public interface TypedJob extends SimpleJob, TypedSPI {
     
-    public OneOffDisabledJobIntegrateTest() {
-        super(TestType.ONE_OFF);
-    }
+    /**
+     * Get props.
+     * 
+     * @return props
+     */
+    Properties getProps();
     
-    @Override
-    protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
-    }
+    /**
+     * Set props.
+     * 
+     * @param props props
+     */
+    void setProps(Properties props);
 }

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.dataflow;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
@@ -43,7 +42,7 @@ public final class StreamingDataflowElasticJobForExecuteFailureTest extends Enab
     }
     
     @Override
-    protected JobConfiguration getJobConfiguration(final ElasticJob elasticJob, final String jobName) {
+    protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, JobType.DATAFLOW, 3).cron("0/1 * * * * ?")
                 .shardingItemParameters("0=A,1=B,2=C").overwrite(true).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
     }

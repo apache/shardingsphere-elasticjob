@@ -21,7 +21,6 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.api.type.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
@@ -32,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobShutdownHo
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.SetUpFacade;
+import org.apache.shardingsphere.elasticjob.lite.job.TypedJobFactory;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.quartz.JobBuilder;
@@ -87,8 +87,17 @@ public abstract class JobBootstrap {
         this.tracingConfig = tracingConfig;
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        this.jobConfig = setUpFacade.setUpJobConfiguration(null == elasticJob ? ScriptJob.class.getName() : elasticJob.getClass().getName(), jobConfig);
+        this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJob.getClass().getName(), jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
+    }
+    
+    public JobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        this(regCenter, elasticJobType, jobConfig, null, elasticJobListeners);
+    }
+    
+    public JobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
+                        final ElasticJobListener... elasticJobListeners) {
+        this(regCenter, TypedJobFactory.getJob(elasticJobType, jobConfig.getProps()), jobConfig, tracingConfig, elasticJobListeners);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
@@ -144,9 +153,7 @@ public abstract class JobBootstrap {
         result.getJobDataMap().put(JOB_CONFIG_DATA_MAP_KEY, getJobConfig());
         result.getJobDataMap().put(JOB_LISTENERS_DATA_MAP_KEY, elasticJobListeners);
         result.getJobDataMap().put(TRACING_CONFIG_DATA_MAP_KEY, tracingConfig);
-        if (null != elasticJob && !elasticJob.getClass().getName().equals(ScriptJob.class.getName())) {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
-        }
+        result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         return result;
     }
     
