@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.scheduler.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
 /**
@@ -55,7 +56,7 @@ public final class ScheduleJobBootstrap implements JobBootstrap {
      */
     public void schedule() {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron can not be empty.");
-        jobScheduler.createJobScheduleController().scheduleJob(jobScheduler.getJobConfig().getCron());
+        jobScheduler.getJobScheduleController().scheduleJob(jobScheduler.getJobConfig().getCron());
     }
     
     @Override

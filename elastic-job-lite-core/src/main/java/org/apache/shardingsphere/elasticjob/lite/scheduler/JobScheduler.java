@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.bootstrap;
+package org.apache.shardingsphere.elasticjob.lite.scheduler;
 
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
@@ -75,6 +75,9 @@ public final class JobScheduler {
     
     private final SchedulerFacade schedulerFacade;
     
+    @Getter
+    private final JobScheduleController jobScheduleController;
+    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         this(regCenter, elasticJob, jobConfig, null, elasticJobListeners);
     }
@@ -89,6 +92,7 @@ public final class JobScheduler {
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJob.getClass().getName(), jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
+        jobScheduleController = createJobScheduleController();
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
@@ -109,7 +113,7 @@ public final class JobScheduler {
         }
     }
     
-    protected JobScheduleController createJobScheduleController() {
+    private JobScheduleController createJobScheduleController() {
         JobScheduleController result = new JobScheduleController(createScheduler(), createJobDetail(), getJobConfig().getJobName());
         JobRegistry.getInstance().registerJob(getJobConfig().getJobName(), result);
         registerStartUpInfo();

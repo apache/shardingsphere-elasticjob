@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.scheduler.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
 /**
@@ -52,7 +53,7 @@ public final class OneOffJobBootstrap implements JobBootstrap {
      * Execute job.
      */
     public void execute() {
-        jobScheduler.createJobScheduleController().executeJob();
+        jobScheduler.getJobScheduleController().executeJob();
     }
     
     @Override
