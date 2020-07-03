@@ -120,13 +120,6 @@ public final class JobScheduler {
         return result;
     }
     
-    private void registerStartUpInfo() {
-        JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
-        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
-        setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
-    }
-    
     private Scheduler createScheduler() {
         Scheduler result;
         try {
@@ -161,10 +154,17 @@ public final class JobScheduler {
         return result;
     }
     
+    private void registerStartUpInfo() {
+        JobRegistry.getInstance().registerRegistryCenter(jobConfig.getJobName(), regCenter);
+        JobRegistry.getInstance().addJobInstance(jobConfig.getJobName(), new JobInstance());
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobConfig.getJobName(), jobConfig.getShardingTotalCount());
+        setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
+    }
+    
    /**
     * Shutdown job.
     */
-    public void shutdown() { 
+    public void shutdown() {
         schedulerFacade.shutdownInstance();
     }
 }
