@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.junit.Test;
 
@@ -31,7 +30,6 @@ public final class YamlJobConfigurationTest {
     public void assertToJobConfiguration() {
         YamlJobConfiguration yamlJobConfiguration = new YamlJobConfiguration();
         yamlJobConfiguration.setJobName("test_job");
-        yamlJobConfiguration.setJobType(JobType.SIMPLE);
         yamlJobConfiguration.setCron("0/1 * * * * ?");
         yamlJobConfiguration.setShardingTotalCount(3);
         yamlJobConfiguration.setShardingItemParameters("0=A,1=B,2=C");

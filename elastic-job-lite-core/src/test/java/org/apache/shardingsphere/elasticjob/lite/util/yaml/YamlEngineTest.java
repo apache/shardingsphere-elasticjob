@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.util.yaml;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.junit.Test;
 
@@ -38,7 +37,6 @@ public final class YamlEngineTest {
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
-            + "jobType: SIMPLE\n"
             + "maxTimeDiffSeconds: 0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
@@ -53,7 +51,6 @@ public final class YamlEngineTest {
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
-            + "jobType: SIMPLE\n"
             + "maxTimeDiffSeconds: 0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
@@ -65,7 +62,6 @@ public final class YamlEngineTest {
     public void assertMarshal() {
         YamlJobConfiguration yamlJobConfiguration = new YamlJobConfiguration();
         yamlJobConfiguration.setJobName("test_job");
-        yamlJobConfiguration.setJobType(JobType.SIMPLE);
         yamlJobConfiguration.setCron("0/1 * * * * ?");
         yamlJobConfiguration.setShardingTotalCount(3);
         yamlJobConfiguration.setShardingItemParameters("0=A,1=B,2=C");
@@ -82,7 +78,6 @@ public final class YamlEngineTest {
     public void assertMarshalWithNullValue() {
         YamlJobConfiguration yamlJobConfiguration = new YamlJobConfiguration();
         yamlJobConfiguration.setJobName("test_job");
-        yamlJobConfiguration.setJobType(JobType.SIMPLE);
         yamlJobConfiguration.setCron("0/1 * * * * ?");
         yamlJobConfiguration.setShardingTotalCount(3);
         assertThat(YamlEngine.marshal(yamlJobConfiguration), is(YAML_WITH_NULL));
@@ -92,7 +87,6 @@ public final class YamlEngineTest {
     public void assertUnmarshal() {
         YamlJobConfiguration yamlJobConfiguration = YamlEngine.unmarshal(YAML, YamlJobConfiguration.class);
         assertThat(yamlJobConfiguration.getJobName(), is("test_job"));
-        assertThat(yamlJobConfiguration.getJobType(), is(JobType.SIMPLE));
         assertThat(yamlJobConfiguration.getCron(), is("0/1 * * * * ?"));
         assertThat(yamlJobConfiguration.getShardingTotalCount(), is(3));
         assertThat(yamlJobConfiguration.getShardingItemParameters(), is("0=A,1=B,2=C"));
@@ -111,7 +105,6 @@ public final class YamlEngineTest {
     public void assertUnmarshalWithNullValue() {
         YamlJobConfiguration yamlJobConfiguration = YamlEngine.unmarshal(YAML_WITH_NULL, YamlJobConfiguration.class);
         assertThat(yamlJobConfiguration.getJobName(), is("test_job"));
-        assertThat(yamlJobConfiguration.getJobType(), is(JobType.SIMPLE));
         assertThat(yamlJobConfiguration.getCron(), is("0/1 * * * * ?"));
         assertThat(yamlJobConfiguration.getShardingTotalCount(), is(3));
         assertNull(yamlJobConfiguration.getShardingItemParameters());

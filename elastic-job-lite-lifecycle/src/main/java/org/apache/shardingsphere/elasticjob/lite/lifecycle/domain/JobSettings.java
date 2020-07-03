@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
@@ -77,7 +76,6 @@ public final class JobSettings implements Serializable {
     public YamlJobConfiguration toYamlJobConfiguration() {
         YamlJobConfiguration result = new YamlJobConfiguration();
         result.setJobName(jobName);
-        result.setJobType(JobType.valueOf(jobType));
         result.setCron(cron);
         result.setShardingTotalCount(shardingTotalCount);
         result.setShardingItemParameters(shardingItemParameters);
