@@ -27,19 +27,19 @@ public final class ShardingNode {
     
     public static final String ROOT = "sharding";
     
-    static final String INSTANCE_APPENDIX = "instance";
+    private static final String INSTANCE_APPENDIX = "instance";
     
-    public static final String INSTANCE = ROOT + "/%s/" + INSTANCE_APPENDIX;
+    private static final String INSTANCE = ROOT + "/%s/" + INSTANCE_APPENDIX;
     
-    static final String RUNNING_APPENDIX = "running";
+    private static final String RUNNING_APPENDIX = "running";
     
-    static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
+    private static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
     
-    static final String MISFIRE = ROOT + "/%s/misfire";
+    private static final String MISFIRE = ROOT + "/%s/misfire";
     
-    static final String DISABLED = ROOT + "/%s/disabled";
+    private static final String DISABLED = ROOT + "/%s/disabled";
     
-    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
+    private static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
     
     static final String NECESSARY = LEADER_ROOT + "/necessary";
     

@@ -79,7 +79,6 @@ public final class ElasticJobExecutor {
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
     
-    @SuppressWarnings("unchecked")
     private static JobItemExecutor getJobItemExecutor(final ElasticJob elasticJob) {
         if (elasticJob instanceof SimpleJob) {
             return new SimpleJobExecutor();

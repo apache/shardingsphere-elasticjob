@@ -26,13 +26,13 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
  */
 public final class FailoverNode {
     
-    static final String FAILOVER = "failover";
+    private static final String FAILOVER = "failover";
     
-    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
+    private static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
     
     static final String ITEMS_ROOT = LEADER_ROOT + "/items";
     
-    static final String ITEMS = ITEMS_ROOT + "/%s";
+    private static final String ITEMS = ITEMS_ROOT + "/%s";
     
     static final String LATCH = LEADER_ROOT + "/latch";
     
@@ -54,7 +54,7 @@ public final class FailoverNode {
     
     /**
      * Get sharding item by execution failover path.
-     * 
+     *
      * @param path failover path
      * @return sharding item, return null if not from failover path
      */

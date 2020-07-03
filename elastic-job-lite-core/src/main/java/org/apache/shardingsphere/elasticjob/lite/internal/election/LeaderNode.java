@@ -26,7 +26,7 @@ public final class LeaderNode {
     
     public static final String ROOT = "leader";
     
-    static final String ELECTION_ROOT = ROOT + "/election";
+    private static final String ELECTION_ROOT = ROOT + "/election";
     
     static final String INSTANCE = ELECTION_ROOT + "/instance";
     

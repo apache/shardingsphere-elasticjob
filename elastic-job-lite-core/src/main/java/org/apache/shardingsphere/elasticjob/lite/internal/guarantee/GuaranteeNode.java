@@ -25,7 +25,7 @@ import com.google.common.base.Joiner;
  */
 public final class GuaranteeNode {
     
-    static final String ROOT = "guarantee";
+    private static final String ROOT = "guarantee";
     
     static final String STARTED_ROOT = ROOT + "/started";
     
