@@ -23,6 +23,7 @@ import lombok.Setter;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.type.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.job.TypedJob;
@@ -36,7 +37,7 @@ import java.util.Properties;
  */
 @Getter
 @Setter
-public final class ScriptJob implements TypedJob {
+public final class ScriptJob implements SimpleJob, TypedJob {
     
     public static final String SCRIPT_KEY = "script.command.line";
     
