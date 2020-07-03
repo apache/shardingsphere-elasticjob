@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.job;
 
+import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
 import java.util.Properties;
@@ -24,7 +25,7 @@ import java.util.Properties;
 /**
  * Typed job.
  */
-public interface TypedJob extends TypedSPI {
+public interface TypedJob extends ElasticJob, TypedSPI {
     
     /**
      * Get props.
