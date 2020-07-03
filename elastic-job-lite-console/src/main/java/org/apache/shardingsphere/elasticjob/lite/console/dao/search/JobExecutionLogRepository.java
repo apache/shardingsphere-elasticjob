@@ -15,33 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
-
-/**
- * Dataflow job.
- * 
- * @param <T> type of data
- */
-public interface DataflowJob<T> extends ElasticJob {
-    
-    /**
-     * Fetch to be processed data.
-     *
-     * @param shardingContext sharding context
-     * @return to be processed data
-     */
-    List<T> fetchData(ShardingContext shardingContext);
-    
-    /**
-     * Process data.
-     *
-     * @param shardingContext sharding context
-     * @param data to be processed data
-     */
-    void processData(ShardingContext shardingContext, List<T> data);
+public interface JobExecutionLogRepository extends JpaRepository<JobExecutionLog, String>, JpaSpecificationExecutor<JobExecutionLog> {
 }

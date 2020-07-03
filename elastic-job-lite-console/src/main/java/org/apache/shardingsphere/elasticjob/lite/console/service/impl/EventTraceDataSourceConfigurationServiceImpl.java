@@ -17,14 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.service.impl;
 
+import org.apache.shardingsphere.elasticjob.lite.console.config.DynamicDataSourceConfig.DynamicDataSource;
+import org.apache.shardingsphere.elasticjob.lite.console.config.DynamicDataSourceConfig.DynamicDataSourceContextHolder;
+import org.apache.shardingsphere.elasticjob.lite.console.domain.DataSourceFactory;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.EventTraceDataSourceConfigurations;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.GlobalConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.repository.ConfigurationsXmlRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.util.Optional;
 
 /**
@@ -34,6 +39,9 @@ import java.util.Optional;
 public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
+    
+    @Autowired
+    private DynamicDataSource dynamicDataSource;
     
     @Override
     public EventTraceDataSourceConfigurations loadAll() {
@@ -45,6 +53,8 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
         GlobalConfiguration configs = loadGlobal();
         EventTraceDataSourceConfiguration result = find(name, configs.getEventTraceDataSourceConfigurations());
         setActivated(configs, result);
+        // Activate the dataSource by data source name for spring boot
+        DynamicDataSourceContextHolder.setDataSourceName(name);
         return result;
     }
     
@@ -90,6 +100,8 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
         if (result) {
             configurationsXmlRepository.save(configs);
         }
+        DataSource dataSource = DataSourceFactory.createDataSource(config);
+        dynamicDataSource.addDataSource(config.getName(), dataSource);
         return result;
     }
     

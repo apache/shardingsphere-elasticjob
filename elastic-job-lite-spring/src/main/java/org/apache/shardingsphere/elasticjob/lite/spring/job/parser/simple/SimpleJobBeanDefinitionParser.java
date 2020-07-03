@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.simple;
 
-import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.w3c.dom.Element;
 

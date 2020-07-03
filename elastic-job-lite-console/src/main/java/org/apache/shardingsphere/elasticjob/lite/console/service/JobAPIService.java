@@ -32,7 +32,7 @@ public interface JobAPIService {
      * @return job settings API
      */
     JobSettingsAPI getJobSettingsAPI();
-
+    
     /**
      * Job operate API.
      *

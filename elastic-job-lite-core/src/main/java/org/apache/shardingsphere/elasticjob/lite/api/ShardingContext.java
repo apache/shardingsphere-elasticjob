@@ -28,37 +28,16 @@ import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 @ToString
 public final class ShardingContext {
     
-    /**
-     * job name.
-     */
     private final String jobName;
     
-    /**
-     * task ID.
-     */
     private final String taskId;
     
-    /**
-     * sharding total count.
-     */
     private final int shardingTotalCount;
     
-    /**
-     * job parameter.
-     * 
-     * <p>Can configure for same job class, but use different parameter for different job schedule instance.</p>
-     * 
-     */
     private final String jobParameter;
     
-    /**
-     * Sharding item assigned for this sharding.
-     */
     private final int shardingItem;
     
-    /**
-     * Sharding parameter assigned for this sharding.
-     */
     private final String shardingParameter;
     
     public ShardingContext(final ShardingContexts shardingContexts, final int shardingItem) {

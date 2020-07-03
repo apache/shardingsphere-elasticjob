@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api;
+package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
-/**
- * Job type.
- */
-public enum JobType {
-    
-    SIMPLE, DATAFLOW, SCRIPT
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface JobStatusTraceLogRepository extends JpaRepository<JobStatusTraceLog, String>, JpaSpecificationExecutor<JobStatusTraceLog> {
 }
