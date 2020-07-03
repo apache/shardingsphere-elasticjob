@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
 import java.util.Properties;
