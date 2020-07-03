@@ -73,7 +73,7 @@ public final class YamlJobConfiguration {
      * @return job configuration
      */
     public JobConfiguration toJobConfiguration() {
-        JobConfiguration result = JobConfiguration.newBuilder(jobName, jobType, shardingTotalCount)
+        JobConfiguration result = JobConfiguration.newBuilder(jobName, shardingTotalCount)
                 .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)

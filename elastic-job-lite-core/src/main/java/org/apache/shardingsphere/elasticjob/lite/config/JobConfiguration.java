@@ -23,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 
 import java.util.Properties;
 
@@ -35,8 +34,6 @@ import java.util.Properties;
 public final class JobConfiguration {
     
     private final String jobName;
-    
-    private final JobType jobType;
     
     private final String cron;
     
@@ -74,20 +71,17 @@ public final class JobConfiguration {
      * Create ElasticJob configuration builder.
      *
      * @param jobName job name
-     * @param jobType job type
      * @param shardingTotalCount sharding total count
      * @return ElasticJob configuration builder
      */
-    public static Builder newBuilder(final String jobName, final JobType jobType, final int shardingTotalCount) {
-        return new Builder(jobName, jobType, shardingTotalCount);
+    public static Builder newBuilder(final String jobName, final int shardingTotalCount) {
+        return new Builder(jobName, shardingTotalCount);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
         
         private final String jobName;
-        
-        private final JobType jobType;
         
         private String cron;
         
@@ -346,7 +340,7 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobConfiguration(jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
+            return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
         }

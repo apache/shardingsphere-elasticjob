@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.type.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
@@ -53,7 +52,7 @@ public class DataflowJobConfig {
     }
     
     private JobConfiguration getJobConfiguration(final Class<? extends DataflowJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
-        return JobConfiguration.newBuilder(jobClass.getName(), JobType.DATAFLOW, shardingTotalCount)
+        return JobConfiguration.newBuilder(jobClass.getName(), shardingTotalCount)
                 .cron(cron).shardingItemParameters(shardingItemParameters).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).overwrite(true).build();
     }
 }
