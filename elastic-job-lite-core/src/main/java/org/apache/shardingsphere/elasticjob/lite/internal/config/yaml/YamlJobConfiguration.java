@@ -94,7 +94,6 @@ public final class YamlJobConfiguration {
     public static YamlJobConfiguration fromJobConfiguration(final JobConfiguration jobConfiguration) {
         YamlJobConfiguration result = new YamlJobConfiguration();
         result.setJobName(jobConfiguration.getJobName());
-        result.setJobType(jobConfiguration.getJobType());
         result.setCron(jobConfiguration.getCron());
         result.setShardingTotalCount(jobConfiguration.getShardingTotalCount());
         result.setShardingItemParameters(jobConfiguration.getShardingItemParameters());

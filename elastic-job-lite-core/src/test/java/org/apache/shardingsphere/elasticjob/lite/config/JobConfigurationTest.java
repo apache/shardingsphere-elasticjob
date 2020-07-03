@@ -39,7 +39,6 @@ public final class JobConfigurationTest {
                 .description("desc").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
@@ -62,7 +61,6 @@ public final class JobConfigurationTest {
     public void assertBuildRequiredProperties() {
         JobConfiguration actual = JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build();
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is(""));
@@ -84,11 +82,6 @@ public final class JobConfigurationTest {
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyJobName() {
         JobConfiguration.newBuilder("", JobType.SIMPLE, 3).cron("0/1 * * * * ?").build();
-    }
-    
-    @Test(expected = NullPointerException.class)
-    public void assertBuildWithNullJobType() {
-        JobConfiguration.newBuilder("test_job", null, 3).cron("0/1 * * * * ?").build();
     }
     
     @Test(expected = IllegalArgumentException.class)

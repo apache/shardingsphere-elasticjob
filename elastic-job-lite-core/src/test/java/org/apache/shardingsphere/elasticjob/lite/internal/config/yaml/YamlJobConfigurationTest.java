@@ -48,7 +48,6 @@ public final class YamlJobConfigurationTest {
         yamlJobConfiguration.setOverwrite(true);
         JobConfiguration actual = yamlJobConfiguration.toJobConfiguration();
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is("0=A,1=B,2=C"));
@@ -76,7 +75,6 @@ public final class YamlJobConfigurationTest {
                 .disabled(true).overwrite(true).build();
         YamlJobConfiguration actual = YamlJobConfiguration.fromJobConfiguration(jobConfiguration);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is("0=A,1=B,2=C"));

@@ -53,7 +53,8 @@ public final class JobSettingsAPIImplTest {
     public void assertGetDataflowJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "DATAFLOW");
+        assertJobSettings(actual);
+        assertTrue(actual.isStreamingProcess());
         verify(regCenter).get("/test_job/config");
     }
     
@@ -61,13 +62,13 @@ public final class JobSettingsAPIImplTest {
     public void assertGetScriptJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual, "SCRIPT");
+        assertJobSettings(actual);
+        assertThat(actual.getScriptCommandLine(), is("echo"));
         verify(regCenter).get("/test_job/config");
     }
     
-    private void assertJobSettings(final JobSettings jobSettings, final String jobType) {
+    private void assertJobSettings(final JobSettings jobSettings) {
         assertThat(jobSettings.getJobName(), is("test_job"));
-        assertThat(jobSettings.getJobType(), is(jobType));
         assertThat(jobSettings.getShardingTotalCount(), is(3));
         assertThat(jobSettings.getCron(), is("0/1 * * * * ?"));
         assertThat(jobSettings.getShardingItemParameters(), is(""));
@@ -79,12 +80,6 @@ public final class JobSettingsAPIImplTest {
         assertNull(jobSettings.getJobShardingStrategyType());
         assertThat(jobSettings.getReconcileIntervalMinutes(), is(10));
         assertThat(jobSettings.getDescription(), is(""));
-        if ("DATAFLOW".equals(jobType)) {
-            assertTrue(jobSettings.isStreamingProcess());
-        }
-        if ("SCRIPT".equals(jobType)) {
-            assertThat(jobSettings.getScriptCommandLine(), is("echo"));
-        }
     }
     
     @Test
