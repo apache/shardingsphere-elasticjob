@@ -28,31 +28,38 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguratio
 /**
  * Schedule job bootstrap.
  */
-public final class ScheduleJobBootstrap extends JobBootstrap {
+public final class ScheduleJobBootstrap implements JobBootstrap {
+    
+    private final JobScheduler jobScheduler;
     
     public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, elasticJobListeners);
     }
     
     public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                                 final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, elasticJobListeners);
     }
     
     public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                                 final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     /**
      * Schedule job.
      */
     public void schedule() {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(getJobConfig().getCron()), "Cron can not be empty.");
-        createJobScheduleController().scheduleJob(getJobConfig().getCron());
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron can not be empty.");
+        jobScheduler.createJobScheduleController().scheduleJob(jobScheduler.getJobConfig().getCron());
+    }
+    
+    @Override
+    public void shutdown() {
+        jobScheduler.shutdown();
     }
 }

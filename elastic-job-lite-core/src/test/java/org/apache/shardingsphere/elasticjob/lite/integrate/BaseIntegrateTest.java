@@ -58,7 +58,7 @@ public abstract class BaseIntegrateTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
-    private final JobBootstrap bootstrap;
+    private final JobBootstrap jobBootstrap;
     
     private final LeaderService leaderService;
     
@@ -67,7 +67,7 @@ public abstract class BaseIntegrateTest {
     
     protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
         jobConfiguration = getJobConfiguration(jobName);
-        bootstrap = createJobBootstrap(type, elasticJob);
+        jobBootstrap = createJobBootstrap(type, elasticJob);
         leaderService = new LeaderService(regCenter, jobName);
     }
     
@@ -94,16 +94,16 @@ public abstract class BaseIntegrateTest {
     @Before
     public void setUp() {
         regCenter.init();
-        if (bootstrap instanceof ScheduleJobBootstrap) {
-            ((ScheduleJobBootstrap) bootstrap).schedule();
+        if (jobBootstrap instanceof ScheduleJobBootstrap) {
+            ((ScheduleJobBootstrap) jobBootstrap).schedule();
         } else {
-            ((OneOffJobBootstrap) bootstrap).execute();
+            ((OneOffJobBootstrap) jobBootstrap).execute();
         }
     }
     
     @After
     public void tearDown() {
-        bootstrap.shutdown();
+        jobBootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
@@ -121,7 +121,7 @@ public abstract class BaseIntegrateTest {
         assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(regCenter.get("/" + jobName + "/config"), YamlJobConfiguration.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
-        if (bootstrap instanceof ScheduleJobBootstrap) {
+        if (jobBootstrap instanceof ScheduleJobBootstrap) {
             assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
         } else {
             assertNull(jobConfig.getCron());

@@ -26,30 +26,37 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguratio
 /**
  * One off job bootstrap.
  */
-public final class OneOffJobBootstrap extends JobBootstrap {
+public final class OneOffJobBootstrap implements JobBootstrap {
+    
+    private final JobScheduler jobScheduler;
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, elasticJobListeners);
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
                               final ElasticJobListener... elasticJobListeners) {
-        super(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
     }
     
     /**
      * Execute job.
      */
     public void execute() {
-        createJobScheduleController().executeJob();
+        jobScheduler.createJobScheduleController().executeJob();
+    }
+    
+    @Override
+    public void shutdown() {
+        jobScheduler.shutdown();
     }
 }
