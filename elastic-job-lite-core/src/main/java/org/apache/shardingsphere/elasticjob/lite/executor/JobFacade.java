@@ -94,18 +94,6 @@ public interface JobFacade {
     boolean isExecuteMisfired(Collection<Integer> shardingItems);
     
     /**
-     * Judge job whether eligible running.
-     * 
-     * <p>The ineligible job includes:
-     * 1. Need to shutdown;
-     * 2. Need to resharding;
-     * 3. Not stream job.
-     * 
-     * @return job is eligible running or not
-     */
-    boolean isEligibleForJobRunning();
-    
-    /**
      * Judge job whether need resharding.
      *
      * @return whether need resharding

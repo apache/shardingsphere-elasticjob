@@ -18,13 +18,12 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.collect.Lists;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestElasticJobListener;
+import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
@@ -207,33 +206,6 @@ public final class LiteJobFacadeTest {
     public void assertAfterJobExecuted() {
         liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
         verify(caller).after();
-    }
-    
-    @Test
-    public void assertNotEligibleForJobRunningWhenNeedSharding() {
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build());
-        when(shardingService.isNeedSharding()).thenReturn(true);
-        assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
-        verify(shardingService).isNeedSharding();
-    }
-    
-    @Test
-    public void assertNotEligibleForJobRunningWhenUnStreamingProcess() {
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder("test_job", JobType.DATAFLOW, 3).cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build());
-        assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
-        verify(configService).load(true);
-    }
-    
-    @Test
-    public void assertEligibleForJobRunningWhenNotNeedShardingAndStreamingProcess() {
-        when(shardingService.isNeedSharding()).thenReturn(false);
-        when(configService.load(true)).thenReturn(
-                JobConfiguration.newBuilder("test_job", JobType.DATAFLOW, 3).cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build());
-        assertThat(liteJobFacade.isEligibleForJobRunning(), is(true));
-        verify(shardingService).isNeedSharding();
-        verify(configService).load(true);
     }
     
     @Test
