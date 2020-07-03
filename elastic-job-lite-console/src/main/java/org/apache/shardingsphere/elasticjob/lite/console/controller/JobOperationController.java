@@ -79,7 +79,7 @@ public final class JobOperationController {
      * 
      * @param jobName job name
      */
-    @PostMapping(value = "/{jobName}/disable", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/{jobName}/disable")
     public void disableJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().disable(jobName, null);
     }
@@ -89,7 +89,7 @@ public final class JobOperationController {
      *
      * @param jobName job name
      */
-    @PostMapping(value = "/{jobName}/enable", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/{jobName}/enable")
     public void enableJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().enable(jobName, null);
     }
@@ -99,7 +99,7 @@ public final class JobOperationController {
      * 
      * @param jobName job name
      */
-    @PostMapping(value = "/{jobName}/shutdown", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/{jobName}/shutdown")
     public void shutdownJob(@PathVariable("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(jobName, null);
     }
@@ -121,7 +121,7 @@ public final class JobOperationController {
      * @param jobName job name
      * @param item sharding item
      */
-    @PostMapping(value = "/{jobName}/sharding/{item}/disable", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/{jobName}/sharding/{item}/disable")
     public void disableSharding(@PathVariable("jobName") final String jobName, @PathVariable("item") final String item) {
         jobAPIService.getShardingOperateAPI().disable(jobName, item);
     }
@@ -132,7 +132,7 @@ public final class JobOperationController {
      * @param jobName job name
      * @param item sharding item
      */
-    @PostMapping(value = "/{jobName}/sharding/{item}/enable", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/{jobName}/sharding/{item}/enable")
     public void enableSharding(@PathVariable("jobName") final String jobName, @PathVariable("item") final String item) {
         jobAPIService.getShardingOperateAPI().enable(jobName, item);
     }
