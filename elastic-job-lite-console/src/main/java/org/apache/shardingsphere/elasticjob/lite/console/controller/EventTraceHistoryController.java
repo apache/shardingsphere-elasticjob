@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import java.text.ParseException;
 import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExecutionEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
