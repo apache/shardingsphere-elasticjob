@@ -36,8 +36,6 @@ public final class JobSettings implements Serializable {
     
     private String jobName;
     
-    private String jobType;
-    
     private String cron;
     
     private int shardingTotalCount;
