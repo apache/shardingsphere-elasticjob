@@ -37,7 +37,7 @@ public final class ScriptJob implements SimpleJob, TypedJob {
     
     public static final String SCRIPT_KEY = "script.command.line";
     
-    private String scriptCommandLine;
+    private volatile String scriptCommandLine;
     
     @Override
     public void init(final Properties props) {
