@@ -18,8 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.job.impl;
 
 import com.google.common.base.Strings;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
@@ -35,31 +33,34 @@ import java.util.Properties;
 /**
  * Script job.
  */
-@Getter
-@Setter
 public final class ScriptJob implements SimpleJob, TypedJob {
     
     public static final String SCRIPT_KEY = "script.command.line";
     
-    private Properties props;
+    private volatile String scriptCommandLine;
+    
+    @Override
+    public void init(final Properties props) {
+        scriptCommandLine = getScriptCommandLine(props);
+    }
+    
+    private String getScriptCommandLine(final Properties props) {
+        String result = props.getProperty(SCRIPT_KEY);
+        if (Strings.isNullOrEmpty(result)) {
+            throw new JobConfigurationException("Cannot find script command line, job is not executed.");
+        }
+        return result;
+    }
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        CommandLine commandLine = CommandLine.parse(getScriptCommandLine(shardingContext));
+        CommandLine commandLine = CommandLine.parse(scriptCommandLine);
         commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
             new DefaultExecutor().execute(commandLine);
         } catch (final IOException ex) {
             throw new JobSystemException("Execute script failure.", ex);
         }
-    }
-    
-    private String getScriptCommandLine(final ShardingContext shardingContext) {
-        String result = props.getProperty(SCRIPT_KEY);
-        if (Strings.isNullOrEmpty(result)) {
-            throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName());
-        }
-        return result;
     }
     
     @Override

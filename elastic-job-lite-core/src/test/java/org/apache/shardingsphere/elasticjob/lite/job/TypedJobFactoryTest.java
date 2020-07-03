@@ -17,20 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.lite.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.job.fixture.FooTypedJob;
+import org.junit.Test;
 
 import java.util.Properties;
 
-/**
- * Typed job.
- */
-public interface TypedJob extends ElasticJob, TypedSPI {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public final class TypedJobFactoryTest {
     
-    /**
-     * Initialize job.
-     * 
-     * @param props job properties
-     */
-    void init(Properties props);
+    @Test(expected = JobConfigurationException.class)
+    public void assertCreateJobInstanceFailureWhenJobTypeNotExisted() {
+        TypedJobFactory.createJobInstance("INVALID", new Properties());
+    }
+    
+    @Test
+    public void assertCreateJobInstanceSuccess() {
+        Properties props = new Properties();
+        props.setProperty("foo", "foo");
+        FooTypedJob actual = (FooTypedJob) TypedJobFactory.createJobInstance("FOO", props);
+        assertThat(actual.getFoo(), is("foo"));
+    }
 }
