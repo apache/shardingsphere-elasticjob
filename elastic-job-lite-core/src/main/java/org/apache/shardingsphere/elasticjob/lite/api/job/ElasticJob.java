@@ -15,20 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.type.simple;
-
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
+package org.apache.shardingsphere.elasticjob.lite.api.job;
 
 /**
- * Simple job.
+ * ElasticJob interface.
  */
-public interface SimpleJob extends ElasticJob {
-    
-    /**
-     * Execute job.
-     *
-     * @param shardingContext sharding context
-     */
-    void execute(ShardingContext shardingContext);
+public interface ElasticJob {
 }

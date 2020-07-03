@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.junit.Before;
 
 public abstract class EnabledJobIntegrateTest extends BaseIntegrateTest {
