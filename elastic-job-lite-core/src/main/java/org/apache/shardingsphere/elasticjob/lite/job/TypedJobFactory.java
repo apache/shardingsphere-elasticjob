@@ -52,7 +52,7 @@ public final class TypedJobFactory {
             throw new JobConfigurationException("Can not find job type `%s`.", type);
         }
         TypedJob result = JOBS.get(type);
-        result.setProps(props);
+        result.init(props);
         return result; 
     }
 }

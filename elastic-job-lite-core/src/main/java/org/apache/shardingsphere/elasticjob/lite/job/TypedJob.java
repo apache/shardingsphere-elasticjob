@@ -28,16 +28,9 @@ import java.util.Properties;
 public interface TypedJob extends ElasticJob, TypedSPI {
     
     /**
-     * Get props.
+     * Initialize job.
      * 
-     * @return props
+     * @param props job properties
      */
-    Properties getProps();
-    
-    /**
-     * Set props.
-     * 
-     * @param props props
-     */
-    void setProps(Properties props);
+    void init(Properties props);
 }

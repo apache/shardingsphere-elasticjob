@@ -31,7 +31,7 @@ public final class ScriptJobTest {
     @Test(expected = JobConfigurationException.class)
     public void assertExecuteWhenCommandLineIsEmpty() {
         ScriptJob scriptJob = new ScriptJob();
-        scriptJob.setProps(new Properties());
+        scriptJob.init(new Properties());
         scriptJob.execute(mock(ShardingContext.class));
     }
     
@@ -40,7 +40,7 @@ public final class ScriptJobTest {
         ScriptJob scriptJob = new ScriptJob();
         Properties props = new Properties();
         props.setProperty(ScriptJob.SCRIPT_KEY, "not_exists_file");
-        scriptJob.setProps(props);
+        scriptJob.init(props);
         scriptJob.execute(mock(ShardingContext.class));
     }
     
@@ -49,7 +49,7 @@ public final class ScriptJobTest {
         ScriptJob scriptJob = new ScriptJob();
         Properties props = new Properties();
         props.setProperty(ScriptJob.SCRIPT_KEY, "echo");
-        scriptJob.setProps(props);
+        scriptJob.init(props);
         scriptJob.execute(mock(ShardingContext.class));
     }
 }
