@@ -38,4 +38,11 @@ public interface JobItemExecutor<T extends ElasticJob> {
      * @param shardingContext sharding context
      */
     void process(T elasticJob, JobConfiguration jobConfig, JobFacade jobFacade, ShardingContext shardingContext);
+    
+    /**
+     * Get elastic job class.
+     * 
+     * @return elastic job class
+     */
+    Class<T> getElasticJobClass();
 }
