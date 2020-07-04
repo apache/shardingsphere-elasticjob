@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNull;
 public final class MonitorServiceEnableTest extends BaseMonitorServiceTest {
     
     public MonitorServiceEnableTest() {
-        super(new FooSimpleElasticJob());
+        super(new FooSimpleJob());
     }
     
     @Before
