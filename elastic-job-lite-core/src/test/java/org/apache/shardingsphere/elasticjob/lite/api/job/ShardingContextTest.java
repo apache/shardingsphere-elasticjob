@@ -18,8 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.api.job;
 
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -28,7 +30,7 @@ public final class ShardingContextTest {
     
     @Test
     public void assertNew() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createShardingContexts();
         ShardingContext actual = new ShardingContext(shardingContexts, 1);
         assertThat(actual.getJobName(), is(shardingContexts.getJobName()));
         assertThat(actual.getTaskId(), is(shardingContexts.getTaskId()));
@@ -40,7 +42,14 @@ public final class ShardingContextTest {
     
     @Test
     public void assertToString() {
-        assertThat(new ShardingContext(ShardingContextsBuilder.getMultipleShardingContexts(), 1).toString(), 
+        assertThat(new ShardingContext(createShardingContexts(), 1).toString(), 
                 is("ShardingContext(jobName=test_job, taskId=fake_task_id, shardingTotalCount=2, jobParameter=, shardingItem=1, shardingParameter=B)"));
+    }
+    
+    private static ShardingContexts createShardingContexts() {
+        Map<Integer, String> map = new HashMap<>(2, 1);
+        map.put(0, "A");
+        map.put(1, "B");
+        return new ShardingContexts("fake_task_id", "test_job", 2, "", map);
     }
 }
