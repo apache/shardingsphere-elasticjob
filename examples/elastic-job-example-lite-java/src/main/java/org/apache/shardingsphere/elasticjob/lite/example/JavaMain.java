@@ -53,9 +53,9 @@ public final class JavaMain {
     private static final String EVENT_RDB_STORAGE_URL = "jdbc:h2:mem:job_event_storage";
     
     private static final String EVENT_RDB_STORAGE_USERNAME = "sa";
-
+    
     private static final String EVENT_RDB_STORAGE_PASSWORD = "";
-
+    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws IOException {
     // CHECKSTYLE:ON
