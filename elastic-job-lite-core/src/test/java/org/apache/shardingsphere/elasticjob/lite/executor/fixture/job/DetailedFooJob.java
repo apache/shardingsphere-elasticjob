@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job;
+package org.apache.shardingsphere.elasticjob.lite.executor.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-
-public interface FooJob extends ElasticJob {
+public final class DetailedFooJob implements FooJob {
 }
