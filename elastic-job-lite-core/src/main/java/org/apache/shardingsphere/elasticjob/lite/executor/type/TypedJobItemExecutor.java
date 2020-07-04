@@ -22,8 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
 /**
  * Typed job item executor.
- * 
- * @param <T> type of ElasticJob
  */
-public interface TypedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T>, TypedSPI {
+public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
 }

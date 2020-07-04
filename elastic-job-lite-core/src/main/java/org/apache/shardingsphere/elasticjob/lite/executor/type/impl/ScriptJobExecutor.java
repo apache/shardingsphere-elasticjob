@@ -20,13 +20,13 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
 import java.io.IOException;
@@ -35,12 +35,12 @@ import java.util.Properties;
 /**
  * Script job executor.
  */
-public final class ScriptJobExecutor implements TypedJobItemExecutor<ScriptJob> {
+public final class ScriptJobExecutor implements TypedJobItemExecutor {
     
     public static final String SCRIPT_KEY = "script.command.line";
     
     @Override
-    public void process(final ScriptJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         CommandLine commandLine = CommandLine.parse(getScriptCommandLine(jobConfig.getProps()));
         commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
