@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,37 +27,35 @@ import lombok.Setter;
 /**
  * Pageable request base request.
  */
-@Getter
-@Setter
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
 @NoArgsConstructor
 @AllArgsConstructor
 public class BasePageRequest {
     
     public static final int DEFAULT_PAGE_SIZE = 10;
     
-    // CHECKSTYLE:OFF
     /**
      * Page size of request.
      */
     @JsonProperty("per_page")
-    protected Integer pageSize = DEFAULT_PAGE_SIZE;
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
     
     /**
      * Page number of request.
      */
     @JsonProperty("page")
-    protected Integer pageNumber = 1;
+    private Integer pageNumber = 1;
     
     /**
      * The field name for sort by.
      */
     @JsonProperty("sort")
-    protected String sortBy;
+    private String sortBy;
     
     /**
      * Order type, asc or desc.
      */
     @JsonProperty("order")
-    protected String orderType;
-    // CHECKSTYLE:ON
+    private String orderType;
 }
