@@ -27,8 +27,8 @@ import lombok.Setter;
 /**
  * Pageable request base request.
  */
-@Getter(AccessLevel.PUBLIC)
-@Setter(AccessLevel.PUBLIC)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BasePageRequest {
