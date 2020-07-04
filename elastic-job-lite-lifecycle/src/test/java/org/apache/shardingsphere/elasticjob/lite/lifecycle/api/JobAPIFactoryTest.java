@@ -27,7 +27,7 @@ public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
     public void assertCreateJobConfigAPI() {
-        assertThat(JobAPIFactory.createJobConfigAPI(getConnectionString(), "namespace", null), instanceOf(JobConfigAPI.class));
+        assertThat(JobAPIFactory.createJobConfigurationAPI(getConnectionString(), "namespace", null), instanceOf(JobConfigurationAPI.class));
     }
     
     @Test

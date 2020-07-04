@@ -20,29 +20,29 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 
 /**
- * Job settings API.
+ * Job configuration API.
  */
-public interface JobConfigAPI {
-
+public interface JobConfigurationAPI {
+    
     /**
      * get job configuration.
      *
      * @param jobName job name
      * @return job configuration
      */
-    YamlJobConfiguration getJobConfig(String jobName);
-
+    YamlJobConfiguration getJobConfiguration(String jobName);
+    
     /**
      * Update job configuration.
      *
      * @param yamlJobConfiguration job configuration
      */
-    void updateJobConfig(YamlJobConfiguration yamlJobConfiguration);
-
+    void updateJobConfiguration(YamlJobConfiguration yamlJobConfiguration);
+    
     /**
      * Remove job configuration.
      *
      * @param jobName job name
      */
-    void removeJobConfig(String jobName);
+    void removeJobConfiguration(String jobName);
 }

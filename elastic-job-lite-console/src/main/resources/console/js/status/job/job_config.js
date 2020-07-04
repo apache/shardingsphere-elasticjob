@@ -18,7 +18,7 @@
 $(function() {
     tooltipLocale();
     validate();
-    bindSubmitJobSettingsForm();
+    bindSubmitJobConfigurationForm();
     bindResetForm();
 });
 
@@ -42,7 +42,7 @@ function getJobParams() {
     return jobParams;
 }
 
-function bindSubmitJobSettingsForm() {
+function bindSubmitJobConfigurationForm() {
     $("#update-job-info-btn").on("click", function(){
         var bootstrapValidator = $("#job-config-form").data("bootstrapValidator");
         bootstrapValidator.validate();

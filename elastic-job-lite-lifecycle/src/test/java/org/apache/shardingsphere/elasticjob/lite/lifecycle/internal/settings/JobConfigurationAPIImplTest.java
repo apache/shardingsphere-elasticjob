@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
@@ -38,22 +38,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class JobConfigAPIImplTest {
+public final class JobConfigurationAPIImplTest {
     
-    private JobConfigAPI jobConfigAPI;
+    private JobConfigurationAPI jobConfigAPI;
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @Before
     public void setUp() {
-        jobConfigAPI = new JobConfigAPIImpl(regCenter);
+        jobConfigAPI = new JobConfigurationAPIImpl(regCenter);
     }
     
     @Test
     public void assertGetDataflowJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
-        YamlJobConfiguration actual = jobConfigAPI.getJobConfig("test_job");
+        YamlJobConfiguration actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
         assertThat(actual.getProps().getProperty(DataflowJobExecutor.STREAM_PROCESS_KEY), is("true"));
         verify(regCenter).get("/test_job/config");
@@ -62,7 +62,7 @@ public final class JobConfigAPIImplTest {
     @Test
     public void assertGetScriptJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
-        YamlJobConfiguration actual = jobConfigAPI.getJobConfig("test_job");
+        YamlJobConfiguration actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
         assertThat(actual.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("echo"));
         verify(regCenter).get("/test_job/config");
@@ -97,7 +97,7 @@ public final class JobConfigAPIImplTest {
         jobConfiguration.setReconcileIntervalMinutes(10);
         jobConfiguration.setDescription("");
         jobConfiguration.getProps().setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, "true");
-        jobConfigAPI.updateJobConfig(jobConfiguration);
+        jobConfigAPI.updateJobConfiguration(jobConfiguration);
         verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
     
@@ -105,7 +105,7 @@ public final class JobConfigAPIImplTest {
     public void assertUpdateJobConfigIfJobNameIsEmpty() {
         YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
         jobConfiguration.setJobName("");
-        jobConfigAPI.updateJobConfig(jobConfiguration);
+        jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -113,7 +113,7 @@ public final class JobConfigAPIImplTest {
         YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("");
-        jobConfigAPI.updateJobConfig(jobConfiguration);
+        jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -122,12 +122,12 @@ public final class JobConfigAPIImplTest {
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("0/1 * * * * ?");
         jobConfiguration.setShardingTotalCount(0);
-        jobConfigAPI.updateJobConfig(jobConfiguration);
+        jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
     
     @Test
-    public void assertRemoveJobSettings() {
-        jobConfigAPI.removeJobConfig("test_job");
+    public void assertRemoveJobConfiguration() {
+        jobConfigAPI.removeJobConfiguration("test_job");
         verify(regCenter).remove("/test_job");
     }
 }
