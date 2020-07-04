@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,29 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.fixture.job;
+package org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor;
 
-import java.util.List;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
 
-public interface JobCaller {
+public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
-    /**
-     * Execute job.
-     */
-    void execute();
+    @Override
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    }
     
-    /**
-     * Fetch the data.
-     *
-     * @param shardingItem sharding items of job
-     * @return the list of data fetched
-     */
-    List<Object> fetchData(int shardingItem);
-    
-    /**
-     * Process the data.
-     *
-     * @param data the data of the job
-     */
-    void processData(Object data);
+    @Override
+    public String getType() {
+        return "FOO";
+    }
 }
