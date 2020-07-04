@@ -35,20 +35,15 @@ public final class TaskNode {
     private String uuid;
     
     /**
-     * Get the path of task node.
-     *
-     * @return the path of task node
-     */
-    public String getTaskNodePath() {
-        return Joiner.on("@-@").join(null == jobName ? "test_job" : jobName, shardingItem);
-    }
-    
-    /**
      * Get the value of task node.
      *
      * @return the value of task node
      */
     public String getTaskNodeValue() {
         return Joiner.on("@-@").join(getTaskNodePath(), null == type ? ExecutionType.READY : type, null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
+    }
+    
+    private String getTaskNodePath() {
+        return Joiner.on("@-@").join(null == jobName ? "test_job" : jobName, shardingItem);
     }
 }

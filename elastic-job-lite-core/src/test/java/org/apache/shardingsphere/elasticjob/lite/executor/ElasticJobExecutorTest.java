@@ -22,7 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironme
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -33,6 +32,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -69,7 +70,7 @@ public final class ElasticJobExecutorTest {
     }
     
     private JobConfiguration createJobConfiguration() {
-        return JobConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, 3)
+        return JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
     }
     
@@ -85,7 +86,7 @@ public final class ElasticJobExecutorTest {
     
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() {
-        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", ShardingContextsBuilder.JOB_NAME, 3, "", Collections.emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
         elasticJobExecutor.execute();
@@ -107,12 +108,12 @@ public final class ElasticJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertExecuteFailureWhenThrowExceptionForSingleShardingItem() {
-        assertExecuteFailureWhenThrowException(ShardingContextsBuilder.getSingleShardingContexts());
+        assertExecuteFailureWhenThrowException(createSingleShardingContexts());
     }
     
     @Test
     public void assertExecuteFailureWhenThrowExceptionForMultipleShardingItems() {
-        assertExecuteFailureWhenThrowException(ShardingContextsBuilder.getMultipleShardingContexts());
+        assertExecuteFailureWhenThrowException(createMultipleShardingContexts());
     }
     
     private void assertExecuteFailureWhenThrowException(final ShardingContexts shardingContexts) {
@@ -138,12 +139,12 @@ public final class ElasticJobExecutorTest {
     
     @Test
     public void assertExecuteSuccessForSingleShardingItems() {
-        assertExecuteSuccess(ShardingContextsBuilder.getSingleShardingContexts());
+        assertExecuteSuccess(createSingleShardingContexts());
     }
     
     @Test
     public void assertExecuteSuccessForMultipleShardingItems() {
-        assertExecuteSuccess(ShardingContextsBuilder.getMultipleShardingContexts());
+        assertExecuteSuccess(createMultipleShardingContexts());
     }
     
     private void assertExecuteSuccess(final ShardingContexts shardingContexts) {
@@ -157,7 +158,7 @@ public final class ElasticJobExecutorTest {
     
     @Test
     public void assertExecuteWithMisfireIsEmpty() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor.execute();
         verifyForIsNotMisfire(jobFacade, shardingContexts);
@@ -166,7 +167,7 @@ public final class ElasticJobExecutorTest {
     
     @Test
     public void assertExecuteWithMisfireIsNotEmptyButIsNotEligibleForJobRunning() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor.execute();
         verifyForIsNotMisfire(jobFacade, shardingContexts);
@@ -176,7 +177,7 @@ public final class ElasticJobExecutorTest {
     
     @Test
     public void assertExecuteWithMisfire() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
         elasticJobExecutor.execute();
@@ -190,7 +191,7 @@ public final class ElasticJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertBeforeJobExecutedFailure() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContexts);
         try {
@@ -202,7 +203,7 @@ public final class ElasticJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertAfterJobExecutedFailure() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
+        ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContexts);
         try {
@@ -210,6 +211,19 @@ public final class ElasticJobExecutorTest {
         } finally {
             verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
+    }
+    
+    private ShardingContexts createSingleShardingContexts() {
+        Map<Integer, String> map = new HashMap<>(1, 1);
+        map.put(0, "A");
+        return new ShardingContexts("fake_task_id", "test_job", 1, "", map);
+    }
+    
+    private ShardingContexts createMultipleShardingContexts() {
+        Map<Integer, String> map = new HashMap<>(2, 1);
+        map.put(0, "A");
+        map.put(1, "B");
+        return new ShardingContexts("fake_task_id", "test_job", 2, "", map);
     }
     
     private void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
