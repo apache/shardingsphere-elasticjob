@@ -235,8 +235,8 @@ function renderJob(data) {
     $("#job-error-handler").attr("value", data.jobErrorHandlerType);
     $("#reconcile-interval-minutes").attr("value", data.reconcileIntervalMinutes);
     $("#description").text(data.description);
-    $("#streaming-process").attr("checked", data.streamingProcess);
+    $("#streaming-process").attr("checked", data.props['streaming.process'] === 'true');
     $("#streaming-process-group").show();
-    $("#script-command-line").attr("value", data.scriptCommandLine);
+    $("#script-command-line").attr("value", data.props['script.command.line']);
     $("#script-commandLine-group").show();
 }

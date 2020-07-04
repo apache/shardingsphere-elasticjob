@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.service;
 
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
@@ -31,7 +31,7 @@ public interface JobAPIService {
      *
      * @return job settings API
      */
-    JobSettingsAPI getJobSettingsAPI();
+    JobConfigAPI getJobConfigAPI();
     
     /**
      * Job operate API.
