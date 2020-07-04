@@ -72,7 +72,6 @@ public final class JobItemExecutorFactory {
      * @param elasticJobType elastic job type
      * @return job item executor
      */
-    @SuppressWarnings("unchecked")
     public static JobItemExecutor getExecutor(final String elasticJobType) {
         for (Entry<String, TypedJobItemExecutor> entry : TYPED_EXECUTORS.entrySet()) {
             if (entry.getKey().equals(elasticJobType)) {
