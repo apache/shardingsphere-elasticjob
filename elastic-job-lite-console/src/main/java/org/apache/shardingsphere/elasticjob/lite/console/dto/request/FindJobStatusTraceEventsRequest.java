@@ -50,11 +50,11 @@ public class FindJobStatusTraceEventsRequest extends BasePageRequest {
     @JsonProperty("endTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date end;
-
+    
     public FindJobStatusTraceEventsRequest(final Integer pageSize, final Integer pageNumber) {
         super(pageSize, pageNumber, null, null);
     }
-
+    
     public FindJobStatusTraceEventsRequest(final Integer pageSize, final Integer pageNumber, final String sortBy, final String orderType, final Date startTime, final Date endTime) {
         super(pageSize, pageNumber, sortBy, orderType);
         this.start = startTime;

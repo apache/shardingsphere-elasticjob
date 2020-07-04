@@ -44,7 +44,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
     @JsonProperty("startTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date start;
-
+    
     @JsonProperty("endTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date end;
