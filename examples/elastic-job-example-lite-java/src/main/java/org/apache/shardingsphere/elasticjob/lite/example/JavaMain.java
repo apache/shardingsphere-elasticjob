@@ -56,9 +56,7 @@ public final class JavaMain {
     
     private static final String EVENT_RDB_STORAGE_PASSWORD = "";
     
-    // CHECKSTYLE:OFF
     public static void main(final String[] args) throws IOException {
-    // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
         TracingConfiguration tracingConfig = new TracingConfiguration<>("RDB", setUpEventTraceDataSource());
