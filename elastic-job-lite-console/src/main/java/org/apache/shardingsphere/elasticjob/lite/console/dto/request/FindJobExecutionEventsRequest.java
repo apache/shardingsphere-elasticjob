@@ -44,7 +44,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
     @JsonProperty("startTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date start;
-
+    
     @JsonProperty("endTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date end;
@@ -55,8 +55,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
      * @param pageSize page size
      */
     public FindJobExecutionEventsRequest(final Integer pageSize, final Integer pageNumber) {
-        this.pageSize = pageSize;
-        this.pageNumber = pageNumber;
+        super(pageSize, pageNumber, null, null);
     }
     
     /**
@@ -70,10 +69,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
      */
     public FindJobExecutionEventsRequest(final Integer pageSize, final Integer pageNumber, final String sortBy,
         final String orderType, final Date startTime, final Date endTime) {
-        this.pageSize = pageSize;
-        this.pageNumber = pageNumber;
-        this.sortBy = sortBy;
-        this.orderType = orderType;
+        super(pageSize, pageNumber, sortBy, orderType);
         this.start = startTime;
         this.end = endTime;
     }
