@@ -44,7 +44,7 @@ public class BasePageRequest {
      * Page number of request.
      */
     @JsonProperty("page")
-    private Integer pageNumber;
+    private Integer pageNumber = 1;
     
     /**
      * The field name for sort by.
