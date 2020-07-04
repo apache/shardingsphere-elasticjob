@@ -22,9 +22,9 @@ import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -47,8 +47,8 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         if (jobConfig.getProps().containsKey(DataflowJobExecutor.STREAM_PROCESS_KEY)) {
             result.setStreamingProcess(Boolean.parseBoolean(jobConfig.getProps().get(DataflowJobExecutor.STREAM_PROCESS_KEY).toString()));
         }
-        if (jobConfig.getProps().containsKey(ScriptJob.SCRIPT_KEY)) {
-            result.setScriptCommandLine(jobConfig.getProps().getProperty(ScriptJob.SCRIPT_KEY));
+        if (jobConfig.getProps().containsKey(ScriptJobExecutor.SCRIPT_KEY)) {
+            result.setScriptCommandLine(jobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY));
         }
         return result;
     }

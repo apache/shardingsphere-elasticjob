@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.script;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 import org.junit.Test;
@@ -36,14 +36,14 @@ public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true).setProperty(ScriptJob.SCRIPT_KEY, "echo").build();
+        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true).setProperty(ScriptJobExecutor.SCRIPT_KEY, "echo").build();
     }
     
     @Test
     public void assertJobInit() {
         BlockUtils.waitingShortTime();
-        String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJob.SCRIPT_KEY);
+        String scriptCommandLine = getJobConfiguration().getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY);
         JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), YamlJobConfiguration.class).toJobConfiguration();
-        assertThat(jobConfig.getProps().getProperty(ScriptJob.SCRIPT_KEY), is(scriptCommandLine));
+        assertThat(jobConfig.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is(scriptCommandLine));
     }
 }
