@@ -71,6 +71,12 @@ public abstract class BaseIntegrateTest {
         leaderService = new LeaderService(regCenter, jobName);
     }
     
+    protected BaseIntegrateTest(final TestType type, final String elasticJobType) {
+        jobConfiguration = getJobConfiguration(jobName);
+        jobBootstrap = createJobBootstrap(type, elasticJobType);
+        leaderService = new LeaderService(regCenter, jobName);
+    }
+    
     protected abstract JobConfiguration getJobConfiguration(String jobName);
     
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
@@ -79,6 +85,17 @@ public abstract class BaseIntegrateTest {
                 return new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
             case ONE_OFF:
                 return new OneOffJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+            default:
+                throw new RuntimeException(String.format("Cannot support `%s`", type));
+        }
+    }
+    
+    private JobBootstrap createJobBootstrap(final TestType type, final String elasticJobType) {
+        switch (type) {
+            case SCHEDULE:
+                return new ScheduleJobBootstrap(regCenter, elasticJobType, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+            case ONE_OFF:
+                return new OneOffJobBootstrap(regCenter, elasticJobType, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }

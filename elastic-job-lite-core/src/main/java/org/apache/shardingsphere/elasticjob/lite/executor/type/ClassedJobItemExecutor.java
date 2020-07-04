@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script;
+package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
-import org.w3c.dom.Element;
-
-import java.util.Properties;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 
 /**
- * Script job bean definition parser.
+ * Classed job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-public final class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
+public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
     
-    @Override
-    protected Properties getProps(final Element element) {
-        Properties result = new Properties();
-        result.setProperty(ScriptJobExecutor.SCRIPT_KEY, element.getAttribute(ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE));
-        return result;
-    }
+    /**
+     * Get elastic job class.
+     * 
+     * @return elastic job class
+     */
+    Class<T> getElasticJobClass();
 }

@@ -15,31 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.job.fixture;
+package org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor;
 
-import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.job.TypedJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job.FooJob;
 
-import java.util.Properties;
-
-@Getter
-public final class FooTypedJob implements SimpleJob, TypedJob {
-    
-    private volatile String foo; 
+public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJob> {
     
     @Override
-    public void init(final Properties props) {
-        foo = props.getProperty("foo");
+    public void process(final FooJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
     }
     
     @Override
-    public void execute(final ShardingContext shardingContext) {
-    }
-    
-    @Override
-    public String getType() {
-        return "FOO";
+    public Class<FooJob> getElasticJobClass() {
+        return FooJob.class;
     }
 }
