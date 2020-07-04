@@ -30,17 +30,27 @@ import static org.junit.Assert.assertThat;
 public final class JobItemExecutorFactoryTest {
     
     @Test(expected = JobConfigurationException.class)
-    public void assertGetExecutorFailureWithInvalidType() {
+    public void assertGetExecutorByClassFailureWithInvalidType() {
         JobItemExecutorFactory.getExecutor(FailedJob.class);
     }
     
     @Test
-    public void assertGetExecutorSuccessWithCurrentClass() {
+    public void assertGetExecutorByClassSuccessWithCurrentClass() {
         assertThat(JobItemExecutorFactory.getExecutor(FooJob.class), instanceOf(FooJobExecutor.class));
     }
     
     @Test
-    public void assertGetExecutorSuccessWithSubClass() {
+    public void assertGetExecutorByClassSuccessWithSubClass() {
         assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(FooJobExecutor.class));
+    }
+    
+    @Test(expected = JobConfigurationException.class)
+    public void assertGetExecutorByTypeFailureWithInvalidType() {
+        JobItemExecutorFactory.getExecutor("FAIL");
+    }
+    
+    @Test
+    public void assertGetExecutorByTypeSuccess() {
+        assertThat(JobItemExecutorFactory.getExecutor("FOO"), instanceOf(FooJobExecutor.class));
     }
 }

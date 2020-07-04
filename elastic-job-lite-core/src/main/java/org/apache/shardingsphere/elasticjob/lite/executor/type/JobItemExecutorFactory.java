@@ -33,11 +33,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobItemExecutorFactory {
     
-    private static final Map<Class, JobItemExecutor> EXECUTORS = new ConcurrentHashMap<>();
+    private static final Map<Class, ClassedJobItemExecutor> CLASSED_EXECUTORS = new ConcurrentHashMap<>();
+    
+    private static final Map<String, TypedJobItemExecutor> TYPED_EXECUTORS = new ConcurrentHashMap<>();
     
     static {
         for (JobItemExecutor each : ServiceLoader.load(JobItemExecutor.class)) {
-            EXECUTORS.put(each.getElasticJobClass(), each);
+            if (each instanceof ClassedJobItemExecutor) {
+                ClassedJobItemExecutor typedJobItemExecutor = (ClassedJobItemExecutor) each;
+                CLASSED_EXECUTORS.put(typedJobItemExecutor.getElasticJobClass(), typedJobItemExecutor);
+            }
+            if (each instanceof TypedJobItemExecutor) {
+                TypedJobItemExecutor typedJobItemExecutor = (TypedJobItemExecutor) each;
+                TYPED_EXECUTORS.put(typedJobItemExecutor.getType(), typedJobItemExecutor);
+            }
         }
     }
     
@@ -49,11 +58,27 @@ public final class JobItemExecutorFactory {
      */
     @SuppressWarnings("unchecked")
     public static JobItemExecutor getExecutor(final Class<? extends ElasticJob> elasticJobClass) {
-        for (Entry<Class, JobItemExecutor> entry : EXECUTORS.entrySet()) {
+        for (Entry<Class, ClassedJobItemExecutor> entry : CLASSED_EXECUTORS.entrySet()) {
             if (entry.getKey().isAssignableFrom(elasticJobClass)) {
                 return entry.getValue();
             }
         }
         throw new JobConfigurationException("Can not find executor for elastic job class `%s`", elasticJobClass.getName());
+    }
+    
+    /**
+     * Get executor.
+     *
+     * @param elasticJobType elastic job type
+     * @return job item executor
+     */
+    @SuppressWarnings("unchecked")
+    public static JobItemExecutor getExecutor(final String elasticJobType) {
+        for (Entry<String, TypedJobItemExecutor> entry : TYPED_EXECUTORS.entrySet()) {
+            if (entry.getKey().equals(elasticJobType)) {
+                return entry.getValue();
+            }
+        }
+        throw new JobConfigurationException("Can not find executor for elastic job type `%s`", elasticJobType);
     }
 }

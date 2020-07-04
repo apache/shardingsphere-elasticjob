@@ -21,14 +21,14 @@ import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.job.type.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.ClassedJobItemExecutor;
 
 import java.util.List;
 
 /**
  * Dataflow job executor.
  */
-public final class DataflowJobExecutor implements JobItemExecutor<DataflowJob> {
+public final class DataflowJobExecutor implements ClassedJobItemExecutor<DataflowJob> {
     
     public static final String STREAM_PROCESS_KEY = "streaming.process";
     
