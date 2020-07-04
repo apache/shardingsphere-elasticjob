@@ -48,13 +48,11 @@ function bindSubmitJobSettingsForm() {
         bootstrapValidator.validate();
         if (bootstrapValidator.isValid()) {
             var jobName = $("#job-name").val();
-            var jobType = $("#job-type").val();
             var shardingTotalCount = $("#sharding-total-count").val();
             var jobParameter = $("#job-parameter").val();
             var cron = $("#cron").val();
             var streamingProcess = $("#streaming-process").prop("checked");
             var maxTimeDiffSeconds = $("#max-time-diff-seconds").val();
-            var monitorPort = $("#monitor-port").val();
             var monitorExecution = $("#monitor-execution").prop("checked");
             var failover = $("#failover").prop("checked");
             var misfire = $("#misfire").prop("checked");
@@ -70,7 +68,23 @@ function bindSubmitJobSettingsForm() {
             var jobErrorHandler = $("#job-error-handler").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
-            var postJson = {jobName: jobName, jobType : jobType, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobExecutorServiceHandler: jobExecutorServiceHandler, jobErrorHandler: jobErrorHandler, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
+            var postJson = {
+                jobName: jobName,
+                shardingTotalCount: shardingTotalCount,
+                jobParameter: jobParameter,
+                cron: cron,
+                shardingItemParameters: shardingItemParameters,
+                maxTimeDiffSeconds: maxTimeDiffSeconds,
+                monitorExecution: monitorExecution,
+                failover: failover,
+                misfire: misfire,
+                reconcileIntervalMinutes: reconcileIntervalMinutes,
+                jobShardingStrategyType: jobShardingStrategyType,
+                jobExecutorServiceHandler: jobExecutorServiceHandler,
+                jobErrorHandler: jobErrorHandler,
+                description: description,
+                props: {'streaming.process': streamingProcess, 'script.command.line': scriptCommandLine}
+            };
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();
@@ -129,28 +143,6 @@ function validate() {
                     },
                     notEmpty: {
                         message: $.i18n.prop("job-cron-not-null")
-                    }
-                }
-            },
-            monitorPort: {
-                validators: {
-                    regexp: {
-                        regexp: /^(-?\d+)?$/,
-                        message: $.i18n.prop("job-monitor-port-should-be-integer")
-                    },
-                    notEmpty: {
-                        message: $.i18n.prop("job-monitor-port-not-null")
-                    },
-                    callback: {
-                        message: $.i18n.prop("job-monitor-port-range-limit"),
-                        callback: function(value, validator) {
-                            var monitorPort = parseInt(validator.getFieldElements("monitorPort").val(), 10);
-                            if (monitorPort <= 65535) {
-                                validator.updateStatus("monitorPort", "VALID");
-                                return true;
-                            }
-                            return false;
-                        }
                     }
                 }
             }

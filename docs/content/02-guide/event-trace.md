@@ -21,8 +21,8 @@ Elastic-Job-Lite 在配置中提供了 TracingConfiguration，目前支持数据
     // 初始化注册中心
     CoordinatorRegistryCenter regCenter = ...;
     // 初始化作业配置
-    LiteJobConfiguration liteJobConfig = ...;
-    new JobScheduler(regCenter, liteJobConfig, tracingConfig).init(); 
+    JobConfiguration jobConfig = ...;
+    new JobScheduler(regCenter, jobConfig, tracingConfig).init(); 
 ```
 
 具体配置方式请参见[开发指南](/01-start/dev-guide/).

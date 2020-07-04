@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
 
@@ -30,12 +30,12 @@ import java.util.Collection;
 public interface JobFacade {
     
     /**
-     * Load job root configuration.
+     * Load job configuration.
      * 
      * @param fromCache load from cache or not
-     * @return job root configuration
+     * @return job configuration
      */
-    JobRootConfiguration loadJobRootConfiguration(boolean fromCache);
+    JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
      * check job execution environment.
@@ -92,18 +92,6 @@ public interface JobFacade {
      * @return whether need to execute misfire tasks
      */
     boolean isExecuteMisfired(Collection<Integer> shardingItems);
-    
-    /**
-     * Judge job whether eligible running.
-     * 
-     * <p>The ineligible job includes:
-     * 1. Need to shutdown;
-     * 2. Need to resharding;
-     * 3. Not stream job.
-     * 
-     * @return job is eligible running or not
-     */
-    boolean isEligibleForJobRunning();
     
     /**
      * Judge job whether need resharding.

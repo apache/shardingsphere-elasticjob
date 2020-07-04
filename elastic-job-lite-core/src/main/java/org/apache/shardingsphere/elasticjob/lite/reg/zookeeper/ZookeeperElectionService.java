@@ -74,7 +74,7 @@ public final class ZookeeperElectionService {
         try {
             leaderSelector.close();
             // CHECKSTYLE:OFF
-        } catch (final Exception ignored) {
+        } catch (final Exception ignore) {
         }
         // CHECKSTYLE:ON
     }

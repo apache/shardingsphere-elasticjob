@@ -44,9 +44,7 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         Set<String> servers = new HashSet<>();
         for (String jobName : regCenter.getChildrenKeys("/")) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
-            for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
-                servers.add(each);
-            }
+            servers.addAll(regCenter.getChildrenKeys(jobNodePath.getServerNodePath()));
         }
         return servers.size();
     }

@@ -49,14 +49,14 @@ public final class JobListenerTest {
     }
     
     @Test
-    public void assertChildEventWhenEventDataIsEmpty() throws Exception {
+    public void assertChildEventWhenEventDataIsEmpty() {
         when(event.getData()).thenReturn(null);
         fooJobListener.childEvent(null, event);
         verify(list, times(0)).clear();
     }
     
     @Test
-    public void assertChildEventSuccess() throws Exception {
+    public void assertChildEventSuccess() {
         when(event.getData()).thenReturn(new ChildData("/test_job", null, null));
         fooJobListener.childEvent(null, event);
         verify(list).clear();

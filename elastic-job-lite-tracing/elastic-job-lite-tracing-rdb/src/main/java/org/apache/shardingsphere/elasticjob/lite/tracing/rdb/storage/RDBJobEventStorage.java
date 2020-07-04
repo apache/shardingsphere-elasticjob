@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,13 +18,12 @@
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.DatabaseType;
+import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.type.DatabaseType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -36,8 +35,10 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /**
@@ -52,30 +53,43 @@ public final class RDBJobEventStorage {
     
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
-    private final DataSource dataSource;
+    private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
     
-    private final RDBStorageSQLMapper sqlMapper;
+    private final DataSource dataSource;
     
     private DatabaseType databaseType;
     
+    private final RDBStorageSQLMapper sqlMapper;
+    
+    static {
+        for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
+            DATABASE_TYPES.put(each.getType(), each);
+        }
+    }
+    
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
-        sqlMapper = new RDBStorageSQLMapper(loadProps());
+        databaseType = getDatabaseType(dataSource);
+        sqlMapper = new RDBStorageSQLMapper(null == databaseType ? "sql92" : databaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
     
-    @SneakyThrows
-    private Properties loadProps() {
-        Properties result = new Properties();
-        result.load(RDBJobEventStorage.class.getClassLoader().getResourceAsStream("META-INF/sql/storage/mysql.properties"));
-        return result;
+    private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            String databaseProductName = connection.getMetaData().getDatabaseProductName();
+            for (DatabaseType each : DATABASE_TYPES.values()) {
+                if (each.getDatabaseProductName().equals(databaseProductName)) {
+                    return each;
+                }
+            }
+        }
+        return null;
     }
     
     private void initTablesAndIndexes() throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             createJobExecutionTableAndIndexIfNeeded(connection);
             createJobStatusTraceTableAndIndexIfNeeded(connection);
-            databaseType = DatabaseType.valueFrom(connection.getMetaData().getDatabaseProductName());
         }
     }
     
@@ -174,12 +188,6 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean isDuplicateRecord(final SQLException ex) {
-        return DatabaseType.MySQL == databaseType && 1062 == ex.getErrorCode() || DatabaseType.H2 == databaseType && 23505 == ex.getErrorCode() 
-                || DatabaseType.SQLServer == databaseType && 1 == ex.getErrorCode() || DatabaseType.DB2 == databaseType && -803 == ex.getErrorCode()
-                || DatabaseType.PostgreSQL == databaseType && 0 == ex.getErrorCode() || DatabaseType.Oracle == databaseType && 1 == ex.getErrorCode();
-    }
-    
     private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         try (
@@ -271,6 +279,10 @@ public final class RDBJobEventStorage {
             log.error(ex.getMessage());
         }
         return result;
+    }
+    
+    private boolean isDuplicateRecord(final SQLException ex) {
+        return null != databaseType && databaseType.getDuplicateRecordErrorCode() == ex.getErrorCode();
     }
     
     /**

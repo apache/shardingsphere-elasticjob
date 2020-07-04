@@ -17,12 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobExecutorFactory;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+
+import java.util.List;
 
 /**
  * Lite job class.
@@ -30,12 +35,26 @@ import org.quartz.JobExecutionContext;
 @Setter
 public final class LiteJob implements Job {
     
+    private CoordinatorRegistryCenter regCenter;
+    
     private ElasticJob elasticJob;
     
-    private JobFacade jobFacade;
+    private String elasticJobType;
+    
+    private JobConfiguration jobConfig;
+    
+    private List<ElasticJobListener> elasticJobListeners;
+    
+    private TracingConfiguration tracingConfig;
     
     @Override
     public void execute(final JobExecutionContext context) {
-        JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+        createExecutor().execute();
+    }
+    
+    private ElasticJobExecutor createExecutor() {
+        return null == elasticJob
+                ? new ElasticJobExecutor(regCenter, elasticJobType, jobConfig, elasticJobListeners, tracingConfig)
+                : new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig);
     }
 }

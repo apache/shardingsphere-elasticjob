@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.JobOperateAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.ShardingOperateAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings.JobSettingsAPIImpl;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings.JobConfigAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics.JobStatisticsAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics.ServerStatisticsAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics.ShardingStatisticsAPIImpl;
@@ -41,8 +41,8 @@ public final class JobAPIFactory {
      * @param digest registry center digest
      * @return job settings API
      */
-    public static JobSettingsAPI createJobSettingsAPI(final String connectString, final String namespace, final String digest) {
-        return new JobSettingsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
+    public static JobConfigAPI createJobConfigAPI(final String connectString, final String namespace, final String digest) {
+        return new JobConfigAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**

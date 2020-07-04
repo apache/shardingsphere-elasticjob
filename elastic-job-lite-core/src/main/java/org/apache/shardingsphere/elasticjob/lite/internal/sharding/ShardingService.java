@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategyFactory;
-import org.apache.shardingsphere.elasticjob.lite.config.LiteJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
@@ -108,12 +108,12 @@ public final class ShardingService {
             return;
         }
         waitingOtherShardingItemCompleted();
-        LiteJobConfiguration liteJobConfig = configService.load(false);
-        int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
+        JobConfiguration jobConfig = configService.load(false);
+        int shardingTotalCount = jobConfig.getShardingTotalCount();
         log.debug("Job '{}' sharding begin.", jobName);
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);
-        JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyType());
+        JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(jobConfig.getJobShardingStrategyType());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
         log.debug("Job '{}' sharding complete.", jobName);
     }
@@ -157,7 +157,7 @@ public final class ShardingService {
             return Collections.emptyList();
         }
         List<Integer> result = new LinkedList<>();
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
@@ -185,7 +185,7 @@ public final class ShardingService {
      */
     public boolean hasShardingInfoInOfflineServers() {
         List<String> onlineInstances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (!onlineInstances.contains(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 return true;

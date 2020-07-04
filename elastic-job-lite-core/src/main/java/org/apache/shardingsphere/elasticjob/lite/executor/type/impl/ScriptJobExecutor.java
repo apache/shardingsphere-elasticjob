@@ -20,38 +20,46 @@ package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.lite.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Script job executor.
  */
-public final class ScriptJobExecutor implements JobItemExecutor<ScriptJob> {
+public final class ScriptJobExecutor implements TypedJobItemExecutor {
+    
+    public static final String SCRIPT_KEY = "script.command.line";
     
     @Override
-    public void process(final ScriptJob elasticJob, final JobRootConfiguration jobRootConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        String scriptCommandLine = ((ScriptJobConfiguration) jobRootConfig.getTypeConfig()).getScriptCommandLine();
-        if (Strings.isNullOrEmpty(scriptCommandLine)) {
-            throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName());
-        }
-        executeScript(shardingContext, scriptCommandLine);
-    }
-    
-    private void executeScript(final ShardingContext shardingContext, final String scriptCommandLine) {
-        CommandLine commandLine = CommandLine.parse(scriptCommandLine);
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        CommandLine commandLine = CommandLine.parse(getScriptCommandLine(jobConfig.getProps()));
         commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
             new DefaultExecutor().execute(commandLine);
         } catch (final IOException ex) {
-            throw new JobConfigurationException("Execute script failure.", ex);
+            throw new JobSystemException("Execute script failure.", ex);
         }
+    }
+    
+    private String getScriptCommandLine(final Properties props) {
+        String result = props.getProperty(SCRIPT_KEY);
+        if (Strings.isNullOrEmpty(result)) {
+            throw new JobConfigurationException("Cannot find script command line, job is not executed.");
+        }
+        return result;
+    }
+    
+    @Override
+    public String getType() {
+        return "SCRIPT";
     }
 }

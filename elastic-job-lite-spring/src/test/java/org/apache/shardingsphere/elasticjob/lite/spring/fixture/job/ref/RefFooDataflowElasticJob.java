@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.dataflow.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.type.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooService;
 
 import java.util.Collections;

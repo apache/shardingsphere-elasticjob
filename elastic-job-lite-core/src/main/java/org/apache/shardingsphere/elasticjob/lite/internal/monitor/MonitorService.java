@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,29 +40,25 @@ import java.util.List;
 @Slf4j
 public final class MonitorService {
     
-    public static final String DUMP_COMMAND = "dump";
-    
-    private final String jobName;
+    public static final String DUMP_COMMAND = "dump@";
+
+    private final int port;
     
     private final CoordinatorRegistryCenter regCenter;
-    
-    private final ConfigurationService configService;
     
     private ServerSocket serverSocket;
     
     private volatile boolean closed;
     
-    public MonitorService(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.jobName = jobName;
+    public MonitorService(final CoordinatorRegistryCenter regCenter, final int port) {
         this.regCenter = regCenter;
-        configService = new ConfigurationService(regCenter, jobName);
+        this.port = port;
     }
     
     /**
      * start to listen.
      */
     public void listen() {
-        int port = configService.load(true).getMonitorPort();
         if (port < 0) {
             return;
         }
@@ -94,15 +89,16 @@ public final class MonitorService {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 Socket ignored = socket) {
             String cmdLine = reader.readLine();
-            if (null != cmdLine && DUMP_COMMAND.equalsIgnoreCase(cmdLine)) {
+            if (null != cmdLine && cmdLine.startsWith(DUMP_COMMAND) && cmdLine.split("@").length == 2) {
                 List<String> result = new ArrayList<>();
-                dumpDirectly("/" + jobName, result);
+                String jobName = cmdLine.split("@")[1];
+                dumpDirectly("/" + jobName, jobName, result);
                 outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
             }
         }
     }
     
-    private void dumpDirectly(final String path, final List<String> result) {
+    private void dumpDirectly(final String path, final String jobName, final List<String> result) {
         for (String each : regCenter.getChildrenKeys(path)) {
             String zkPath = path + "/" + each;
             String zkValue = regCenter.get(zkPath);
@@ -118,7 +114,7 @@ public final class MonitorService {
             } else {
                 result.add(Joiner.on(" | ").join(zkPath, zkValue, treeCachePath, treeCacheValue));
             }
-            dumpDirectly(zkPath, result);
+            dumpDirectly(zkPath, jobName, result);
         }
     }
     

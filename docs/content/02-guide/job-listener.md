@@ -47,7 +47,7 @@ public class JobMain {
         return regCenter;
     }
     
-    private static LiteJobConfiguration createJobConfiguration() {
+    private static JobConfiguration createJobConfiguration() {
         // 创建作业配置
         ...
     }
@@ -98,7 +98,7 @@ public class JobMain {
         return regCenter;
     }
     
-    private static LiteJobConfiguration createJobConfiguration() {
+    private static JobConfiguration createJobConfiguration() {
         // 创建作业配置
         ...
     }

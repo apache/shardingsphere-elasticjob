@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple;
 
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
 
 public final class FooSimpleElasticJob implements SimpleJob {
     
