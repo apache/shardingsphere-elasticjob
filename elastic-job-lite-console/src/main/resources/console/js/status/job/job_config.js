@@ -18,7 +18,7 @@
 $(function() {
     tooltipLocale();
     validate();
-    bindSubmitJobSettingsForm();
+    bindSubmitJobConfigurationForm();
     bindResetForm();
 });
 
@@ -42,7 +42,7 @@ function getJobParams() {
     return jobParams;
 }
 
-function bindSubmitJobSettingsForm() {
+function bindSubmitJobConfigurationForm() {
     $("#update-job-info-btn").on("click", function(){
         var bootstrapValidator = $("#job-config-form").data("bootstrapValidator");
         bootstrapValidator.validate();
@@ -68,7 +68,23 @@ function bindSubmitJobSettingsForm() {
             var jobErrorHandler = $("#job-error-handler").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
-            var postJson = {jobName: jobName, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobExecutorServiceHandler: jobExecutorServiceHandler, jobErrorHandler: jobErrorHandler, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
+            var postJson = {
+                jobName: jobName,
+                shardingTotalCount: shardingTotalCount,
+                jobParameter: jobParameter,
+                cron: cron,
+                shardingItemParameters: shardingItemParameters,
+                maxTimeDiffSeconds: maxTimeDiffSeconds,
+                monitorExecution: monitorExecution,
+                failover: failover,
+                misfire: misfire,
+                reconcileIntervalMinutes: reconcileIntervalMinutes,
+                jobShardingStrategyType: jobShardingStrategyType,
+                jobExecutorServiceHandler: jobExecutorServiceHandler,
+                jobErrorHandler: jobErrorHandler,
+                description: description,
+                props: {'streaming.process': streamingProcess, 'script.command.line': scriptCommandLine}
+            };
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();

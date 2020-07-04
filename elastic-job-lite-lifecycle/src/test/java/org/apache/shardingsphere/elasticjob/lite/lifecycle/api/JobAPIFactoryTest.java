@@ -26,8 +26,8 @@ import static org.junit.Assert.assertThat;
 public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
-    public void assertCreateJobSettingsAPI() {
-        assertThat(JobAPIFactory.createJobSettingsAPI(getConnectionString(), "namespace", null), instanceOf(JobSettingsAPI.class));
+    public void assertCreateJobConfigAPI() {
+        assertThat(JobAPIFactory.createJobConfigurationAPI(getConnectionString(), "namespace", null), instanceOf(JobConfigurationAPI.class));
     }
     
     @Test

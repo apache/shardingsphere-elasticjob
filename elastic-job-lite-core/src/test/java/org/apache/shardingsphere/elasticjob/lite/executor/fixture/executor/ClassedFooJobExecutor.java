@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.fixture;
+package org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.FooJob;
 
-import java.util.List;
-
-public class TestDataflowJob implements DataflowJob {
+public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJob> {
     
     @Override
-    public List fetchData(final ShardingContext shardingContext) {
-        return null;
+    public void process(final FooJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
     }
     
     @Override
-    public void processData(final ShardingContext shardingContext, final List data) {
+    public Class<FooJob> getElasticJobClass() {
+        return FooJob.class;
     }
 }

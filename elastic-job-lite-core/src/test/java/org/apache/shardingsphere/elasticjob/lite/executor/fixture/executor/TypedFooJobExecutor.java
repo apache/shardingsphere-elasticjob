@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,31 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.fixture.util;
+package org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobConfigurationUtil {
+public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
-    /**
-     * Create the configuration of simple job.
-     *
-     * @return job configuration
-     */
-    public static JobConfiguration createSimpleJobConfiguration() {
-        return JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build();
+    @Override
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
     }
     
-    /**
-     * Create the configuration of simple job.
-     *
-     * @param overwrite whether overwrite the config
-     * @return job configuration
-     */
-    public static JobConfiguration createSimpleJobConfiguration(final boolean overwrite) {
-        return JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").overwrite(overwrite).build();
+    @Override
+    public String getType() {
+        return "FOO";
     }
 }

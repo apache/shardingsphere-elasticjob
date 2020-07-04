@@ -11,19 +11,19 @@ next = "/02-guide/customized-hook/"
 
 ### 1. 配置类API
 
-#### `JobSettingsAPI` 作业配置的API
+#### `JobConfigurationAPI` 作业配置的API
 
-##### JobSettings getJobSettings(String jobName) 获取作业设置.
+##### YamlJobConfiguration getJobConfiguration(String jobName) 获取作业设置.
 
 * **Parameters:** jobName — 作业名称
  
 * **Returns:** 作业设置对象
 
-##### void updateJobSettings(JobSettings jobSettings) 更新作业设置.
+##### void updateJobConfiguration(YamlJobConfiguration yamlJobConfiguration) 更新作业设置.
 
-* **Parameters:** jobSettings — 作业设置对象
+* **Parameters:** jobConfiguration — 作业设置对象
 
-##### void removeJobSettings(String jobName) 删除作业设置.
+##### void removeJobConfiguration(String jobName) 删除作业设置.
 
 * **Parameters:** jobName — 作业名称
  

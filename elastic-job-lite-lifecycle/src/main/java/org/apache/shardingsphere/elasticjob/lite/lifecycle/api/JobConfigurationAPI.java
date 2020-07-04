@@ -15,17 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.fixture.job;
+package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 
-@RequiredArgsConstructor
-public final class TestWrongJob implements SimpleJob {
+/**
+ * Job configuration API.
+ */
+public interface JobConfigurationAPI {
     
-    @Override
-    public void execute(final ShardingContext shardingContext) {
-        throw new RuntimeException("WrongJobException");
-    }
+    /**
+     * get job configuration.
+     *
+     * @param jobName job name
+     * @return job configuration
+     */
+    YamlJobConfiguration getJobConfiguration(String jobName);
+    
+    /**
+     * Update job configuration.
+     *
+     * @param yamlJobConfiguration job configuration
+     */
+    void updateJobConfiguration(YamlJobConfiguration yamlJobConfiguration);
+    
+    /**
+     * Remove job configuration.
+     *
+     * @param jobName job name
+     */
+    void removeJobConfiguration(String jobName);
 }
