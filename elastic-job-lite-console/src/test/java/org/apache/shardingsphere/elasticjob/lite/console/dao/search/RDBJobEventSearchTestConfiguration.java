@@ -17,6 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
+import java.sql.SQLException;
+import javax.sql.DataSource;
+import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExecutionEventsRequest;
+import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
+import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceHistoryService;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.rdb.storage.RDBJobEventStorage;
@@ -24,26 +29,23 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
-
 @TestConfiguration
 public class RDBJobEventSearchTestConfiguration implements InitializingBean {
-    
+
     @Autowired
-    private RDBJobEventSearch repository;
-    
+    private EventTraceHistoryService eventTraceHistoryService;
+
     @Autowired
     private DataSource dataSource;
-    
+
     @Override
     public void afterPropertiesSet() throws Exception {
         initStorage();
     }
-    
+
     private void initStorage() throws SQLException {
-        repository.findJobExecutionEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, null));
-        repository.findJobStatusTraceEvents(new RDBJobEventSearch.Condition(10, 1, null, null, null, null, null));
+        eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(10, 1));
+        eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(10, 1));
         RDBJobEventStorage storage = new RDBJobEventStorage(dataSource);
         for (int i = 1; i <= 500L; i++) {
             JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job_" + i, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
