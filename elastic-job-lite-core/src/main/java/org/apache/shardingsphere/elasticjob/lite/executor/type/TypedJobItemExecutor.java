@@ -15,22 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.job;
+package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
-import java.util.Properties;
-
 /**
- * Typed job.
+ * Typed job item executor.
  */
-public interface TypedJob extends ElasticJob, TypedSPI {
-    
-    /**
-     * Initialize job.
-     * 
-     * @param props job properties
-     */
-    void init(Properties props);
+public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
 }

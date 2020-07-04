@@ -15,4 +15,6 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.job.impl.ScriptJob
+org.apache.shardingsphere.elasticjob.lite.executor.type.impl.SimpleJobExecutor
+org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor
+org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor

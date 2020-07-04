@@ -18,18 +18,23 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.type.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.ClassedJobItemExecutor;
 
 /**
  * Simple job executor.
  */
-public final class SimpleJobExecutor implements JobItemExecutor<SimpleJob> {
+public final class SimpleJobExecutor implements ClassedJobItemExecutor<SimpleJob> {
     
     @Override
     public void process(final SimpleJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         elasticJob.execute(shardingContext);
+    }
+    
+    @Override
+    public Class<SimpleJob> getElasticJobClass() {
+        return SimpleJob.class;
     }
 }
