@@ -17,10 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Date;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExecutionEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceHistoryService;
@@ -34,14 +30,19 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Import(RDBJobEventSearchTestConfiguration.class)
 public final class RDBJobEventSearchTest {
-
+    
     @Autowired
     private EventTraceHistoryService eventTraceHistoryService;
-
+    
     @Test
     public void assertFindJobExecutionEventsWithPageSizeAndNumber() {
         Page<JobExecutionEvent> result = eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest());
@@ -57,14 +58,14 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(0));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithErrorPageSizeAndNumber() {
         Page<JobExecutionEvent> result = eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(-1, -1, null, null, null, null));
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithSort() {
         Page<JobExecutionEvent> result = eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(10, 1, "jobName", "ASC", null, null));
@@ -76,7 +77,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getContent().size(), is(10));
         assertThat(result.getContent().get(0).getJobName(), is("test_job_99"));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithErrorSort() {
         Page<JobExecutionEvent> result = eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(10, 1, "jobName", "ERROR_SORT", null, null));
@@ -87,7 +88,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithTime() {
         Date now = new Date();
@@ -108,7 +109,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithFields() {
         FindJobExecutionEventsRequest findJobExecutionEventsRequest = new FindJobExecutionEventsRequest(10, 1, null, null, null, null);
@@ -122,14 +123,14 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(1L));
         assertThat(result.getContent().size(), is(1));
     }
-
+    
     @Test
     public void assertFindJobExecutionEventsWithErrorFields() {
         Page<JobExecutionEvent> result = eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(10, 1));
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithPageSizeAndNumber() {
         Page<JobStatusTraceEvent> result = eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(10, 1, null, null, null, null));
@@ -145,14 +146,14 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(0));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithErrorPageSizeAndNumber() {
         Page<JobStatusTraceEvent> result = eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(-1, -1));
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithSort() {
         Page<JobStatusTraceEvent> result = eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(10, 1, "jobName", "ASC", null, null));
@@ -164,7 +165,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getContent().size(), is(10));
         assertThat(result.getContent().get(0).getJobName(), is("test_job_99"));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithErrorSort() {
         Page<JobStatusTraceEvent> result = eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(10, 1, "jobName", "ERROR_SORT", null, null));
@@ -175,7 +176,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithTime() {
         Date now = new Date();
@@ -196,7 +197,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(500L));
         assertThat(result.getContent().size(), is(10));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithFields() {
         FindJobStatusTraceEventsRequest findJobStatusTraceEventsRequest = new FindJobStatusTraceEventsRequest(10, 1);
@@ -205,7 +206,7 @@ public final class RDBJobEventSearchTest {
         assertThat(result.getTotalElements(), is(1L));
         assertThat(result.getContent().size(), is(1));
     }
-
+    
     @Test
     public void assertFindJobStatusTraceEventsWithErrorFields() {
         FindJobStatusTraceEventsRequest findJobStatusTraceEventsRequest = new FindJobStatusTraceEventsRequest(10, 1);

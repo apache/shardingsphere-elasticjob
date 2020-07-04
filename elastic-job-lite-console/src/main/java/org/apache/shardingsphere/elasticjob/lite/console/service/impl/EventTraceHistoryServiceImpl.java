@@ -18,13 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.console.service.impl;
 
 import com.google.common.base.Strings;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.JobExecutionLogRepository;
 import org.apache.shardingsphere.elasticjob.lite.console.dao.search.JobStatusTraceLogRepository;
@@ -48,19 +41,27 @@ import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.Predicate;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Event trace history service implementation.
  */
 @Slf4j
 @Component
 public final class EventTraceHistoryServiceImpl implements EventTraceHistoryService {
-
+    
     @Autowired
     private JobExecutionLogRepository jobExecutionLogRepository;
-
+    
     @Autowired
     private JobStatusTraceLogRepository jobStatusTraceLogRepository;
-
+    
     @Override
     public Page<JobExecutionEvent> findJobExecutionEvents(final FindJobExecutionEventsRequest findJobExecutionEventsRequest) {
         Example<JobExecutionLog> jobExecutionLogExample = getExample(findJobExecutionEventsRequest, JobExecutionLog.class);
@@ -70,7 +71,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
         Page<JobExecutionLog> page = jobExecutionLogRepository.findAll(specification, getPageable(findJobExecutionEventsRequest, JobExecutionLog.class));
         return new PageImpl<>(page.get().map(JobExecutionLog::toJobExecutionEvent).collect(Collectors.toList()), page.getPageable(), page.getTotalElements());
     }
-
+    
     @Override
     public Page<JobStatusTraceEvent> findJobStatusTraceEvents(final FindJobStatusTraceEventsRequest findJobStatusTraceEventsRequest) {
         Example<JobStatusTraceLog> jobStatusTraceLogExample = getExample(findJobStatusTraceEventsRequest, JobStatusTraceLog.class);
@@ -79,7 +80,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
         Page<JobStatusTraceLog> page = jobStatusTraceLogRepository.findAll(specification, getPageable(findJobStatusTraceEventsRequest, JobStatusTraceLog.class));
         return new PageImpl<>(page.get().map(JobStatusTraceLog::toJobStatusTraceEvent).collect(Collectors.toList()), page.getPageable(), page.getTotalElements());
     }
-
+    
     private <T> Pageable getPageable(final BasePageRequest pageRequest, final Class<T> clazz) {
         int page = 0;
         int perPage = BasePageRequest.DEFAULT_PAGE_SIZE;
@@ -89,7 +90,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
         }
         return PageRequest.of(page, perPage, getSort(pageRequest, clazz));
     }
-
+    
     private <T> Sort getSort(final BasePageRequest pageRequest, final Class<T> clazz) {
         Sort sort = Sort.unsorted();
         boolean sortFieldIsPresent = Arrays.stream(clazz.getDeclaredFields())
@@ -108,7 +109,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
         }
         return sort;
     }
-
+    
     private <T> Specification<T> getSpecWithExampleAndDate(final Example<T> example, final Date from, final Date to, final String field) {
         return (Specification<T>) (root, query, builder) -> {
             final List<Predicate> predicates = new ArrayList<>();
@@ -122,7 +123,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
             return builder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
+    
     private <T> Example<T> getExample(final Object source, final Class<T> clazz) {
         T instance = BeanUtils.newInstance(clazz);
         BeanUtils.copyProperties(source, instance);
