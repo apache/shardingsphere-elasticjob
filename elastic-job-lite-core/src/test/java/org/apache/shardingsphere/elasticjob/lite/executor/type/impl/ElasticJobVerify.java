@@ -42,13 +42,10 @@ final class ElasticJobVerify {
         } catch (final JobExecutionEnvironmentException ex) {
             throw new RuntimeException(ex);
         }
-        verify(jobFacade).getShardingContexts();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
         verify(jobFacade).registerJobCompleted(shardingContexts);
-        verify(jobFacade).isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).afterJobExecuted(shardingContexts);
     }
 }
