@@ -17,4 +17,3 @@
 
 org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.ClassedFooJobExecutor
 org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.TypedFooJobExecutor
-org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.TestJobItemExecutor

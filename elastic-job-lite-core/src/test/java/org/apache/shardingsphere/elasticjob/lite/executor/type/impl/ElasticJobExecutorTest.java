@@ -23,9 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.lite.fixture.ShardingContextsBuilder;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.TestJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -59,7 +59,7 @@ public final class ElasticJobExecutorTest {
     private JobFacade jobFacade;
     
     @Mock
-    private TestJobItemExecutor jobItemExecutor;
+    private ClassedFooJobExecutor jobItemExecutor;
     
     private ElasticJobExecutor elasticJobExecutor;
     
