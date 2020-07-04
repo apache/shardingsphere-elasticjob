@@ -36,7 +36,7 @@ public class BasePageRequest {
      * Page size of request.
      */
     @JsonProperty("per_page")
-    private Integer pageSize;
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
     
     /**
      * Page number of request.
