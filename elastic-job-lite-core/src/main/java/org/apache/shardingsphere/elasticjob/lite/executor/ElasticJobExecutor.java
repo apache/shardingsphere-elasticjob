@@ -66,10 +66,20 @@ public final class ElasticJobExecutor {
     
     public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter,
                               final ElasticJob elasticJob, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
+        this(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig, JobItemExecutorFactory.getExecutor(elasticJob.getClass()));
+    }
+    
+    public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter,
+                              final String type, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
+        this(regCenter, null, jobConfig, elasticJobListeners, tracingConfig, JobItemExecutorFactory.getExecutor(type));
+    }
+    
+    private ElasticJobExecutor(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, 
+                               final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig, final JobItemExecutor jobItemExecutor) {
         this.elasticJob = elasticJob;
         this.jobConfig = jobConfig;
-        this.jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
-        jobItemExecutor = JobItemExecutorFactory.getExecutor(elasticJob.getClass());
+        this.jobItemExecutor = jobItemExecutor;
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobConfig.getJobName());
         jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getJobErrorHandlerType());
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);

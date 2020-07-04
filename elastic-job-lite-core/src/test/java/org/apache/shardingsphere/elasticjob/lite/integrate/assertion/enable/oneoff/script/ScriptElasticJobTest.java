@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 public final class ScriptElasticJobTest extends EnabledJobIntegrateTest {
     
     public ScriptElasticJobTest() {
-        super(TestType.ONE_OFF, new ScriptJob());
+        super(TestType.ONE_OFF, "SCRIPT");
     }
     
     @Override
