@@ -88,5 +88,6 @@ chapter = true
 1. <a href="https://www.motie.com/" rel="nofollow">磨铁文学</a>
 1. <a href="https://www.ttpai.cn/" rel="nofollow">天天拍车</a>
 1. <a href="https://www.bestpay.com.cn/" rel="nofollow">甜橙金融(翼支付)</a>
+1. <a href="http://www.thinktown.com/" rel="nofollow">新课堂教育</a>
 
 <img src="https://shardingsphere.apache.org/community/image/powered-by.png" width = "30%" height = "30%" align="right" alt="Powered By ShardingSphere" />
