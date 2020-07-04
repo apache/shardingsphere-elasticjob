@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.FooJobExecutor
+org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.FooJobExecutor
