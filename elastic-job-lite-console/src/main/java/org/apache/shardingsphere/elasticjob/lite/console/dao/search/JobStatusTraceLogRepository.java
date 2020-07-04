@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
 
+import org.apache.shardingsphere.elasticjob.lite.console.domain.JobStatusTraceLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

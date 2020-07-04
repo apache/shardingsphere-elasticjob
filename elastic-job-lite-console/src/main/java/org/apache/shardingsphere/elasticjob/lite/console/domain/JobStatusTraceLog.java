@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.console.dao.search;
+package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
 import lombok.Data;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
