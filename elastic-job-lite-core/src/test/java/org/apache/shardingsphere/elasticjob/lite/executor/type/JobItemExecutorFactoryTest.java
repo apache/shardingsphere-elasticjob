@@ -18,10 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.ClassedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.TypedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job.FailedJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor.FooJobExecutor;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -36,12 +37,12 @@ public final class JobItemExecutorFactoryTest {
     
     @Test
     public void assertGetExecutorByClassSuccessWithCurrentClass() {
-        assertThat(JobItemExecutorFactory.getExecutor(FooJob.class), instanceOf(FooJobExecutor.class));
+        assertThat(JobItemExecutorFactory.getExecutor(FooJob.class), instanceOf(ClassedFooJobExecutor.class));
     }
     
     @Test
     public void assertGetExecutorByClassSuccessWithSubClass() {
-        assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(FooJobExecutor.class));
+        assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(ClassedFooJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
@@ -51,6 +52,6 @@ public final class JobItemExecutorFactoryTest {
     
     @Test
     public void assertGetExecutorByTypeSuccess() {
-        assertThat(JobItemExecutorFactory.getExecutor("FOO"), instanceOf(FooJobExecutor.class));
+        assertThat(JobItemExecutorFactory.getExecutor("FOO"), instanceOf(TypedFooJobExecutor.class));
     }
 }

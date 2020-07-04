@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.job;
+package org.apache.shardingsphere.elasticjob.lite.executor.type.fixture.executor;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
 
-import java.util.Properties;
-
-/**
- * Typed job.
- */
-public interface TypedJob extends ElasticJob, TypedSPI {
+public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
-    /**
-     * Initialize job.
-     * 
-     * @param props job properties
-     */
-    void init(Properties props);
+    @Override
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    }
+    
+    @Override
+    public String getType() {
+        return "FOO";
+    }
 }
