@@ -52,7 +52,7 @@ public final class JobConfigController {
      */
     @GetMapping(value = "/{jobName}", produces = MediaType.APPLICATION_JSON)
     public YamlJobConfiguration getJobConfig(@PathVariable("jobName") final String jobName) {
-        return jobAPIService.getJobConfigAPI().getJobConfig(jobName);
+        return jobAPIService.getJobConfigurationAPI().getJobConfiguration(jobName);
     }
     
     /**
@@ -62,7 +62,7 @@ public final class JobConfigController {
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON)
     public void updateJobConfig(@RequestBody final YamlJobConfiguration yamlJobConfiguration) {
-        jobAPIService.getJobConfigAPI().updateJobConfig(yamlJobConfiguration);
+        jobAPIService.getJobConfigurationAPI().updateJobConfiguration(yamlJobConfiguration);
     }
     
     /**
@@ -72,6 +72,6 @@ public final class JobConfigController {
      */
     @DeleteMapping("/{jobName}")
     public void removeJob(@PathVariable("jobName") final String jobName) {
-        jobAPIService.getJobConfigAPI().removeJobConfig(jobName);
+        jobAPIService.getJobConfigurationAPI().removeJobConfiguration(jobName);
     }
 }

@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
 
@@ -30,28 +30,26 @@ import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
  * Job Configuration API implementation class.
  */
 @RequiredArgsConstructor
-public final class JobConfigAPIImpl implements JobConfigAPI {
+public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
     
     private final CoordinatorRegistryCenter regCenter;
-
+    
     @Override
-    public YamlJobConfiguration getJobConfig(final String jobName) {
-        JobNodePath jobNodePath = new JobNodePath(jobName);
-        YamlJobConfiguration result = YamlEngine.unmarshal(regCenter.get(jobNodePath.getConfigNodePath()), YamlJobConfiguration.class);
-        return result;
+    public YamlJobConfiguration getJobConfiguration(final String jobName) {
+        return YamlEngine.unmarshal(regCenter.get(new JobNodePath(jobName).getConfigNodePath()), YamlJobConfiguration.class);
     }
-
+    
     @Override
-    public void updateJobConfig(final YamlJobConfiguration yamlJobConfiguration) {
+    public void updateJobConfiguration(final YamlJobConfiguration yamlJobConfiguration) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(yamlJobConfiguration.getJobName()), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(yamlJobConfiguration.getCron()), "cron can not be empty.");
         Preconditions.checkArgument(yamlJobConfiguration.getShardingTotalCount() > 0, "shardingTotalCount should larger than zero.");
         JobNodePath jobNodePath = new JobNodePath(yamlJobConfiguration.getJobName());
         regCenter.update(jobNodePath.getConfigNodePath(), YamlEngine.marshal(yamlJobConfiguration));
     }
-
+    
     @Override
-    public void removeJobConfig(final String jobName) {
+    public void removeJobConfiguration(final String jobName) {
         regCenter.remove("/" + jobName);
     }
 }
