@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobSettings;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,33 +45,33 @@ public final class JobConfigController {
     }
     
     /**
-     * Get job settings.
+     * Get job configuration.
      *
      * @param jobName job name
-     * @return job settings
+     * @return job configuration
      */
     @GetMapping(value = "/{jobName}", produces = MediaType.APPLICATION_JSON)
-    public JobSettings getJobSettings(@PathVariable("jobName") final String jobName) {
-        return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
+    public YamlJobConfiguration getJobConfig(@PathVariable("jobName") final String jobName) {
+        return jobAPIService.getJobConfigAPI().getJobConfig(jobName);
     }
     
     /**
-     * Update job settings.
+     * Update job configuration.
      *
-     * @param jobSettings job settings
+     * @param yamlJobConfiguration job configuration
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON)
-    public void updateJobSettings(@RequestBody final JobSettings jobSettings) {
-        jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
+    public void updateJobConfig(@RequestBody final YamlJobConfiguration yamlJobConfiguration) {
+        jobAPIService.getJobConfigAPI().updateJobConfig(yamlJobConfiguration);
     }
     
     /**
-     * Remove job settings.
+     * Remove job configuration.
      *
      * @param jobName job name
      */
     @DeleteMapping("/{jobName}")
     public void removeJob(@PathVariable("jobName") final String jobName) {
-        jobAPIService.getJobSettingsAPI().removeJobSettings(jobName);
+        jobAPIService.getJobConfigAPI().removeJobConfig(jobName);
     }
 }
