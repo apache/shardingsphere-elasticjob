@@ -27,7 +27,7 @@ import org.springframework.data.domain.Page;
  * Event trace history service.
  */
 public interface EventTraceHistoryService {
-
+    
     /**
      * Find job execution events.
      *
@@ -35,7 +35,7 @@ public interface EventTraceHistoryService {
      * @return job execution events
      */
     Page<JobExecutionEvent> findJobExecutionEvents(FindJobExecutionEventsRequest findJobExecutionEventsRequest);
-
+    
     /**
      * Find job status trace events.
      *

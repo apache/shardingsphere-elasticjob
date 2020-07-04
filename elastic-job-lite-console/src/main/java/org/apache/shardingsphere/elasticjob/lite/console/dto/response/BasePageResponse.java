@@ -18,29 +18,30 @@
 package org.apache.shardingsphere.elasticjob.lite.console.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.io.Serializable;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BasePageResponse<T> implements Serializable {
-
+    
     /**
      * Total count of rows.
      */
     private Long total;
-
+    
     /**
      * Rows data.
      */
     private List<T> rows;
-
+    
     /**
      * Create new BasePageResponse with total and data.
      * @param total Total count of match data
@@ -51,7 +52,7 @@ public class BasePageResponse<T> implements Serializable {
     public static <T> BasePageResponse of(final Long total, final List<T> data) {
         return new BasePageResponse(total, data);
     }
-
+    
     /**
      * Create new BasePageResponse with Page.
      * @param page match data info.

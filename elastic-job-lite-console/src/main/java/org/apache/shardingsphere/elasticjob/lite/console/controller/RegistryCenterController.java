@@ -51,7 +51,7 @@ public final class RegistryCenterController {
     public RegistryCenterController(final RegistryCenterConfigurationService regCenterService) {
         this.regCenterService = regCenterService;
     }
-
+    
     /**
      * Judge whether registry center is activated.
      *

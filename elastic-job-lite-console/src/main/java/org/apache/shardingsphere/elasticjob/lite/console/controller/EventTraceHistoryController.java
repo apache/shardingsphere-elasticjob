@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import javax.ws.rs.core.MediaType;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExecutionEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.dto.response.BasePageResponse;
@@ -30,16 +29,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.core.MediaType;
+
 /**
  * Event trace history RESTful API.
  */
 @RestController
 @RequestMapping("/event-trace")
 public final class EventTraceHistoryController {
-
+    
     @Autowired
     private EventTraceHistoryService eventTraceHistoryService;
-
+    
     /**
      * Find job execution events.
      *

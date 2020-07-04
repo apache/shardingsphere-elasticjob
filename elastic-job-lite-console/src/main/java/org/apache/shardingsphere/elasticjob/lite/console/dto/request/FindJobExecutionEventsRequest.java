@@ -19,11 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.console.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * Request object of uri '/event-trace/execution'.
@@ -33,13 +34,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindJobExecutionEventsRequest extends BasePageRequest {
-
+    
     private String jobName;
-
+    
     private String ip;
-
+    
     private Boolean isSuccess;
-
+    
     @JsonProperty("startTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date start;
@@ -47,7 +48,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
     @JsonProperty("endTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date end;
-
+    
     /**
      * Create new FindJobExecutionEventsRequest with pageSize and pageNumber.
      * @param pageNumber page number
@@ -57,7 +58,7 @@ public class FindJobExecutionEventsRequest extends BasePageRequest {
         this.pageSize = pageSize;
         this.pageNumber = pageNumber;
     }
-
+    
     /**
      * Create new FindJobExecutionEventsRequest with properties.
      * @param pageNumber page number
