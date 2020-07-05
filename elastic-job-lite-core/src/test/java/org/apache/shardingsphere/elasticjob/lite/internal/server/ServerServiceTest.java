@@ -82,7 +82,7 @@ public final class ServerServiceTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         serverService.persistOnline(true);
-        verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", "");
+        verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", ServerStatus.ENABLED.name());
         JobRegistry.getInstance().shutdown("test_job");
     }
     
@@ -90,6 +90,8 @@ public final class ServerServiceTest {
     public void assertHasAvailableServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("127.0.0.1", "127.0.0.2", "127.0.0.3"));
         when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn(ServerStatus.DISABLED.name());
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.2")).thenReturn(ServerStatus.ENABLED.name());
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.3")).thenReturn(ServerStatus.ENABLED.name());
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Collections.singletonList("127.0.0.3@-@0"));
         assertTrue(serverService.hasAvailableServers());
     }
@@ -97,8 +99,8 @@ public final class ServerServiceTest {
     @Test
     public void assertHasNotAvailableServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("127.0.0.1", "127.0.0.2"));
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn(ServerStatus.DISABLED.name());
         when(jobNodeStorage.getJobNodeData("servers/127.0.0.2")).thenReturn(ServerStatus.DISABLED.name());
-        when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("127.0.0.2@-@0", "127.0.0.2@-@1"));
         assertFalse(serverService.hasAvailableServers());
     }
     
@@ -111,23 +113,26 @@ public final class ServerServiceTest {
     @Test
     public void assertIsNotAvailableServerWithoutOnlineInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Collections.singletonList("127.0.0.2@-@0"));
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn(ServerStatus.ENABLED.name());
         assertFalse(serverService.isAvailableServer("127.0.0.1"));
     }
     
     @Test
     public void assertIsAvailableServer() {
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Collections.singletonList("127.0.0.1@-@0"));
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn(ServerStatus.ENABLED.name());
         assertTrue(serverService.isAvailableServer("127.0.0.1"));
     }
     
     @Test
     public void assertIsNotEnableServer() {
-        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn(ServerStatus.DISABLED.name());
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn("", ServerStatus.DISABLED.name());
         assertFalse(serverService.isEnableServer("127.0.0.1"));
     }
     
     @Test
     public void assertIsEnableServer() {
+        when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn("", ServerStatus.ENABLED.name());
         assertTrue(serverService.isEnableServer("127.0.0.1"));
     }
 }

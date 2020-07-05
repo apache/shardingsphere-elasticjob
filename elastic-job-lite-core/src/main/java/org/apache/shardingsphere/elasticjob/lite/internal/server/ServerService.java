@@ -17,10 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.server;
 
+import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ public final class ServerService {
      */
     public void persistOnline(final boolean enabled) {
         if (!JobRegistry.getInstance().isShutdown(jobName)) {
-            jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
+            jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? ServerStatus.ENABLED.name() : ServerStatus.DISABLED.name());
         }
     }
     
@@ -93,6 +95,11 @@ public final class ServerService {
      * @return is server enabled or not
      */
     public boolean isEnableServer(final String ip) {
-        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip)));
+        String serverStatus = jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip));
+        while (Strings.isNullOrEmpty(serverStatus)) {
+            BlockUtils.waitingShortTime();
+            serverStatus = jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip));
+        }
+        return !ServerStatus.DISABLED.name().equals(serverStatus);
     }
 }
