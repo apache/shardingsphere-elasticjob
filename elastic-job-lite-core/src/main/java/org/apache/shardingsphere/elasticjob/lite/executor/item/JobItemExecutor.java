@@ -15,13 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.type;
+package org.apache.shardingsphere.elasticjob.lite.executor.item;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**
- * Typed job item executor.
+ * Job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
+public interface JobItemExecutor<T extends ElasticJob> {
+    
+    /**
+     * Process job item.
+     * 
+     * @param elasticJob elastic job
+     * @param jobConfig job configuration
+     * @param jobFacade job facade
+     * @param shardingContext sharding context
+     */
+    void process(T elasticJob, JobConfiguration jobConfig, JobFacade jobFacade, ShardingContext shardingContext);
 }

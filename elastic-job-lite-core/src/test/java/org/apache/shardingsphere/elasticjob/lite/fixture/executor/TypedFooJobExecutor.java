@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.TypedJobItemExecutor;
 
 public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
