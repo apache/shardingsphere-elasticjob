@@ -37,9 +37,7 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
     @Test
     public final void assertJobRunning() {
+        BlockUtils.waitingShortTime();
         assertRegCenterCommonInfoWithDisabled();
-        while (!FooSimpleJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
     }
 }
