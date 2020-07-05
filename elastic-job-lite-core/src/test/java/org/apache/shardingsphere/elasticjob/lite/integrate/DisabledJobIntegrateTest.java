@@ -37,7 +37,7 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
         super(type, new DetailedFooJob());
     }
     
-    protected void assertDisabledRegCenterInfo() {
+    protected final void assertDisabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), YamlJobConfiguration.class).toJobConfiguration();

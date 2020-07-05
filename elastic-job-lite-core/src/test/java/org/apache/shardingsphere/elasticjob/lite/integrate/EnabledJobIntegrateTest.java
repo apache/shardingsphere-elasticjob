@@ -38,10 +38,6 @@ public abstract class EnabledJobIntegrateTest extends BaseIntegrateTest {
         super(type, elasticJob);
     }
     
-    protected EnabledJobIntegrateTest(final TestType type, final String elasticJobType) {
-        super(type, elasticJobType);
-    }
-    
     @Before
     public final void assertEnabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
