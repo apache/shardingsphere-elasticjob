@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class StreamingDataflowElasticJob implements DataflowJob<String> {
+public final class StreamingDataflowJob implements DataflowJob<String> {
     
     private final Set<String> processedData = new CopyOnWriteArraySet<>();
     
