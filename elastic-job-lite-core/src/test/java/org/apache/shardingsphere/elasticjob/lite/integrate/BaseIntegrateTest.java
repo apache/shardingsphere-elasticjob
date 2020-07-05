@@ -55,6 +55,9 @@ public abstract class BaseIntegrateTest {
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
+    @Getter(value = AccessLevel.PROTECTED)
+    private final ElasticJob elasticJob;
+            
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
@@ -66,12 +69,14 @@ public abstract class BaseIntegrateTest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
+        this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJob);
         leaderService = new LeaderService(regCenter, jobName);
     }
     
     protected BaseIntegrateTest(final TestType type, final String elasticJobType) {
+        elasticJob = null;
         jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJobType);
         leaderService = new LeaderService(regCenter, jobName);
@@ -110,7 +115,6 @@ public abstract class BaseIntegrateTest {
     
     @Before
     public void setUp() {
-        regCenter.init();
         if (jobBootstrap instanceof ScheduleJobBootstrap) {
             ((ScheduleJobBootstrap) jobBootstrap).schedule();
         } else {

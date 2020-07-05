@@ -17,22 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate;
 
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
     public DisabledJobIntegrateTest(final TestType type) {
-        super(type, new FooSimpleJob());
-    }
-    
-    @Before
-    @After
-    public void reset() {
-        FooSimpleJob.reset();
+        super(type, new DetailedFooJob());
     }
     
     @Test

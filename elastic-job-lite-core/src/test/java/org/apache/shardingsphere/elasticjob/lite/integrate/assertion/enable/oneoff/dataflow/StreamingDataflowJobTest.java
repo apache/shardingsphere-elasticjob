@@ -20,24 +20,16 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.one
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingDataflowElasticJobTest extends EnabledJobIntegrateTest {
+public final class StreamingDataflowJobTest extends EnabledJobIntegrateTest {
     
-    public StreamingDataflowElasticJobTest() {
-        super(TestType.ONE_OFF, new StreamingDataflowElasticJob());
-    }
-    
-    @Before
-    @After
-    public void reset() {
-        StreamingDataflowElasticJob.reset();
+    public StreamingDataflowJobTest() {
+        super(TestType.ONE_OFF, new StreamingDataflowJob());
     }
     
     @Override
@@ -48,7 +40,7 @@ public final class StreamingDataflowElasticJobTest extends EnabledJobIntegrateTe
     
     @Test
     public void assertJobInit() {
-        while (!StreamingDataflowElasticJob.isCompleted()) {
+        while (!((StreamingDataflowJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

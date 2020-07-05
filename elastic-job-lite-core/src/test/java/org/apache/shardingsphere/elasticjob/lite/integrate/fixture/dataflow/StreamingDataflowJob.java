@@ -17,37 +17,36 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow;
 
-import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.type.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-public class StreamingDataflowElasticJobForExecuteThrowsException implements DataflowJob<String> {
+public final class StreamingDataflowJob implements DataflowJob<String> {
     
-    @Getter
-    private static volatile boolean completed;
+    private final Set<String> processedData = new CopyOnWriteArraySet<>();
+    
+    private final List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
-        if (completed) {
-            return null;
-        }
-        return Collections.singletonList("data");
+        return processedData.isEmpty() ? result : null;
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<String> data) {
-        completed = true;
-        throw new JobSystemException("I want an error.");
+        processedData.addAll(data);
     }
     
     /**
-     * Set completed to false.
+     * Is completed.
+     *
+     * @return true if is completed
      */
-    public static void reset() {
-        completed = false;
+    public boolean isCompleted() {
+        return result.size() == processedData.size();
     }
 }

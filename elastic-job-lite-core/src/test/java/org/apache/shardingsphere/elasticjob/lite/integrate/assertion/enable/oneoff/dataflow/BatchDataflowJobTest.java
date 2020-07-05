@@ -20,24 +20,16 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.one
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.OneOffDataflowElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.BatchDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest {
+public final class BatchDataflowJobTest extends EnabledJobIntegrateTest {
     
-    public OneOffDataflowElasticJobTest() {
-        super(TestType.ONE_OFF, new OneOffDataflowElasticJob());
-    }
-    
-    @Before
-    @After
-    public void reset() {
-        OneOffDataflowElasticJob.reset();
+    public BatchDataflowJobTest() {
+        super(TestType.ONE_OFF, new BatchDataflowJob());
     }
     
     @Override
@@ -48,7 +40,7 @@ public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest 
     
     @Test
     public void assertJobInit() {
-        while (!OneOffDataflowElasticJob.isCompleted()) {
+        while (!((BatchDataflowJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

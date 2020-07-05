@@ -21,20 +21,13 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
 
+@Getter
 public final class FooSimpleJob implements SimpleJob {
     
-    @Getter
-    private static volatile boolean completed;
+    private volatile boolean completed;
     
     @Override
     public void execute(final ShardingContext shardingContext) {
         completed = true;
-    }
-    
-    /**
-     * Set completed to false.
-     */
-    public static void reset() {
-        completed = false;
     }
 }

@@ -20,35 +20,27 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.sch
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJobForExecuteThrowsException;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.BatchDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingDataflowElasticJobForExecuteThrowsExceptionTest extends EnabledJobIntegrateTest {
+public final class BatchDataflowJobTest extends EnabledJobIntegrateTest {
     
-    public StreamingDataflowElasticJobForExecuteThrowsExceptionTest() {
-        super(TestType.SCHEDULE, new StreamingDataflowElasticJobForExecuteThrowsException());
-    }
-    
-    @Before
-    @After
-    public void reset() {
-        StreamingDataflowElasticJobForExecuteThrowsException.reset();
+    public BatchDataflowJobTest() {
+        super(TestType.SCHEDULE, new BatchDataflowJob());
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?")
-                .shardingItemParameters("0=A,1=B,2=C").jobErrorHandlerType("IGNORE").overwrite(true).setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
+                .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     
     @Test
     public void assertJobInit() {
-        while (!StreamingDataflowElasticJobForExecuteThrowsException.isCompleted()) {
+        while (!((BatchDataflowJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
