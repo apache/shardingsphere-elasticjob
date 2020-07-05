@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.junit.Test;
 
 import java.io.IOException;

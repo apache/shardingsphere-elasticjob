@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.executor.type;
 
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor.ClassedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.executor.TypedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.DetailedFooJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.FailedJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.FooJob;
+import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.fixture.executor.TypedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.lite.fixture.job.FailedJob;
+import org.apache.shardingsphere.elasticjob.lite.fixture.job.FooJob;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
