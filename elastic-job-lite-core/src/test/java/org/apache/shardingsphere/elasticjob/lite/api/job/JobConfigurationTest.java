@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.config;
+package org.apache.shardingsphere.elasticjob.lite.api.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
