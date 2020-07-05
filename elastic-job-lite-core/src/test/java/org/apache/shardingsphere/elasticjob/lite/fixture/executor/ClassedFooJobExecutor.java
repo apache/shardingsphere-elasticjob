@@ -27,6 +27,7 @@ public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJo
     
     @Override
     public void process(final FooJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        elasticJob.foo(shardingContext);
     }
     
     @Override

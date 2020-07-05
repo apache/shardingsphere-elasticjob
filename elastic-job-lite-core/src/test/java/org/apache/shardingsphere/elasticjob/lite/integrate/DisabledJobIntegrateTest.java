@@ -26,12 +26,10 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
@@ -39,19 +37,7 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
         super(type, new DetailedFooJob());
     }
     
-    @Test
-    public final void assertJobRunning() {
-        BlockUtils.waitingShortTime();
-        assertDisabledRegCenterInfo();
-        setJobEnable();
-        // TODO assert job enable success
-//        while (!((DetailedFooJob) getElasticJob()).isCompleted()) {
-//            BlockUtils.waitingShortTime();
-//        }
-        assertEnabledRegCenterInfo();
-    }
-    
-    private void assertDisabledRegCenterInfo() {
+    protected void assertDisabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), YamlJobConfiguration.class).toJobConfiguration();
@@ -66,16 +52,5 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
         while (null != getRegCenter().get("/" + getJobName() + "/leader/election/instance")) {
             BlockUtils.waitingShortTime();
         }
-    }
-    
-    private void setJobEnable() {
-        getRegCenter().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), ServerStatus.ENABLED.name());
-    }
-    
-    private void assertEnabledRegCenterInfo() {
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        getRegCenter().remove("/" + getJobName() + "/leader/election");
-        // TODO assert job enable success
-        // assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }
