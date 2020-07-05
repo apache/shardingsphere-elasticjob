@@ -61,6 +61,7 @@ public abstract class BaseIntegrateTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfiguration;
     
+    @Getter(AccessLevel.PROTECTED)
     private final JobBootstrap jobBootstrap;
     
     private final LeaderService leaderService;
@@ -131,10 +132,6 @@ public abstract class BaseIntegrateTest {
     protected final void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
         assertTrue(leaderService.isLeaderUntilBlock());
-    }
-    
-    protected final void assertRegCenterCommonInfoWithDisabled() {
-        assertRegCenterCommonInfo();
     }
     
     private void assertRegCenterCommonInfo() {
