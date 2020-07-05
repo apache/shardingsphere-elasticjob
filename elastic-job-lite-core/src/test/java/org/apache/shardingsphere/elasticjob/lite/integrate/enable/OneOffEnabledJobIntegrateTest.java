@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable;
+package org.apache.shardingsphere.elasticjob.lite.integrate.enable;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
@@ -24,15 +24,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
+public final class OneOffEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
     
-    public ScheduleEnabledJobIntegrateTest() {
-        super(TestType.SCHEDULE, new DetailedFooJob());
+    public OneOffEnabledJobIntegrateTest() {
+        super(TestType.ONE_OFF, new DetailedFooJob());
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
     }
     
     @Test

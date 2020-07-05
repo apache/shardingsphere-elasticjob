@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.dataflow.job;
 
-import org.apache.shardingsphere.elasticjob.lite.dataflow.executor.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
-import org.w3c.dom.Element;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 
-import java.util.Properties;
+import java.util.List;
 
 /**
- * Dataflow job bean definition parser.
+ * Dataflow job.
+ * 
+ * @param <T> type of data
  */
-public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
+public interface DataflowJob<T> extends ElasticJob {
     
-    @Override
-    protected Properties getProps(final Element element) {
-        Properties result = new Properties();
-        result.setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
-        return result;
-    }
+    /**
+     * Fetch to be processed data.
+     *
+     * @param shardingContext sharding context
+     * @return to be processed data
+     */
+    List<T> fetchData(ShardingContext shardingContext);
+    
+    /**
+     * Process data.
+     *
+     * @param shardingContext sharding context
+     * @param data to be processed data
+     */
+    void processData(ShardingContext shardingContext, List<T> data);
 }

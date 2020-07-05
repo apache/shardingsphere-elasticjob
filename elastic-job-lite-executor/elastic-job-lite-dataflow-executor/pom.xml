@@ -21,16 +21,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>elastic-job-lite-executor</artifactId>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elastic-job-lite</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elastic-job-lite-executor</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>elastic-job-lite-dataflow-executor</artifactId>
     <name>${project.artifactId}</name>
     
-    <modules>
-        <module>elastic-job-lite-simple-executor</module>
-        <module>elastic-job-lite-dataflow-executor</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elastic-job-lite-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -85,7 +84,7 @@ public final class SetUpFacadeTest {
     @Test
     public void assertSetUpJobConfiguration() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", 3)
-                .cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
+                .cron("0/1 * * * * ?").setProperty("streaming.process", Boolean.TRUE.toString()).build();
         when(configService.setUpJobConfiguration(ElasticJob.class.getName(), jobConfig)).thenReturn(jobConfig);
         assertThat(setUpFacade.setUpJobConfiguration(ElasticJob.class.getName(), jobConfig), is(jobConfig));
         verify(configService).setUpJobConfiguration(ElasticJob.class.getName(), jobConfig);

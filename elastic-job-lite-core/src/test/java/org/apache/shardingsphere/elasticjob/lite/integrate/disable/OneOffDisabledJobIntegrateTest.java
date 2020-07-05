@@ -15,31 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable;
+package org.apache.shardingsphere.elasticjob.lite.integrate.disable;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
-public final class OneOffEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
+public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
     
-    public OneOffEnabledJobIntegrateTest() {
-        super(TestType.ONE_OFF, new DetailedFooJob());
+    public OneOffDisabledJobIntegrateTest() {
+        super(TestType.ONE_OFF);
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
     }
     
     @Test
-    public void assertJobInit() {
-        while (!((DetailedFooJob) getElasticJob()).isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
+    public void assertJobRunning() {
+        BlockUtils.waitingShortTime();
+        assertDisabledRegCenterInfo();
     }
 }

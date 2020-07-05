@@ -15,33 +15,37 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.job.type;
+package org.apache.shardingsphere.elasticjob.lite.dataflow.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * Dataflow job.
- * 
- * @param <T> type of data
- */
-public interface DataflowJob<T> extends ElasticJob {
+public final class StreamingDataflowJob implements DataflowJob<String> {
+    
+    private final Set<String> processedData = new CopyOnWriteArraySet<>();
+    
+    private final List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
+    
+    @Override
+    public List<String> fetchData(final ShardingContext shardingContext) {
+        return processedData.isEmpty() ? result : null;
+    }
+    
+    @Override
+    public void processData(final ShardingContext shardingContext, final List<String> data) {
+        processedData.addAll(data);
+    }
     
     /**
-     * Fetch to be processed data.
+     * Is completed.
      *
-     * @param shardingContext sharding context
-     * @return to be processed data
+     * @return true if is completed
      */
-    List<T> fetchData(ShardingContext shardingContext);
-    
-    /**
-     * Process data.
-     *
-     * @param shardingContext sharding context
-     * @param data to be processed data
-     */
-    void processData(ShardingContext shardingContext, List<T> data);
+    public boolean isCompleted() {
+        return result.size() == processedData.size();
+    }
 }
