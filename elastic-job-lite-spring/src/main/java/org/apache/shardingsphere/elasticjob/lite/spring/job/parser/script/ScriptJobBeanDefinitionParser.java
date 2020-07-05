@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script;
 
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.script.executor.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import org.w3c.dom.Element;
 

@@ -32,5 +32,6 @@
     <modules>
         <module>elastic-job-lite-simple-executor</module>
         <module>elastic-job-lite-dataflow-executor</module>
+        <module>elastic-job-lite-script-executor</module>
     </modules>
 </project>
