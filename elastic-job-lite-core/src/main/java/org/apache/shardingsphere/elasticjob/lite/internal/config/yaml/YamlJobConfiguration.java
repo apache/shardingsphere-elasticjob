@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 
 import java.util.Properties;
 

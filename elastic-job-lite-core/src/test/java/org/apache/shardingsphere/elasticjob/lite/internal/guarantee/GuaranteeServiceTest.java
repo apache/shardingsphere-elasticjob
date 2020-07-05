@@ -17,8 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -68,7 +67,7 @@ public final class GuaranteeServiceTest {
     @Test
     public void assertIsNotAllStarted() {
         when(configService.load(false)).thenReturn(
-                JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build());
+                JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").setProperty("streaming.process", Boolean.TRUE.toString()).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllStarted());

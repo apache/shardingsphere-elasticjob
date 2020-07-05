@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
 
 public class TestSimpleJob implements SimpleJob {
     
