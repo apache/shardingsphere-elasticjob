@@ -22,8 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobE
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -34,12 +32,6 @@ public final class StreamingDataflowElasticJobForMultipleThreadsTest extends Ena
         super(TestType.SCHEDULE, new StreamingDataflowElasticJob());
     }
     
-    @Before
-    @After
-    public void reset() {
-        StreamingDataflowElasticJob.reset();
-    }
-    
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?")
@@ -48,7 +40,7 @@ public final class StreamingDataflowElasticJobForMultipleThreadsTest extends Ena
     
     @Test
     public void assertJobInit() {
-        while (!StreamingDataflowElasticJob.isCompleted()) {
+        while (!((StreamingDataflowElasticJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

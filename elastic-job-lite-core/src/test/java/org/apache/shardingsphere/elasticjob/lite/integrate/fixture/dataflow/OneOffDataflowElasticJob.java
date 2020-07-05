@@ -27,9 +27,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public final class OneOffDataflowElasticJob implements DataflowJob<String> {
     
-    private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
+    private final Set<String> processedData = new CopyOnWriteArraySet<>();
     
-    private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
+    private final List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
@@ -46,14 +46,7 @@ public final class OneOffDataflowElasticJob implements DataflowJob<String> {
      *
      * @return true if is completed
      */
-    public static boolean isCompleted() {
+    public boolean isCompleted() {
         return result.size() == processedData.size();
-    }
-    
-    /**
-     * Reset the processed data set.
-     */
-    public static void reset() {
-        processedData.clear();
     }
 }

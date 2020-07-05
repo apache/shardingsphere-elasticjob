@@ -21,8 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -33,12 +31,6 @@ public final class SimpleElasticJobTest extends EnabledJobIntegrateTest {
         super(TestType.SCHEDULE, new FooSimpleJob());
     }
     
-    @Before
-    @After
-    public void reset() {
-        FooSimpleJob.reset();
-    }
-    
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
@@ -46,7 +38,7 @@ public final class SimpleElasticJobTest extends EnabledJobIntegrateTest {
     
     @Test
     public void assertJobInit() {
-        while (!FooSimpleJob.isCompleted()) {
+        while (!((FooSimpleJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

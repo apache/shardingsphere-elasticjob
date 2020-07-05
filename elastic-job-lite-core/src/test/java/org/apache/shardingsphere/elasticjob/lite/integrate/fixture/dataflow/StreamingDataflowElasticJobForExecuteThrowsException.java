@@ -25,10 +25,10 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import java.util.Collections;
 import java.util.List;
 
-public class StreamingDataflowElasticJobForExecuteThrowsException implements DataflowJob<String> {
+@Getter
+public final class StreamingDataflowElasticJobForExecuteThrowsException implements DataflowJob<String> {
     
-    @Getter
-    private static volatile boolean completed;
+    private volatile boolean completed;
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
@@ -42,12 +42,5 @@ public class StreamingDataflowElasticJobForExecuteThrowsException implements Dat
     public void processData(final ShardingContext shardingContext, final List<String> data) {
         completed = true;
         throw new JobSystemException("I want an error.");
-    }
-    
-    /**
-     * Set completed to false.
-     */
-    public static void reset() {
-        completed = false;
     }
 }

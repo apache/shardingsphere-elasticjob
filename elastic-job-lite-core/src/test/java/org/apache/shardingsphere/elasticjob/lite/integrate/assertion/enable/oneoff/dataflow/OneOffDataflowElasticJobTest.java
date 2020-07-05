@@ -22,8 +22,6 @@ import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobE
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.OneOffDataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -34,12 +32,6 @@ public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest 
         super(TestType.ONE_OFF, new OneOffDataflowElasticJob());
     }
     
-    @Before
-    @After
-    public void reset() {
-        OneOffDataflowElasticJob.reset();
-    }
-    
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
@@ -48,7 +40,7 @@ public final class OneOffDataflowElasticJobTest extends EnabledJobIntegrateTest 
     
     @Test
     public void assertJobInit() {
-        while (!OneOffDataflowElasticJob.isCompleted()) {
+        while (!((OneOffDataflowElasticJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));

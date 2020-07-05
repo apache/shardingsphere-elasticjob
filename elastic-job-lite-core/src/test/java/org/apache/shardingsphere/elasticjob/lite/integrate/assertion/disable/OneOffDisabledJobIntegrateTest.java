@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable.oneoff;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.disable;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.DisabledJobIntegrateTest;
