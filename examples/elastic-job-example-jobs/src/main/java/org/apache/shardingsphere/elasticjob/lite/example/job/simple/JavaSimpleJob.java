@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.example.job.simple;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.example.fixture.entity.Foo;
 import org.apache.shardingsphere.elasticjob.lite.example.fixture.repository.FooRepository;
 import org.apache.shardingsphere.elasticjob.lite.example.fixture.repository.FooRepositoryFactory;

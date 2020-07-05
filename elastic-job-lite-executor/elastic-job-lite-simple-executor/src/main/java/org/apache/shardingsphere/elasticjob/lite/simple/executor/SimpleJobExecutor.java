@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple;
+package org.apache.shardingsphere.elasticjob.lite.simple.executor;
 
-import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.type.ClassedJobItemExecutor;
 
-@Getter
-public final class FooSimpleJob implements SimpleJob {
-    
-    private volatile boolean completed;
+/**
+ * Simple job executor.
+ */
+public final class SimpleJobExecutor implements ClassedJobItemExecutor<SimpleJob> {
     
     @Override
-    public void execute(final ShardingContext shardingContext) {
-        completed = true;
+    public void process(final SimpleJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        elasticJob.execute(shardingContext);
+    }
+    
+    @Override
+    public Class<SimpleJob> getElasticJobClass() {
+        return SimpleJob.class;
     }
 }

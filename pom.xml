@@ -32,6 +32,7 @@
     
     <modules>
         <module>elastic-job-lite-core</module>
+        <module>elastic-job-lite-executor</module>
         <module>elastic-job-lite-tracing</module>
         <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-lifecycle</module>

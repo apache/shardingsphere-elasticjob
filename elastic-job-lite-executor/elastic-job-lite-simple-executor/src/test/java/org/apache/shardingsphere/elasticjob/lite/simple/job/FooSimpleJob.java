@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.job.type;
+package org.apache.shardingsphere.elasticjob.lite.simple.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 
-/**
- * Simple job.
- */
-public interface SimpleJob extends ElasticJob {
+@Getter
+public final class FooSimpleJob implements SimpleJob {
     
-    /**
-     * Execute job.
-     *
-     * @param shardingContext sharding context
-     */
-    void execute(ShardingContext shardingContext);
+    private volatile boolean completed;
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        completed = true;
+    }
 }
