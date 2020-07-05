@@ -15,32 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.schedule.dataflow;
+package org.apache.shardingsphere.elasticjob.lite.integrate.assertion.enable.oneoff.dataflow;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.integrate.EnabledJobIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.OneOffDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.dataflow.BatchDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class OneOffDataflowJobTest extends EnabledJobIntegrateTest {
+public final class BatchDataflowJobTest extends EnabledJobIntegrateTest {
     
-    public OneOffDataflowJobTest() {
-        super(TestType.SCHEDULE, new OneOffDataflowJob());
+    public BatchDataflowJobTest() {
+        super(TestType.ONE_OFF, new BatchDataflowJob());
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").misfire(false).overwrite(true)
                 .setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     
     @Test
     public void assertJobInit() {
-        while (!((OneOffDataflowJob) getElasticJob()).isCompleted()) {
+        while (!((BatchDataflowJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
