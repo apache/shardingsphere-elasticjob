@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,27 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.type;
+package org.apache.shardingsphere.elasticjob.lite.executor.item.impl;
 
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
 /**
- * Job item executor.
- * 
- * @param <T> type of ElasticJob
+ * Typed job item executor.
  */
-public interface JobItemExecutor<T extends ElasticJob> {
-    
-    /**
-     * Process job item.
-     * 
-     * @param elasticJob elastic job
-     * @param jobConfig job configuration
-     * @param jobFacade job facade
-     * @param shardingContext sharding context
-     */
-    void process(T elasticJob, JobConfiguration jobConfig, JobFacade jobFacade, ShardingContext shardingContext);
+public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
 }

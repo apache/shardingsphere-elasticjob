@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.type;
+package org.apache.shardingsphere.elasticjob.lite.executor.item;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.TypedJobItemExecutor;
 
 import java.util.Map;
 import java.util.Map.Entry;
