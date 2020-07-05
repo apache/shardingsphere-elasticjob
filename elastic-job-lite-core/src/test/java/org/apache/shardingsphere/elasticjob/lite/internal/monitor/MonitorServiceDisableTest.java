@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
-import org.apache.shardingsphere.elasticjob.lite.integrate.fixture.simple.FooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.executor.fixture.job.DetailedFooJob;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,11 +25,11 @@ import java.io.IOException;
 public final class MonitorServiceDisableTest extends BaseMonitorServiceTest {
     
     public MonitorServiceDisableTest() {
-        super(new FooSimpleElasticJob());
+        super(new DetailedFooJob());
     }
     
     @Test(expected = IOException.class)
     public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000 - 1);
+        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, MONITOR_PORT - 1);
     }
 }

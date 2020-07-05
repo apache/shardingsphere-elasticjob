@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.job.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -34,12 +34,12 @@ import org.junit.BeforeClass;
 
 public abstract class BaseMonitorServiceTest {
     
-    protected static final int MONITOR_PORT = 9000;
+    static final int MONITOR_PORT = 9000;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-
+    
     @Getter(value = AccessLevel.PROTECTED)
     private static MonitorService monitorService = new MonitorService(regCenter, MONITOR_PORT);
     
@@ -60,17 +60,14 @@ public abstract class BaseMonitorServiceTest {
     }
     
     @Before
-    public void setUp() {
+    public final void setUp() {
         regCenter.init();
+        bootstrap.schedule();
     }
     
     @After
-    public void tearDown() {
+    public final void tearDown() {
         bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-    }
-    
-    protected final void scheduleJob() {
-        bootstrap.schedule();
     }
 }

@@ -21,7 +21,7 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.type.SimpleJob;
 
-public final class FooSimpleElasticJob implements SimpleJob {
+public final class FooSimpleJob implements SimpleJob {
     
     @Getter
     private static volatile boolean completed;
