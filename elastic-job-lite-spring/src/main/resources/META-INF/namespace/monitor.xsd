@@ -21,7 +21,7 @@
             xmlns:beans="http://www.springframework.org/schema/beans"
             targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/monitor"
             elementFormDefault="qualified">
-    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
     <xsd:element name="embed">
         <xsd:complexType>

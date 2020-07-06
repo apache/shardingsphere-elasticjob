@@ -21,7 +21,7 @@
             xmlns:beans="http://www.springframework.org/schema/beans"
             targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/job"
             elementFormDefault="qualified">
-    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
     <xsd:element name="listener">
         <xsd:complexType>
@@ -36,40 +36,34 @@
         </xsd:complexType>
     </xsd:element>
     
-    <xsd:complexType name="base">
-        <xsd:complexContent>
-            <xsd:extension base="beans:identifiedType">
-                <xsd:all>
-                    <xsd:element ref="beans:props" minOccurs="0" />
-                    <xsd:element ref="listener" minOccurs="0" />
-                    <xsd:element ref="distributed-listener" minOccurs="0" />
-                </xsd:all>
-                <xsd:attribute name="job-ref" type="xsd:string" />
-                <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
-                <xsd:attribute name="cron" type="xsd:string" />
-                <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
-                <xsd:attribute name="job-parameter" type="xsd:string" />
-                <xsd:attribute name="monitor-execution" type="xsd:string" default="true" />
-                <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1" />
-                <xsd:attribute name="failover" type="xsd:string" default="false" />
-                <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10" />
-                <xsd:attribute name="misfire" type="xsd:string" default="true" />
-                <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
-                <xsd:attribute name="job-executor-service-handler-type" type="xsd:string" />
-                <xsd:attribute name="job-error-handler-type" type="xsd:string" />
-                <xsd:attribute name="description" type="xsd:string" />
-                <xsd:attribute name="disabled" type="xsd:string" default="false" />
-                <xsd:attribute name="overwrite" type="xsd:string" default="false" />
-                <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-    
     <xsd:element name="job">
         <xsd:complexType>
             <xsd:complexContent>
-                <xsd:extension base="base" />
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:all>
+                        <xsd:element ref="beans:props" minOccurs="0" />
+                        <xsd:element ref="listener" minOccurs="0" />
+                        <xsd:element ref="distributed-listener" minOccurs="0" />
+                    </xsd:all>
+                    <xsd:attribute name="job-ref" type="xsd:string" />
+                    <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                    <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
+                    <xsd:attribute name="cron" type="xsd:string" />
+                    <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
+                    <xsd:attribute name="job-parameter" type="xsd:string" />
+                    <xsd:attribute name="monitor-execution" type="xsd:string" default="true" />
+                    <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1" />
+                    <xsd:attribute name="failover" type="xsd:string" default="false" />
+                    <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10" />
+                    <xsd:attribute name="misfire" type="xsd:string" default="true" />
+                    <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
+                    <xsd:attribute name="job-executor-service-handler-type" type="xsd:string" />
+                    <xsd:attribute name="job-error-handler-type" type="xsd:string" />
+                    <xsd:attribute name="description" type="xsd:string" />
+                    <xsd:attribute name="disabled" type="xsd:string" default="false" />
+                    <xsd:attribute name="overwrite" type="xsd:string" default="false" />
+                    <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
+                </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
