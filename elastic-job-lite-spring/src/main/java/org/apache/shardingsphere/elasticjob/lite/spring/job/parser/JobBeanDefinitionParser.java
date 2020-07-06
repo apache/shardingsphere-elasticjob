@@ -18,14 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job.parser;
 
 import com.google.common.base.Strings;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.EventTraceBeanDefinitionTag;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobBeanDefinitionTag;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobListenerBeanDefinitionTag;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -43,7 +40,6 @@ import java.util.Properties;
  */
 public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
-    @SneakyThrows
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory;
@@ -56,9 +52,9 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createJobConfigurationBeanDefinition(element, parserContext));
-        BeanDefinition tracingConfig = createTracingConfiguration(element);
-        if (null != tracingConfig) {
-            factory.addConstructorArgValue(tracingConfig);
+        String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
+        if (!Strings.isNullOrEmpty(tracingRef)) {
+            factory.addConstructorArgReference(tracingRef);
         }
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
@@ -89,17 +85,6 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     private Properties parsePropsElement(final Element element, final ParserContext parserContext) {
         Element propsElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionTag.PROPS_TAG);
         return null == propsElement ? new Properties() : parserContext.getDelegate().parsePropsElement(propsElement);
-    }
-    
-    private BeanDefinition createTracingConfiguration(final Element element) {
-        String eventTraceDataSourceName = element.getAttribute(EventTraceBeanDefinitionTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
-        if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
-            return null;
-        }
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(TracingConfiguration.class);
-        factory.addConstructorArgValue("RDB");
-        factory.addConstructorArgReference(eventTraceDataSourceName);
-        return factory.getBeanDefinition();
     }
     
     private List<BeanDefinition> createJobListeners(final Element element) {

@@ -25,6 +25,7 @@
                         http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <import resource="base.xml"/>
+    
     <bean id="refSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">
         <property name="fooService" ref="foo" />
     </bean>
@@ -32,10 +33,13 @@
         <property name="fooService" ref="foo" />
     </bean>
     
-    <job:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" 
-                sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" />
-    <job:job id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" 
-             sharding-item-parameters="${dataflowJob.shardingItemParameters}" overwrite="${dataflowJob.overwrite}">
+    <job:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" 
+             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}"
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" />
+    
+    <job:job id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" 
+             cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" 
+             overwrite="${dataflowJob.overwrite}">
         <props>
             <prop key="streaming.process">${dataflowJob.streamingProcess}</prop>
         </props>

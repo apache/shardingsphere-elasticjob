@@ -29,13 +29,13 @@
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob" />
     
-    <job:job id="simpleElasticJob_namespace" job-ref="fooJob" 
-                registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
-                disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
-    <job:job id="dataflowElasticJob_namespace" job-ref="dataflowJob" 
-                  registry-center-ref="regCenter" sharding-total-count="${dataflowJob.shardingTotalCount}" cron="${dataflowJob.cron}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" 
-                  monitor-execution="${dataflowJob.monitorExecution}" failover="${dataflowJob.failover}" description="${dataflowJob.description}" disabled="${dataflowJob.disabled}" 
-                  overwrite="${dataflowJob.overwrite}">
+    <job:job id="simpleElasticJob_namespace" job-ref="fooJob" registry-center-ref="regCenter" 
+             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
+    <job:job id="dataflowElasticJob_namespace" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             sharding-total-count="${dataflowJob.shardingTotalCount}" cron="${dataflowJob.cron}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" 
+             monitor-execution="${dataflowJob.monitorExecution}" failover="${dataflowJob.failover}" description="${dataflowJob.description}" 
+             disabled="${dataflowJob.disabled}" overwrite="${dataflowJob.overwrite}">
         <props>
             <prop key="streaming.process">${dataflowJob.streamingProcess}</prop>
         </props>

@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.tag;
+package org.apache.shardingsphere.elasticjob.lite.spring.tracing.tag;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Event trace bean definition tag.
+ * Tracing bean definition tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class EventTraceBeanDefinitionTag {
+public final class TracingBeanDefinitionTag {
     
-    public static final String EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE = "event-trace-rdb-data-source";
+    public static final String DATA_SOURCE_REF_ATTRIBUTE = "data-source-ref";
 }

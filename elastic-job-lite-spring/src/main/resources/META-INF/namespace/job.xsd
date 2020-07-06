@@ -47,6 +47,7 @@
                     </xsd:all>
                     <xsd:attribute name="job-ref" type="xsd:string" />
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                    <xsd:attribute name="tracing-ref" type="xsd:string" />
                     <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
                     <xsd:attribute name="cron" type="xsd:string" />
                     <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
@@ -62,7 +63,6 @@
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
-                    <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

@@ -189,7 +189,7 @@ Root 对应 JobConfiguration，有2个子类分别对应Lite和Cloud部署类型
     </job:simple>
     
     <!-- 配置带作业数据库事件追踪的简单作业-->
-    <job:simple id="eventTraceElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" event-trace-rdb-data-source="yourDataSource">
+    <job:simple id="eventTraceElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" tracing-ref="yourDataSource" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
     </job:simple>
 </beans>
 ```

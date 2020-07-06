@@ -119,6 +119,7 @@ Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将�
 | class                             | String  | 否      |                 | 作业实现类，需实现ElasticJob接口                                              |
 | job-ref                           | String  | 否      |                 | 作业关联的beanId，该配置优先级大于class属性配置                                 |
 | registry-center-ref               | String  | 是      |                 | 注册中心Bean的引用，需引用reg:zookeeper的声明                                  |
+| tracing-ref                       | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                   |
 | cron                              | String  | 是      |                 | cron表达式，用于控制作业触发时间                                               |
 | sharding-total-count              | int     | 是      |                 | 作业分片总数                                                                 |
 | sharding-item-parameters          | String  | 否      |                 | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从0开始，不可大于或等于作业分片总数<br />如：<br/>0=a,1=b,2=c|
@@ -134,7 +135,6 @@ Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将�
 | description                       | String  | 否      |                 | 作业描述信息                                                                 |
 | disabled                          | boolean | 否      | false           | 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 | overwrite                         | boolean | 否      | false           | 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
-| event-trace-rdb-data-source       | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                   |
 
 ### c. 监控配置
 
