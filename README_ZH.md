@@ -96,8 +96,8 @@ public class MyElasticJob implements SimpleJob {
     <!--配置作业注册中心 -->
     <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
    
-    <!--配置任务监控 -->
-    <elasticjob:monitor id="monitor1" registry-center-ref="regCenter" monitor-port="9999"/>    
+    <!--配置任务快照服务 -->
+    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999"/>
 
     <!--配置作业类 -->
     <bean id="simpleJob" class="xxx.MyElasticJob" />

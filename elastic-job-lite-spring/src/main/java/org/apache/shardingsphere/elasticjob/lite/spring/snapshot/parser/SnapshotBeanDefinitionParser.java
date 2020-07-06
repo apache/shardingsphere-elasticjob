@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser;
+package org.apache.shardingsphere.elasticjob.lite.spring.snapshot.parser;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
-import org.apache.shardingsphere.elasticjob.lite.spring.monitor.tag.MonitorBeanDefinitionTag;
+import org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.lite.spring.snapshot.tag.SnapshotBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
@@ -26,15 +26,15 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Monitor bean definition parser.
+ * Snapshot bean definition parser.
  */
-public final class MonitorBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public final class SnapshotBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(MonitorService.class);
-        result.addConstructorArgReference(element.getAttribute(MonitorBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(MonitorBeanDefinitionTag.MONITOR_PORT_ATTRIBUTE));
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(SnapshotService.class);
+        result.addConstructorArgReference(element.getAttribute(SnapshotBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(SnapshotBeanDefinitionTag.DUMP_PORT_ATTRIBUTE));
         result.setInitMethodName("listen");
         result.setDestroyMethodName("close");
         return result.getBeanDefinition();

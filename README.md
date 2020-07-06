@@ -104,8 +104,8 @@ public class MyElasticJob implements SimpleJob {
     <!--configure registry center -->
     <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
-    <!--configure monitor -->
-    <elasticjob:monitor id="monitor1" registry-center-ref="regCenter" monitor-port="9999"/>
+    <!--configure job snapshot service -->
+    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999"/>
     
     <!--configure job class -->
     <bean id="simpleJob" class="xxx.MyElasticJob" />

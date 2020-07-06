@@ -15,21 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.junit.Test;
 
 import java.io.IOException;
 
-public final class MonitorServiceDisableTest extends BaseMonitorServiceTest {
+public final class SnapshotServiceDisableTest extends BaseSnapshotServiceTest {
     
-    public MonitorServiceDisableTest() {
+    public SnapshotServiceDisableTest() {
         super(new DetailedFooJob());
     }
     
     @Test(expected = IOException.class)
     public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, MONITOR_PORT - 1);
+        SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND, DUMP_PORT - 1);
     }
 }

@@ -38,5 +38,5 @@
     
     <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.lite.handler.error.impl.LogJobErrorHandler" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService" level="OFF" />
 </configuration>
