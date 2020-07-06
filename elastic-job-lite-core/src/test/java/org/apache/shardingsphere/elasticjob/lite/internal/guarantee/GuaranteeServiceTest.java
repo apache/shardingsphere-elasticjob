@@ -59,6 +59,18 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
+    public void assertIsNotRegisterStartSuccess() {
+        assertFalse(guaranteeService.isRegisterStartSuccess(Arrays.asList(0, 1)));
+    }
+    
+    @Test
+    public void assertIsRegisterStartSuccess() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started/0")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started/1")).thenReturn(true);
+        assertTrue(guaranteeService.isRegisterStartSuccess(Arrays.asList(0, 1)));
+    }
+    
+    @Test
     public void assertIsNotAllStartedWhenRootNodeIsNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);
         assertFalse(guaranteeService.isAllStarted());
@@ -92,6 +104,18 @@ public final class GuaranteeServiceTest {
         guaranteeService.registerComplete(Arrays.asList(0, 1));
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/0");
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/1");
+    }
+    
+    @Test
+    public void assertIsNotRegisterCompleteSuccess() {
+        assertFalse(guaranteeService.isRegisterCompleteSuccess(Arrays.asList(0, 1)));
+    }
+    
+    @Test
+    public void assertIsRegisterCompleteSuccess() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed/0")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed/1")).thenReturn(true);
+        assertTrue(guaranteeService.isRegisterCompleteSuccess(Arrays.asList(0, 1)));
     }
     
     @Test
