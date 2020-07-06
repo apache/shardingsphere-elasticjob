@@ -16,11 +16,12 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/job"
+<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/job"
+            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
             elementFormDefault="qualified">
+    
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
     <xsd:element name="listener">
@@ -63,6 +64,44 @@
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="zookeeper">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="server-lists" type="xsd:string" use="required" />
+                    <xsd:attribute name="namespace" type="xsd:string" use="required" />
+                    <xsd:attribute name="base-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-retries" type="xsd:string" />
+                    <xsd:attribute name="session-timeout-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="connection-timeout-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="digest" type="xsd:string" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="rdb-event-trace">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="data-source-ref" type="xsd:string" use="required" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="monitor">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                    <xsd:attribute name="monitor-port" type="xsd:string" default="-1" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
