@@ -26,7 +26,7 @@ import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJo
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.script.executor.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 
 import javax.sql.DataSource;
@@ -96,7 +96,7 @@ public final class JavaMain {
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
         new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", 3)
-                .cron("0/5 * * * * ?").setProperty(ScriptJobExecutor.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
+                .cron("0/5 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
     }
     
     private static String buildScriptCommandLine() throws IOException {

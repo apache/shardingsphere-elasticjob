@@ -21,12 +21,13 @@ import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.util.json.GsonFactory;
 
 import java.io.IOException;
@@ -36,8 +37,6 @@ import java.util.Properties;
  * Script job executor.
  */
 public final class ScriptJobExecutor implements TypedJobItemExecutor {
-    
-    public static final String SCRIPT_KEY = "script.command.line";
     
     @Override
     public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
@@ -51,7 +50,7 @@ public final class ScriptJobExecutor implements TypedJobItemExecutor {
     }
     
     private String getScriptCommandLine(final Properties props) {
-        String result = props.getProperty(SCRIPT_KEY);
+        String result = props.getProperty(ScriptJobProperties.SCRIPT_KEY);
         if (Strings.isNullOrEmpty(result)) {
             throw new JobConfigurationException("Cannot find script command line, job is not executed.");
         }

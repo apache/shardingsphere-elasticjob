@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobCon
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.script.executor.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +64,7 @@ public final class JobConfigurationAPIImplTest {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
         YamlJobConfiguration actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
-        assertThat(actual.getProps().getProperty(ScriptJobExecutor.SCRIPT_KEY), is("echo"));
+        assertThat(actual.getProps().getProperty(ScriptJobProperties.SCRIPT_KEY), is("echo"));
         verify(regCenter).get("/test_job/config");
     }
     
