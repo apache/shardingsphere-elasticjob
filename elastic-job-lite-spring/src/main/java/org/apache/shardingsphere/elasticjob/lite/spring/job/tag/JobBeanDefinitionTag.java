@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.parser;
+package org.apache.shardingsphere.elasticjob.lite.spring.job.tag;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Job bean definition parser tag.
+ * Job bean definition tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobBeanDefinitionParserTag {
-    
-    public static final String CLASS_ATTRIBUTE = "class";
+public final class JobBeanDefinitionTag {
     
     public static final String JOB_REF_ATTRIBUTE = "job-ref";
     
@@ -44,33 +42,23 @@ public final class JobBeanDefinitionParserTag {
     
     public static final String FAILOVER_ATTRIBUTE = "failover";
     
-    public static final String MAX_TIME_DIFF_SECONDS_ATTRIBUTE = "max-time-diff-seconds";
-    
     public static final String MISFIRE_ATTRIBUTE = "misfire";
+    
+    public static final String MAX_TIME_DIFF_SECONDS_ATTRIBUTE = "max-time-diff-seconds";
     
     public static final String RECONCILE_INTERVAL_MINUTES = "reconcile-interval-minutes";
     
     public static final String JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE = "job-sharding-strategy-type";
     
+    public static final String JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE = "job-executor-service-handler-type";
+    
+    public static final String JOB_ERROR_HANDLER_TYPE_ATTRIBUTE = "job-error-handler-type";
+    
     public static final String DESCRIPTION_ATTRIBUTE = "description";
+    
+    public static final String PROPS_TAG = "props";
     
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
-    
-    public static final String PROPS_TAG = "props";
-    
-    public static final String LISTENER_TAG = "listener";
-    
-    public static final String DISTRIBUTED_LISTENER_TAG = "distributed-listener";
-    
-    public static final String DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
-    
-    public static final String DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
-    
-    public static final String JOB_EXECUTOR_SERVICE_HANDLER_ATTRIBUTE = "job-executor-service-handler";
-    
-    public static final String JOB_ERROR_HANDLER_ATTRIBUTE = "job-error-handler";
-    
-    public static final String EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE = "event-trace-rdb-data-source";
 }

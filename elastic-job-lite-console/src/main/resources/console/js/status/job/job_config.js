@@ -64,8 +64,8 @@ function bindSubmitJobConfigurationForm() {
             var shardingItemParameters = $("#sharding-item-parameters").val();
             var jobShardingStrategyType = $("#job-sharding-strategy-type").val();
             var scriptCommandLine = $("#script-command-line").val();
-            var jobExecutorServiceHandler = $("#job-executor-service-handler").val();
-            var jobErrorHandler = $("#job-error-handler").val();
+            var jobExecutorServiceHandlerType = $("#job-executor-service-handler-type").val();
+            var jobErrorHandlerType = $("#job-error-handler-type").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
             var postJson = {
@@ -80,8 +80,8 @@ function bindSubmitJobConfigurationForm() {
                 misfire: misfire,
                 reconcileIntervalMinutes: reconcileIntervalMinutes,
                 jobShardingStrategyType: jobShardingStrategyType,
-                jobExecutorServiceHandler: jobExecutorServiceHandler,
-                jobErrorHandler: jobErrorHandler,
+                jobExecutorServiceHandlerType: jobExecutorServiceHandlerType,
+                jobErrorHandlerType: jobErrorHandlerType,
                 description: description,
                 props: {'streaming.process': streamingProcess, 'script.command.line': scriptCommandLine}
             };

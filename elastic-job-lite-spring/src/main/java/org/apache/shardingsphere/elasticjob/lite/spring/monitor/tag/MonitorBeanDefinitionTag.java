@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.monitor.handler;
+package org.apache.shardingsphere.elasticjob.lite.spring.monitor.tag;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.MonitorBeanDefinitionParser;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * Monitor spring namespace handler.
+ * Monitor bean definition tag.
  */
-public final class MonitorNamespaceHandler extends NamespaceHandlerSupport {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MonitorBeanDefinitionTag {
     
-    @Override
-    public void init() {
-        registerBeanDefinitionParser("embed", new MonitorBeanDefinitionParser());
-    }
+    public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
+    
+    public static final String MONITOR_PORT_ATTRIBUTE = "monitor-port";
 }
