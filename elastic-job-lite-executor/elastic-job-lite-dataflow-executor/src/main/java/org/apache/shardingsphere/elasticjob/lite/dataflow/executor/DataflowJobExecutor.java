@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.dataflow.executor;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.dataflow.job.DataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.ClassedJobItemExecutor;
 
@@ -30,11 +31,9 @@ import java.util.List;
  */
 public final class DataflowJobExecutor implements ClassedJobItemExecutor<DataflowJob> {
     
-    public static final String STREAM_PROCESS_KEY = "streaming.process";
-    
     @Override
     public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        if (Boolean.parseBoolean(jobConfig.getProps().getOrDefault(STREAM_PROCESS_KEY, false).toString())) {
+        if (Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false).toString())) {
             streamingExecute(elasticJob, jobConfig, jobFacade, shardingContext);
         } else {
             oneOffExecute(elasticJob, shardingContext);
@@ -53,7 +52,7 @@ public final class DataflowJobExecutor implements ClassedJobItemExecutor<Dataflo
     }
     
     private boolean isEligibleForJobRunning(final JobConfiguration jobConfig, final JobFacade jobFacade) {
-        return !jobFacade.isNeedSharding() && Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobExecutor.STREAM_PROCESS_KEY, false).toString());
+        return !jobFacade.isNeedSharding() && Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false).toString());
     }
     
     private void oneOffExecute(final DataflowJob elasticJob, final ShardingContext shardingContext) {

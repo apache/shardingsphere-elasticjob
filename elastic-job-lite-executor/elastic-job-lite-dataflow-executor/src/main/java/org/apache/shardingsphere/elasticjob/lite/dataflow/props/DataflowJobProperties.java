@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow;
-
-import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
-import org.w3c.dom.Element;
-
-import java.util.Properties;
+package org.apache.shardingsphere.elasticjob.lite.dataflow.props;
 
 /**
- * Dataflow job bean definition parser.
+ * Dataflow job properties.
  */
-public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
+public final class DataflowJobProperties {
     
-    @Override
-    protected Properties getProps(final Element element) {
-        Properties result = new Properties();
-        result.setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
-        return result;
-    }
+    /**
+     * Whether use stream mode to process dataflow job.
+     */
+    public static final String STREAM_PROCESS_KEY = "streaming.process";
 }
