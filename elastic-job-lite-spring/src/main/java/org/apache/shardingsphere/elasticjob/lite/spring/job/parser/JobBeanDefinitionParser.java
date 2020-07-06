@@ -22,6 +22,9 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.EventTraceBeanDefinitionTag;
+import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobBeanDefinitionTag;
+import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobListenerBeanDefinitionTag;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -44,14 +47,14 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory;
-        if (Strings.isNullOrEmpty(element.getAttribute(JobBeanDefinitionParserTag.CRON_ATTRIBUTE))) {
+        if (Strings.isNullOrEmpty(element.getAttribute(JobBeanDefinitionTag.CRON_ATTRIBUTE))) {
             factory = BeanDefinitionBuilder.rootBeanDefinition(OneOffJobBootstrap.class);
         } else {
             factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
             factory.setInitMethodName("schedule");
         }
-        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
-        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE));
+        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
+        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createJobConfigurationBeanDefinition(element, parserContext));
         BeanDefinition tracingConfig = createTracingConfiguration(element);
         if (null != tracingConfig) {
@@ -64,32 +67,32 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     private BeanDefinition createJobConfigurationBeanDefinition(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
         result.addConstructorArgValue(element.getAttribute(ID_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.CRON_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.SHARDING_TOTAL_COUNT_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.JOB_PARAMETER_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.MONITOR_EXECUTION_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.MISFIRE_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.RECONCILE_INTERVAL_MINUTES));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.JOB_EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.JOB_ERROR_HANDLER_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.DESCRIPTION_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.CRON_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.SHARDING_TOTAL_COUNT_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_PARAMETER_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MONITOR_EXECUTION_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.FAILOVER_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MISFIRE_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.RECONCILE_INTERVAL_MINUTES));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_ERROR_HANDLER_TYPE_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         result.addConstructorArgValue(parsePropsElement(element, parserContext));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.DISABLED_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionParserTag.OVERWRITE_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.OVERWRITE_ATTRIBUTE));
         return result.getBeanDefinition();
     }
     
     private Properties parsePropsElement(final Element element, final ParserContext parserContext) {
-        Element propsElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionParserTag.PROPS_TAG);
+        Element propsElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionTag.PROPS_TAG);
         return null == propsElement ? new Properties() : parserContext.getDelegate().parsePropsElement(propsElement);
     }
     
     private BeanDefinition createTracingConfiguration(final Element element) {
-        String eventTraceDataSourceName = element.getAttribute(JobBeanDefinitionParserTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
+        String eventTraceDataSourceName = element.getAttribute(EventTraceBeanDefinitionTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
         if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
             return null;
         }
@@ -100,19 +103,19 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     }
     
     private List<BeanDefinition> createJobListeners(final Element element) {
-        Element listenerElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionParserTag.LISTENER_TAG);
-        Element distributedListenerElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_TAG);
+        Element listenerElement = DomUtils.getChildElementByTagName(element, JobListenerBeanDefinitionTag.LISTENER_TAG);
+        Element distributedListenerElement = DomUtils.getChildElementByTagName(element, JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_TAG);
         List<BeanDefinition> result = new ManagedList<>(2);
         if (null != listenerElement) {
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(listenerElement.getAttribute(JobBeanDefinitionParserTag.CLASS_ATTRIBUTE));
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(listenerElement.getAttribute(JobListenerBeanDefinitionTag.CLASS_ATTRIBUTE));
             factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
             result.add(factory.getBeanDefinition());
         }
         if (null != distributedListenerElement) {
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(distributedListenerElement.getAttribute(JobBeanDefinitionParserTag.CLASS_ATTRIBUTE));
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.CLASS_ATTRIBUTE));
             factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
-            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
+            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
+            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
             result.add(factory.getBeanDefinition());
         }
         return result;

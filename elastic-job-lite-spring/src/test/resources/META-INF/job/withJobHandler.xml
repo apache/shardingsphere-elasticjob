@@ -31,7 +31,7 @@
     
     <job:job id="simpleElasticJob_namespace_job_handler" job-ref="fooJob" 
                 registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
-                disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler="SINGLE_THREAD" />
+                disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" />
     <job:job id="dataflowElasticJob_namespace_job_handler" job-ref="dataflowJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C"
-                  job-error-handler="THROW" description="中文描述" overwrite="true" />
+                  job-error-handler-type="THROW" description="中文描述" overwrite="true" />
 </beans>
