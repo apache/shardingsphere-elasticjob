@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.monitor.MonitorService;
+import org.apache.shardingsphere.elasticjob.lite.spring.monitor.tag.MonitorBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
@@ -25,15 +26,15 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Bean definition parser for embed monitor.
+ * Monitor bean definition parser.
  */
-public class EmbedMonitorBeanDefinitionParser extends AbstractBeanDefinitionParser {
-
+public final class MonitorBeanDefinitionParser extends AbstractBeanDefinitionParser {
+    
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(MonitorService.class);
-        result.addConstructorArgReference(element.getAttribute(MonitorBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(MonitorBeanDefinitionParserTag.MONITOR_PORT_ATTRIBUTE));
+        result.addConstructorArgReference(element.getAttribute(MonitorBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(MonitorBeanDefinitionTag.MONITOR_PORT_ATTRIBUTE));
         result.setInitMethodName("listen");
         result.setDestroyMethodName("close");
         return result.getBeanDefinition();

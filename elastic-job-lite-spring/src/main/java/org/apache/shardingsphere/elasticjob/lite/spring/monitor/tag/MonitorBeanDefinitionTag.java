@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser;
+package org.apache.shardingsphere.elasticjob.lite.spring.monitor.tag;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Monitor bean definition parser tag.
+ * Monitor bean definition tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MonitorBeanDefinitionParserTag {
+public final class MonitorBeanDefinitionTag {
     
     public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
     

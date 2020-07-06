@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.monitor.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.EmbedMonitorBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.MonitorBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
@@ -27,6 +27,6 @@ public final class MonitorNamespaceHandler extends NamespaceHandlerSupport {
     
     @Override
     public void init() {
-        registerBeanDefinitionParser("embed", new EmbedMonitorBeanDefinitionParser());
+        registerBeanDefinitionParser("embed", new MonitorBeanDefinitionParser());
     }
 }
