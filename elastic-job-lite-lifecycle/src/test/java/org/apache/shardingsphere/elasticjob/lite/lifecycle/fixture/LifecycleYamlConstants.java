@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 public final class LifecycleYamlConstants {
     
     private static final String SIMPLE_JOB_YAML = "jobName: %s\n"
-            + "jobType: SIMPLE\n"
             + "cron: 0/1 * * * * ?\n"
             + "shardingTotalCount: 3\n"
             + "jobParameter: param\n"
@@ -43,7 +42,6 @@ public final class LifecycleYamlConstants {
             + "failover: false\n"
             + "jobName: test_job\n"
             + "jobParameter: param\n"
-            + "jobType: DATAFLOW\n"
             + "maxTimeDiffSeconds: -1\n"
             + "misfire: true\n"
             + "monitorExecution: true\n"
@@ -54,7 +52,6 @@ public final class LifecycleYamlConstants {
             + "shardingTotalCount: 3\n";
     
     private static final String SCRIPT_JOB_YAML = "jobName: test_job\n"
-            + "jobType: SCRIPT\n"
             + "cron: 0/1 * * * * ?\n"
             + "shardingTotalCount: 3\n"
             + "jobParameter: param\n"
@@ -65,7 +62,7 @@ public final class LifecycleYamlConstants {
             + "reconcileIntervalMinutes: 10\n"
             + "description: ''\n"
             + "props:\n"
-            + "  script.command.line: test.sh\n"
+            + "  script.command.line: echo\n"
             + "disabled: false\n"
             + "overwrite: false\n";
     

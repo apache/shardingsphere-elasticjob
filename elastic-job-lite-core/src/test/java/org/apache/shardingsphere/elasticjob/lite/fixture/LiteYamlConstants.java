@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 public final class LiteYamlConstants {
     
     private static final String JOB_YAML = "jobName: test_job\n"
-            + "jobType: SIMPLE\n"
             + "cron: 0/1 * * * * ?\n"
             + "shardingTotalCount: 3\n"
             + "jobParameter: 'param'\n"

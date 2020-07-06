@@ -17,8 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.reconcile;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -60,7 +59,7 @@ public final class ReconcileServiceTest {
     
     @Test
     public void assertReconcile() {
-        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", JobType.SIMPLE, 3).cron("0/1 * * * * ?").reconcileIntervalMinutes(1).build());
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").reconcileIntervalMinutes(1).build());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);

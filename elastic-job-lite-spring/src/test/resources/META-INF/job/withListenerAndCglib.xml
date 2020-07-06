@@ -19,29 +19,35 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                        http://www.springframework.org/schema/beans/spring-beans.xsd 
-                        http://www.springframework.org/schema/context 
-                        http://www.springframework.org/schema/context/spring-context.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/job
-                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
-                        http://www.springframework.org/schema/aop 
-                        http://www.springframework.org/schema/aop/spring-aop.xsd 
-                        ">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd 
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/aop 
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                           ">
     <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.spring.fixture.aspect,org.apache.shardingsphere.elasticjob.lite.spring.fixture.service" />
     <aop:aspectj-autoproxy proxy-target-class="true" />
+    
     <import resource="base.xml"/>
     
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob" />
     
-    <job:simple id="simpleElasticJob_namespace_listener_cglib" job-ref="fooJob" 
-                registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
-                disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" event-trace-rdb-data-source="elasticJobLog">
-        <job:listener class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.listener.SimpleCglibListener" />
-    </job:simple>
-    <job:dataflow id="dataflowElasticJob_namespace_listener_cglib" job-ref="dataflowJob" 
-                  registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" overwrite="true" streaming-process="true" />
+    <elasticjob:job id="simpleElasticJob_namespace_listener_cglib" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
+        <elasticjob:listener class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.listener.SimpleCglibListener" />
+    </elasticjob:job>
+    <elasticjob:job id="dataflowElasticJob_namespace_listener_cglib" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" 
+             overwrite="true">
+        <props>
+            <prop key="streaming.process">true</prop>
+        </props>
+    </elasticjob:job>
 </beans>

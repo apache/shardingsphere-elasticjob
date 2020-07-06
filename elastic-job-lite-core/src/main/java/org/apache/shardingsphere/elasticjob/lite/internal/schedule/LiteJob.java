@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
@@ -39,6 +39,8 @@ public final class LiteJob implements Job {
     
     private ElasticJob elasticJob;
     
+    private String elasticJobType;
+    
     private JobConfiguration jobConfig;
     
     private List<ElasticJobListener> elasticJobListeners;
@@ -47,6 +49,12 @@ public final class LiteJob implements Job {
     
     @Override
     public void execute(final JobExecutionContext context) {
-        new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig).execute();
+        createExecutor().execute();
+    }
+    
+    private ElasticJobExecutor createExecutor() {
+        return null == elasticJob
+                ? new ElasticJobExecutor(regCenter, elasticJobType, jobConfig, elasticJobListeners, tracingConfig)
+                : new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig);
     }
 }

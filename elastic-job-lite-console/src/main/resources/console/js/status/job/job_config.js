@@ -18,7 +18,7 @@
 $(function() {
     tooltipLocale();
     validate();
-    bindSubmitJobSettingsForm();
+    bindSubmitJobConfigurationForm();
     bindResetForm();
 });
 
@@ -42,13 +42,12 @@ function getJobParams() {
     return jobParams;
 }
 
-function bindSubmitJobSettingsForm() {
+function bindSubmitJobConfigurationForm() {
     $("#update-job-info-btn").on("click", function(){
         var bootstrapValidator = $("#job-config-form").data("bootstrapValidator");
         bootstrapValidator.validate();
         if (bootstrapValidator.isValid()) {
             var jobName = $("#job-name").val();
-            var jobType = $("#job-type").val();
             var shardingTotalCount = $("#sharding-total-count").val();
             var jobParameter = $("#job-parameter").val();
             var cron = $("#cron").val();
@@ -65,11 +64,27 @@ function bindSubmitJobSettingsForm() {
             var shardingItemParameters = $("#sharding-item-parameters").val();
             var jobShardingStrategyType = $("#job-sharding-strategy-type").val();
             var scriptCommandLine = $("#script-command-line").val();
-            var jobExecutorServiceHandler = $("#job-executor-service-handler").val();
-            var jobErrorHandler = $("#job-error-handler").val();
+            var jobExecutorServiceHandlerType = $("#job-executor-service-handler-type").val();
+            var jobErrorHandlerType = $("#job-error-handler-type").val();
             var description = $("#description").val();
             var reconcileIntervalMinutes = $("#reconcile-interval-minutes").val();
-            var postJson = {jobName: jobName, jobType : jobType, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyType: jobShardingStrategyType, jobExecutorServiceHandler: jobExecutorServiceHandler, jobErrorHandler: jobErrorHandler, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
+            var postJson = {
+                jobName: jobName,
+                shardingTotalCount: shardingTotalCount,
+                jobParameter: jobParameter,
+                cron: cron,
+                shardingItemParameters: shardingItemParameters,
+                maxTimeDiffSeconds: maxTimeDiffSeconds,
+                monitorExecution: monitorExecution,
+                failover: failover,
+                misfire: misfire,
+                reconcileIntervalMinutes: reconcileIntervalMinutes,
+                jobShardingStrategyType: jobShardingStrategyType,
+                jobExecutorServiceHandlerType: jobExecutorServiceHandlerType,
+                jobErrorHandlerType: jobErrorHandlerType,
+                description: description,
+                props: {'streaming.process': streamingProcess, 'script.command.line': scriptCommandLine}
+            };
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();

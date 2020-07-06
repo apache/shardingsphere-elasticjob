@@ -68,6 +68,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test
     public void assertBeforeJobExecutedWhenIsAllStarted() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
@@ -77,6 +78,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test
     public void assertBeforeJobExecutedWhenIsNotAllStartedAndNotTimeout() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
@@ -86,6 +88,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertBeforeJobExecutedWhenIsNotAllStartedAndTimeout() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L, 2L);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
@@ -95,6 +98,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test
     public void assertAfterJobExecutedWhenIsAllCompleted() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
@@ -104,6 +108,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test
     public void assertAfterJobExecutedWhenIsAllCompletedAndNotTimeout() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
@@ -113,6 +118,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertAfterJobExecutedWhenIsAllCompletedAndTimeout() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L, 2L);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);

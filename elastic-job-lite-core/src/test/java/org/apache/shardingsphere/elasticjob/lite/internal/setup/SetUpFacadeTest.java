@@ -17,10 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.fixture.TestDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -28,10 +26,8 @@ import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceServi
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,12 +44,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SetUpFacadeTest {
-    
-    @Mock
-    private CoordinatorRegistryCenter regCenter;
-    
-    @Mock
-    private JobScheduleController jobScheduleController;
     
     @Mock
     private ConfigurationService configService;
@@ -93,11 +83,11 @@ public final class SetUpFacadeTest {
     
     @Test
     public void assertSetUpJobConfiguration() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", JobType.DATAFLOW, 3)
-                .cron("0/1 * * * * ?").setProperty(DataflowJobExecutor.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build();
-        when(configService.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig)).thenReturn(jobConfig);
-        assertThat(setUpFacade.setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig), is(jobConfig));
-        verify(configService).setUpJobConfiguration(TestDataflowJob.class.getName(), jobConfig);
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", 3)
+                .cron("0/1 * * * * ?").setProperty("streaming.process", Boolean.TRUE.toString()).build();
+        when(configService.setUpJobConfiguration(ElasticJob.class.getName(), jobConfig)).thenReturn(jobConfig);
+        assertThat(setUpFacade.setUpJobConfiguration(ElasticJob.class.getName(), jobConfig), is(jobConfig));
+        verify(configService).setUpJobConfiguration(ElasticJob.class.getName(), jobConfig);
     }
     
     @Test

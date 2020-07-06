@@ -27,14 +27,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="job-type" class="col-sm-6 control-label" data-lang="job-type"></label>
-                            <div class="col-sm-6">
-                                <input type="text" id="job-type" name="jobType" class="form-control" disabled />
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
@@ -131,15 +123,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="job-error-handler" class="col-sm-2 control-label" data-lang="job-error-handler"></label>
+                    <label for="job-executor-service-handler-type" class="col-sm-2 control-label" data-lang="job-executor-service-handler-type"></label>
                     <div class="col-sm-9">
-                        <input type="text" id="job-error-handler" name="jobErrorHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`JobErrorHandler`接口，定制异常处理流程，默认实现是记录日志但不抛出异常。" />
+                        <input type="text" id="job-executor-service-handler-type" name="jobExecutorServiceHandlerType" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="job-executor-service-handler" class="col-sm-2 control-label" data-lang="job-executor-service-handler"></label>
+                    <label for="job-error-handler-type" class="col-sm-2 control-label" data-lang="job-error-handler-type"></label>
                     <div class="col-sm-9">
-                        <input type="text" id="job-executor-service-handler" name="jobExecutorServiceHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
+                        <input type="text" id="job-error-handler-type" name="jobErrorHandlerType" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`JobErrorHandler`接口，定制异常处理流程，默认实现是记录日志但不抛出异常。" />
                     </div>
                 </div>
                 <div class="form-group">

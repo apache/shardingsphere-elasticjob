@@ -17,27 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
-import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch;
-import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Condition;
-import org.apache.shardingsphere.elasticjob.lite.console.dao.search.RDBJobEventSearch.Result;
-import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceDataSourceConfigurationService;
+import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExecutionEventsRequest;
+import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
+import org.apache.shardingsphere.elasticjob.lite.console.dto.response.BasePageResponse;
+import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceHistoryService;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.MultiValueMap;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.core.MediaType;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Event trace history RESTful API.
@@ -46,30 +38,19 @@ import java.util.Map;
 @RequestMapping("/event-trace")
 public final class EventTraceHistoryController {
     
-    private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService;
-    
-    private final RDBJobEventSearch rdbJobEventSearch;
-    
     @Autowired
-    public EventTraceHistoryController(final EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService,
-                                       final RDBJobEventSearch rdbJobEventSearch) {
-        this.eventTraceDataSourceConfigurationService = eventTraceDataSourceConfigurationService;
-        this.rdbJobEventSearch = rdbJobEventSearch;
-    }
+    private EventTraceHistoryService eventTraceHistoryService;
     
     /**
      * Find job execution events.
      *
      * @param requestParams query criteria
      * @return job execution event trace result
-     * @throws ParseException parse exception
      */
-    @GetMapping(value = "/execution", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
-    public Result<JobExecutionEvent> findJobExecutionEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
-        if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new Result<>(0L, new ArrayList<JobExecutionEvent>());
-        }
-        return rdbJobEventSearch.findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "ip", "isSuccess"}));
+    @GetMapping(value = "/execution", produces = MediaType.APPLICATION_JSON)
+    public BasePageResponse<JobExecutionEvent> findJobExecutionEvents(final FindJobExecutionEventsRequest requestParams) {
+        Page<JobExecutionEvent> jobExecutionEvents = eventTraceHistoryService.findJobExecutionEvents(requestParams);
+        return BasePageResponse.of(jobExecutionEvents);
     }
     
     /**
@@ -77,47 +58,10 @@ public final class EventTraceHistoryController {
      *
      * @param requestParams query criteria
      * @return job status trace result
-     * @throws ParseException parse exception
      */
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
-    public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
-        if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
-            return new Result<>(0L, new ArrayList<JobStatusTraceEvent>());
-        }
-        return rdbJobEventSearch.findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "source", "executionType", "state"}));
-    }
-    
-    private Condition buildCondition(final MultiValueMap<String, String> requestParams, final String[] params) throws ParseException {
-        int perPage = 10;
-        int page = 1;
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("per_page"))) {
-            perPage = Integer.parseInt(requestParams.getFirst("per_page"));
-        }
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("page"))) {
-            page = Integer.parseInt(requestParams.getFirst("page"));
-        }
-        String sort = requestParams.getFirst("sort");
-        String order = requestParams.getFirst("order");
-        Date startTime = null;
-        Date endTime = null;
-        Map<String, Object> fields = getQueryParameters(requestParams, params);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("startTime"))) {
-            startTime = simpleDateFormat.parse(requestParams.getFirst("startTime"));
-        }
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("endTime"))) {
-            endTime = simpleDateFormat.parse(requestParams.getFirst("endTime"));
-        }
-        return new Condition(perPage, page, sort, order, startTime, endTime, fields);
-    }
-    
-    private Map<String, Object> getQueryParameters(final MultiValueMap<String, String> requestParams, final String[] params) {
-        final Map<String, Object> result = new HashMap<>();
-        for (String each : params) {
-            if (!Strings.isNullOrEmpty(requestParams.getFirst(each))) {
-                result.put(each, requestParams.getFirst(each));
-            }
-        }
-        return result;
+    public BasePageResponse<JobStatusTraceEvent> findJobStatusTraceEvents(final FindJobStatusTraceEventsRequest requestParams) {
+        Page<JobStatusTraceEvent> jobStatusTraceEvents = eventTraceHistoryService.findJobStatusTraceEvents(requestParams);
+        return BasePageResponse.of(jobStatusTraceEvents);
     }
 }

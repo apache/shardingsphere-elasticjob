@@ -19,10 +19,9 @@ package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.lite.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.type.JobType;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -35,12 +34,12 @@ import org.junit.BeforeClass;
 
 public abstract class BaseMonitorServiceTest {
     
-    protected static final int MONITOR_PORT = 9000;
+    static final int MONITOR_PORT = 9000;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-
+    
     @Getter(value = AccessLevel.PROTECTED)
     private static MonitorService monitorService = new MonitorService(regCenter, MONITOR_PORT);
     
@@ -50,7 +49,7 @@ public abstract class BaseMonitorServiceTest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     public BaseMonitorServiceTest(final ElasticJob elasticJob) {
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, JobType.SIMPLE, 3).cron("0/1 * * * * ?").overwrite(true).build());
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
     @BeforeClass
@@ -61,17 +60,14 @@ public abstract class BaseMonitorServiceTest {
     }
     
     @Before
-    public void setUp() {
+    public final void setUp() {
         regCenter.init();
+        bootstrap.schedule();
     }
     
     @After
-    public void tearDown() {
+    public final void tearDown() {
         bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-    }
-    
-    protected final void scheduleJob() {
-        bootstrap.schedule();
     }
 }

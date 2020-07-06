@@ -39,13 +39,28 @@ public final class GuaranteeService {
     
     /**
      * Register start.
-     * 
-     * @param shardingItems to be registered sharding items 
+     *
+     * @param shardingItems to be registered sharding items
      */
     public void registerStart(final Collection<Integer> shardingItems) {
         for (int each : shardingItems) {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getStartedNode(each));
         }
+    }
+    
+    /**
+     * Judge whether current sharding items are all register start success.
+     *
+     * @param shardingItems current sharding items
+     * @return current sharding items are all start success or not
+     */
+    public boolean isRegisterStartSuccess(final Collection<Integer> shardingItems) {
+        for (int each : shardingItems) {
+            if (!jobNodeStorage.isJobNodeExisted(GuaranteeNode.getStartedNode(each))) {
+                return false;
+            }
+        }
+        return true;
     }
     
     /**
@@ -74,6 +89,21 @@ public final class GuaranteeService {
         for (int each : shardingItems) {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getCompletedNode(each));
         }
+    }
+    
+    /**
+     * Judge whether sharding items are register complete success.
+     *
+     * @param shardingItems current sharding items
+     * @return current sharding items are all complete success or not
+     */
+    public boolean isRegisterCompleteSuccess(final Collection<Integer> shardingItems) {
+        for (int each : shardingItems) {
+            if (!jobNodeStorage.isJobNodeExisted(GuaranteeNode.getCompletedNode(each))) {
+                return false;
+            }
+        }
+        return true;
     }
     
     /**

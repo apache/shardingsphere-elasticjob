@@ -18,20 +18,21 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                        http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/job
-                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
-                        ">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                           ">
     <import resource="base.xml"/>
     
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob" />
     
-    <job:simple id="simpleElasticJob_namespace_event_trace_rdb" job-ref="fooJob" registry-center-ref="regCenter" 
-                cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" 
-                overwrite="${simpleJob.overwrite}" job-executor-service-handler="SINGLE_THREAD" event-trace-rdb-data-source="elasticJobLog" />
-    <job:dataflow id="dataflowElasticJob_namespace_event_trace_rdb" job-ref="dataflowJob" registry-center-ref="regCenter" 
-                  cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" job-error-handler="THROW" description="中文描述" overwrite="true" />
+    <elasticjob:job id="simpleElasticJob_namespace_event_trace_rdb" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" job-executor-service-handler-type="SINGLE_THREAD" 
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
+    
+    <elasticjob:job id="dataflowElasticJob_namespace_event_trace_rdb" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" job-error-handler-type="THROW" description="中文描述" overwrite="true" />
 </beans>

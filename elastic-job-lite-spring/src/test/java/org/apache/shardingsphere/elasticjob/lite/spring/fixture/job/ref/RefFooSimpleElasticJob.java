@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.type.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooService;
 
 public class RefFooSimpleElasticJob implements SimpleJob {
