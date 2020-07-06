@@ -20,10 +20,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                        http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
-                        ">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
+                           ">
     <import resource="base.xml"/>
     
     <bean id="refSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">
