@@ -16,44 +16,55 @@
   ~ limitations under the License.
   -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context" 
-    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg" 
-    xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job" 
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
+       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/tracing"
+       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd 
                         http://www.springframework.org/schema/context 
                         http://www.springframework.org/schema/context/spring-context.xsd 
                         http://elasticjob.shardingsphere.apache.org/schema/reg
                         http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/tracing
+                        http://elasticjob.shardingsphere.apache.org/schema/tracing/tracing.xsd
                         http://elasticjob.shardingsphere.apache.org/schema/job
                         http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
                         ">
     <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
     <context:property-placeholder location="classpath:conf/*.properties" />
     
-    <bean id="elasticJobLog" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <reg:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
+    
+    <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${event.rdb.driver}"/>
         <property name="url" value="${event.rdb.url}"/>
         <property name="username" value="${event.rdb.username}"/>
         <property name="password" value="${event.rdb.password}"/>
     </bean>
+    <tracing:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
-    <reg:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
-
     <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
     
-    <job:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}" sharding-item-parameters="${simple.shardingItemParameters}" monitor-execution="${simple.monitorExecution}" failover="${simple.failover}" description="${simple.description}" disabled="${simple.disabled}" overwrite="${simple.overwrite}" event-trace-rdb-data-source="elasticJobLog" />
-    <job:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter" sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" description="${dataflow.description}" disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
+    <job:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}" sharding-item-parameters="${simple.shardingItemParameters}" monitor-execution="${simple.monitorExecution}" failover="${simple.failover}" description="${simple.description}" 
+             disabled="${simple.disabled}" overwrite="${simple.overwrite}" />
+    
+    <job:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" description="${dataflow.description}" 
+             disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
         <props>
             <prop key="streaming.process">${dataflow.streamingProcess}</prop>
         </props>
     </job:job>
     
     <!-- use absolute path to run script job -->
-    <!--<job:job id="${script.id}" registry-center-ref="regCenter" sharding-total-count="${script.shardingTotalCount}" cron="${script.cron}" sharding-item-parameters="${script.shardingItemParameters}" description="${script.description}" overwrite="${script.overwrite}">-->
+    <!--<job:job id="${script.id}" registry-center-ref="regCenter" -->
+             <!--sharding-total-count="${script.shardingTotalCount}" cron="${script.cron}" sharding-item-parameters="${script.shardingItemParameters}" description="${script.description}" -->
+             <!--overwrite="${script.overwrite}">-->
         <!--<props>-->
             <!--<prop key="script.command.line">${script.scriptCommandLine}</prop>-->
         <!--</props>-->

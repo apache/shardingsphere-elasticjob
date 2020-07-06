@@ -8,7 +8,7 @@
   ~ the License.  You may obtain a copy of the License at
   ~
   ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
+  ~  
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,18 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/monitor"
+<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/tracing"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/monitor"
+            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/tracing"
             elementFormDefault="qualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
-    <xsd:element name="embed">
+    <xsd:element name="rdb-event-trace">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="monitor-port" type="xsd:string" default="-1" />
+                    <xsd:attribute name="data-source-ref" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

@@ -20,21 +20,28 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
+       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/tracing"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://elasticjob.shardingsphere.apache.org/schema/reg
                            http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/tracing
+                           http://elasticjob.shardingsphere.apache.org/schema/tracing/tracing.xsd
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
+    
     <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" 
                    max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
-    <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
-    <bean id="elasticJobLog" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    
+    <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver" />
         <property name="url" value="jdbc:h2:mem:job_event_storage" />
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
+    <tracing:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    
+    <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
 </beans>

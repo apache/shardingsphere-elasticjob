@@ -29,9 +29,10 @@
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob" />
     
-    <job:job id="simpleElasticJob_namespace_event_trace_rdb" job-ref="fooJob" registry-center-ref="regCenter" 
-                cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" 
-                overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" event-trace-rdb-data-source="elasticJobLog" />
+    <job:job id="simpleElasticJob_namespace_event_trace_rdb" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" job-executor-service-handler-type="SINGLE_THREAD" 
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" />
+    
     <job:job id="dataflowElasticJob_namespace_event_trace_rdb" job-ref="dataflowJob" registry-center-ref="regCenter" 
-                  cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" job-error-handler-type="THROW" description="中文描述" overwrite="true" />
+             cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" job-error-handler-type="THROW" description="中文描述" overwrite="true" />
 </beans>
