@@ -105,9 +105,4 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         }
         return result;
     }
-    
-    @Override
-    protected boolean shouldGenerateId() {
-        return true;
-    }
 }
