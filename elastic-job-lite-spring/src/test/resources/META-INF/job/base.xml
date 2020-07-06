@@ -19,20 +19,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
-       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing/tracing.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
     
-    <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" 
+    <elasticjob:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" 
                    max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
     
     <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -41,7 +38,7 @@
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
-    <tracing:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
     <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
 </beans>

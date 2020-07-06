@@ -18,11 +18,11 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
     <import resource="base.xml"/>
     
@@ -33,15 +33,15 @@
         <property name="fooService" ref="foo" />
     </bean>
     
-    <job:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" 
+    <elasticjob:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" 
              cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}"
              disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" />
     
-    <job:job id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" 
+    <elasticjob:job id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" 
              cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" 
              overwrite="${dataflowJob.overwrite}">
         <props>
             <prop key="streaming.process">${dataflowJob.streamingProcess}</prop>
         </props>
-    </job:job>
+    </elasticjob:job>
 </beans>

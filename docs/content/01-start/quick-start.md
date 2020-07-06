@@ -94,29 +94,23 @@ public class JobDemo {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
-       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
-       xmlns:monitor="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor/monitor.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
    
     <!--配置任务监控 -->
-    <monitor:embed id="monitor1" registry-center-ref="regCenter" monitor-port="9999" />    
+    <elasticjob:monitor id="monitor1" registry-center-ref="regCenter" monitor-port="9999" />    
 
     <!--配置作业类 -->
     <bean id="simpleJob" class="xxx.MyElasticJob" />
     
     <!--配置作业 -->
-    <job:simple id="oneOffElasticJob" job-ref="simpleJob" registry-center-ref="regCenter" reconcile-interval-minutes="10" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    <elasticjob:simple id="oneOffElasticJob" job-ref="simpleJob" registry-center-ref="regCenter" reconcile-interval-minutes="10" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
 

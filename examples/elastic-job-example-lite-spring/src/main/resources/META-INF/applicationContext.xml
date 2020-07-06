@@ -18,55 +18,49 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:context="http://www.springframework.org/schema/context" 
-       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
-       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing"
-       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd 
                         http://www.springframework.org/schema/context 
                         http://www.springframework.org/schema/context/spring-context.xsd 
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing/tracing.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
-                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
     <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
     <context:property-placeholder location="classpath:conf/*.properties" />
     
-    <reg:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
+    <elasticjob:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
     
     <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${event.rdb.driver}"/>
-        <property name="url" value="${event.rdb.url}"/>
-        <property name="username" value="${event.rdb.username}"/>
-        <property name="password" value="${event.rdb.password}"/>
+        <property name="driverClassName" value="${event.rdb.driver}" />
+        <property name="url" value="${event.rdb.url}" />
+        <property name="username" value="${event.rdb.username}" />
+        <property name="password" value="${event.rdb.password}" />
     </bean>
-    <tracing:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
     <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
     
-    <job:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+    <elasticjob:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
              sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}" sharding-item-parameters="${simple.shardingItemParameters}" monitor-execution="${simple.monitorExecution}" failover="${simple.failover}" description="${simple.description}" 
              disabled="${simple.disabled}" overwrite="${simple.overwrite}" />
     
-    <job:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter" 
+    <elasticjob:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter" 
              sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" description="${dataflow.description}" 
              disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
         <props>
             <prop key="streaming.process">${dataflow.streamingProcess}</prop>
         </props>
-    </job:job>
+    </elasticjob:job>
     
     <!-- use absolute path to run script job -->
-    <!--<job:job id="${script.id}" registry-center-ref="regCenter" -->
+    <!--<elasticjob:job id="${script.id}" registry-center-ref="regCenter" -->
              <!--sharding-total-count="${script.shardingTotalCount}" cron="${script.cron}" sharding-item-parameters="${script.shardingItemParameters}" description="${script.description}" -->
              <!--overwrite="${script.overwrite}">-->
         <!--<props>-->
             <!--<prop key="script.command.line">${script.scriptCommandLine}</prop>-->
         <!--</props>-->
-    <!--</job:job>-->
+    <!--</elasticjob:job>-->
 </beans>

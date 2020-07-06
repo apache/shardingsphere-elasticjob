@@ -105,19 +105,20 @@ public class MyElasticJob implements SimpleJob {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
-    xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+    xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.dangdang.com/schema/ddframe/reg
-                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
-                        http://www.dangdang.com/schema/ddframe/job
-                        http://www.dangdang.com/schema/ddframe/job/job.xsd
+                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob
+                        http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
+    <bean id="yourRefJobBeanId" class="xxx.MySimpleRefElasticJob">
+        <property name="fooService" ref="xxx.FooService"/>
+    </bean>
+        
     <!-- 配置作业-->
-    <job:simple id="oneOffElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    <elasticjob:job id="oneOffElasticJob" job-ref="yourRefJobBeanId" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
