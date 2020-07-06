@@ -17,19 +17,18 @@
   -->
 
 <xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/monitor"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:beans="http://www.springframework.org/schema/beans"
-        targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/monitor"
-        elementFormDefault="qualified"
-        attributeFormDefault="unqualified">
-    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/monitor"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
     
     <xsd:element name="embed">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="monitor-port" type="xsd:string" default="-1"/>
+                    <xsd:attribute name="monitor-port" type="xsd:string" default="-1" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

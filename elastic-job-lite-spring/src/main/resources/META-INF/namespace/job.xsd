@@ -17,11 +17,11 @@
   -->
 
 <xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/job"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:beans="http://www.springframework.org/schema/beans"
-        targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/job"
-        elementFormDefault="qualified">
-    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/job"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
     
     <xsd:element name="listener">
         <xsd:complexType>
@@ -40,6 +40,7 @@
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
                 <xsd:all>
+                    <xsd:element ref="beans:props" minOccurs="0" />
                     <xsd:element ref="listener" minOccurs="0" />
                     <xsd:element ref="distributed-listener" minOccurs="0" />
                 </xsd:all>
@@ -49,46 +50,26 @@
                 <xsd:attribute name="cron" type="xsd:string" />
                 <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
                 <xsd:attribute name="job-parameter" type="xsd:string" />
-                <xsd:attribute name="monitor-execution" type="xsd:string" default="true"/>
-                <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1"/>
-                <xsd:attribute name="failover" type="xsd:string" default="false"/>
-                <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10"/>
-                <xsd:attribute name="misfire" type="xsd:string" default="true"/>
+                <xsd:attribute name="monitor-execution" type="xsd:string" default="true" />
+                <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1" />
+                <xsd:attribute name="failover" type="xsd:string" default="false" />
+                <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10" />
+                <xsd:attribute name="misfire" type="xsd:string" default="true" />
                 <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
                 <xsd:attribute name="job-executor-service-handler" type="xsd:string" />
                 <xsd:attribute name="job-error-handler" type="xsd:string" />
                 <xsd:attribute name="description" type="xsd:string" />
-                <xsd:attribute name="disabled" type="xsd:string" default="false"/>
-                <xsd:attribute name="overwrite" type="xsd:string" default="false"/>
+                <xsd:attribute name="disabled" type="xsd:string" default="false" />
+                <xsd:attribute name="overwrite" type="xsd:string" default="false" />
                 <xsd:attribute name="event-trace-rdb-data-source" type="xsd:string" />
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
     
-    <xsd:element name="simple">
+    <xsd:element name="job">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="base" />
-            </xsd:complexContent>
-        </xsd:complexType>
-    </xsd:element>
-    
-    <xsd:element name="dataflow">
-        <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="base">
-                    <xsd:attribute name="streaming-process" type="xsd:string" default="false"/>
-                </xsd:extension>
-            </xsd:complexContent>
-        </xsd:complexType>
-    </xsd:element>
-    
-    <xsd:element name="script">
-        <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="base">
-                    <xsd:attribute name="script-command-line" type="xsd:string" />
-                </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>

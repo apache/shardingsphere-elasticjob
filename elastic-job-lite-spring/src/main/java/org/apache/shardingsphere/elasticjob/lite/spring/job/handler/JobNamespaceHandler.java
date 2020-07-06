@@ -17,9 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job.handler;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.dataflow.DataflowJobBeanDefinitionParser;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.script.ScriptJobBeanDefinitionParser;
-import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.simple.SimpleJobBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.JobBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
@@ -29,8 +27,6 @@ public final class JobNamespaceHandler extends NamespaceHandlerSupport {
     
     @Override
     public void init() {
-        registerBeanDefinitionParser("simple", new SimpleJobBeanDefinitionParser());
-        registerBeanDefinitionParser("dataflow", new DataflowJobBeanDefinitionParser());
-        registerBeanDefinitionParser("script", new ScriptJobBeanDefinitionParser());
+        registerBeanDefinitionParser("job", new JobBeanDefinitionParser());
     }
 }
