@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>3.7. </b>"
 title = "作业监听器"
-weight = 25
-prev = "/02-guide/dump/"
-next = "/02-guide/job-reconcile/"
+weight = 7
+chapter = true
 +++
 
 可通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行2种。

@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>3.5. </b>"
 title = "作业运行状态监控"
-weight = 22
-prev = "/02-guide/event-trace/"
-next = "/02-guide/dump/"
+weight = 5
+chapter = true
 +++
 
 通过监听Elastic-Job-Lite的zookeeper注册中心的几个关键节点即可完成作业运行状态监控功能。

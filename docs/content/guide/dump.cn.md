@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
-title = "dump作业运行信息"
-weight = 24
-prev = "/02-guide/execution-monitor/"
-next = "/02-guide/job-listener/"
+pre = "<b>3.6. </b>"
+title = "Dump 作业运行信息"
+weight = 6
+chapter = true
 +++
 
 使用Elastic-Job-Lite过程中可能会碰到一些分布式问题，导致作业运行不稳定。

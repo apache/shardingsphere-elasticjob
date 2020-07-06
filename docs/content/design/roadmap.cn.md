@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-12-06T22:38:50+08:00"
-title = "未来线路规划"
-weight = 4
-prev = "/03-design/lite-design/"
-next = "/00-overview"
+pre = "<b>4.2. </b>"
+title = "线路规划"
+weight = 2
+chapter = true
 +++
 
 ## Core

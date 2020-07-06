@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>2.3. </b>"
 title = "部署指南"
-weight = 13
-prev = "/01-start/dev-guide/"
-next = "/02-guide"
+weight = 3
+chapter = true
 +++
 
 ## 应用部署

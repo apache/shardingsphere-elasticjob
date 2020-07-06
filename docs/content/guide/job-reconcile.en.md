@@ -1,9 +1,8 @@
 +++
-date = "2017-03-27T16:14:21+08:00"
-title = "自诊断修复"
-weight = 26
-prev = "/02-guide/job-listener/"
-next = "/02-guide/operation-manual/"
+pre = "<b>3.8. </b>"
+title = "Reconcile"
+weight = 8
+chapter = true
 +++
 
 在分布式的场景下由于网络、时钟等原因，可能导致Zookeeper的数据与真实运行的作业产生不一致，这种不一致通过正向的校验无法完全避免。需要另外启动一个线程定时校验注册中心数据与真实作业状态的一致性，即维持Elastic-Job的最终一致性。

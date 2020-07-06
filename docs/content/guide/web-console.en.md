@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
-title = "运维平台"
-weight = 11
-prev = "/02-guide"
-next = "/02-guide/config-manual/"
+pre = "<b>3.1. </b>"
+title = "Console"
+weight = 1
+chapter = true
 +++
 
 解压缩`elastic-job-lite-console-${version}.tar.gz`并执行bin\start.sh。打开浏览器访问`http://localhost:8899/`即可访问控制台。8899为默认端口号，可通过启动脚本输入-p自定义端口号。

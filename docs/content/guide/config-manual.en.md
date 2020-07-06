@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-03-21T16:14:21+08:00"
-title = "配置手册"
-weight = 12
-prev = "/02-guide/web-console/"
-next = "/02-guide/job-sharding-strategy/"
+pre = "<b>3.2. </b>"
+title = "Config Manual"
+weight = 2
+chapter = true
 +++
 
 ## 1. Java Code 配置

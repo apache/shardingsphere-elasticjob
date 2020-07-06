@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-09-27T16:14:21+08:00"
+pre = "<b>3.4. </b>"
 title = "事件追踪"
-weight = 15
-prev = "/02-guide/job-sharding-strategy/"
-next = "/02-guide/execution-monitor/"
+weight = 4
+chapter = true
 +++
 
 Elastic-Job提供了事件追踪功能，可通过事件订阅的方式处理调度过程的重要事件，用于查询、统计和监控。Elastic-Job目前提供了基于关系型数据库两种事件订阅方式记录事件。

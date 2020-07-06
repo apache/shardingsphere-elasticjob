@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>2.2. </b>"
 title = "开发指南"
-weight = 12
-prev = "/01-start/faq/"
-next = "/01-start/deploy-guide/"
+weight = 2
+chapter = true
 +++
 
 ## 0. 环境要求

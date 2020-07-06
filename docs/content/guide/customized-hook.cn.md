@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-09-27T16:14:21+08:00"
+pre = "<b>3.10. </b>"
 title = "定制化处理"
-weight = 31
-prev = "/02-guide/operation-manual/"
-next = "/03-design"
+weight = 10
+chapter = true
 +++
 
 Elastic-Job 在配置中提供了 JobHandler，用于定制化处理，目前支持自定义异常处理及作业处理线程池。

@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-28T16:14:21+08:00"
-title = "实现原理"
-weight=3
-prev = "/03-design/module/"
-next = "/03-design/roadmap/"
+pre = "<b>4.1. </b>"
+title = "Principle"
+weight = 1
+chapter = true
 +++
 
 ## 弹性分布式实现

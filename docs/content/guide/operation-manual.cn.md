@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-03-21T16:14:21+08:00"
+pre = "<b>3.9. </b>"
 title = "操作手册"
-weight = 30
-prev = "/02-guide/job-reconcile/"
-next = "/02-guide/customized-hook/"
+weight = 9
+chapter = true
 +++
 
 ## Java API(孵化中)

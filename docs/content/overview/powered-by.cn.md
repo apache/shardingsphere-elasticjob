@@ -1,12 +1,8 @@
 +++
-icon = "<b>0. </b>"
-date = "2017-04-12T16:06:17+08:00"
+pre = "<b>1.3. </b>"
 title = "采用公司"
 weight = 3
-prev = "/00-overview/news/"
-next = "/00-overview/contribution/"
 chapter = true
-
 +++
 
 ## 登记

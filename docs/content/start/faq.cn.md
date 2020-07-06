@@ -1,11 +1,10 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>2.4. </b>"
 title = "FAQ"
-weight = 2
-prev = "/01-start/quick-start/"
-next = "/01-start/dev-guide/"
+weight = 4
+chapter = true
 +++
+
 
 ### 1. 阅读源码时为什么会出现编译错误?
 

@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-12-06T22:38:50+08:00"
-title = "简介"
+pre = "<b>1.1. </b>"
+title = "Intro"
 weight = 1
-prev = "/00-overview"
-next = "/00-overview/contribution/"
+chapter = true
 +++
 
 Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供最轻量级的分布式任务的协调服务，外部依赖仅Zookeeper。

@@ -1,10 +1,8 @@
 +++
-toc = true
-date = "2016-01-27T16:14:21+08:00"
+pre = "<b>3.3. </b>"
 title = "作业分片策略"
-weight = 13
-prev = "/02-guide/config-manual/"
-next = "/02-guide/event-trace/"
+weight = 3
+chapter = true
 +++
 
 ## 框架提供的分片策略
