@@ -44,16 +44,8 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     private TimeService timeService = new TimeService();
     
     public AbstractDistributeOnceElasticJobListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
-        if (startedTimeoutMilliseconds <= 0L) {
-            this.startedTimeoutMilliseconds = Long.MAX_VALUE;
-        } else {
-            this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
-        }
-        if (completedTimeoutMilliseconds <= 0L) {
-            this.completedTimeoutMilliseconds = Long.MAX_VALUE; 
-        } else {
-            this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
-        }
+        this.startedTimeoutMilliseconds = startedTimeoutMilliseconds <= 0L ? Long.MAX_VALUE : startedTimeoutMilliseconds;
+        this.completedTimeoutMilliseconds = completedTimeoutMilliseconds <= 0L ? Long.MAX_VALUE : completedTimeoutMilliseconds;
     }
     
     @Override
