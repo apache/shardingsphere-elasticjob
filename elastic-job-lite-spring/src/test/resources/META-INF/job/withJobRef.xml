@@ -32,8 +32,12 @@
         <property name="fooService" ref="foo" />
     </bean>
     
-    <job:simple id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" 
+    <job:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" 
                 sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler="SINGLE_THREAD" />
-    <job:dataflow id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" 
-                  sharding-item-parameters="${dataflowJob.shardingItemParameters}" overwrite="${dataflowJob.overwrite}" streaming-process="${dataflowJob.streamingProcess}" />
+    <job:job id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" 
+             sharding-item-parameters="${dataflowJob.shardingItemParameters}" overwrite="${dataflowJob.overwrite}">
+        <props>
+            <prop key="streaming.process">${dataflowJob.streamingProcess}</prop>
+        </props>
+    </job:job>
 </beans>

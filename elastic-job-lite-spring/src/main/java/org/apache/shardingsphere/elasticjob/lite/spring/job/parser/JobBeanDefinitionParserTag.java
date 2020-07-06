@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.job.parser.common;
+package org.apache.shardingsphere.elasticjob.lite.spring.job.parser;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Base job bean definition parser tag.
+ * Job bean definition parser tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BaseJobBeanDefinitionParserTag {
+public final class JobBeanDefinitionParserTag {
     
     public static final String CLASS_ATTRIBUTE = "class";
     
@@ -48,6 +48,8 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String MISFIRE_ATTRIBUTE = "misfire";
     
+    public static final String RECONCILE_INTERVAL_MINUTES = "reconcile-interval-minutes";
+    
     public static final String JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE = "job-sharding-strategy-type";
     
     public static final String DESCRIPTION_ATTRIBUTE = "description";
@@ -55,6 +57,8 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
+    
+    public static final String PROPS_TAG = "props";
     
     public static final String LISTENER_TAG = "listener";
     
@@ -69,6 +73,4 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String JOB_ERROR_HANDLER_ATTRIBUTE = "job-error-handler";
     
     public static final String EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE = "event-trace-rdb-data-source";
-    
-    public static final String RECONCILE_INTERVAL_MINUTES = "reconcile-interval-minutes";
 }
