@@ -17,16 +17,16 @@ next = "/02-guide/operation-manual/"
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
-    xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/reg
-                        http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/job
-                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
-                        ">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
+       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
+                          ">
     <!--配置作业注册中心 -->
     <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     

@@ -16,10 +16,10 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/job"
+<xsd:schema xmlns="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/job"
+            targetNamespace="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
             elementFormDefault="qualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     

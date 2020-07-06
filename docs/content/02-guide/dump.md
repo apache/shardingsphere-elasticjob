@@ -23,19 +23,19 @@ next = "/02-guide/job-listener/"
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
-        xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
-        xmlns:monitor="http://elasticjob.shardingsphere.apache.org/schema/monitor"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                            http://www.springframework.org/schema/beans/spring-beans.xsd
-                            http://elasticjob.shardingsphere.apache.org/schema/reg
-                            http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
-                            http://elasticjob.shardingsphere.apache.org/schema/job
-                            http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
-                            http://elasticjob.shardingsphere.apache.org/schema/monitor
-                            http://elasticjob.shardingsphere.apache.org/schema/monitor/monitor.xsd
-                        ">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
+       xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job"
+       xmlns:monitor="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/job/job.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/monitor/monitor.xsd
+                         ">
     <!--配置作业注册中心 -->
     <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     

@@ -19,16 +19,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
-       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/tracing"
+       xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg"
+       xmlns:tracing="http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/reg
-                           http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/tracing
-                           http://elasticjob.shardingsphere.apache.org/schema/tracing/tracing.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/reg/reg.xsd
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing
+                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/tracing/tracing.xsd
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
     
