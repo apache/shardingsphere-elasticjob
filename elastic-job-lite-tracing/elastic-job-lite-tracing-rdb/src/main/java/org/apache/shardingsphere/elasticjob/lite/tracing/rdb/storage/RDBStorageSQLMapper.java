@@ -74,7 +74,7 @@ public final class RDBStorageSQLMapper {
     }
     
     private InputStream getPropertiesInputStream(final String sqlPropertiesFileName) {
-        InputStream sqlPropertiesFile = RDBJobEventStorage.class.getClassLoader().getResourceAsStream(String.format("META-INF/sql/%s.properties", sqlPropertiesFileName));
+        InputStream sqlPropertiesFile = RDBJobEventStorage.class.getClassLoader().getResourceAsStream(String.format("META-INF/sql/%s", sqlPropertiesFileName));
         return null == sqlPropertiesFile ? RDBJobEventStorage.class.getClassLoader().getResourceAsStream("META-INF/sql/sql92.properties") : sqlPropertiesFile;
     }
 }
