@@ -95,13 +95,13 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    
-    <xsd:element name="monitor">
+
+    <xsd:element name="snapshot">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="monitor-port" type="xsd:string" default="-1" />
+                    <xsd:attribute name="dump-port" type="xsd:string" default="-1" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

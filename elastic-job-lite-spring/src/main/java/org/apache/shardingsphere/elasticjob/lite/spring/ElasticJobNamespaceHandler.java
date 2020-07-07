@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring;
 
 import org.apache.shardingsphere.elasticjob.lite.spring.job.parser.JobBeanDefinitionParser;
-import org.apache.shardingsphere.elasticjob.lite.spring.monitor.parser.MonitorBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.snapshot.parser.SnapshotBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.reg.parser.ZookeeperBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.tracing.parser.TracingBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -32,7 +32,7 @@ public final class ElasticJobNamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
         registerBeanDefinitionParser("job", new JobBeanDefinitionParser());
         registerBeanDefinitionParser("zookeeper", new ZookeeperBeanDefinitionParser());
-        registerBeanDefinitionParser("monitor", new MonitorBeanDefinitionParser());
+        registerBeanDefinitionParser("snapshot", new SnapshotBeanDefinitionParser());
         registerBeanDefinitionParser("rdb-event-trace", new TracingBeanDefinitionParser());
     }
 }

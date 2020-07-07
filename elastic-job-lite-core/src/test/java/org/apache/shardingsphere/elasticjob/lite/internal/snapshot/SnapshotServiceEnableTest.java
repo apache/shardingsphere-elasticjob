@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.junit.After;
@@ -27,25 +27,25 @@ import java.io.IOException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public final class MonitorServiceEnableTest extends BaseMonitorServiceTest {
+public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     
-    public MonitorServiceEnableTest() {
+    public SnapshotServiceEnableTest() {
         super(new DetailedFooJob());
     }
     
     @Before
     public void listenMonitor() {
-        getMonitorService().listen();
+        getSnapshotService().listen();
     }
     
     @After
     public void closeMonitor() {
-        getMonitorService().close();
+        getSnapshotService().close();
     }
     
     @Test
     public void assertMonitorWithCommand() throws IOException {
-        assertNotNull(SocketUtils.sendCommand(MonitorService.DUMP_COMMAND + getJobName(), MONITOR_PORT));
-        assertNull(SocketUtils.sendCommand("unknown_command", MONITOR_PORT));
+        assertNotNull(SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND + getJobName(), DUMP_PORT));
+        assertNull(SocketUtils.sendCommand("unknown_command", DUMP_PORT));
     }
 }

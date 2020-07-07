@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,23 +32,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public abstract class BaseMonitorServiceTest {
+public abstract class BaseSnapshotServiceTest {
     
-    static final int MONITOR_PORT = 9000;
+    static final int DUMP_PORT = 9000;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     @Getter(value = AccessLevel.PROTECTED)
-    private static MonitorService monitorService = new MonitorService(regCenter, MONITOR_PORT);
+    private static SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
     
     private final ScheduleJobBootstrap bootstrap;
     
     @Getter(value = AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    public BaseMonitorServiceTest(final ElasticJob elasticJob) {
+    public BaseSnapshotServiceTest(final ElasticJob elasticJob) {
         bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     

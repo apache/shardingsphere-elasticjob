@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,13 +34,13 @@ public final class SocketUtils {
      * Send command.
      *
      * @param command command
-     * @param monitorPort the port for monitor
+     * @param dumpPort the port for dumping data
      * @return result of command
      * @throws IOException io exception
      */
-    public static String sendCommand(final String command, final int monitorPort) throws IOException {
+    public static String sendCommand(final String command, final int dumpPort) throws IOException {
         try (
-                Socket socket = new Socket("127.0.0.1", monitorPort);
+                Socket socket = new Socket("127.0.0.1", dumpPort);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
             ) {

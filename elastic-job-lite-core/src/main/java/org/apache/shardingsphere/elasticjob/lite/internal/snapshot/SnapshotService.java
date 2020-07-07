@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.monitor;
+package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import com.google.common.base.Joiner;
 import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Monitor service.
+ * Snapshot service.
  */
 @Slf4j
-public final class MonitorService {
+public final class SnapshotService {
     
     public static final String DUMP_COMMAND = "dump@";
 
@@ -50,34 +50,34 @@ public final class MonitorService {
     
     private volatile boolean closed;
     
-    public MonitorService(final CoordinatorRegistryCenter regCenter, final int port) {
+    public SnapshotService(final CoordinatorRegistryCenter regCenter, final int port) {
         this.regCenter = regCenter;
         this.port = port;
     }
     
     /**
-     * start to listen.
+     * Start to listen.
      */
     public void listen() {
         if (port < 0) {
             return;
         }
         try {
-            log.info("Elastic job: Monitor service is running, the port is '{}'", port);
-            openSocketForMonitor(port);
+            log.info("Elastic job: Snapshot service is running, the port is '{}'", port);
+            openSocket(port);
         } catch (final IOException ex) {
-            log.error("Elastic job: Monitor service listen failure, error is: ", ex);
+            log.error("Elastic job: Snapshot service listen failure, error is: ", ex);
         }
     }
     
-    private void openSocketForMonitor(final int port) throws IOException {
+    private void openSocket(final int port) throws IOException {
         serverSocket = new ServerSocket(port);
         new Thread(() -> {
             while (!closed) {
                 try {
                     process(serverSocket.accept());
                 } catch (final IOException ex) {
-                    log.error("Elastic job: Monitor service open socket for monitor failure, error is: ", ex);
+                    log.error("Elastic job: Snapshot service open socket failure, error is: ", ex);
                 }
             }
         }).start();
@@ -132,7 +132,7 @@ public final class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                log.error("Elastic job: Monitor service close failure, error is: ", ex);
+                log.error("Elastic job: Snapshot service close failure, error is: ", ex);
             }
         }
     }

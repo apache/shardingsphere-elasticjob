@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.monitor.tag;
+package org.apache.shardingsphere.elasticjob.lite.spring.snapshot.tag;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Monitor bean definition tag.
+ * Snapshot bean definition tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MonitorBeanDefinitionTag {
+public final class SnapshotBeanDefinitionTag {
     
     public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
     
-    public static final String MONITOR_PORT_ATTRIBUTE = "monitor-port";
+    public static final String DUMP_PORT_ATTRIBUTE = "dump-port";
 }
