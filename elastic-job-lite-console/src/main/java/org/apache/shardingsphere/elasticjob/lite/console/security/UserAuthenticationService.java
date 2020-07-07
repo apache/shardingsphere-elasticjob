@@ -38,19 +38,20 @@ import java.util.Map;
 @Getter
 @Setter
 public class UserAuthenticationService {
-
+    
     private String rootUsername;
-
+    
     private String rootPassword;
-
+    
     private String guestUsername;
-
+    
     private String guestPassword;
-
+    
     /**
      * Check user.
      *
      * @param authorization authorization
+     * @param method method
      * @return authorization result
      */
     public AuthenticationResult checkUser(final String authorization, final String method) {
@@ -65,6 +66,7 @@ public class UserAuthenticationService {
         String response = authorizationMap.get("response");
         String password;
         AuthenticationResult authenticationResult;
+        
         if (rootUsername.equals(username)) {
             password = rootPassword;
             authenticationResult = new AuthenticationResult(true, false);
@@ -74,16 +76,18 @@ public class UserAuthenticationService {
         } else {
             return new AuthenticationResult(false, false);
         }
+        
         String hash1 = Hashing.md5().hashBytes((username + ":" + realm + ":" + password).getBytes()).toString();
         String hash2 = Hashing.md5().hashBytes((method + ":" + uri).getBytes()).toString();
-        String exceptResponse = Hashing.md5().hashBytes((hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":"+ qop + ":" + hash2).getBytes()).toString();
-        if(StringUtils.equals(response,  exceptResponse)){
+        String exceptResponse = Hashing.md5().hashBytes((hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + hash2).getBytes()).toString();
+        
+        if (StringUtils.equals(response, exceptResponse)) {
             return authenticationResult;
         }
         return new AuthenticationResult(false, false);
     }
 
-    private static Map<String, String> parseAuthorizationMap(String authority) {
+    private static Map<String, String> parseAuthorizationMap(final String authority) {
         if (StringUtils.isBlank(authority)) {
             return Collections.emptyMap();
         }
