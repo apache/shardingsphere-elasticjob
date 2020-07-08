@@ -1,7 +1,7 @@
 baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
 canonifyurls = true
 languageCode = "en-us"
-title = "ShardingSphere"
+title = "ElasticJob"
 theme = "hugo-theme-learn"
 
 defaultContentLanguage = "en"
@@ -10,13 +10,13 @@ defaultContentLanguageInSubdir= true
 [Languages]
 [Languages.en]
 #baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
-title = "ShardingSphere"
+title = "ElasticJob"
 weight = 1
 languageName = "English"
 
 [Languages.cn]
 #baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
-title = "ShardingSphere"
+title = "ElasticJob"
 weight = 2
 languageName = "Chinese"
 
