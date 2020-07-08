@@ -1,6 +1,6 @@
 +++
-pre = "<b>3.2. </b>"
-title = "配置手册"
+pre = "<b>4.2. </b>"
+title = "Job Configuration"
 weight = 2
 chapter = true
 +++

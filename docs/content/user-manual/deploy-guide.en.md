@@ -1,7 +1,7 @@
 +++
-pre = "<b>2.3. </b>"
+pre = "<b>4.10. </b>"
 title = "Deploy Guide"
-weight = 3
+weight = 10
 chapter = true
 +++
 

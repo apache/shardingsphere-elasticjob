@@ -1,7 +1,7 @@
 +++
-pre = "<b>3.8. </b>"
+pre = "<b>4.5. </b>"
 title = "自诊断修复"
-weight = 8
+weight = 5
 chapter = true
 +++
 

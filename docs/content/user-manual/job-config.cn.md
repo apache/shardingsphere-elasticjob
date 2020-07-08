@@ -1,6 +1,6 @@
 +++
-pre = "<b>3.2. </b>"
-title = "Config Manual"
+pre = "<b>4.2. </b>"
+title = "作业配置"
 weight = 2
 chapter = true
 +++

@@ -1,7 +1,7 @@
 +++
-pre = "<b>3.9. </b>"
+pre = "<b>4.12. </b>"
 title = "Operator"
-weight = 9
+weight = 12
 chapter = true
 +++
 
@@ -24,7 +24,7 @@ chapter = true
 ##### void removeJobConfiguration(String jobName) 删除作业设置.
 
 * **Parameters:** jobName — 作业名称
- 
+
 ### 2. 操作类API
 
 #### 2.1 `JobOperateAPI` 操作作业的API
