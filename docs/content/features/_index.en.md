@@ -5,4 +5,5 @@ weight = 3
 chapter = true
 +++
 
-TODO
+This chapter describes concepts and features about ElasticJob. 
+Please refer to [User manual](/en/user-manual/) for more details.
