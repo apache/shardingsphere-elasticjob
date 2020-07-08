@@ -67,4 +67,3 @@ org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.RotateServerByNa
 ## 配置分片策略
 
 与配置通常的作业属性相同，在spring命名空间或者JobConfiguration中配置jobShardingStrategyType属性，属性值是作业分片策略类的全路径。
-

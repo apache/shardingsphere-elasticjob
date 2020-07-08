@@ -5,18 +5,18 @@ weight = 8
 chapter = true
 +++
 
-使用Elastic-Job-Lite过程中可能会碰到一些分布式问题，导致作业运行不稳定。
+使用 ElasticJob Lite 过程中可能会碰到一些分布式问题，导致作业运行不稳定。
 
-由于无法在生产环境调试，通过dump命令可以把作业内部相关信息dump出来，方便开发者debug分析；
-另外为了不泄露隐私，已将相关信息中的ip地址以ip1, ip2...的形式过滤，可以在互联网上公开传输环境信息，便于进一步完善Elastic-Job。
+由于无法在生产环境调试，通过 dump 命令可以把作业内部相关信息导出，方便开发者调试分析；
+另外为了不泄露隐私，已将相关信息中的 IP 地址以 ip1, ip2... 的形式过滤，可以在互联网上公开传输环境信息，便于进一步完善 ElasticJob。
 
 ## 如何使用
 
 ### 配置监听端口
 
-支持两种配置方式
+支持 2 种配置方式
 
-* Spring方式
+* Spring 方式
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,10 +42,11 @@ chapter = true
 </beans>
 ```
 
-* Java方式
+* Java 方式
 
 ```java
 public class JobMain {
+    
     public static void main(final String[] args) {
         // ...
         SnapshotService snapshotService = new SnapshotService(regCenter, 9888);
@@ -57,9 +58,9 @@ public class JobMain {
 
 ### 启动作业
 
-### 执行dump命令
+### 执行 dump 命令
 
-dump命令完全参照Zookeeper的四字命令理念
+dump 命令完全参照 Zookeeper 的四字命令理念
 
 ```bash
 echo "dump@jobName" | nc <任意一台作业服务器IP> 9888
@@ -75,4 +76,4 @@ echo "dump@jobName" | nc <任意一台作业服务器IP> 9888 > job_debug.txt
 
 ## 使用注意事项
 
-务必更新至1.0.3以上版本
+务必更新至 1.0.3 以上版本。
