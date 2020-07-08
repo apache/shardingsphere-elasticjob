@@ -6,6 +6,7 @@ chapter = true
 +++
 
 ## Core
+
 - [x] Unified Job Config API
     - [x] Core Config
     - [x] Type Config
@@ -22,7 +23,8 @@ chapter = true
 - [ ] Unified Schedule API
 - [ ] Unified Resource API
 
-## Elastic-Job-Lite
+## ElasticJob Lite
+
 - [x] Distributed Features
     - [x] High Availability
     - [x] Elastic scale in/out
@@ -42,8 +44,8 @@ chapter = true
     - [x] Web Console
 - [x] Job Dependency
     - [x] Listener
-    - [ ] Workflow
     - [ ] DAG
 - [x] Spring Integrate
     - [x] Namespace
     - [x] Bean Injection
+    - [ ] Spring Boot Starter
