@@ -5,7 +5,7 @@ weight = 7
 chapter = true
 +++
 
-Elastic-Job 在配置中提供了 JobHandler，用于定制化处理，目前支持自定义异常处理及作业处理线程池。
+ElasticJob 在配置中提供了 JobHandler，用于定制化处理，目前支持自定义异常处理及作业处理线程池。
 
 ## 异常处理
 
