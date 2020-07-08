@@ -21,9 +21,9 @@ chapter = true
 
 ## 1. 作业开发
 
-Elastic-Job-Lite和Elastic-Job-Cloud提供统一作业接口，开发者仅需对业务作业进行一次开发，之后可根据不同的配置以及部署至不同的Lite或Cloud环境。
+ElasticJob Lite 和 ElasticJob Cloud 提供统一作业接口，开发者仅需对业务作业进行一次开发，之后可根据不同的配置以及部署至不同的Lite或Cloud环境。
 
-Elastic-Job提供Simple、Dataflow和Script 3种作业类型。
+ElasticJob 提供 Simple、Dataflow 和 Script 3 种作业类型。
 方法参数shardingContext包含作业配置、片和运行时信息。可通过getShardingTotalCount(), getShardingItem()等方法分别获取分片总数，运行在本作业服务器的分片序列号等。
 
 ### a. Simple类型作业
