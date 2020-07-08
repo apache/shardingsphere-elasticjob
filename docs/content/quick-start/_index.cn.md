@@ -1,6 +1,6 @@
 +++
 pre = "<b>2. </b>"
-title = "Start"
+title = "快速入门"
 weight = 2
 chapter = true
 +++

@@ -1,7 +1,7 @@
 +++
-pre = "<b>4. </b>"
-title = "设计规划"
-weight = 4
+pre = "<b>5. </b>"
+title = "Dev Manual"
+weight = 5
 chapter = true
 +++
 

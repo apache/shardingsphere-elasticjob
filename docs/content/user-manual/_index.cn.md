@@ -1,7 +1,7 @@
 +++
-pre = "<b>3. </b>"
-title = "使用指南"
-weight = 3
+pre = "<b>4. </b>"
+title = "用户手册"
+weight = 4
 chapter = true
 +++
 
