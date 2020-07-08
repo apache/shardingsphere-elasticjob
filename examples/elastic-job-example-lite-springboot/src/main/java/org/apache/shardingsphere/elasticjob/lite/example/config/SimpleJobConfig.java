@@ -35,7 +35,7 @@ public class SimpleJobConfig {
     @Resource
     private ZookeeperRegistryCenter regCenter;
     
-    @Resource
+    @Resource(name = "tracingConfiguration")
     private TracingConfiguration tracingConfig;
     
     @Bean
