@@ -26,7 +26,13 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob-lite.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob-lite)
 [![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
 
-# 功能列表
+## 架构图
+
+### ElasticJob Lite
+
+![Elastic-Job-Lite Architecture](https://shardingsphere.apache.org/elasticjob/lite/img/architecture/elastic_job_lite.png)
+
+## 功能列表
 
 * 分布式调度协调
 * 弹性扩容缩容
@@ -37,5 +43,5 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 * 支持并行调度
 * 支持作业生命周期操作
 * 丰富的作业类型
-* Spring整合以及命名空间提供
+* Spring 整合以及命名空间提供
 * 运维平台

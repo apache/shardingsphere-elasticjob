@@ -1,28 +1,36 @@
-# Elastic-Job - distributed scheduled job solution
+# [ElasticJob - distributed scheduled job solution](http://shardingsphere.apache.org/elasticjob/)
 
-[![Total Lines](https://tokei.rs/b1/github/elasticjob/elastic-job-lite?category=lines)](https://github.com/elasticjob/elastic-job-lite)
-[![Build Status](https://travis-ci.org/apache/shardingsphere-elastic-job-lite.svg?branch=master)](https://travis-ci.org/github/apache/shardingsphere-elastic-job-lite)
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/elaticjob.shardingsphere.apache.org/elastic-job-lite/badge.svg)](https://maven-badges.herokuapp.com/maven-central/elaticjob.shardingsphere.apache.org/elastic-job-lite)
-[![Gitter](https://badges.gitter.im/Elastic-JOB/elastic-job-lite.svg)](https://gitter.im/Elastic-JOB/elasticjob?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
-[![GitHub release](https://img.shields.io/github/release/elasticjob/elastic-job.svg)](https://github.com/elasticjob/elastic-job/releases)
+**Official website: http://shardingsphere.apache.org/elasticjob/**
+
+[![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob-lite.svg)](https://starchart.cc/apache/shardingsphere-elasticjob-lite)
+
+ElasticJob is a distributed scheduled job solution. 
+It is composited from 2 independent sub projects: ElasticJob Lite and ElasticJob Cloud.
+
+ElasticJob Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
+
+ElasticJob Lite and ElasticJob Cloud provide unified API. 
+Developers only need code one time, then decide to deploy Lite or Cloud as you want.
+
+ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
+
+Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apache.org).
+
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-# [Homepage](http://shardingsphere.apache.org/elasticjob/)
+[![GitHub release](https://img.shields.io/github/release/apache/shardingsphere-elasticjob-lite.svg)](https://github.com/apache/shardingsphere-elasticjob-lite/releases)
 
-# [中文主页](http://shardingsphere.apache.org/elasticjob/index_zh.html)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob-lite.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob-lite)
+[![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
 
-# Elastic-Job-Lite Console [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://elasticjob.io/dist/elastic-job-lite-console-2.1.5.tar.gz)
+## Architecture
 
-# Overview
+### Elastic-Job-Lite
 
-Elastic-Job is a distributed scheduled job solution. Elastic-Job is composited from 2 independent sub projects: Elastic-Job-Lite and Elastic-Job-Cloud.
+![Elastic-Job-Lite Architecture](docs/static/img/architecture/elastic_job_lite.png)
 
-Elastic-Job-Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
-
-Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need code one time, then decide to deploy Lite or Cloud as you want.
-
-# Features
+## Features
 
 * Distributed schedule job coordinate
 * Elastic scale in and scale out supported
@@ -36,20 +44,13 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Spring integrated and namespace supported
 * Web console
 
-# Architecture
+## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
 
-## Elastic-Job-Lite
+## [Roadmap](ROADMAP.md)
 
-![Elastic-Job-Lite Architecture](docs/static/img/architecture/elastic_job_lite.png)
+## Quick Start
 
-
-# [Release Notes](https://github.com/elasticjob/elastic-job/releases)
-
-# [Roadmap](ROADMAP.md)
-
-# Quick Start
-
-## Add maven dependency
+### Add maven dependency
 
 ```xml
 <!-- import elastic-job lite core -->
@@ -66,7 +67,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
     <version>${lasted.release.version}</version>
 </dependency>
 ```
-## Job development
+### Job development
 
 ```java
 public class MyElasticJob implements SimpleJob {
@@ -89,7 +90,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-## Job configuration
+### Job configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
