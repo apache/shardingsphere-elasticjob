@@ -31,27 +31,35 @@
     
     <properties>
         <springboot.version>2.3.1.RELEASE</springboot.version>
+        <spring.version>5.2.7.RELEASE</spring.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elastic-job-example-jobs</artifactId>
             <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.zaxxer</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elastic-job-example-embed-zk</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elastic-job-lite-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elastic-job-lite-spring</artifactId>
         </dependency>
         
         <dependency>

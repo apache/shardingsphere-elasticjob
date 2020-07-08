@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobPrope
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class DataflowJobConfig {
     @Resource
     private ZookeeperRegistryCenter regCenter;
     
-    @Resource
+    @Autowired
     private TracingConfiguration tracingConfig;
     
     @Bean
