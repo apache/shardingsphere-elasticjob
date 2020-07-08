@@ -1,11 +1,9 @@
 +++
-pre = "<b>1.2. </b>"
-title = "News"
-weight = 2
+pre = "<b>6. </b>"
+title = "博客"
+weight = 6
 chapter = true
 +++
-
-# 新闻
 
 * 2017-09 [Mesosphere新闻：Q&A with Zhang Liang of Dangdang: the biggest book seller in China](https://mesosphere.com/blog/qa-dangdang-book-seller-china/?from=timeline&isappinstalled=0)
 
