@@ -84,7 +84,7 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertEnableWithJobNameAndServerIp() {
         jobOperateAPI.enable("test_job", "localhost");
-        verify(regCenter).persist("/test_job/servers/localhost", "");
+        verify(regCenter).persist("/test_job/servers/localhost", "ENABLED");
     }
     
     @Test
@@ -92,8 +92,8 @@ public final class JobOperateAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.enable("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).persist("/test_job/servers/ip1", "");
-        verify(regCenter).persist("/test_job/servers/ip2", "");
+        verify(regCenter).persist("/test_job/servers/ip1", "ENABLED");
+        verify(regCenter).persist("/test_job/servers/ip2", "ENABLED");
     }
     
     @Test
@@ -103,8 +103,8 @@ public final class JobOperateAPIImplTest {
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
         jobOperateAPI.enable(null, "localhost");
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).persist("/test_job1/servers/localhost", "");
-        verify(regCenter).persist("/test_job2/servers/localhost", "");
+        verify(regCenter).persist("/test_job1/servers/localhost", "ENABLED");
+        verify(regCenter).persist("/test_job2/servers/localhost", "ENABLED");
     }
     
     @Test
