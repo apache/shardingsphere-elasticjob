@@ -17,10 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.security;
 
+import com.google.common.base.Splitter;
+import com.google.common.hash.Hashing;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User authentication service.
@@ -43,15 +51,57 @@ public class UserAuthenticationService {
      * Check user.
      *
      * @param authorization authorization
+     * @param method method
      * @return authorization result
      */
-    public AuthenticationResult checkUser(final String authorization) {
-        if ((rootUsername + ":" + rootPassword).equals(authorization)) {
-            return new AuthenticationResult(true, false);
-        } else if ((guestUsername + ":" + guestPassword).equals(authorization)) {
-            return new AuthenticationResult(true, true);
+    public AuthenticationResult checkUser(final String authorization, final String method) {
+        Map<String, String> authorizationMap = parseAuthorizationMap(authorization);
+        String username = authorizationMap.get("username");
+        String realm = authorizationMap.get("realm");
+        String uri = authorizationMap.get("uri");
+        String nonce = authorizationMap.get("nonce");
+        String nc = authorizationMap.get("nc");
+        String cnonce = authorizationMap.get("cnonce");
+        String qop = authorizationMap.get("qop");
+        String response = authorizationMap.get("response");
+        String password;
+        AuthenticationResult authenticationResult;
+        
+        if (rootUsername.equals(username)) {
+            password = rootPassword;
+            authenticationResult = new AuthenticationResult(true, false);
+        } else if (guestUsername.equals(username)) {
+            password = guestPassword;
+            authenticationResult = new AuthenticationResult(true, true);
         } else {
             return new AuthenticationResult(false, false);
         }
+        
+        String hash1 = Hashing.md5().hashBytes((username + ":" + realm + ":" + password).getBytes()).toString();
+        String hash2 = Hashing.md5().hashBytes((method + ":" + uri).getBytes()).toString();
+        String exceptResponse = Hashing.md5().hashBytes((hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + hash2).getBytes()).toString();
+        
+        if (StringUtils.equals(response, exceptResponse)) {
+            return authenticationResult;
+        }
+        return new AuthenticationResult(false, false);
+    }
+
+    private static Map<String, String> parseAuthorizationMap(final String authority) {
+        if (StringUtils.isBlank(authority)) {
+            return Collections.emptyMap();
+        }
+        String authorityWithoutPrefix = authority.substring(authority.indexOf(" ") + 1);
+        List<String> keyValueList = Splitter.on(",").omitEmptyStrings().trimResults().splitToList(authorityWithoutPrefix);
+        Map<String, String> result = new HashMap<>();
+        for (String keyValue : keyValueList) {
+            int index = keyValue.indexOf("=");
+            if (-1 != index) {
+                String key = keyValue.substring(0, index);
+                String value = keyValue.substring(index + 1).replaceAll("\"", "").trim();
+                result.put(key, value);
+            }
+        }
+        return result;
     }
 }

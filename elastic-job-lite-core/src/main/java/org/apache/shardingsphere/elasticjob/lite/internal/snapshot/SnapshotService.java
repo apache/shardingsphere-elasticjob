@@ -77,10 +77,17 @@ public final class SnapshotService {
                 try {
                     process(serverSocket.accept());
                 } catch (final IOException ex) {
+                    if (isIgnoredException()) {
+                        return;
+                    }
                     log.error("Elastic job: Snapshot service open socket failure, error is: ", ex);
                 }
             }
         }).start();
+    }
+    
+    private boolean isIgnoredException() {
+        return serverSocket.isClosed();
     }
     
     private void process(final Socket socket) throws IOException {

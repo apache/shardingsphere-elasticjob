@@ -1,11 +1,11 @@
 +++
-pre = "<b>1.2. </b>"
-title = "新闻"
-weight = 2
+pre = "<b>6. </b>"
+title = "Blog"
+weight = 6
 chapter = true
 +++
 
-# 新闻
+* 2020-05 [官微快讯：The distributed scheduling project ElasticJob is about to restart](https://mp.weixin.qq.com/s/XJFj_vOj3bR6HRQUzy1ikg)
 
 * 2017-09 [Mesosphere新闻：Q&A with Zhang Liang of Dangdang: the biggest book seller in China](https://mesosphere.com/blog/qa-dangdang-book-seller-china/?from=timeline&isappinstalled=0)
 

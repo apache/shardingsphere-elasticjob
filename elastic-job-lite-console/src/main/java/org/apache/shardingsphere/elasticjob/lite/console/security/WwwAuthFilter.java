@@ -19,37 +19,45 @@ package org.apache.shardingsphere.elasticjob.lite.console.security;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * WWW auth filter.
  */
 @Slf4j
 public final class WwwAuthFilter implements Filter {
-    
+
     private static final String AUTH_PREFIX = "Basic ";
-    
+
     private static final String ROOT_IDENTIFY = "root";
-    
+
     private static final String GUEST_IDENTIFY = "guest";
-    
+
+    private static final String DIGEST_REALM = "127.0.0.1";
+
+    private static final String DIGEST_QOP = "AUTH";
+
+    private static final String DIGEST_OPAQUE = "740faacf85fd450e90f57e9b16d0725c";
+
+    private static final String DIGEST_ALGORITHM = "MD5";
+
     @Setter
     private UserAuthenticationService userAuthenticationService;
-    
+
     @Override
     public void init(final FilterConfig filterConfig) {
     }
-    
+
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -57,7 +65,7 @@ public final class WwwAuthFilter implements Filter {
         String authorization = httpRequest.getHeader("authorization");
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
             authorization = authorization.substring(AUTH_PREFIX.length());
-            AuthenticationResult authenticationResult = userAuthenticationService.checkUser(new String(Base64.decodeBase64(authorization)));
+            AuthenticationResult authenticationResult = userAuthenticationService.checkUser(authorization, ((HttpServletRequest) request).getMethod());
             if (authenticationResult.isSuccess()) {
                 authenticateSuccess(httpResponse, authenticationResult.isGuest());
                 chain.doFilter(httpRequest, httpResponse);
@@ -68,7 +76,7 @@ public final class WwwAuthFilter implements Filter {
             needAuthenticate(httpResponse);
         }
     }
-    
+
     private void authenticateSuccess(final HttpServletResponse response, final boolean isGuest) {
         response.setStatus(200);
         response.setHeader("Pragma", "No-cache");
@@ -81,7 +89,10 @@ public final class WwwAuthFilter implements Filter {
         response.setStatus(401);
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
-        response.setHeader("WWW-authenticate", AUTH_PREFIX + "Realm=\"Elastic Job Console Auth\"");
+        String nonce = UUID.randomUUID().toString();
+        String authorization = String.format("Digest realm=\"%s\", qop=\"%s\", nonce=\"%s\", opaque=\"%s\", algorithm=\"%s\"",
+                DIGEST_REALM, DIGEST_QOP, nonce, DIGEST_OPAQUE, DIGEST_ALGORITHM);
+        response.setHeader("WWW-authenticate", authorization);
     }
     
     @Override
