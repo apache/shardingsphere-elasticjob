@@ -118,7 +118,7 @@ public abstract class BaseIntegrateTest {
     private final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
         private TestDistributeOnceElasticJobListener() {
-            super(-1L, -1L);
+            super(100L, 100L);
         }
         
         @Override
