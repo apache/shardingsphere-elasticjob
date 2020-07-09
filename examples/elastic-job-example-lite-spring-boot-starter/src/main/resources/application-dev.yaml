@@ -1,0 +1,15 @@
+elasticjob:
+  tracing:
+    type: RDB
+  registryCenter:
+    zookeeper:
+      serverLists: localhost:6181
+      namespace: spring_boot_demo
+
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:job_event_storage
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:

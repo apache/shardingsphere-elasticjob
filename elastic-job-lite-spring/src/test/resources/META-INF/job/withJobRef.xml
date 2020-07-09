@@ -27,10 +27,10 @@
     <import resource="base.xml"/>
     
     <bean id="refSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">
-        <property name="fooService" ref="foo" />
+        <property name="fooService" ref="bar" />
     </bean>
     <bean id="refDataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooDataflowElasticJob">
-        <property name="fooService" ref="foo" />
+        <property name="fooService" ref="bar" />
     </bean>
     
     <elasticjob:job id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" 

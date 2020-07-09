@@ -40,5 +40,5 @@
     </bean>
     <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
-    <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
+    <bean id="bar" class="org.apache.shardingsphere.elasticjob.lite.spring.fixture.service.FooServiceImpl" />
 </beans>
