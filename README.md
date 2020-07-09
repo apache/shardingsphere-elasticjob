@@ -9,8 +9,8 @@ It is composited from 2 independent sub projects: ElasticJob Lite and ElasticJob
 
 ElasticJob Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
 
-ElasticJob Lite and ElasticJob Cloud provide unified API. 
-Developers only need code one time, then decide to deploy Lite or Cloud as you want.
+Elasticjob uses a unified job API for each product. 
+Developers only need code one time and can deploy at will.
 
 ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
 
@@ -32,17 +32,34 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ## Features
 
-* Distributed schedule job coordinate
-* Elastic scale in and scale out supported
-* Failover
-* Misfired jobs refire
-* Sharding consistently, same sharding item for a job only one running instance
-* Self diagnose and recover when distribute environment unstable
-* Parallel scheduling supported
-* Job lifecycle operation
-* Lavish job types
-* Spring integrated and namespace supported
-* Web console
+- Elastic Schedule
+  - Support job sharding and high availability in distributed system
+  - Scale out for throughput and efficiency improvement
+  - Job processing capacity is flexible and scalable with the allocation of resources
+
+- Resource Assign
+  - Execute job on suitable time and assigned resources
+  - Aggregation same job to same job executor
+  - Append resources to newly assigned jobs dynamically
+
+- Job Governance
+  - Failover
+  - Misfired
+  - Self diagnose and recover when distribute environment unstable
+
+- Job Dependency
+  - DAG based job dependency
+  - DAG based job item dependency
+
+- Job Open Ecosystem
+  - Unify job api for extension
+  - Support rich job type lib, such as dataflow, script, HTTP, file, big data
+  - Focus business SDK, can work with Spring IOC
+
+- Admin Console
+  - Job administration
+  - Job event trace query
+  - Registry center management
 
 ## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
 
