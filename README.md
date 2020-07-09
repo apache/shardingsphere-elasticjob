@@ -73,14 +73,14 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 <!-- import elastic-job lite core -->
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-core</artifactId>
+    <artifactId>elasticjob-lite-core</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
 
 <!-- import other module if need -->
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
 ```

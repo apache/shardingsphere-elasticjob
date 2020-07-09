@@ -13,10 +13,10 @@ chapter = true
 
 ## 运维平台和 RESTFul API 部署(可选)
 
-1. 解压缩 `elastic-job-lite-console-${version}.tar.gz` 并执行 `bin\start.sh`。
+1. 解压缩 `elasticjob-lite-console-${version}.tar.gz` 并执行 `bin\start.sh`。
 
 2. 打开浏览器访问 `http://localhost:8899/` 即可访问控制台。8899 为默认端口号，可通过启动脚本输入 `-p` 自定义端口号。
 
 3. 访问 RESTFul API 方法同控制台。
 
-4. `elastic-job-lite-console-${version}.tar.gz`可通过 `mvn install` 编译获取。
+4. `elasticjob-lite-console-${version}.tar.gz`可通过 `mvn install` 编译获取。
