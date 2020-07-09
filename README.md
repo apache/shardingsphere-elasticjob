@@ -4,10 +4,9 @@
 
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob-lite.svg)](https://starchart.cc/apache/shardingsphere-elasticjob-lite)
 
-ElasticJob is a distributed scheduled job solution. 
-It is composited from 2 independent sub projects: ElasticJob Lite and ElasticJob Cloud.
+ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
 
-ElasticJob Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
+ElasticJob Lite is a lightweight, decentralized solution that provides distributed task sharding services.
 
 Elasticjob uses a unified job API for each product. 
 Developers only need code one time and can deploy at will.
@@ -32,34 +31,17 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ## Features
 
-- Elastic Schedule
-  - Support job sharding and high availability in distributed system
-  - Scale out for throughput and efficiency improvement
-  - Job processing capacity is flexible and scalable with the allocation of resources
-
-- Resource Assign
-  - Execute job on suitable time and assigned resources
-  - Aggregation same job to same job executor
-  - Append resources to newly assigned jobs dynamically
-
-- Job Governance
-  - Failover
-  - Misfired
-  - Self diagnose and recover when distribute environment unstable
-
-- Job Dependency(TODO)
-  - DAG based job dependency
-  - DAG based job item dependency
-
-- Job Open Ecosystem
-  - Unified job API for extension
-  - Support rich job type lib, such as dataflow, script, HTTP, file, big data
-  - Easy integrate with business job, can work with Spring IOC
-
-- Admin Console
-  - Job administration
-  - Job event trace query
-  - Registry center management
+* Distributed schedule job coordinate
+* Elastic scale in and scale out supported
+* Failover
+* Misfired jobs refire
+* Sharding consistently, same sharding item for a job only one running instance
+* Self diagnose and recover when distribute environment unstable
+* Parallel scheduling supported
+* Job lifecycle operation
+* Lavish job types
+* Spring integrated and namespace supported
+* Web console
 
 ## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
 
