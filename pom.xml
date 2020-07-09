@@ -25,7 +25,7 @@
         <version>21</version>
     </parent>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite</artifactId>
+    <artifactId>elastic-job</artifactId>
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
@@ -41,8 +41,6 @@
         <module>elastic-job-cloud-common</module>
         <module>elastic-job-cloud-scheduler</module>
         <module>elastic-job-cloud-executor</module>
-        
-        <module>examples</module>
     </modules>
     
     <properties>

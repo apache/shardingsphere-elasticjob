@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elastic-job-lite</artifactId>
+        <artifactId>elastic-job</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-lite-spring</artifactId>
