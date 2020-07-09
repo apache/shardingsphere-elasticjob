@@ -5,6 +5,10 @@ weight = 9
 chapter = true
 +++
 
+* 2020-07 [InfoQ文章：ElasticJob的产品定位与新版本设计理念](https://www.infoq.cn/article/ZcEsH20kUCB9QP1O1PNt)
+
+* 2020-07 [开源中国：GitHub上持续冲榜，ElasticJob重启](https://mp.weixin.qq.com/s/QLKjn_dfVG2OBxbnrwDl5w)
+
 * 2020-05 [官微快讯：分布式调度项目ElasticJob即将重新起航](https://mp.weixin.qq.com/s/XJFj_vOj3bR6HRQUzy1ikg)
 
 * 2017-09 [Mesosphere新闻：Q&A with Zhang Liang of Dangdang: the biggest book seller in China](https://mesosphere.com/blog/qa-dangdang-book-seller-china/?from=timeline&isappinstalled=0)
