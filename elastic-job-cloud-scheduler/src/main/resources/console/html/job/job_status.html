@@ -1,0 +1,117 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="content-wrapper">
+    <div class="page-height-min">
+        <section class="content-header">
+            <h1 data-lang="job-status"></h1>
+            <ol class="breadcrumb">
+                <li class="active"><i class="fa fa-tasks" data-lang="sidebar-job"></i></li>
+                <li class="active" data-lang="status"></li>
+            </ol>
+        </section>
+        <section class="content">
+            <ul class="nav nav-tabs" role="tablist">
+                <li id="running_tab" role="presentation" class="active"><a href="#running" aria-controls="running" role="tab" data-toggle="tab" data-lang="tab-running-tasks"></a></li>
+                <li id="ready_tab" role="presentation"><a href="#ready" aria-controls="ready" role="tab" data-toggle="tab" data-lang="tab-ready-jobs"></a></li>
+                <li id="failover_tab" role="presentation"><a href="#failover" aria-controls="failover" role="tab" data-toggle="tab" data-lang="tab-failover-tasks"></a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="running">
+                    <table id="running" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/api/job/tasks/running"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                        <thead>
+                            <tr>
+                                <th data-field="id" data-sortable="true"><span data-lang="task-id"></span></th>
+                                <th data-field="metaInfo.jobName" data-sortable="true"><span data-lang="task-name"></span></th>
+                                <th data-field="slaveId" data-sortable="true"><span data-lang="server-ip"></span></th>
+                                <th data-field="type" data-sortable="true"><span data-lang="job-execution-type"></span></th>
+                                <th data-field="metaInfo.shardingItems"><span data-lang="job-sharding-item"></span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="ready">
+                    <table id="ready" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/api/job/tasks/ready"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                        <thead>
+                            <tr>
+                                <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                                <th data-field="times" data-sortable="true"><span data-lang="remaining-execute-times"></span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="failover">
+                    <table id="failover" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/api/job/tasks/failover"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                        <thead>
+                            <tr>
+                                <th data-field="taskInfo.jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                                <th data-field="originalTaskId"><span data-lang="original-task-id"></span></th>
+                                <th data-field="taskInfo.shardingItems"><span data-lang="job-sharding-item"></span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>

@@ -31,6 +31,8 @@
         <module>elastic-job-example-lite-java</module>
         <module>elastic-job-example-lite-spring</module>
         <module>elastic-job-example-lite-springboot</module>
+        
+        <module>elastic-job-example-cloud</module>
     </modules>
     
     <properties>
@@ -61,6 +63,12 @@
             <dependency>
                 <artifactId>elastic-job-lite-spring</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.shardingsphere.elasticjob</groupId>
+                <artifactId>elastic-job-cloud-executor</artifactId>
                 <version>${elastic-job.version}</version>
             </dependency>
             

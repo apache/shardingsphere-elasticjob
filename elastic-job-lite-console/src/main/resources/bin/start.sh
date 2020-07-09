@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-
 show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "  -p <port>          Server port (default: 8899)"
