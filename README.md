@@ -4,10 +4,9 @@
 
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob-lite.svg)](https://starchart.cc/apache/shardingsphere-elasticjob-lite)
 
-ElasticJob is a distributed scheduled job solution. 
-It is composited from 2 independent sub projects: ElasticJob Lite and ElasticJob Cloud.
+ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
 
-ElasticJob Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
+ElasticJob Lite is a lightweight, decentralized solution that provides distributed task sharding services.
 
 Elasticjob uses a unified job API for each product. 
 Developers only need code one time and can deploy at will.
