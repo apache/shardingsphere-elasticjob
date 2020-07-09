@@ -45,7 +45,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
   - 错过作业重新执行
   - 自巡检与自动修复
 
-- 作业依赖
+- 作业依赖(TODO)
   - 基于有向无环图（DAG）的作业间依赖
   - 基于有向无环图（DAG）的作业分片间依赖
 

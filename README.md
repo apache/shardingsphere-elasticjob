@@ -47,7 +47,7 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - Misfired
   - Self diagnose and recover when distribute environment unstable
 
-- Job Dependency
+- Job Dependency(TODO)
   - DAG based job dependency
   - DAG based job item dependency
 
