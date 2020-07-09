@@ -1,6 +1,6 @@
 regCenter:
   serverList: localhost:6181
-  namespace: elastic-job-lite-springboot
+  namespace: elasticjob-lite-springboot
   
 simpleJob:
   cron: 0/5 * * * * ?

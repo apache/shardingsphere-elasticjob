@@ -22,19 +22,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob</artifactId>
+        <artifactId>elasticjob-lite</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-lite</artifactId>
+    <artifactId>elasticjob-lite-executor</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-
+    
     <modules>
-        <module>elasticjob-lite-core</module>
-        <module>elasticjob-lite-executor</module>
-        <module>elasticjob-lite-tracing</module>
-        <module>elasticjob-lite-spring</module>
-        <module>elasticjob-lite-lifecycle</module>
-        <module>elasticjob-lite-console</module>
+        <module>elasticjob-lite-simple-executor</module>
+        <module>elasticjob-lite-dataflow-executor</module>
+        <module>elasticjob-lite-script-executor</module>
     </modules>
 </project>

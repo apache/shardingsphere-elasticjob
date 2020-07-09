@@ -42,7 +42,7 @@
         
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elastic-job-lite-core</artifactId>
+            <artifactId>elasticjob-lite-core</artifactId>
         </dependency>
         
         <dependency>

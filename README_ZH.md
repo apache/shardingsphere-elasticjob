@@ -68,17 +68,17 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 ### 引入maven依赖
 
 ```xml
-<!-- 引入elastic-job-lite核心模块 -->
+<!-- 引入elasticjob-lite核心模块 -->
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-core</artifactId>
+    <artifactId>elasticjob-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```

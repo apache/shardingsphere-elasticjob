@@ -51,12 +51,12 @@ chapter = true
 
 ## 2. Spring 命名空间配置
 
-Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将命名方式由驼峰式改为以减号间隔。使用 Spring 命名空间需在 pom.xml 文件中添加 elastic-job-lite-spring 模块的依赖。
+Spring 命名空间与 Java Code 方式配置类似，大部分属性只是将命名方式由驼峰式改为以减号间隔。使用 Spring 命名空间需在 pom.xml 文件中添加 elasticjob-lite-spring 模块的依赖。
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```

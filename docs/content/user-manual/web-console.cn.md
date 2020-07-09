@@ -5,9 +5,9 @@ weight = 11
 chapter = true
 +++
 
-解压缩`elastic-job-lite-console-${version}.tar.gz`并执行bin\start.sh。打开浏览器访问`http://localhost:8899/`即可访问控制台。8899为默认端口号，可通过启动脚本输入-p自定义端口号。
+解压缩`elasticjob-lite-console-${version}.tar.gz`并执行bin\start.sh。打开浏览器访问`http://localhost:8899/`即可访问控制台。8899为默认端口号，可通过启动脚本输入-p自定义端口号。
 
-`elastic-job-lite-console-${version}.tar.gz`可通过mvn install编译获取。
+`elasticjob-lite-console-${version}.tar.gz`可通过mvn install编译获取。
 
 ## 登录
 

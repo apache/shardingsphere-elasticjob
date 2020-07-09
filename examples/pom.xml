@@ -51,17 +51,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <artifactId>elastic-job-lite-core</artifactId>
+                <artifactId>elasticjob-lite-core</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elastic-job-lite-simple-executor</artifactId>
+                <artifactId>elasticjob-lite-simple-executor</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
             <dependency>
-                <artifactId>elastic-job-lite-spring</artifactId>
+                <artifactId>elasticjob-lite-spring</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>
