@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
 import com.google.common.base.Preconditions;
+import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
@@ -62,9 +63,9 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
                 if (disabled) {
-                    regCenter.persist(jobNodePath.getServerNodePath(each), "DISABLED");
+                    regCenter.persist(jobNodePath.getServerNodePath(each), ServerStatus.DISABLED.name());
                 } else {
-                    regCenter.persist(jobNodePath.getServerNodePath(each), "");
+                    regCenter.persist(jobNodePath.getServerNodePath(each), ServerStatus.ENABLED.name());
                 }
             }
         } else {
@@ -81,9 +82,9 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String serverNodePath = jobNodePath.getServerNodePath(serverIp);
         if (disabled) {
-            regCenter.persist(serverNodePath, "DISABLED");
+            regCenter.persist(serverNodePath, ServerStatus.DISABLED.name());
         } else {
-            regCenter.persist(serverNodePath, "");
+            regCenter.persist(serverNodePath, ServerStatus.ENABLED.name());
         }
     }
     

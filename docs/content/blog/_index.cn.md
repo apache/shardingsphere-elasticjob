@@ -1,9 +1,13 @@
 +++
-pre = "<b>6. </b>"
+pre = "<b>9. </b>"
 title = "博客"
-weight = 6
+weight = 9
 chapter = true
 +++
+
+* 2020-07 [InfoQ文章：ElasticJob的产品定位与新版本设计理念](https://www.infoq.cn/article/ZcEsH20kUCB9QP1O1PNt)
+
+* 2020-07 [开源中国：GitHub上持续冲榜，ElasticJob重启](https://mp.weixin.qq.com/s/QLKjn_dfVG2OBxbnrwDl5w)
 
 * 2020-05 [官微快讯：分布式调度项目ElasticJob即将重新起航](https://mp.weixin.qq.com/s/XJFj_vOj3bR6HRQUzy1ikg)
 
