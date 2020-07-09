@@ -15,7 +15,7 @@ ElasticJob 是一个分布式调度解决方案，由 2 个相互独立的子项
 
 ElasticJob Lite 定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务。
 
-ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://shardingsphere.apache.org/)的子项目。
+ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://shardingsphere.apache.org/) 的子项目。
 欢迎通过[邮件列表](mailto:dev@shardingsphere.apache.org)参与讨论。
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
