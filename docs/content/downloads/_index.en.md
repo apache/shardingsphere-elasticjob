@@ -14,7 +14,7 @@ The downloads are distributed via mirror sites and should be checked for tamperi
 
 | Version | Release date | Description | Downloads |
 | - | - | - | - |
-| 3.0.0-alpha | Jul -, 2020  | Source codes | [[src]]() [[asc]]() [[sha512]]() |
+| 3.0.0-alpha | Coming soon  | Source codes | [[src]]() [[asc]]() [[sha512]]() |
 |             |              | ElasticJob Lite Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
 |             |              | ElasticJob Lite Console Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
 
