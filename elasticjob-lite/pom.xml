@@ -25,13 +25,16 @@
         <artifactId>elasticjob</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elastic-job-lite-executor</artifactId>
+    <artifactId>elasticjob-lite</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    
+
     <modules>
-        <module>elastic-job-lite-simple-executor</module>
-        <module>elastic-job-lite-dataflow-executor</module>
-        <module>elastic-job-lite-script-executor</module>
+        <module>elastic-job-lite-core</module>
+        <module>elastic-job-lite-executor</module>
+        <module>elastic-job-lite-tracing</module>
+        <module>elastic-job-lite-spring</module>
+        <module>elastic-job-lite-lifecycle</module>
+        <module>elastic-job-lite-console</module>
     </modules>
 </project>

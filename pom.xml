@@ -31,13 +31,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elastic-job-lite-core</module>
-        <module>elastic-job-lite-executor</module>
-        <module>elastic-job-lite-tracing</module>
-        <module>elastic-job-lite-spring</module>
-        <module>elastic-job-lite-lifecycle</module>
-        <module>elastic-job-lite-console</module>
-        
+        <module>elasticjob-lite</module>
         <module>elastic-job-cloud-common</module>
         <module>elastic-job-cloud-scheduler</module>
         <module>elastic-job-cloud-executor</module>
