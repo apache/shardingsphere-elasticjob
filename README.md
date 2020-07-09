@@ -6,12 +6,13 @@
 
 ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
 
-ElasticJob Lite is a lightweight, decentralized solution that provides distributed task sharding services.
+ElasticJob Lite is a lightweight, decentralized solution that provides distributed task sharding services;
+ElasticJob Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
 
 Elasticjob uses a unified job API for each product. 
 Developers only need code one time and can deploy at will.
 
-ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
+ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub-project on May 28 2020.
 
 Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apache.org).
 
@@ -46,7 +47,7 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - Misfired
   - Self diagnose and recover when distribute environment unstable
 
-- Job Dependency
+- Job Dependency(TODO)
   - DAG based job dependency
   - DAG based job item dependency
 
