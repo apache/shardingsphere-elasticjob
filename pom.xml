@@ -32,9 +32,7 @@
     
     <modules>
         <module>elasticjob-lite</module>
-        <module>elastic-job-cloud-common</module>
-        <module>elastic-job-cloud-scheduler</module>
-        <module>elastic-job-cloud-executor</module>
+        <module>elasticjob-cloud</module>
     </modules>
     
     <properties>
