@@ -52,9 +52,9 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - DAG based job item dependency
 
 - Job Open Ecosystem
-  - Unify job api for extension
+  - Unified job API for extension
   - Support rich job type lib, such as dataflow, script, HTTP, file, big data
-  - Focus business SDK, can work with Spring IOC
+  - Easy integrate with business job, can work with Spring IOC
 
 - Admin Console
   - Job administration
