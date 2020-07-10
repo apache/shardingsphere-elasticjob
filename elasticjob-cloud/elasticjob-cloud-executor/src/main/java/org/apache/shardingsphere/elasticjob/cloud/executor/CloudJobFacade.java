@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
-import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 
@@ -46,7 +47,7 @@ public final class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException {
+    public void checkJobExecutionEnvironment() {
     }
     
     @Override
@@ -60,11 +61,8 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
     }
-
-    /**
-     * Get sharding contexts.
-     * @return sharding contexts
-     */
+    
+    @Override
     public ShardingContexts getShardingContexts() {
         return shardingContexts;
     }
@@ -107,9 +105,9 @@ public final class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void postJobStatusTraceEvent(final String taskId, final JobStatusTraceEvent.State state, final String message) {
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                JobStatusTraceEvent.Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
+                Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }

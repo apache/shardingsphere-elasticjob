@@ -17,12 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ final class ElasticJobVerify {
             throw new RuntimeException(ex);
         }
         verify(jobFacade).getShardingContexts();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);

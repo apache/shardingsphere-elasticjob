@@ -33,6 +33,7 @@
     <modules>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
+        <module>elasticjob-common</module>
     </modules>
     
     <properties>
