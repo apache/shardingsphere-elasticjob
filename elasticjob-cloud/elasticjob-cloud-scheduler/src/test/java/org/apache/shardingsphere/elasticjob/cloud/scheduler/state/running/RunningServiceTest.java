@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -37,6 +36,8 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RunningServiceTest {
@@ -52,8 +53,8 @@ public final class RunningServiceTest {
     
     @Before
     public void setUp() {
-        Mockito.when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
-        Mockito.when(regCenter.get("/config/job/test_job_t")).thenReturn(CloudJsonConstants.getJobJson("test_job_t"));
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
+        when(regCenter.get("/config/job/test_job_t")).thenReturn(CloudJsonConstants.getJobJson("test_job_t"));
         runningService = new RunningService(regCenter);
         taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         taskContextT = TaskContext.from(TaskNode.builder().jobName("test_job_t").build().getTaskNodeValue());
@@ -62,8 +63,8 @@ public final class RunningServiceTest {
         Assert.assertThat(runningService.getAllRunningDaemonTasks().size(), is(1));
         Assert.assertThat(runningService.getAllRunningTasks().size(), is(2));
         String path = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
-        Mockito.verify(regCenter).isExisted(path);
-        Mockito.verify(regCenter).persist(path, taskContext.getId());
+        verify(regCenter).isExisted(path);
+        verify(regCenter).persist(path, taskContext.getId());
     }
     
     @After
@@ -75,10 +76,10 @@ public final class RunningServiceTest {
     public void assertStart() {
         TaskNode taskNode1 = TaskNode.builder().jobName("test_job").shardingItem(0).slaveId("111").type(ExecutionType.READY).uuid(UUID.randomUUID().toString()).build();
         TaskNode taskNode2 = TaskNode.builder().jobName("test_job").shardingItem(1).slaveId("222").type(ExecutionType.FAILOVER).uuid(UUID.randomUUID().toString()).build();
-        Mockito.when(regCenter.getChildrenKeys(RunningNode.ROOT)).thenReturn(Collections.singletonList("test_job"));
-        Mockito.when(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(Arrays.asList(taskNode1.getTaskNodePath(), taskNode2.getTaskNodePath()));
-        Mockito.when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode1.getTaskNodePath()))).thenReturn(taskNode1.getTaskNodeValue());
-        Mockito.when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode2.getTaskNodePath()))).thenReturn(taskNode2.getTaskNodeValue());
+        when(regCenter.getChildrenKeys(RunningNode.ROOT)).thenReturn(Collections.singletonList("test_job"));
+        when(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(Arrays.asList(taskNode1.getTaskNodePath(), taskNode2.getTaskNodePath()));
+        when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode1.getTaskNodePath()))).thenReturn(taskNode1.getTaskNodeValue());
+        when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode2.getTaskNodePath()))).thenReturn(taskNode2.getTaskNodeValue());
         runningService.start();
         Assert.assertThat(runningService.getAllRunningDaemonTasks().size(), is(2));
     }
@@ -93,7 +94,7 @@ public final class RunningServiceTest {
     
     @Test
     public void assertAddWithData() {
-        Mockito.when(regCenter.get("/config/job/other_job")).thenReturn(CloudJsonConstants.getJobJson("other_job"));
+        when(regCenter.get("/config/job/other_job")).thenReturn(CloudJsonConstants.getJobJson("other_job"));
         TaskNode taskNode = TaskNode.builder().jobName("other_job").build();
         runningService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         Assert.assertThat(runningService.getRunningTasks("other_job").size(), is(1));
@@ -111,18 +112,18 @@ public final class RunningServiceTest {
     public void assertRemoveByJobName() {
         runningService.remove("test_job");
         Assert.assertTrue(runningService.getRunningTasks("test_job").isEmpty());
-        Mockito.verify(regCenter).remove(RunningNode.getRunningJobNodePath("test_job"));
+        verify(regCenter).remove(RunningNode.getRunningJobNodePath("test_job"));
         runningService.remove("test_job_t");
         Assert.assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
     }
     
     @Test
     public void assertRemoveByTaskContext() {
-        Mockito.when(regCenter.isExisted(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(Collections.emptyList());
+        when(regCenter.isExisted(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(true);
+        when(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(Collections.emptyList());
         runningService.remove(taskContext);
         Assert.assertTrue(runningService.getRunningTasks("test_job").isEmpty());
-        Mockito.verify(regCenter).remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()));
+        verify(regCenter).remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()));
         runningService.remove(taskContextT);
         Assert.assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
     }

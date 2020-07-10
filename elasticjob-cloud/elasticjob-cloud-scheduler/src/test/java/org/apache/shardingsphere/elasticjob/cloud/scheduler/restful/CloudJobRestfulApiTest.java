@@ -37,7 +37,6 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
@@ -50,74 +49,78 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {
-        Mockito.when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Mockito.when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
-        Mockito.verify(getRegCenter()).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(getRegCenter()).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
         RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job");
     }
     
     @Test
     public void assertRegisterWithoutApp() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
+        when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", CloudJsonConstants.getJobJson()), is(500));
     }
     
     @Test
     public void assertRegisterWithExistedName() throws Exception {
-        Mockito.when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Mockito.when(getRegCenter().isExisted("/config/test_job")).thenReturn(false);
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().isExisted("/config/test_job")).thenReturn(false);
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", CloudJsonConstants.getJobJson()), is(500));
         RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job");
     }
     
     @Test
     public void assertRegisterWithBadRequest() throws Exception {
-        Mockito.when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", "\"{\"jobName\":\"wrong_job\"}"), is(500));
     }
     
     @Test
     public void assertUpdate() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(true);
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(true);
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/update", "PUT", CloudJsonConstants.getJobJson()), is(204));
-        Mockito.verify(getRegCenter()).update("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(getRegCenter()).update("/config/job/test_job", CloudJsonConstants.getJobJson());
         RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job");
     }
     
     @Test
     public void assertDeregister() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
+        when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job"), is(204));
-        Mockito.verify(getRegCenter(), Mockito.times(3)).get("/config/job/test_job");
+        verify(getRegCenter(), times(3)).get("/config/job/test_job");
     }
     
     @Test
     public void assertTriggerWithDaemonJob() throws Exception {
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/trigger", "POST", "test_job"), is(500));
     }
     
     @Test
     public void assertTriggerWithTransientJob() throws Exception {
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/trigger", "POST", "test_job"), is(204));
     }
     
     @Test
     public void assertDetail() throws Exception {
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/jobs/test_job"), is(CloudJsonConstants.getJobJson()));
-        Mockito.verify(getRegCenter()).get("/config/job/test_job");
+        verify(getRegCenter()).get("/config/job/test_job");
     }
     
     @Test
@@ -127,54 +130,54 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertFindAllJobs() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job")).thenReturn(true);
-        Mockito.when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/jobs"), is("[" + CloudJsonConstants.getJobJson() + "]"));
-        Mockito.verify(getRegCenter()).isExisted("/config/job");
-        Mockito.verify(getRegCenter()).getChildrenKeys("/config/job");
-        Mockito.verify(getRegCenter()).get("/config/job/test_job");
+        verify(getRegCenter()).isExisted("/config/job");
+        verify(getRegCenter()).getChildrenKeys("/config/job");
+        verify(getRegCenter()).get("/config/job/test_job");
     }
     
     @Test
     public void assertFindAllRunningTasks() throws Exception {
         RunningService runningService = new RunningService(getRegCenter());
         TaskContext actualTaskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        Mockito.when(getRegCenter().get("/config/job/" + actualTaskContext.getMetaInfo().getJobName())).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().get("/config/job/" + actualTaskContext.getMetaInfo().getJobName())).thenReturn(CloudJsonConstants.getJobJson());
         runningService.add(actualTaskContext);
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/tasks/running"), is(GsonFactory.getGson().toJson(Lists.newArrayList(actualTaskContext))));
     }
     
     @Test
     public void assertFindAllReadyTasks() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/state/ready")).thenReturn(true);
-        Mockito.when(getRegCenter().getChildrenKeys("/state/ready")).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(getRegCenter().get("/state/ready/test_job")).thenReturn("1");
+        when(getRegCenter().isExisted("/state/ready")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/state/ready")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/state/ready/test_job")).thenReturn("1");
         Map<String, String> expectedMap = new HashMap<>();
         expectedMap.put("jobName", "test_job");
         expectedMap.put("times", "1");
         @SuppressWarnings("unchecked")
         Collection<Map<String, String>> expectedResult = Lists.newArrayList(expectedMap);
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/tasks/ready"), is(GsonFactory.getGson().toJson(expectedResult)));
-        Mockito.verify(getRegCenter()).isExisted("/state/ready");
-        Mockito.verify(getRegCenter()).getChildrenKeys("/state/ready");
-        Mockito.verify(getRegCenter()).get("/state/ready/test_job");
+        verify(getRegCenter()).isExisted("/state/ready");
+        verify(getRegCenter()).getChildrenKeys("/state/ready");
+        verify(getRegCenter()).get("/state/ready/test_job");
     }
     
     @Test
     public void assertFindAllFailoverTasks() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/state/failover")).thenReturn(true);
-        Mockito.when(getRegCenter().getChildrenKeys("/state/failover")).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(getRegCenter().getChildrenKeys("/state/failover/test_job")).thenReturn(Lists.newArrayList("test_job@-@0"));
+        when(getRegCenter().isExisted("/state/failover")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/state/failover")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().getChildrenKeys("/state/failover/test_job")).thenReturn(Lists.newArrayList("test_job@-@0"));
         String originalTaskId = UUID.randomUUID().toString();
-        Mockito.when(getRegCenter().get("/state/failover/test_job/test_job@-@0")).thenReturn(originalTaskId);
+        when(getRegCenter().get("/state/failover/test_job/test_job@-@0")).thenReturn(originalTaskId);
         FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(TaskContext.MetaInfo.from("test_job@-@0"), originalTaskId);
         Collection<FailoverTaskInfo> expectedResult = Lists.newArrayList(expectedFailoverTask);
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/tasks/failover"), is(GsonFactory.getGson().toJson(expectedResult)));
-        Mockito.verify(getRegCenter()).isExisted("/state/failover");
-        Mockito.verify(getRegCenter()).getChildrenKeys("/state/failover");
-        Mockito.verify(getRegCenter()).getChildrenKeys("/state/failover/test_job");
-        Mockito.verify(getRegCenter()).get("/state/failover/test_job/test_job@-@0");
+        verify(getRegCenter()).isExisted("/state/failover");
+        verify(getRegCenter()).getChildrenKeys("/state/failover");
+        verify(getRegCenter()).getChildrenKeys("/state/failover/test_job");
+        verify(getRegCenter()).get("/state/failover/test_job/test_job@-@0");
     }
     
     @Test
@@ -188,11 +191,11 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     public void assertFindJobExecutionEvents() throws Exception {
         ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        Mockito.when(getJobEventRdbSearch().findJobExecutionEvents(Mockito.any(JobEventRdbSearch.Condition.class))).thenReturn(new JobEventRdbSearch.Result<>(0,
+        when(getJobEventRdbSearch().findJobExecutionEvents(any(JobEventRdbSearch.Condition.class))).thenReturn(new JobEventRdbSearch.Result<>(0,
                 Lists.newArrayList(jobExecutionEvent)));
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/executions?" + buildFindJobEventsQueryParameter()),
                 is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0, Lists.newArrayList(jobExecutionEvent)))));
-        Mockito.verify(getJobEventRdbSearch()).findJobExecutionEvents(Mockito.any(JobEventRdbSearch.Condition.class));
+        verify(getJobEventRdbSearch()).findJobExecutionEvents(any(JobEventRdbSearch.Condition.class));
     }
     
     @Test
@@ -207,11 +210,11 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
         ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent("test-job", 
                 "fake_task_id", "fake_slave_id", JobStatusTraceEvent.Source.LITE_EXECUTOR, ExecutionType.READY.toString(), "0", JobStatusTraceEvent.State.TASK_RUNNING, "message is empty.");
-        Mockito.when(getJobEventRdbSearch().findJobStatusTraceEvents(Mockito.any(JobEventRdbSearch.Condition.class))).thenReturn(new Result<>(0,
+        when(getJobEventRdbSearch().findJobStatusTraceEvents(any(JobEventRdbSearch.Condition.class))).thenReturn(new Result<>(0,
                 Lists.newArrayList(jobStatusTraceEvent)));
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/statusTraces?" + buildFindJobEventsQueryParameter()),
                 is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0, Lists.newArrayList(jobStatusTraceEvent)))));
-        Mockito.verify(getJobEventRdbSearch()).findJobStatusTraceEvents(Mockito.any(JobEventRdbSearch.Condition.class));
+        verify(getJobEventRdbSearch()).findJobStatusTraceEvents(any(JobEventRdbSearch.Condition.class));
     }
     
     private String buildFindJobEventsQueryParameter() throws UnsupportedEncodingException {
@@ -299,27 +302,27 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertIsDisabled() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/state/disable/job/test_job")).thenReturn(true);
+        when(getRegCenter().isExisted("/state/disable/job/test_job")).thenReturn(true);
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/test_job/disable"), is("true"));
     }
     
     @Test
     public void assertDisable() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job")).thenReturn(true);
-        Mockito.when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/test_job/disable", "POST"), is(204));
-        Mockito.verify(getRegCenter()).persist("/state/disable/job/test_job", "test_job");
+        verify(getRegCenter()).persist("/state/disable/job/test_job", "test_job");
     }
     
     @Test
     public void assertEnable() throws Exception {
-        Mockito.when(getRegCenter().isExisted("/config/job")).thenReturn(true);
-        Mockito.when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Mockito.when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/test_job/enable", "POST", "test_job"), is(204));
-        Mockito.verify(getRegCenter()).remove("/state/disable/job/test_job");
+        verify(getRegCenter()).remove("/state/disable/job/test_job");
     }
 }

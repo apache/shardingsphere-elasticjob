@@ -36,7 +36,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
@@ -46,6 +45,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public final class AppConstraintEvaluatorTest {
     
@@ -63,7 +64,7 @@ public final class AppConstraintEvaluatorTest {
     
     @BeforeClass
     public static void init() {
-        facadeService = Mockito.mock(FacadeService.class);
+        facadeService = mock(FacadeService.class);
         AppConstraintEvaluator.init(facadeService);
     }
     
@@ -101,7 +102,7 @@ public final class AppConstraintEvaluatorTest {
     
     @Test
     public void assertExistExecutorOnS0() throws Exception {
-        Mockito.when(facadeService.loadExecutorInfo()).thenReturn(ImmutableList.of(new MesosStateService.ExecutorStateInfo("foo-app@-@S0", "S0")));
+        when(facadeService.loadExecutorInfo()).thenReturn(ImmutableList.of(new MesosStateService.ExecutorStateInfo("foo-app@-@S0", "S0")));
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
         Assert.assertThat(result.getResultMap().size(), is(2));
@@ -110,7 +111,7 @@ public final class AppConstraintEvaluatorTest {
     
     @Test
     public void assertGetExecutorError() throws Exception {
-        Mockito.when(facadeService.loadExecutorInfo()).thenThrow(JSONException.class);
+        when(facadeService.loadExecutorInfo()).thenThrow(JSONException.class);
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
         Assert.assertThat(result.getResultMap().size(), is(2));
@@ -119,7 +120,7 @@ public final class AppConstraintEvaluatorTest {
     
     @Test
     public void assertLackJobConfig() {
-        Mockito.when(facadeService.load("test")).thenReturn(Optional.empty());
+        when(facadeService.load("test")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));
         Assert.assertThat(result.getResultMap().size(), is(1));
         Assert.assertThat(getAssignedTaskNumber(result), is(1));
@@ -127,8 +128,8 @@ public final class AppConstraintEvaluatorTest {
     
     @Test
     public void assertLackAppConfig() {
-        Mockito.when(facadeService.load("test")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test")));
-        Mockito.when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.empty());
+        when(facadeService.load("test")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test")));
+        when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));
         Assert.assertThat(result.getResultMap().size(), is(1));
         Assert.assertThat(getAssignedTaskNumber(result), is(1));
@@ -158,19 +159,19 @@ public final class AppConstraintEvaluatorTest {
                 appName = "bar-app";
             }
             result.add(getTask(jobName));
-            Mockito.when(facadeService.load(jobName)).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration(jobName, appName)));
+            when(facadeService.load(jobName)).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration(jobName, appName)));
         }
-        Mockito.when(facadeService.loadAppConfig("foo-app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("foo-app")));
-        Mockito.when(facadeService.loadAppConfig("bar-app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("bar-app")));
+        when(facadeService.loadAppConfig("foo-app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("foo-app")));
+        when(facadeService.loadAppConfig("bar-app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("bar-app")));
         return result;
     }
     
     private TaskRequest getTask(final String jobName) {
-        TaskRequest result = Mockito.mock(TaskRequest.class);
-        Mockito.when(result.getCPUs()).thenReturn(1.0d);
-        Mockito.when(result.getMemory()).thenReturn(128.0d);
-        Mockito.when(result.getHardConstraints()).thenAnswer((Answer<List<? extends ConstraintEvaluator>>) invocationOnMock -> ImmutableList.of(AppConstraintEvaluator.getInstance()));
-        Mockito.when(result.getId()).thenReturn(new TaskContext(jobName, Collections.singletonList(0), ExecutionType.READY).getId());
+        TaskRequest result = mock(TaskRequest.class);
+        when(result.getCPUs()).thenReturn(1.0d);
+        when(result.getMemory()).thenReturn(128.0d);
+        when(result.getHardConstraints()).thenAnswer((Answer<List<? extends ConstraintEvaluator>>) invocationOnMock -> ImmutableList.of(AppConstraintEvaluator.getInstance()));
+        when(result.getId()).thenReturn(new TaskContext(jobName, Collections.singletonList(0), ExecutionType.READY).getId());
         return result;
     }
     

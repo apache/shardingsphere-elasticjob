@@ -25,12 +25,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
@@ -40,7 +40,7 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertSandbox() throws Exception {
-        Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         JsonArray sandbox = service.sandbox("foo_app");
         Assert.assertThat(sandbox.size(), is(1));
@@ -51,7 +51,7 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertExecutors() throws Exception {
-        Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
         Assert.assertThat(executorStateInfo.size(), is(1));
@@ -62,7 +62,7 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertAllExecutors() throws Exception {
-        Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors();
         Assert.assertThat(executorStateInfo.size(), is(1));

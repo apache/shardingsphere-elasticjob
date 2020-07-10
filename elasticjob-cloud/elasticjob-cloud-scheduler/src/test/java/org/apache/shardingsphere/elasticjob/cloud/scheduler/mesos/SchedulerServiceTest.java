@@ -17,22 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import com.google.common.util.concurrent.Service;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
@@ -70,7 +70,7 @@ public class SchedulerServiceTest {
     private SchedulerService schedulerService;
     
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,  
                 producerManager, statisticManager, cloudJobConfigurationListener, 
                 taskLaunchScheduledService, restfulService, reconcileService);
@@ -137,9 +137,8 @@ public class SchedulerServiceTest {
     }
     
     private InOrder getInOrder() {
-        return Mockito.inOrder(facadeService, schedulerDriver,
-                producerManager, statisticManager, cloudJobConfigurationListener,
-                taskLaunchScheduledService, restfulService, reconcileService);
+        return inOrder(facadeService, schedulerDriver, producerManager, 
+                statisticManager, cloudJobConfigurationListener, taskLaunchScheduledService, restfulService, reconcileService);
     }
     
     private void setReconcileEnabled(final boolean isEnabled) {

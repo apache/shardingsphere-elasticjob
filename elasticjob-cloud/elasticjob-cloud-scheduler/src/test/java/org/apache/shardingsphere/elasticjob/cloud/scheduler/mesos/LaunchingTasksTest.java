@@ -31,7 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class LaunchingTasksTest {
@@ -69,7 +69,7 @@ public final class LaunchingTasksTest {
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
-        Mockito.when(facadeService.getEligibleJobContext()).thenReturn(Arrays.asList(
+        when(facadeService.getEligibleJobContext()).thenReturn(Arrays.asList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY),
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
         launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());

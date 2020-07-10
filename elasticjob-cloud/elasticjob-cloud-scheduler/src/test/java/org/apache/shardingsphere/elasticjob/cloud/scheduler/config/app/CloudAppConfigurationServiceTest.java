@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -33,6 +32,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudAppConfigurationServiceTest {
@@ -47,35 +48,35 @@ public final class CloudAppConfigurationServiceTest {
     public void assertAdd() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.add(appConfig);
-        Mockito.verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertUpdate() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.update(appConfig);
-        Mockito.verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertLoadAllWithoutRootNode() {
-        Mockito.when(regCenter.isExisted("/config/app")).thenReturn(false);
+        when(regCenter.isExisted("/config/app")).thenReturn(false);
         Assert.assertTrue(configService.loadAll().isEmpty());
-        Mockito.verify(regCenter).isExisted("/config/app");
+        verify(regCenter).isExisted("/config/app");
     }
     
     @Test
     public void assertLoadAllWithRootNode() {
-        Mockito.when(regCenter.isExisted("/config/app")).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
-        Mockito.when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
+        when(regCenter.isExisted("/config/app")).thenReturn(true);
+        when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
+        when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
         Collection<CloudAppConfiguration> actual = configService.loadAll();
         Assert.assertThat(actual.size(), is(1));
         Assert.assertThat(actual.iterator().next().getAppName(), is("test_app_1"));
-        Mockito.verify(regCenter).isExisted("/config/app");
-        Mockito.verify(regCenter).getChildrenKeys("/config/app");
-        Mockito.verify(regCenter).get("/config/app/test_app_1");
-        Mockito.verify(regCenter).get("/config/app/test_app_2");
+        verify(regCenter).isExisted("/config/app");
+        verify(regCenter).getChildrenKeys("/config/app");
+        verify(regCenter).get("/config/app/test_app_1");
+        verify(regCenter).get("/config/app/test_app_2");
     }
     
     @Test
@@ -86,7 +87,7 @@ public final class CloudAppConfigurationServiceTest {
     
     @Test
     public void assertLoadWithConfig() {
-        Mockito.when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         Optional<CloudAppConfiguration> actual = configService.load("test_app");
         Assert.assertTrue(actual.isPresent());
         Assert.assertThat(actual.get().getAppName(), is("test_app"));
@@ -95,6 +96,6 @@ public final class CloudAppConfigurationServiceTest {
     @Test
     public void assertRemove() {
         configService.remove("test_app");
-        Mockito.verify(regCenter).remove("/config/app/test_app");
+        verify(regCenter).remove("/config/app/test_app");
     }
 }

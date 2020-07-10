@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
@@ -42,6 +41,10 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,8 +73,8 @@ public final class StatisticManagerTest {
     public void tearDown() throws NoSuchFieldException {
         statisticManager.shutdown();
         ReflectionUtils.setFieldValue(StatisticManager.class, StatisticManager.class.getDeclaredField("instance"), null);
-        Mockito.reset(configurationService);
-        Mockito.reset(rdbRepository);
+        reset(configurationService);
+        reset(rdbRepository);
     }
     
     @Test
@@ -95,7 +98,7 @@ public final class StatisticManagerTest {
     public void assertShutdown() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "scheduler", scheduler);
         statisticManager.shutdown();
-        Mockito.verify(scheduler).shutdown();
+        verify(scheduler).shutdown();
     }
     
     @Test
@@ -116,13 +119,13 @@ public final class StatisticManagerTest {
     @Test
     public void assertTaskResultStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.getSummedTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class)))
+        when(rdbRepository.getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
             .thenReturn(new TaskResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
         Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(10));
         Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(10));
         Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(10));
         Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(10));
-        Mockito.verify(rdbRepository, Mockito.times(4)).getSummedTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class));
+        verify(rdbRepository, times(4)).getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
     }
     
     @Test
@@ -135,7 +138,7 @@ public final class StatisticManagerTest {
         Assert.assertThat(statisticManager.getJobTypeStatistics().getSimpleJobCount(), is(1));
         Assert.assertThat(statisticManager.getJobTypeStatistics().getDataflowJobCount(), is(1));
         Assert.assertThat(statisticManager.getJobTypeStatistics().getScriptJobCount(), is(1));
-        Mockito.verify(configurationService, Mockito.times(3)).loadAll();
+        verify(configurationService, times(3)).loadAll();
     }
     
     @Test
@@ -146,7 +149,7 @@ public final class StatisticManagerTest {
                 CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_2", CloudJobExecutionType.TRANSIENT)));
         Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getDaemonJobCount(), is(1));
         Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getTransientJobCount(), is(1));
-        Mockito.verify(configurationService, Mockito.times(2)).loadAll();
+        verify(configurationService, times(2)).loadAll();
     }
     
     @Test
@@ -158,10 +161,10 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindTaskRunningStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findTaskRunningStatistics(Mockito.any(Date.class)))
+        when(rdbRepository.findTaskRunningStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new TaskRunningStatistics(10, new Date())));
         Assert.assertThat(statisticManager.findTaskRunningStatisticsWeekly().size(), is(1));
-        Mockito.verify(rdbRepository).findTaskRunningStatistics(Mockito.any(Date.class));
+        verify(rdbRepository).findTaskRunningStatistics(any(Date.class));
     }
     
     @Test
@@ -173,10 +176,10 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindJobRunningStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findJobRunningStatistics(Mockito.any(Date.class)))
+        when(rdbRepository.findJobRunningStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRunningStatistics(10, new Date())));
         Assert.assertThat(statisticManager.findJobRunningStatisticsWeekly().size(), is(1));
-        Mockito.verify(rdbRepository).findJobRunningStatistics(Mockito.any(Date.class));
+        verify(rdbRepository).findJobRunningStatistics(any(Date.class));
     }
     
     @Test
@@ -188,10 +191,10 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindJobRegisterStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findJobRegisterStatistics(Mockito.any(Date.class)))
+        when(rdbRepository.findJobRegisterStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRegisterStatistics(10, new Date())));
         Assert.assertThat(statisticManager.findJobRegisterStatisticsSinceOnline().size(), is(1));
-        Mockito.verify(rdbRepository).findJobRegisterStatistics(Mockito.any(Date.class));
+        verify(rdbRepository).findJobRegisterStatistics(any(Date.class));
     }
     
     @Test
@@ -214,7 +217,7 @@ public final class StatisticManagerTest {
             Assert.assertThat(actual.getSuccessCount(), is(10));
             Assert.assertThat(actual.getFailedCount(), is(5));
         }
-        Mockito.verify(rdbRepository, Mockito.times(StatisticInterval.values().length)).findLatestTaskResultStatistics(Mockito.any(StatisticInterval.class));
+        verify(rdbRepository, times(StatisticInterval.values().length)).findLatestTaskResultStatistics(any(StatisticInterval.class));
     }
     
     @Test
@@ -226,9 +229,9 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindTaskResultStatisticsDailyWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class)))
+        when(rdbRepository.findTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
             .thenReturn(Lists.newArrayList(new TaskResultStatistics(10, 5, StatisticInterval.MINUTE, new Date())));
         Assert.assertThat(statisticManager.findTaskResultStatisticsDaily().size(), is(1));
-        Mockito.verify(rdbRepository).findTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class));
+        verify(rdbRepository).findTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
     }
 }

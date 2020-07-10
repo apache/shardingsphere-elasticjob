@@ -30,12 +30,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.ws.rs.core.MediaType;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RestfulServerTest {
@@ -60,7 +61,7 @@ public final class RestfulServerTest {
     
     @Before
     public void setUp() {
-        caller = Mockito.mock(Caller.class);
+        caller = mock(Caller.class);
         TestRestfulApi.setCaller(caller);
     }
     
@@ -69,8 +70,8 @@ public final class RestfulServerTest {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":1}");
         Assert.assertThat(actual.getResponseStatus(), is(200));
         Assert.assertThat(actual.getResponseContent(), is("{\"string\":\"test_processed\",\"integer\":\"1_processed\"}"));
-        Mockito.verify(caller).call("test");
-        Mockito.verify(caller).call(1);
+        verify(caller).call("test");
+        verify(caller).call(1);
     }
     
     @Test
@@ -78,7 +79,7 @@ public final class RestfulServerTest {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":\"invalid_number\"}");
         Assert.assertThat(actual.getResponseStatus(), is(500));
         Assert.assertThat(actual.getResponseContent(), StringStartsWith.startsWith("java.lang.NumberFormatException"));
-        Mockito.verify(caller).call("test");
+        verify(caller).call("test");
     }
     
     private static ContentExchange sentRequest(final String content) throws Exception {
