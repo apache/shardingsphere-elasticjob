@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.event.rdb;
+package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEventThrowable;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -90,8 +88,7 @@ public final class JobEventRdbSearch {
                 JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), JobExecutionEvent.ExecutionSource.valueOf(resultSet.getString(6)), Integer.valueOf(resultSet.getString(7)), 
                         new Date(resultSet.getTimestamp(8).getTime()), resultSet.getTimestamp(9) == null ? null : new Date(resultSet.getTimestamp(9).getTime()), 
-                        resultSet.getBoolean(10), new JobExecutionEventThrowable(null, resultSet.getString(11))
-                        );
+                        resultSet.getBoolean(10), resultSet.getString(11));
                 result.add(jobExecutionEvent);
             }
         } catch (final SQLException ex) {
@@ -110,7 +107,7 @@ public final class JobEventRdbSearch {
                 ) {
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), JobStatusTraceEvent.Source.valueOf(resultSet.getString(6)), ExecutionType.valueOf(resultSet.getString(7)), resultSet.getString(8),
+                        resultSet.getString(5), JobStatusTraceEvent.Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
                         JobStatusTraceEvent.State.valueOf(resultSet.getString(9)), resultSet.getString(10), new Date(resultSet.getTimestamp(11).getTime()));
                 result.add(jobStatusTraceEvent);
             }

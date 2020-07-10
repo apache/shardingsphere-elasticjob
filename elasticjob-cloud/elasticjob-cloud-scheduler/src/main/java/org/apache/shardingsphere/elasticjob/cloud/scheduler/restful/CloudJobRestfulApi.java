@@ -22,9 +22,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbSearch;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
@@ -45,6 +43,8 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResul
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.codehaus.jettison.json.JSONException;
 
 import javax.sql.DataSource;

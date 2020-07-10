@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbSearch;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
@@ -74,13 +74,13 @@ public abstract class AbstractCloudRestfulApiTest {
     private static void initMesosServer() throws Exception {
         MesosStateService.register("127.0.0.1", 9050);
         masterServer = new RestfulServer(9050);
-        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
+        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.absent(), Optional.absent());
         slaveServer = new RestfulServer(9051);
-        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
+        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.absent(), Optional.absent());
     }
     
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         restfulService.stop();
         masterServer.stop();
         slaveServer.stop();
