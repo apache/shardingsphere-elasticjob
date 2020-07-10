@@ -28,4 +28,8 @@
     <artifactId>elasticjob-common</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
+    
+    <modules>
+        <module>elasticjob-lite-tracing</module>
+    </modules>
 </project>
