@@ -36,8 +36,8 @@
         <appender-ref ref="STDOUT" />
     </root>
     
-    <logger name="org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener.RDBTracingListenerConfiguration" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus" level="OFF" />
     <logger name="org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler" level="OFF" />
     <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
 </configuration>
