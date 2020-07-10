@@ -19,13 +19,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
+       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                           http://shardingsphere.apache.org/schema/elasticjob
+                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
     
     <context:property-placeholder location="classpath:conf/job/conf.properties" ignore-unresolvable="true"/>
