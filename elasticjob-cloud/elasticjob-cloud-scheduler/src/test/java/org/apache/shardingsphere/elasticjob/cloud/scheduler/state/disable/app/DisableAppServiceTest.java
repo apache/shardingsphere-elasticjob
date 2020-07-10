@@ -18,13 +18,16 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app;
 
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class DisableAppServiceTest {
@@ -35,34 +38,34 @@ public final class DisableAppServiceTest {
     private DisableAppService disableAppService;
         
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         disableAppService = new DisableAppService(regCenter);
     }
     
     @Test
     public void assertAdd() {
         disableAppService.add("test_app");
-        Mockito.verify(regCenter).isExisted("/state/disable/app/test_app");
-        Mockito.verify(regCenter).persist("/state/disable/app/test_app", "test_app");
+        verify(regCenter).isExisted("/state/disable/app/test_app");
+        verify(regCenter).persist("/state/disable/app/test_app", "test_app");
     }
     
     @Test
     public void assertRemove() {
         disableAppService.remove("test_app");
-        Mockito.verify(regCenter).remove("/state/disable/app/test_app");
+        verify(regCenter).remove("/state/disable/app/test_app");
     }
     
     @Test
     public void assertIsDisabled() {
-        Mockito.when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(true);
-        Assert.assertTrue(disableAppService.isDisabled("test_app"));
-        Mockito.verify(regCenter).isExisted("/state/disable/app/test_app");
+        when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(true);
+        assertTrue(disableAppService.isDisabled("test_app"));
+        verify(regCenter).isExisted("/state/disable/app/test_app");
     }
     
     @Test
     public void assertIsEnabled() {
-        Mockito.when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(false);
-        Assert.assertFalse(disableAppService.isDisabled("test_app"));
-        Mockito.verify(regCenter).isExisted("/state/disable/app/test_app");
+        when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(false);
+        assertFalse(disableAppService.isDisabled("test_app"));
+        verify(regCenter).isExisted("/state/disable/app/test_app");
     }
 }

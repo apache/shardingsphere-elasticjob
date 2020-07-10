@@ -25,16 +25,12 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 import java.util.Collections;
@@ -43,6 +39,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobRunningStatisticJobTest {
@@ -64,55 +66,55 @@ public class JobRunningStatisticJobTest {
     
     @Test
     public void assertBuildJobDetail() {
-        Assert.assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), Is.is(JobRunningStatisticJob.class.getSimpleName()));
+        assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
     }
     
     @Test
     public void assertBuildTrigger() {
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
-        Assert.assertThat(trigger.getKey().getName(), Is.is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
+        assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
     public void assertGetDataMap() {
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), Is.is(runningService));
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("repository"), Is.is(repository));
+        assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
+        assertThat(jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
+    public void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.empty();
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.empty();
-        Mockito.when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
-        Mockito.when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
-        Mockito.when(repository.add(ArgumentMatchers.any(JobRunningStatistics.class))).thenReturn(true);
-        Mockito.when(repository.add(ArgumentMatchers.any(TaskRunningStatistics.class))).thenReturn(true);
-        Mockito.when(runningService.getAllRunningTasks()).thenReturn(Collections.emptyMap());
+        when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
+        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
+        when(repository.add(ArgumentMatchers.any(JobRunningStatistics.class))).thenReturn(true);
+        when(repository.add(ArgumentMatchers.any(TaskRunningStatistics.class))).thenReturn(true);
+        when(runningService.getAllRunningTasks()).thenReturn(Collections.emptyMap());
         jobRunningStatisticJob.execute(null);
-        Mockito.verify(repository).findLatestJobRunningStatistics();
-        Mockito.verify(repository).add(ArgumentMatchers.any(JobRunningStatistics.class));
-        Mockito.verify(repository).add(ArgumentMatchers.any(TaskRunningStatistics.class));
-        Mockito.verify(runningService).getAllRunningTasks();
+        verify(repository).findLatestJobRunningStatistics();
+        verify(repository).add(ArgumentMatchers.any(JobRunningStatistics.class));
+        verify(repository).add(ArgumentMatchers.any(TaskRunningStatistics.class));
+        verify(runningService).getAllRunningTasks();
     }
     
     @Test
-    public void assertExecute() throws SchedulerException {
+    public void assertExecute() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.of(new JobRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.of(new TaskRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
-        Mockito.when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
-        Mockito.when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
-        Mockito.when(repository.add(ArgumentMatchers.any(JobRunningStatistics.class))).thenReturn(true);
-        Mockito.when(repository.add(ArgumentMatchers.any(TaskRunningStatistics.class))).thenReturn(true);
+        when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
+        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
+        when(repository.add(ArgumentMatchers.any(JobRunningStatistics.class))).thenReturn(true);
+        when(repository.add(ArgumentMatchers.any(TaskRunningStatistics.class))).thenReturn(true);
         Map<String, Set<TaskContext>> jobMap = new HashMap<>(1);
         Set<TaskContext> jobSet = new HashSet<>(1);
         jobSet.add(TaskContext.from(TaskNode.builder().jobName("test_job").build().getTaskNodeValue()));
         jobMap.put("test_job", jobSet);
-        Mockito.when(runningService.getAllRunningTasks()).thenReturn(jobMap);
+        when(runningService.getAllRunningTasks()).thenReturn(jobMap);
         jobRunningStatisticJob.execute(null);
-        Mockito.verify(repository).findLatestJobRunningStatistics();
-        Mockito.verify(repository).findLatestTaskRunningStatistics();
-        Mockito.verify(repository, Mockito.times(3)).add(ArgumentMatchers.any(JobRunningStatistics.class));
-        Mockito.verify(repository, Mockito.times(3)).add(ArgumentMatchers.any(TaskRunningStatistics.class));
-        Mockito.verify(runningService).getAllRunningTasks();
+        verify(repository).findLatestJobRunningStatistics();
+        verify(repository).findLatestTaskRunningStatistics();
+        verify(repository, times(3)).add(ArgumentMatchers.any(JobRunningStatistics.class));
+        verify(repository, times(3)).add(ArgumentMatchers.any(TaskRunningStatistics.class));
+        verify(runningService).getAllRunningTasks();
     }
 }

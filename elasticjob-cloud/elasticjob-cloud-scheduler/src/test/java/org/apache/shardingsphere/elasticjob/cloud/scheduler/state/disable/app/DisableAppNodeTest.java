@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app;
 
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class DisableAppNodeTest {
     
     @Test
     public void assertGetDisableAppNodePath() {
-        Assert.assertThat(DisableAppNode.getDisableAppNodePath("test_app0000000001"), Is.is("/state/disable/app/test_app0000000001"));
+        assertThat(DisableAppNode.getDisableAppNodePath("test_app0000000001"), is("/state/disable/app/test_app0000000001"));
     }
 }

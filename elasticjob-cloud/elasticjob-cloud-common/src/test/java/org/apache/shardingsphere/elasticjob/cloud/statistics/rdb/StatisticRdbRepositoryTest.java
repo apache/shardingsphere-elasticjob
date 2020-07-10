@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegiste
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +31,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -114,7 +114,7 @@ public class StatisticRdbRepositoryTest {
     @Test
     public void assertFindLatestTaskResultStatisticsWhenTableIsEmpty() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            Assert.assertFalse(repository.findLatestTaskResultStatistics(each).isPresent());
+            assertFalse(repository.findLatestTaskResultStatistics(each).isPresent());
         }
     }
     
@@ -147,7 +147,7 @@ public class StatisticRdbRepositoryTest {
     
     @Test
     public void assertFindLatestTaskRunningStatisticsWhenTableIsEmpty() {
-        Assert.assertFalse(repository.findLatestTaskRunningStatistics().isPresent());
+        assertFalse(repository.findLatestTaskRunningStatistics().isPresent());
     }
     
     @Test
@@ -176,7 +176,7 @@ public class StatisticRdbRepositoryTest {
     
     @Test
     public void assertFindLatestJobRunningStatisticsWhenTableIsEmpty() {
-        Assert.assertFalse(repository.findLatestJobRunningStatistics().isPresent());
+        assertFalse(repository.findLatestJobRunningStatistics().isPresent());
     }
     
     @Test
@@ -205,7 +205,7 @@ public class StatisticRdbRepositoryTest {
     
     @Test
     public void assertFindLatestJobRegisterStatisticsWhenTableIsEmpty() {
-        Assert.assertFalse(repository.findLatestJobRegisterStatistics().isPresent());
+        assertFalse(repository.findLatestJobRegisterStatistics().isPresent());
     }
     
     @Test

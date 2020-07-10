@@ -45,9 +45,6 @@ public final class RDBTracingListenerTest {
     private static final String JOB_NAME = "test_rdb_event_listener";
     
     @Mock
-    private RDBTracingListenerConfiguration rdbTracingListenerConfig;
-    
-    @Mock
     private RDBJobEventStorage repository;
     
     private JobEventBus jobEventBus;

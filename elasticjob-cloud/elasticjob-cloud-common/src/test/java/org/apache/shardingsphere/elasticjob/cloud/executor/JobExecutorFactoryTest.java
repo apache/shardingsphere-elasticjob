@@ -19,22 +19,24 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
+import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
+import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestDataflowJob;
-import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.OtherJob;
+import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestSimpleJob;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class JobExecutorFactoryTest {
@@ -44,20 +46,20 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForScriptJob() {
-        Mockito.when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), CoreMatchers.instanceOf(ScriptJobExecutor.class));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
+        assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), CoreMatchers.instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
-        Mockito.when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), CoreMatchers.instanceOf(SimpleJobExecutor.class));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), CoreMatchers.instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
-        Mockito.when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), CoreMatchers.instanceOf(DataflowJobExecutor.class));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
+        assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), CoreMatchers.instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
@@ -67,9 +69,9 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorTwice() {
-        Mockito.when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
-        Assert.assertTrue(executor.hashCode() != anotherExecutor.hashCode());
+        assertTrue(executor.hashCode() != anotherExecutor.hashCode());
     }
 }

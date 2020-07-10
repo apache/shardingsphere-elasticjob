@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.digest;
 
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class EncryptionTest {
     
     @Test
     public void assertMd5() {
-        Assert.assertThat(Encryption.md5("test"), Is.is("98f6bcd4621d373cade4e832627b4f6"));
+        assertThat(Encryption.md5("test"), is("98f6bcd4621d373cade4e832627b4f6"));
     }
 }

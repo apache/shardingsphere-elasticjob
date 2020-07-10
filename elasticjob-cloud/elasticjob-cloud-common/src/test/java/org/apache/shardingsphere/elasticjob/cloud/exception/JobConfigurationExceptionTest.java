@@ -18,19 +18,20 @@
 package org.apache.shardingsphere.elasticjob.cloud.exception;
 
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class JobConfigurationExceptionTest {
     
     @Test
     public void assertGetMessage() {
-        Assert.assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), Is.is("message is: 'test'"));
+        assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
     
     @Test
     public void assertGetCause() {
-        Assert.assertThat(new JobConfigurationException(new RuntimeException()).getCause(), CoreMatchers.instanceOf(RuntimeException.class));
+        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), CoreMatchers.instanceOf(RuntimeException.class));
     }
 }

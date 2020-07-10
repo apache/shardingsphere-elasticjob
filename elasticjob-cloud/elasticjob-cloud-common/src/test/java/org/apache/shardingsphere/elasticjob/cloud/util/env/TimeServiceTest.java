@@ -17,15 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.env;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class TimeServiceTest {
     
     private TimeService timeService = new TimeService();
     
     @Test
-    public void assertGetCurrentMillis() throws Exception {
-        Assert.assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
+    public void assertGetCurrentMillis() {
+        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

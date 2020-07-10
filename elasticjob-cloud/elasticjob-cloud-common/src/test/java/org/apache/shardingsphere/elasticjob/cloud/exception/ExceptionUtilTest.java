@@ -17,24 +17,26 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.exception;
 
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class ExceptionUtilTest {
     
     @Test
     public void assertTransformWithError() {
-        Assert.assertTrue(ExceptionUtil.transform(new Error("Error")).startsWith("java.lang.Error"));
+        assertTrue(ExceptionUtil.transform(new Error("Error")).startsWith("java.lang.Error"));
     }
     
     @Test
     public void assertTransformWithException() {
-        Assert.assertTrue(ExceptionUtil.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
+        assertTrue(ExceptionUtil.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
     }
     
     @Test
     public void assertTransformWithNull() {
-        Assert.assertThat(ExceptionUtil.transform(null), Is.is(""));
+        assertThat(ExceptionUtil.transform(null), is(""));
     }
 }

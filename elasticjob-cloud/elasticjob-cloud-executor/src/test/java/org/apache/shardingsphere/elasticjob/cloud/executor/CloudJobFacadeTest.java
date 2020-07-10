@@ -24,9 +24,11 @@ import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironm
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,19 +39,20 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CloudJobFacadeTest {
     
-    private final ShardingContexts shardingContexts;
+    private ShardingContexts shardingContexts;
     
-    private final JobConfigurationContext jobConfig;
+    private JobConfigurationContext jobConfig;
     
     @Mock
     private JobEventBus eventBus;
     
-    private final JobFacade jobFacade;
+    private JobFacade jobFacade;
     
-    public CloudJobFacadeTest() {
-        MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() {
         shardingContexts = getShardingContexts();
         jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false));
         jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);

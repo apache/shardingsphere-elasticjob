@@ -20,21 +20,21 @@ package org.apache.shardingsphere.elasticjob.cloud.util.json;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestJobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.ThrowJobExceptionHandler;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class JobConfigurationGsonTypeAdapterTest {
     
@@ -45,21 +45,21 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToSimpleJobJson() {
-        Assert.assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
                 new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig())),
-                Is.is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+                is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertToDataflowJobJson() {
-        Assert.assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig())),
-                Is.is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig())),
+                is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertToScriptJobJson() {
-        Assert.assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig())),
-                Is.is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig())),
+                is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
@@ -68,7 +68,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
                 APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(
                 new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig());
-        Assert.assertThat(GsonFactory.getGson().toJson(actual), Is.is(GsonFactory.getGson().toJson(expected)));
+        assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
     @Test
@@ -76,7 +76,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
         TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
                 APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig());
-        Assert.assertThat(GsonFactory.getGson().toJson(actual), Is.is(GsonFactory.getGson().toJson(expected)));
+        assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
     @Test
@@ -84,13 +84,13 @@ public final class JobConfigurationGsonTypeAdapterTest {
         TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
                 APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig());
-        Assert.assertThat(GsonFactory.getGson().toJson(actual), Is.is(GsonFactory.getGson().toJson(expected)));
+        assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
     private static class JobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<TestJobRootConfiguration> {
     
         @Override
-        protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
+        protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) {
         }
     
         @Override
@@ -99,7 +99,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
         }
     
         @Override
-        protected void writeCustomized(final JsonWriter out, final TestJobRootConfiguration value) throws IOException {
+        protected void writeCustomized(final JsonWriter out, final TestJobRootConfiguration value) {
         }
     }
 }

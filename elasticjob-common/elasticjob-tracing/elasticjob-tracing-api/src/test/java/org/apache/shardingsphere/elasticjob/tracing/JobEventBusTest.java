@@ -28,13 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -73,7 +73,7 @@ public final class JobEventBusTest {
         field.setAccessible(true);
         field.set(jobEventBus, eventBus);
         jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
-        verify(eventBus, Mockito.times(0)).post(ArgumentMatchers.<JobEvent>any());
+        verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     
     @SneakyThrows
