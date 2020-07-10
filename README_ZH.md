@@ -59,8 +59,6 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
   - 作业执行历史数据追踪
   - 注册中心管理
 
-## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
-
 ## [Roadmap](ROADMAP.md)
 
 ## 快速入门
