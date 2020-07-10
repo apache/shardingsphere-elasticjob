@@ -17,10 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.server;
 
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -58,7 +60,11 @@ public final class ServerNode {
      * @return is server path for localhost or not
      */
     public boolean isLocalServerPath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, JobRegistry.getInstance().getJobInstance(jobName).getIp())));
+        JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+        if (Objects.isNull(jobInstance)) {
+            return false;
+        }
+        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, jobInstance.getIp())));
     }
     
     String getServerNode(final String ip) {
