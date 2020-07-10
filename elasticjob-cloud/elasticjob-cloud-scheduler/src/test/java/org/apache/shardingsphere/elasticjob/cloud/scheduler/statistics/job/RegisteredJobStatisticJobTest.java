@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +31,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -64,20 +65,20 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertBuildTrigger() throws SchedulerException {
+    public void assertBuildTrigger() {
         Trigger trigger = registeredJobStatisticJob.buildTrigger();
         assertThat(trigger.getKey().getName(), is(RegisteredJobStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
-    public void assertGetDataMap() throws SchedulerException {
-        assertThat((CloudJobConfigurationService) registeredJobStatisticJob.getDataMap().get("configurationService"), is(configurationService));
-        assertThat((StatisticRdbRepository) registeredJobStatisticJob.getDataMap().get("repository"), is(repository));
+    public void assertGetDataMap() {
+        assertThat(registeredJobStatisticJob.getDataMap().get("configurationService"), is(configurationService));
+        assertThat(registeredJobStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
     public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
-        Optional<JobRegisterStatistics> latestOne = Optional.absent();
+        Optional<JobRegisterStatistics> latestOne = Optional.empty();
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
         when(configurationService.loadAll()).thenReturn(Lists.newArrayList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));

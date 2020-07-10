@@ -17,10 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.restful;
 
-import com.google.common.base.Optional;
+import org.apache.shardingsphere.elasticjob.cloud.restful.fixture.Caller;
 import org.apache.shardingsphere.elasticjob.cloud.restful.fixture.TestFilter;
 import org.apache.shardingsphere.elasticjob.cloud.restful.fixture.TestRestfulApi;
-import org.apache.shardingsphere.elasticjob.cloud.restful.fixture.Caller;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
@@ -50,16 +49,16 @@ public final class RestfulServerTest {
     public static void setUpClass() throws Exception {
         server = new RestfulServer(17000);
         server.addFilter(TestFilter.class, "/*");
-        server.start(TestRestfulApi.class.getPackage().getName(), Optional.<String>absent());
+        server.start(TestRestfulApi.class.getPackage().getName(), null);
     }
     
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         server.stop();
     }
     
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         caller = Mockito.mock(Caller.class);
         TestRestfulApi.setCaller(caller);
     }

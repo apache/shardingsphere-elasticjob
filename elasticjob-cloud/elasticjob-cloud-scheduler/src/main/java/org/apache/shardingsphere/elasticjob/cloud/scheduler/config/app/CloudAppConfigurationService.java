@@ -17,14 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Cloud app configuration service.
@@ -59,7 +59,7 @@ public final class CloudAppConfigurationService {
      * @return cloud app configuration
      */
     public Optional<CloudAppConfiguration> load(final String appName) {
-        return Optional.fromNullable(CloudAppConfigurationGsonFactory.fromJson(regCenter.get(CloudAppConfigurationNode.getRootNodePath(appName))));
+        return Optional.ofNullable(CloudAppConfigurationGsonFactory.fromJson(regCenter.get(CloudAppConfigurationNode.getRootNodePath(appName))));
     }
     
     /**
@@ -75,9 +75,7 @@ public final class CloudAppConfigurationService {
         Collection<CloudAppConfiguration> result = new ArrayList<>(appNames.size());
         for (String each : appNames) {
             Optional<CloudAppConfiguration> config = load(each);
-            if (config.isPresent()) {
-                result.add(config.get());
-            }
+            config.ifPresent(result::add);
         }
         return result;
     }

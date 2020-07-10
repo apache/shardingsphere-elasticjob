@@ -17,27 +17,25 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext.MetaInfo;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 /**
  * Running service.
@@ -73,13 +71,8 @@ public final class RunningService {
                 remove(each);
                 continue;
             }
-            RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(Lists.transform(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)), new Function<String, TaskContext>() {
-                
-                @Override
-                public TaskContext apply(final String input) {
-                    return TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(TaskContext.MetaInfo.from(input).toString())));
-                }
-            })));
+            RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)).stream().map(
+                input -> TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(MetaInfo.from(input).toString())))).collect(Collectors.toList())));
         }
     }
     
@@ -125,12 +118,7 @@ public final class RunningService {
     }
     
     private Optional<TaskContext> findTask(final TaskContext taskContext) {
-        return Iterators.tryFind(getRunningTasks(taskContext.getMetaInfo().getJobName()).iterator(), new Predicate<TaskContext>() {
-            @Override
-            public boolean apply(final TaskContext input) {
-                return input.equals(taskContext);
-            }
-        });
+        return getRunningTasks(taskContext.getMetaInfo().getJobName()).stream().filter(each -> each.equals(taskContext)).findFirst();
     }
     
     /**

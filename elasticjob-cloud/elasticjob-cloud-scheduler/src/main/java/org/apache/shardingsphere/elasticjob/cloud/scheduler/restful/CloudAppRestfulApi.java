@@ -17,21 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.mesos.Protos.ExecutorID;
+import org.apache.mesos.Protos.SlaveID;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import com.google.common.base.Optional;
-import org.apache.mesos.Protos.ExecutorID;
-import org.apache.mesos.Protos.SlaveID;
 import org.codehaus.jettison.json.JSONException;
 
 import javax.ws.rs.Consumes;
@@ -45,6 +44,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Cloud app restful api.
@@ -143,12 +143,11 @@ public final class CloudAppRestfulApi {
      * 
      * @param appName app name
      * @return true is disabled, otherwise not
-     * @throws JSONException parse json exception
      */
     @GET
     @Path("/{appName}/disable")
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean isDisabled(@PathParam("appName") final String appName) throws JSONException {
+    public boolean isDisabled(@PathParam("appName") final String appName) {
         return disableAppService.isDisabled(appName);
     }
     
@@ -174,11 +173,10 @@ public final class CloudAppRestfulApi {
      * Enable app.
      * 
      * @param appName app name
-     * @throws JSONException parse json exception
      */
     @POST
     @Path("/{appName}/enable")
-    public void enable(@PathParam("appName") final String appName) throws JSONException {
+    public void enable(@PathParam("appName") final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.remove(appName);
             for (CloudJobConfiguration each : jobConfigService.loadAll()) {

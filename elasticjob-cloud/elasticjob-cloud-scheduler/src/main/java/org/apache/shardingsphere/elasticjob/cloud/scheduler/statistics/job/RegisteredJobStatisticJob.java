@@ -17,21 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
-import com.google.common.base.Optional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
@@ -39,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Registered job statistic.
@@ -77,11 +76,9 @@ public final class RegisteredJobStatisticJob extends AbstractStatisticJob {
     }
     
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) {
         Optional<JobRegisterStatistics> latestOne = repository.findLatestJobRegisterStatistics();
-        if (latestOne.isPresent()) {
-            fillBlankIfNeeded(latestOne.get());
-        }
+        latestOne.ifPresent(this::fillBlankIfNeeded);
         int registeredCount = configurationService.loadAll().size();
         JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(registeredCount, StatisticTimeUtils.getCurrentStatisticTime(execInterval));
         log.debug("Add jobRegisterStatistics, registeredCount is:{}", registeredCount);

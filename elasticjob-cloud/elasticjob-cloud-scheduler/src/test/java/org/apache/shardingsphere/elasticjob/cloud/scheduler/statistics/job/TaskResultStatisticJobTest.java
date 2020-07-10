@@ -17,18 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.TaskResultMetaData;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +30,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskResultStatisticJobTest {
@@ -66,7 +66,7 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertBuildTrigger() throws SchedulerException {
+    public void assertBuildTrigger() {
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
             Trigger trigger = taskResultStatisticJob.buildTrigger();
@@ -75,15 +75,15 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertGetDataMap() throws SchedulerException {
-        assertThat((StatisticInterval) taskResultStatisticJob.getDataMap().get("statisticInterval"), is(statisticInterval));
-        assertThat((TaskResultMetaData) taskResultStatisticJob.getDataMap().get("sharedData"), is(sharedData));
-        assertThat((StatisticRdbRepository) taskResultStatisticJob.getDataMap().get("repository"), is(repository));
+    public void assertGetDataMap() {
+        assertThat(taskResultStatisticJob.getDataMap().get("statisticInterval"), is(statisticInterval));
+        assertThat(taskResultStatisticJob.getDataMap().get("sharedData"), is(sharedData));
+        assertThat(taskResultStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
     public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
-        Optional<TaskResultStatistics> latestOne = Optional.absent();
+        Optional<TaskResultStatistics> latestOne = Optional.empty();
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
             when(repository.findLatestTaskResultStatistics(each)).thenReturn(latestOne);

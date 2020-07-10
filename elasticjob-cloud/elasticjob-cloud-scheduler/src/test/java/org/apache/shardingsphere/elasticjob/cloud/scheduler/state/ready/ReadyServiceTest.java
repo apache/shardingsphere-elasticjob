@@ -17,17 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,8 +39,8 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class ReadyServiceTest {
@@ -56,9 +54,6 @@ public final class ReadyServiceTest {
     @Mock
     private RunningService runningService;
     
-    @Mock
-    private List<String> mockedReadyQueue;
-    
     private ReadyService readyService;
         
     @Before
@@ -70,10 +65,10 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddTransientWithJobConfigIsNotPresent() {
-        Mockito.when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("test_job")).thenReturn(Optional.empty());
         readyService.addTransient("test_job");
         Mockito.verify(regCenter, Mockito.times(0)).isExisted("/state/ready");
-        Mockito.verify(regCenter, Mockito.times(0)).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq(""));
+        Mockito.verify(regCenter, Mockito.times(0)).persist(ArgumentMatchers.any(), ArgumentMatchers.eq(""));
     }
     
     @Test
@@ -81,7 +76,7 @@ public final class ReadyServiceTest {
         Mockito.when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         readyService.addTransient("test_job");
         Mockito.verify(regCenter, Mockito.times(0)).isExisted("/state/ready");
-        Mockito.verify(regCenter, Mockito.times(0)).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq(""));
+        Mockito.verify(regCenter, Mockito.times(0)).persist(ArgumentMatchers.any(), ArgumentMatchers.eq(""));
     }
     
     @Test
@@ -123,10 +118,10 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddDaemonWithJobConfigIsNotPresent() {
-        Mockito.when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("test_job")).thenReturn(Optional.empty());
         readyService.addDaemon("test_job");
         Mockito.verify(regCenter, Mockito.times(0)).isExisted("/state/ready");
-        Mockito.verify(regCenter, Mockito.times(0)).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
+        Mockito.verify(regCenter, Mockito.times(0)).persist(ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
     }
     
     @Test
@@ -134,7 +129,7 @@ public final class ReadyServiceTest {
         Mockito.when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         readyService.addDaemon("test_job");
         Mockito.verify(regCenter, Mockito.times(0)).isExisted("/state/ready");
-        Mockito.verify(regCenter, Mockito.times(0)).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
+        Mockito.verify(regCenter, Mockito.times(0)).persist(ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
     }
     
     @Test
@@ -148,7 +143,7 @@ public final class ReadyServiceTest {
     public void assertAddDaemonWithSameJobName() {
         Mockito.when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         readyService.addDaemon("test_job");
-        Mockito.verify(regCenter).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
+        Mockito.verify(regCenter).persist(ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
     }
     
     @Test
@@ -156,7 +151,7 @@ public final class ReadyServiceTest {
         Mockito.when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         Mockito.when(runningService.isJobRunning("test_job")).thenReturn(true);
         readyService.addDaemon("test_job");
-        Mockito.verify(regCenter, Mockito.never()).persist((String) ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
+        Mockito.verify(regCenter, Mockito.never()).persist(ArgumentMatchers.any(), ArgumentMatchers.eq("1"));
     }
     
     @Test
@@ -169,13 +164,13 @@ public final class ReadyServiceTest {
     @Test
     public void assertGetAllEligibleJobContextsWithoutRootNode() {
         Mockito.when(regCenter.isExisted("/state/ready")).thenReturn(false);
-        Assert.assertTrue(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).isEmpty());
+        Assert.assertTrue(readyService.getAllEligibleJobContexts(Collections.emptyList()).isEmpty());
         Mockito.verify(regCenter).isExisted("/state/ready");
     }
     
     @Test
     public void assertSetMisfireDisabledWhenJobIsNotExisted() {
-        Mockito.when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("test_job")).thenReturn(Optional.empty());
         readyService.setMisfireDisabled("test_job");
         Mockito.verify(regCenter, Mockito.times(0)).persist("/state/ready/test_job", "1");
     }
@@ -199,7 +194,7 @@ public final class ReadyServiceTest {
     public void assertGetAllEligibleJobContextsWithRootNode() {
         Mockito.when(regCenter.isExisted("/state/ready")).thenReturn(true);
         Mockito.when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("not_existed_job", "running_job", "ineligible_job", "eligible_job"));
-        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.empty());
         Mockito.when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job")));
         Mockito.when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
         Mockito.when(runningService.isJobRunning("running_job")).thenReturn(true);
@@ -218,10 +213,10 @@ public final class ReadyServiceTest {
     public void assertGetAllEligibleJobContextsWithRootNodeAndDaemonJob() {
         Mockito.when(regCenter.isExisted("/state/ready")).thenReturn(true);
         Mockito.when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("not_existed_job", "running_job"));
-        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.empty());
         Mockito.when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", CloudJobExecutionType.DAEMON)));
         Mockito.when(runningService.isJobRunning("running_job")).thenReturn(true);
-        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).size(), Is.is(0));
+        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.emptyList()).size(), Is.is(0));
         Mockito.verify(regCenter).isExisted("/state/ready");
         Mockito.verify(regCenter, Mockito.times(1)).getChildrenKeys("/state/ready");
         Mockito.verify(configService).load("not_existed_job");
@@ -244,18 +239,18 @@ public final class ReadyServiceTest {
         Mockito.when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(false);
         Assert.assertTrue(readyService.getAllReadyTasks().isEmpty());
         Mockito.verify(regCenter).isExisted(ReadyNode.ROOT);
-        Mockito.verify(regCenter, Mockito.times(0)).getChildrenKeys((String) ArgumentMatchers.any());
-        Mockito.verify(regCenter, Mockito.times(0)).get((String) ArgumentMatchers.any());
+        Mockito.verify(regCenter, Mockito.times(0)).getChildrenKeys(ArgumentMatchers.any());
+        Mockito.verify(regCenter, Mockito.times(0)).get(ArgumentMatchers.any());
     }
     
     @Test
     public void assertGetAllTasksWhenRootNodeHasNoChild() {
         Mockito.when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Collections.<String>emptyList());
+        Mockito.when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Collections.emptyList());
         Assert.assertTrue(readyService.getAllReadyTasks().isEmpty());
         Mockito.verify(regCenter).isExisted(ReadyNode.ROOT);
         Mockito.verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
-        Mockito.verify(regCenter, Mockito.times(0)).get((String) ArgumentMatchers.any());
+        Mockito.verify(regCenter, Mockito.times(0)).get(ArgumentMatchers.any());
     }
     
     @Test
@@ -281,6 +276,6 @@ public final class ReadyServiceTest {
         Assert.assertThat(result.get("test_job_2"), Is.is(5));
         Mockito.verify(regCenter).isExisted(ReadyNode.ROOT);
         Mockito.verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
-        Mockito.verify(regCenter, Mockito.times(2)).get((String) ArgumentMatchers.any());
+        Mockito.verify(regCenter, Mockito.times(2)).get(ArgumentMatchers.any());
     }
 }

@@ -17,23 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import com.google.common.base.Optional;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
@@ -41,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -84,7 +83,7 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
     }
     
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) {
         Map<String, Set<TaskContext>> allRunningTasks = runningService.getAllRunningTasks();
         statisticJob(getJobRunningCount(allRunningTasks));
         statisticTask(getTaskRunningCount(allRunningTasks));
@@ -92,9 +91,7 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
     
     private void statisticJob(final int runningCount) {
         Optional<JobRunningStatistics> latestOne = repository.findLatestJobRunningStatistics();
-        if (latestOne.isPresent()) {
-            fillBlankIfNeeded(latestOne.get());
-        }
+        latestOne.ifPresent(this::fillBlankIfNeeded);
         JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(runningCount, StatisticTimeUtils.getCurrentStatisticTime(EXECUTE_INTERVAL));
         log.debug("Add jobRunningStatistics, runningCount is:{}", runningCount);
         repository.add(jobRunningStatistics);
@@ -102,9 +99,7 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
     
     private void statisticTask(final int runningCount) {
         Optional<TaskRunningStatistics> latestOne = repository.findLatestTaskRunningStatistics();
-        if (latestOne.isPresent()) {
-            fillBlankIfNeeded(latestOne.get());
-        }
+        latestOne.ifPresent(this::fillBlankIfNeeded);
         TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(runningCount, StatisticTimeUtils.getCurrentStatisticTime(EXECUTE_INTERVAL));
         log.debug("Add taskRunningStatistics, runningCount is:{}", runningCount);
         repository.add(taskRunningStatistics);

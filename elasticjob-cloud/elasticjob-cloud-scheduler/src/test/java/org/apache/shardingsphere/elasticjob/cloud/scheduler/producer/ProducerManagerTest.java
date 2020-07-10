@@ -17,6 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
+import com.google.common.collect.Lists;
+import org.apache.mesos.Protos;
+import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
+import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
@@ -24,17 +32,8 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobE
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import org.apache.mesos.Protos;
-import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +43,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -106,7 +106,7 @@ public final class ProducerManagerTest {
 
     @Test(expected = AppConfigurationException.class)
     public void assertRegisterJobWithoutApp() {
-        when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
+        when(appConfigService.load("test_app")).thenReturn(Optional.empty());
         producerManager.register(transientJobConfig);
     }
     
@@ -126,7 +126,7 @@ public final class ProducerManagerTest {
     @Test
     public void assertRegisterTransientJob() {
         when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
-        when(configService.load("transient_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(configService.load("transient_test_job")).thenReturn(Optional.empty());
         producerManager.register(transientJobConfig);
         verify(configService).add(transientJobConfig);
         verify(transientProducerScheduler).register(transientJobConfig);
@@ -135,7 +135,7 @@ public final class ProducerManagerTest {
     @Test
     public void assertRegisterDaemonJob() {
         when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
-        when(configService.load("daemon_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(configService.load("daemon_test_job")).thenReturn(Optional.empty());
         producerManager.register(daemonJobConfig);
         verify(configService).add(daemonJobConfig);
         verify(readyService).addDaemon("daemon_test_job");
@@ -143,7 +143,7 @@ public final class ProducerManagerTest {
     
     @Test(expected = JobConfigurationException.class)
     public void assertUpdateNotExisted() {
-        when(configService.load("transient_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(configService.load("transient_test_job")).thenReturn(Optional.empty());
         producerManager.update(transientJobConfig);
     }
     
@@ -164,7 +164,7 @@ public final class ProducerManagerTest {
     
     @Test
     public void assertDeregisterNotExisted() {
-        when(configService.load("transient_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(configService.load("transient_test_job")).thenReturn(Optional.empty());
         producerManager.deregister("transient_test_job");
         verify(configService, times(0)).remove("transient_test_job");
     }

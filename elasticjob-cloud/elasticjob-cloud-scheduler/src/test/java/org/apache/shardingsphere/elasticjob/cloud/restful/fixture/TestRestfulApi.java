@@ -43,12 +43,6 @@ public final class TestRestfulApi {
     public Map<String, String> call(final Map<String, String> map) {
         caller.call(map.get("string"));
         caller.call(Integer.valueOf(map.get("integer")));
-        return Maps.transformEntries(map, new Maps.EntryTransformer<String, String, String>() {
-            
-            @Override
-            public String transformEntry(final String key, final String value) {
-                return value + "_processed";
-            }
-        });
+        return Maps.transformEntries(map, (key, value) -> value + "_processed");
     }
 }

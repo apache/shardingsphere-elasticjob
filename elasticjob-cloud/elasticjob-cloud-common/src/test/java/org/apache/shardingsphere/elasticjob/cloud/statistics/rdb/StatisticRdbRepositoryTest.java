@@ -17,20 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.statistics.rdb;
 
-import com.google.common.base.Optional;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class StatisticRdbRepositoryTest {
     
@@ -49,30 +52,30 @@ public class StatisticRdbRepositoryTest {
     @Test
     public void assertAddTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            Assert.assertTrue(repository.add(new TaskResultStatistics(100, 0, each, new Date())));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, new Date())));
         }
     }
     
     @Test
     public void assertAddTaskRunningStatistics() {
-        Assert.assertTrue(repository.add(new TaskRunningStatistics(100, new Date())));
+        assertTrue(repository.add(new TaskRunningStatistics(100, new Date())));
     }
     
     @Test
     public void assertAddJobRunningStatistics() {
-        Assert.assertTrue(repository.add(new TaskRunningStatistics(100, new Date())));
+        assertTrue(repository.add(new TaskRunningStatistics(100, new Date())));
     }
     
     @Test
     public void assertAddJobRegisterStatistics() {
-        Assert.assertTrue(repository.add(new JobRegisterStatistics(100, new Date())));
+        assertTrue(repository.add(new JobRegisterStatistics(100, new Date())));
     }
     
     @Test
     public void assertFindTaskResultStatisticsWhenTableIsEmpty() {
-        Assert.assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.MINUTE).size(), Is.is(0));
-        Assert.assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.HOUR).size(), Is.is(0));
-        Assert.assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.DAY).size(), Is.is(0));
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.MINUTE).size(), is(0));
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.HOUR).size(), is(0));
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.DAY).size(), is(0));
     }
     
     @Test
@@ -80,10 +83,10 @@ public class StatisticRdbRepositoryTest {
         Date now = new Date();
         Date yesterday = getYesterday();
         for (StatisticInterval each : StatisticInterval.values()) {
-            Assert.assertTrue(repository.add(new TaskResultStatistics(100, 0, each, yesterday)));
-            Assert.assertTrue(repository.add(new TaskResultStatistics(100, 0, each, now)));
-            Assert.assertThat(repository.findTaskResultStatistics(yesterday, each).size(), Is.is(2));
-            Assert.assertThat(repository.findTaskResultStatistics(now, each).size(), Is.is(1));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, yesterday)));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, now)));
+            assertThat(repository.findTaskResultStatistics(yesterday, each).size(), is(2));
+            assertThat(repository.findTaskResultStatistics(now, each).size(), is(1));
         }
     }
     
@@ -91,8 +94,8 @@ public class StatisticRdbRepositoryTest {
     public void assertGetSummedTaskResultStatisticsWhenTableIsEmpty() {
         for (StatisticInterval each : StatisticInterval.values()) {
             TaskResultStatistics po = repository.getSummedTaskResultStatistics(new Date(), each);
-            Assert.assertThat(po.getSuccessCount(), Is.is(0));
-            Assert.assertThat(po.getFailedCount(), Is.is(0));
+            assertThat(po.getSuccessCount(), is(0));
+            assertThat(po.getFailedCount(), is(0));
         }
     }
     
@@ -103,8 +106,8 @@ public class StatisticRdbRepositoryTest {
             repository.add(new TaskResultStatistics(100, 2, each, date));
             repository.add(new TaskResultStatistics(200, 5, each, date));
             TaskResultStatistics po = repository.getSummedTaskResultStatistics(date, each);
-            Assert.assertThat(po.getSuccessCount(), Is.is(300));
-            Assert.assertThat(po.getFailedCount(), Is.is(7));
+            assertThat(po.getSuccessCount(), is(300));
+            assertThat(po.getFailedCount(), is(7));
         }
     }
     
@@ -121,24 +124,25 @@ public class StatisticRdbRepositoryTest {
             repository.add(new TaskResultStatistics(100, 2, each, new Date()));
             repository.add(new TaskResultStatistics(200, 5, each, new Date()));
             Optional<TaskResultStatistics> po = repository.findLatestTaskResultStatistics(each);
-            Assert.assertThat(po.get().getSuccessCount(), Is.is(200));
-            Assert.assertThat(po.get().getFailedCount(), Is.is(5));
+            assertTrue(po.isPresent());
+            assertThat(po.get().getSuccessCount(), is(200));
+            assertThat(po.get().getFailedCount(), is(5));
         }
     }
     
     @Test
     public void assertFindTaskRunningStatisticsWhenTableIsEmpty() {
-        Assert.assertThat(repository.findTaskRunningStatistics(new Date()).size(), Is.is(0));
+        assertThat(repository.findTaskRunningStatistics(new Date()).size(), is(0));
     }
     
     @Test
     public void assertFindTaskRunningStatisticsWithDifferentFromDate() {
         Date now = new Date();
         Date yesterday = getYesterday();
-        Assert.assertTrue(repository.add(new TaskRunningStatistics(100, yesterday)));
-        Assert.assertTrue(repository.add(new TaskRunningStatistics(100, now)));
-        Assert.assertThat(repository.findTaskRunningStatistics(yesterday).size(), Is.is(2));
-        Assert.assertThat(repository.findTaskRunningStatistics(now).size(), Is.is(1));
+        assertTrue(repository.add(new TaskRunningStatistics(100, yesterday)));
+        assertTrue(repository.add(new TaskRunningStatistics(100, now)));
+        assertThat(repository.findTaskRunningStatistics(yesterday).size(), is(2));
+        assertThat(repository.findTaskRunningStatistics(now).size(), is(1));
     }
     
     @Test
@@ -151,22 +155,23 @@ public class StatisticRdbRepositoryTest {
         repository.add(new TaskRunningStatistics(100, new Date()));
         repository.add(new TaskRunningStatistics(200, new Date()));
         Optional<TaskRunningStatistics> po = repository.findLatestTaskRunningStatistics();
-        Assert.assertThat(po.get().getRunningCount(), Is.is(200));
+        assertTrue(po.isPresent());
+        assertThat(po.get().getRunningCount(), is(200));
     }
     
     @Test
     public void assertFindJobRunningStatisticsWhenTableIsEmpty() {
-        Assert.assertThat(repository.findJobRunningStatistics(new Date()).size(), Is.is(0));
+        assertThat(repository.findJobRunningStatistics(new Date()).size(), is(0));
     }
     
     @Test
     public void assertFindJobRunningStatisticsWithDifferentFromDate() {
         Date now = new Date();
         Date yesterday = getYesterday();
-        Assert.assertTrue(repository.add(new JobRunningStatistics(100, yesterday)));
-        Assert.assertTrue(repository.add(new JobRunningStatistics(100, now)));
-        Assert.assertThat(repository.findJobRunningStatistics(yesterday).size(), Is.is(2));
-        Assert.assertThat(repository.findJobRunningStatistics(now).size(), Is.is(1));
+        assertTrue(repository.add(new JobRunningStatistics(100, yesterday)));
+        assertTrue(repository.add(new JobRunningStatistics(100, now)));
+        assertThat(repository.findJobRunningStatistics(yesterday).size(), is(2));
+        assertThat(repository.findJobRunningStatistics(now).size(), is(1));
     }
     
     @Test
@@ -179,22 +184,23 @@ public class StatisticRdbRepositoryTest {
         repository.add(new JobRunningStatistics(100, new Date()));
         repository.add(new JobRunningStatistics(200, new Date()));
         Optional<JobRunningStatistics> po = repository.findLatestJobRunningStatistics();
-        Assert.assertThat(po.get().getRunningCount(), Is.is(200));
+        assertTrue(po.isPresent());
+        assertThat(po.get().getRunningCount(), is(200));
     }
     
     @Test
     public void assertFindJobRegisterStatisticsWhenTableIsEmpty() {
-        Assert.assertThat(repository.findJobRegisterStatistics(new Date()).size(), Is.is(0));
+        assertThat(repository.findJobRegisterStatistics(new Date()).size(), is(0));
     }
     
     @Test
     public void assertFindJobRegisterStatisticsWithDifferentFromDate() {
         Date now = new Date();
         Date yesterday = getYesterday();
-        Assert.assertTrue(repository.add(new JobRegisterStatistics(100, yesterday)));
-        Assert.assertTrue(repository.add(new JobRegisterStatistics(100, now)));
-        Assert.assertThat(repository.findJobRegisterStatistics(yesterday).size(), Is.is(2));
-        Assert.assertThat(repository.findJobRegisterStatistics(now).size(), Is.is(1));
+        assertTrue(repository.add(new JobRegisterStatistics(100, yesterday)));
+        assertTrue(repository.add(new JobRegisterStatistics(100, now)));
+        assertThat(repository.findJobRegisterStatistics(yesterday).size(), is(2));
+        assertThat(repository.findJobRegisterStatistics(now).size(), is(1));
     }
     
     @Test
@@ -207,7 +213,8 @@ public class StatisticRdbRepositoryTest {
         repository.add(new JobRegisterStatistics(100, new Date()));
         repository.add(new JobRegisterStatistics(200, new Date()));
         Optional<JobRegisterStatistics> po = repository.findLatestJobRegisterStatistics();
-        Assert.assertThat(po.get().getRegisteredCount(), Is.is(200));
+        assertTrue(po.isPresent());
+        assertThat(po.get().getRegisteredCount(), is(200));
     }
     
     private Date getYesterday() {

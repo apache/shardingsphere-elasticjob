@@ -17,39 +17,38 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.google.common.collect.Sets;
+import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
-import org.junit.Assert;
-import org.mockito.Mockito;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class FacadeServiceTest {
@@ -160,7 +159,7 @@ public final class FacadeServiceTest {
     @Test
     public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        Mockito.when(jobConfigService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(jobConfigService.load("test_job")).thenReturn(Optional.empty());
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         Mockito.verify(failoverService, Mockito.times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
     }
@@ -206,14 +205,14 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertLoadAppConfigWhenAbsent() {
-        Mockito.when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
-        Assert.assertThat(facadeService.loadAppConfig("test_app"), Is.is(Optional.<CloudAppConfiguration>absent()));
+        Mockito.when(appConfigService.load("test_app")).thenReturn(Optional.empty());
+        Assert.assertThat(facadeService.loadAppConfig("test_app"), Is.is(Optional.<CloudAppConfiguration>empty()));
     }
     
     @Test
     public void assertLoadJobConfigWhenAbsent() {
-        Mockito.when(jobConfigService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        Assert.assertThat(facadeService.load("test_job"), Is.is(Optional.<CloudJobConfiguration>absent()));
+        Mockito.when(jobConfigService.load("test_job")).thenReturn(Optional.empty());
+        Assert.assertThat(facadeService.load("test_job"), Is.is(Optional.<CloudJobConfiguration>empty()));
     }
     
     @Test
@@ -225,7 +224,7 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertIsRunningForReadyJobAndNotRunning() {
-        Mockito.when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
+        Mockito.when(runningService.getRunningTasks("test_job")).thenReturn(Collections.emptyList());
         Assert.assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
     }
     
