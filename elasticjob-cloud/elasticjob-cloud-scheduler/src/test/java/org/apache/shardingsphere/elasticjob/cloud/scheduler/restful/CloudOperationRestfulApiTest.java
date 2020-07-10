@@ -18,40 +18,41 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.unitils.util.ReflectionUtils;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertExplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), Is.is(204));
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), Is.is(500));
+        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(204));
+        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(500));
     }
     
     @Test
     public void assertImplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), Is.is(204));
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), Is.is(500));
+        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), is(204));
+        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), is(500));
     }
     
     @Test
     public void assertSandbox() throws Exception {
         Mockito.when(getRegCenter().getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), Is.is("[{\"hostname\":\"127.0.0.1\","
+        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[{\"hostname\":\"127.0.0.1\","
                 + "\"path\":\"/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@"
                 + "d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1\"}]"));
     }
     
     @Test
     public void assertNoFrameworkSandbox() throws Exception {
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), Is.is("[]"));
+        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
         Mockito.when(getRegCenter().getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("not-exists");
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), Is.is("[]"));
+        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
     }
 }

@@ -18,20 +18,21 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class RunningNodeTest {
     
     @Test
     public void assertGetRunningJobNodePath() {
-        Assert.assertThat(RunningNode.getRunningJobNodePath("test_job"), Is.is("/state/running/test_job"));
+        Assert.assertThat(RunningNode.getRunningJobNodePath("test_job"), is("/state/running/test_job"));
     }
     
     @Test
     public void assertGetRunningTaskNodePath() {
         String nodePath = TaskNode.builder().build().getTaskNodePath();
-        Assert.assertThat(RunningNode.getRunningTaskNodePath(nodePath), Is.is("/state/running/test_job/" + nodePath));
+        Assert.assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
     }
 }

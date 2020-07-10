@@ -30,7 +30,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferB
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +43,8 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SchedulerEngineTest {
@@ -88,7 +89,7 @@ public final class SchedulerEngineTest {
         SchedulerDriver schedulerDriver = Mockito.mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0"), OfferBuilder.createOffer("offer_1"));
         schedulerEngine.resourceOffers(schedulerDriver, offers);
-        Assert.assertThat(LeasesQueue.getInstance().drainTo().size(), Is.is(2));
+        Assert.assertThat(LeasesQueue.getInstance().drainTo().size(), is(2));
     }
     
     @Test

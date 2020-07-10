@@ -17,19 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper;
 
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class ZookeeperConfigurationTest {
     
     @Test
     public void assertNewZookeeperConfigurationForServerListsAndNamespace() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "myNamespace");
-        Assert.assertThat(zkConfig.getServerLists(), Is.is("localhost:2181"));
-        Assert.assertThat(zkConfig.getNamespace(), Is.is("myNamespace"));
-        Assert.assertThat(zkConfig.getBaseSleepTimeMilliseconds(), Is.is(1000));
-        Assert.assertThat(zkConfig.getMaxSleepTimeMilliseconds(), Is.is(3000));
-        Assert.assertThat(zkConfig.getMaxRetries(), Is.is(3));
+        Assert.assertThat(zkConfig.getServerLists(), is("localhost:2181"));
+        Assert.assertThat(zkConfig.getNamespace(), is("myNamespace"));
+        Assert.assertThat(zkConfig.getBaseSleepTimeMilliseconds(), is(1000));
+        Assert.assertThat(zkConfig.getMaxSleepTimeMilliseconds(), is(3000));
+        Assert.assertThat(zkConfig.getMaxRetries(), is(3));
     }
 }

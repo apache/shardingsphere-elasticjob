@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 import java.util.Collections;
@@ -43,6 +41,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobRunningStatisticJobTest {
@@ -64,23 +64,23 @@ public class JobRunningStatisticJobTest {
     
     @Test
     public void assertBuildJobDetail() {
-        Assert.assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), Is.is(JobRunningStatisticJob.class.getSimpleName()));
+        Assert.assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
     }
     
     @Test
     public void assertBuildTrigger() {
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
-        Assert.assertThat(trigger.getKey().getName(), Is.is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
+        Assert.assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
     public void assertGetDataMap() {
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), Is.is(runningService));
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("repository"), Is.is(repository));
+        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
+        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
+    public void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.empty();
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.empty();
         Mockito.when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
@@ -96,7 +96,7 @@ public class JobRunningStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() throws SchedulerException {
+    public void assertExecute() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.of(new JobRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.of(new TaskRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
         Mockito.when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);

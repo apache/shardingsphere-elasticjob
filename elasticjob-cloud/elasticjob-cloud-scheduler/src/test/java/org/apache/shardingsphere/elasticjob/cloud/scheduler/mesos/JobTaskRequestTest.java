@@ -17,16 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.netflix.fenzo.TaskRequest;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import com.netflix.fenzo.TaskRequest;
-import org.hamcrest.core.Is;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class JobTaskRequestTest {
     
@@ -41,32 +42,32 @@ public final class JobTaskRequestTest {
     
     @Test
     public void assertTaskGroupName() {
-        Assert.assertThat(jobTaskRequest.taskGroupName(), Is.is(""));
+        Assert.assertThat(jobTaskRequest.taskGroupName(), is(""));
     }
     
     @Test
     public void assertGetCPUs() {
-        Assert.assertThat(jobTaskRequest.getCPUs(), Is.is(1.0d));
+        Assert.assertThat(jobTaskRequest.getCPUs(), is(1.0d));
     }
     
     @Test
     public void assertGetMemory() {
-        Assert.assertThat(jobTaskRequest.getMemory(), Is.is(128.0d));
+        Assert.assertThat(jobTaskRequest.getMemory(), is(128.0d));
     }
     
     @Test
     public void assertGetNetworkMbps() {
-        Assert.assertThat(jobTaskRequest.getNetworkMbps(), Is.is(0d));
+        Assert.assertThat(jobTaskRequest.getNetworkMbps(), is(0d));
     }
     
     @Test
     public void assertGetDisk() {
-        Assert.assertThat(jobTaskRequest.getDisk(), Is.is(10d));
+        Assert.assertThat(jobTaskRequest.getDisk(), is(10d));
     }
     
     @Test
     public void assertGetPorts() {
-        Assert.assertThat(jobTaskRequest.getPorts(), Is.is(1));
+        Assert.assertThat(jobTaskRequest.getPorts(), is(1));
     }
     
     @Test
@@ -77,7 +78,7 @@ public final class JobTaskRequestTest {
     @Test
     public void assertGetHardConstraints() {
         AppConstraintEvaluator.init(null);
-        Assert.assertThat(jobTaskRequest.getHardConstraints().size(), Is.is(1));
+        Assert.assertThat(jobTaskRequest.getHardConstraints().size(), is(1));
     }
     
     @Test
@@ -97,6 +98,6 @@ public final class JobTaskRequestTest {
     
     @Test
     public void assertGetCustomNamedResources() {
-        Assert.assertThat(jobTaskRequest.getCustomNamedResources(), Is.is(Collections.<String, TaskRequest.NamedResourceSetRequest>emptyMap()));
+        Assert.assertThat(jobTaskRequest.getCustomNamedResources(), is(Collections.<String, TaskRequest.NamedResourceSetRequest>emptyMap()));
     }
 }

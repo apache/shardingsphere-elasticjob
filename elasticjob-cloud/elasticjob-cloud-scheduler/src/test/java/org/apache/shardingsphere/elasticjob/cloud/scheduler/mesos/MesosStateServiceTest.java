@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.google.gson.JsonArray;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.AbstractCloudRestfulApiTest;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.gson.JsonArray;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +29,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collection;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
@@ -42,9 +43,9 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
         Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         JsonArray sandbox = service.sandbox("foo_app");
-        Assert.assertThat(sandbox.size(), Is.is(1));
-        Assert.assertThat(sandbox.get(0).getAsJsonObject().get("hostname").getAsString(), Is.is("127.0.0.1"));
-        Assert.assertThat(sandbox.get(0).getAsJsonObject().get("path").getAsString(), Is.is("/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/"
+        Assert.assertThat(sandbox.size(), is(1));
+        Assert.assertThat(sandbox.get(0).getAsJsonObject().get("hostname").getAsString(), is("127.0.0.1"));
+        Assert.assertThat(sandbox.get(0).getAsJsonObject().get("path").getAsString(), is("/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/"
                 + "frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1"));
     }
     
@@ -53,10 +54,10 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
         Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
-        Assert.assertThat(executorStateInfo.size(), Is.is(1));
+        Assert.assertThat(executorStateInfo.size(), is(1));
         MesosStateService.ExecutorStateInfo executor = executorStateInfo.iterator().next();
-        Assert.assertThat(executor.getId(), Is.is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
-        Assert.assertThat(executor.getSlaveId(), Is.is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Assert.assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Assert.assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
     
     @Test
@@ -64,9 +65,9 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
         Mockito.when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors();
-        Assert.assertThat(executorStateInfo.size(), Is.is(1));
+        Assert.assertThat(executorStateInfo.size(), is(1));
         MesosStateService.ExecutorStateInfo executor = executorStateInfo.iterator().next();
-        Assert.assertThat(executor.getId(), Is.is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
-        Assert.assertThat(executor.getSlaveId(), Is.is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Assert.assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Assert.assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
 }

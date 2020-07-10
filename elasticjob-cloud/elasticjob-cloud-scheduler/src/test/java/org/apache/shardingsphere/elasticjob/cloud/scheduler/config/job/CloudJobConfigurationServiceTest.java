@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +31,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationServiceTest {
@@ -76,8 +77,8 @@ public final class CloudJobConfigurationServiceTest {
         Mockito.when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         Mockito.when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
-        Assert.assertThat(actual.size(), Is.is(1));
-        Assert.assertThat(actual.iterator().next().getJobName(), Is.is("test_job_1"));
+        Assert.assertThat(actual.size(), is(1));
+        Assert.assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
         Mockito.verify(regCenter).isExisted("/config/job");
         Mockito.verify(regCenter).getChildrenKeys("/config/job");
         Mockito.verify(regCenter).get("/config/job/test_job_1");
@@ -95,7 +96,7 @@ public final class CloudJobConfigurationServiceTest {
         Mockito.when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getJobName(), Is.is("test_job"));
+        Assert.assertThat(actual.get().getJobName(), is("test_job"));
     }
     
     @Test
@@ -103,8 +104,8 @@ public final class CloudJobConfigurationServiceTest {
         Mockito.when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getBeanName(), Is.is("springSimpleJob"));
-        Assert.assertThat(actual.get().getApplicationContext(), Is.is("applicationContext.xml"));
+        Assert.assertThat(actual.get().getBeanName(), is("springSimpleJob"));
+        Assert.assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

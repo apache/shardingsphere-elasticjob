@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready;
 
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class ReadyNodeTest {
     
     @Test
     public void assertGetReadyJobNodePath() {
-        Assert.assertThat(ReadyNode.getReadyJobNodePath("test_job0000000001"), Is.is("/state/ready/test_job0000000001"));
+        Assert.assertThat(ReadyNode.getReadyJobNodePath("test_job0000000001"), is("/state/ready/test_job0000000001"));
     }
 }

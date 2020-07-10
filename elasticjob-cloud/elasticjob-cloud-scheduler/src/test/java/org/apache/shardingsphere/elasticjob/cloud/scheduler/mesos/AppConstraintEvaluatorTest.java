@@ -31,7 +31,6 @@ import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.codehaus.jettison.json.JSONException;
-import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,6 +44,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class AppConstraintEvaluatorTest {
     
@@ -79,23 +80,23 @@ public final class AppConstraintEvaluatorTest {
     @Test
     public void assertFirstLaunch() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, SUFFICIENT_CPU, SUFFICIENT_MEM), getLease(1, SUFFICIENT_CPU, SUFFICIENT_MEM)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(2));
-        Assert.assertThat(result.getFailures().size(), Is.is(0));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(20));
+        Assert.assertThat(result.getResultMap().size(), is(2));
+        Assert.assertThat(result.getFailures().size(), is(0));
+        Assert.assertThat(getAssignedTaskNumber(result), is(20));
     }
     
     @Test
     public void assertFirstLaunchLackCpu() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, SUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, SUFFICIENT_MEM)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(2));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(18));
+        Assert.assertThat(result.getResultMap().size(), is(2));
+        Assert.assertThat(getAssignedTaskNumber(result), is(18));
     }
     
     @Test
     public void assertFirstLaunchLackMem() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, SUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, SUFFICIENT_CPU, INSUFFICIENT_MEM)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(2));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(18));
+        Assert.assertThat(result.getResultMap().size(), is(2));
+        Assert.assertThat(getAssignedTaskNumber(result), is(18));
     }
     
     @Test
@@ -103,7 +104,7 @@ public final class AppConstraintEvaluatorTest {
         Mockito.when(facadeService.loadExecutorInfo()).thenReturn(ImmutableList.of(new MesosStateService.ExecutorStateInfo("foo-app@-@S0", "S0")));
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(2));
+        Assert.assertThat(result.getResultMap().size(), is(2));
         Assert.assertTrue(getAssignedTaskNumber(result) > 18);
     }
     
@@ -112,16 +113,16 @@ public final class AppConstraintEvaluatorTest {
         Mockito.when(facadeService.loadExecutorInfo()).thenThrow(JSONException.class);
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(2));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(18));
+        Assert.assertThat(result.getResultMap().size(), is(2));
+        Assert.assertThat(getAssignedTaskNumber(result), is(18));
     }
     
     @Test
     public void assertLackJobConfig() {
         Mockito.when(facadeService.load("test")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(1));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(1));
+        Assert.assertThat(result.getResultMap().size(), is(1));
+        Assert.assertThat(getAssignedTaskNumber(result), is(1));
     }
     
     @Test
@@ -129,8 +130,8 @@ public final class AppConstraintEvaluatorTest {
         Mockito.when(facadeService.load("test")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test")));
         Mockito.when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));
-        Assert.assertThat(result.getResultMap().size(), Is.is(1));
-        Assert.assertThat(getAssignedTaskNumber(result), Is.is(1));
+        Assert.assertThat(result.getResultMap().size(), is(1));
+        Assert.assertThat(getAssignedTaskNumber(result), is(1));
     }
     
     private VirtualMachineLease getLease(final int index, final double cpus, final double mem) {

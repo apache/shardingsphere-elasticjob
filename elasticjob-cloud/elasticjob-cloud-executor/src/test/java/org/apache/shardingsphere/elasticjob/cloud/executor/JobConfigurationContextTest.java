@@ -18,46 +18,46 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
-import org.hamcrest.core.Is;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
+
 public class JobConfigurationContextTest {
     
     @Test
-    public void assertSimpleJobConfigurationContext() throws JobExecutionEnvironmentException {
+    public void assertSimpleJobConfigurationContext() {
         Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig() instanceof SimpleJobConfiguration);
     }
     
     @Test
-    public void assertDataflowJobConfigurationContext() throws JobExecutionEnvironmentException {
+    public void assertDataflowJobConfigurationContext() {
         Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.DATAFLOW)).getTypeConfig() instanceof DataflowJobConfiguration);
     }
     
     @Test
-    public void assertScriptJobConfigurationContext() throws JobExecutionEnvironmentException {
+    public void assertScriptJobConfigurationContext() {
         Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
     }
     
     @Test
-    public void assertSpringSimpleJobConfigurationContext() throws JobExecutionEnvironmentException {
+    public void assertSpringSimpleJobConfigurationContext() {
         Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
         context.put("beanName", "springSimpleJobName");
         context.put("applicationContext", "applicationContext.xml");
-        Assert.assertThat(new JobConfigurationContext(context).getBeanName(), Is.is("springSimpleJobName"));
-        Assert.assertThat(new JobConfigurationContext(context).getApplicationContext(), Is.is("applicationContext.xml"));
+        Assert.assertThat(new JobConfigurationContext(context).getBeanName(), is("springSimpleJobName"));
+        Assert.assertThat(new JobConfigurationContext(context).getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test
-    public void assertSimpleJobConfigurationContextWithExecutionType() throws JobExecutionEnvironmentException {
+    public void assertSimpleJobConfigurationContextWithExecutionType() {
         Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
         Assert.assertTrue(new JobConfigurationContext(context).isTransient());
         context.put("cron", "0/1 * * * * ?");

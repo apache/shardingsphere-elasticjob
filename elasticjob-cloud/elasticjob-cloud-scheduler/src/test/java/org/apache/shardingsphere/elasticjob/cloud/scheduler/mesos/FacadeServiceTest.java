@@ -35,7 +35,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.Di
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +48,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class FacadeServiceTest {
@@ -108,15 +109,15 @@ public final class FacadeServiceTest {
         Mockito.when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
         Mockito.when(readyService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(readyJobContexts);
         Collection<JobContext> actual = facadeService.getEligibleJobContext();
-        Assert.assertThat(actual.size(), Is.is(2));
+        Assert.assertThat(actual.size(), is(2));
         int i = 0;
         for (JobContext each : actual) {
             switch (i) {
                 case 0:
-                    Assert.assertThat(each.getJobConfig().getJobName(), Is.is("failover_job"));
+                    Assert.assertThat(each.getJobConfig().getJobName(), is("failover_job"));
                     break;
                 case 1:
-                    Assert.assertThat(each.getJobConfig().getJobName(), Is.is("ready_job"));
+                    Assert.assertThat(each.getJobConfig().getJobName(), is("ready_job"));
                     break;
                 default:
                     break;
@@ -193,26 +194,26 @@ public final class FacadeServiceTest {
     public void assertLoadAppConfig() {
         Optional<CloudAppConfiguration> appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
         Mockito.when(appConfigService.load("test_app")).thenReturn(appConfigOptional);
-        Assert.assertThat(facadeService.loadAppConfig("test_app"), Is.is(appConfigOptional));
+        Assert.assertThat(facadeService.loadAppConfig("test_app"), is(appConfigOptional));
     }
     
     @Test
     public void assertLoadJobConfig() {
         Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
         Mockito.when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
-        Assert.assertThat(facadeService.load("test_job"), Is.is(jobConfigOptional));
+        Assert.assertThat(facadeService.load("test_job"), is(jobConfigOptional));
     }
     
     @Test
     public void assertLoadAppConfigWhenAbsent() {
         Mockito.when(appConfigService.load("test_app")).thenReturn(Optional.empty());
-        Assert.assertThat(facadeService.loadAppConfig("test_app"), Is.is(Optional.<CloudAppConfiguration>empty()));
+        Assert.assertThat(facadeService.loadAppConfig("test_app"), is(Optional.<CloudAppConfiguration>empty()));
     }
     
     @Test
     public void assertLoadJobConfigWhenAbsent() {
         Mockito.when(jobConfigService.load("test_job")).thenReturn(Optional.empty());
-        Assert.assertThat(facadeService.load("test_job"), Is.is(Optional.<CloudJobConfiguration>empty()));
+        Assert.assertThat(facadeService.load("test_job"), is(Optional.<CloudJobConfiguration>empty()));
     }
     
     @Test

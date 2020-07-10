@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class ReadyServiceTest {
@@ -200,7 +201,7 @@ public final class ReadyServiceTest {
         Mockito.when(runningService.isJobRunning("running_job")).thenReturn(true);
         Mockito.when(runningService.isJobRunning("eligible_job")).thenReturn(false);
         Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), Is.is(1));
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));
         Mockito.verify(regCenter).isExisted("/state/ready");
         Mockito.verify(regCenter, Mockito.times(1)).getChildrenKeys("/state/ready");
         Mockito.verify(configService).load("not_existed_job");
@@ -216,7 +217,7 @@ public final class ReadyServiceTest {
         Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.empty());
         Mockito.when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", CloudJobExecutionType.DAEMON)));
         Mockito.when(runningService.isJobRunning("running_job")).thenReturn(true);
-        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.emptyList()).size(), Is.is(0));
+        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.emptyList()).size(), is(0));
         Mockito.verify(regCenter).isExisted("/state/ready");
         Mockito.verify(regCenter, Mockito.times(1)).getChildrenKeys("/state/ready");
         Mockito.verify(configService).load("not_existed_job");
@@ -271,9 +272,9 @@ public final class ReadyServiceTest {
         Mockito.when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_1"))).thenReturn("1");
         Mockito.when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_2"))).thenReturn("5");
         Map<String, Integer> result = readyService.getAllReadyTasks();
-        Assert.assertThat(result.size(), Is.is(2));
-        Assert.assertThat(result.get("test_job_1"), Is.is(1));
-        Assert.assertThat(result.get("test_job_2"), Is.is(5));
+        Assert.assertThat(result.size(), is(2));
+        Assert.assertThat(result.get("test_job_1"), is(1));
+        Assert.assertThat(result.get("test_job_2"), is(5));
         Mockito.verify(regCenter).isExisted(ReadyNode.ROOT);
         Mockito.verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
         Mockito.verify(regCenter, Mockito.times(2)).get(ArgumentMatchers.any());

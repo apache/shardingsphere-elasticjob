@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.exception;
 
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class ExceptionUtilTest {
     
@@ -35,6 +36,6 @@ public final class ExceptionUtilTest {
     
     @Test
     public void assertTransformWithNull() {
-        Assert.assertThat(ExceptionUtil.transform(null), Is.is(""));
+        Assert.assertThat(ExceptionUtil.transform(null), is(""));
     }
 }

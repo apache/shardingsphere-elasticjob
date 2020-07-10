@@ -21,12 +21,13 @@ import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultE
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class JobPropertiesTest {
     
@@ -48,7 +49,7 @@ public final class JobPropertiesTest {
     public void assertPutSuccess() throws NoSuchFieldException {
         JobProperties actual = new JobProperties();
         actual.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
-        Assert.assertThat(getMap(actual).size(), Is.is(1));
+        Assert.assertThat(getMap(actual).size(), is(1));
     }
     
     private Map getMap(final JobProperties jobProperties) throws NoSuchFieldException {
@@ -56,27 +57,27 @@ public final class JobPropertiesTest {
     }
     
     @Test
-    public void assertGetWhenValueIsEmpty() throws NoSuchFieldException {
+    public void assertGetWhenValueIsEmpty() {
         JobProperties actual = new JobProperties();
-        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), Is.is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), Is.is(DefaultExecutorServiceHandler.class.getCanonicalName()));
+        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
+        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
     }
     
     @Test
-    public void assertGetWhenValueIsNotEmpty() throws NoSuchFieldException {
+    public void assertGetWhenValueIsNotEmpty() {
         JobProperties actual = new JobProperties();
         actual.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName());
-        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), Is.is(IgnoreJobExceptionHandler.class.getCanonicalName()));
+        Assert.assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getCanonicalName()));
     }
     
     @Test
     public void assertJson() {
-        Assert.assertThat(new JobProperties().json(), Is.is(APIJsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
+        Assert.assertThat(new JobProperties().json(), is(APIJsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertJobPropertiesEnumFromValidValue() {
-        Assert.assertThat(JobProperties.JobPropertiesEnum.from(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey()), Is.is(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+        Assert.assertThat(JobProperties.JobPropertiesEnum.from(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey()), is(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
     }
     
     @Test

@@ -28,7 +28,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegiste
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +41,7 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Date;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +76,7 @@ public final class StatisticManagerTest {
     
     @Test
     public void assertGetInstance() {
-        Assert.assertThat(statisticManager, Is.is(StatisticManager.getInstance(regCenter, null)));
+        Assert.assertThat(statisticManager, is(StatisticManager.getInstance(regCenter, null)));
     }
     
     @Test
@@ -107,10 +107,10 @@ public final class StatisticManagerTest {
     @Test
     public void assertTaskResultStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
-        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), Is.is(0));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), Is.is(0));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), Is.is(0));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), Is.is(0));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(0));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(0));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(0));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(0));
     }
     
     @Test
@@ -118,10 +118,10 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.getSummedTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class)))
             .thenReturn(new TaskResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), Is.is(10));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), Is.is(10));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), Is.is(10));
-        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), Is.is(10));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(10));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(10));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(10));
+        Assert.assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(10));
         Mockito.verify(rdbRepository, Mockito.times(4)).getSummedTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class));
     }
     
@@ -132,9 +132,9 @@ public final class StatisticManagerTest {
                 CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_simple"), 
                 CloudJobConfigurationBuilder.createDataflowCloudJobConfiguration("test_job_dataflow"), 
                 CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("test_job_script")));
-        Assert.assertThat(statisticManager.getJobTypeStatistics().getSimpleJobCount(), Is.is(1));
-        Assert.assertThat(statisticManager.getJobTypeStatistics().getDataflowJobCount(), Is.is(1));
-        Assert.assertThat(statisticManager.getJobTypeStatistics().getScriptJobCount(), Is.is(1));
+        Assert.assertThat(statisticManager.getJobTypeStatistics().getSimpleJobCount(), is(1));
+        Assert.assertThat(statisticManager.getJobTypeStatistics().getDataflowJobCount(), is(1));
+        Assert.assertThat(statisticManager.getJobTypeStatistics().getScriptJobCount(), is(1));
         Mockito.verify(configurationService, Mockito.times(3)).loadAll();
     }
     
@@ -144,8 +144,8 @@ public final class StatisticManagerTest {
         when(configurationService.loadAll()).thenReturn(Lists.newArrayList(
                 CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", CloudJobExecutionType.DAEMON),
                 CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_2", CloudJobExecutionType.TRANSIENT)));
-        Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getDaemonJobCount(), Is.is(1));
-        Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getTransientJobCount(), Is.is(1));
+        Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getDaemonJobCount(), is(1));
+        Assert.assertThat(statisticManager.getJobExecutionTypeStatistics().getTransientJobCount(), is(1));
         Mockito.verify(configurationService, Mockito.times(2)).loadAll();
     }
     
@@ -160,7 +160,7 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findTaskRunningStatistics(Mockito.any(Date.class)))
             .thenReturn(Lists.newArrayList(new TaskRunningStatistics(10, new Date())));
-        Assert.assertThat(statisticManager.findTaskRunningStatisticsWeekly().size(), Is.is(1));
+        Assert.assertThat(statisticManager.findTaskRunningStatisticsWeekly().size(), is(1));
         Mockito.verify(rdbRepository).findTaskRunningStatistics(Mockito.any(Date.class));
     }
     
@@ -175,7 +175,7 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findJobRunningStatistics(Mockito.any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRunningStatistics(10, new Date())));
-        Assert.assertThat(statisticManager.findJobRunningStatisticsWeekly().size(), Is.is(1));
+        Assert.assertThat(statisticManager.findJobRunningStatisticsWeekly().size(), is(1));
         Mockito.verify(rdbRepository).findJobRunningStatistics(Mockito.any(Date.class));
     }
     
@@ -190,7 +190,7 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findJobRegisterStatistics(Mockito.any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRegisterStatistics(10, new Date())));
-        Assert.assertThat(statisticManager.findJobRegisterStatisticsSinceOnline().size(), Is.is(1));
+        Assert.assertThat(statisticManager.findJobRegisterStatisticsSinceOnline().size(), is(1));
         Mockito.verify(rdbRepository).findJobRegisterStatistics(Mockito.any(Date.class));
     }
     
@@ -199,8 +199,8 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         for (StatisticInterval each : StatisticInterval.values()) {
             TaskResultStatistics actual = statisticManager.findLatestTaskResultStatistics(each);
-            Assert.assertThat(actual.getSuccessCount(), Is.is(0));
-            Assert.assertThat(actual.getFailedCount(), Is.is(0));
+            Assert.assertThat(actual.getSuccessCount(), is(0));
+            Assert.assertThat(actual.getFailedCount(), is(0));
         }
     }
     
@@ -211,8 +211,8 @@ public final class StatisticManagerTest {
             when(rdbRepository.findLatestTaskResultStatistics(each))
                 .thenReturn(Optional.of(new TaskResultStatistics(10, 5, each, new Date())));
             TaskResultStatistics actual = statisticManager.findLatestTaskResultStatistics(each);
-            Assert.assertThat(actual.getSuccessCount(), Is.is(10));
-            Assert.assertThat(actual.getFailedCount(), Is.is(5));
+            Assert.assertThat(actual.getSuccessCount(), is(10));
+            Assert.assertThat(actual.getFailedCount(), is(5));
         }
         Mockito.verify(rdbRepository, Mockito.times(StatisticInterval.values().length)).findLatestTaskResultStatistics(Mockito.any(StatisticInterval.class));
     }
@@ -228,7 +228,7 @@ public final class StatisticManagerTest {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class)))
             .thenReturn(Lists.newArrayList(new TaskResultStatistics(10, 5, StatisticInterval.MINUTE, new Date())));
-        Assert.assertThat(statisticManager.findTaskResultStatisticsDaily().size(), Is.is(1));
+        Assert.assertThat(statisticManager.findTaskResultStatisticsDaily().size(), is(1));
         Mockito.verify(rdbRepository).findTaskResultStatistics(Mockito.any(Date.class), Mockito.any(StatisticInterval.class));
     }
 }

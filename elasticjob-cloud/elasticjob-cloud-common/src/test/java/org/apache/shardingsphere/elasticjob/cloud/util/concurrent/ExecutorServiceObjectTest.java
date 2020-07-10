@@ -17,10 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.concurrent;
 
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.concurrent.ExecutorService;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class ExecutorServiceObjectTest {
     
@@ -29,22 +31,22 @@ public final class ExecutorServiceObjectTest {
     @Test
     public void assertCreateExecutorService() {
         executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
-        Assert.assertThat(executorServiceObject.getActiveThreadCount(), Is.is(0));
-        Assert.assertThat(executorServiceObject.getWorkQueueSize(), Is.is(0));
+        Assert.assertThat(executorServiceObject.getActiveThreadCount(), is(0));
+        Assert.assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         Assert.assertFalse(executorServiceObject.isShutdown());
         ExecutorService executorService = executorServiceObject.createExecutorService();
         executorService.submit(new FooTask());
         BlockUtils.waitingShortTime();
-        Assert.assertThat(executorServiceObject.getActiveThreadCount(), Is.is(1));
-        Assert.assertThat(executorServiceObject.getWorkQueueSize(), Is.is(0));
+        Assert.assertThat(executorServiceObject.getActiveThreadCount(), is(1));
+        Assert.assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         Assert.assertFalse(executorServiceObject.isShutdown());
         executorService.submit(new FooTask());
         BlockUtils.waitingShortTime();
-        Assert.assertThat(executorServiceObject.getActiveThreadCount(), Is.is(1));
-        Assert.assertThat(executorServiceObject.getWorkQueueSize(), Is.is(1));
+        Assert.assertThat(executorServiceObject.getActiveThreadCount(), is(1));
+        Assert.assertThat(executorServiceObject.getWorkQueueSize(), is(1));
         Assert.assertFalse(executorServiceObject.isShutdown());
         executorService.shutdownNow();
-        Assert.assertThat(executorServiceObject.getWorkQueueSize(), Is.is(0));
+        Assert.assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         Assert.assertTrue(executorServiceObject.isShutdown());
     }
     

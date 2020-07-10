@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.exception;
 
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class JobExecutionEnvironmentExceptionTest {
     
     @Test
     public void assertGetMessage() {
-        Assert.assertThat(new JobExecutionEnvironmentException("message is: '%s'", "test").getMessage(), Is.is("message is: 'test'"));
+        Assert.assertThat(new JobExecutionEnvironmentException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
 }

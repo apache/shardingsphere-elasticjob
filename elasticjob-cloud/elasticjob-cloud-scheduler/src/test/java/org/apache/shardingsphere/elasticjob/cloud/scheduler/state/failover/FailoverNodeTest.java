@@ -19,20 +19,21 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
 
 public final class FailoverNodeTest {
     
     @Test
     public void assertGetFailoverJobNodePath() {
-        Assert.assertThat(FailoverNode.getFailoverJobNodePath("test_job"), Is.is("/state/failover/test_job"));
+        Assert.assertThat(FailoverNode.getFailoverJobNodePath("test_job"), is("/state/failover/test_job"));
     }
     
     @Test
     public void assertGetFailoverTaskNodePath() {
         String jobNodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
-        Assert.assertThat(FailoverNode.getFailoverTaskNodePath(jobNodePath), Is.is("/state/failover/test_job/" + jobNodePath));
+        Assert.assertThat(FailoverNode.getFailoverTaskNodePath(jobNodePath), is("/state/failover/test_job/" + jobNodePath));
     }
 }
