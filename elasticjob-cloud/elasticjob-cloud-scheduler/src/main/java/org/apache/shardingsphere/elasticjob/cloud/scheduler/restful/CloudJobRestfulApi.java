@@ -17,11 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
@@ -29,24 +35,19 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnviron
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobExecutionTypeStatistics;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeStatistics;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.codehaus.jettison.json.JSONException;
 
+import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -96,8 +97,7 @@ public final class CloudJobRestfulApi {
         Preconditions.checkNotNull(regCenter);
         configService = new CloudJobConfigurationService(regCenter);
         facadeService = new FacadeService(regCenter);
-        Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = Optional.absent();
-        statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);
+        statisticManager = StatisticManager.getInstance(regCenter, Optional.absent());
     }
     
     /**
@@ -110,9 +110,9 @@ public final class CloudJobRestfulApi {
         CloudJobRestfulApi.regCenter = regCenter;
         CloudJobRestfulApi.producerManager = producerManager;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
-        Optional<JobEventRdbConfiguration> jobEventRdbConfig = BootstrapEnvironment.getInstance().getJobEventRdbConfiguration();
-        if (jobEventRdbConfig.isPresent()) {
-            jobEventRdbSearch = new JobEventRdbSearch(jobEventRdbConfig.get().getDataSource());
+        Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
+        if (tracingConfiguration.isPresent()) {
+            jobEventRdbSearch = new JobEventRdbSearch((DataSource) tracingConfiguration.get().getStorage());
         } else {
             jobEventRdbSearch = null;
         }
