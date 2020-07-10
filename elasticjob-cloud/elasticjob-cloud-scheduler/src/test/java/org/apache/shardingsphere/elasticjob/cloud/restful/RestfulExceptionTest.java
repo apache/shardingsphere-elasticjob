@@ -17,15 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.restful;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class RestfulExceptionTest {
     
     @Test
     public void assertRestfulException() {
-        assertThat(new RestfulException(new RuntimeException()).getCause(), IsInstanceOf.instanceOf(RuntimeException.class));
+        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

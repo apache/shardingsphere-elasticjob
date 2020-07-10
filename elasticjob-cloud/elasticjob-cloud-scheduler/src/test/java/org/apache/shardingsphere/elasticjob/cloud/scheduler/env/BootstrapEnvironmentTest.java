@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
@@ -28,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -76,7 +76,7 @@ public final class BootstrapEnvironmentTest {
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         Optional<TracingConfiguration> tracingConfiguration = bootstrapEnvironment.getTracingConfiguration();
-        tracingConfiguration.ifPresent(tracingConfiguration1 -> assertThat(tracingConfiguration1.getStorage(), IsInstanceOf.instanceOf(BasicDataSource.class)));
+        tracingConfiguration.ifPresent(tracingConfiguration1 -> assertThat(tracingConfiguration1.getStorage(), instanceOf(BasicDataSource.class)));
     }
     
     @Test

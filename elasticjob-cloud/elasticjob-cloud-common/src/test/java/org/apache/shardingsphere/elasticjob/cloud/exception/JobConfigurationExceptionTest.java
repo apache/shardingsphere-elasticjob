@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.exception;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -32,6 +32,6 @@ public final class JobConfigurationExceptionTest {
     
     @Test
     public void assertGetCause() {
-        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), CoreMatchers.instanceOf(RuntimeException.class));
+        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

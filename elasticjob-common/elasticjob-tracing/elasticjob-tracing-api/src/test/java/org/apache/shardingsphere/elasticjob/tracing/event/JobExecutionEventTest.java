@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.event;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +32,7 @@ public final class JobExecutionEventTest {
     public void assertNewJobExecutionEvent() {
         JobExecutionEvent actual = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getSource(), CoreMatchers.is(JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER));
+        assertThat(actual.getSource(), is(JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER));
         assertThat(actual.getShardingItem(), is(0));
         assertNotNull(actual.getHostname());
         assertNotNull(actual.getStartTime());
