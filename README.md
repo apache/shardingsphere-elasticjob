@@ -61,8 +61,6 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - Job event trace query
   - Registry center management
 
-## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
-
 ## [Roadmap](ROADMAP.md)
 
 ## Quick Start
