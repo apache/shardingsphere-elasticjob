@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Optional;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -35,7 +35,7 @@ public final class BootstrapEnvironmentTest {
     private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
     
     @Test
-    public void assertGetMesosConfiguration() throws NoSuchFieldException {
+    public void assertGetMesosConfiguration() {
         MesosConfiguration mesosConfig = bootstrapEnvironment.getMesosConfiguration();
         Assert.assertThat(mesosConfig.getHostname(), Is.is("localhost"));
         Assert.assertThat(mesosConfig.getUser(), Is.is(""));
@@ -73,15 +73,15 @@ public final class BootstrapEnvironmentTest {
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), "sa");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
-        Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = bootstrapEnvironment.getJobEventRdbConfiguration();
-        if (jobEventRdbConfiguration.isPresent()) {
-            Assert.assertThat(jobEventRdbConfiguration.get().getDataSource(), IsInstanceOf.instanceOf(BasicDataSource.class));
+        Optional<TracingConfiguration> tracingConfiguration = bootstrapEnvironment.getTracingConfiguration();
+        if (tracingConfiguration.isPresent()) {
+            Assert.assertThat(tracingConfiguration.get().getStorage(), IsInstanceOf.instanceOf(BasicDataSource.class));
         }
     }
     
     @Test
-    public void assertWithoutEventTraceRdbConfiguration() throws NoSuchFieldException {
-        Assert.assertFalse(bootstrapEnvironment.getJobEventRdbConfiguration().isPresent());
+    public void assertWithoutEventTraceRdbConfiguration() {
+        Assert.assertFalse(bootstrapEnvironment.getTracingConfiguration().isPresent());
     }
     
     @Test

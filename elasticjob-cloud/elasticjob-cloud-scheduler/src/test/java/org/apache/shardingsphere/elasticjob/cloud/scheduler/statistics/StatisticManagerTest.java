@@ -17,19 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
@@ -50,7 +50,7 @@ public class StatisticManagerTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private Optional<JobEventRdbConfiguration> jobEventRdbConfiguration;
+    private Optional<TracingConfiguration> tracingConfiguration;
     
     @Mock
     private StatisticRdbRepository rdbRepository;
@@ -65,7 +65,7 @@ public class StatisticManagerTest {
     
     @Before
     public void setUp() {
-        statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);
+        statisticManager = StatisticManager.getInstance(regCenter, tracingConfiguration);
     }
     
     @After
@@ -78,7 +78,7 @@ public class StatisticManagerTest {
     
     @Test
     public void assertGetInstance() {
-        Assert.assertThat(statisticManager, Is.is(StatisticManager.getInstance(regCenter, jobEventRdbConfiguration)));
+        Assert.assertThat(statisticManager, Is.is(StatisticManager.getInstance(regCenter, tracingConfiguration)));
     }
     
     @Test

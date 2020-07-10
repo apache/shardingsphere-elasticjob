@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -26,7 +24,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
+import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -123,11 +124,11 @@ public final class BootstrapEnvironment {
     }
     
     /**
-     * Get the job event rdb config.
+     * Get tracing configuration.
      *
-     * @return job event rdb config
+     * @return tracing configuration
      */
-    public Optional<JobEventRdbConfiguration> getJobEventRdbConfiguration() {
+    public Optional<TracingConfiguration> getTracingConfiguration() {
         String driver = getValue(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER);
         String url = getValue(EnvironmentArgument.EVENT_TRACE_RDB_URL);
         String username = getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME);
@@ -138,7 +139,7 @@ public final class BootstrapEnvironment {
             dataSource.setUrl(url);
             dataSource.setUsername(username);
             dataSource.setPassword(password);
-            return Optional.of(new JobEventRdbConfiguration(dataSource));
+            return Optional.of(new TracingConfiguration<DataSource>("RDB", dataSource));
         }
         return Optional.absent();
     }

@@ -17,22 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbSearch;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch.Result;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobExecutionTypeStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeStatistics;
-import com.google.common.collect.Lists;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
@@ -185,7 +186,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertFindJobExecutionEvents() throws Exception {
         ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         Mockito.when(getJobEventRdbSearch().findJobExecutionEvents(Mockito.any(JobEventRdbSearch.Condition.class))).thenReturn(new JobEventRdbSearch.Result<>(0,
                 Lists.newArrayList(jobExecutionEvent)));
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/executions?" + buildFindJobEventsQueryParameter()),
@@ -203,9 +204,9 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertFindJobStatusTraceEvent() throws Exception {
         ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
-        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(
-                "test-job", "fake_task_id", "fake_slave_id", JobStatusTraceEvent.Source.LITE_EXECUTOR, ExecutionType.READY, "0", JobStatusTraceEvent.State.TASK_RUNNING, "message is empty.");
-        Mockito.when(getJobEventRdbSearch().findJobStatusTraceEvents(Mockito.any(JobEventRdbSearch.Condition.class))).thenReturn(new JobEventRdbSearch.Result<>(0,
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent("test-job", 
+                "fake_task_id", "fake_slave_id", JobStatusTraceEvent.Source.LITE_EXECUTOR, ExecutionType.READY.toString(), "0", JobStatusTraceEvent.State.TASK_RUNNING, "message is empty.");
+        Mockito.when(getJobEventRdbSearch().findJobStatusTraceEvents(Mockito.any(JobEventRdbSearch.Condition.class))).thenReturn(new Result<>(0,
                 Lists.newArrayList(jobStatusTraceEvent)));
         Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/statusTraces?" + buildFindJobEventsQueryParameter()),
                 Is.is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0, Lists.newArrayList(jobStatusTraceEvent)))));

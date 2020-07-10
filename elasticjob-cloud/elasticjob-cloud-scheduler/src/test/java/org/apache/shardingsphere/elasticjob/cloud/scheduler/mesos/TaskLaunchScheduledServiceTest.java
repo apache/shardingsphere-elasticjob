@@ -17,28 +17,26 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.netflix.fenzo.SchedulingResult;
 import com.netflix.fenzo.TaskAssignmentResult;
-import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
-import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action2;
 import com.netflix.fenzo.plugins.VMLeaseObject;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,48 +74,48 @@ public final class TaskLaunchScheduledServiceTest {
     private TaskLaunchScheduledService taskLaunchScheduledService;
     
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         taskLaunchScheduledService.startUp();
     }
     
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         taskLaunchScheduledService.shutDown();
     }
     
     @Test
-    public void assertRunOneIteration() throws Exception {
+    public void assertRunOneIteration() {
         when(facadeService.getEligibleJobContext()).thenReturn(Lists.newArrayList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job", CloudJobExecutionType.DAEMON, 1), ExecutionType.FAILOVER)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
-        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.<VirtualMachineLease>newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
+        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("failover_job", ExecutionType.FAILOVER))));
-        when(taskScheduler.scheduleOnce(ArgumentMatchers.<TaskRequest>anyList(), ArgumentMatchers.<VirtualMachineLease>anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
+        when(taskScheduler.scheduleOnce(ArgumentMatchers.anyList(), ArgumentMatchers.anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.load("failover_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
         when(facadeService.getFailoverTaskId(any(TaskContext.MetaInfo.class)))
                 .thenReturn(Optional.of(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "failover_job", ExecutionType.FAILOVER.name())));
         when(taskScheduler.getTaskAssigner()).thenReturn(mock(Action2.class));
         taskLaunchScheduledService.runOneIteration();
-        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.<TaskContext>anyList());
+        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.anyList());
         verify(facadeService).loadAppConfig("test_app");
         verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
     }
     
     @Test
-    public void assertRunOneIterationWithScriptJob() throws Exception {
+    public void assertRunOneIterationWithScriptJob() {
         when(facadeService.getEligibleJobContext()).thenReturn(Lists.newArrayList(
                 JobContext.from(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1), ExecutionType.READY)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
-        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.<VirtualMachineLease>newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
+        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("script_job", ExecutionType.READY))));
-        when(taskScheduler.scheduleOnce(ArgumentMatchers.<TaskRequest>anyList(), ArgumentMatchers.<VirtualMachineLease>anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
+        when(taskScheduler.scheduleOnce(ArgumentMatchers.anyList(), ArgumentMatchers.anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
         when(facadeService.load("script_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1)));
         when(taskScheduler.getTaskAssigner()).thenReturn(mock(Action2.class));
         taskLaunchScheduledService.runOneIteration();
-        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.<TaskContext>anyList());
+        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.anyList());
         verify(facadeService).isRunning(TaskContext.from(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "script_job", ExecutionType.READY)));
         verify(facadeService).loadAppConfig("test_app");
         verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
@@ -130,12 +128,12 @@ public final class TaskLaunchScheduledServiceTest {
     }
     
     @Test
-    public void assertScheduler() throws Exception {
+    public void assertScheduler() {
         assertThat(taskLaunchScheduledService.scheduler(), instanceOf(Scheduler.class));
     }
     
     @Test
-    public void assertServiceName() throws Exception {
+    public void assertServiceName() {
         assertThat(taskLaunchScheduledService.serviceName(), is("task-launch-processor"));
     }
 }

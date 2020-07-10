@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestWrongJob;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,13 +43,13 @@ public final class WrongJobExecutorTest {
     private SimpleJobExecutor wrongSimpleJobExecutor;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         wrongSimpleJobExecutor = new SimpleJobExecutor(new TestWrongJob(), jobFacade);
     }
     
     @Test(expected = RuntimeException.class)
-    public void assertWrongJobExecutorWithSingleItem() throws NoSuchFieldException {
+    public void assertWrongJobExecutorWithSingleItem() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
@@ -58,7 +58,7 @@ public final class WrongJobExecutorTest {
     }
     
     @Test
-    public void assertWrongJobExecutorWithMultipleItems() throws NoSuchFieldException {
+    public void assertWrongJobExecutorWithMultipleItems() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         map.put(1, "B");
@@ -66,6 +66,6 @@ public final class WrongJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         wrongSimpleJobExecutor.execute();
         verify(jobFacade).getShardingContexts();
-        verify(jobFacade).postJobStatusTraceEvent("fake_task_id", JobStatusTraceEvent.State.TASK_RUNNING, "");
+        verify(jobFacade).postJobStatusTraceEvent("fake_task_id", State.TASK_RUNNING, "");
     }
 }

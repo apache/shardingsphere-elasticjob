@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 

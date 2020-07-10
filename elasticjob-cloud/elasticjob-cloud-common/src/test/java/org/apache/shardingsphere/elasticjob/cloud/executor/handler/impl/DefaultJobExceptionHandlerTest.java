@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl;
 
-import org.apache.shardingsphere.elasticjob.cloud.event.fixture.JobEventCaller;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
