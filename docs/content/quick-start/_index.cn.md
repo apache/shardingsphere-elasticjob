@@ -12,7 +12,7 @@ chapter = true
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-core</artifactId>
+    <artifactId>elasticjob-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
@@ -78,7 +78,7 @@ public class JobDemo {
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
