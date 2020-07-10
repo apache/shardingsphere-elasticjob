@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.domain;
 
 import lombok.Data;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

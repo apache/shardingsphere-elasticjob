@@ -32,8 +32,8 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobExecuti
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;

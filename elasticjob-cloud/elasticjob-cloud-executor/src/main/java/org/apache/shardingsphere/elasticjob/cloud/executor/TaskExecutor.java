@@ -31,8 +31,8 @@ import org.apache.shardingsphere.elasticjob.cloud.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.cloud.exception.ExceptionUtil;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.util.concurrent.ExecutorServiceObject;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.sql.DataSource;

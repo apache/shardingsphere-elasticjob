@@ -45,9 +45,9 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobE
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
 import java.util.Collection;

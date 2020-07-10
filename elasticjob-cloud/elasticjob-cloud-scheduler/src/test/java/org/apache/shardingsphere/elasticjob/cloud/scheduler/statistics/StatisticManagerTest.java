@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegiste
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;

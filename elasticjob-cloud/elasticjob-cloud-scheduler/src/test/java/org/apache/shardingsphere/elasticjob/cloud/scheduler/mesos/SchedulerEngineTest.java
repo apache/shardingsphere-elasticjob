@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDServic
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;

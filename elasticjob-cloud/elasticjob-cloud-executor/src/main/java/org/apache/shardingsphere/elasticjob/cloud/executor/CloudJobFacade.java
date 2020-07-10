@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.Source;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 

@@ -31,10 +31,10 @@ import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandlerFa
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
 
 import java.util.Collection;

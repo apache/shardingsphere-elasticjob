@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.config;
 
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

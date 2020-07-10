@@ -28,8 +28,8 @@ import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobExec
 import org.apache.shardingsphere.elasticjob.lite.console.dto.request.FindJobStatusTraceEventsRequest;
 import org.apache.shardingsphere.elasticjob.lite.console.service.EventTraceHistoryService;
 import org.apache.shardingsphere.elasticjob.lite.console.util.BeanUtils;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

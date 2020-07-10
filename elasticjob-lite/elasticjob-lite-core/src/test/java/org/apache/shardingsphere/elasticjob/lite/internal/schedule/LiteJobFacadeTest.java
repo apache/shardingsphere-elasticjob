@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverServi
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;

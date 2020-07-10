@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener
 import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
 /**
  * One off job bootstrap.

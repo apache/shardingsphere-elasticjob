@@ -30,9 +30,9 @@ import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServi
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties;
 import org.apache.shardingsphere.elasticjob.cloud.util.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 import java.util.Map;

@@ -42,9 +42,9 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeSta
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.codehaus.jettison.json.JSONException;
 
 import javax.sql.DataSource;

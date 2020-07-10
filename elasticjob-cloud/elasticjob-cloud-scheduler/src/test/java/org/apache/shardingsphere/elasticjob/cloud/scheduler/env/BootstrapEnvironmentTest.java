@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 import com.google.common.base.Optional;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;

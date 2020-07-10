@@ -33,8 +33,8 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDServic
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.lite.tracing.JobEventBus;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
 /**
  * Scheduler service.
