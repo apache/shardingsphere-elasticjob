@@ -25,12 +25,12 @@
         <artifactId>elasticjob-lite</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-lite-tracing</artifactId>
+    <artifactId>elasticjob-tracing</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-lite-tracing-api</module>
-        <module>elasticjob-lite-tracing-rdb</module>
+        <module>elasticjob-tracing-api</module>
+        <module>elasticjob-tracing-rdb</module>
     </modules>
 </project>

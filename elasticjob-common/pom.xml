@@ -30,6 +30,6 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-lite-tracing</module>
+        <module>elasticjob-tracing</module>
     </modules>
 </project>
