@@ -17,25 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
@@ -43,7 +40,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Mesos facade service.
@@ -120,13 +119,7 @@ public final class FacadeService {
                     break;
             }
         }
-        failoverService.remove(Lists.transform(failoverTaskContexts, new Function<TaskContext, TaskContext.MetaInfo>() {
-            
-            @Override
-            public TaskContext.MetaInfo apply(final TaskContext input) {
-                return input.getMetaInfo();
-            }
-        }));
+        failoverService.remove(failoverTaskContexts.stream().map(TaskContext::getMetaInfo).collect(Collectors.toList()));
         readyService.remove(readyJobNames);
     }
     

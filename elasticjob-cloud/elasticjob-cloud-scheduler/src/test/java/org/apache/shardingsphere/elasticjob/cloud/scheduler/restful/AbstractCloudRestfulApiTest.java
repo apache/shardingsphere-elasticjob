@@ -17,20 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
-import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -74,9 +73,9 @@ public abstract class AbstractCloudRestfulApiTest {
     private static void initMesosServer() throws Exception {
         MesosStateService.register("127.0.0.1", 9050);
         masterServer = new RestfulServer(9050);
-        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.absent(), Optional.absent());
+        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), null, null);
         slaveServer = new RestfulServer(9051);
-        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.absent(), Optional.absent());
+        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), null, null);
     }
     
     @AfterClass

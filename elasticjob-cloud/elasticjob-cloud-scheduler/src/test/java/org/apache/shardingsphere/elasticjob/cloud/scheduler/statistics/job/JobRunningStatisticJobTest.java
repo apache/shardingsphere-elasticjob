@@ -17,19 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
@@ -43,7 +37,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
-import com.google.common.base.Optional;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobRunningStatisticJobTest {
@@ -69,26 +68,26 @@ public class JobRunningStatisticJobTest {
     }
     
     @Test
-    public void assertBuildTrigger() throws SchedulerException {
+    public void assertBuildTrigger() {
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
         Assert.assertThat(trigger.getKey().getName(), Is.is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
-    public void assertGetDataMap() throws SchedulerException {
-        Assert.assertThat((RunningService) jobRunningStatisticJob.getDataMap().get("runningService"), Is.is(runningService));
-        Assert.assertThat((StatisticRdbRepository) jobRunningStatisticJob.getDataMap().get("repository"), Is.is(repository));
+    public void assertGetDataMap() {
+        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), Is.is(runningService));
+        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("repository"), Is.is(repository));
     }
     
     @Test
     public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
-        Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.absent();
-        Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.absent();
+        Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.empty();
+        Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.empty();
         Mockito.when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
         Mockito.when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
         Mockito.when(repository.add(ArgumentMatchers.any(JobRunningStatistics.class))).thenReturn(true);
         Mockito.when(repository.add(ArgumentMatchers.any(TaskRunningStatistics.class))).thenReturn(true);
-        Mockito.when(runningService.getAllRunningTasks()).thenReturn(Collections.<String, Set<TaskContext>>emptyMap());
+        Mockito.when(runningService.getAllRunningTasks()).thenReturn(Collections.emptyMap());
         jobRunningStatisticJob.execute(null);
         Mockito.verify(repository).findLatestJobRunningStatistics();
         Mockito.verify(repository).add(ArgumentMatchers.any(JobRunningStatistics.class));

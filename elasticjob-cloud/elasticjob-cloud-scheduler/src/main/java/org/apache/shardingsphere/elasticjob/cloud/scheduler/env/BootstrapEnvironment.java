@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Getter;
@@ -31,6 +30,7 @@ import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -141,7 +141,7 @@ public final class BootstrapEnvironment {
             dataSource.setPassword(password);
             return Optional.of(new TracingConfiguration<DataSource>("RDB", dataSource));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
     
     /**
@@ -168,7 +168,7 @@ public final class BootstrapEnvironment {
     public Optional<String> getMesosRole() {
         String role = getValue(EnvironmentArgument.MESOS_ROLE);
         if (Strings.isNullOrEmpty(role)) {
-            return Optional.absent();
+            return Optional.empty();
         }
         return Optional.of(role);
     }

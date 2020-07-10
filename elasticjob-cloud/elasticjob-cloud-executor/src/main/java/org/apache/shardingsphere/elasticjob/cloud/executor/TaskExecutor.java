@@ -151,9 +151,7 @@ public final class TaskExecutor implements Executor {
             String applicationContextFile = jobConfig.getApplicationContext();
             if (null == applicationContexts.get(applicationContextFile)) {
                 synchronized (applicationContexts) {
-                    if (null == applicationContexts.get(applicationContextFile)) {
-                        applicationContexts.put(applicationContextFile, new ClassPathXmlApplicationContext(applicationContextFile));
-                    }
+                    applicationContexts.computeIfAbsent(applicationContextFile, ClassPathXmlApplicationContext::new);
                 }
             }
             return (ElasticJob) applicationContexts.get(applicationContextFile).getBean(jobConfig.getBeanName());

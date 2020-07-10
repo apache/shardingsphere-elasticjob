@@ -17,12 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
@@ -32,6 +30,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobE
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
@@ -45,7 +44,6 @@ import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.codehaus.jettison.json.JSONException;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -72,6 +70,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -97,7 +96,7 @@ public final class CloudJobRestfulApi {
         Preconditions.checkNotNull(regCenter);
         configService = new CloudJobConfigurationService(regCenter);
         facadeService = new FacadeService(regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, Optional.absent());
+        statisticManager = StatisticManager.getInstance(regCenter, null);
     }
     
     /**
@@ -111,11 +110,7 @@ public final class CloudJobRestfulApi {
         CloudJobRestfulApi.producerManager = producerManager;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
-        if (tracingConfiguration.isPresent()) {
-            jobEventRdbSearch = new JobEventRdbSearch((DataSource) tracingConfiguration.get().getStorage());
-        } else {
-            jobEventRdbSearch = null;
-        }
+        jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
     
     /**
@@ -159,12 +154,11 @@ public final class CloudJobRestfulApi {
      *
      * @param jobName job name
      * @return true is disabled, otherwise not
-     * @throws JSONException parse json exception
      */
     @GET
     @Path("/{jobName}/disable")
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean isDisabled(@PathParam("jobName") final String jobName) throws JSONException {
+    public boolean isDisabled(@PathParam("jobName") final String jobName) {
         return facadeService.isJobDisabled(jobName);
     }
     
@@ -172,11 +166,10 @@ public final class CloudJobRestfulApi {
      * Enable cloud job.
      *
      * @param jobName job name
-     * @throws JSONException parse json exception
      */
     @POST
     @Path("/{jobName}/enable")
-    public void enable(@PathParam("jobName") final String jobName) throws JSONException {
+    public void enable(@PathParam("jobName") final String jobName) {
         Optional<CloudJobConfiguration> configOptional = configService.load(jobName);
         if (configOptional.isPresent()) {
             facadeService.enableJob(jobName);
@@ -394,16 +387,17 @@ public final class CloudJobRestfulApi {
     @Path("/statistics/tasks/results/{period}")
     @Consumes(MediaType.APPLICATION_JSON)
     public TaskResultStatistics getTaskResultStatistics(@PathParam("period") final String period) {
-        if ("online".equals(period)) {
-            return statisticManager.getTaskResultStatisticsSinceOnline();
-        } else if ("lastWeek".equals(period)) {
-            return statisticManager.getTaskResultStatisticsWeekly();
-        } else if ("lastHour".equals(period)) {
-            return statisticManager.findLatestTaskResultStatistics(StatisticInterval.HOUR);
-        } else if ("lastMinute".equals(period)) {
-            return statisticManager.findLatestTaskResultStatistics(StatisticInterval.MINUTE);
-        } else {
-            return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
+        switch (period) {
+            case "online":
+                return statisticManager.getTaskResultStatisticsSinceOnline();
+            case "lastWeek":
+                return statisticManager.getTaskResultStatisticsWeekly();
+            case "lastHour":
+                return statisticManager.findLatestTaskResultStatistics(StatisticInterval.HOUR);
+            case "lastMinute":
+                return statisticManager.findLatestTaskResultStatistics(StatisticInterval.MINUTE);
+            default:
+                return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
     }
     

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
 import lombok.AllArgsConstructor;
@@ -35,6 +34,8 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulServi
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+
+import java.util.Optional;
 
 /**
  * Scheduler service.
@@ -66,7 +67,7 @@ public final class SchedulerService {
     public SchedulerService(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
         facadeService = new FacadeService(regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, env.getTracingConfiguration());
+        statisticManager = StatisticManager.getInstance(regCenter, env.getTracingConfiguration().orElse(null));
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
@@ -78,11 +79,8 @@ public final class SchedulerService {
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
-        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
-        if (frameworkIDOptional.isPresent()) {
-            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
-        }
+        frameworkIDService.fetch().ifPresent(frameworkID -> builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkID).build()));
         Optional<String> role = env.getMesosRole();
         String frameworkName = MesosConfiguration.FRAMEWORK_NAME;
         if (role.isPresent()) {
@@ -108,10 +106,7 @@ public final class SchedulerService {
     
     private JobEventBus getJobEventBus() {
         Optional<TracingConfiguration> tracingConfiguration = env.getTracingConfiguration();
-        if (tracingConfiguration.isPresent()) {
-            return new JobEventBus(tracingConfiguration.get());
-        }
-        return new JobEventBus();
+        return tracingConfiguration.map(JobEventBus::new).orElseGet(JobEventBus::new);
     }
     
     /**

@@ -17,10 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudAppConfigurationServiceTest {

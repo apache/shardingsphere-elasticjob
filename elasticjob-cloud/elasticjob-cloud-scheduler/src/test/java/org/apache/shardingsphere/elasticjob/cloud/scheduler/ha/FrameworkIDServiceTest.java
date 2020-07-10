@@ -18,11 +18,12 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.ha;
 
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -44,7 +45,7 @@ public class FrameworkIDServiceTest {
     }
     
     @Test
-    public void assertFetch() throws Exception {
+    public void assertFetch() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("1");
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         assertTrue(frameworkIDOptional.isPresent());
@@ -53,7 +54,7 @@ public class FrameworkIDServiceTest {
     }
     
     @Test
-    public void assertSave() throws Exception {
+    public void assertSave() {
         when(registryCenter.isExisted(HANode.FRAMEWORK_ID_NODE)).thenReturn(false);
         frameworkIDService.save("1");
         verify(registryCenter).isExisted(HANode.FRAMEWORK_ID_NODE);

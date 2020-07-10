@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
@@ -44,6 +43,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SchedulerEngineTest {

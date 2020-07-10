@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
@@ -56,6 +55,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -182,7 +182,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
-        assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
+        assignedShardingItemParameters.put(shardingItem, shardingItemParameters.getOrDefault(shardingItem, ""));
         return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
@@ -247,9 +247,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
                 Source.CLOUD_SCHEDULER, taskContext.getType().toString(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
             Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
-            if (taskContextOptional.isPresent()) {
-                result.setOriginalTaskId(taskContextOptional.get());
-            }
+            taskContextOptional.ifPresent(result::setOriginalTaskId);
         }
         return result;
     }

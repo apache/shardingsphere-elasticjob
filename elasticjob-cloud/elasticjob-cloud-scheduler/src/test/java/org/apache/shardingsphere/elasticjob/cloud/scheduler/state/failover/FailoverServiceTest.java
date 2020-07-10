@@ -17,18 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,8 +40,8 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,9 +55,6 @@ public final class FailoverServiceTest {
     
     @Mock
     private RunningService runningService;
-    
-    @Mock
-    private List<String> mockedFailoverQueue;
     
     private FailoverService failoverService;
     
@@ -120,13 +115,13 @@ public final class FailoverServiceTest {
     public void assertGetAllEligibleJobContextsWithRootNode() {
         Mockito.when(regCenter.isExisted("/state/failover")).thenReturn(true);
         Mockito.when(regCenter.getChildrenKeys("/state/failover")).thenReturn(Arrays.asList("task_empty_job", "not_existed_job", "eligible_job"));
-        Mockito.when(regCenter.getChildrenKeys("/state/failover/task_empty_job")).thenReturn(Collections.<String>emptyList());
+        Mockito.when(regCenter.getChildrenKeys("/state/failover/task_empty_job")).thenReturn(Collections.emptyList());
         Mockito.when(regCenter.getChildrenKeys("/state/failover/not_existed_job")).thenReturn(Arrays.asList(
                 TaskNode.builder().jobName("not_existed_job").build().getTaskNodePath(), TaskNode.builder().jobName("not_existed_job").shardingItem(1).build().getTaskNodePath()));
         String eligibleJobNodePath1 = TaskNode.builder().jobName("eligible_job").build().getTaskNodePath();
         String eligibleJobNodePath2 = TaskNode.builder().jobName("eligible_job").shardingItem(1).build().getTaskNodePath();
         Mockito.when(regCenter.getChildrenKeys("/state/failover/eligible_job")).thenReturn(Arrays.asList(eligibleJobNodePath1, eligibleJobNodePath2));
-        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        Mockito.when(configService.load("not_existed_job")).thenReturn(Optional.empty());
         Mockito.when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
         Mockito.when(runningService.isTaskRunning(TaskContext.MetaInfo.from(eligibleJobNodePath1))).thenReturn(true);
         Mockito.when(runningService.isTaskRunning(TaskContext.MetaInfo.from(eligibleJobNodePath2))).thenReturn(false);
@@ -168,7 +163,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertGetAllFailoverTasksWhenRootNodeHasNoChild() {
         Mockito.when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Collections.<String>emptyList());
+        Mockito.when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Collections.emptyList());
         Assert.assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         Mockito.verify(regCenter).isExisted(FailoverNode.ROOT);
         Mockito.verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
@@ -178,7 +173,7 @@ public final class FailoverServiceTest {
     public void assertGetAllFailoverTasksWhenJobNodeHasNoChild() {
         Mockito.when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
         Mockito.when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
-        Mockito.when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"))).thenReturn(Collections.<String>emptyList());
+        Mockito.when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"))).thenReturn(Collections.emptyList());
         Assert.assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         Mockito.verify(regCenter).isExisted(FailoverNode.ROOT);
         Mockito.verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
