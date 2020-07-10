@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.election;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -25,6 +26,8 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+
+import java.util.Objects;
 
 /**
  * Election listener manager.
@@ -70,7 +73,11 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         }
         
         private boolean isPassiveElection(final String path, final Type eventType) {
-            return isLeaderCrashed(path, eventType) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp());
+            JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+            if (Objects.isNull(jobInstance)) {
+                return false;
+            }
+            return isLeaderCrashed(path, eventType) && serverService.isAvailableServer(jobInstance.getIp());
         }
         
         private boolean isLeaderCrashed(final String path, final Type eventType) {
