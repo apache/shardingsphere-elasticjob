@@ -20,13 +20,14 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public final class TaskInfoDataTest {
     
@@ -51,8 +52,8 @@ public final class TaskInfoDataTest {
     }
     
     private void assertSerialize(final Map expected) {
-        Assert.assertThat(expected.size(), is(2));
-        Assert.assertNotNull(expected.get("shardingContext"));
-        Assert.assertNotNull(expected.get("jobConfigContext"));
+        assertThat(expected.size(), is(2));
+        assertNotNull(expected.get("shardingContext"));
+        assertNotNull(expected.get("jobConfigContext"));
     }
 }

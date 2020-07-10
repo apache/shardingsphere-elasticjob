@@ -28,7 +28,6 @@ import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -82,7 +82,7 @@ public final class TaskExecutorThreadTest {
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
-            Assert.assertTrue(ex.getMessage().startsWith("Elastic-Job: Class 'org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutorThreadTest' must implements ElasticJob interface."));
+            assertTrue(ex.getMessage().startsWith("Elastic-Job: Class 'org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutorThreadTest' must implements ElasticJob interface."));
         }
     }
     
@@ -93,7 +93,7 @@ public final class TaskExecutorThreadTest {
         try {
             taskThread.run();    
         } catch (final JobSystemException ex) {
-            Assert.assertTrue(ex.getMessage().startsWith("Elastic-Job: Class 'WrongClass' initialize failure, the error message is 'WrongClass'."));
+            assertTrue(ex.getMessage().startsWith("Elastic-Job: Class 'WrongClass' initialize failure, the error message is 'WrongClass'."));
         }
     }
     

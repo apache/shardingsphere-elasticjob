@@ -25,7 +25,6 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.ws.rs.core.MediaType;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -68,8 +68,8 @@ public final class RestfulServerTest {
     @Test
     public void assertCallSuccess() throws Exception {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":1}");
-        Assert.assertThat(actual.getResponseStatus(), is(200));
-        Assert.assertThat(actual.getResponseContent(), is("{\"string\":\"test_processed\",\"integer\":\"1_processed\"}"));
+        assertThat(actual.getResponseStatus(), is(200));
+        assertThat(actual.getResponseContent(), is("{\"string\":\"test_processed\",\"integer\":\"1_processed\"}"));
         verify(caller).call("test");
         verify(caller).call(1);
     }
@@ -77,8 +77,8 @@ public final class RestfulServerTest {
     @Test
     public void assertCallFailure() throws Exception {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":\"invalid_number\"}");
-        Assert.assertThat(actual.getResponseStatus(), is(500));
-        Assert.assertThat(actual.getResponseContent(), StringStartsWith.startsWith("java.lang.NumberFormatException"));
+        assertThat(actual.getResponseStatus(), is(500));
+        assertThat(actual.getResponseContent(), StringStartsWith.startsWith("java.lang.NumberFormatException"));
         verify(caller).call("test");
     }
     

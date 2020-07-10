@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConf
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,6 +78,6 @@ public final class LaunchingTasksTest {
     @Test
     public void assertGetPendingTasks() {
         List<TaskRequest> actual = launchingTasks.getPendingTasks();
-        Assert.assertThat(actual.size(), is(20));
+        assertThat(actual.size(), is(20));
     }
 }

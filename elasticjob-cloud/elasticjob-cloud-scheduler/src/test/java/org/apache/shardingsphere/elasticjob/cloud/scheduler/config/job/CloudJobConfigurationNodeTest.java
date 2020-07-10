@@ -17,15 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class CloudJobConfigurationNodeTest {
     
     @Test
     public void assertGetRootNodePath() {
-        Assert.assertThat(CloudJobConfigurationNode.getRootNodePath("test_job"), is("/config/job/test_job"));
+        assertThat(CloudJobConfigurationNode.getRootNodePath("test_job"), is("/config/job/test_job"));
     }
 }

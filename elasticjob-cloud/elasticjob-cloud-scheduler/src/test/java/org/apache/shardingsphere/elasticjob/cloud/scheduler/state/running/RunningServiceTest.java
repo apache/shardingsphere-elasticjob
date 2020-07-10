@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobE
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,10 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,8 +63,8 @@ public final class RunningServiceTest {
         taskContextT = TaskContext.from(TaskNode.builder().jobName("test_job_t").build().getTaskNodeValue());
         runningService.add(taskContext);
         runningService.add(taskContextT);
-        Assert.assertThat(runningService.getAllRunningDaemonTasks().size(), is(1));
-        Assert.assertThat(runningService.getAllRunningTasks().size(), is(2));
+        assertThat(runningService.getAllRunningDaemonTasks().size(), is(1));
+        assertThat(runningService.getAllRunningTasks().size(), is(2));
         String path = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
         verify(regCenter).isExisted(path);
         verify(regCenter).persist(path, taskContext.getId());
@@ -81,15 +84,15 @@ public final class RunningServiceTest {
         when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode1.getTaskNodePath()))).thenReturn(taskNode1.getTaskNodeValue());
         when(regCenter.get(RunningNode.getRunningTaskNodePath(taskNode2.getTaskNodePath()))).thenReturn(taskNode2.getTaskNodeValue());
         runningService.start();
-        Assert.assertThat(runningService.getAllRunningDaemonTasks().size(), is(2));
+        assertThat(runningService.getAllRunningDaemonTasks().size(), is(2));
     }
     
     @Test
     public void assertAddWithoutData() {
-        Assert.assertThat(runningService.getRunningTasks("test_job").size(), is(1));
-        Assert.assertThat(runningService.getRunningTasks("test_job").iterator().next(), is(taskContext));
-        Assert.assertThat(runningService.getRunningTasks("test_job_t").size(), is(1));
-        Assert.assertThat(runningService.getRunningTasks("test_job_t").iterator().next(), is(taskContextT));
+        assertThat(runningService.getRunningTasks("test_job").size(), is(1));
+        assertThat(runningService.getRunningTasks("test_job").iterator().next(), is(taskContext));
+        assertThat(runningService.getRunningTasks("test_job_t").size(), is(1));
+        assertThat(runningService.getRunningTasks("test_job_t").iterator().next(), is(taskContextT));
     }
     
     @Test
@@ -97,24 +100,24 @@ public final class RunningServiceTest {
         when(regCenter.get("/config/job/other_job")).thenReturn(CloudJsonConstants.getJobJson("other_job"));
         TaskNode taskNode = TaskNode.builder().jobName("other_job").build();
         runningService.add(TaskContext.from(taskNode.getTaskNodeValue()));
-        Assert.assertThat(runningService.getRunningTasks("other_job").size(), is(1));
-        Assert.assertThat(runningService.getRunningTasks("other_job").iterator().next(), is(TaskContext.from(taskNode.getTaskNodeValue())));
+        assertThat(runningService.getRunningTasks("other_job").size(), is(1));
+        assertThat(runningService.getRunningTasks("other_job").iterator().next(), is(TaskContext.from(taskNode.getTaskNodeValue())));
     }
     
     @Test
     public void assertUpdateIdle() {
         runningService.updateIdle(taskContext, true);
-        Assert.assertThat(runningService.getRunningTasks("test_job").size(), is(1));
-        Assert.assertTrue(runningService.getRunningTasks("test_job").iterator().next().isIdle());
+        assertThat(runningService.getRunningTasks("test_job").size(), is(1));
+        assertTrue(runningService.getRunningTasks("test_job").iterator().next().isIdle());
     }
     
     @Test
     public void assertRemoveByJobName() {
         runningService.remove("test_job");
-        Assert.assertTrue(runningService.getRunningTasks("test_job").isEmpty());
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
         verify(regCenter).remove(RunningNode.getRunningJobNodePath("test_job"));
         runningService.remove("test_job_t");
-        Assert.assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
+        assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
     }
     
     @Test
@@ -122,42 +125,42 @@ public final class RunningServiceTest {
         when(regCenter.isExisted(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(true);
         when(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath("test_job"))).thenReturn(Collections.emptyList());
         runningService.remove(taskContext);
-        Assert.assertTrue(runningService.getRunningTasks("test_job").isEmpty());
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
         verify(regCenter).remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()));
         runningService.remove(taskContextT);
-        Assert.assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
+        assertTrue(runningService.getRunningTasks("test_job_t").isEmpty());
     }
     
     @Test
     public void assertIsJobRunning() {
-        Assert.assertTrue(runningService.isJobRunning("test_job"));
+        assertTrue(runningService.isJobRunning("test_job"));
     }
     
     @Test
     public void assertIsTaskRunning() {
-        Assert.assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
+        assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
     }
     
     @Test
     public void assertIsTaskNotRunning() {
-        Assert.assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(2).build().getTaskNodePath())));
+        assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(2).build().getTaskNodePath())));
     }
     
     @Test
     public void assertMappingOperate() {
         String taskId = TaskNode.builder().build().getTaskNodeValue();
-        Assert.assertNull(runningService.popMapping(taskId));
+        assertNull(runningService.popMapping(taskId));
         runningService.addMapping(taskId, "localhost");
-        Assert.assertThat(runningService.popMapping(taskId), is("localhost"));
-        Assert.assertNull(runningService.popMapping(taskId));
+        assertThat(runningService.popMapping(taskId), is("localhost"));
+        assertNull(runningService.popMapping(taskId));
     }
     
     @Test
     public void assertClear() {
-        Assert.assertFalse(runningService.getRunningTasks("test_job").isEmpty());
+        assertFalse(runningService.getRunningTasks("test_job").isEmpty());
         runningService.addMapping(TaskNode.builder().build().getTaskNodeValue(), "localhost");
         runningService.clear();
-        Assert.assertTrue(runningService.getRunningTasks("test_job").isEmpty());
-        Assert.assertNull(runningService.popMapping(TaskNode.builder().build().getTaskNodeValue()));
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
+        assertNull(runningService.popMapping(TaskNode.builder().build().getTaskNodeValue()));
     }
 }

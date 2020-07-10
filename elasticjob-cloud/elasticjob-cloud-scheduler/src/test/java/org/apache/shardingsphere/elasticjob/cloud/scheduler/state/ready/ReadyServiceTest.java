@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +40,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -168,7 +169,7 @@ public final class ReadyServiceTest {
     @Test
     public void assertGetAllEligibleJobContextsWithoutRootNode() {
         when(regCenter.isExisted("/state/ready")).thenReturn(false);
-        Assert.assertTrue(readyService.getAllEligibleJobContexts(Collections.emptyList()).isEmpty());
+        assertTrue(readyService.getAllEligibleJobContexts(Collections.emptyList()).isEmpty());
         verify(regCenter).isExisted("/state/ready");
     }
     
@@ -203,7 +204,7 @@ public final class ReadyServiceTest {
         when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         when(runningService.isJobRunning("eligible_job")).thenReturn(false);
-        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
+        assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));
         verify(regCenter).isExisted("/state/ready");
         verify(regCenter, times(1)).getChildrenKeys("/state/ready");
@@ -220,7 +221,7 @@ public final class ReadyServiceTest {
         when(configService.load("not_existed_job")).thenReturn(Optional.empty());
         when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", CloudJobExecutionType.DAEMON)));
         when(runningService.isJobRunning("running_job")).thenReturn(true);
-        Assert.assertThat(readyService.getAllEligibleJobContexts(Collections.emptyList()).size(), is(0));
+        assertThat(readyService.getAllEligibleJobContexts(Collections.emptyList()).size(), is(0));
         verify(regCenter).isExisted("/state/ready");
         verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");
@@ -241,7 +242,7 @@ public final class ReadyServiceTest {
     @Test
     public void assertGetAllTasksWithoutRootNode() {
         when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(false);
-        Assert.assertTrue(readyService.getAllReadyTasks().isEmpty());
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
         verify(regCenter).isExisted(ReadyNode.ROOT);
         verify(regCenter, times(0)).getChildrenKeys(ArgumentMatchers.any());
         verify(regCenter, times(0)).get(ArgumentMatchers.any());
@@ -251,7 +252,7 @@ public final class ReadyServiceTest {
     public void assertGetAllTasksWhenRootNodeHasNoChild() {
         when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
         when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Collections.emptyList());
-        Assert.assertTrue(readyService.getAllReadyTasks().isEmpty());
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
         verify(regCenter).isExisted(ReadyNode.ROOT);
         verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
         verify(regCenter, times(0)).get(ArgumentMatchers.any());
@@ -262,7 +263,7 @@ public final class ReadyServiceTest {
         when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
         when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job"))).thenReturn("");
-        Assert.assertTrue(readyService.getAllReadyTasks().isEmpty());
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
         verify(regCenter).isExisted(ReadyNode.ROOT);
         verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
         verify(regCenter).get(ReadyNode.getReadyJobNodePath("test_job"));
@@ -275,9 +276,9 @@ public final class ReadyServiceTest {
         when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_1"))).thenReturn("1");
         when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_2"))).thenReturn("5");
         Map<String, Integer> result = readyService.getAllReadyTasks();
-        Assert.assertThat(result.size(), is(2));
-        Assert.assertThat(result.get("test_job_1"), is(1));
-        Assert.assertThat(result.get("test_job_2"), is(5));
+        assertThat(result.size(), is(2));
+        assertThat(result.get("test_job_1"), is(1));
+        assertThat(result.get("test_job_2"), is(5));
         verify(regCenter).isExisted(ReadyNode.ROOT);
         verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
         verify(regCenter, times(2)).get(ArgumentMatchers.any());

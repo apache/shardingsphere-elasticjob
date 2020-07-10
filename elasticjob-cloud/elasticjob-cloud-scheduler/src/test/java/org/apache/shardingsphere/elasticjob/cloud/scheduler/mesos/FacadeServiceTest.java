@@ -35,7 +35,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.Di
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +48,9 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,15 +113,15 @@ public final class FacadeServiceTest {
         when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
         when(readyService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(readyJobContexts);
         Collection<JobContext> actual = facadeService.getEligibleJobContext();
-        Assert.assertThat(actual.size(), is(2));
+        assertThat(actual.size(), is(2));
         int i = 0;
         for (JobContext each : actual) {
             switch (i) {
                 case 0:
-                    Assert.assertThat(each.getJobConfig().getJobName(), is("failover_job"));
+                    assertThat(each.getJobConfig().getJobName(), is("failover_job"));
                     break;
                 case 1:
-                    Assert.assertThat(each.getJobConfig().getJobName(), is("ready_job"));
+                    assertThat(each.getJobConfig().getJobName(), is("ready_job"));
                     break;
                 default:
                     break;
@@ -196,26 +198,26 @@ public final class FacadeServiceTest {
     public void assertLoadAppConfig() {
         Optional<CloudAppConfiguration> appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
         when(appConfigService.load("test_app")).thenReturn(appConfigOptional);
-        Assert.assertThat(facadeService.loadAppConfig("test_app"), is(appConfigOptional));
+        assertThat(facadeService.loadAppConfig("test_app"), is(appConfigOptional));
     }
     
     @Test
     public void assertLoadJobConfig() {
         Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
         when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
-        Assert.assertThat(facadeService.load("test_job"), is(jobConfigOptional));
+        assertThat(facadeService.load("test_job"), is(jobConfigOptional));
     }
     
     @Test
     public void assertLoadAppConfigWhenAbsent() {
         when(appConfigService.load("test_app")).thenReturn(Optional.empty());
-        Assert.assertThat(facadeService.loadAppConfig("test_app"), is(Optional.<CloudAppConfiguration>empty()));
+        assertThat(facadeService.loadAppConfig("test_app"), is(Optional.<CloudAppConfiguration>empty()));
     }
     
     @Test
     public void assertLoadJobConfigWhenAbsent() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.empty());
-        Assert.assertThat(facadeService.load("test_job"), is(Optional.<CloudJobConfiguration>empty()));
+        assertThat(facadeService.load("test_job"), is(Optional.<CloudJobConfiguration>empty()));
     }
     
     @Test
@@ -228,19 +230,19 @@ public final class FacadeServiceTest {
     @Test
     public void assertIsRunningForReadyJobAndNotRunning() {
         when(runningService.getRunningTasks("test_job")).thenReturn(Collections.emptyList());
-        Assert.assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
+        assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
     }
     
     @Test
     public void assertIsRunningForFailoverJobAndNotRunning() {
         when(runningService.isTaskRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()).getMetaInfo())).thenReturn(false);
-        Assert.assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
+        assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
     }
     
     @Test
     public void assertIsRunningForFailoverJobAndRunning() {
         when(runningService.isTaskRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()).getMetaInfo())).thenReturn(true);
-        Assert.assertTrue(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
+        assertTrue(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
     }
     
     @Test
@@ -277,20 +279,20 @@ public final class FacadeServiceTest {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(disableAppService.isDisabled("test_app")).thenReturn(false);
         when(disableJobService.isDisabled("test_job")).thenReturn(true);
-        Assert.assertTrue(facadeService.isJobDisabled("test_job"));
+        assertTrue(facadeService.isJobDisabled("test_job"));
     }
     
     @Test
     public void assertIsJobEnabled() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        Assert.assertFalse(facadeService.isJobDisabled("test_job"));
+        assertFalse(facadeService.isJobDisabled("test_job"));
     }
     
     @Test
     public void assertIsJobDisabledWhenAppDisabled() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(disableAppService.isDisabled("test_app")).thenReturn(true);
-        Assert.assertTrue(facadeService.isJobDisabled("test_job"));
+        assertTrue(facadeService.isJobDisabled("test_job"));
     }
     
     @Test
@@ -298,7 +300,7 @@ public final class FacadeServiceTest {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(disableAppService.isDisabled("test_app")).thenReturn(false);
         when(disableJobService.isDisabled("test_job")).thenReturn(true);
-        Assert.assertTrue(facadeService.isJobDisabled("test_job"));
+        assertTrue(facadeService.isJobDisabled("test_job"));
     }
     
     @Test

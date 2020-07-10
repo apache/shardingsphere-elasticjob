@@ -29,12 +29,13 @@ import org.apache.shardingsphere.elasticjob.cloud.fixture.job.OtherJob;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestSimpleJob;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,19 +47,19 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorForScriptJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), CoreMatchers.instanceOf(ScriptJobExecutor.class));
+        assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), CoreMatchers.instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), CoreMatchers.instanceOf(SimpleJobExecutor.class));
+        assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), CoreMatchers.instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
-        Assert.assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), CoreMatchers.instanceOf(DataflowJobExecutor.class));
+        assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), CoreMatchers.instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
@@ -71,6 +72,6 @@ public final class JobExecutorFactoryTest {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
-        Assert.assertTrue(executor.hashCode() != anotherExecutor.hashCode());
+        assertTrue(executor.hashCode() != anotherExecutor.hashCode());
     }
 }

@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,19 +66,19 @@ public class JobRunningStatisticJobTest {
     
     @Test
     public void assertBuildJobDetail() {
-        Assert.assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
+        assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
     }
     
     @Test
     public void assertBuildTrigger() {
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
-        Assert.assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
+        assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
     public void assertGetDataMap() {
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
-        Assert.assertThat(jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
+        assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
+        assertThat(jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test

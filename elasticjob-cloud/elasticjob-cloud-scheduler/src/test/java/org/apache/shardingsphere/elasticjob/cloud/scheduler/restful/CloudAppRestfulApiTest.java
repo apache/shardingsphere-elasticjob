@@ -20,12 +20,12 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,41 +35,41 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertRegister() throws Exception {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertRegisterWithExistedName() throws Exception {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(500));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(500));
     }
     
     @Test
     public void assertRegisterWithBadRequest() throws Exception {
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", "\"{\"appName\":\"wrong_job\"}"), is(500));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", "\"{\"appName\":\"wrong_job\"}"), is(500));
     }
     
     @Test
     public void assertUpdate() throws Exception {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(true);
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "PUT", CloudAppJsonConstants.getAppJson("test_app")), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "PUT", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertDetail() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/test_app"), is(CloudAppJsonConstants.getAppJson("test_app")));
+        assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/test_app"), is(CloudAppJsonConstants.getAppJson("test_app")));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
     public void assertDetailWithNotExistedJob() throws Exception {
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/notExistedJobName", "GET", ""), is(404));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/notExistedJobName", "GET", ""), is(404));
     }
     
     @Test
@@ -77,7 +77,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().isExisted("/config/app")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Lists.newArrayList("test_app"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/list"), is("[" + CloudAppJsonConstants.getAppJson("test_app") + "]"));
+        assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/list"), is("[" + CloudAppJsonConstants.getAppJson("test_app") + "]"));
         verify(getRegCenter()).isExisted("/config/app");
         verify(getRegCenter()).getChildrenKeys("/config/app");
         verify(getRegCenter()).get("/config/app/test_app");
@@ -86,14 +86,14 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertDeregister() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app", "DELETE", CloudAppJsonConstants.getAppJson("test_app")), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app", "DELETE", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
     public void assertIsDisabled() throws Exception {
         when(getRegCenter().isExisted("/state/disable/app/test_app")).thenReturn(true);
-        Assert.assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/test_app/disable"), is("true"));
+        assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/test_app/disable"), is("true"));
     }
     
     @Test
@@ -102,7 +102,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/disable", "POST"), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/disable", "POST"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
         verify(getRegCenter()).persist("/state/disable/app/test_app", "test_app");
     }
@@ -113,7 +113,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        Assert.assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/enable", "POST"), is(204));
+        assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/enable", "POST"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
         verify(getRegCenter()).remove("/state/disable/app/test_app");
     }

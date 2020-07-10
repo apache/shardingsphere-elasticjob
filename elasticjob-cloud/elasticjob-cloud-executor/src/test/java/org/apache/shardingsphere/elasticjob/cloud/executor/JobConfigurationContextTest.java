@@ -22,29 +22,31 @@ import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobCon
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class JobConfigurationContextTest {
     
     @Test
     public void assertSimpleJobConfigurationContext() {
-        Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig() instanceof SimpleJobConfiguration);
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig() instanceof SimpleJobConfiguration);
     }
     
     @Test
     public void assertDataflowJobConfigurationContext() {
-        Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.DATAFLOW)).getTypeConfig() instanceof DataflowJobConfiguration);
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.DATAFLOW)).getTypeConfig() instanceof DataflowJobConfiguration);
     }
     
     @Test
     public void assertScriptJobConfigurationContext() {
-        Assert.assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
     }
     
     @Test
@@ -52,16 +54,16 @@ public class JobConfigurationContextTest {
         Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
         context.put("beanName", "springSimpleJobName");
         context.put("applicationContext", "applicationContext.xml");
-        Assert.assertThat(new JobConfigurationContext(context).getBeanName(), is("springSimpleJobName"));
-        Assert.assertThat(new JobConfigurationContext(context).getApplicationContext(), is("applicationContext.xml"));
+        assertThat(new JobConfigurationContext(context).getBeanName(), is("springSimpleJobName"));
+        assertThat(new JobConfigurationContext(context).getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test
     public void assertSimpleJobConfigurationContextWithExecutionType() {
         Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
-        Assert.assertTrue(new JobConfigurationContext(context).isTransient());
+        assertTrue(new JobConfigurationContext(context).isTransient());
         context.put("cron", "0/1 * * * * ?");
-        Assert.assertFalse(new JobConfigurationContext(context).isTransient());
+        assertFalse(new JobConfigurationContext(context).isTransient());
     }
     
     private Map<String, String> buildJobConfigurationContextMap(final JobType jobType) {

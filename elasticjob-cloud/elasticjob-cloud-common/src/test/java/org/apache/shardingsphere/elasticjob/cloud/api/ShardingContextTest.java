@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.cloud.api;
 
 import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.ShardingContextsBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class ShardingContextTest {
     
@@ -30,17 +30,17 @@ public final class ShardingContextTest {
     public void assertNew() {
         ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         ShardingContext actual = new ShardingContext(shardingContexts, 1);
-        Assert.assertThat(actual.getJobName(), is(shardingContexts.getJobName()));
-        Assert.assertThat(actual.getTaskId(), is(shardingContexts.getTaskId()));
-        Assert.assertThat(actual.getShardingTotalCount(), is(shardingContexts.getShardingTotalCount()));
-        Assert.assertThat(actual.getJobParameter(), is(shardingContexts.getJobParameter()));
-        Assert.assertThat(actual.getShardingItem(), is(1));
-        Assert.assertThat(actual.getShardingParameter(), is(shardingContexts.getShardingItemParameters().get(1)));
+        assertThat(actual.getJobName(), is(shardingContexts.getJobName()));
+        assertThat(actual.getTaskId(), is(shardingContexts.getTaskId()));
+        assertThat(actual.getShardingTotalCount(), is(shardingContexts.getShardingTotalCount()));
+        assertThat(actual.getJobParameter(), is(shardingContexts.getJobParameter()));
+        assertThat(actual.getShardingItem(), is(1));
+        assertThat(actual.getShardingParameter(), is(shardingContexts.getShardingItemParameters().get(1)));
     }
     
     @Test
     public void assertToString() {
-        Assert.assertThat(new ShardingContext(ShardingContextsBuilder.getMultipleShardingContexts(), 1).toString(),
+        assertThat(new ShardingContext(ShardingContextsBuilder.getMultipleShardingContexts(), 1).toString(),
                 is("ShardingContext(jobName=test_job, taskId=fake_task_id, shardingTotalCount=2, jobParameter=, shardingItem=1, shardingParameter=B)"));
     }
 }

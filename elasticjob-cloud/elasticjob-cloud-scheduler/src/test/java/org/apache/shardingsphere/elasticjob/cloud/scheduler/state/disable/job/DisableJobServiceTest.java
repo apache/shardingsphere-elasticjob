@@ -18,13 +18,14 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job;
 
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,14 +58,14 @@ public final class DisableJobServiceTest {
     @Test
     public void assertIsDisabled() {
         when(regCenter.isExisted("/state/disable/job/test_job")).thenReturn(true);
-        Assert.assertTrue(disableJobService.isDisabled("test_job"));
+        assertTrue(disableJobService.isDisabled("test_job"));
         verify(regCenter).isExisted("/state/disable/job/test_job");
     }
     
     @Test
     public void assertIsEnabled() {
         when(regCenter.isExisted("/state/disable/job/test_job")).thenReturn(false);
-        Assert.assertFalse(disableJobService.isDisabled("test_job"));
+        assertFalse(disableJobService.isDisabled("test_job"));
         verify(regCenter).isExisted("/state/disable/job/test_job");
     }
 }

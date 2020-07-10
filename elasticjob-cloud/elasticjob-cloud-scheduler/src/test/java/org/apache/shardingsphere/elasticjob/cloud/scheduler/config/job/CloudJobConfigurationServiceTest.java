@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,6 +31,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +70,7 @@ public final class CloudJobConfigurationServiceTest {
     @Test
     public void assertLoadAllWithoutRootNode() {
         when(regCenter.isExisted("/config/job")).thenReturn(false);
-        Assert.assertTrue(configService.loadAll().isEmpty());
+        assertTrue(configService.loadAll().isEmpty());
         verify(regCenter).isExisted("/config/job");
     }
     
@@ -78,8 +80,8 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
-        Assert.assertThat(actual.size(), is(1));
-        Assert.assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
         verify(regCenter).isExisted("/config/job");
         verify(regCenter).getChildrenKeys("/config/job");
         verify(regCenter).get("/config/job/test_job_1");
@@ -88,25 +90,24 @@ public final class CloudJobConfigurationServiceTest {
     
     @Test
     public void assertLoadWithoutConfig() {
-        Optional<CloudJobConfiguration> actual = configService.load("test_job");
-        Assert.assertFalse(actual.isPresent());
+        assertFalse(configService.load("test_job").isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
         when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
-        Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getJobName(), is("test_job"));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getJobName(), is("test_job"));
     }
     
     @Test
     public void assertLoadWithSpringConfig() {
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
-        Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getBeanName(), is("springSimpleJob"));
-        Assert.assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
+        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

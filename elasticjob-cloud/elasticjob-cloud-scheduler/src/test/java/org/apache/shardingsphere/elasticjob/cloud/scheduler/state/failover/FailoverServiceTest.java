@@ -27,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnviron
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +42,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -110,7 +111,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertGetAllEligibleJobContextsWithoutRootNode() {
         when(regCenter.isExisted("/state/failover")).thenReturn(false);
-        Assert.assertTrue(failoverService.getAllEligibleJobContexts().isEmpty());
+        assertTrue(failoverService.getAllEligibleJobContexts().isEmpty());
         verify(regCenter).isExisted("/state/failover");
     }
     
@@ -129,9 +130,9 @@ public final class FailoverServiceTest {
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(eligibleJobNodePath1))).thenReturn(true);
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(eligibleJobNodePath2))).thenReturn(false);
         Collection<JobContext> actual = failoverService.getAllEligibleJobContexts();
-        Assert.assertThat(actual.size(), is(1));
-        Assert.assertThat(actual.iterator().next().getAssignedShardingItems().size(), is(1));
-        Assert.assertThat(actual.iterator().next().getAssignedShardingItems().get(0), is(1));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.iterator().next().getAssignedShardingItems().size(), is(1));
+        assertThat(actual.iterator().next().getAssignedShardingItems().get(0), is(1));
         verify(regCenter).isExisted("/state/failover");
         verify(regCenter).remove("/state/failover/task_empty_job");
         verify(regCenter).remove("/state/failover/not_existed_job");
@@ -152,14 +153,14 @@ public final class FailoverServiceTest {
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
         when(regCenter.get("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(taskNode.getTaskNodeValue());
-        Assert.assertThat(failoverService.getTaskId(taskNode.getMetaInfo()).get(), is(taskNode.getTaskNodeValue()));
+        assertThat(failoverService.getTaskId(taskNode.getMetaInfo()).get(), is(taskNode.getTaskNodeValue()));
         verify(regCenter, times(2)).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
     }
     
     @Test
     public void assertGetAllFailoverTasksWithoutRootNode() {
         when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(false);
-        Assert.assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         verify(regCenter).isExisted(FailoverNode.ROOT);
     }
     
@@ -167,7 +168,7 @@ public final class FailoverServiceTest {
     public void assertGetAllFailoverTasksWhenRootNodeHasNoChild() {
         when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
         when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Collections.emptyList());
-        Assert.assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         verify(regCenter).isExisted(FailoverNode.ROOT);
         verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
     }
@@ -177,7 +178,7 @@ public final class FailoverServiceTest {
         when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
         when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"))).thenReturn(Collections.emptyList());
-        Assert.assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         verify(regCenter).isExisted(FailoverNode.ROOT);
         verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
         verify(regCenter).getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"));
@@ -196,15 +197,15 @@ public final class FailoverServiceTest {
         when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@1"))).thenReturn(uuid2);
         when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_2@-@0"))).thenReturn(uuid3);
         Map<String, Collection<FailoverTaskInfo>> result = failoverService.getAllFailoverTasks();
-        Assert.assertThat(result.size(), is(2));
-        Assert.assertThat(result.get("test_job_1").size(), is(2));
-        Assert.assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getTaskInfo().toString(), is("test_job_1@-@0"));
-        Assert.assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getOriginalTaskId(), is(uuid1));
-        Assert.assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getTaskInfo().toString(), is("test_job_1@-@1"));
-        Assert.assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getOriginalTaskId(), is(uuid2));
-        Assert.assertThat(result.get("test_job_2").size(), is(1));
-        Assert.assertThat(result.get("test_job_2").iterator().next().getTaskInfo().toString(), is("test_job_2@-@0"));
-        Assert.assertThat(result.get("test_job_2").iterator().next().getOriginalTaskId(), is(uuid3));
+        assertThat(result.size(), is(2));
+        assertThat(result.get("test_job_1").size(), is(2));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getTaskInfo().toString(), is("test_job_1@-@0"));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getOriginalTaskId(), is(uuid1));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getTaskInfo().toString(), is("test_job_1@-@1"));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getOriginalTaskId(), is(uuid2));
+        assertThat(result.get("test_job_2").size(), is(1));
+        assertThat(result.get("test_job_2").iterator().next().getTaskInfo().toString(), is("test_job_2@-@0"));
+        assertThat(result.get("test_job_2").iterator().next().getOriginalTaskId(), is(uuid3));
         verify(regCenter).isExisted(FailoverNode.ROOT);
         verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
         verify(regCenter).getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_1"));

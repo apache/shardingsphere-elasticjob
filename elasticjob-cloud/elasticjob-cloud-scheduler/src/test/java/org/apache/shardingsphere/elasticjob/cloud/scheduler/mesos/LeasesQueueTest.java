@@ -18,10 +18,11 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class LeasesQueueTest {
     
@@ -29,9 +30,9 @@ public final class LeasesQueueTest {
     
     @Test
     public void assertOperate() {
-        Assert.assertTrue(leasesQueue.drainTo().isEmpty());
+        assertTrue(leasesQueue.drainTo().isEmpty());
         leasesQueue.offer(OfferBuilder.createOffer("offer_1"));
         leasesQueue.offer(OfferBuilder.createOffer("offer_2"));
-        Assert.assertThat(leasesQueue.drainTo().size(), is(2));
+        assertThat(leasesQueue.drainTo().size(), is(2));
     }
 }

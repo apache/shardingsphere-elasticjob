@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.hamcrest.core.IsNot;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Set;
@@ -33,6 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class ExecutorServiceHandlerRegistryTest {
     
@@ -45,12 +45,12 @@ public final class ExecutorServiceHandlerRegistryTest {
     public void assertRemove() {
         ExecutorService actual = ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler());
         ExecutorServiceHandlerRegistry.remove("test_job");
-        Assert.assertThat(actual, IsNot.not(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler())));
+        assertThat(actual, IsNot.not(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler())));
     }
     
     @Test
     public void assertGetExecutorServiceHandlerForSameThread() {
-        Assert.assertThat(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler()),
+        assertThat(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler()),
                 is(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler())));
     }
     
@@ -65,8 +65,8 @@ public final class ExecutorServiceHandlerRegistryTest {
             executorService.submit(new GetExecutorServiceHandlerTask(barrier, latch, set));
         }
         latch.await();
-        Assert.assertThat(set.size(), is(1));
-        Assert.assertThat(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler()), is(set.iterator().next()));
+        assertThat(set.size(), is(1));
+        assertThat(ExecutorServiceHandlerRegistry.getExecutorServiceHandler("test_job", new DefaultExecutorServiceHandler()), is(set.iterator().next()));
     }
     
     @RequiredArgsConstructor
