@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.job;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;

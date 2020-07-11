@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle;
 
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 import org.apache.curator.test.TestingServer;
 import org.junit.BeforeClass;
 

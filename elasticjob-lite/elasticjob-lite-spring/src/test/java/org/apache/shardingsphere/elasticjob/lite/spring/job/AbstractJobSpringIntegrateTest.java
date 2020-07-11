@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.job;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;

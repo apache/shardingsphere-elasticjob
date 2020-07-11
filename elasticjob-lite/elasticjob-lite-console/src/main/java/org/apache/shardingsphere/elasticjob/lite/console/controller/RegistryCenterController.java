@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterCo
 import org.apache.shardingsphere.elasticjob.lite.console.service.RegistryCenterConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionRegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegException;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

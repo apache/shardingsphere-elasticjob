@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.console.service.impl.RegistryCe
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionRegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegException;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
