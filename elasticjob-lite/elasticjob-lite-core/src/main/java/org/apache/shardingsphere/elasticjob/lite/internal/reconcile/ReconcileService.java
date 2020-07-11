@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.concurrent.TimeUnit;
 

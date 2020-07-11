@@ -17,12 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.security.WwwAuthFilter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * Restful server.

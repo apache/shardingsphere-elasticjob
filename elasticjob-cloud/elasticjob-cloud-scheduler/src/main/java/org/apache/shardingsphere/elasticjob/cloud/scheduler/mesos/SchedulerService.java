@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.MesosConfiguration;
@@ -32,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDServic
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 

@@ -23,9 +23,9 @@ import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 

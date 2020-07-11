@@ -21,7 +21,7 @@ import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.io.File;
 import java.io.IOException;

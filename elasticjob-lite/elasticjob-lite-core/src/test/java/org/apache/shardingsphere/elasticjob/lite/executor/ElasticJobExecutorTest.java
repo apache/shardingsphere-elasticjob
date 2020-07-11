@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironme
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;

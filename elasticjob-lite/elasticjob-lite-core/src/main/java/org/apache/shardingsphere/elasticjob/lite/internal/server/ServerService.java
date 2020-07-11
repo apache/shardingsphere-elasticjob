@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
 
 import java.util.List;

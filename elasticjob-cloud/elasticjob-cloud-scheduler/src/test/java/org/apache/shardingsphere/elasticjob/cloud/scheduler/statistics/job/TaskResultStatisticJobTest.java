@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 import java.util.Optional;
@@ -82,7 +81,7 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
+    public void assertExecuteWhenRepositoryIsEmpty() {
         Optional<TaskResultStatistics> latestOne = Optional.empty();
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
@@ -95,7 +94,7 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() throws SchedulerException {
+    public void assertExecute() {
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
             Optional<TaskResultStatistics> latestOne = Optional.of(new TaskResultStatistics(0, 0, each, StatisticTimeUtils.getStatisticTime(each, -3)));

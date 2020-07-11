@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,8 +24,8 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.util.List;
 

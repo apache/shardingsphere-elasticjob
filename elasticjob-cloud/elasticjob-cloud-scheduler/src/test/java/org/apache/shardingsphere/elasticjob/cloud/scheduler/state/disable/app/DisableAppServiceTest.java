@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app;
 
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

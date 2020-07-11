@@ -17,16 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.SchedulerElectionCandidate;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperElectionService;
-import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperRegistryCenter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.SchedulerElectionCandidate;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperElectionService;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 
 import java.util.concurrent.CountDownLatch;
 

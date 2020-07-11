@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.instance.TriggerListen
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.MonitorExecutionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
 
