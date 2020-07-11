@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
 
 import java.util.List;

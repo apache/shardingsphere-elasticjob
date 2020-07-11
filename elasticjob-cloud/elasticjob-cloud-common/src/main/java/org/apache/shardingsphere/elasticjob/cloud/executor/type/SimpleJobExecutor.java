@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.AbstractElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.fixture;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 
 public final class TestJob implements SimpleJob {

@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
 
 import java.util.List;
 
