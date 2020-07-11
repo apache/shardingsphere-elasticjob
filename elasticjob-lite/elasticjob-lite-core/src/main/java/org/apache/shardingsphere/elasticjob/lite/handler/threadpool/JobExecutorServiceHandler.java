@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.threadpool;
 
-import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
 
 import java.util.concurrent.ExecutorService;
 
