@@ -37,13 +37,13 @@ public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
-    private final JobConfigurationContext jobConfig;
+    private final JobTypeConfiguration jobConfig;
     
     private final JobEventBus jobEventBus;
     
     @Override
     public JobTypeConfiguration loadJobRootConfiguration(final boolean fromCache) {
-        return jobConfig.getTypeConfig();
+        return jobConfig;
     }
     
     @Override

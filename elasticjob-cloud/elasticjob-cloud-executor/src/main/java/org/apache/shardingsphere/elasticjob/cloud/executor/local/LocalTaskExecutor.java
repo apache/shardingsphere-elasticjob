@@ -56,7 +56,7 @@ public final class LocalTaskExecutor {
     @SuppressWarnings("unchecked")
     public void execute() {
         AbstractElasticJobExecutor jobExecutor;
-        CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobConfigurationContext(), new JobEventBus());
+        CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobConfigurationContext().getTypeConfig(), new JobEventBus());
         switch (localCloudJobConfiguration.getTypeConfig().getJobType()) {
             case SIMPLE:
                 jobExecutor = new SimpleJobExecutor(getJobInstance(SimpleJob.class), jobFacade);

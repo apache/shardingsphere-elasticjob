@@ -123,7 +123,7 @@ public final class TaskExecutor implements Executor {
             JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
             try {
                 ElasticJob elasticJob = getElasticJobInstance(jobConfig);
-                final CloudJobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
+                final CloudJobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), jobEventBus);
                 if (jobConfig.isTransient()) {
                     JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
