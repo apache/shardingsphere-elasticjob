@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-common</artifactId>
+        <artifactId>elasticjob-infra</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-registry-center</artifactId>
