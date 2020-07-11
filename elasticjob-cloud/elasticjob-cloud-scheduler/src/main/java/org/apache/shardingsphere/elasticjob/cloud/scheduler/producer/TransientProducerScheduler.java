@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;

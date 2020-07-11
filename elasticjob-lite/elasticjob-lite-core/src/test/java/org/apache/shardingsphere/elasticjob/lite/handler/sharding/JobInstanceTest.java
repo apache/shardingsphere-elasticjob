@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.sharding;
 
-import org.apache.shardingsphere.elasticjob.infra.common.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

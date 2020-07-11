@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
 
 import java.util.concurrent.ExecutorService;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.ElasticJobExecutorService;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 
 /**
  * Abstract job executor service handler.

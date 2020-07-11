@@ -26,8 +26,8 @@ import org.apache.shardingsphere.elasticjob.cloud.fixture.ShardingContextsBuilde
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.JobCaller;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestSimpleJob;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
 import org.junit.Test;

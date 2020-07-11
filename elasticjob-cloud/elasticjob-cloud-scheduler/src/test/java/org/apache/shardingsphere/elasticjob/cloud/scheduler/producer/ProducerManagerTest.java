@@ -32,7 +32,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConf
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

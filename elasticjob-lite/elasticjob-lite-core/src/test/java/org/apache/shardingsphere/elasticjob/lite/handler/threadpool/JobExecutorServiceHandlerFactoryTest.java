@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.threadpool;
 
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler;
 import org.junit.Test;

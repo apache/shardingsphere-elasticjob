@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.handler.sharding;
 
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.AverageAllocationJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.OdevitySortByNameJobShardingStrategy;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

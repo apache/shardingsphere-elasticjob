@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfigu
 import org.apache.shardingsphere.elasticjob.cloud.executor.AbstractElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 import java.io.IOException;
 

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.config;
 
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 
 import java.util.Collections;

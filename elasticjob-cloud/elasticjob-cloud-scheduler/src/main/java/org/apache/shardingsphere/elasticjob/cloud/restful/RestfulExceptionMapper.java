@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.restful;
 
-import org.apache.shardingsphere.elasticjob.infra.common.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

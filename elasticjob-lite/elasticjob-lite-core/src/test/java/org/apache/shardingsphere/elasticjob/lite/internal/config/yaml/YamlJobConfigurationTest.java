@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.common.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

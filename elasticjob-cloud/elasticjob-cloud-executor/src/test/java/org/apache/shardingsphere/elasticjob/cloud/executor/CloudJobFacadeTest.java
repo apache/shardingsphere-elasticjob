@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;

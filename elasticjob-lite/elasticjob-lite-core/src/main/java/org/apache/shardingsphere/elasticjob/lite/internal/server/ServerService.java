@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 
 import java.util.List;
 

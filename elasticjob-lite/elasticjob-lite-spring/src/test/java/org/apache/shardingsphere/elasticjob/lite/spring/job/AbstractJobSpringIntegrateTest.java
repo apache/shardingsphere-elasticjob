@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.DataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.fixture.job.FooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

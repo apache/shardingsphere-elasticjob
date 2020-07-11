@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import static org.mockito.Mockito.verify;
