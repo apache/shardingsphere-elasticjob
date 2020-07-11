@@ -31,9 +31,10 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-api</module>
+        <module>elasticjob-common</module>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
-        <module>elasticjob-common</module>
     </modules>
     
     <properties>
