@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;

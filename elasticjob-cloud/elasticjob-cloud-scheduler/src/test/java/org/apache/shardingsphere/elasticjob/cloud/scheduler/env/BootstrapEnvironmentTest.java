@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.cloud.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;

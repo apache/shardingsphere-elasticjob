@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
@@ -30,6 +29,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

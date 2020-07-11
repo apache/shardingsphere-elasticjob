@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.fixture;
 
-import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.cloud.reg.exception.RegExceptionHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,15 +31,7 @@ public final class EmbedTestingServer {
     private static final int PORT = 3181;
     
     private static volatile TestingServer testingServer;
-
-    /**
-     * Get connection url.
-     * @return the connection
-     */
-    public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
-    }
-
+    
     /**
      * Start the embed server.
      */

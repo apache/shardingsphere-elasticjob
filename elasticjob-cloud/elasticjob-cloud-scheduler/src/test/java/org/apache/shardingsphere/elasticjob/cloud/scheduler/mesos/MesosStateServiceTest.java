@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.gson.JsonArray;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.AbstractCloudRestfulApiTest;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
