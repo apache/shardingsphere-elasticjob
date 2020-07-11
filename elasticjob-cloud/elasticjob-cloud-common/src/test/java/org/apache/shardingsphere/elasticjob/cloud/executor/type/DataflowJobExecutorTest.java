@@ -97,7 +97,6 @@ public final class DataflowJobExecutorTest {
     public void assertExecuteWhenFetchDataIsNotEmptyForStreamingProcessAndSingleShardingItem() {
         setUp(true, ShardingContextsBuilder.getSingleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.singletonList(1), Collections.emptyList());
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         dataflowJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller).processData(1);
@@ -109,7 +108,6 @@ public final class DataflowJobExecutorTest {
         setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.singletonList(1), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Collections.singletonList(2), Collections.emptyList());
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         dataflowJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller, times(2)).fetchData(1);
@@ -123,7 +121,6 @@ public final class DataflowJobExecutorTest {
         setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.singletonList(1), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(2, 3), Collections.emptyList());
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         doThrow(new IllegalStateException()).when(jobCaller).processData(2);
         dataflowJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
@@ -137,7 +134,6 @@ public final class DataflowJobExecutorTest {
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsEligibleForJobRunningForStreamingProcess() {
         setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         when(jobCaller.fetchData(0)).thenReturn(Arrays.asList(1, 2), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(3, 4), Collections.emptyList());
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
@@ -152,8 +148,7 @@ public final class DataflowJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunningForStreamingProcess() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
+        setUp(false, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Arrays.asList(1, 2));
         when(jobCaller.fetchData(1)).thenReturn(Arrays.asList(3, 4));
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);

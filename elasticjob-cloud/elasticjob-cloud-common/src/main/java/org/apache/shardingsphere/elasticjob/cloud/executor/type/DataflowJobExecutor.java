@@ -41,17 +41,17 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     protected void process(final ShardingContext shardingContext) {
         DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) getJobRootConfig().getTypeConfig();
         if (dataflowConfig.isStreamingProcess()) {
-            streamingExecute(shardingContext);
+            streamingExecute(shardingContext, dataflowConfig);
         } else {
             oneOffExecute(shardingContext);
         }
     }
     
-    private void streamingExecute(final ShardingContext shardingContext) {
+    private void streamingExecute(final ShardingContext shardingContext, final DataflowJobConfiguration dataflowConfig) {
         List<Object> data = fetchData(shardingContext);
         while (null != data && !data.isEmpty()) {
             processData(shardingContext, data);
-            if (!getJobFacade().isEligibleForJobRunning()) {
+            if (!dataflowConfig.isStreamingProcess()) {
                 break;
             }
             data = fetchData(shardingContext);
