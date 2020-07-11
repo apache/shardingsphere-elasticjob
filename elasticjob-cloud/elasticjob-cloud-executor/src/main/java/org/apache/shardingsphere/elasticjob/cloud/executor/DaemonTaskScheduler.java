@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;

@@ -26,6 +26,7 @@ import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;

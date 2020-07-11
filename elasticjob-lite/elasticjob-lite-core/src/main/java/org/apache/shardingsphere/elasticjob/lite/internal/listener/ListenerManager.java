@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.RescheduleListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.ElectionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverListenerManager;

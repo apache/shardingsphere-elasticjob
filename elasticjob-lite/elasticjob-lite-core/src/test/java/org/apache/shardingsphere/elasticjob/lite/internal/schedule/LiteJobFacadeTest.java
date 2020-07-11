@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJob
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;

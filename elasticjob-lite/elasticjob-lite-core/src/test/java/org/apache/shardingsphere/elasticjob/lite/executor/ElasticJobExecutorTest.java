@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;

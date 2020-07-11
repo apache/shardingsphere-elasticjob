@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandlerRegistry;

@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
