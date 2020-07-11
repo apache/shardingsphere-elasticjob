@@ -75,7 +75,7 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertLoadJobRootConfiguration() {
-        assertThat(jobFacade.loadJobRootConfiguration(true), is(jobConfig));
+        assertThat(jobFacade.loadJobRootConfiguration(true), is(jobConfig.getTypeConfig()));
     }
     
     @Test

@@ -39,7 +39,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) getJobRootConfig().getTypeConfig();
+        DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) getJobConfig();
         if (dataflowConfig.isStreamingProcess()) {
             streamingExecute(shardingContext, dataflowConfig);
         } else {

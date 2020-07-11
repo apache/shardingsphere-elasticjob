@@ -19,8 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -43,8 +42,8 @@ public final class CloudJobFacade implements JobFacade {
     private final JobEventBus jobEventBus;
     
     @Override
-    public JobRootConfiguration loadJobRootConfiguration(final boolean fromCache) {
-        return jobConfig;
+    public JobTypeConfiguration loadJobRootConfiguration(final boolean fromCache) {
+        return jobConfig.getTypeConfig();
     }
     
     @Override
@@ -80,11 +79,6 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
         return false;
-    }
-    
-    @Override
-    public boolean isEligibleForJobRunning() {
-        return jobConfig.getTypeConfig() instanceof DataflowJobConfiguration && ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess();
     }
     
     @Override
