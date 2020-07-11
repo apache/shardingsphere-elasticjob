@@ -22,8 +22,8 @@ import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.env.TimeService;
+import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.env.TimeService;
 
 /**
  * Distributed once elasticjob listener.

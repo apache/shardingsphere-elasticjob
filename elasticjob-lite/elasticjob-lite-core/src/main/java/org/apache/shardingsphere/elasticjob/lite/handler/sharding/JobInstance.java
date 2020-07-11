@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.handler.sharding;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.env.IpUtils;
 
 import java.lang.management.ManagementFactory;
 

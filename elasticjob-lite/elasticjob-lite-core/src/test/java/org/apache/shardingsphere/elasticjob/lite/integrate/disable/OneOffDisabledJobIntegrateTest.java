@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.disable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
 import org.junit.Test;
 
 public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTest {

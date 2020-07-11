@@ -24,9 +24,9 @@ import org.apache.shardingsphere.elasticjob.lite.integrate.BaseIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.yaml.YamlEngine;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
