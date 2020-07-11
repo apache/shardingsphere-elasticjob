@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 
 public final class FailedJob implements ElasticJob {
 }

@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 import java.io.Serializable;
 import java.util.Map;

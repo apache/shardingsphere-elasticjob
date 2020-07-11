@@ -15,10 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.job;
+package org.apache.shardingsphere.elasticjob.api;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
- * ElasticJob interface.
+ * Sharding context.
  */
-public interface ElasticJob {
+@RequiredArgsConstructor
+@Getter
+@ToString
+public final class ShardingContext {
+    
+    private final String jobName;
+    
+    private final String taskId;
+    
+    private final int shardingTotalCount;
+    
+    private final String jobParameter;
+    
+    private final int shardingItem;
+    
+    private final String shardingParameter;
 }

@@ -30,6 +30,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-api</module>
         <module>elasticjob-registry-center</module>
         <module>elasticjob-tracing</module>
     </modules>

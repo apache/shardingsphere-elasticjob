@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.item.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spi.TypedSPI;
 
