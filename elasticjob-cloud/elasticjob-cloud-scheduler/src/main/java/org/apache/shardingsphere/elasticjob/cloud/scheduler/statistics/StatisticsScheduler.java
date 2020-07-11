@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.StatisticJob;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobStatisticException;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobStatisticException;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;

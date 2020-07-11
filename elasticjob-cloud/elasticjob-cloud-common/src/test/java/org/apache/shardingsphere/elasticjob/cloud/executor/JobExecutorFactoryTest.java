@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
@@ -28,6 +27,7 @@ import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExcep
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.OtherJob;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

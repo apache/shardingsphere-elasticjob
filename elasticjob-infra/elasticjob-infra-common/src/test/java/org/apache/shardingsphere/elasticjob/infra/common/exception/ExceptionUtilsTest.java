@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.exception;
+package org.apache.shardingsphere.elasticjob.infra.common.exception;
 
-/**
- * Job statistic exception.
- */
-public final class JobStatisticException extends RuntimeException {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+public final class ExceptionUtilsTest {
     
-    private static final long serialVersionUID = -2502533914008085601L;
+    @Test
+    public void assertTransformWithError() {
+        assertTrue(ExceptionUtils.transform(new Error("Error")).startsWith("java.lang.Error"));
+    }
     
-    public JobStatisticException(final Exception ex) {
-        super(ex);
+    @Test
+    public void assertTransformWithException() {
+        assertTrue(ExceptionUtils.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
+    }
+    
+    @Test
+    public void assertTransformWithNull() {
+        assertThat(ExceptionUtils.transform(null), is(""));
     }
 }

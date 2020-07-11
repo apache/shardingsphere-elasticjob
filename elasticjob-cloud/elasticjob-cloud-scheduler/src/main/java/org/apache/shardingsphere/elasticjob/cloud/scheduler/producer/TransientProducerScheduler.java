@@ -17,16 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
+import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
-import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -145,7 +144,7 @@ final class TransientProducerScheduler {
         private ReadyService readyService;
         
         @Override
-        public void execute(final JobExecutionContext context) throws JobExecutionException {
+        public void execute(final JobExecutionContext context) {
             List<String> jobNames = repository.get(context.getJobDetail().getKey());
             for (String each : jobNames) {
                 readyService.addTransient(each);

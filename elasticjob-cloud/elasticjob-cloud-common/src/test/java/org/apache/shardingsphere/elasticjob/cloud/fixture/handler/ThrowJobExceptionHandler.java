@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.fixture.handler;
 
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 
 public final class ThrowJobExceptionHandler implements JobExceptionHandler {
     

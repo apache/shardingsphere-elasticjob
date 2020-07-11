@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,18 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.exception;
+package org.apache.shardingsphere.elasticjob.infra.common.exception;
 
-import org.junit.Test;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-public class JobStatisticExceptionTest {
+/**
+ * Exception utilities.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ExceptionUtils {
     
-    @Test
-    public void assertGetCause() {
-        assertThat(new JobStatisticException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    /**
+     * Transform throwable to string.
+     *
+     * @param cause cause
+     * @return string
+     */
+    public static String transform(final Throwable cause) {
+        if (null == cause) {
+            return "";
+        }
+        StringWriter result = new StringWriter();
+        try (PrintWriter writer = new PrintWriter(result)) {
+            cause.printStackTrace(writer);
+        }
+        return result.toString();
     }
-
 }
