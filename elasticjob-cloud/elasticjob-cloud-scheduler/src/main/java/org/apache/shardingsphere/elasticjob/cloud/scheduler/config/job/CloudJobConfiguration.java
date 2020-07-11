@@ -17,17 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 
 /**
  * Cloud job configuration.
  */
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public final class CloudJobConfiguration implements JobRootConfiguration {
     
@@ -43,7 +43,7 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private String beanName;
     
-    private String applicationContext; 
+    private String applicationContext;
     
     /**
      * Get job name.
