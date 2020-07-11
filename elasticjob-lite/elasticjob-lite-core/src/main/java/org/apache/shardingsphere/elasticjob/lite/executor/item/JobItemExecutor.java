@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor.item;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 
 /**

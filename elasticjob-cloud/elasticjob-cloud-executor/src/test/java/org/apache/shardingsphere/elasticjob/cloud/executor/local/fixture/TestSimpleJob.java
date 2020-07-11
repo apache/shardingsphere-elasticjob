@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;

@@ -17,20 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
@@ -151,7 +150,7 @@ public final class DaemonTaskScheduler {
         private Protos.TaskID taskId;
         
         @Override
-        public void execute(final JobExecutionContext context) throws JobExecutionException {
+        public void execute(final JobExecutionContext context) {
             ShardingContexts shardingContexts = jobFacade.getShardingContexts();
             int jobEventSamplingCount = shardingContexts.getJobEventSamplingCount();
             int currentJobEventSamplingCount = shardingContexts.getCurrentJobEventSamplingCount();

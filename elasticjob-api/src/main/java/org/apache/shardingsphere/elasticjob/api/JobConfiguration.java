@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.job;
+package org.apache.shardingsphere.elasticjob.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

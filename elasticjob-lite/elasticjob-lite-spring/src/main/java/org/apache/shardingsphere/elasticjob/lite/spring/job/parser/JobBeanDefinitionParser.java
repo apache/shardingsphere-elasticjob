@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.job.parser;
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobBeanDefinitionTag;
 import org.apache.shardingsphere.elasticjob.lite.spring.job.tag.JobListenerBeanDefinitionTag;
 import org.springframework.beans.factory.config.BeanDefinition;

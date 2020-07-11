@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.job;
+package org.apache.shardingsphere.elasticjob.api;
 
 import org.junit.Test;
 

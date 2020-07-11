@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.dataflow.job.DataflowJob;
 
 import java.util.List;

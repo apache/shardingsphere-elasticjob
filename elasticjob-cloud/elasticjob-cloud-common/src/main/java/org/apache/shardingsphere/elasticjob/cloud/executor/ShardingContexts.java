@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 import java.io.Serializable;
 import java.util.Map;

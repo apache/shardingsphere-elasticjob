@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategyFactory;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;

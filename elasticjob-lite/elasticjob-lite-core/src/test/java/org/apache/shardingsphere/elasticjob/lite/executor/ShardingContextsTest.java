@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.executor;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.junit.Test;
 
 import java.util.HashMap;

@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.exception.ExceptionUtil;
 import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;

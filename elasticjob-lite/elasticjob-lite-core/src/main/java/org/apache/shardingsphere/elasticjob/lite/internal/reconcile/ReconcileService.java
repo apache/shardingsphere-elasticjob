@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.reconcile;
 
 import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
