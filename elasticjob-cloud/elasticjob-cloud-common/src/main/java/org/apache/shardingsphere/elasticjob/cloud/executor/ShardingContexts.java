@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.shardingsphere.elasticjob.cloud.api.ShardingContext;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -86,5 +87,16 @@ public final class ShardingContexts implements Serializable {
         this.jobParameter = jobParameter;
         this.shardingItemParameters = shardingItemParameters;
         this.jobEventSamplingCount = jobEventSamplingCount;
+    }
+    
+    
+    /**
+     * Create sharding context.
+     *
+     * @param shardingItem sharding item
+     * @return sharding context
+     */
+    public ShardingContext createShardingContext(final int shardingItem) {
+        return new ShardingContext(jobName, taskId, shardingTotalCount, jobParameter, shardingItem, shardingItemParameters.get(shardingItem));
     }
 }

@@ -199,7 +199,7 @@ public abstract class AbstractElasticJobExecutor {
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         JobExecutionEvent completeEvent;
         try {
-            process(new ShardingContext(shardingContexts, item));
+            process(shardingContexts.createShardingContext(item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             if (shardingContexts.isAllowSendJobEvent()) {

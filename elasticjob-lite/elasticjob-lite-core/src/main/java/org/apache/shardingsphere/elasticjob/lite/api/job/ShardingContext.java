@@ -18,12 +18,13 @@
 package org.apache.shardingsphere.elasticjob.lite.api.job;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 
 /**
  * Sharding context.
  */
+@RequiredArgsConstructor
 @Getter
 @ToString
 public final class ShardingContext {
@@ -39,13 +40,4 @@ public final class ShardingContext {
     private final int shardingItem;
     
     private final String shardingParameter;
-    
-    public ShardingContext(final ShardingContexts shardingContexts, final int shardingItem) {
-        jobName = shardingContexts.getJobName();
-        taskId = shardingContexts.getTaskId();
-        shardingTotalCount = shardingContexts.getShardingTotalCount();
-        jobParameter = shardingContexts.getJobParameter();
-        this.shardingItem = shardingItem;
-        shardingParameter = shardingContexts.getShardingItemParameters().get(shardingItem);
-    }
 }

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.api;
+package org.apache.shardingsphere.elasticjob.lite.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.fixture.ShardingContextsBuilder;
+import org.apache.shardingsphere.elasticjob.lite.api.job.ShardingContext;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class ShardingContextTest {
+public final class ShardingContextsTest {
     
     @Test
-    public void assertNew() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
-        ShardingContext actual = new ShardingContext(shardingContexts, 1);
+    public void assertCreateShardingContext() {
+        ShardingContexts shardingContexts = createShardingContexts();
+        ShardingContext actual = shardingContexts.createShardingContext(1);
         assertThat(actual.getJobName(), is(shardingContexts.getJobName()));
         assertThat(actual.getTaskId(), is(shardingContexts.getTaskId()));
         assertThat(actual.getShardingTotalCount(), is(shardingContexts.getShardingTotalCount()));
@@ -38,9 +40,10 @@ public final class ShardingContextTest {
         assertThat(actual.getShardingParameter(), is(shardingContexts.getShardingItemParameters().get(1)));
     }
     
-    @Test
-    public void assertToString() {
-        assertThat(new ShardingContext(ShardingContextsBuilder.getMultipleShardingContexts(), 1).toString(),
-                is("ShardingContext(jobName=test_job, taskId=fake_task_id, shardingTotalCount=2, jobParameter=, shardingItem=1, shardingParameter=B)"));
+    private ShardingContexts createShardingContexts() {
+        Map<Integer, String> map = new HashMap<>(2, 1);
+        map.put(0, "A");
+        map.put(1, "B");
+        return new ShardingContexts("fake_task_id", "test_job", 2, "", map);
     }
 }
