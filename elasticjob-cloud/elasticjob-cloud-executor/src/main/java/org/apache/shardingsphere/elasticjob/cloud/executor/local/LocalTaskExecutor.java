@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Task executor.
+ * Local task executor.
  */
 @RequiredArgsConstructor
 public final class LocalTaskExecutor {

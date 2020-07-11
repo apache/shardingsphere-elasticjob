@@ -34,8 +34,6 @@ import java.util.Map;
  */
 public final class JobTypeConfigurationUtil {
     
-    private static final String IGNORE_CRON = "ignoredCron";
-    
     /**
      * Create job configuration context.
      * 
@@ -47,7 +45,7 @@ public final class JobTypeConfigurationUtil {
         String jobClass = jobConfigurationMap.get("jobClass");
         String jobType = jobConfigurationMap.get("jobType");
         String jobName = jobConfigurationMap.get("jobName");
-        String cron = Strings.isNullOrEmpty(jobConfigurationMap.get("cron")) ? IGNORE_CRON : jobConfigurationMap.get("cron");
+        String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
