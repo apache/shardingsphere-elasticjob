@@ -47,9 +47,6 @@ public final class DaemonTaskSchedulerTest {
     private JobExecutionContext jobExecutionContext;
     
     @Mock
-    private AbstractElasticJobExecutor jobExecutor;
-    
-    @Mock
     private ShardingContexts shardingContexts;
     
     private TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
