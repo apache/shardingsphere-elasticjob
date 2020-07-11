@@ -32,7 +32,7 @@
     
     <modules>
         <module>elasticjob-api</module>
-        <module>elasticjob-common</module>
+        <module>elasticjob-infra</module>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
     </modules>
