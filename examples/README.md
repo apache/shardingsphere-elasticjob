@@ -1,5 +1,5 @@
-# elastic-job-example
+# ElasticJob Example
 
-Elastic-Job 2.x example.
+ElasticJob 2.x example.
 
 Example for 1.x please see tags in `https://github.com/elasticjob/elastic-job/tree/${tag}/elastic-job-example`

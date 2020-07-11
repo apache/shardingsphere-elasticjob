@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        http://shardingsphere.apache.org/schema/elasticjob
+                        http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                        ">
+    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
+    <context:property-placeholder location="classpath:conf/*.properties" />
+    
+    <elasticjob:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
+
+    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999"/>
+
+    <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${event.rdb.driver}" />
+        <property name="url" value="${event.rdb.url}" />
+        <property name="username" value="${event.rdb.username}" />
+        <property name="password" value="${event.rdb.password}" />
+    </bean>
+    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    
+    <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
+    <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
+    
+    <elasticjob:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}" sharding-item-parameters="${simple.shardingItemParameters}" monitor-execution="${simple.monitorExecution}" failover="${simple.failover}" description="${simple.description}" 
+             disabled="${simple.disabled}" overwrite="${simple.overwrite}" />
+    
+    <elasticjob:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" description="${dataflow.description}" 
+             disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
+        <props>
+            <prop key="streaming.process">${dataflow.streamingProcess}</prop>
+        </props>
+    </elasticjob:job>
+    
+    <!-- use absolute path to run script job -->
+    <!--<elasticjob:job id="${script.id}" registry-center-ref="regCenter" -->
+             <!--sharding-total-count="${script.shardingTotalCount}" cron="${script.cron}" sharding-item-parameters="${script.shardingItemParameters}" description="${script.description}" -->
+             <!--overwrite="${script.overwrite}">-->
+        <!--<props>-->
+            <!--<prop key="script.command.line">${script.scriptCommandLine}</prop>-->
+        <!--</props>-->
+    <!--</elasticjob:job>-->
+</beans>
