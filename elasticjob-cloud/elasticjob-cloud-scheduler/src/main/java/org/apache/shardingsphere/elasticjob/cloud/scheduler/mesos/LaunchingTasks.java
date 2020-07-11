@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.VMAssignmentResult;

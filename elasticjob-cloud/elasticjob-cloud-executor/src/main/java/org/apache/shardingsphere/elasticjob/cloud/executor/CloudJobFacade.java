@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;

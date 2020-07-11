@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.StateNode;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

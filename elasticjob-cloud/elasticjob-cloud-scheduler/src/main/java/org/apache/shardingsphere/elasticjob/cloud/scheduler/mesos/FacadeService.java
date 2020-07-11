@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;

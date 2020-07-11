@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

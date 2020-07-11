@@ -23,7 +23,7 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;

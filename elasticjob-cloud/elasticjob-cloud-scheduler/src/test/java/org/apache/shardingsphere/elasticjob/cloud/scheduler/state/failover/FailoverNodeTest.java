@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.junit.Test;
 

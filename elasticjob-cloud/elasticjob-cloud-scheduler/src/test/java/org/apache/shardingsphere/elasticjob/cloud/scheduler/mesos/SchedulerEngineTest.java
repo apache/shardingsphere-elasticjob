@@ -21,7 +21,7 @@ import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;

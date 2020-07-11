@@ -26,7 +26,7 @@ import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;

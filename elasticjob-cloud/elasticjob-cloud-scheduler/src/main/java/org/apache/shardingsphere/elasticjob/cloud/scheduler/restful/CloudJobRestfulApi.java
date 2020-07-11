@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;

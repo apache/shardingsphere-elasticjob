@@ -22,7 +22,7 @@ import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.mesos.Protos.TaskStatus;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestScriptJobConfiguration;
 import org.junit.Before;
 import org.junit.Test;

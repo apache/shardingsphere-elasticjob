@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
