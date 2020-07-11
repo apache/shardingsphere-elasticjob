@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Map;

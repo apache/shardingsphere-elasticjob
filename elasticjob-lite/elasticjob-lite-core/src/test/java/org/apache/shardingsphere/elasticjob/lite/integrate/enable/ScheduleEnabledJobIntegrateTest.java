@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.integrate.enable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

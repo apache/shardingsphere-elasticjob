@@ -18,13 +18,13 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.common.env.TimeService;
-import org.apache.shardingsphere.elasticjob.infra.common.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.env.TimeService;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 /**
  * Configuration service.

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.test;
 
 import org.apache.curator.test.TestingServer;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 

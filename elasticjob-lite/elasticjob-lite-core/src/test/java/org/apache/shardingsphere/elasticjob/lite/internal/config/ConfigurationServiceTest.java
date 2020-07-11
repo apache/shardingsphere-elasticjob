@@ -19,13 +19,13 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.infra.common.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl;
 
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.ElasticJobExecutorService;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 
 import java.util.concurrent.ExecutorService;
 

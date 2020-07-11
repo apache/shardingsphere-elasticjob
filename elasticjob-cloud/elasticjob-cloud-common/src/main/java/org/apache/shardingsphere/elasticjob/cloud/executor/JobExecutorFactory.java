@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 /**
  * Job executor factory.

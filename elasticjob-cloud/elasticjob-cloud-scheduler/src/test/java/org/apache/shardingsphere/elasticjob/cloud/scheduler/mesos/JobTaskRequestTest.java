@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.netflix.fenzo.TaskRequest;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.Test;

@@ -17,13 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.ShardingContextsBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

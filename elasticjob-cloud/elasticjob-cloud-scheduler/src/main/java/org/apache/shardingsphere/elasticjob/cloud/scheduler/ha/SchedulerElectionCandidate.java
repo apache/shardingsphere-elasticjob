@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.ha;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.SchedulerService;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 

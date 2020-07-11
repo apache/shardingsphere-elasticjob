@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.fixture;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 
 import java.util.HashMap;
 import java.util.Map;

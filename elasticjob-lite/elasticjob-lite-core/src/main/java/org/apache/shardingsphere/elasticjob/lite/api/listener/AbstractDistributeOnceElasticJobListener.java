@@ -19,11 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.api.listener;
 
 import java.util.Set;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
-import org.apache.shardingsphere.elasticjob.infra.common.env.TimeService;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.env.TimeService;
 
 /**
  * Distributed once elasticjob listener.

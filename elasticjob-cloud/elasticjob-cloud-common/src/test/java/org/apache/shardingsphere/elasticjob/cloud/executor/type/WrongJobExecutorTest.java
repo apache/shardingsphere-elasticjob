@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.type;
 
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestWrongJob;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;

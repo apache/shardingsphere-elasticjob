@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;

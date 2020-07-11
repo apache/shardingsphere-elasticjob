@@ -26,7 +26,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListe
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerNode;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.common.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 /**
  * Sharding listener manager.

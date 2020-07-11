@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategy;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobShardingStrategyFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategy;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategyFactory;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
@@ -31,7 +31,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.TransactionExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.common.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
