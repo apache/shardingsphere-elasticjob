@@ -11,7 +11,7 @@ chapter = true
 
 **全路径：**
 
-org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.AverageAllocationJobShardingStrategy
+AverageAllocationJobShardingStrategy
 
 **策略说明：**
 
@@ -30,7 +30,7 @@ org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.AverageAllocatio
 
 **全路径：**
 
-org.apache.shardingsphere.elasticjob.lite.handler.sharding.impl.OdevitySortByNameJobShardingStrategy
+OdevitySortByNameJobShardingStrategy
 
 **策略说明：**
 

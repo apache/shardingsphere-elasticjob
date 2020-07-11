@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;

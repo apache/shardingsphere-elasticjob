@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.election;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.shardingsphere.elasticjob.lite.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
