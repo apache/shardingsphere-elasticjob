@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.config.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.ExceptionUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

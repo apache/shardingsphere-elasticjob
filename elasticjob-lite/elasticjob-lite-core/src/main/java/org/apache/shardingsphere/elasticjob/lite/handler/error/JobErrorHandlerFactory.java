@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.handler.error;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.lite.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

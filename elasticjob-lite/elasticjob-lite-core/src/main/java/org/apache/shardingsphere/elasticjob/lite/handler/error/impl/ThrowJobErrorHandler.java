@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.handler.error.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.handler.error.JobErrorHandler;
 
 /**

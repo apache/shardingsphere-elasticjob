@@ -21,9 +21,9 @@ import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestDataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 import org.junit.Before;
 import org.junit.Test;
 

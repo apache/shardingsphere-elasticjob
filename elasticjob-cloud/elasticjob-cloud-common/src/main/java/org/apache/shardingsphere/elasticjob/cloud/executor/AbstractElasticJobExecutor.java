@@ -22,14 +22,14 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.exception.ExceptionUtil;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.cloud.util.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
@@ -208,7 +208,7 @@ public abstract class AbstractElasticJobExecutor {
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            String errorMessage = ExceptionUtil.transform(cause);
+            String errorMessage = ExceptionUtils.transform(cause);
             completeEvent = startEvent.executionFailure(errorMessage);
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, errorMessage);

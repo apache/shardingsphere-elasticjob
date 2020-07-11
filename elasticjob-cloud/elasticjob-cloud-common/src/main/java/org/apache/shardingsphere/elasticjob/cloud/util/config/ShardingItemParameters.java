@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.cloud.util.config;
 
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobConfigurationException;
 
 import java.util.Collections;
 import java.util.HashMap;

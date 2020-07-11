@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.exception.ExceptionUtil;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.ExceptionUtils;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,13 +25,13 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Restful api exception mapper.
+ * Restful API exception mapper.
  */
 @Provider
 public final class RestfulExceptionMapper implements ExceptionMapper<Throwable> {
     
     @Override
     public Response toResponse(final Throwable cause) {
-        return Response.ok(ExceptionUtil.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        return Response.ok(ExceptionUtils.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }

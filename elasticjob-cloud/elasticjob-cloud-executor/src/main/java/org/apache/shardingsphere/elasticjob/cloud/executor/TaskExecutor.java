@@ -28,9 +28,9 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.script.ScriptJob;
-import org.apache.shardingsphere.elasticjob.cloud.exception.ExceptionUtil;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.cloud.util.concurrent.ExecutorServiceObject;
+import org.apache.shardingsphere.elasticjob.infra.common.concurrent.ElasticJobExecutorService;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.common.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -53,7 +53,7 @@ public final class TaskExecutor implements Executor {
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
     public TaskExecutor() {
-        executorService = new ExecutorServiceObject("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
+        executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     }
     
     @Override
@@ -133,7 +133,7 @@ public final class TaskExecutor implements Executor {
             } catch (final Throwable ex) {
                 // CHECKSTYLE:ON
                 log.error("ElasticJob Cloud Executor error", ex);
-                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).setMessage(ExceptionUtil.transform(ex)).build());
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).setMessage(ExceptionUtils.transform(ex)).build());
                 executorDriver.stop();
                 throw ex;
             }
