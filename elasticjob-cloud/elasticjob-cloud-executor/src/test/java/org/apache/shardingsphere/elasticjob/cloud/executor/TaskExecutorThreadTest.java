@@ -58,7 +58,7 @@ public final class TaskExecutorThreadTest {
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
     }
-
+    
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
@@ -99,11 +99,11 @@ public final class TaskExecutorThreadTest {
     }
     
     private TaskInfo buildWrongClass() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron("WrongClass", "ignoredCron")).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron("WrongClass", null)).build();
     }
     
     private TaskInfo buildWrongElasticJobClass() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TaskExecutorThreadTest.class.getCanonicalName(), "ignoredCron")).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TaskExecutorThreadTest.class.getCanonicalName(), null)).build();
     }
     
     private TaskInfo buildSpringDaemonTaskInfo() {
@@ -111,11 +111,11 @@ public final class TaskExecutorThreadTest {
     }
     
     private TaskInfo buildJavaTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestJob.class.getCanonicalName(), "ignoredCron")).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestJob.class.getCanonicalName(), null)).build();
     }
     
     private TaskInfo buildSpringScriptTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), "ignoredCron", JobType.SCRIPT)).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), null, JobType.SCRIPT)).build();
     }
     
     private TaskInfo.Builder buildTaskInfo(final Map<String, String> jobConfigurationContext) {

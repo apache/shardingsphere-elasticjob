@@ -44,7 +44,7 @@ public final class WrongJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration().getTypeConfig());
         wrongSimpleJobExecutor = new SimpleJobExecutor(new TestWrongJob(), jobFacade);
     }
     

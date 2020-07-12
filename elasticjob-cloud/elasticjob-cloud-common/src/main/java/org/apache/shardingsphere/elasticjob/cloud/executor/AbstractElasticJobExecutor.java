@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.ExecutorServiceHandlerRegistry;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobExceptionHandler;
@@ -51,7 +51,7 @@ public abstract class AbstractElasticJobExecutor {
     private final JobFacade jobFacade;
     
     @Getter(AccessLevel.PROTECTED)
-    private final JobRootConfiguration jobRootConfig;
+    private final JobTypeConfiguration jobConfig;
     
     private final String jobName;
     
@@ -63,15 +63,15 @@ public abstract class AbstractElasticJobExecutor {
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
-        jobRootConfig = jobFacade.loadJobRootConfiguration(true);
-        jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
+        jobConfig = jobFacade.loadJobRootConfiguration(true);
+        jobName = jobConfig.getCoreConfig().getJobName();
         executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
-        itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
+        itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getCoreConfig().getShardingTotalCount(), 1);
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
-        String handlerClassName = jobRootConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
+        String handlerClassName = jobConfig.getCoreConfig().getJobProperties().get(jobPropertiesEnum);
         try {
             Class<?> handlerClass = Class.forName(handlerClassName);
             if (jobPropertiesEnum.getClassType().isAssignableFrom(handlerClass)) {

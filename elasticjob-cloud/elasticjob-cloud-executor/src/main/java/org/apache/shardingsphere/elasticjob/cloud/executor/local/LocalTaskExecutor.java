@@ -26,11 +26,12 @@ import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.AbstractElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.CloudJobFacade;
-import org.apache.shardingsphere.elasticjob.cloud.executor.JobConfigurationContext;
+import org.apache.shardingsphere.elasticjob.cloud.executor.JobTypeConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
@@ -43,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Task executor.
+ * Local task executor.
  */
 @RequiredArgsConstructor
 public final class LocalTaskExecutor {
@@ -56,7 +57,7 @@ public final class LocalTaskExecutor {
     @SuppressWarnings("unchecked")
     public void execute() {
         AbstractElasticJobExecutor jobExecutor;
-        CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobConfigurationContext(), new JobEventBus());
+        CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobTypeConfiguration(), new JobEventBus());
         switch (localCloudJobConfiguration.getTypeConfig().getJobType()) {
             case SIMPLE:
                 jobExecutor = new SimpleJobExecutor(getJobInstance(SimpleJob.class), jobFacade);
@@ -82,19 +83,17 @@ public final class LocalTaskExecutor {
                 localCloudJobConfiguration.getJobName(), coreConfig.getShardingTotalCount(), coreConfig.getJobParameter(), shardingItemMap);
     }
     
-    private JobConfigurationContext getJobConfigurationContext() {
+    private JobTypeConfiguration getJobTypeConfiguration() {
         Map<String, String> jobConfigurationMap = new HashMap<>();
         jobConfigurationMap.put("jobClass", localCloudJobConfiguration.getTypeConfig().getJobClass());
         jobConfigurationMap.put("jobType", localCloudJobConfiguration.getTypeConfig().getJobType().name());
         jobConfigurationMap.put("jobName", localCloudJobConfiguration.getJobName());
-        jobConfigurationMap.put("beanName", localCloudJobConfiguration.getBeanName());
-        jobConfigurationMap.put("applicationContext", localCloudJobConfiguration.getApplicationContext());
         if (JobType.DATAFLOW == localCloudJobConfiguration.getTypeConfig().getJobType()) {
             jobConfigurationMap.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) localCloudJobConfiguration.getTypeConfig()).isStreamingProcess()));
         } else if (JobType.SCRIPT == localCloudJobConfiguration.getTypeConfig().getJobType()) {
             jobConfigurationMap.put("scriptCommandLine", ((ScriptJobConfiguration) localCloudJobConfiguration.getTypeConfig()).getScriptCommandLine());
         }
-        return new JobConfigurationContext(jobConfigurationMap);
+        return JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
     }
     
     private <T extends ElasticJob> T getJobInstance(final Class<T> clazz) {

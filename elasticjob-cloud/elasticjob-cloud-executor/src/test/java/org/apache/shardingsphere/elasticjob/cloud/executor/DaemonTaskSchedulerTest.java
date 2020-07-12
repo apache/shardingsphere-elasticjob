@@ -47,9 +47,6 @@ public final class DaemonTaskSchedulerTest {
     private JobExecutionContext jobExecutionContext;
     
     @Mock
-    private AbstractElasticJobExecutor jobExecutor;
-    
-    @Mock
     private ShardingContexts shardingContexts;
     
     private TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
@@ -68,7 +65,7 @@ public final class DaemonTaskSchedulerTest {
     @Test
     public void assertJobRun() {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh").getTypeConfig());
         daemonJob.execute(jobExecutionContext);
         verify(shardingContexts).setAllowSendJobEvent(true);
         verify(executorDriver).sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskId).setState(TaskState.TASK_RUNNING).setMessage("BEGIN").build());
@@ -80,7 +77,7 @@ public final class DaemonTaskSchedulerTest {
     public void assertJobRunWithEventSampling() {
         when(shardingContexts.getJobEventSamplingCount()).thenReturn(2);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh").getTypeConfig());
         daemonJob.execute(jobExecutionContext);
         verify(shardingContexts).setCurrentJobEventSamplingCount(1);
         verify(shardingContexts).setAllowSendJobEvent(false);

@@ -58,13 +58,13 @@ public final class SimpleJobExecutorTest {
     
     @Before
     public void setUp() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration().getTypeConfig());
         simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
     }
     
     @Test
     public void assertNewExecutorWithDefaultHandlers() throws NoSuchFieldException {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration("ErrorHandler", Object.class.getName()));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration("ErrorHandler", Object.class.getName()).getTypeConfig());
         SimpleJobExecutor simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
         assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")), 
                 instanceOf(new DefaultExecutorServiceHandler().createExecutorService("test_job").getClass()));

@@ -23,7 +23,7 @@ import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -58,7 +58,7 @@ public final class DaemonTaskScheduler {
     
     private final ElasticJob elasticJob;
     
-    private final JobRootConfiguration jobRootConfig;
+    private final JobCoreConfiguration jobConfig;
     
     private final JobFacade jobFacade;
     
@@ -70,13 +70,13 @@ public final class DaemonTaskScheduler {
      * Init the job.
      */
     public void init() {
-        JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobRootConfig.getTypeConfig().getCoreConfig().getJobName()).build();
+        JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobConfig.getJobName()).build();
         jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         jobDetail.getJobDataMap().put(EXECUTOR_DRIVER_DATA_MAP_KEY, executorDriver);
         jobDetail.getJobDataMap().put(TASK_ID_DATA_MAP_KEY, taskId);
         try {
-            scheduleJob(initializeScheduler(), jobDetail, taskId.getValue(), jobRootConfig.getTypeConfig().getCoreConfig().getCron());
+            scheduleJob(initializeScheduler(), jobDetail, taskId.getValue(), jobConfig.getCron());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
@@ -93,7 +93,7 @@ public final class DaemonTaskScheduler {
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", taskId.getValue());
-        if (!jobRootConfig.getTypeConfig().getCoreConfig().isMisfire()) {
+        if (!jobConfig.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());

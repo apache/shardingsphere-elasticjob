@@ -33,16 +33,16 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-simple-executor</artifactId>
+            <artifactId>elasticjob-simple-executor</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-dataflow-executor</artifactId>
+            <artifactId>elasticjob-dataflow-executor</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-script-executor</artifactId>
+            <artifactId>elasticjob-script-executor</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         

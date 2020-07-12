@@ -37,7 +37,6 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,7 +55,7 @@ public class CloudJobFacadeTest {
     public void setUp() {
         shardingContexts = getShardingContexts();
         jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -76,7 +75,7 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertLoadJobRootConfiguration() {
-        assertThat(jobFacade.loadJobRootConfiguration(true), is(jobConfig));
+        assertThat(jobFacade.loadJobRootConfiguration(true), is(jobConfig.getTypeConfig()));
     }
     
     @Test
@@ -117,21 +116,6 @@ public class CloudJobFacadeTest {
     @Test
     public void assertIsExecuteMisfired() {
         assertFalse(jobFacade.isExecuteMisfired(null));
-    }
-    
-    @Test
-    public void assertIsEligibleForJobRunningWhenIsNotDataflowJob() {
-        assertFalse(jobFacade.isEligibleForJobRunning());
-    }
-    
-    @Test
-    public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsNotStreamingProcess() {
-        assertFalse(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false)), new JobEventBus()).isEligibleForJobRunning());
-    }
-    
-    @Test
-    public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsStreamingProcess() {
-        assertTrue(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true)), new JobEventBus()).isEligibleForJobRunning());
     }
     
     @Test
