@@ -17,33 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
 /**
  * Local cloud job configuration.
  */
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Getter
 public final class LocalCloudJobConfiguration {
     
-    private final JobTypeConfiguration typeConfig;
+    private final JobConfiguration jobConfiguration;
     
     private final int shardingItem;
-    
-    private String beanName;
-    
-    private String applicationContext;
-    
-    /**
-     * Get job name.
-     *
-     * @return the job name
-     */
-    public String getJobName() {
-        return typeConfig.getCoreConfig().getJobName();
-    }
 }

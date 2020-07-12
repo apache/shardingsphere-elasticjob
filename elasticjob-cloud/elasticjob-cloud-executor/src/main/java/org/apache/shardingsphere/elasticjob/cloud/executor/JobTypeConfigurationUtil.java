@@ -46,8 +46,6 @@ public final class JobTypeConfigurationUtil {
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (JobType.DATAFLOW.name().equals(jobType)) {
