@@ -23,8 +23,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
@@ -36,13 +36,11 @@ import java.util.Map;
 
 /**
  * Job configuration gson type adapter.
- *
- * @param <T> type of job root configuration
  */
-public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootConfiguration> extends TypeAdapter<T> {
+public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapter<CloudJobConfiguration> {
     
     @Override
-    public T read(final JsonReader in) throws IOException {
+    public CloudJobConfiguration read(final JsonReader in) throws IOException {
         String jobName = "";
         String cron = "";
         int shardingTotalCount = 0;
@@ -144,10 +142,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         }
     }
     
-    protected abstract T getJobRootConfiguration(JobTypeConfiguration typeConfig, Map<String, Object> customizedValueMap);
+    protected abstract CloudJobConfiguration getJobRootConfiguration(JobTypeConfiguration typeConfig, Map<String, Object> customizedValueMap);
     
     @Override
-    public void write(final JsonWriter out, final T value) throws IOException {
+    public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
         out.name("jobClass").value(value.getTypeConfig().getJobClass());
@@ -176,5 +174,5 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.endObject();
     }
     
-    protected abstract void writeCustomized(JsonWriter out, T value) throws IOException;
+    protected abstract void writeCustomized(JsonWriter out, CloudJobConfiguration value) throws IOException;
 }

@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.constants.CloudConfigurationConstants;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.AbstractJobConfigurationGsonTypeAdapter;
@@ -63,7 +65,7 @@ public final class CloudJobConfigurationGsonFactory {
     /**
      * Json adapter of the cloud job configuration.
      */
-    public static final class CloudJobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<CloudJobConfiguration> {
+    public static final class CloudJobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter {
         
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {

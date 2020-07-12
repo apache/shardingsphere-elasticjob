@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public final class TransientProducerSchedulerTest {
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
-    public void setUp() throws NoSuchFieldException, SchedulerException {
+    public void setUp() throws NoSuchFieldException {
         transientProducerScheduler = new TransientProducerScheduler(readyService);
         ReflectionUtils.setFieldValue(transientProducerScheduler, "scheduler", scheduler);
     }

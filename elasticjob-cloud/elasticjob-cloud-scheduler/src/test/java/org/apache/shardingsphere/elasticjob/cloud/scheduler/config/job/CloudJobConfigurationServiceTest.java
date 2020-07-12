@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;

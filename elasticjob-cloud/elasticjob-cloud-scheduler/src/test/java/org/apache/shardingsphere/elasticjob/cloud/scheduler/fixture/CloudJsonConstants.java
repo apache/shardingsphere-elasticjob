@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJsonConstants {
