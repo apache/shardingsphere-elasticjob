@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.dataflow.props;
+package org.apache.shardingsphere.elasticjob.dataflow.props;
 
 /**
  * Dataflow job properties.

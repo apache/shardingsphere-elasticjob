@@ -15,26 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.simple.executor;
+package org.apache.shardingsphere.elasticjob.simple.job;
 
+import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 
-/**
- * Simple job executor.
- */
-public final class SimpleJobExecutor implements ClassedJobItemExecutor<SimpleJob> {
+@Getter
+public final class FooSimpleJob implements SimpleJob {
+    
+    private volatile boolean completed;
     
     @Override
-    public void process(final SimpleJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        elasticJob.execute(shardingContext);
-    }
-    
-    @Override
-    public Class<SimpleJob> getElasticJobClass() {
-        return SimpleJob.class;
+    public void execute(final ShardingContext shardingContext) {
+        completed = true;
     }
 }

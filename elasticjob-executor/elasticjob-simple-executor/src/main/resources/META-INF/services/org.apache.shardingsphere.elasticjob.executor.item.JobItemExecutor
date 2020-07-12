@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.simple.executor.SimpleJobExecutor
+org.apache.shardingsphere.elasticjob.simple.executor.SimpleJobExecutor

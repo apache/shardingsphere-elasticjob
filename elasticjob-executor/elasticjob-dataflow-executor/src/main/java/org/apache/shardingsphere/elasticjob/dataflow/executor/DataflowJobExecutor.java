@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.dataflow.executor;
+package org.apache.shardingsphere.elasticjob.dataflow.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.dataflow.job.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 

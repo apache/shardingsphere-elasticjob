@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.script.executor;
+package org.apache.shardingsphere.elasticjob.script.executor;
 
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationExce
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import java.io.IOException;

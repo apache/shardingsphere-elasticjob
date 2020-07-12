@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.script.props;
+package org.apache.shardingsphere.elasticjob.script.props;
 
 /**
  * Script job properties.

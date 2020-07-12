@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.dataflow.job;
+package org.apache.shardingsphere.elasticjob.dataflow.job;
 
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
