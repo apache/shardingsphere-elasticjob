@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.executor;
 
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,12 +63,19 @@ public final class ElasticJobExecutorTest {
     public void setUp() {
         jobConfig = createJobConfiguration();
         elasticJobExecutor = new ElasticJobExecutor(fooJob, jobConfig, jobFacade);
-        ReflectionUtils.setFieldValue(elasticJobExecutor, "jobItemExecutor", jobItemExecutor);
+        setJobItemExecutor();
     }
     
     private JobConfiguration createJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
+    }
+    
+    @SneakyThrows
+    private void setJobItemExecutor() {
+        Field field = ElasticJobExecutor.class.getDeclaredField("jobItemExecutor");
+        field.setAccessible(true);
+        field.set(elasticJobExecutor, jobItemExecutor);
     }
     
     @Test(expected = JobSystemException.class)
