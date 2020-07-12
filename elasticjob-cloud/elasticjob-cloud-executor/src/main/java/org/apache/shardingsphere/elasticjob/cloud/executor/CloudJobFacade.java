@@ -35,7 +35,7 @@ import java.util.Collection;
  * Cloud job facade.
  */
 @RequiredArgsConstructor
-public final class CloudJobFacade implements JobFacade {
+public final class CloudJobFacade implements JobFacade, org.apache.shardingsphere.elasticjob.executor.JobFacade {
     
     private final ShardingContexts shardingContexts;
     
