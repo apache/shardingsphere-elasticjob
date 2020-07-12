@@ -17,9 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.config;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,15 +29,14 @@ public final class JobCoreConfigurationTest {
     @Test
     public void assertBuildAllProperties() {
         JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).description("desc")
-                .jobProperties("job_exception_handler", IgnoreJobExceptionHandler.class.getName()).build();
+                .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).description("desc").jobErrorHandlerType("IGNORE").build();
         assertRequiredProperties(actual);
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(actual.getJobParameter(), is("param"));
         assertTrue(actual.isFailover());
         assertFalse(actual.isMisfire());
         assertThat(actual.getDescription(), is("desc"));
-        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getName()));
+        assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
     }
     
     @Test
@@ -70,7 +66,6 @@ public final class JobCoreConfigurationTest {
         assertFalse(actual.isFailover());
         assertTrue(actual.isMisfire());
         assertThat(actual.getDescription(), is(""));
-        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getName()));
     }
     
     @Test(expected = IllegalArgumentException.class)

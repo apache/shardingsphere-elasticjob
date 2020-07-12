@@ -21,9 +21,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -46,7 +47,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public final class DaemonTaskScheduler {
     
-    public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    private static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    
+    private static final String ELASTIC_JOB_TYPE_DATA_MAP_KEY = "elasticJobType";
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
@@ -57,6 +60,8 @@ public final class DaemonTaskScheduler {
     private static final ConcurrentHashMap<String, Scheduler> RUNNING_SCHEDULERS = new ConcurrentHashMap<>(1024, 1);
     
     private final ElasticJob elasticJob;
+    
+    private final String elasticJobType;
     
     private final JobCoreConfiguration jobConfig;
     
@@ -72,6 +77,7 @@ public final class DaemonTaskScheduler {
     public void init() {
         JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobConfig.getJobName()).build();
         jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
+        jobDetail.getJobDataMap().put(ELASTIC_JOB_TYPE_DATA_MAP_KEY, elasticJobType);
         jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         jobDetail.getJobDataMap().put(EXECUTOR_DRIVER_DATA_MAP_KEY, executorDriver);
         jobDetail.getJobDataMap().put(TASK_ID_DATA_MAP_KEY, taskId);
@@ -140,9 +146,12 @@ public final class DaemonTaskScheduler {
         
         @Setter
         private ElasticJob elasticJob;
+    
+        @Setter
+        private String elasticJobType;
         
         @Setter
-        private JobFacade jobFacade;
+        private CloudJobFacade jobFacade;
         
         @Setter
         private ExecutorDriver executorDriver;
@@ -158,11 +167,19 @@ public final class DaemonTaskScheduler {
             if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
                 shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
                 jobFacade.getShardingContexts().setAllowSendJobEvent(false);
-                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                if (null == elasticJob) {
+                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                } else {
+                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                }
             } else {
                 jobFacade.getShardingContexts().setAllowSendJobEvent(true);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                if (null == elasticJob) {
+                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                } else {
+                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                }
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
                 shardingContexts.setCurrentJobEventSamplingCount(0);
             }

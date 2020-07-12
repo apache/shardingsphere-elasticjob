@@ -27,8 +27,4 @@ public final class AppConfigurationException extends RuntimeException {
     public AppConfigurationException(final String errorMessage, final Object... args) {
         super(String.format(errorMessage, args));
     }
-    
-    public AppConfigurationException(final Throwable cause) {
-        super(cause);
-    }
 }

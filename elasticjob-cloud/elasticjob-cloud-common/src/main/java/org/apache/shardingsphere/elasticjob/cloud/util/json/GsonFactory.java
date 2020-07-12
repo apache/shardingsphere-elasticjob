@@ -34,7 +34,7 @@ public final class GsonFactory {
     private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
     
     private static volatile Gson gson = GSON_BUILDER.create();
-
+    
     /**
      * Register type adapter.
      *
@@ -45,7 +45,7 @@ public final class GsonFactory {
         GSON_BUILDER.registerTypeAdapter(type, typeAdapter);
         gson = GSON_BUILDER.create();
     }
-
+    
     /**
      * Get gson instance.
      *
