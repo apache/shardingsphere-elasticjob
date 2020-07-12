@@ -57,7 +57,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-lite-simple-executor</artifactId>
+                <artifactId>elasticjob-simple-executor</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
             <dependency>
