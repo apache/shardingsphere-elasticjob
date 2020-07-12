@@ -54,7 +54,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -63,7 +63,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
@@ -71,7 +71,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildSpringScriptTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -80,7 +80,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
@@ -92,7 +92,7 @@ public final class TaskExecutorThreadTest {
     @Ignore
     public void assertLaunchTaskWithWrongClass() {
         TaskInfo taskInfo = buildWrongClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();    
         } catch (final JobSystemException ex) {

@@ -26,6 +26,7 @@ import org.apache.mesos.Protos.FrameworkInfo;
 import org.apache.mesos.Protos.SlaveInfo;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +58,7 @@ public final class TaskExecutorTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        taskExecutor = new TaskExecutor();
+        taskExecutor = new TaskExecutor(new TestJob());
         ReflectionUtils.setFieldValue(taskExecutor, "executorService", executorService);
         executorInfo = ExecutorInfo.getDefaultInstance();
     }
