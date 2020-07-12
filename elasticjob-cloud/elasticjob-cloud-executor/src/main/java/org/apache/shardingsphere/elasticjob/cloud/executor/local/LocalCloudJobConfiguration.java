@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 
 /**
  * Local cloud job configuration.
@@ -29,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public final class LocalCloudJobConfiguration implements JobRootConfiguration {
+public final class LocalCloudJobConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     

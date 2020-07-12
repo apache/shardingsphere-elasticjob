@@ -46,7 +46,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class LocalTaskExecutor {
     
-    private final LocalCloudJobConfiguration localCloudJobConfiguration;
+    private final LocalCloudJobConfiguration localJobConfiguration;
     
     /**
      * Execute job.
@@ -55,7 +55,7 @@ public final class LocalTaskExecutor {
     public void execute() {
         CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobTypeConfiguration(), new JobEventBus());
         ElasticJob elasticJob;
-        switch (localCloudJobConfiguration.getTypeConfig().getJobType()) {
+        switch (localJobConfiguration.getTypeConfig().getJobType()) {
             case SIMPLE:
                 elasticJob = getJobInstance(SimpleJob.class);
                 break;
@@ -73,38 +73,38 @@ public final class LocalTaskExecutor {
     }
     
     private ShardingContexts getShardingContexts() {
-        JobCoreConfiguration coreConfig = localCloudJobConfiguration.getTypeConfig().getCoreConfig();
+        JobCoreConfiguration coreConfig = localJobConfiguration.getTypeConfig().getCoreConfig();
         Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
-        shardingItemMap.put(localCloudJobConfiguration.getShardingItem(),
-                new ShardingItemParameters(coreConfig.getShardingItemParameters()).getMap().get(localCloudJobConfiguration.getShardingItem()));
-        return new ShardingContexts(Joiner.on("@-@").join(localCloudJobConfiguration.getJobName(), localCloudJobConfiguration.getShardingItem(), "READY", "foo_slave_id", "foo_uuid"),
-                localCloudJobConfiguration.getJobName(), coreConfig.getShardingTotalCount(), coreConfig.getJobParameter(), shardingItemMap);
+        shardingItemMap.put(localJobConfiguration.getShardingItem(),
+                new ShardingItemParameters(coreConfig.getShardingItemParameters()).getMap().get(localJobConfiguration.getShardingItem()));
+        return new ShardingContexts(Joiner.on("@-@").join(localJobConfiguration.getJobName(), localJobConfiguration.getShardingItem(), "READY", "foo_slave_id", "foo_uuid"),
+                localJobConfiguration.getJobName(), coreConfig.getShardingTotalCount(), coreConfig.getJobParameter(), shardingItemMap);
     }
     
     private JobTypeConfiguration getJobTypeConfiguration() {
         Map<String, String> jobConfigurationMap = new HashMap<>();
-        jobConfigurationMap.put("jobClass", localCloudJobConfiguration.getTypeConfig().getJobClass());
-        jobConfigurationMap.put("jobType", localCloudJobConfiguration.getTypeConfig().getJobType().name());
-        jobConfigurationMap.put("jobName", localCloudJobConfiguration.getJobName());
-        if (JobType.DATAFLOW == localCloudJobConfiguration.getTypeConfig().getJobType()) {
-            jobConfigurationMap.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) localCloudJobConfiguration.getTypeConfig()).isStreamingProcess()));
-        } else if (JobType.SCRIPT == localCloudJobConfiguration.getTypeConfig().getJobType()) {
-            jobConfigurationMap.put("scriptCommandLine", ((ScriptJobConfiguration) localCloudJobConfiguration.getTypeConfig()).getScriptCommandLine());
+        jobConfigurationMap.put("jobClass", localJobConfiguration.getTypeConfig().getJobClass());
+        jobConfigurationMap.put("jobType", localJobConfiguration.getTypeConfig().getJobType().name());
+        jobConfigurationMap.put("jobName", localJobConfiguration.getJobName());
+        if (JobType.DATAFLOW == localJobConfiguration.getTypeConfig().getJobType()) {
+            jobConfigurationMap.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) localJobConfiguration.getTypeConfig()).isStreamingProcess()));
+        } else if (JobType.SCRIPT == localJobConfiguration.getTypeConfig().getJobType()) {
+            jobConfigurationMap.put("scriptCommandLine", ((ScriptJobConfiguration) localJobConfiguration.getTypeConfig()).getScriptCommandLine());
         }
         return JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
     }
     
     private <T extends ElasticJob> T getJobInstance(final Class<T> clazz) {
         Object result;
-        if (Strings.isNullOrEmpty(localCloudJobConfiguration.getApplicationContext())) {
-            String jobClass = localCloudJobConfiguration.getTypeConfig().getJobClass();
+        if (Strings.isNullOrEmpty(localJobConfiguration.getApplicationContext())) {
+            String jobClass = localJobConfiguration.getTypeConfig().getJobClass();
             try {
                 result = Class.forName(jobClass).newInstance();
             } catch (final ReflectiveOperationException ex) {
                 throw new JobSystemException("ElasticJob: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
             }
         } else {
-            result = new ClassPathXmlApplicationContext(localCloudJobConfiguration.getApplicationContext()).getBean(localCloudJobConfiguration.getBeanName());
+            result = new ClassPathXmlApplicationContext(localJobConfiguration.getApplicationContext()).getBean(localJobConfiguration.getBeanName());
         }
         return clazz.cast(result);
     }
