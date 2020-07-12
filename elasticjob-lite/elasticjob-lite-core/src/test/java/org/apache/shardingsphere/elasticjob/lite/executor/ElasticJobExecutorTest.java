@@ -23,9 +23,8 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironm
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,9 +46,6 @@ import static org.mockito.Mockito.when;
 public final class ElasticJobExecutorTest {
     
     @Mock
-    private CoordinatorRegistryCenter regCenter;
-    
-    @Mock
     private FooJob fooJob;
     
     private JobConfiguration jobConfig;
@@ -65,8 +61,7 @@ public final class ElasticJobExecutorTest {
     @Before
     public void setUp() {
         jobConfig = createJobConfiguration();
-        elasticJobExecutor = new ElasticJobExecutor(regCenter, fooJob, jobConfig, Collections.emptyList(), null);
-        ReflectionUtils.setFieldValue(elasticJobExecutor, "jobFacade", jobFacade);
+        elasticJobExecutor = new ElasticJobExecutor(fooJob, jobConfig, jobFacade);
         ReflectionUtils.setFieldValue(elasticJobExecutor, "jobItemExecutor", jobItemExecutor);
     }
     

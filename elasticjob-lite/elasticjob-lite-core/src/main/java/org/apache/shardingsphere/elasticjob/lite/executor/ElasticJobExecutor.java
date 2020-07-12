@@ -20,25 +20,20 @@ package org.apache.shardingsphere.elasticjob.lite.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.LiteJobFacade;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -64,22 +59,19 @@ public final class ElasticJobExecutor {
     
     private final Map<Integer, String> itemErrorMessages;
     
-    public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter,
-                              final ElasticJob elasticJob, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
-        this(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig, JobItemExecutorFactory.getExecutor(elasticJob.getClass()));
+    public ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade) {
+        this(elasticJob, jobConfig, jobFacade, JobItemExecutorFactory.getExecutor(elasticJob.getClass()));
     }
     
-    public ElasticJobExecutor(final CoordinatorRegistryCenter regCenter,
-                              final String type, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
-        this(regCenter, null, jobConfig, elasticJobListeners, tracingConfig, JobItemExecutorFactory.getExecutor(type));
+    public ElasticJobExecutor(final String type, final JobConfiguration jobConfig, final JobFacade jobFacade) {
+        this(null, jobConfig, jobFacade, JobItemExecutorFactory.getExecutor(type));
     }
     
-    private ElasticJobExecutor(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, 
-                               final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig, final JobItemExecutor jobItemExecutor) {
+    private ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
         this.elasticJob = elasticJob;
         this.jobConfig = jobConfig;
+        this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobConfig.getJobName());
         jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getJobErrorHandlerType());
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
