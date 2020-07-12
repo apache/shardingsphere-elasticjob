@@ -33,6 +33,4 @@ public final class SimpleJobConfiguration implements JobTypeConfiguration {
     private final JobCoreConfiguration coreConfig;
     
     private final JobType jobType = JobType.SIMPLE;
-    
-    private final String jobClass;
 }

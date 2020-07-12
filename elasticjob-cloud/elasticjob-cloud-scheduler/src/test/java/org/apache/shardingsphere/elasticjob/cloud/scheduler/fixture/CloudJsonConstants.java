@@ -24,12 +24,12 @@ import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJsonConstants {
     
-    private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+    private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":%s,\"description\":\"\","
             + "\"appName\":\"test_app\",\"cpuCount\":1.0,\"memoryMB\":128.0," 
             + "\"jobExecutionType\":\"%s\"}";
     
-    private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+    private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
             + "\"appName\":\"test_spring_app\",\"cpuCount\":1.0,\"memoryMB\":128.0,"
             + "\"jobExecutionType\":\"TRANSIENT\",\"beanName\":\"springSimpleJob\","

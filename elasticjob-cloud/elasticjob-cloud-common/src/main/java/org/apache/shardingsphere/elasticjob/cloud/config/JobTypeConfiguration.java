@@ -32,13 +32,6 @@ public interface JobTypeConfiguration {
     JobType getJobType();
 
     /**
-     * Get job class name.
-     *
-     * @return job class name
-     */
-    String getJobClass();
-
-    /**
      * Get job core configuration.
      *
      * @return job core configuration

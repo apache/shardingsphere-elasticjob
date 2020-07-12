@@ -34,7 +34,5 @@ public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
     private final JobType jobType = JobType.DATAFLOW;
     
-    private final String jobClass;
-    
     private final boolean streamingProcess;
 }

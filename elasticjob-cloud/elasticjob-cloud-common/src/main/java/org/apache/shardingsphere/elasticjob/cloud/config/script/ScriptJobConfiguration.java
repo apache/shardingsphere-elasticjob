@@ -34,7 +34,5 @@ public final class ScriptJobConfiguration implements JobTypeConfiguration {
     
     private final JobType jobType = JobType.SCRIPT;
     
-    private final String jobClass = "SCRIPT";
-    
     private final String scriptCommandLine;
 }

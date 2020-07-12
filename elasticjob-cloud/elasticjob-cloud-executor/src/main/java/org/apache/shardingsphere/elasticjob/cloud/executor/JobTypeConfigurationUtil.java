@@ -41,7 +41,6 @@ public final class JobTypeConfigurationUtil {
      */
     public static JobTypeConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
-        String jobClass = jobConfigurationMap.get("jobClass");
         String jobType = jobConfigurationMap.get("jobType");
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
@@ -49,10 +48,10 @@ public final class JobTypeConfigurationUtil {
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            return new DataflowJobConfiguration(jobCoreConfig, jobClass, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
+            return new DataflowJobConfiguration(jobCoreConfig, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
         } else if (JobType.SCRIPT.name().equals(jobType)) {
             return new ScriptJobConfiguration(jobCoreConfig, jobConfigurationMap.get("scriptCommandLine"));
         }
-        return new SimpleJobConfiguration(jobCoreConfig, jobClass);
+        return new SimpleJobConfiguration(jobCoreConfig);
     }
 }

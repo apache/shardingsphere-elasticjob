@@ -52,7 +52,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         String jobErrorHandlerType = "";
         String description = "";
         JobType jobType = null;
-        String jobClass = "";
         boolean streamingProcess = false;
         String scriptCommandLine = "";
         Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
@@ -93,9 +92,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
                 case "jobType":
                     jobType = JobType.valueOf(in.nextString());
                     break;
-                case "jobClass":
-                    jobClass = in.nextString();
-                    break;
                 case "streamingProcess":
                     streamingProcess = in.nextBoolean();
                     break;
@@ -110,7 +106,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -125,16 +121,13 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(
-            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
             case SIMPLE:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
-                return new SimpleJobConfiguration(coreConfig, jobClass);
+                return new SimpleJobConfiguration(coreConfig);
             case DATAFLOW:
-                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
-                return new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
+                return new DataflowJobConfiguration(coreConfig, streamingProcess);
             case SCRIPT:
                 return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
             default:
@@ -148,7 +141,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
     public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobClass").value(value.getTypeConfig().getJobClass());
         out.name("jobType").value(value.getTypeConfig().getJobType().name());
         out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
         out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
