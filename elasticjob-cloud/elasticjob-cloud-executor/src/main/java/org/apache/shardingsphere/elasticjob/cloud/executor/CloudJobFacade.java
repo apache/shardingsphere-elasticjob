@@ -18,8 +18,10 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -44,6 +46,16 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public JobTypeConfiguration loadJobRootConfiguration(final boolean fromCache) {
         return jobConfig;
+    }
+    
+    @Override
+    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
+        return JobConfiguration.newBuilder(jobConfig.getCoreConfig().getJobName(), jobConfig.getCoreConfig().getShardingTotalCount())
+                .cron(jobConfig.getCoreConfig().getCron()).shardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).jobParameter(jobConfig.getCoreConfig().getJobParameter())
+                .failover(jobConfig.getCoreConfig().isFailover()).misfire(jobConfig.getCoreConfig().isMisfire()).description(jobConfig.getCoreConfig().getDescription())
+                .jobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
+                .jobErrorHandlerType(jobConfig.getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER)).build();
+        
     }
     
     @Override

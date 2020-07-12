@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -37,6 +38,14 @@ public interface JobFacade {
      * @return job root configuration
      */
     JobTypeConfiguration loadJobRootConfiguration(boolean fromCache);
+    
+    /**
+     * Load job configuration.
+     *
+     * @param fromCache load from cache or not
+     * @return job configuration
+     */
+    JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
      * check job execution environment.
