@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.cloud.config;
 
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
 
@@ -70,7 +69,7 @@ public final class JobCoreConfigurationTest {
         assertFalse(actual.isFailover());
         assertTrue(actual.isMisfire());
         assertThat(actual.getDescription(), is(""));
-        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getName()));
+        assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is("LOG"));
     }
     
     @Test(expected = IllegalArgumentException.class)

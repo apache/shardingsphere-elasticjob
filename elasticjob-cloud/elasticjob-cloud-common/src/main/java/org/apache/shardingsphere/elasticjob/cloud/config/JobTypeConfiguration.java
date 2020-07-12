@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
  * Job type configuration.
  */
 public interface JobTypeConfiguration {
-
+    
     /**
      * Get job type.
      *

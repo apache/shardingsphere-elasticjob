@@ -21,9 +21,10 @@ import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.mesos.Protos.TaskStatus;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.when;
 public final class DaemonTaskSchedulerTest {
     
     @Mock
-    private JobFacade jobFacade;
+    private CloudJobFacade jobFacade;
     
     @Mock
     private ExecutorDriver executorDriver;
@@ -56,8 +57,8 @@ public final class DaemonTaskSchedulerTest {
     @Before
     public void setUp() {
         daemonJob = new DaemonTaskScheduler.DaemonJob();
-        daemonJob.setElasticJob(null);
         daemonJob.setJobFacade(jobFacade);
+        daemonJob.setElasticJobType("SCRIPT");
         daemonJob.setExecutorDriver(executorDriver);
         daemonJob.setTaskId(taskId);
     }
@@ -65,7 +66,7 @@ public final class DaemonTaskSchedulerTest {
     @Test
     public void assertJobRun() {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh").getTypeConfig());
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration());
         daemonJob.execute(jobExecutionContext);
         verify(shardingContexts).setAllowSendJobEvent(true);
         verify(executorDriver).sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskId).setState(TaskState.TASK_RUNNING).setMessage("BEGIN").build());
@@ -77,7 +78,7 @@ public final class DaemonTaskSchedulerTest {
     public void assertJobRunWithEventSampling() {
         when(shardingContexts.getJobEventSamplingCount()).thenReturn(2);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh").getTypeConfig());
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration());
         daemonJob.execute(jobExecutionContext);
         verify(shardingContexts).setCurrentJobEventSamplingCount(1);
         verify(shardingContexts).setAllowSendJobEvent(false);
@@ -87,5 +88,10 @@ public final class DaemonTaskSchedulerTest {
         verify(executorDriver).sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskId).setState(TaskState.TASK_RUNNING).setMessage("BEGIN").build());
         verify(executorDriver).sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskId).setState(TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
         verify(shardingContexts).setCurrentJobEventSamplingCount(0);
+    }
+    
+    private JobConfiguration createJobConfiguration() {
+        return JobConfiguration.newBuilder("test_script_job", 3).cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE")
+                .setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build();
     }
 }

@@ -28,7 +28,7 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.api.script.ScriptJob;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -125,10 +125,15 @@ public final class TaskExecutor implements Executor {
                 ElasticJob elasticJob = getElasticJobInstance(jobConfig);
                 final CloudJobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), jobEventBus);
                 if (jobConfig.isTransient()) {
-                    JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                    if (null == elasticJob) {
+                        new ElasticJobExecutor(jobConfig.getTypeConfig().getJobClass(), jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                    } else {
+                        new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                    }
+                    
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
-                    new DaemonTaskScheduler(elasticJob, jobConfig.getTypeConfig().getCoreConfig(), jobFacade, executorDriver, taskInfo.getTaskId()).init();
+                    new DaemonTaskScheduler(elasticJob, jobConfig.getTypeConfig().getJobClass(), jobConfig.getTypeConfig().getCoreConfig(), jobFacade, executorDriver, taskInfo.getTaskId()).init();
                 }
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
@@ -143,9 +148,8 @@ public final class TaskExecutor implements Executor {
         private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
             if (!Strings.isNullOrEmpty(jobConfig.getBeanName()) && !Strings.isNullOrEmpty(jobConfig.getApplicationContext())) {
                 return getElasticJobBean(jobConfig);
-            } else {
-                return getElasticJobClass(jobConfig);
             }
+            return getElasticJobClass(jobConfig);
         }
         
         private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
@@ -163,14 +167,11 @@ public final class TaskExecutor implements Executor {
             try {
                 Class<?> elasticJobClass = Class.forName(jobClass);
                 if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
-                    throw new JobSystemException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
+                    throw new JobSystemException("ElasticJob: Class '%s' must implements ElasticJob interface.", jobClass);
                 }
-                if (elasticJobClass != ScriptJob.class) {
-                    return (ElasticJob) elasticJobClass.newInstance();
-                }
-                return null;
+                return (ElasticJob) elasticJobClass.newInstance();
             } catch (final ReflectiveOperationException ex) {
-                throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
+                return null;
             }
         }
     }

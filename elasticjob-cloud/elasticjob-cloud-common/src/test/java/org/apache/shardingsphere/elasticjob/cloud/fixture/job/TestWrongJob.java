@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.fixture.job;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 @RequiredArgsConstructor
 public final class TestWrongJob implements SimpleJob {

@@ -23,20 +23,17 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
-import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.AbstractElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.executor.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobTypeConfigurationUtil;
-import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
-import org.apache.shardingsphere.elasticjob.cloud.executor.type.ScriptJobExecutor;
-import org.apache.shardingsphere.elasticjob.cloud.executor.type.SimpleJobExecutor;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
+import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -56,22 +53,23 @@ public final class LocalTaskExecutor {
      */
     @SuppressWarnings("unchecked")
     public void execute() {
-        AbstractElasticJobExecutor jobExecutor;
         CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobTypeConfiguration(), new JobEventBus());
+        ElasticJob elasticJob;
         switch (localCloudJobConfiguration.getTypeConfig().getJobType()) {
             case SIMPLE:
-                jobExecutor = new SimpleJobExecutor(getJobInstance(SimpleJob.class), jobFacade);
+                elasticJob = getJobInstance(SimpleJob.class);
                 break;
             case DATAFLOW:
-                jobExecutor = new DataflowJobExecutor(getJobInstance(DataflowJob.class), jobFacade);
-                break;
-            case SCRIPT:
-                jobExecutor = new ScriptJobExecutor(jobFacade);
+                elasticJob = getJobInstance(DataflowJob.class);
                 break;
             default:
-                throw new UnsupportedOperationException(localCloudJobConfiguration.getTypeConfig().getJobType().name());
+                elasticJob = null;
         }
-        jobExecutor.execute();
+        if (null == elasticJob) {
+            new ElasticJobExecutor("SCRIPT", jobFacade.loadJobConfiguration(true), jobFacade).execute();
+        } else {
+            new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+        }
     }
     
     private ShardingContexts getShardingContexts() {

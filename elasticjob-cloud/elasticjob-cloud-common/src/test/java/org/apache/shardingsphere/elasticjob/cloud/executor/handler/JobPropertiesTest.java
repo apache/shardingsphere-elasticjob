@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.handler;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
@@ -61,8 +60,8 @@ public final class JobPropertiesTest {
     @Test
     public void assertGetWhenValueIsEmpty() {
         JobProperties actual = new JobProperties();
-        assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
+        assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is("LOG"));
+        assertThat(actual.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is("SINGLE_THREAD"));
     }
     
     @Test
@@ -74,7 +73,7 @@ public final class JobPropertiesTest {
     
     @Test
     public void assertJson() {
-        assertThat(new JobProperties().json(), is(APIJsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
+        assertThat(new JobProperties().json(), is(APIJsonConstants.getJobPropertiesJson("LOG")));
     }
     
     @Test

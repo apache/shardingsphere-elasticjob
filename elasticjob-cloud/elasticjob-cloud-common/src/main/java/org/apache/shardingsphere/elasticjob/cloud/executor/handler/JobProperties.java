@@ -17,13 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.handler;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
 
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -85,12 +85,12 @@ public final class JobProperties {
         /**
          * Job execution handler.
          */
-        JOB_EXCEPTION_HANDLER("job_exception_handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class.getCanonicalName()),
+        JOB_EXCEPTION_HANDLER("job_exception_handler", JobErrorHandler.class, "LOG"),
 
         /**
          * Executor service handler.
          */
-        EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class.getCanonicalName());
+        EXECUTOR_SERVICE_HANDLER("executor_service_handler", JobExecutorServiceHandler.class, "SINGLE_THREAD");
         
         private final String key;
     

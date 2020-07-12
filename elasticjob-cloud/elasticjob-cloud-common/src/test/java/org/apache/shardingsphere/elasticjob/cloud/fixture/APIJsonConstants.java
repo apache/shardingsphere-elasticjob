@@ -19,12 +19,11 @@ package org.apache.shardingsphere.elasticjob.cloud.fixture;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class APIJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"SINGLE_THREAD\"}";
     
     // CHECKSTYLE:OFF
     private static final String SIMPLE_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.cloud.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","

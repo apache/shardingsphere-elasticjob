@@ -20,12 +20,10 @@ package org.apache.shardingsphere.elasticjob.cloud.util.json;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.APIJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestDataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestJobRootConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.fixture.config.TestSimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.IgnoreJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.fixture.handler.ThrowJobExceptionHandler;
 import org.junit.BeforeClass;
@@ -43,12 +41,12 @@ public final class JobConfigurationGsonTypeAdapterTest {
         GsonFactory.registerTypeAdapter(TestJobRootConfiguration.class, new JobConfigurationGsonTypeAdapter());
     } 
     
-    @Test
-    public void assertToSimpleJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
-                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig())),
-                is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
-    }
+//    @Test
+//    public void assertToSimpleJobJson() {
+//        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
+//                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig())),
+//                is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+//    }
     
     @Test
     public void assertToDataflowJobJson() {
@@ -56,20 +54,20 @@ public final class JobConfigurationGsonTypeAdapterTest {
                 is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
     }
     
-    @Test
-    public void assertToScriptJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig())),
-                is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
-    }
-    
-    @Test
-    public void assertFromSimpleJobJson() {
-        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
-                APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(
-                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig());
-        assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
-    }
+//    @Test
+//    public void assertToScriptJobJson() {
+//        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh", ThrowJobExceptionHandler.class).getTypeConfig())),
+//                is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+//    }
+//    
+//    @Test
+//    public void assertFromSimpleJobJson() {
+//        TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
+//                APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
+//        TestJobRootConfiguration expected = new TestJobRootConfiguration(
+//                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName()).getTypeConfig());
+//        assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
+//    }
     
     @Test
     public void assertFromDataflowJobJson() {

@@ -19,15 +19,12 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultExecutorServiceHandler;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.impl.DefaultJobExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
-            + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"LOG\",\"executor_service_handler\":\"SINGLE_THREAD\"}";
     
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":%s,\"description\":\"\","
