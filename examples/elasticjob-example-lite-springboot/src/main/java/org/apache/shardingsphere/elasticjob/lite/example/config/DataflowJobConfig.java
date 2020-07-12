@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.example.config;
 
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.dataflow.job.DataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;

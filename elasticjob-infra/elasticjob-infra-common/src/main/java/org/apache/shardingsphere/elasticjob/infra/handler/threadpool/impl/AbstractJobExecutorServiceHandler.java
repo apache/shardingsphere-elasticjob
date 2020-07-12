@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl;
 
-import java.util.concurrent.ExecutorService;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * Abstract job executor service handler.
@@ -28,7 +29,7 @@ public abstract class AbstractJobExecutorServiceHandler implements JobExecutorSe
     
     @Override
     public ExecutorService createExecutorService(final String jobName) {
-        return new ElasticJobExecutorService("elastic-job-" + jobName, getPoolSize()).createExecutorService();
+        return new ElasticJobExecutorService("elasticjob-" + jobName, getPoolSize()).createExecutorService();
     }
     
     protected abstract int getPoolSize();

@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;

@@ -17,12 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
-import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

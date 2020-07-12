@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.cloud.config.script;
 
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.api.script.ScriptJob;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import lombok.Getter;
@@ -35,7 +34,7 @@ public final class ScriptJobConfiguration implements JobTypeConfiguration {
     
     private final JobType jobType = JobType.SCRIPT;
     
-    private final String jobClass = ScriptJob.class.getCanonicalName();
+    private final String jobClass = "SCRIPT";
     
     private final String scriptCommandLine;
 }
