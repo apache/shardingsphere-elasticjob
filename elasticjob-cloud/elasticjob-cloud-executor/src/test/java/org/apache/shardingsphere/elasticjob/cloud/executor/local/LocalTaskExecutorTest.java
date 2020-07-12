@@ -49,7 +49,7 @@ public final class LocalTaskExecutorTest {
     
     @Test
     public void assertSimpleJob() {
-        new LocalTaskExecutor(new TestSimpleJob(), new LocalCloudJobConfiguration(JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3).cron("*/2 * * * * ?").build(), 1)).execute();
+        new LocalTaskExecutor(new TestSimpleJob(), JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3).cron("*/2 * * * * ?").build(), 1).execute();
         assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
         assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(1));
         assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
@@ -60,9 +60,9 @@ public final class LocalTaskExecutorTest {
     
     @Test
     public void assertSpringSimpleJob() {
-        new LocalTaskExecutor(new TestSimpleJob(), new LocalCloudJobConfiguration(
+        new LocalTaskExecutor(new TestSimpleJob(), 
                 JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3).cron("*/2 * * * * ?")
-                        .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobParameter("dbName=dangdang").build(), 1)).execute();
+                        .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobParameter("dbName=dangdang").build(), 1).execute();
         assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
         assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
         assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is("dbName=dangdang"));
@@ -74,8 +74,7 @@ public final class LocalTaskExecutorTest {
     @Test
     public void assertDataflowJob() {
         TestDataflowJob.setInput(Arrays.asList("1", "2", "3"));
-        new LocalTaskExecutor(new TestDataflowJob(), new LocalCloudJobConfiguration(
-                JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 10).cron("*/2 * * * * ?").build(), 5)).execute();
+        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 10).cron("*/2 * * * * ?").build(), 5).execute();
         assertFalse(TestDataflowJob.getOutput().isEmpty());
         for (String each : TestDataflowJob.getOutput()) {
             assertTrue(each.endsWith("-d"));
@@ -84,8 +83,8 @@ public final class LocalTaskExecutorTest {
     
     @Test
     public void assertScriptJob() throws IOException {
-        new LocalTaskExecutor(new TestDataflowJob(), new LocalCloudJobConfiguration(JobConfiguration.newBuilder("TestScriptJob", 3).cron("*/2 * * * * ?")
-                .setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), 1)).execute();
+        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder("TestScriptJob", 3).cron("*/2 * * * * ?")
+                .setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), 1).execute();
     }
     
     private static String buildScriptCommandLine() throws IOException {
@@ -99,6 +98,6 @@ public final class LocalTaskExecutorTest {
     
     @Test(expected = JobConfigurationException.class)
     public void assertNotExistsJobClass() {
-        new LocalTaskExecutor("not exist", new LocalCloudJobConfiguration(JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1)).execute();
+        new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute();
     }
 }

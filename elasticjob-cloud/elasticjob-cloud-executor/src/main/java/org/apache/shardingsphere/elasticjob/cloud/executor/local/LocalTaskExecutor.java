@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
 import com.google.common.base.Joiner;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
@@ -35,28 +37,23 @@ import java.util.Map;
 /**
  * Local task executor.
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LocalTaskExecutor {
     
     private final ElasticJob elasticJob;
     
     private final String elasticJobType;
     
-    private final LocalCloudJobConfiguration localJobConfiguration;
-    
     private final JobConfiguration jobConfiguration;
     
-    public LocalTaskExecutor(final ElasticJob elasticJob, final LocalCloudJobConfiguration localJobConfiguration) {
-        this.elasticJob = elasticJob;
-        elasticJobType = null;
-        this.localJobConfiguration = localJobConfiguration;
-        this.jobConfiguration = localJobConfiguration.getJobConfiguration();
+    private final int shardingItem;
+    
+    public LocalTaskExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfiguration, final int shardingItem) {
+        this(elasticJob, null, jobConfiguration, shardingItem);
     }
     
-    public LocalTaskExecutor(final String elasticJobType, final LocalCloudJobConfiguration localJobConfiguration) {
-        this.elasticJob = null;
-        this.elasticJobType = elasticJobType;
-        this.localJobConfiguration = localJobConfiguration;
-        this.jobConfiguration = localJobConfiguration.getJobConfiguration();
+    public LocalTaskExecutor(final String elasticJobType, final JobConfiguration jobConfiguration, final int shardingItem) {
+        this(null, elasticJobType, jobConfiguration, shardingItem);
     }
     
     /**
@@ -75,9 +72,8 @@ public final class LocalTaskExecutor {
     
     private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
-        shardingItemMap.put(localJobConfiguration.getShardingItem(),
-                new ShardingItemParameters(jobConfiguration.getShardingItemParameters()).getMap().get(localJobConfiguration.getShardingItem()));
-        return new ShardingContexts(Joiner.on("@-@").join(jobConfiguration.getJobName(), localJobConfiguration.getShardingItem(), "READY", "foo_slave_id", "foo_uuid"),
+        shardingItemMap.put(shardingItem, new ShardingItemParameters(jobConfiguration.getShardingItemParameters()).getMap().get(shardingItem));
+        return new ShardingContexts(Joiner.on("@-@").join(jobConfiguration.getJobName(), shardingItem, "READY", "foo_slave_id", "foo_uuid"),
                 jobConfiguration.getJobName(), jobConfiguration.getShardingTotalCount(), jobConfiguration.getJobParameter(), shardingItemMap);
     }
     
