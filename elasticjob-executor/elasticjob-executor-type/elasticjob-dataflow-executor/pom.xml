@@ -21,11 +21,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>elasticjob-executor-type</artifactId>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-executor</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-simple-executor</artifactId>
+    <artifactId>elasticjob-dataflow-executor</artifactId>
     <name>${project.artifactId}</name>
     
     <dependencies>
