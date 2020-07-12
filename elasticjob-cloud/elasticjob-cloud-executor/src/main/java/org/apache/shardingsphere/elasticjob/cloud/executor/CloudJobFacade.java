@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties.JobPropertiesEnum;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -56,8 +55,8 @@ public final class CloudJobFacade implements JobFacade, org.apache.shardingspher
         JobConfiguration result = JobConfiguration.newBuilder(jobConfig.getCoreConfig().getJobName(), jobConfig.getCoreConfig().getShardingTotalCount())
                 .cron(jobConfig.getCoreConfig().getCron()).shardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).jobParameter(jobConfig.getCoreConfig().getJobParameter())
                 .failover(jobConfig.getCoreConfig().isFailover()).misfire(jobConfig.getCoreConfig().isMisfire()).description(jobConfig.getCoreConfig().getDescription())
-                .jobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
-                .jobErrorHandlerType(jobConfig.getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER)).build();
+                .jobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobExecutorServiceHandlerType())
+                .jobErrorHandlerType(jobConfig.getCoreConfig().getJobErrorHandlerType()).build();
         if (JobType.DATAFLOW == jobConfig.getJobType()) {
             result.getProps().setProperty("streaming.process", Boolean.toString(((DataflowJobConfiguration) jobConfig).isStreamingProcess()));
         } else if (JobType.SCRIPT == jobConfig.getJobType()) {

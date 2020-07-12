@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.config;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,10 +45,12 @@ public final class JobCoreConfiguration {
     
     private final boolean misfire;
     
+    private final String jobExecutorServiceHandlerType;
+    
+    private final String jobErrorHandlerType;
+    
     private final String description;
     
-    private final JobProperties jobProperties;
-
     /**
      * Create simple job configuration builder.
      *
@@ -78,11 +79,13 @@ public final class JobCoreConfiguration {
         private boolean failover;
         
         private boolean misfire = true;
+    
+        private String jobExecutorServiceHandlerType;
+    
+        private String jobErrorHandlerType;
         
         private String description = "";
         
-        private final JobProperties jobProperties = new JobProperties();
-
         /**
          * Set mapper of sharding items and sharding parameters.
          *
@@ -104,7 +107,7 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
-
+        
         /**
          * Set job parameter.
          *
@@ -118,7 +121,7 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
-
+        
         /**
          * Set enable failover.
          *
@@ -134,7 +137,7 @@ public final class JobCoreConfiguration {
             this.failover = failover;
             return this;
         }
-
+        
         /**
          * Set enable misfire.
          *
@@ -146,7 +149,29 @@ public final class JobCoreConfiguration {
             this.misfire = misfire;
             return this;
         }
-
+        
+        /**
+         * Set job executor service handler type.
+         *
+         * @param jobExecutorServiceHandlerType job executor service handler type
+         * @return job configuration builder
+         */
+        public Builder jobExecutorServiceHandlerType(final String jobExecutorServiceHandlerType) {
+            this.jobExecutorServiceHandlerType = jobExecutorServiceHandlerType;
+            return this;
+        }
+    
+        /**
+         * Set job error handler type.
+         *
+         * @param jobErrorHandlerType job error handler type
+         * @return job configuration builder
+         */
+        public Builder jobErrorHandlerType(final String jobErrorHandlerType) {
+            this.jobErrorHandlerType = jobErrorHandlerType;
+            return this;
+        }
+        
         /**
          * Set job description.
          *
@@ -160,20 +185,7 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
-
-        /**
-         * Set job properties.
-         *
-         * @param key property key
-         * @param value property value
-         *
-         * @return job configuration builder
-         */
-        public Builder jobProperties(final String key, final String value) {
-            jobProperties.put(key, value);
-            return this;
-        }
-
+        
         /**
          * Build Job.
          *
@@ -182,7 +194,8 @@ public final class JobCoreConfiguration {
         public final JobCoreConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+            return new JobCoreConfiguration(
+                    jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
         }
     }
 }

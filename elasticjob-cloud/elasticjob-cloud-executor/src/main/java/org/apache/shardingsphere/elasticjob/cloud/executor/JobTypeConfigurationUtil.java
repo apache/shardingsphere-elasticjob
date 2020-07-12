@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.handler.JobProperties.JobPropertiesEnum;
 
 import java.util.Map;
 
@@ -49,9 +48,8 @@ public final class JobTypeConfigurationUtil {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount).build();
-        jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
-        jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
+                .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (JobType.DATAFLOW.name().equals(jobType)) {
             return new DataflowJobConfiguration(jobCoreConfig, jobClass, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
         } else if (JobType.SCRIPT.name().equals(jobType)) {
