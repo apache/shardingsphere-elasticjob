@@ -59,7 +59,6 @@ public final class LocalTaskExecutor {
     /**
      * Execute job.
      */
-    @SuppressWarnings("unchecked")
     public void execute() {
         createElasticJobExecutor(new CloudJobFacade(getShardingContexts(), getJobTypeConfiguration(), new JobEventBus())).execute();
     }
