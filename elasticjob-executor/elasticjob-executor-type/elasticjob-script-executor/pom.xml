@@ -34,10 +34,10 @@
             <artifactId>elasticjob-executor-kernel</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-core</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
         </dependency>
         
         <dependency>
