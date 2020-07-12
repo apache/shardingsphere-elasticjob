@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.api.script;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 
 /**
  * Script job.

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 
 public final class OtherJob implements ElasticJob {
 }

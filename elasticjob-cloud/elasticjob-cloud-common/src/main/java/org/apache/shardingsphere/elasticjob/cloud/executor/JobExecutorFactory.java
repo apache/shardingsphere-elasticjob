@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.dataflow.DataflowJob;
 import org.apache.shardingsphere.elasticjob.cloud.api.simple.SimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.type.DataflowJobExecutor;
