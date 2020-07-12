@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
@@ -71,11 +72,6 @@ public class CloudJobFacadeTest {
         result.put("jobType", jobType.name());
         result.put("streamingProcess", Boolean.toString(streamingProcess));
         return result;
-    }
-    
-    @Test
-    public void assertLoadJobRootConfiguration() {
-        assertThat(jobFacade.loadJobRootConfiguration(true), is(jobConfig.getTypeConfig()));
     }
     
     @Test

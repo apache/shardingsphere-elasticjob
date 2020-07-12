@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -37,18 +38,13 @@ import java.util.Collection;
  * Cloud job facade.
  */
 @RequiredArgsConstructor
-public final class CloudJobFacade implements JobFacade, org.apache.shardingsphere.elasticjob.executor.JobFacade {
+public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
     private final JobTypeConfiguration jobConfig;
     
     private final JobEventBus jobEventBus;
-    
-    @Override
-    public JobTypeConfiguration loadJobRootConfiguration(final boolean fromCache) {
-        return jobConfig;
-    }
     
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {

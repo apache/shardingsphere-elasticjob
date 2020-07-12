@@ -30,7 +30,7 @@ public final class HomeFolderUtils {
     
     private static final String USER_HOME = System.getProperty("user.home");
     
-    private static final String CONSOLE_ROOT_FOLDER = ".elastic-job-console";
+    private static final String CONSOLE_ROOT_FOLDER = ".elasticjob-console";
     
     /**
      * Get file path in home folder.
