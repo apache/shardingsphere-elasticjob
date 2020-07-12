@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor;
+package org.apache.shardingsphere.elasticjob.executor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
@@ -27,8 +27,8 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironm
 import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutorFactory;
+import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;

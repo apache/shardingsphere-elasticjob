@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.simple.executor;
+package org.apache.shardingsphere.elasticjob.executor.item;
 
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 
 /**
- * Simple job executor.
+ * Job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-public final class SimpleJobExecutor implements ClassedJobItemExecutor<SimpleJob> {
+public interface JobItemExecutor<T extends ElasticJob> {
     
-    @Override
-    public void process(final SimpleJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        elasticJob.execute(shardingContext);
-    }
-    
-    @Override
-    public Class<SimpleJob> getElasticJobClass() {
-        return SimpleJob.class;
-    }
+    /**
+     * Process job item.
+     * 
+     * @param elasticJob elastic job
+     * @param jobConfig job configuration
+     * @param jobFacade job facade
+     * @param shardingContext sharding context
+     */
+    void process(T elasticJob, JobConfiguration jobConfig, JobFacade jobFacade, ShardingContext shardingContext);
 }

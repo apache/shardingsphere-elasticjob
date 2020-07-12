@@ -15,14 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.item.impl;
+package org.apache.shardingsphere.elasticjob.executor.item.impl;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
 
 /**
- * Typed job item executor.
+ * Classed job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
+public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
+    
+    /**
+     * Get elastic job class.
+     * 
+     * @return elastic job class
+     */
+    Class<T> getElasticJobClass();
 }

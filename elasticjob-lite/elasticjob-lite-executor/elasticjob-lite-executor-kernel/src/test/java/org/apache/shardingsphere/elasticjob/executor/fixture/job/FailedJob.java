@@ -15,22 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.item.impl;
+package org.apache.shardingsphere.elasticjob.executor.fixture.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.JobItemExecutor;
 
-/**
- * Classed job item executor.
- * 
- * @param <T> type of ElasticJob
- */
-public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
-    
-    /**
-     * Get elastic job class.
-     * 
-     * @return elastic job class
-     */
-    Class<T> getElasticJobClass();
+public final class FailedJob implements ElasticJob {
 }

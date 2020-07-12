@@ -19,9 +19,9 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.quartz.Job;

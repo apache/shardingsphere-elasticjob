@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-lite-executor-kernel</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-tracing-rdb</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

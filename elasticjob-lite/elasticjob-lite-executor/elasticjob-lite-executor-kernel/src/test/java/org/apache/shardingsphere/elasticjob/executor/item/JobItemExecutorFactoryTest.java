@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor.item;
+package org.apache.shardingsphere.elasticjob.executor.item;
 
+import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.executor.fixture.executor.TypedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.executor.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.executor.fixture.job.FailedJob;
+import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.fixture.executor.TypedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.FailedJob;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.FooJob;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

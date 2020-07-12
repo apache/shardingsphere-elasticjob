@@ -30,6 +30,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-lite-executor-kernel</module>
         <module>elasticjob-lite-simple-executor</module>
         <module>elasticjob-lite-dataflow-executor</module>
         <module>elasticjob-lite-script-executor</module>

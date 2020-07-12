@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.executor;
+package org.apache.shardingsphere.elasticjob.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
+import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.lite.fixture.executor.ClassedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
 import org.junit.Test;

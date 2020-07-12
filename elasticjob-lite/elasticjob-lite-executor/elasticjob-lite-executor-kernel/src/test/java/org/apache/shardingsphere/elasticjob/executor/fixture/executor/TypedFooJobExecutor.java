@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.fixture.executor;
+package org.apache.shardingsphere.elasticjob.executor.fixture.executor;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
 
 public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     

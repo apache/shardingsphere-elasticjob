@@ -21,8 +21,8 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.lite.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.lite.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 
 import java.util.List;
 
