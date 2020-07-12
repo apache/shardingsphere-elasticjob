@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 
 public final class HomeFolderUtilsTest {
     
-    private static final String HOME_FOLDER = System.getProperty("user.home") + File.separator + ".elastic-job-console" + File.separator;
+    private static final String HOME_FOLDER = System.getProperty("user.home") + File.separator + ".elasticjob-console" + File.separator;
     
     @Test
     public void assertGetFilePathInHomeFolder() {

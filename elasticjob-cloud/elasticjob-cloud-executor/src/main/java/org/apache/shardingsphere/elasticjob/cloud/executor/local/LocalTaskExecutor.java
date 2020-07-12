@@ -101,7 +101,7 @@ public final class LocalTaskExecutor {
             try {
                 result = Class.forName(jobClass).newInstance();
             } catch (final ReflectiveOperationException ex) {
-                throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
+                throw new JobSystemException("ElasticJob: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
             }
         } else {
             result = new ClassPathXmlApplicationContext(localCloudJobConfiguration.getApplicationContext()).getBean(localCloudJobConfiguration.getBeanName());
