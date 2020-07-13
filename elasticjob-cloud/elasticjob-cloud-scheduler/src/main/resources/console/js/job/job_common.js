@@ -199,31 +199,11 @@ function submitJobForm(type, url, modal) {
     });
 }
 
-function dataControl() {
-    $("#job-type").change(function() {
-        var jobType = $("#job-type").val();
-        if("SIMPLE" === jobType) {
-            $("#streaming-process").hide();
-            $("#streaming-process-box").hide();
-            $("#bootstrap-script-div").hide();
-        } else if("DATAFLOW" === jobType) {
-            $("#streaming-process").show();
-            $("#streaming-process-box").show();
-            $("#bootstrap-script-div").hide();
-        } else if("SCRIPT" === jobType) {
-            $("#streaming-process").hide();
-            $("#streaming-process-box").hide();
-            $("#bootstrap-script-div").show();
-        }
-    });
-}
-
 function getJob() {
     return {
         jobName: $("#job-name").val(),
         appName: $("#job-app-name").val(),
         cron: $("#cron").val(),
-        jobType: $("#job-type").val(),
         cpuCount: $("#cpu-count").val(),
         jobExecutionType: $("#job-execution-type").val(),
         memoryMB: $("#job-memory").val(),

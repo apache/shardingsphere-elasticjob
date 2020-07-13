@@ -26,7 +26,11 @@ import static org.junit.Assert.assertThat;
 
 public final class YamlEngineTest {
     
-    private static final String YAML = "bar: bar\nfoo: foo\n";
+    private static final String YAML = "bar: bar\n"
+            + "foo: foo\n"
+            + "nest:\n"
+            + "  bar: nest_bar\n"
+            + "  foo: nest_foo\n";
     
     private static final String YAML_WITH_NULL = "foo: foo\n";
     
@@ -35,6 +39,10 @@ public final class YamlEngineTest {
         FooYamlConfiguration actual = new FooYamlConfiguration();
         actual.setFoo("foo");
         actual.setBar("bar");
+        FooYamlConfiguration nest = new FooYamlConfiguration();
+        nest.setFoo("nest_foo");
+        nest.setBar("nest_bar");
+        actual.setNest(nest);
         assertThat(YamlEngine.marshal(actual), is(YAML));
     }
     
@@ -50,6 +58,8 @@ public final class YamlEngineTest {
         FooYamlConfiguration actual = YamlEngine.unmarshal(YAML, FooYamlConfiguration.class);
         assertThat(actual.getFoo(), is("foo"));
         assertThat(actual.getBar(), is("bar"));
+        assertThat(actual.getNest().getFoo(), is("nest_foo"));
+        assertThat(actual.getNest().getBar(), is("nest_bar"));
     }
     
     @Test
@@ -57,5 +67,6 @@ public final class YamlEngineTest {
         FooYamlConfiguration actual = YamlEngine.unmarshal(YAML_WITH_NULL, FooYamlConfiguration.class);
         assertThat(actual.getFoo(), is("foo"));
         assertNull(actual.getBar());
+        assertNull(actual.getNest());
     }
 }

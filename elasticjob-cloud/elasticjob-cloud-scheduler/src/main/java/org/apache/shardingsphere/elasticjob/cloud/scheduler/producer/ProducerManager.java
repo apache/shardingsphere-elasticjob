@@ -86,36 +86,36 @@ public final class ProducerManager {
     /**
      * Register the job.
      * 
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void register(final CloudJobConfiguration jobConfig) {
-        if (disableJobService.isDisabled(jobConfig.getJobName())) {
-            throw new JobConfigurationException("Job '%s' has been disable.", jobConfig.getJobName());
+    public void register(final CloudJobConfiguration cloudJobConfig) {
+        if (disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName())) {
+            throw new JobConfigurationException("Job '%s' has been disable.", cloudJobConfig.getJobConfig().getJobName());
         }
-        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
+        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(cloudJobConfig.getAppName());
         if (!appConfigFromZk.isPresent()) {
-            throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
+            throw new AppConfigurationException("Register app '%s' firstly.", cloudJobConfig.getAppName());
         }
-        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(cloudJobConfig.getJobConfig().getJobName());
         if (jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("Job '%s' already existed.", jobConfig.getJobName());
+            throw new JobConfigurationException("Job '%s' already existed.", cloudJobConfig.getJobConfig().getJobName());
         }
-        configService.add(jobConfig);
-        schedule(jobConfig);
+        configService.add(cloudJobConfig);
+        schedule(cloudJobConfig);
     }
     
     /**
      * Update the job.
      *
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void update(final CloudJobConfiguration jobConfig) {
-        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(cloudJobConfig.getJobConfig().getJobName());
         if (!jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
+            throw new JobConfigurationException("Cannot found job '%s', please register first.", cloudJobConfig.getJobConfig().getJobName());
         }
-        configService.update(jobConfig);
-        reschedule(jobConfig.getJobName());
+        configService.update(cloudJobConfig);
+        reschedule(cloudJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -135,16 +135,16 @@ public final class ProducerManager {
     /**
      * Schedule the job.
      *
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void schedule(final CloudJobConfiguration jobConfig) {
-        if (disableAppService.isDisabled(jobConfig.getAppName()) || disableJobService.isDisabled(jobConfig.getJobName())) {
+    public void schedule(final CloudJobConfiguration cloudJobConfig) {
+        if (disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName())) {
             return;
         }
-        if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
-            transientProducerScheduler.register(jobConfig);
-        } else if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-            readyService.addDaemon(jobConfig.getJobName());
+        if (CloudJobExecutionType.TRANSIENT == cloudJobConfig.getJobExecutionType()) {
+            transientProducerScheduler.register(cloudJobConfig);
+        } else if (CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
+            readyService.addDaemon(cloudJobConfig.getJobConfig().getJobName());
         }
     }
     

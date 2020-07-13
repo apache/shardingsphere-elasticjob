@@ -32,7 +32,7 @@ import java.util.List;
 @Getter
 public final class JobContext {
     
-    private final CloudJobConfiguration jobConfig;
+    private final CloudJobConfiguration cloudJobConfig;
     
     private final List<Integer> assignedShardingItems;
     
@@ -41,16 +41,16 @@ public final class JobContext {
     /**
      * Create job running context from job configuration and execution type.
      *
-     * @param jobConfig job configuration
+     * @param cloudJobConfig cloud job configuration
      * @param type execution type
      * @return Job running context
      */
-    public static JobContext from(final CloudJobConfiguration jobConfig, final ExecutionType type) {
-        int shardingTotalCount = jobConfig.getJobConfig().getShardingTotalCount();
+    public static JobContext from(final CloudJobConfiguration cloudJobConfig, final ExecutionType type) {
+        int shardingTotalCount = cloudJobConfig.getJobConfig().getShardingTotalCount();
         List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             shardingItems.add(i);
         }
-        return new JobContext(jobConfig, shardingItems, type);
+        return new JobContext(cloudJobConfig, shardingItems, type);
     }
 }

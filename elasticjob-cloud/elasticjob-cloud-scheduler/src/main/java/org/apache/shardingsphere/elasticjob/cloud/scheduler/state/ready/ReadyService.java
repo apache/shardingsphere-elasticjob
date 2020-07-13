@@ -119,7 +119,7 @@ public final class ReadyService {
         if (!regCenter.isExisted(ReadyNode.ROOT)) {
             return Collections.emptyList();
         }
-        Collection<String> ineligibleJobNames = ineligibleJobContexts.stream().map(input -> input.getJobConfig().getJobName()).collect(Collectors.toList());
+        Collection<String> ineligibleJobNames = ineligibleJobContexts.stream().map(input -> input.getCloudJobConfig().getJobConfig().getJobName()).collect(Collectors.toList());
         List<String> jobNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
         List<JobContext> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {

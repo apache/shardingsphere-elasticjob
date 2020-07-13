@@ -49,12 +49,12 @@ public final class TransientProducerSchedulerTest {
 
     private TransientProducerScheduler transientProducerScheduler;
     
-    private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+    private final CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(jobConfig.getJobConfig().getCron()).build();
+    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(cloudJobConfig.getJobConfig().getCron()).build();
     
-    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getJobConfig().getCron())
-                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getJobConfig().getCron())
+    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cloudJobConfig.getJobConfig().getCron())
+                        .withSchedule(CronScheduleBuilder.cronSchedule(cloudJobConfig.getJobConfig().getCron())
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
@@ -66,15 +66,15 @@ public final class TransientProducerSchedulerTest {
     @Test
     public void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
-        transientProducerScheduler.register(jobConfig);
+        transientProducerScheduler.register(cloudJobConfig);
         verify(scheduler).checkExists(jobDetail.getKey());
         verify(scheduler).scheduleJob(jobDetail, trigger);
     }
     
     @Test
     public void assertDeregister() throws SchedulerException {
-        transientProducerScheduler.deregister(jobConfig);
-        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getJobConfig().getCron()));
+        transientProducerScheduler.deregister(cloudJobConfig);
+        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(cloudJobConfig.getJobConfig().getCron()));
     }
     
     @Test

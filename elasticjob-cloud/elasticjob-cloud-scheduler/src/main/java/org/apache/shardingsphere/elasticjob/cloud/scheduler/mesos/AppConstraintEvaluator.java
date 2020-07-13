@@ -138,20 +138,20 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     }
     
     private CloudAppConfiguration getAppConfiguration(final String taskId) throws LackConfigException {
-        CloudJobConfiguration jobConfig = getJobConfiguration(TaskContext.from(taskId));
-        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(jobConfig.getAppName());
+        CloudJobConfiguration cloudJobConfig = getJobConfiguration(TaskContext.from(taskId));
+        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(cloudJobConfig.getAppName());
         if (!appConfigOptional.isPresent()) {
-            throw new LackConfigException("APP", jobConfig.getAppName());
+            throw new LackConfigException("APP", cloudJobConfig.getAppName());
         }
         return appConfigOptional.get();
     }
     
     private CloudJobConfiguration getJobConfiguration(final TaskContext taskContext) throws LackConfigException {
-        Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
+        if (!cloudJobConfig.isPresent()) {
             throw new LackConfigException("JOB", taskContext.getMetaInfo().getJobName());
         }
-        return jobConfigOptional.get();
+        return cloudJobConfig.get();
     }
     
     private class LackConfigException extends Exception {

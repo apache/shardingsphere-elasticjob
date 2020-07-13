@@ -17,12 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.json;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -33,7 +35,7 @@ import java.util.Map;
 /**
  * Job configuration gson type adapter.
  */
-public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapter<CloudJobConfiguration> {
+public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<CloudJobConfiguration> {
     
     @Override
     public CloudJobConfiguration read(final JsonReader in) throws IOException {
@@ -104,21 +106,46 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         if (null != scriptCommandLine) {
             jobConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, scriptCommandLine);
         }
-        return getJobRootConfiguration(jobConfig, customizedValueMap);
+        return getCloudJobConfiguration(jobConfig, customizedValueMap);
     }
     
-    protected abstract void addToCustomizedValueMap(String jsonName, JsonReader in, Map<String, Object> customizedValueMap) throws IOException;
+    private void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
+        switch (jsonName) {
+            case CloudConfigurationConstants.CPU_COUNT:
+            case CloudConfigurationConstants.MEMORY_MB:
+                customizedValueMap.put(jsonName, in.nextDouble());
+                break;
+            case CloudConfigurationConstants.APP_NAME:
+            case CloudConfigurationConstants.JOB_EXECUTION_TYPE:
+                customizedValueMap.put(jsonName, in.nextString());
+                break;
+            default:
+                in.skipValue();
+                break;
+        }
+    }
     
     private JobConfiguration getJobConfiguration(final String jobName, final String cron, final int shardingTotalCount,
-                                                     final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire,
-                                                     final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
+                                                 final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire,
+                                                 final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
         return JobConfiguration.newBuilder(jobName, shardingTotalCount).cron(cron)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire)
                 .jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description(description)
                 .build();
     }
     
-    protected abstract CloudJobConfiguration getJobRootConfiguration(JobConfiguration jobConfig, Map<String, Object> customizedValueMap);
+    private CloudJobConfiguration getCloudJobConfiguration(final JobConfiguration jobConfig, final Map<String, Object> customizedValueMap) {
+        Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.APP_NAME), "appName cannot be null.");
+        Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT), "cpuCount cannot be null.");
+        Preconditions.checkArgument((double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT) >= 0.001, "cpuCount cannot be less than 0.001");
+        Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB), "memoryMB cannot be null.");
+        Preconditions.checkArgument((double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB) >= 1, "memory cannot be less than 1");
+        Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE), "jobExecutionType cannot be null.");
+        return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME),
+                (double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT),
+                (double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB),
+                CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()), jobConfig);
+    }
     
     @Override
     public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
@@ -147,5 +174,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         out.endObject();
     }
     
-    protected abstract void writeCustomized(JsonWriter out, CloudJobConfiguration value) throws IOException;
+    private void writeCustomized(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
+        out.name(CloudConfigurationConstants.APP_NAME).value(value.getAppName());
+        out.name(CloudConfigurationConstants.CPU_COUNT).value(value.getCpuCount());
+        out.name(CloudConfigurationConstants.MEMORY_MB).value(value.getMemoryMB());
+        out.name(CloudConfigurationConstants.JOB_EXECUTION_TYPE).value(value.getJobExecutionType().name());
+    }
 }

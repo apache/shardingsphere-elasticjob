@@ -30,20 +30,11 @@ public final class CloudJobConfiguration {
     
     private final String appName;
     
-    private final JobConfiguration jobConfig;
-    
     private final double cpuCount;
     
     private final double memoryMB;
     
     private final CloudJobExecutionType jobExecutionType;
     
-    /**
-     * Get job name.
-     *
-     * @return job name
-     */
-    public String getJobName() {
-        return jobConfig.getJobName();
-    }
+    private final JobConfiguration jobConfig;
 }

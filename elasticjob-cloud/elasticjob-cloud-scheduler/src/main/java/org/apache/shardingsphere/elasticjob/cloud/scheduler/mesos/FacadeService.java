@@ -157,21 +157,21 @@ public final class FacadeService {
      * @param taskContext task running context
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
+        if (!cloudJobConfigOptional.isPresent()) {
             return;
         }
-        if (isDisable(jobConfigOptional.get())) {
+        if (isDisable(cloudJobConfigOptional.get())) {
             return;
         }
-        CloudJobConfiguration jobConfig = jobConfigOptional.get();
-        if (jobConfig.getJobConfig().isFailover() || CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+        CloudJobConfiguration cloudJobConfig = cloudJobConfigOptional.get();
+        if (cloudJobConfig.getJobConfig().isFailover() || CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
     }
     
-    private boolean isDisable(final CloudJobConfiguration jobConfiguration) {
-        return disableAppService.isDisabled(jobConfiguration.getAppName()) || disableJobService.isDisabled(jobConfiguration.getJobName());
+    private boolean isDisable(final CloudJobConfiguration cloudJobConfig) {
+        return disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -219,11 +219,11 @@ public final class FacadeService {
      * @param jobName job name
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(jobName);
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = jobConfigService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
             return;
         }
-        if (isDisable(jobConfigOptional.get())) {
+        if (isDisable(cloudJobConfig.get())) {
             return;
         }
         readyService.addDaemon(jobName);
