@@ -35,11 +35,6 @@ public final class PostgreSQLDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getSQLPropertiesFile() {
-        return "postgresQL.properties";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 0;
     }

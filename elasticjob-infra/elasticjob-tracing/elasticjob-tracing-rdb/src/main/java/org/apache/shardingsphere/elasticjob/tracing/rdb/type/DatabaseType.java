@@ -41,7 +41,9 @@ public interface DatabaseType {
      *
      * @return SQL properties file
      */
-    String getSQLPropertiesFile();
+    default String getSQLPropertiesFile() {
+        return String.format("%s.properties", getType());
+    }
     
     /**
      * Get duplicate record error code.

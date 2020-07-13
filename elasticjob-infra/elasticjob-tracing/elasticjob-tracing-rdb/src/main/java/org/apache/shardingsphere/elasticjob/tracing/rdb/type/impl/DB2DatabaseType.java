@@ -35,11 +35,6 @@ public final class DB2DatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getSQLPropertiesFile() {
-        return "db2.properties";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return -803;
     }

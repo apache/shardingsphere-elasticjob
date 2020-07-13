@@ -35,11 +35,6 @@ public final class SQLServerDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getSQLPropertiesFile() {
-        return "sqlserver.properties";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 1;
     }

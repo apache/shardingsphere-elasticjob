@@ -35,11 +35,6 @@ public final class OracleDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getSQLPropertiesFile() {
-        return "oracle.properties";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 1;
     }
