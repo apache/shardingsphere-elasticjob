@@ -17,17 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.util.json;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
@@ -53,9 +49,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         String jobExecutorServiceHandlerType = "";
         String jobErrorHandlerType = "";
         String description = "";
-        JobType jobType = null;
-        boolean streamingProcess = false;
-        String scriptCommandLine = "";
+        Boolean streamingProcess = null;
+        String scriptCommandLine = null;
         Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
         in.beginObject();
         while (in.hasNext()) {
@@ -91,9 +86,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
                 case "description":
                     description = in.nextString();
                     break;
-                case "jobType":
-                    jobType = JobType.valueOf(in.nextString());
-                    break;
                 case "streamingProcess":
                     streamingProcess = in.nextBoolean();
                     break;
@@ -108,7 +100,13 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, streamingProcess, scriptCommandLine);
+        if (null != streamingProcess) {
+            coreConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.toString(streamingProcess));
+        }
+        if (null != scriptCommandLine) {
+            coreConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, scriptCommandLine);
+        }
+        JobTypeConfiguration typeConfig = new SimpleJobConfiguration(coreConfig);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -123,27 +121,12 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final boolean streamingProcess, final String scriptCommandLine) {
-        Preconditions.checkNotNull(jobType, "jobType cannot be null.");
-        switch (jobType) {
-            case SIMPLE:
-                return new SimpleJobConfiguration(coreConfig);
-            case DATAFLOW:
-                return new DataflowJobConfiguration(coreConfig, streamingProcess);
-            case SCRIPT:
-                return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
-            default:
-                throw new UnsupportedOperationException(String.valueOf(jobType));
-        }
-    }
-    
     protected abstract CloudJobConfiguration getJobRootConfiguration(JobTypeConfiguration typeConfig, Map<String, Object> customizedValueMap);
     
     @Override
     public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobType").value(value.getTypeConfig().getJobType().name());
         out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
         out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
         out.name("shardingItemParameters").value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
@@ -158,10 +141,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
         }
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
         if (value.getTypeConfig().getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            out.name("streamingProcess").value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
+            out.name("streamingProcess").value(value.getTypeConfig().getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
         }
         if (value.getTypeConfig().getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
-            out.name("scriptCommandLine").value(((ScriptJobConfiguration) value.getTypeConfig()).getScriptCommandLine());
+            out.name("scriptCommandLine").value(value.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
         writeCustomized(out, value);
         out.endObject();
