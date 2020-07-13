@@ -107,8 +107,6 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
-        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

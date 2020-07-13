@@ -32,9 +32,8 @@ public final class CloudJsonConstants {
     private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
             + "\"appName\":\"test_spring_app\",\"cpuCount\":1.0,\"memoryMB\":128.0,"
-            + "\"jobExecutionType\":\"TRANSIENT\",\"beanName\":\"springSimpleJob\","
-            + "\"applicationContext\":\"applicationContext.xml\"}";
-
+            + "\"jobExecutionType\":\"TRANSIENT\"}";
+    
     /**
      * Get job in json format.
      * @return job in json format
@@ -42,7 +41,7 @@ public final class CloudJsonConstants {
     public static String getJobJson() {
         return String.format(JOB_JSON, "test_job", true, "TRANSIENT");
     }
-
+    
     /**
      * Get job in json format.
      * @param jobName job name
@@ -51,7 +50,7 @@ public final class CloudJsonConstants {
     public static String getJobJson(final String jobName) {
         return String.format(JOB_JSON, jobName, true, "TRANSIENT");
     }
-
+    
     /**
      * Get job in json format.
      * @param jobExecutionType job execution type
@@ -60,7 +59,7 @@ public final class CloudJsonConstants {
     public static String getJobJson(final CloudJobExecutionType jobExecutionType) {
         return String.format(JOB_JSON, "test_job", true, jobExecutionType.name());
     }
-
+    
     /**
      * Get job in json format.
      * @param misfire is misfire
@@ -69,7 +68,7 @@ public final class CloudJsonConstants {
     public static String getJobJson(final boolean misfire) {
         return String.format(JOB_JSON, "test_job", misfire, "TRANSIENT");
     }
-
+    
     /**
      * Get sprint job in json format.
      * @return job in json format

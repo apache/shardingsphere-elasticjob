@@ -75,8 +75,6 @@ public final class CloudJobConfigurationGsonFactory {
                     customizedValueMap.put(jsonName, in.nextDouble());
                     break;
                 case CloudConfigurationConstants.APP_NAME:
-                case CloudConfigurationConstants.APPLICATION_CONTEXT:
-                case CloudConfigurationConstants.BEAN_NAME:
                 case CloudConfigurationConstants.JOB_EXECUTION_TYPE:
                     customizedValueMap.put(jsonName, in.nextString());
                     break;
@@ -94,18 +92,10 @@ public final class CloudJobConfigurationGsonFactory {
             Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB), "memoryMB cannot be null.");
             Preconditions.checkArgument((double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB) >= 1, "memory cannot be less than 1");
             Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE), "jobExecutionType cannot be null.");
-            if (customizedValueMap.containsKey(CloudConfigurationConstants.BEAN_NAME) && customizedValueMap.containsKey(CloudConfigurationConstants.APPLICATION_CONTEXT)) {
-                return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME), jobConfig,
-                        (double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT),
-                        (double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB),
-                        CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()),
-                        customizedValueMap.get(CloudConfigurationConstants.BEAN_NAME).toString(), customizedValueMap.get(CloudConfigurationConstants.APPLICATION_CONTEXT).toString());
-            } else {
-                return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME), jobConfig,
-                        (double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT),
-                        (double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB),
-                        CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()));
-            }
+            return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME), jobConfig,
+                    (double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT),
+                    (double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB),
+                    CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()));
         }
         
         @Override
@@ -114,8 +104,6 @@ public final class CloudJobConfigurationGsonFactory {
             out.name(CloudConfigurationConstants.CPU_COUNT).value(value.getCpuCount());
             out.name(CloudConfigurationConstants.MEMORY_MB).value(value.getMemoryMB());
             out.name(CloudConfigurationConstants.JOB_EXECUTION_TYPE).value(value.getJobExecutionType().name());
-            out.name(CloudConfigurationConstants.BEAN_NAME).value(value.getBeanName());
-            out.name(CloudConfigurationConstants.APPLICATION_CONTEXT).value(value.getApplicationContext());
         }
     }
 }

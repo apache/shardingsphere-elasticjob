@@ -105,7 +105,7 @@ public final class CloudJobConfigurationBuilder {
      */
     public static CloudJobConfiguration createCloudSpringJobConfiguration(final String jobName) {
         return new CloudJobConfiguration("test_spring_app", JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build(),
-                1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
+                1.0d, 128.0d, CloudJobExecutionType.TRANSIENT);
     }
     
     /**

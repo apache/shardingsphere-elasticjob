@@ -17,9 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.constants;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Cloud configuration constants.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudConfigurationConstants {
     
     public static final String APP_NAME = "appName";
@@ -37,10 +41,4 @@ public final class CloudConfigurationConstants {
     public static final String MEMORY_MB = "memoryMB";
     
     public static final String JOB_EXECUTION_TYPE = "jobExecutionType";
-    
-    public static final String BEAN_NAME = "beanName";
-    
-    public static final String APPLICATION_CONTEXT = "applicationContext";
-    
-    
 }

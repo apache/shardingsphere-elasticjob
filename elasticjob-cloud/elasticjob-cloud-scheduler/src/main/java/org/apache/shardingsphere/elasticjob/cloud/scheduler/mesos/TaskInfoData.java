@@ -61,8 +61,6 @@ public final class TaskInfoData {
         } else if (jobConfig.getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
             result.put("scriptCommandLine", jobConfig.getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
-        result.put("beanName", jobConfig.getBeanName());
-        result.put("applicationContext", jobConfig.getApplicationContext());
         return result;
     }
 }

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -25,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 /**
  * Cloud job configuration.
  */
-@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 public final class CloudJobConfiguration {
@@ -39,10 +37,6 @@ public final class CloudJobConfiguration {
     private final double memoryMB;
     
     private final CloudJobExecutionType jobExecutionType;
-    
-    private String beanName;
-    
-    private String applicationContext;
     
     /**
      * Get job name.
