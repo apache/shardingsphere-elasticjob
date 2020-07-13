@@ -163,10 +163,10 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         CloudAppConfiguration appConfig = appConfigOptional.get();
         taskContext.setSlaveId(offer.getSlaveId().getValue());
         ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig, jobConfig);
-        boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && jobConfig.getTypeConfig().getCoreConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
+        boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && jobConfig.getCoreConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
         String script = appConfig.getBootstrapScript();
         if (isCommandExecutor) {
-            script = jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
+            script = jobConfig.getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
         Protos.CommandInfo.URI uri = buildURI(appConfig, isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
@@ -178,12 +178,12 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig) {
-        Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
+        Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.getOrDefault(shardingItem, ""));
-        return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
-                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
+        return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getCoreConfig().getShardingTotalCount(),
+                jobConfig.getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
     
     private Protos.TaskInfo buildCommandExecutorTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,

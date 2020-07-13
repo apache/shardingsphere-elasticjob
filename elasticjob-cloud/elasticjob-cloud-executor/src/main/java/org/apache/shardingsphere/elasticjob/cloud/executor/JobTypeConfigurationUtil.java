@@ -20,10 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -40,20 +36,18 @@ public final class JobTypeConfigurationUtil {
      * @param jobConfigurationMap job configuration map
      * @return job type configuration
      */
-    public static JobTypeConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
+    public static JobCoreConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
+        JobCoreConfiguration result = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (jobConfigurationMap.containsKey("streamingProcess")) {
-            jobCoreConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));
-            return new DataflowJobConfiguration(jobCoreConfig);
+            result.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));
         } else if (jobConfigurationMap.containsKey("scriptCommandLine")) {
-            jobCoreConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, jobConfigurationMap.get("scriptCommandLine"));
-            return new ScriptJobConfiguration(jobCoreConfig);
+            result.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, jobConfigurationMap.get("scriptCommandLine"));
         }
-        return new SimpleJobConfiguration(jobCoreConfig);
+        return result;
     }
 }

@@ -31,7 +31,7 @@ public final class CloudJobConfiguration {
     
     private final String appName;
     
-    private final JobTypeConfiguration typeConfig;
+    private final JobCoreConfiguration coreConfig;
     
     private final double cpuCount;
     
@@ -49,6 +49,6 @@ public final class CloudJobConfiguration {
      * @return job name
      */
     public String getJobName() {
-        return typeConfig.getCoreConfig().getJobName();
+        return coreConfig.getJobName();
     }
 }

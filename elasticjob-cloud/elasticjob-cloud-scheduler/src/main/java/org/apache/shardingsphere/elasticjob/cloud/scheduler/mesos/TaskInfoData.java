@@ -22,7 +22,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -54,13 +53,13 @@ public final class TaskInfoData {
     private Map<String, String> buildJobConfigurationContext() {
         Map<String, String> result = new LinkedHashMap<>(16, 1);
         result.put("jobName", jobConfig.getJobName());
-        result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron() : "");
-        result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
-        result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        if (jobConfig.getTypeConfig().getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            result.put("streamingProcess", jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
-        } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
-            result.put("scriptCommandLine", jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
+        result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getCoreConfig().getCron() : "");
+        result.put("executorServiceHandler", jobConfig.getCoreConfig().getJobExecutorServiceHandlerType());
+        result.put("jobExceptionHandler", jobConfig.getCoreConfig().getJobErrorHandlerType());
+        if (jobConfig.getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            result.put("streamingProcess", jobConfig.getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
+        } else if (jobConfig.getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
+            result.put("scriptCommandLine", jobConfig.getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
         result.put("beanName", jobConfig.getBeanName());
         result.put("applicationContext", jobConfig.getApplicationContext());

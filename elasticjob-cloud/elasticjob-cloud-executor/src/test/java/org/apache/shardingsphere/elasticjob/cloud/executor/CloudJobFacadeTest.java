@@ -54,7 +54,7 @@ public class CloudJobFacadeTest {
     public void setUp() {
         shardingContexts = getShardingContexts();
         jobConfig = new JobConfigurationContext(getJobConfigurationMap(false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getJobConfig(), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {

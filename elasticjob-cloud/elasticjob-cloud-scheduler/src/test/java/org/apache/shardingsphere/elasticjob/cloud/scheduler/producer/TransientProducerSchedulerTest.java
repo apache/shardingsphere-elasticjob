@@ -51,10 +51,10 @@ public final class TransientProducerSchedulerTest {
     
     private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
+    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(jobConfig.getCoreConfig().getCron()).build();
     
-    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
-                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getTypeConfig().getCoreConfig().getCron())
+    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getCoreConfig().getCron())
+                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getCoreConfig().getCron())
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
@@ -74,7 +74,7 @@ public final class TransientProducerSchedulerTest {
     @Test
     public void assertDeregister() throws SchedulerException {
         transientProducerScheduler.deregister(jobConfig);
-        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getTypeConfig().getCoreConfig().getCron()));
+        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getCoreConfig().getCron()));
     }
     
     @Test
