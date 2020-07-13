@@ -32,11 +32,19 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
+    private static final String YAML = "appCacheEnable: true\n"
+            + "appName: test_app\n"
+            + "appURL: http://localhost/app.jar\n"
+            + "bootstrapScript: bin/start.sh\n"
+            + "cpuCount: 1.0\n"
+            + "eventTraceSamplingCount: 0\n"
+            + "memoryMB: 128.0\n";
+    
     @Test
     public void assertRegister() throws Exception {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
-        verify(getRegCenter()).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(getRegCenter()).persist("/config/app/test_app", YAML);
     }
     
     @Test
@@ -57,7 +65,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(true);
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app", "PUT", CloudAppJsonConstants.getAppJson("test_app")), is(204));
-        verify(getRegCenter()).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(getRegCenter()).update("/config/app/test_app", YAML);
     }
     
     @Test
