@@ -29,6 +29,8 @@ import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -155,12 +157,11 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
             out.name("jobExceptionHandler").value(value.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
         }
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
-        if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
-            DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
-            out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
-        } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
-            ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
-            out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
+        if (value.getTypeConfig().getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            out.name("streamingProcess").value(((DataflowJobConfiguration) value.getTypeConfig()).isStreamingProcess());
+        }
+        if (value.getTypeConfig().getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
+            out.name("scriptCommandLine").value(((ScriptJobConfiguration) value.getTypeConfig()).getScriptCommandLine());
         }
         writeCustomized(out, value);
         out.endObject();

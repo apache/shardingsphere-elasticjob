@@ -24,6 +24,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Properties;
+
 /**
  * Job core configuration.
  */
@@ -49,6 +51,8 @@ public final class JobCoreConfiguration {
     
     private final String jobErrorHandlerType;
     
+    private final Properties props = new Properties();
+    
     private final String description;
     
     /**
@@ -71,6 +75,8 @@ public final class JobCoreConfiguration {
         private final String cron;
         
         private final int shardingTotalCount;
+    
+        private final Properties props = new Properties();
         
         private String shardingItemParameters = "";
         
@@ -79,9 +85,9 @@ public final class JobCoreConfiguration {
         private boolean failover;
         
         private boolean misfire = true;
-    
+        
         private String jobExecutorServiceHandlerType;
-    
+        
         private String jobErrorHandlerType;
         
         private String description = "";
@@ -169,6 +175,18 @@ public final class JobCoreConfiguration {
          */
         public Builder jobErrorHandlerType(final String jobErrorHandlerType) {
             this.jobErrorHandlerType = jobErrorHandlerType;
+            return this;
+        }
+    
+        /**
+         * Set property.
+         *
+         * @param key property key
+         * @param value property value
+         * @return job configuration builder
+         */
+        public Builder setProperty(final String key, final String value) {
+            props.setProperty(key, value);
             return this;
         }
         
