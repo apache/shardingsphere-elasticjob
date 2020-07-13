@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.constants.CloudConfigurationConstants;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.CloudConfigurationConstants;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

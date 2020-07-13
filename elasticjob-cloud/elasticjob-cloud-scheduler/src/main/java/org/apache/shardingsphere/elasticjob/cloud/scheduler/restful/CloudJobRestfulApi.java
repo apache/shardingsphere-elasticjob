@@ -22,7 +22,6 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
@@ -37,6 +36,7 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunning
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.JobConfigurationGsonTypeAdapter;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -107,7 +107,7 @@ public final class CloudJobRestfulApi {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobRestfulApi.regCenter = regCenter;
         CloudJobRestfulApi.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new JobConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
