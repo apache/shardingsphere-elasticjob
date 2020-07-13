@@ -162,24 +162,6 @@ public final class DaemonTaskScheduler {
         
         private volatile ElasticJobExecutor jobExecutor;
         
-        private ElasticJobExecutor getJobExecutor() {
-            if (null == jobExecutor) {
-                createJobExecutor();
-            }
-            return jobExecutor;
-        }
-        
-        private synchronized void createJobExecutor() {
-            if (null != jobExecutor) {
-                return;
-            }
-            if (null == elasticJob) {
-                jobExecutor = new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade);
-            } else {
-                jobExecutor = new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
-            }
-        }
-        
         @Override
         public void execute(final JobExecutionContext context) {
             ShardingContexts shardingContexts = jobFacade.getShardingContexts();
@@ -196,6 +178,22 @@ public final class DaemonTaskScheduler {
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
                 shardingContexts.setCurrentJobEventSamplingCount(0);
             }
+        }
+        
+        private ElasticJobExecutor getJobExecutor() {
+            if (null == jobExecutor) {
+                createJobExecutor();
+            }
+            return jobExecutor;
+        }
+        
+        private synchronized void createJobExecutor() {
+            if (null != jobExecutor) {
+                return;
+            }
+            jobExecutor = null == elasticJob
+                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade)
+                    : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
         }
     }
 }
