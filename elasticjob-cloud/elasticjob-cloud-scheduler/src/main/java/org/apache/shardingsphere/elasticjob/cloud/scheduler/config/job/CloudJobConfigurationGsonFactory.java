@@ -22,9 +22,9 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.constants.CloudConfigurationConstants;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.AbstractJobConfigurationGsonTypeAdapter;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
@@ -87,7 +87,7 @@ public final class CloudJobConfigurationGsonFactory {
         }
         
         @Override
-        protected CloudJobConfiguration getJobRootConfiguration(final JobCoreConfiguration jobConfig, final Map<String, Object> customizedValueMap) {
+        protected CloudJobConfiguration getJobRootConfiguration(final JobConfiguration jobConfig, final Map<String, Object> customizedValueMap) {
             Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.APP_NAME), "appName cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT), "cpuCount cannot be null.");
             Preconditions.checkArgument((double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT) >= 0.001, "cpuCount cannot be less than 0.001");

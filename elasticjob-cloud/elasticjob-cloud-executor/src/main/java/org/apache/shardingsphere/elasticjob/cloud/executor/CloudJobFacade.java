@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
@@ -39,7 +38,7 @@ public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
-    private final JobCoreConfiguration jobConfig;
+    private final JobConfiguration jobConfig;
     
     private final JobEventBus jobEventBus;
     

@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobTypeConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
@@ -76,7 +75,7 @@ public final class LocalTaskExecutor {
                 jobConfiguration.getJobName(), jobConfiguration.getShardingTotalCount(), jobConfiguration.getJobParameter(), shardingItemMap);
     }
     
-    private JobCoreConfiguration getJobConfiguration() {
+    private JobConfiguration getJobConfiguration() {
         Map<String, String> jobConfigurationMap = new HashMap<>();
         jobConfigurationMap.put("jobName", jobConfiguration.getJobName());
         if (jobConfiguration.getProps().containsKey("streaming.process")) {

@@ -21,8 +21,8 @@ import com.google.common.base.Strings;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -96,29 +96,29 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
             }
         }
         in.endObject();
-        JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
+        JobConfiguration jobConfig = getJobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, jobExecutorServiceHandlerType, jobErrorHandlerType, description);
         if (null != streamingProcess) {
-            coreConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.toString(streamingProcess));
+            jobConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.toString(streamingProcess));
         }
         if (null != scriptCommandLine) {
-            coreConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, scriptCommandLine);
+            jobConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, scriptCommandLine);
         }
-        return getJobRootConfiguration(coreConfig, customizedValueMap);
+        return getJobRootConfiguration(jobConfig, customizedValueMap);
     }
     
     protected abstract void addToCustomizedValueMap(String jsonName, JsonReader in, Map<String, Object> customizedValueMap) throws IOException;
     
-    private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
-                                                         final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire, 
-                                                         final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
-        return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
+    private JobConfiguration getJobConfiguration(final String jobName, final String cron, final int shardingTotalCount,
+                                                     final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire,
+                                                     final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
+        return JobConfiguration.newBuilder(jobName, shardingTotalCount).cron(cron)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire)
                 .jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description(description)
                 .build();
     }
     
-    protected abstract CloudJobConfiguration getJobRootConfiguration(JobCoreConfiguration jobConfig, Map<String, Object> customizedValueMap);
+    protected abstract CloudJobConfiguration getJobRootConfiguration(JobConfiguration jobConfig, Map<String, Object> customizedValueMap);
     
     @Override
     public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {

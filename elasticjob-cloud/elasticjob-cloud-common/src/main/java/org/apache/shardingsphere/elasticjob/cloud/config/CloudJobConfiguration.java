@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
 /**
  * Cloud job configuration.
@@ -31,7 +32,7 @@ public final class CloudJobConfiguration {
     
     private final String appName;
     
-    private final JobCoreConfiguration coreConfig;
+    private final JobConfiguration coreConfig;
     
     private final double cpuCount;
     

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -36,12 +36,12 @@ public final class JobTypeConfigurationUtil {
      * @param jobConfigurationMap job configuration map
      * @return job type configuration
      */
-    public static JobCoreConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
+    public static JobConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
-        JobCoreConfiguration result = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
+        JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(cron)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (jobConfigurationMap.containsKey("streamingProcess")) {
             result.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));

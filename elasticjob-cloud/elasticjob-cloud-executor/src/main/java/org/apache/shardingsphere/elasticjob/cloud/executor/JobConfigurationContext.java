@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 @Getter
 public final class JobConfigurationContext {
     
-    private final JobCoreConfiguration jobConfig;
+    private final JobConfiguration jobConfig;
     
     private final String beanName;
     
