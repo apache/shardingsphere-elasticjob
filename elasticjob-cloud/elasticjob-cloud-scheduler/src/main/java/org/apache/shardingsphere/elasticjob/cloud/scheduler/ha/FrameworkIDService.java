@@ -17,10 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.ha;
 
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+
+import java.util.Optional;
 
 /**
  * FrameworkID service.
@@ -31,19 +32,19 @@ public final class FrameworkIDService {
     private final CoordinatorRegistryCenter regCenter;
     
     /**
-     * Fetch FrameworkID.
+     * Fetch framework ID.
      * 
-     * @return the optional value of FrameworkID
+     * @return framework ID
      */
     public Optional<String> fetch() {
         String frameworkId = regCenter.getDirectly(HANode.FRAMEWORK_ID_NODE);
-        return Strings.isNullOrEmpty(frameworkId) ? Optional.<String>absent() : Optional.of(frameworkId);
+        return Strings.isNullOrEmpty(frameworkId) ? Optional.empty() : Optional.of(frameworkId);
     }
     
     /**
-     * Save FrameworkID.
+     * Save framework ID.
      * 
-     * @param id framework id
+     * @param id framework ID
      */
     public void save(final String id) {
         if (!regCenter.isExisted(HANode.FRAMEWORK_ID_NODE)) {

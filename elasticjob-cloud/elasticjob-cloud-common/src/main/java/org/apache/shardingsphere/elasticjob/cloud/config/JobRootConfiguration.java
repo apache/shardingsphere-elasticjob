@@ -21,7 +21,7 @@ package org.apache.shardingsphere.elasticjob.cloud.config;
  * Job root configuration.
  */
 public interface JobRootConfiguration {
-
+    
     /**
      * Get type Configuration.
      *

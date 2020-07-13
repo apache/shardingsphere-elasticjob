@@ -17,13 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.statistics.rdb;
 
-import com.google.common.base.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -36,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Statistic RDB repository.
@@ -331,7 +331,7 @@ public class StatisticRdbRepository {
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest taskResultStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     /**
@@ -412,7 +412,7 @@ public class StatisticRdbRepository {
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest taskRunningStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     /**
@@ -422,8 +422,7 @@ public class StatisticRdbRepository {
      */
     public Optional<JobRunningStatistics> findLatestJobRunningStatistics() {
         JobRunningStatistics result = null;
-        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
-                TABLE_JOB_RUNNING_STATISTICS);
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", TABLE_JOB_RUNNING_STATISTICS);
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -437,7 +436,7 @@ public class StatisticRdbRepository {
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest jobRunningStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     /**
@@ -490,6 +489,6 @@ public class StatisticRdbRepository {
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error("Fetch latest jobRegisterStatistics from DB error:", ex);
         }
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 }

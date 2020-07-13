@@ -18,12 +18,12 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.executor.ElasticJobExecutor;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
@@ -53,8 +53,7 @@ public final class LiteJob implements Job {
     }
     
     private ElasticJobExecutor createExecutor() {
-        return null == elasticJob
-                ? new ElasticJobExecutor(regCenter, elasticJobType, jobConfig, elasticJobListeners, tracingConfig)
-                : new ElasticJobExecutor(regCenter, elasticJob, jobConfig, elasticJobListeners, tracingConfig);
+        LiteJobFacade jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
+        return null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
     }
 }

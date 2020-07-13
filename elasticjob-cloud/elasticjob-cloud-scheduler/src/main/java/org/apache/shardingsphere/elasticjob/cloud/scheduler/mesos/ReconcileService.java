@@ -17,22 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.TaskStatus;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Reconcile service.
@@ -48,7 +48,7 @@ public class ReconcileService extends AbstractScheduledService {
     private final ReentrantLock lock = new ReentrantLock();
     
     @Override
-    protected void runOneIteration() throws Exception {
+    protected void runOneIteration() {
         lock.lock();
         try {
             explicitReconcile();
@@ -72,15 +72,10 @@ public class ReconcileService extends AbstractScheduledService {
                 return;
             }
             log.info("Requesting {} tasks reconciliation with the Mesos master", runningTask.size());
-            schedulerDriver.reconcileTasks(Collections2.transform(runningTask, new Function<TaskContext, Protos.TaskStatus>() {
-                @Override
-                public Protos.TaskStatus apply(final TaskContext input) {
-                    return Protos.TaskStatus.newBuilder()
-                            .setTaskId(Protos.TaskID.newBuilder().setValue(input.getId()).build())
-                            .setSlaveId(Protos.SlaveID.newBuilder().setValue(input.getSlaveId()).build())
-                            .setState(Protos.TaskState.TASK_RUNNING).build();
-                }
-            }));
+            schedulerDriver.reconcileTasks(runningTask.stream().map(each -> 
+                TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(each.getId()).build())
+                        .setSlaveId(Protos.SlaveID.newBuilder().setValue(each.getSlaveId()).build())
+                        .setState(Protos.TaskState.TASK_RUNNING).build()).collect(Collectors.toList()));
         } finally {
             lock.unlock();
         }
@@ -92,7 +87,7 @@ public class ReconcileService extends AbstractScheduledService {
     public void implicitReconcile() {
         lock.lock();
         try {
-            schedulerDriver.reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
+            schedulerDriver.reconcileTasks(Collections.emptyList());
         } finally {
             lock.unlock();
         }

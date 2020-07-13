@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * Listener manager.

@@ -17,13 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -31,12 +26,16 @@ import com.sun.jersey.api.client.Client;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Mesos state service.
@@ -110,16 +109,13 @@ public class MesosStateService {
      * @throws JSONException parse json exception
      */
     public Collection<ExecutorStateInfo> executors(final String appName) throws JSONException {
-        return Collections2.transform(findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName), new Function<JSONObject, ExecutorStateInfo>() {
-            @Override
-            public ExecutorStateInfo apply(final JSONObject input) {
-                try {
-                    return ExecutorStateInfo.builder().id(getExecutorId(input)).slaveId(input.getString("slave_id")).build();
-                } catch (final JSONException ex) {
-                    throw new RuntimeException(ex);
-                }
+        return findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName).stream().map(each -> {
+            try {
+                return ExecutorStateInfo.builder().id(getExecutorId(each)).slaveId(each.getString("slave_id")).build();
+            } catch (final JSONException ex) {
+                throw new RuntimeException(ex);
             }
-        });
+        }).collect(Collectors.toList());
     }
     
     /**

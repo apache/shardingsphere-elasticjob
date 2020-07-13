@@ -17,19 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready;
 
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +34,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Ready service.
@@ -120,13 +119,7 @@ public final class ReadyService {
         if (!regCenter.isExisted(ReadyNode.ROOT)) {
             return Collections.emptyList();
         }
-        Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
-            
-            @Override
-            public String apply(final JobContext input) {
-                return input.getJobConfig().getJobName();
-            }
-        });
+        Collection<String> ineligibleJobNames = ineligibleJobContexts.stream().map(input -> input.getJobConfig().getJobName()).collect(Collectors.toList());
         List<String> jobNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
         List<JobContext> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {

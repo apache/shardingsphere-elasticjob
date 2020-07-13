@@ -17,17 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,25 +38,25 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CloudJobFacadeTest {
     
-    private final ShardingContexts shardingContexts;
+    private ShardingContexts shardingContexts;
     
-    private final JobConfigurationContext jobConfig;
+    private JobConfigurationContext jobConfig;
     
     @Mock
     private JobEventBus eventBus;
     
-    private final JobFacade jobFacade;
+    private JobFacade jobFacade;
     
-    public CloudJobFacadeTest() {
-        MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() {
         shardingContexts = getShardingContexts();
         jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -69,11 +72,6 @@ public class CloudJobFacadeTest {
         result.put("jobType", jobType.name());
         result.put("streamingProcess", Boolean.toString(streamingProcess));
         return result;
-    }
-    
-    @Test
-    public void assertLoadJobRootConfiguration() {
-        assertThat(jobFacade.loadJobRootConfiguration(true), is((JobRootConfiguration) jobConfig));
     }
     
     @Test
@@ -117,21 +115,6 @@ public class CloudJobFacadeTest {
     }
     
     @Test
-    public void assertIsEligibleForJobRunningWhenIsNotDataflowJob() {
-        assertFalse(jobFacade.isEligibleForJobRunning());
-    }
-    
-    @Test
-    public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsNotStreamingProcess() {
-        assertFalse(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false)), new JobEventBus()).isEligibleForJobRunning());
-    }
-    
-    @Test
-    public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsStreamingProcess() {
-        assertTrue(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true)), new JobEventBus()).isEligibleForJobRunning());
-    }
-    
-    @Test
     public void assertIsNeedSharding() {
         assertFalse(jobFacade.isNeedSharding());
     }
@@ -148,13 +131,13 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertPostJobExecutionEvent() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
         verify(eventBus).post(jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobStatusTraceEvent() {
-        jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), JobStatusTraceEvent.State.TASK_RUNNING, "message is empty.");
+        jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.");
     }
 }

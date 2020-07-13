@@ -1,4 +1,4 @@
-baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
+baseURL = "https://shardingsphere.apache.org/elasticjob/current/lite"
 canonifyurls = true
 languageCode = "en-us"
 title = "ElasticJob"
@@ -9,13 +9,13 @@ defaultContentLanguageInSubdir= true
 
 [Languages]
 [Languages.en]
-#baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
+#baseURL = "https://shardingsphere.apache.org/elasticjob/current/lite"
 title = "ElasticJob"
 weight = 1
 languageName = "English"
 
 [Languages.cn]
-#baseURL = "https://shardingsphere.apache.org/elasticjob/lite"
+#baseURL = "https://shardingsphere.apache.org/elasticjob/current/lite"
 title = "ElasticJob"
 weight = 2
 languageName = "Chinese"

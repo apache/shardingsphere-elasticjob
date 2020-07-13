@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * Sharding operate API implementation class.

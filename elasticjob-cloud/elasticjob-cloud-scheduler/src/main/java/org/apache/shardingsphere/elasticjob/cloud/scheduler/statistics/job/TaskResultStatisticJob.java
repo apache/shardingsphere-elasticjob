@@ -17,21 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.TaskResultMetaData;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
-import com.google.common.base.Optional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
@@ -39,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Task result statistic.
@@ -80,11 +79,9 @@ public final class TaskResultStatisticJob extends AbstractStatisticJob {
     }
     
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) {
         Optional<TaskResultStatistics> latestOne = repository.findLatestTaskResultStatistics(statisticInterval);
-        if (latestOne.isPresent()) {
-            fillBlankIfNeeded(latestOne.get());
-        }
+        latestOne.ifPresent(this::fillBlankIfNeeded);
         TaskResultStatistics taskResultStatistics = new TaskResultStatistics(
                 sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticInterval,
                 StatisticTimeUtils.getCurrentStatisticTime(statisticInterval));

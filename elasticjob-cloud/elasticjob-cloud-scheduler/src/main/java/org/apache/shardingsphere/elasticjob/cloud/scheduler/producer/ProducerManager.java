@@ -17,26 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+
+import java.util.Optional;
 
 /**
  * Producer manager.
@@ -159,9 +160,7 @@ public final class ProducerManager {
         runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (jobConfig.isPresent()) {
-            transientProducerScheduler.deregister(jobConfig.get());
-        }
+        jobConfig.ifPresent(transientProducerScheduler::deregister);
     }
     
     /**
@@ -172,9 +171,7 @@ public final class ProducerManager {
     public void reschedule(final String jobName) {
         unschedule(jobName);
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (jobConfig.isPresent()) {
-            schedule(jobConfig.get());
-        }
+        jobConfig.ifPresent(this::schedule);
     }
     
     /**

@@ -17,23 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.cloud.executor.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
@@ -49,6 +33,20 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.OfferID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
+import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +55,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -87,18 +86,18 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     @Override
-    protected void startUp() throws Exception {
+    protected void startUp() {
         log.info("Elastic Job: Start {}", serviceName());
         AppConstraintEvaluator.init(facadeService);
     }
     
     @Override
-    protected void shutDown() throws Exception {
+    protected void shutDown() {
         log.info("Elastic Job: Stop {}", serviceName());
     }
     
     @Override
-    protected void runOneIteration() throws Exception {
+    protected void runOneIteration() {
         try {
             LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
             List<TaskRequest> taskRequests = launchingTasks.getPendingTasks();
@@ -183,7 +182,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
-        assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
+        assignedShardingItemParameters.put(shardingItem, shardingItemParameters.getOrDefault(shardingItem, ""));
         return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
@@ -209,7 +208,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
                 .setValue(taskContext.getExecutorId(jobConfig.getAppName()))).setCommand(command)
                 .addResources(buildResource("cpus", appConfig.getCpuCount(), offer.getResourcesList()))
                 .addResources(buildResource("mem", appConfig.getMemoryMB(), offer.getResourcesList()));
-        if (env.getJobEventRdbConfiguration().isPresent()) {
+        if (env.getTracingConfiguration().isPresent()) {
             executorBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
         }
         return result.setExecutor(executorBuilder.build()).build();
@@ -238,23 +237,17 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {
-        return Protos.Resource.newBuilder().mergeFrom(Iterables.find(resources, new Predicate<Protos.Resource>() {
-            @Override
-            public boolean apply(final Protos.Resource input) {
-                return input.getName().equals(type);
-            }
-        })).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue)).build();
+        return Protos.Resource.newBuilder().mergeFrom(
+                resources.stream().filter(input -> input.getName().equals(type)).findFirst().get()).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue)).build();
     }
     
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
         TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
+                Source.CLOUD_SCHEDULER, taskContext.getType().toString(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
             Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
-            if (taskContextOptional.isPresent()) {
-                result.setOriginalTaskId(taskContextOptional.get());
-            }
+            taskContextOptional.ifPresent(result::setOriginalTaskId);
         }
         return result;
     }

@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.ha;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.SchedulerService;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.ElectionCandidate;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 
 /**
  * Scheduler election candidate.
@@ -36,7 +36,7 @@ public final class SchedulerElectionCandidate implements ElectionCandidate {
     }
     
     @Override
-    public void startLeadership() throws Exception {
+    public void startLeadership() {
         try {
             schedulerService = new SchedulerService(regCenter);
             schedulerService.start();

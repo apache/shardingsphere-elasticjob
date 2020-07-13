@@ -17,14 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.cloud.event.type.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobExecutionEnvironmentException;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
 
@@ -36,17 +42,27 @@ public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
-    private final JobConfigurationContext jobConfig;
+    private final JobTypeConfiguration jobConfig;
     
     private final JobEventBus jobEventBus;
     
     @Override
-    public JobRootConfiguration loadJobRootConfiguration(final boolean fromCache) {
-        return jobConfig;
+    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
+        JobConfiguration result = JobConfiguration.newBuilder(jobConfig.getCoreConfig().getJobName(), jobConfig.getCoreConfig().getShardingTotalCount())
+                .cron(jobConfig.getCoreConfig().getCron()).shardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).jobParameter(jobConfig.getCoreConfig().getJobParameter())
+                .failover(jobConfig.getCoreConfig().isFailover()).misfire(jobConfig.getCoreConfig().isMisfire()).description(jobConfig.getCoreConfig().getDescription())
+                .jobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobExecutorServiceHandlerType())
+                .jobErrorHandlerType(jobConfig.getCoreConfig().getJobErrorHandlerType()).build();
+        if (JobType.DATAFLOW == jobConfig.getJobType()) {
+            result.getProps().setProperty("streaming.process", Boolean.toString(((DataflowJobConfiguration) jobConfig).isStreamingProcess()));
+        } else if (JobType.SCRIPT == jobConfig.getJobType()) {
+            result.getProps().setProperty("script.command.line", ((ScriptJobConfiguration) jobConfig).getScriptCommandLine());
+        }
+        return result;
     }
     
     @Override
-    public void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException {
+    public void checkJobExecutionEnvironment() {
     }
     
     @Override
@@ -60,11 +76,8 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
     }
-
-    /**
-     * Get sharding contexts.
-     * @return sharding contexts
-     */
+    
+    @Override
     public ShardingContexts getShardingContexts() {
         return shardingContexts;
     }
@@ -81,11 +94,6 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
         return false;
-    }
-    
-    @Override
-    public boolean isEligibleForJobRunning() {
-        return jobConfig.getTypeConfig() instanceof DataflowJobConfiguration && ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess();
     }
     
     @Override
@@ -107,9 +115,9 @@ public final class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void postJobStatusTraceEvent(final String taskId, final JobStatusTraceEvent.State state, final String message) {
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                JobStatusTraceEvent.Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
+                Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }

@@ -17,13 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
+import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
 import org.apache.shardingsphere.elasticjob.cloud.security.WwwAuthFilter;
-import com.google.common.base.Optional;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * Restful server.
@@ -48,7 +47,7 @@ public final class RestfulService {
         try {
             restfulServer.addFilter(WwwAuthFilter.class, "*/")
                          .addFilter(WwwAuthFilter.class, "*.html")
-                         .start(RestfulService.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+                         .start(RestfulService.class.getPackage().getName(), CONSOLE_PATH);
             //CHECKSTYLE:OFF
         } catch (final Exception ex) {
             //CHECKSTYLE:ON

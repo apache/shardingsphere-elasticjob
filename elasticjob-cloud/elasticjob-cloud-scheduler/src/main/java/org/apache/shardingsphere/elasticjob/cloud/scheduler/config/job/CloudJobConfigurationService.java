@@ -17,14 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
-import com.google.common.base.Optional;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Cloud job configuration service.
@@ -64,10 +64,7 @@ public final class CloudJobConfigurationService {
         List<String> jobNames = regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT);
         Collection<CloudJobConfiguration> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
-            Optional<CloudJobConfiguration> config = load(each);
-            if (config.isPresent()) {
-                result.add(config.get());
-            }
+            load(each).ifPresent(result::add);
         }
         return result;
     }
@@ -79,7 +76,7 @@ public final class CloudJobConfigurationService {
      * @return cloud job configuration
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return Optional.fromNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName))));
+        return Optional.ofNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName))));
     }
     
     /**

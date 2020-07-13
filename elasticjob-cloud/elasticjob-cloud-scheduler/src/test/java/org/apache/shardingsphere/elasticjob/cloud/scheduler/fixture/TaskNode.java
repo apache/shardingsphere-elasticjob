@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.Builder;
 
 @Builder

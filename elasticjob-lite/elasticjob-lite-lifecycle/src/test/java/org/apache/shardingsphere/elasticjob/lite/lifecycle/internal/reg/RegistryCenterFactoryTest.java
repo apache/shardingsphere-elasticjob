@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg;
 
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.AbstractEmbedZookeeperBaseTest;
-import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

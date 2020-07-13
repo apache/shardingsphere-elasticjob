@@ -46,17 +46,13 @@ public final class EmbedZookeeperServer {
         // CHECKSTYLE:ON
             ex.printStackTrace();
         } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(1000L);
-                        testingServer.close();
-                    } catch (final InterruptedException | IOException ex) {
-                    }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    Thread.sleep(1000L);
+                    testingServer.close();
+                } catch (final InterruptedException | IOException ignore) {
                 }
-            });
+            }));
         }
     }
 }

@@ -19,19 +19,23 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationServiceTest {
@@ -46,70 +50,69 @@ public final class CloudJobConfigurationServiceTest {
     public void assertAdd() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.add(jobConfig);
-        Mockito.verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
     public void assertUpdate() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.update(jobConfig);
-        Mockito.verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
     public void assertAddSpringJob() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudSpringJobConfiguration("test_spring_job");
         configService.add(jobConfig);
-        Mockito.verify(regCenter).persist("/config/job/test_spring_job", CloudJsonConstants.getSpringJobJson());
+        verify(regCenter).persist("/config/job/test_spring_job", CloudJsonConstants.getSpringJobJson());
     }
     
     @Test
     public void assertLoadAllWithoutRootNode() {
-        Mockito.when(regCenter.isExisted("/config/job")).thenReturn(false);
-        Assert.assertTrue(configService.loadAll().isEmpty());
-        Mockito.verify(regCenter).isExisted("/config/job");
+        when(regCenter.isExisted("/config/job")).thenReturn(false);
+        assertTrue(configService.loadAll().isEmpty());
+        verify(regCenter).isExisted("/config/job");
     }
     
     @Test
     public void assertLoadAllWithRootNode() {
-        Mockito.when(regCenter.isExisted("/config/job")).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
-        Mockito.when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
+        when(regCenter.isExisted("/config/job")).thenReturn(true);
+        when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
-        Assert.assertThat(actual.size(), Is.is(1));
-        Assert.assertThat(actual.iterator().next().getJobName(), Is.is("test_job_1"));
-        Mockito.verify(regCenter).isExisted("/config/job");
-        Mockito.verify(regCenter).getChildrenKeys("/config/job");
-        Mockito.verify(regCenter).get("/config/job/test_job_1");
-        Mockito.verify(regCenter).get("/config/job/test_job_2");
+        assertThat(actual.size(), is(1));
+        assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
+        verify(regCenter).isExisted("/config/job");
+        verify(regCenter).getChildrenKeys("/config/job");
+        verify(regCenter).get("/config/job/test_job_1");
+        verify(regCenter).get("/config/job/test_job_2");
     }
     
     @Test
     public void assertLoadWithoutConfig() {
-        Optional<CloudJobConfiguration> actual = configService.load("test_job");
-        Assert.assertFalse(actual.isPresent());
+        assertFalse(configService.load("test_job").isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
-        Mockito.when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
-        Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getJobName(), Is.is("test_job"));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getJobName(), is("test_job"));
     }
     
     @Test
     public void assertLoadWithSpringConfig() {
-        Mockito.when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
+        when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
-        Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getBeanName(), Is.is("springSimpleJob"));
-        Assert.assertThat(actual.get().getApplicationContext(), Is.is("applicationContext.xml"));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
+        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test
     public void assertRemove() {
         configService.remove("test_job");
-        Mockito.verify(regCenter).remove("/config/job/test_job");
+        verify(regCenter).remove("/config/job/test_job");
     }
 }

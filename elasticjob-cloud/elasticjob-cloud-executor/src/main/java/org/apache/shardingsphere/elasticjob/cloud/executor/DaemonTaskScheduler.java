@@ -17,20 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobRootConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.exception.JobSystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
@@ -46,7 +48,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public final class DaemonTaskScheduler {
     
-    public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    private static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    
+    private static final String ELASTIC_JOB_TYPE_DATA_MAP_KEY = "elasticJobType";
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
@@ -58,7 +62,9 @@ public final class DaemonTaskScheduler {
     
     private final ElasticJob elasticJob;
     
-    private final JobRootConfiguration jobRootConfig;
+    private final String elasticJobType;
+    
+    private final JobCoreConfiguration jobConfig;
     
     private final JobFacade jobFacade;
     
@@ -70,13 +76,14 @@ public final class DaemonTaskScheduler {
      * Init the job.
      */
     public void init() {
-        JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobRootConfig.getTypeConfig().getCoreConfig().getJobName()).build();
+        JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobConfig.getJobName()).build();
         jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
+        jobDetail.getJobDataMap().put(ELASTIC_JOB_TYPE_DATA_MAP_KEY, elasticJobType);
         jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         jobDetail.getJobDataMap().put(EXECUTOR_DRIVER_DATA_MAP_KEY, executorDriver);
         jobDetail.getJobDataMap().put(TASK_ID_DATA_MAP_KEY, taskId);
         try {
-            scheduleJob(initializeScheduler(), jobDetail, taskId.getValue(), jobRootConfig.getTypeConfig().getCoreConfig().getCron());
+            scheduleJob(initializeScheduler(), jobDetail, taskId.getValue(), jobConfig.getCron());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
@@ -93,7 +100,7 @@ public final class DaemonTaskScheduler {
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", taskId.getValue());
-        if (!jobRootConfig.getTypeConfig().getCoreConfig().isMisfire()) {
+        if (!jobConfig.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
@@ -140,9 +147,12 @@ public final class DaemonTaskScheduler {
         
         @Setter
         private ElasticJob elasticJob;
+    
+        @Setter
+        private String elasticJobType;
         
         @Setter
-        private JobFacade jobFacade;
+        private CloudJobFacade jobFacade;
         
         @Setter
         private ExecutorDriver executorDriver;
@@ -151,18 +161,26 @@ public final class DaemonTaskScheduler {
         private Protos.TaskID taskId;
         
         @Override
-        public void execute(final JobExecutionContext context) throws JobExecutionException {
+        public void execute(final JobExecutionContext context) {
             ShardingContexts shardingContexts = jobFacade.getShardingContexts();
             int jobEventSamplingCount = shardingContexts.getJobEventSamplingCount();
             int currentJobEventSamplingCount = shardingContexts.getCurrentJobEventSamplingCount();
             if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
                 shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
                 jobFacade.getShardingContexts().setAllowSendJobEvent(false);
-                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                if (null == elasticJob) {
+                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                } else {
+                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                }
             } else {
                 jobFacade.getShardingContexts().setAllowSendJobEvent(true);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                if (null == elasticJob) {
+                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                } else {
+                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
+                }
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
                 shardingContexts.setCurrentJobEventSamplingCount(0);
             }

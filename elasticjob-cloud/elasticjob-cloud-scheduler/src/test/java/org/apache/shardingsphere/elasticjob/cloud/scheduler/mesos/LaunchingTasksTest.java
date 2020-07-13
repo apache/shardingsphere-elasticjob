@@ -17,27 +17,28 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.netflix.fenzo.TaskRequest;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.netflix.fenzo.TaskRequest;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class LaunchingTasksTest {
@@ -68,7 +69,7 @@ public final class LaunchingTasksTest {
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
-        Mockito.when(facadeService.getEligibleJobContext()).thenReturn(Arrays.asList(
+        when(facadeService.getEligibleJobContext()).thenReturn(Arrays.asList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY),
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
         launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
@@ -77,6 +78,6 @@ public final class LaunchingTasksTest {
     @Test
     public void assertGetPendingTasks() {
         List<TaskRequest> actual = launchingTasks.getPendingTasks();
-        Assert.assertThat(actual.size(), Is.is(20));
+        assertThat(actual.size(), is(20));
     }
 }

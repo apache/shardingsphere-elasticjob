@@ -61,8 +61,6 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - Job event trace query
   - Registry center management
 
-## [Release Notes](https://github.com/elasticjob/elastic-job/releases)
-
 ## [Roadmap](ROADMAP.md)
 
 ## Quick Start
@@ -113,11 +111,11 @@ public class MyElasticJob implements SimpleJob {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:elasticjob="http://elasticjob.shardingsphere.apache.org/schema/elasticjob"
+       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob
-                           http://elasticjob.shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                           http://shardingsphere.apache.org/schema/elasticjob
+                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
     <!--configure registry center -->
     <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />

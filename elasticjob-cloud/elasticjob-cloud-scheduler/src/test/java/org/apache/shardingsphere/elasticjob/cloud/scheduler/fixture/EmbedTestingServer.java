@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
-import org.apache.shardingsphere.elasticjob.cloud.reg.exception.RegExceptionHandler;
 import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,17 +55,13 @@ public final class EmbedTestingServer {
             // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    testingServer.close();
+                } catch (final IOException ex) {
+                    RegExceptionHandler.handleException(ex);
                 }
-            });
+            }));
         }
     }
 }

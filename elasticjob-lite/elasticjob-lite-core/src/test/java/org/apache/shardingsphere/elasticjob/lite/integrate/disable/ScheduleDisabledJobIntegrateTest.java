@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.disable;
 
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.lite.util.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

@@ -17,13 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
 
 import javax.ws.rs.GET;

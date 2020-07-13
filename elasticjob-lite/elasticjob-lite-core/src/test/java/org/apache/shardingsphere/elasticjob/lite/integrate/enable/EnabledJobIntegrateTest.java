@@ -18,14 +18,14 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.enable;
 
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.job.ElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.api.job.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.integrate.BaseIntegrateTest;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.lite.util.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.lite.util.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Before;
 
 import static org.hamcrest.CoreMatchers.is;

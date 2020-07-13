@@ -30,7 +30,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ### ElasticJob Lite
 
-![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/lite/img/architecture/elastic_job_lite.png)
+![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/lite/img/architecture/elastic_job_lite.png)
 
 ## 功能列表
 

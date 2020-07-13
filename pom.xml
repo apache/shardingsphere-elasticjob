@@ -31,6 +31,9 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-api</module>
+        <module>elasticjob-infra</module>
+        <module>elasticjob-executor</module>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
     </modules>
@@ -146,7 +149,7 @@
                 <version>${curator.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

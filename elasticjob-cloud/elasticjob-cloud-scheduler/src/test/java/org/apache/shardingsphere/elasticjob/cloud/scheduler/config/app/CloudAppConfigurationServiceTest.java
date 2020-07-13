@@ -19,19 +19,23 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudAppConfigurationServiceTest {
@@ -46,54 +50,53 @@ public final class CloudAppConfigurationServiceTest {
     public void assertAdd() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.add(appConfig);
-        Mockito.verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertUpdate() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.update(appConfig);
-        Mockito.verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
     }
     
     @Test
     public void assertLoadAllWithoutRootNode() {
-        Mockito.when(regCenter.isExisted("/config/app")).thenReturn(false);
-        Assert.assertTrue(configService.loadAll().isEmpty());
-        Mockito.verify(regCenter).isExisted("/config/app");
+        when(regCenter.isExisted("/config/app")).thenReturn(false);
+        assertTrue(configService.loadAll().isEmpty());
+        verify(regCenter).isExisted("/config/app");
     }
     
     @Test
     public void assertLoadAllWithRootNode() {
-        Mockito.when(regCenter.isExisted("/config/app")).thenReturn(true);
-        Mockito.when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
-        Mockito.when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
+        when(regCenter.isExisted("/config/app")).thenReturn(true);
+        when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
+        when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
         Collection<CloudAppConfiguration> actual = configService.loadAll();
-        Assert.assertThat(actual.size(), Is.is(1));
-        Assert.assertThat(actual.iterator().next().getAppName(), Is.is("test_app_1"));
-        Mockito.verify(regCenter).isExisted("/config/app");
-        Mockito.verify(regCenter).getChildrenKeys("/config/app");
-        Mockito.verify(regCenter).get("/config/app/test_app_1");
-        Mockito.verify(regCenter).get("/config/app/test_app_2");
+        assertThat(actual.size(), is(1));
+        assertThat(actual.iterator().next().getAppName(), is("test_app_1"));
+        verify(regCenter).isExisted("/config/app");
+        verify(regCenter).getChildrenKeys("/config/app");
+        verify(regCenter).get("/config/app/test_app_1");
+        verify(regCenter).get("/config/app/test_app_2");
     }
     
     @Test
     public void assertLoadWithoutConfig() {
-        Optional<CloudAppConfiguration> actual = configService.load("test_app");
-        Assert.assertFalse(actual.isPresent());
+        assertFalse(configService.load("test_app").isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
-        Mockito.when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         Optional<CloudAppConfiguration> actual = configService.load("test_app");
-        Assert.assertTrue(actual.isPresent());
-        Assert.assertThat(actual.get().getAppName(), Is.is("test_app"));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getAppName(), is("test_app"));
     }
     
     @Test
     public void assertRemove() {
         configService.remove("test_app");
-        Mockito.verify(regCenter).remove("/config/app/test_app");
+        verify(regCenter).remove("/config/app/test_app");
     }
 }

@@ -28,11 +28,9 @@
     <artifactId>elasticjob-lite</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-
+    
     <modules>
         <module>elasticjob-lite-core</module>
-        <module>elasticjob-lite-executor</module>
-        <module>elasticjob-lite-tracing</module>
         <module>elasticjob-lite-spring</module>
         <module>elasticjob-lite-lifecycle</module>
         <module>elasticjob-lite-console</module>

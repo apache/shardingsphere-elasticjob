@@ -17,26 +17,25 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.cloud.event.rdb.JobEventRdbConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.MesosConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.event.JobEventBus;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
-import com.netflix.fenzo.VirtualMachineLease;
-import com.netflix.fenzo.functions.Action1;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.MesosConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+
+import java.util.Optional;
 
 /**
  * Scheduler service.
@@ -68,7 +67,7 @@ public final class SchedulerService {
     public SchedulerService(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
         facadeService = new FacadeService(regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
+        statisticManager = StatisticManager.getInstance(regCenter, env.getTracingConfiguration().orElse(null));
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
@@ -80,11 +79,8 @@ public final class SchedulerService {
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
-        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
-        if (frameworkIDOptional.isPresent()) {
-            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
-        }
+        frameworkIDService.fetch().ifPresent(frameworkID -> builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkID).build()));
         Optional<String> role = env.getMesosRole();
         String frameworkName = MesosConfiguration.FRAMEWORK_NAME;
         if (role.isPresent()) {
@@ -102,22 +98,15 @@ public final class SchedulerService {
     private TaskScheduler getTaskScheduler() {
         return new TaskScheduler.Builder()
                 .withLeaseOfferExpirySecs(1000000000L)
-                .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
-                    
-                    @Override
-                    public void call(final VirtualMachineLease lease) {
-                        log.warn("Declining offer on '{}'", lease.hostname());
-                        schedulerDriver.declineOffer(lease.getOffer().getId());
-                    }
+                .withLeaseRejectAction(lease -> {
+                    log.warn("Declining offer on '{}'", lease.hostname());
+                    schedulerDriver.declineOffer(lease.getOffer().getId());
                 }).build();
     }
     
     private JobEventBus getJobEventBus() {
-        Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
-        if (rdbConfig.isPresent()) {
-            return new JobEventBus(rdbConfig.get());
-        }
-        return new JobEventBus();
+        Optional<TracingConfiguration> tracingConfiguration = env.getTracingConfiguration();
+        return tracingConfiguration.map(JobEventBus::new).orElseGet(JobEventBus::new);
     }
     
     /**

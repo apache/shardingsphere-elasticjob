@@ -17,20 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
-import org.apache.shardingsphere.elasticjob.cloud.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
-import org.apache.shardingsphere.elasticjob.cloud.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -102,7 +102,7 @@ public final class FailoverService {
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
-            if (!assignedShardingItems.isEmpty() && jobConfig.isPresent()) {
+            if (!assignedShardingItems.isEmpty()) {
                 result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
             }
         }
@@ -139,11 +139,7 @@ public final class FailoverService {
      */
     public Optional<String> getTaskId(final TaskContext.MetaInfo metaInfo) {
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(metaInfo.toString());
-        Optional<String> result = Optional.absent();
-        if (regCenter.isExisted(failoverTaskNodePath)) {
-            result = Optional.of(regCenter.get(failoverTaskNodePath));
-        }
-        return result;
+        return regCenter.isExisted(failoverTaskNodePath) ? Optional.of(regCenter.get(failoverTaskNodePath)) : Optional.empty();
     }
     
     /**
