@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.junit.Test;
 
@@ -29,22 +28,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class JobConfigurationContextTest {
-    
-    @Test
-    public void assertSimpleJobConfigurationContext() {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap()).getTypeConfig() instanceof SimpleJobConfiguration);
-    }
-    
-    @Test
-    public void assertDataflowJobConfigurationContext() {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap()).getTypeConfig() instanceof SimpleJobConfiguration);
-    }
-    
-    @Test
-    public void assertScriptJobConfigurationContext() {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap()).getTypeConfig() instanceof SimpleJobConfiguration);
-    }
+public final class JobConfigurationContextTest {
     
     @Test
     public void assertSpringSimpleJobConfigurationContext() {

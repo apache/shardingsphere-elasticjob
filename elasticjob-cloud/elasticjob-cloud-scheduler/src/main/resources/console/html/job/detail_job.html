@@ -50,20 +50,6 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="job-type" class="col-sm-6 control-label" data-lang="job-type"><i>*</i></label>
-                        <div class="col-sm-6">
-                            <select id="job-type" disabled="disabled" name="jobType" class="form-control" >
-                                <option value="SIMPLE" required>SIMPLE</option>
-                                <option value="DATAFLOW">DATAFLOW</option>
-                                <option value="SCRIPT">SCRIPT</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
                         <label for="cron" class="col-sm-6 control-label" data-lang="job-cron"><i>*</i></label>
                         <div class="col-sm-6">
                             <input type="text" disabled="disabled" placeholder="0/5 * * * * ?" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom"  title="作业启动时间的cron表达式。如：0/5 * * * * ?"/>

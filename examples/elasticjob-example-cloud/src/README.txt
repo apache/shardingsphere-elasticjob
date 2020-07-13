@@ -13,10 +13,10 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","ap
 b. 注册作业
 注册的作业可用Java和Spring两种启动方式，作业启动在开发指南中有说明，这里只举例说明两种方式如何注册。
 1. Java启动方式作业注册
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
 
 2. Spring启动方式作业注册
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
 
 参数详细配置请见：http://elasticjob.io/elastic-job/elastic-job-cloud/02-guide/cloud-restful-api/
 
@@ -28,14 +28,14 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"exampleApp",
 
 2. Java启动方式作业注册:
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple","appName":"exampleApp","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow","appName":"exampleApp","jobType":"DATAFLOW","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_script","appName":"exampleApp","jobType":"SCRIPT","jobExecutionType":"TRANSIENT","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0, scriptCommandLine="script/demo.sh"}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_script","appName":"exampleApp","jobExecutionType":"TRANSIENT","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0, scriptCommandLine="script/demo.sh"}' http://localhost:8899/api/job/register
 
 3. Spring启动方式作业注册:
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple_spring","appName":"exampleApp","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob","beanName":"springSimpleJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple_spring","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob","beanName":"springSimpleJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow_spring","appName":"exampleApp","jobType":"DATAFLOW","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob","beanName":"springDataflowJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow_spring","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob","beanName":"springDataflowJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register

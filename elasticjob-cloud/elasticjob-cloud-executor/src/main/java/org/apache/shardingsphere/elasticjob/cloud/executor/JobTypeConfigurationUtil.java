@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
@@ -43,16 +42,15 @@ public final class JobTypeConfigurationUtil {
      */
     public static JobTypeConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
-        String jobType = jobConfigurationMap.get("jobType");
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
-        if (JobType.DATAFLOW.name().equals(jobType)) {
+        if (jobConfigurationMap.containsKey("streamingProcess")) {
             jobCoreConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));
             return new DataflowJobConfiguration(jobCoreConfig);
-        } else if (JobType.SCRIPT.name().equals(jobType)) {
+        } else if (jobConfigurationMap.containsKey("scriptCommandLine")) {
             jobCoreConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, jobConfigurationMap.get("scriptCommandLine"));
             return new ScriptJobConfiguration(jobCoreConfig);
         }
