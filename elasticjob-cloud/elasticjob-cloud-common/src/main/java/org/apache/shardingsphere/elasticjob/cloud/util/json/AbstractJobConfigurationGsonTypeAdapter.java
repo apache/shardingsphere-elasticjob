@@ -110,8 +110,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
     protected abstract void addToCustomizedValueMap(String jsonName, JsonReader in, Map<String, Object> customizedValueMap) throws IOException;
     
     private JobConfiguration getJobConfiguration(final String jobName, final String cron, final int shardingTotalCount,
-                                                     final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire,
-                                                     final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
+                                                 final String shardingItemParameters, final String jobParameter, final boolean failover, final boolean misfire,
+                                                 final String jobExecutorServiceHandlerType, final String jobErrorHandlerType, final String description) {
         return JobConfiguration.newBuilder(jobName, shardingTotalCount).cron(cron)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire)
                 .jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType).description(description)
