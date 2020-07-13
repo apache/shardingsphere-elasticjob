@@ -160,6 +160,26 @@ public final class DaemonTaskScheduler {
         @Setter
         private Protos.TaskID taskId;
         
+        private volatile ElasticJobExecutor jobExecutor;
+        
+        private ElasticJobExecutor getJobExecutor() {
+            if (null == jobExecutor) {
+                createJobExecutor();
+            }
+            return jobExecutor;
+        }
+        
+        private synchronized void createJobExecutor() {
+            if (null != jobExecutor) {
+                return;
+            }
+            if (null == elasticJob) {
+                jobExecutor = new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade);
+            } else {
+                jobExecutor = new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
+            }
+        }
+        
         @Override
         public void execute(final JobExecutionContext context) {
             ShardingContexts shardingContexts = jobFacade.getShardingContexts();
@@ -168,19 +188,11 @@ public final class DaemonTaskScheduler {
             if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
                 shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
                 jobFacade.getShardingContexts().setAllowSendJobEvent(false);
-                if (null == elasticJob) {
-                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                } else {
-                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                }
+                getJobExecutor().execute();
             } else {
                 jobFacade.getShardingContexts().setAllowSendJobEvent(true);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-                if (null == elasticJob) {
-                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                } else {
-                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                }
+                getJobExecutor().execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
                 shardingContexts.setCurrentJobEventSamplingCount(0);
             }
