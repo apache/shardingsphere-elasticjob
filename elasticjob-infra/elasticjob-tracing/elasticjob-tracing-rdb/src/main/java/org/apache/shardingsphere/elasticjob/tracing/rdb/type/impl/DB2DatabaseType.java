@@ -30,11 +30,6 @@ public final class DB2DatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "DB2";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return -803;
     }

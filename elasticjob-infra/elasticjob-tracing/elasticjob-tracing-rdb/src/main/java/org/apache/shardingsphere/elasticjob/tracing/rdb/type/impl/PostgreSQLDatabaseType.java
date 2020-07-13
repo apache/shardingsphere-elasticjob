@@ -30,11 +30,6 @@ public final class PostgreSQLDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "PostgreSQL";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 0;
     }

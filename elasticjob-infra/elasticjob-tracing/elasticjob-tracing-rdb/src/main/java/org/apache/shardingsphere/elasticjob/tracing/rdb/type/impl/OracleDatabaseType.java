@@ -30,11 +30,6 @@ public final class OracleDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "Oracle";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 1;
     }

@@ -34,7 +34,9 @@ public interface DatabaseType {
      * 
      * @return database product name
      */
-    String getDatabaseProductName();
+    default String getDatabaseProductName() {
+        return getType();
+    }
     
     /**
      * Get SQL properties file.

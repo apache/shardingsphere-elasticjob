@@ -30,11 +30,6 @@ public final class MySQLDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "MySQL";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 1062;
     }

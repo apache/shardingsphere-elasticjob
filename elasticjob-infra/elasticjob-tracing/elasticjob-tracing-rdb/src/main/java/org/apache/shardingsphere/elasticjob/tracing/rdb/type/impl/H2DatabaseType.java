@@ -30,11 +30,6 @@ public final class H2DatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "H2";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 23505;
     }
