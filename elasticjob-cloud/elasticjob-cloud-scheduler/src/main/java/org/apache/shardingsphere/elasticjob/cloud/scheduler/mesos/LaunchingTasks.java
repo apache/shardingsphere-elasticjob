@@ -69,7 +69,7 @@ public final class LaunchingTasks {
         Collection<String> result = new HashSet<>(assignedJobShardingTotalCountMap.size(), 1);
         for (Map.Entry<String, Integer> entry : assignedJobShardingTotalCountMap.entrySet()) {
             JobContext jobContext = eligibleJobContextsMap.get(entry.getKey());
-            if (ExecutionType.FAILOVER != jobContext.getType() && !entry.getValue().equals(jobContext.getJobConfig().getCoreConfig().getShardingTotalCount())) {
+            if (ExecutionType.FAILOVER != jobContext.getType() && !entry.getValue().equals(jobContext.getJobConfig().getJobConfig().getShardingTotalCount())) {
                 log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", entry.getKey());
                 result.add(entry.getKey());
             }

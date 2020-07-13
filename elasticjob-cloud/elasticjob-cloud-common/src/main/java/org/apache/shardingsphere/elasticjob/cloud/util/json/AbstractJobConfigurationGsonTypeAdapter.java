@@ -123,25 +123,25 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter extends TypeAdapte
     @Override
     public void write(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
         out.beginObject();
-        out.name("jobName").value(value.getCoreConfig().getJobName());
-        out.name("cron").value(value.getCoreConfig().getCron());
-        out.name("shardingTotalCount").value(value.getCoreConfig().getShardingTotalCount());
-        out.name("shardingItemParameters").value(value.getCoreConfig().getShardingItemParameters());
-        out.name("jobParameter").value(value.getCoreConfig().getJobParameter());
-        out.name("failover").value(value.getCoreConfig().isFailover());
-        out.name("misfire").value(value.getCoreConfig().isMisfire());
-        if (!Strings.isNullOrEmpty(value.getCoreConfig().getJobExecutorServiceHandlerType())) {
-            out.name("executorServiceHandler").value(value.getCoreConfig().getJobExecutorServiceHandlerType());
+        out.name("jobName").value(value.getJobConfig().getJobName());
+        out.name("cron").value(value.getJobConfig().getCron());
+        out.name("shardingTotalCount").value(value.getJobConfig().getShardingTotalCount());
+        out.name("shardingItemParameters").value(value.getJobConfig().getShardingItemParameters());
+        out.name("jobParameter").value(value.getJobConfig().getJobParameter());
+        out.name("failover").value(value.getJobConfig().isFailover());
+        out.name("misfire").value(value.getJobConfig().isMisfire());
+        if (!Strings.isNullOrEmpty(value.getJobConfig().getJobExecutorServiceHandlerType())) {
+            out.name("executorServiceHandler").value(value.getJobConfig().getJobExecutorServiceHandlerType());
         }
-        if (!Strings.isNullOrEmpty(value.getCoreConfig().getJobErrorHandlerType())) {
-            out.name("jobExceptionHandler").value(value.getCoreConfig().getJobErrorHandlerType());
+        if (!Strings.isNullOrEmpty(value.getJobConfig().getJobErrorHandlerType())) {
+            out.name("jobExceptionHandler").value(value.getJobConfig().getJobErrorHandlerType());
         }
-        out.name("description").value(value.getCoreConfig().getDescription());
-        if (value.getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            out.name("streamingProcess").value(value.getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
+        out.name("description").value(value.getJobConfig().getDescription());
+        if (value.getJobConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            out.name("streamingProcess").value(value.getJobConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
         }
-        if (value.getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
-            out.name("scriptCommandLine").value(value.getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
+        if (value.getJobConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
+            out.name("scriptCommandLine").value(value.getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
         writeCustomized(out, value);
         out.endObject();

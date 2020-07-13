@@ -73,7 +73,7 @@ public final class ReadyService {
         }
         String readyJobNode = ReadyNode.getReadyJobNodePath(jobName);
         String times = regCenter.getDirectly(readyJobNode);
-        if (cloudJobConfig.get().getCoreConfig().isMisfire()) {
+        if (cloudJobConfig.get().getJobConfig().isMisfire()) {
             regCenter.persist(readyJobNode, Integer.toString(null == times ? 1 : Integer.parseInt(times) + 1));
         } else {
             regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");

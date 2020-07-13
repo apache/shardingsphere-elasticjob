@@ -53,13 +53,13 @@ public final class TaskInfoData {
     private Map<String, String> buildJobConfigurationContext() {
         Map<String, String> result = new LinkedHashMap<>(16, 1);
         result.put("jobName", jobConfig.getJobName());
-        result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getCoreConfig().getCron() : "");
-        result.put("executorServiceHandler", jobConfig.getCoreConfig().getJobExecutorServiceHandlerType());
-        result.put("jobExceptionHandler", jobConfig.getCoreConfig().getJobErrorHandlerType());
-        if (jobConfig.getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            result.put("streamingProcess", jobConfig.getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
-        } else if (jobConfig.getCoreConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
-            result.put("scriptCommandLine", jobConfig.getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
+        result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getJobConfig().getCron() : "");
+        result.put("executorServiceHandler", jobConfig.getJobConfig().getJobExecutorServiceHandlerType());
+        result.put("jobExceptionHandler", jobConfig.getJobConfig().getJobErrorHandlerType());
+        if (jobConfig.getJobConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            result.put("streamingProcess", jobConfig.getJobConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
+        } else if (jobConfig.getJobConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
+            result.put("scriptCommandLine", jobConfig.getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
         return result;
     }

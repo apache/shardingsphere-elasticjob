@@ -66,7 +66,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
                 readyService.remove(Collections.singletonList(jobConfig.getJobName()));
             }
-            if (!jobConfig.getCoreConfig().isMisfire()) {
+            if (!jobConfig.getJobConfig().isMisfire()) {
                 readyService.setMisfireDisabled(jobConfig.getJobName());
             }
             producerManager.reschedule(jobConfig.getJobName());
