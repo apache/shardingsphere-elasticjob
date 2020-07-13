@@ -130,19 +130,6 @@ public final class StatisticManagerTest {
     }
     
     @Test
-    public void assertJobTypeStatistics() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(statisticManager, "configurationService", configurationService);
-        when(configurationService.loadAll()).thenReturn(Lists.newArrayList(
-                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_simple"), 
-                CloudJobConfigurationBuilder.createDataflowCloudJobConfiguration("test_job_dataflow"), 
-                CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("test_job_script")));
-        assertThat(statisticManager.getJobTypeStatistics().getSimpleJobCount(), is(1));
-        assertThat(statisticManager.getJobTypeStatistics().getDataflowJobCount(), is(1));
-        assertThat(statisticManager.getJobTypeStatistics().getScriptJobCount(), is(1));
-        verify(configurationService, times(3)).loadAll();
-    }
-    
-    @Test
     public void assertJobExecutionTypeStatistics() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "configurationService", configurationService);
         when(configurationService.loadAll()).thenReturn(Lists.newArrayList(

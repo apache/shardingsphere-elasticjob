@@ -20,7 +20,6 @@ $(function() {
     renderPieChartSinceLastMinuteData();
     renderPieChartSinceLastHourData();
     renderPieChartSinceLastWeekData();
-    renderJobTypePieChart();
     renderJobExecutionTypePieChart();
     renderStaticsJobsLineChart();
     renderRunningJobsAndTasksLineChart();
@@ -36,7 +35,6 @@ function doLocale() {
     renderPieChartSinceLastMinuteData();
     renderPieChartSinceLastHourData();
     renderPieChartSinceLastWeekData();
-    renderJobTypePieChart();
     renderJobExecutionTypePieChart();
     renderStaticsJobsLineChart();
     renderRunningJobsAndTasksLineChart();
@@ -83,21 +81,6 @@ function renderPieChartSinceLastWeekData() {
                 var color = ["rgb(144,237,125)", "red"];
                 var jobResult = [[$.i18n.prop("execute-result-success"), jobData.successCount], [$.i18n.prop("execute-result-failure"), jobData.failedCount]];
                 renderPieChart(chartName, $.i18n.prop("job-info-for-one-week"), color, jobResult);
-            }
-        }
-    });
-}
-
-function renderJobTypePieChart() {
-    $.ajax({
-        url: "/api/job/statistics/jobs/type",
-        dataType: "json",
-        success: function(jobData) {
-            if(null !== jobData) {
-                var chartName = "#job-type";
-                var color = ["rgb(144, 237, 125)", "rgb(247, 163, 92)", "rgb(67, 67, 72)"];
-                var jobResult = [["DATAFLOW", jobData.dataflowJobCount], ["SIMPLE", jobData.simpleJobCount], ["SCRIPT", jobData.scriptJobCount]];
-                renderPieChart(chartName, $.i18n.prop("job-type"), color, jobResult);
             }
         }
     });
