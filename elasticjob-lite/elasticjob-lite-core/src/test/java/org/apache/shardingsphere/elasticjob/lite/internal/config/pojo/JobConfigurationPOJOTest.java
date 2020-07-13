@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.pojo;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class YamlJobConfigurationTest {
+public final class JobConfigurationPOJOTest {
     
     private static final String YAML = "cron: 0/1 * * * * ?\n"
             + "description: Job description\n"
@@ -61,23 +61,23 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertToJobConfiguration() {
-        YamlJobConfiguration yamlJobConfiguration = new YamlJobConfiguration();
-        yamlJobConfiguration.setJobName("test_job");
-        yamlJobConfiguration.setCron("0/1 * * * * ?");
-        yamlJobConfiguration.setShardingTotalCount(3);
-        yamlJobConfiguration.setShardingItemParameters("0=A,1=B,2=C");
-        yamlJobConfiguration.setJobParameter("param");
-        yamlJobConfiguration.setMonitorExecution(true);
-        yamlJobConfiguration.setFailover(true);
-        yamlJobConfiguration.setMisfire(true);
-        yamlJobConfiguration.setJobShardingStrategyType("AVG_ALLOCATION");
-        yamlJobConfiguration.setJobExecutorServiceHandlerType("CPU");
-        yamlJobConfiguration.setJobErrorHandlerType("IGNORE");
-        yamlJobConfiguration.setDescription("Job description");
-        yamlJobConfiguration.getProps().setProperty("key", "value");
-        yamlJobConfiguration.setDisabled(true);
-        yamlJobConfiguration.setOverwrite(true);
-        JobConfiguration actual = yamlJobConfiguration.toJobConfiguration();
+        JobConfigurationPOJO pojo = new JobConfigurationPOJO();
+        pojo.setJobName("test_job");
+        pojo.setCron("0/1 * * * * ?");
+        pojo.setShardingTotalCount(3);
+        pojo.setShardingItemParameters("0=A,1=B,2=C");
+        pojo.setJobParameter("param");
+        pojo.setMonitorExecution(true);
+        pojo.setFailover(true);
+        pojo.setMisfire(true);
+        pojo.setJobShardingStrategyType("AVG_ALLOCATION");
+        pojo.setJobExecutorServiceHandlerType("CPU");
+        pojo.setJobErrorHandlerType("IGNORE");
+        pojo.setDescription("Job description");
+        pojo.getProps().setProperty("key", "value");
+        pojo.setDisabled(true);
+        pojo.setOverwrite(true);
+        JobConfiguration actual = pojo.toJobConfiguration();
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -104,7 +104,7 @@ public final class YamlJobConfigurationTest {
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("CPU").jobErrorHandlerType("IGNORE")
                 .description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
-        YamlJobConfiguration actual = YamlJobConfiguration.fromJobConfiguration(jobConfiguration);
+        JobConfigurationPOJO actual = JobConfigurationPOJO.fromJobConfiguration(jobConfiguration);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -124,7 +124,7 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertMarshal() {
-        YamlJobConfiguration actual = new YamlJobConfiguration();
+        JobConfigurationPOJO actual = new JobConfigurationPOJO();
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
         actual.setShardingTotalCount(3);
@@ -140,7 +140,7 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertMarshalWithNullValue() {
-        YamlJobConfiguration actual = new YamlJobConfiguration();
+        JobConfigurationPOJO actual = new JobConfigurationPOJO();
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
         actual.setShardingTotalCount(3);
@@ -149,7 +149,7 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertUnmarshal() {
-        YamlJobConfiguration actual = YamlEngine.unmarshal(YAML, YamlJobConfiguration.class);
+        JobConfigurationPOJO actual = YamlEngine.unmarshal(YAML, JobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -167,7 +167,7 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertUnmarshalWithNullValue() {
-        YamlJobConfiguration actual = YamlEngine.unmarshal(YAML_WITH_NULL, YamlJobConfiguration.class);
+        JobConfigurationPOJO actual = YamlEngine.unmarshal(YAML_WITH_NULL, JobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));

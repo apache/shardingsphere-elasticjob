@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.console.controller;
 
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,18 +51,18 @@ public final class JobConfigController {
      * @return job configuration
      */
     @GetMapping(value = "/{jobName}", produces = MediaType.APPLICATION_JSON)
-    public YamlJobConfiguration getJobConfig(@PathVariable("jobName") final String jobName) {
+    public JobConfigurationPOJO getJobConfig(@PathVariable("jobName") final String jobName) {
         return jobAPIService.getJobConfigurationAPI().getJobConfiguration(jobName);
     }
     
     /**
      * Update job configuration.
      *
-     * @param yamlJobConfiguration job configuration
+     * @param jobConfiguration job configuration
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON)
-    public void updateJobConfig(@RequestBody final YamlJobConfiguration yamlJobConfiguration) {
-        jobAPIService.getJobConfigurationAPI().updateJobConfiguration(yamlJobConfiguration);
+    public void updateJobConfig(@RequestBody final JobConfigurationPOJO jobConfiguration) {
+        jobAPIService.getJobConfigurationAPI().updateJobConfiguration(jobConfiguration);
     }
     
     /**

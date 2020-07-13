@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.yaml.YamlCloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -45,7 +45,7 @@ public final class CloudJobConfigurationService {
      */
     public void add(final CloudJobConfiguration cloudJobConfig) {
         regCenter.persist(
-                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfig)));
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(CloudJobConfigurationPOJO.fromCloudJobConfiguration(cloudJobConfig)));
     }
     
     /**
@@ -55,7 +55,7 @@ public final class CloudJobConfigurationService {
      */
     public void update(final CloudJobConfiguration cloudJobConfig) {
         regCenter.update(
-                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfig)));
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(CloudJobConfigurationPOJO.fromCloudJobConfiguration(cloudJobConfig)));
     }
     
     /**
@@ -83,7 +83,7 @@ public final class CloudJobConfigurationService {
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
         String configContent = regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName));
-        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, YamlCloudJobConfiguration.class).toCloudJobConfiguration());
+        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudJobConfigurationPOJO.class).toCloudJobConfiguration());
     }
     
     /**

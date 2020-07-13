@@ -25,7 +25,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.yaml.YamlCloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
@@ -84,7 +84,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private CloudJobConfiguration getCloudJobConfiguration(final TreeCacheEvent event) {
         try {
-            return YamlEngine.unmarshal(new String(event.getData().getData()), YamlCloudJobConfiguration.class).toCloudJobConfiguration();
+            return YamlEngine.unmarshal(new String(event.getData().getData()), CloudJobConfigurationPOJO.class).toCloudJobConfiguration();
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());

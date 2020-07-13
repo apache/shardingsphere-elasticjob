@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.config.yaml;
+package org.apache.shardingsphere.elasticjob.cloud.config.pojo;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class YamlCloudJobConfigurationTest {
+public final class CloudJobConfigurationPOJOTest {
     
     private static final String YAML = "appName: app\n"
             + "cpuCount: 1.0\n"
@@ -70,27 +70,27 @@ public final class YamlCloudJobConfigurationTest {
     
     @Test
     public void assertToJobConfiguration() {
-        YamlCloudJobConfiguration yamlCloudJobConfig = new YamlCloudJobConfiguration();
-        yamlCloudJobConfig.setAppName("app");
-        yamlCloudJobConfig.setCpuCount(1d);
-        yamlCloudJobConfig.setMemoryMB(128d);
-        yamlCloudJobConfig.setJobExecutionType(CloudJobExecutionType.DAEMON);
-        yamlCloudJobConfig.setJobName("test_job");
-        yamlCloudJobConfig.setCron("0/1 * * * * ?");
-        yamlCloudJobConfig.setShardingTotalCount(3);
-        yamlCloudJobConfig.setShardingItemParameters("0=A,1=B,2=C");
-        yamlCloudJobConfig.setJobParameter("param");
-        yamlCloudJobConfig.setMonitorExecution(true);
-        yamlCloudJobConfig.setFailover(true);
-        yamlCloudJobConfig.setMisfire(true);
-        yamlCloudJobConfig.setJobShardingStrategyType("AVG_ALLOCATION");
-        yamlCloudJobConfig.setJobExecutorServiceHandlerType("CPU");
-        yamlCloudJobConfig.setJobErrorHandlerType("IGNORE");
-        yamlCloudJobConfig.setDescription("Job description");
-        yamlCloudJobConfig.getProps().setProperty("key", "value");
-        yamlCloudJobConfig.setDisabled(true);
-        yamlCloudJobConfig.setOverwrite(true);
-        CloudJobConfiguration actual = yamlCloudJobConfig.toCloudJobConfiguration();
+        CloudJobConfigurationPOJO pojo = new CloudJobConfigurationPOJO();
+        pojo.setAppName("app");
+        pojo.setCpuCount(1d);
+        pojo.setMemoryMB(128d);
+        pojo.setJobExecutionType(CloudJobExecutionType.DAEMON);
+        pojo.setJobName("test_job");
+        pojo.setCron("0/1 * * * * ?");
+        pojo.setShardingTotalCount(3);
+        pojo.setShardingItemParameters("0=A,1=B,2=C");
+        pojo.setJobParameter("param");
+        pojo.setMonitorExecution(true);
+        pojo.setFailover(true);
+        pojo.setMisfire(true);
+        pojo.setJobShardingStrategyType("AVG_ALLOCATION");
+        pojo.setJobExecutorServiceHandlerType("CPU");
+        pojo.setJobErrorHandlerType("IGNORE");
+        pojo.setDescription("Job description");
+        pojo.getProps().setProperty("key", "value");
+        pojo.setDisabled(true);
+        pojo.setOverwrite(true);
+        CloudJobConfiguration actual = pojo.toCloudJobConfiguration();
         assertThat(actual.getAppName(), is("app"));
         assertThat(actual.getCpuCount(), is(1d));
         assertThat(actual.getMemoryMB(), is(128d));
@@ -122,7 +122,7 @@ public final class YamlCloudJobConfigurationTest {
                 .description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
         CloudJobConfiguration cloudJobConfig = new CloudJobConfiguration("app", 1d, 128d, CloudJobExecutionType.DAEMON, jobConfig);
-        YamlCloudJobConfiguration actual = YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfig);
+        CloudJobConfigurationPOJO actual = CloudJobConfigurationPOJO.fromCloudJobConfiguration(cloudJobConfig);
         assertThat(actual.getAppName(), is("app"));
         assertThat(actual.getCpuCount(), is(1d));
         assertThat(actual.getMemoryMB(), is(128d));
@@ -146,7 +146,7 @@ public final class YamlCloudJobConfigurationTest {
     
     @Test
     public void assertMarshal() {
-        YamlCloudJobConfiguration actual = new YamlCloudJobConfiguration();
+        CloudJobConfigurationPOJO actual = new CloudJobConfigurationPOJO();
         actual.setAppName("app");
         actual.setCpuCount(1d);
         actual.setMemoryMB(128d);
@@ -166,7 +166,7 @@ public final class YamlCloudJobConfigurationTest {
     
     @Test
     public void assertMarshalWithNullValue() {
-        YamlCloudJobConfiguration actual = new YamlCloudJobConfiguration();
+        CloudJobConfigurationPOJO actual = new CloudJobConfigurationPOJO();
         actual.setAppName("app");
         actual.setCpuCount(1d);
         actual.setMemoryMB(128d);
@@ -178,7 +178,7 @@ public final class YamlCloudJobConfigurationTest {
     
     @Test
     public void assertUnmarshal() {
-        YamlCloudJobConfiguration actual = YamlEngine.unmarshal(YAML, YamlCloudJobConfiguration.class);
+        CloudJobConfigurationPOJO actual = YamlEngine.unmarshal(YAML, CloudJobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -196,7 +196,7 @@ public final class YamlCloudJobConfigurationTest {
     
     @Test
     public void assertUnmarshalWithNullValue() {
-        YamlCloudJobConfiguration actual = YamlEngine.unmarshal(YAML_WITH_NULL, YamlCloudJobConfiguration.class);
+        CloudJobConfigurationPOJO actual = YamlEngine.unmarshal(YAML_WITH_NULL, CloudJobConfigurationPOJO.class);
         assertThat(actual.getAppName(), is("app"));
         assertThat(actual.getCpuCount(), is(1d));
         assertThat(actual.getMemoryMB(), is(128d));

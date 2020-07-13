@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.config.yaml;
+package org.apache.shardingsphere.elasticjob.cloud.config.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +26,11 @@ import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import java.util.Properties;
 
 /**
- * YAML cloud job configuration.
+ * Cloud job configuration POJO.
  */
 @Getter
 @Setter
-public final class YamlCloudJobConfiguration {
+public final class CloudJobConfigurationPOJO {
     
     private String appName;
     
@@ -96,10 +96,10 @@ public final class YamlCloudJobConfiguration {
      * Convert from cloud job configuration.
      *
      * @param cloudJobConfig cloud job configuration
-     * @return YAML cloud job configuration
+     * @return cloud job configuration POJO
      */
-    public static YamlCloudJobConfiguration fromCloudJobConfiguration(final CloudJobConfiguration cloudJobConfig) {
-        YamlCloudJobConfiguration result = new YamlCloudJobConfiguration();
+    public static CloudJobConfigurationPOJO fromCloudJobConfiguration(final CloudJobConfiguration cloudJobConfig) {
+        CloudJobConfigurationPOJO result = new CloudJobConfigurationPOJO();
         result.setAppName(cloudJobConfig.getAppName());
         result.setCpuCount(cloudJobConfig.getCpuCount());
         result.setMemoryMB(cloudJobConfig.getMemoryMB());

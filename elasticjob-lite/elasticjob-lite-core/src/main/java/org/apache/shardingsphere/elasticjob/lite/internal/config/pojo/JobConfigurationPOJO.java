@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
+package org.apache.shardingsphere.elasticjob.lite.internal.config.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,11 +24,11 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import java.util.Properties;
 
 /**
- * YAML job configuration.
+ * Job configuration POJO.
  */
 @Getter
 @Setter
-public final class YamlJobConfiguration {
+public final class JobConfigurationPOJO {
     
     private String jobName;
     
@@ -86,10 +86,10 @@ public final class YamlJobConfiguration {
      * Convert from job configuration.
      * 
      * @param jobConfiguration job configuration
-     * @return YAML job configuration
+     * @return job configuration POJO
      */
-    public static YamlJobConfiguration fromJobConfiguration(final JobConfiguration jobConfiguration) {
-        YamlJobConfiguration result = new YamlJobConfiguration();
+    public static JobConfigurationPOJO fromJobConfiguration(final JobConfiguration jobConfiguration) {
+        JobConfigurationPOJO result = new JobConfigurationPOJO();
         result.setJobName(jobConfiguration.getJobName());
         result.setCron(jobConfiguration.getCron());
         result.setShardingTotalCount(jobConfiguration.getShardingTotalCount());
