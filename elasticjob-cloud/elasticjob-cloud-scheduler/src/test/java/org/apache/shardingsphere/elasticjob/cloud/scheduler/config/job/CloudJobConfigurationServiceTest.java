@@ -41,6 +41,24 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationServiceTest {
     
+    private static final String YAML = "appName: test_app\n"
+            + "cpuCount: 1.0\n"
+            + "cron: 0/30 * * * * ?\n"
+            + "description: ''\n"
+            + "disabled: false\n"
+            + "failover: true\n"
+            + "jobExecutionType: TRANSIENT\n"
+            + "jobName: test_job\n"
+            + "jobParameter: ''\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "memoryMB: 128.0\n"
+            + "misfire: true\n"
+            + "monitorExecution: true\n"
+            + "overwrite: false\n"
+            + "reconcileIntervalMinutes: 10\n"
+            + "shardingItemParameters: ''\n"
+            + "shardingTotalCount: 10\n";
+        
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
@@ -51,21 +69,14 @@ public final class CloudJobConfigurationServiceTest {
     public void assertAdd() {
         CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.add(cloudJobConfig);
-        verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).persist("/config/job/test_job", YAML);
     }
     
     @Test
     public void assertUpdate() {
         CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.update(cloudJobConfig);
-        verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
-    }
-    
-    @Test
-    public void assertAddSpringJob() {
-        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudSpringJobConfiguration("test_spring_job");
-        configService.add(cloudJobConfig);
-        verify(regCenter).persist("/config/job/test_spring_job", CloudJsonConstants.getSpringJobJson());
+        verify(regCenter).update("/config/job/test_job", YAML);
     }
     
     @Test

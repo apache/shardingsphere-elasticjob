@@ -90,7 +90,7 @@ public final class YamlCloudJobConfigurationTest {
         yamlCloudJobConfig.getProps().setProperty("key", "value");
         yamlCloudJobConfig.setDisabled(true);
         yamlCloudJobConfig.setOverwrite(true);
-        CloudJobConfiguration actual = yamlCloudJobConfig.toJobConfiguration();
+        CloudJobConfiguration actual = yamlCloudJobConfig.toCloudJobConfiguration();
         assertThat(actual.getAppName(), is("app"));
         assertThat(actual.getCpuCount(), is(1d));
         assertThat(actual.getMemoryMB(), is(128d));

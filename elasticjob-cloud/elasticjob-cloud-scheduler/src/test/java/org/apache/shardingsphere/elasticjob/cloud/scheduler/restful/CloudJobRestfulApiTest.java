@@ -56,12 +56,32 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
+    private static final String YAML = "appName: test_app\n"
+            + "cpuCount: 1.0\n"
+            + "cron: 0/30 * * * * ?\n"
+            + "description: ''\n"
+            + "disabled: false\n"
+            + "failover: true\n"
+            + "jobErrorHandlerType: ''\n"
+            + "jobExecutionType: TRANSIENT\n"
+            + "jobExecutorServiceHandlerType: ''\n"
+            + "jobName: test_job\n"
+            + "jobParameter: ''\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "memoryMB: 128.0\n"
+            + "misfire: true\n"
+            + "monitorExecution: true\n"
+            + "overwrite: false\n"
+            + "reconcileIntervalMinutes: 10\n"
+            + "shardingItemParameters: ''\n"
+            + "shardingTotalCount: 10\n";
+    
     @Test
     public void assertRegister() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
-        verify(getRegCenter()).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(getRegCenter()).persist("/config/job/test_job", YAML);
         RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job");
     }
     
@@ -92,7 +112,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(true);
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/update", "PUT", CloudJsonConstants.getJobJson()), is(204));
-        verify(getRegCenter()).update("/config/job/test_job", CloudJsonConstants.getJobJson());
+        verify(getRegCenter()).update("/config/job/test_job", YAML);
         RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job");
     }
     

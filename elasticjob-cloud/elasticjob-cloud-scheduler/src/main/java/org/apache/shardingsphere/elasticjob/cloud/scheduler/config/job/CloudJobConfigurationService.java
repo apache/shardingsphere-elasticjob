@@ -17,9 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.CloudJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.cloud.config.yaml.YamlCloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
@@ -42,7 +44,8 @@ public final class CloudJobConfigurationService {
      * @param cloudJobConfig cloud job configuration
      */
     public void add(final CloudJobConfiguration cloudJobConfig) {
-        regCenter.persist(CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), CloudJobConfigurationGsonFactory.toJson(cloudJobConfig));
+        regCenter.persist(
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfig)));
     }
     
     /**
@@ -51,7 +54,8 @@ public final class CloudJobConfigurationService {
      * @param cloudJobConfig cloud job configuration
      */
     public void update(final CloudJobConfiguration cloudJobConfig) {
-        regCenter.update(CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), CloudJobConfigurationGsonFactory.toJson(cloudJobConfig));
+        regCenter.update(
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfig)));
     }
     
     /**
@@ -78,7 +82,8 @@ public final class CloudJobConfigurationService {
      * @return cloud job configuration
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return Optional.ofNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName))));
+        String configContent = regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName));
+        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, YamlCloudJobConfiguration.class).toCloudJobConfiguration());
     }
     
     /**
