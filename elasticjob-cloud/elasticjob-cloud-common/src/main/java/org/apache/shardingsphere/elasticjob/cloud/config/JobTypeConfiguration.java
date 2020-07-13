@@ -17,19 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.config;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-
 /**
  * Job type configuration.
  */
 public interface JobTypeConfiguration {
-    
-    /**
-     * Get job type.
-     *
-     * @return job type
-     */
-    JobType getJobType();
 
     /**
      * Get job core configuration.

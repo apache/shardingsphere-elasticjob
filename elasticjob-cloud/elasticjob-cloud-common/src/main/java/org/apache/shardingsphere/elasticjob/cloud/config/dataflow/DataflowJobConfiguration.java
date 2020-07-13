@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.config.dataflow;
 
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 
 /**
  * Dataflow job configuration.
@@ -31,6 +30,4 @@ import lombok.RequiredArgsConstructor;
 public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
-    
-    private final JobType jobType = JobType.DATAFLOW;
 }
