@@ -34,14 +34,18 @@ public interface DatabaseType {
      * 
      * @return database product name
      */
-    String getDatabaseProductName();
+    default String getDatabaseProductName() {
+        return getType();
+    }
     
     /**
      * Get SQL properties file.
      *
      * @return SQL properties file
      */
-    String getSQLPropertiesFile();
+    default String getSQLPropertiesFile() {
+        return String.format("%s.properties", getType());
+    }
     
     /**
      * Get duplicate record error code.
