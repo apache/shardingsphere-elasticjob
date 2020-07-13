@@ -22,6 +22,7 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.api.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.dag.JobDagConfig;
 import org.apache.shardingsphere.elasticjob.lite.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -81,6 +82,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         result.addConstructorArgValue(getProps(element));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DISABLED_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.OVERWRITE_ATTRIBUTE));
+        result.addConstructorArgValue(createJobDagConfig(element));
         return result.getBeanDefinition();
     }
     
@@ -113,7 +115,18 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         }
         return result;
     }
-    
+
+    private BeanDefinition createJobDagConfig(final Element element) {
+        BeanDefinitionBuilder jobDagConfig = BeanDefinitionBuilder.rootBeanDefinition(JobDagConfig.class);
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_GROUP));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_DEPENDENCIES));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_RETRY_TIMES));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_RETRY_INTERVAL));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_RUN_ALONE));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.DAG_SKIP_WHEN_FAIL));
+        return jobDagConfig.getBeanDefinition();
+    }
+
     @Override
     protected boolean shouldGenerateId() {
         return true;

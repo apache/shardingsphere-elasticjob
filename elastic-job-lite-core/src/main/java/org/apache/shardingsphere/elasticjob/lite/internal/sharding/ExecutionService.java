@@ -21,12 +21,15 @@ import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.lite.internal.state.JobStateEnum;
+import org.apache.shardingsphere.elasticjob.lite.internal.state.JobStateNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Execution service.
@@ -58,6 +61,17 @@ public final class ExecutionService {
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
         }
+
+        if (!jobNodeStorage.isJobNodeExisted(JobStateNode.getRootState())) {
+            jobNodeStorage.createJobNodeIfNeeded(JobStateNode.getRootState(), JobStateEnum.RUNNING);
+        } else {
+            JobStateEnum jobState = JobStateEnum.of(jobNodeStorage.getJobNodeDataDirectly(JobStateNode.getRootState()));
+            if (jobState != JobStateEnum.RUNNING) {
+                jobNodeStorage.updateJobNode(JobStateNode.getRootState(), JobStateEnum.RUNNING);
+            }
+        }
+        jobNodeStorage.createJobNodeIfNeeded(JobStateNode.getRooProcSucc());
+        jobNodeStorage.createJobNodeIfNeeded(JobStateNode.getRooProcFail());
     }
     
     /**
@@ -73,6 +87,48 @@ public final class ExecutionService {
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
         }
+    }
+
+    /**
+     * Register job completed and Statistical the job status.
+     *
+     * @param shardingContexts sharding contexts
+     * @param itemErrorMessages error items.
+     */
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Map<Integer, String> itemErrorMessages) {
+        JobRegistry.getInstance().setJobRunning(jobName, false);
+        if (!configService.load(true).isMonitorExecution()) {
+            return;
+        }
+        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
+
+            if (itemErrorMessages.containsKey(each)) {
+                // fail
+                jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getProcSucc(each));
+                jobNodeStorage.createJobNodeIfNeeded(JobStateNode.getProcFail(each));
+            } else {
+                // succ
+                jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getProcFail(each));
+                jobNodeStorage.createJobNodeIfNeeded(JobStateNode.getProcSucc(each));
+            }
+        }
+
+        List<String> succList = jobNodeStorage.getJobNodeChildrenKeys(JobStateNode.getRooProcSucc());
+        List<String> failList = jobNodeStorage.getJobNodeChildrenKeys(JobStateNode.getRooProcFail());
+        int shardingTotalCount = shardingContexts.getShardingTotalCount();
+        int succCount = succList.size();
+        int failCount = failList.size();
+        if ((succCount + failCount) == shardingTotalCount) {
+            if (failCount == 0) {
+                jobNodeStorage.updateJobNode(JobStateNode.getRootState(), JobStateEnum.SUCCESS);
+            } else {
+                jobNodeStorage.updateJobNode(JobStateNode.getRootState(), JobStateEnum.FAIL);
+            }
+            jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getRooProcFail());
+            jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getRooProcSucc());
+        }
+
     }
     
     /**

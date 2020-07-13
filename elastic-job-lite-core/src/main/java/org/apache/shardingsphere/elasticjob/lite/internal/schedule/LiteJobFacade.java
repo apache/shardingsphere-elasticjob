@@ -23,6 +23,10 @@ import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.lite.dag.DagService;
+import org.apache.shardingsphere.elasticjob.lite.dag.DagStates;
+import org.apache.shardingsphere.elasticjob.lite.dag.JobDagConfig;
+import org.apache.shardingsphere.elasticjob.lite.exception.DagRuntimeException;
 import org.apache.shardingsphere.elasticjob.lite.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.lite.executor.ShardingContexts;
@@ -41,6 +45,7 @@ import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEve
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Lite job facade.
@@ -61,8 +66,15 @@ public final class LiteJobFacade implements JobFacade {
     private final List<ElasticJobListener> elasticJobListeners;
     
     private final JobEventBus jobEventBus;
+
+    private final DagService dagService;
     
     public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final JobEventBus jobEventBus) {
+        this(regCenter, jobName, elasticJobListeners, jobEventBus, null);
+    }
+
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final JobEventBus jobEventBus,
+                         final JobDagConfig jobDagConfig) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionContextService = new ExecutionContextService(regCenter, jobName);
@@ -70,8 +82,13 @@ public final class LiteJobFacade implements JobFacade {
         failoverService = new FailoverService(regCenter, jobName);
         this.elasticJobListeners = elasticJobListeners;
         this.jobEventBus = jobEventBus;
+        if (null == jobDagConfig) {
+            this.dagService = null;
+        } else {
+            this.dagService = new DagService(regCenter, jobName, jobEventBus, jobDagConfig);
+        }
     }
-    
+
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {
         return configService.load(fromCache);
@@ -101,7 +118,15 @@ public final class LiteJobFacade implements JobFacade {
             failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
         }
     }
-    
+
+    @Override
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Map<Integer, String> itemErrorMessages) {
+        executionService.registerJobCompleted(shardingContexts, itemErrorMessages);
+        if (configService.load(true).isFailover()) {
+            failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
+        }
+    }
+
     @Override
     public ShardingContexts getShardingContexts() {
         boolean isFailover = configService.load(true).isFailover();
@@ -176,6 +201,42 @@ public final class LiteJobFacade implements JobFacade {
                 taskContext.getSlaveId(), Source.LITE_EXECUTOR, taskContext.getType().name(), taskContext.getMetaInfo().getShardingItems().toString(), state, message));
         if (!Strings.isNullOrEmpty(message)) {
             log.trace(message);
+        }
+    }
+
+    @Override
+    public boolean isDagJob() {
+        return dagService != null;
+    }
+
+    @Override
+    public void dagStatesCheck() {
+        if (dagService.getDagStates() == DagStates.RUNNING) {
+            return;
+        }
+        if (dagService.getDagStates() == DagStates.PAUSE) {
+            throw new DagRuntimeException("Dag Job states PAUSE");
+        }
+
+        if (dagService.isDagRootJob()) {
+            dagService.changeDagStatesAndReGraph();
+        }
+
+        if (dagService.getDagStates() != DagStates.RUNNING) {
+            log.info("DAG states not right {}", dagService.getDagStates().getValue());
+            throw new DagRuntimeException("Dag states Not right!");
+        }
+    }
+
+    @Override
+    public void dagJobDependenciesCheck() {
+        dagService.checkJobDependenciesState();
+    }
+
+    @Override
+    public void initDagConfig() {
+        if (null != dagService) {
+            dagService.regDagConfig();
         }
     }
 }

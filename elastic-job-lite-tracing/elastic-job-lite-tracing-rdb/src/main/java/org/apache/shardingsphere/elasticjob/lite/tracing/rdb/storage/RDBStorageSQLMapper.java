@@ -30,7 +30,9 @@ import java.util.Properties;
 public final class RDBStorageSQLMapper {
     
     private final String createTableForJobExecutionLog;
-    
+
+    private final String createTableForDagJobExecutionLog;
+
     private final String createTableForJobStatusTraceLog;
     
     private final String createIndexForTaskIdStateIndex;
@@ -40,7 +42,9 @@ public final class RDBStorageSQLMapper {
     private final String insertForJobExecutionLogForComplete;
     
     private final String insertForJobExecutionLogForFailure;
-    
+
+    private final String insertForDagJobExecutionLog;
+
     private final String updateForJobExecutionLog;
     
     private final String updateForJobExecutionLogForFailure;
@@ -64,6 +68,8 @@ public final class RDBStorageSQLMapper {
         insertForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.INSERT");
         selectForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT");
         selectOriginalTaskIdForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT_ORIGINAL_TASK_ID");
+        createTableForDagJobExecutionLog = props.getProperty("DAG_JOB_EXECUTION_LOG.TABLE.CREATE");
+        insertForDagJobExecutionLog = props.getProperty("DAG_JOB_EXECUTION_LOG.INSERT");
     }
     
     @SneakyThrows

@@ -1,0 +1,82 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="index-content">
+    <section class="content-header">
+        <h4 data-lang="sidebar-dag-edge"></h4>
+        <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-cogs" data-lang="sidebar-dag"></i></li>
+            <li class="active" data-lang="sidebar-dag-history"></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div id="dagHistoryToolbar">
+            <form class="form-inline" >
+                <div class="form-group toolbar">
+                    <label for="tFlowCode" data-lang="dag-flow-code"></label>
+                    <input type="text" class="form-control" id="tFlowCode" placeholder="">
+                </div>
+                <div class="form-group toolbar">
+                    <label for="tBatchNo" data-lang="dag-batch-no"></label>
+                    <input type="text" class="form-control" id="tBatchNo" placeholder="">
+                </div>
+                <div class="form-group toolbar">
+                    <label for="tStartTime" data-lang="start-time"></label>
+                    <input type="text" class="form-control custom-datepicker" id="tStartTime">
+                </div>
+                <div class="form-group toolbar">
+                    <label for="tEndTime" data-lang="complete-time"></label>
+                    <input type="text" class="form-control custom-datepicker" id="tEndTime">
+                </div>
+            </form>
+        </div>
+        <table id="dag-history-table"
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-striped="true"
+               data-toggle="table"
+               data-url="/api/dag/history"
+               data-flat="true"
+               data-click-to-select="true"
+               data-row-style="rowStyle"
+               data-query-params="queryParams"
+               data-query-params-type="notLimit"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-page-list="[10, 20, 50, 100]"
+               data-show-columns="true"
+               data-toolbar="#dagHistoryToolbar">
+            <thead>
+            <tr>
+                <th data-field="flowCode" data-sortable="true"><span data-lang="dag-flow-code"></span></th>
+                <th data-field="jobName" data-sortable="false"><span data-lang="dag-job-name"></span></th>
+                <th data-field="batchNo" data-sortable="true"><span data-lang="dag-batch-no"></span></th>
+                <th data-field="execDate" data-sortable="false"><span data-lang="dag-exec-date"></span></th>
+                <th data-field="execTime" data-sortable="false"><span data-lang="dag-exec-time"></span></th>
+                <th data-field="state" data-sortable="false"><span data-lang="dag-state"></span></th>
+                <th data-field="message" data-sortable="false"><span data-lang="dag-message"></span></th>
+            </tr>
+            </thead>
+        </table>
+    </section>
+</div>
+
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/util/common.js"></script>
+<script src="js/dag/dag_history.js"></script>

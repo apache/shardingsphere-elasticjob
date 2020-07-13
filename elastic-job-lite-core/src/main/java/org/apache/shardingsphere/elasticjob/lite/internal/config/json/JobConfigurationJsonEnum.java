@@ -68,7 +68,21 @@ public enum JobConfigurationJsonEnum {
     
     DISABLED("disabled", boolean.class),
     
-    OVERWRITE("overwrite", boolean.class);
+    OVERWRITE("overwrite", boolean.class),
+
+    DAGGROUP("dagGroup", String.class),
+
+    DAGDEPENDENCIES("dagDependencies", String.class),
+
+    RETRYTIMES("retryTimes", int.class),
+
+    RETRYINTERVAL("retryInterval", int.class),
+
+    DAGRUNALONE("dagRunAlone", boolean.class),
+
+    DAGSKIPWHENFAIL("dagSkipWhenFail", boolean.class);
+
+
     
     private final String jsonName;
     

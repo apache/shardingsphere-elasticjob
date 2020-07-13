@@ -22,6 +22,7 @@ import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.dag.JobDagConfig;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.json.JobConfigurationGsonFactory;
@@ -71,6 +72,16 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         jobSettings.setJobErrorHandlerType(jobConfig.getJobErrorHandlerType());
         jobSettings.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
         jobSettings.setDescription(jobConfig.getDescription());
+        // for dag settings
+        JobDagConfig jobDagConfig = jobConfig.getJobDagConfig();
+        if (jobDagConfig != null) {
+            jobSettings.setDagGroup(jobDagConfig.getDagGroup());
+            jobSettings.setDagDependencies(jobDagConfig.getDagDependencies());
+            jobSettings.setDagRunAlone(jobDagConfig.isDagRunAlone());
+            jobSettings.setDagSkipWhenFail(jobDagConfig.isDagSkipWhenFail());
+            jobSettings.setRetryTimes(jobDagConfig.getRetryTimes());
+            jobSettings.setRetryInterval(jobDagConfig.getRetryInterval());
+        }
     }
     
     private void buildDataflowJobSettings(final JobSettings jobSettings, final JobConfiguration config) {

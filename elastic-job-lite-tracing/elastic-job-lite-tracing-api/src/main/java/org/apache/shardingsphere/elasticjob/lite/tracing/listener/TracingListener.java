@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.tracing.listener;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 
@@ -44,4 +45,14 @@ public interface TracingListener {
     @Subscribe
     @AllowConcurrentEvents
     void listen(JobStatusTraceEvent jobStatusTraceEvent);
+
+    /**
+     * Listen dag job trace event.
+     *
+     * @param dagJobExecutionEvent dag job status trace event
+     */
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(DagJobExecutionEvent dagJobExecutionEvent);
+
 }

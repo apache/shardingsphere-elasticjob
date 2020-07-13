@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
@@ -57,7 +58,11 @@ public final class RDBJobEventSearch {
     
     private static final List<String> FIELDS_JOB_STATUS_TRACE_LOG = 
             Lists.newArrayList("id", "job_name", "original_task_id", "task_id", "slave_id", "source", "execution_type", "sharding_item", "state", "message", "creation_time");
-    
+
+    private static final String TABLE_DAG_JOB_EXECUTION_LOG = "DAG_JOB_EXECUTION_LOG";
+
+    private static final List<String> FIELDS_DAG_JOB_EXECUTION_LOG = Lists.newArrayList("id", "group_name", "job_name", "exec_time", "exec_date", "batch_no", "state", "message");
+
     private final DataSource dataSource;
     
     /**
@@ -264,7 +269,36 @@ public final class RDBJobEventSearch {
         }
         return sqlBuilder.toString();
     }
-    
+
+    /**
+     * Query dag events.
+     *
+     * @param condition query condition
+     * @return result
+     */
+    public Result<DagJobExecutionEvent> findDagJobExecutionEvents(final Condition condition) {
+        return new Result<>(getEventCount(TABLE_DAG_JOB_EXECUTION_LOG, FIELDS_DAG_JOB_EXECUTION_LOG, condition), getDagJobExecutionEvents(condition));
+    }
+
+    private List<DagJobExecutionEvent> getDagJobExecutionEvents(final Condition condition) {
+        List<DagJobExecutionEvent> result = new LinkedList<>();
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = createDataPreparedStatement(connection, TABLE_DAG_JOB_EXECUTION_LOG, FIELDS_DAG_JOB_EXECUTION_LOG, condition);
+                ResultSet resultSet = preparedStatement.executeQuery()
+        ) {
+            while (resultSet.next()) {
+                DagJobExecutionEvent dagJobExecutionEvent = new DagJobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8));
+                result.add(dagJobExecutionEvent);
+            }
+        } catch (final SQLException ex) {
+            // TODO log failure directly to output log, consider to be configurable in the future
+            log.error("Fetch DagJobExecutionEvent from DB error:", ex);
+        }
+        return result;
+    }
+
     /**
      * Query condition.
      */

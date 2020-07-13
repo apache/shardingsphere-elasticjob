@@ -116,7 +116,19 @@ public final class JobNodeStorage {
             regCenter.persist(jobNodePath.getFullPath(node), "");
         }
     }
-    
+
+    /**
+     * Create job node if needed.
+     *
+     * @param node node
+     * @param value value
+     */
+    public void createJobNodeIfNeeded(final String node, final Object value) {
+        if (isJobRootNodeExisted() && !isJobNodeExisted(node)) {
+            regCenter.persist(jobNodePath.getFullPath(node), value.toString());
+        }
+    }
+
     /**
      * Remove job node if existed.
      * 

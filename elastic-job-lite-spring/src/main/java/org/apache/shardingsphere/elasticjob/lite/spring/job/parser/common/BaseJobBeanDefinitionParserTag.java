@@ -73,4 +73,17 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE = "event-trace-rdb-data-source";
     
     public static final String RECONCILE_INTERVAL_MINUTES = "reconcile-interval-minutes";
+
+    public static final String DAG_GROUP = "dag-group";
+
+    public static final String DAG_DEPENDENCIES = "dag-dependencies";
+
+    public static final String DAG_RETRY_TIMES = "dag-retry-times";
+
+    public static final String DAG_RETRY_INTERVAL = "dag-retry-interval";
+
+    public static final String DAG_RUN_ALONE = "dag-run-alone";
+
+    public static final String DAG_SKIP_WHEN_FAIL = "dag-skip-when-fail";
+
 }

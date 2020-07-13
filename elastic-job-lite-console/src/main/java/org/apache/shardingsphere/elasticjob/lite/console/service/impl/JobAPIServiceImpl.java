@@ -20,13 +20,14 @@ package org.apache.shardingsphere.elasticjob.lite.console.service.impl;
 import org.apache.shardingsphere.elasticjob.lite.console.domain.RegistryCenterConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.console.service.JobAPIService;
 import org.apache.shardingsphere.elasticjob.lite.console.util.SessionRegistryCenterConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobAPIFactory;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.DagOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobAPIFactory;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 
 /**
  * Job API service implementation.
@@ -68,5 +69,11 @@ public final class JobAPIServiceImpl implements JobAPIService {
         RegistryCenterConfiguration regCenterConfig = SessionRegistryCenterConfiguration.getRegistryCenterConfiguration();
         return JobAPIFactory.createShardingStatisticsAPI(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), regCenterConfig.getDigest());
     }
-    
+
+    @Override
+    public DagOperateAPI getDagOperateApi() {
+        RegistryCenterConfiguration regCenterConfig = SessionRegistryCenterConfiguration.getRegistryCenterConfiguration();
+        return JobAPIFactory.createDagOperateAPI(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), regCenterConfig.getDigest());
+    }
+
 }

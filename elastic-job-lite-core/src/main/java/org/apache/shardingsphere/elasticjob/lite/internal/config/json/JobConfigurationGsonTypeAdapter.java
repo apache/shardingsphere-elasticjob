@@ -24,6 +24,7 @@ import com.google.gson.stream.JsonWriter;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.config.JobConfiguration.Builder;
+import org.apache.shardingsphere.elasticjob.lite.dag.JobDagConfig;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.DataflowJobExecutor;
 import org.apache.shardingsphere.elasticjob.lite.executor.type.impl.ScriptJobExecutor;
 
@@ -112,6 +113,28 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
         if (jsonValueMap.containsKey(JobConfigurationJsonEnum.OVERWRITE.getJsonName())) {
             builder.overwrite((boolean) jsonValueMap.get(JobConfigurationJsonEnum.OVERWRITE.getJsonName()));
         }
+
+        if (jsonValueMap.containsKey(JobConfigurationJsonEnum.DAGGROUP.getJsonName())) {
+            JobDagConfig jobDagConfig = new JobDagConfig();
+            jobDagConfig.setDagGroup((String) jsonValueMap.get(JobConfigurationJsonEnum.DAGGROUP.getJsonName()));
+            if (jsonValueMap.containsKey(JobConfigurationJsonEnum.DAGDEPENDENCIES.getJsonName())) {
+                jobDagConfig.setDagDependencies((String) jsonValueMap.get(JobConfigurationJsonEnum.DAGDEPENDENCIES.getJsonName()));
+            }
+            if (jsonValueMap.containsKey(JobConfigurationJsonEnum.RETRYTIMES.getJsonName())) {
+                jobDagConfig.setRetryTimes((int) jsonValueMap.get(JobConfigurationJsonEnum.RETRYTIMES.getJsonName()));
+            }
+            if (jsonValueMap.containsKey(JobConfigurationJsonEnum.RETRYINTERVAL.getJsonName())) {
+                jobDagConfig.setRetryInterval((int) jsonValueMap.get(JobConfigurationJsonEnum.RETRYINTERVAL.getJsonName()));
+            }
+            if (jsonValueMap.containsKey(JobConfigurationJsonEnum.DAGRUNALONE.getJsonName())) {
+                jobDagConfig.setDagRunAlone((boolean) jsonValueMap.get(JobConfigurationJsonEnum.DAGRUNALONE.getJsonName()));
+            }
+            if (jsonValueMap.containsKey(JobConfigurationJsonEnum.DAGSKIPWHENFAIL.getJsonName())) {
+                jobDagConfig.setDagSkipWhenFail((boolean) jsonValueMap.get(JobConfigurationJsonEnum.DAGSKIPWHENFAIL.getJsonName()));
+            }
+            builder.jobDagConfig(jobDagConfig);
+        }
+
         return builder.build();
     }
     
@@ -146,6 +169,15 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<JobConfig
         out.name(JobConfigurationJsonEnum.RECONCILE_INTERVAL_MINUTES.getJsonName()).value(value.getReconcileIntervalMinutes());
         out.name(JobConfigurationJsonEnum.DISABLED.getJsonName()).value(value.isDisabled());
         out.name(JobConfigurationJsonEnum.OVERWRITE.getJsonName()).value(value.isOverwrite());
+
+        if (null != value.getJobDagConfig() && !Strings.isNullOrEmpty(value.getJobDagConfig().getDagGroup())) {
+            out.name(JobConfigurationJsonEnum.DAGGROUP.getJsonName()).value(value.getJobDagConfig().getDagGroup());
+            out.name(JobConfigurationJsonEnum.DAGDEPENDENCIES.getJsonName()).value(value.getJobDagConfig().getDagDependencies());
+            out.name(JobConfigurationJsonEnum.RETRYTIMES.getJsonName()).value(value.getJobDagConfig().getRetryTimes());
+            out.name(JobConfigurationJsonEnum.RETRYINTERVAL.getJsonName()).value(value.getJobDagConfig().getRetryInterval());
+            out.name(JobConfigurationJsonEnum.DAGRUNALONE.getJsonName()).value(value.getJobDagConfig().isDagRunAlone());
+            out.name(JobConfigurationJsonEnum.DAGSKIPWHENFAIL.getJsonName()).value(value.getJobDagConfig().isDagSkipWhenFail());
+        }
         out.endObject();
     }
 }

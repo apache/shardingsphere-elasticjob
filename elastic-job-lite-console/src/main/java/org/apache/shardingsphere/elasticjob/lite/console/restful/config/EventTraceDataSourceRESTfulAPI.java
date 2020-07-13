@@ -141,6 +141,7 @@ public final class EventTraceDataSourceRESTfulAPI {
         // CHECKSTYLE:OFF
         } catch (final Exception ex) {
         // CHECKSTYLE:ON
+            System.out.println(ex);
             return false;
         }
         return true;

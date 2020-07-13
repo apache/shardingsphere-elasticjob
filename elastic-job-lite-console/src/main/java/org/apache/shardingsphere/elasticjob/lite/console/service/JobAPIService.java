@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.console.service;
 
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.DagOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobSettingsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
-import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 
 public interface JobAPIService {
 
@@ -67,5 +68,10 @@ public interface JobAPIService {
      * @return sharding statistics API
      */
     ShardingStatisticsAPI getShardingStatisticsAPI();
-    
+
+    /**
+     * Dag Operate API.
+     * @return dag operate api.
+     */
+    DagOperateAPI getDagOperateApi();
 }

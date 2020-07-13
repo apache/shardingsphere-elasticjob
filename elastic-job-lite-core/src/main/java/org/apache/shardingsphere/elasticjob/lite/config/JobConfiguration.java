@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.lite.api.JobType;
+import org.apache.shardingsphere.elasticjob.lite.dag.JobDagConfig;
 
 import java.util.Properties;
 
@@ -71,7 +72,9 @@ public final class JobConfiguration {
     private final boolean disabled;
     
     private final boolean overwrite;
-    
+
+    private final JobDagConfig jobDagConfig;
+
     /**
      * Create ElasticJob configuration builder.
      *
@@ -125,6 +128,8 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
+
+        private JobDagConfig jobDagConfig;
         
         /**
          * Set mapper of sharding items and sharding parameters.
@@ -354,6 +359,17 @@ public final class JobConfiguration {
             this.overwrite = overwrite;
             return this;
         }
+
+        /**
+         * Set Dag configuration.
+         *
+         * @param jobDagConfig dag configuration
+         * @return ElasticJob configuration builder
+         */
+        public Builder jobDagConfig(final JobDagConfig jobDagConfig) {
+            this.jobDagConfig = jobDagConfig;
+            return this;
+        }
         
         /**
          * Build ElasticJob configuration.
@@ -365,9 +381,13 @@ public final class JobConfiguration {
             Preconditions.checkNotNull(jobType, "jobType can not be null.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
+            if (null != jobDagConfig) {
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobDagConfig.getDagGroup()), "dagGroup can not be empty When use DAG");
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobDagConfig.getDagDependencies()), "dagDependencies can not be empty When use DAG");
+            }
             return new JobConfiguration(jobName, jobType, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes, monitorPort, 
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite, jobDagConfig);
         }
     }
 }

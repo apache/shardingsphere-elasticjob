@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.tracing.rdb.listener;
 
+import org.apache.shardingsphere.elasticjob.lite.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.lite.tracing.listener.TracingListener;
@@ -44,5 +45,10 @@ public final class RDBTracingListener implements TracingListener {
     @Override
     public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
         repository.addJobStatusTraceEvent(jobStatusTraceEvent);
+    }
+
+    @Override
+    public void listen(final DagJobExecutionEvent dagJobExecutionEvent) {
+        repository.addDagJobExecutionEvent(dagJobExecutionEvent);
     }
 }

@@ -35,6 +35,12 @@ $(function() {
     $("#status-history").click(function() {
         $("#content").load("html/history/job_status_history.html");
     });
+    $("#dag-flow").click(function() {
+        $("#content").load("html/dag/dag_flow.html");
+    });
+    $("#dag-history").click(function() {
+        $("#content").load("html/dag/dag_history.html");
+    });
     $("#help").click(function() {
         $("#content").load("html/help/help.html", null, function(){
             doLocale();

@@ -66,4 +66,16 @@ public final class JobSettings implements Serializable {
     private String scriptCommandLine;
     
     private int reconcileIntervalMinutes;
+
+    private String dagGroup;
+
+    private String dagDependencies;
+
+    private int retryTimes;
+
+    private int retryInterval;
+
+    private boolean dagRunAlone;
+
+    private boolean dagSkipWhenFail;
 }
