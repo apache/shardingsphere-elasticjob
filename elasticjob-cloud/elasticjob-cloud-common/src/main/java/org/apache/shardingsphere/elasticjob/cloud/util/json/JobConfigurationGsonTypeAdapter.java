@@ -141,10 +141,10 @@ public final class JobConfigurationGsonTypeAdapter extends TypeAdapter<CloudJobC
         Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB), "memoryMB cannot be null.");
         Preconditions.checkArgument((double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB) >= 1, "memory cannot be less than 1");
         Preconditions.checkNotNull(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE), "jobExecutionType cannot be null.");
-        return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME), jobConfig,
+        return new CloudJobConfiguration((String) customizedValueMap.get(CloudConfigurationConstants.APP_NAME),
                 (double) customizedValueMap.get(CloudConfigurationConstants.CPU_COUNT),
                 (double) customizedValueMap.get(CloudConfigurationConstants.MEMORY_MB),
-                CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()));
+                CloudJobExecutionType.valueOf(customizedValueMap.get(CloudConfigurationConstants.JOB_EXECUTION_TYPE).toString()), jobConfig);
     }
     
     @Override

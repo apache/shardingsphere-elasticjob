@@ -115,25 +115,25 @@ public final class CloudJobRestfulApi {
     /**
      * Register cloud job.
      * 
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void register(final CloudJobConfiguration jobConfig) {
-        producerManager.register(jobConfig);
+    public void register(final CloudJobConfiguration cloudJobConfig) {
+        producerManager.register(cloudJobConfig);
     }
     
     /**
      * Update cloud job.
      *
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(final CloudJobConfiguration jobConfig) {
-        producerManager.update(jobConfig);
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        producerManager.update(cloudJobConfig);
     }
     
     /**
@@ -216,11 +216,11 @@ public final class CloudJobRestfulApi {
     @Path("/jobs/{jobName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response detail(@PathParam("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (!jobConfig.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(jobConfig.get()).build();
+        return Response.ok(cloudJobConfig.get()).build();
     }
     
     /**

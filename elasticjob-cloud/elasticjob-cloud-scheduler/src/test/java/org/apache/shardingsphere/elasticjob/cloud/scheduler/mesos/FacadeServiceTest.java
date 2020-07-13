@@ -118,10 +118,10 @@ public final class FacadeServiceTest {
         for (JobContext each : actual) {
             switch (i) {
                 case 0:
-                    assertThat(each.getJobConfig().getJobName(), is("failover_job"));
+                    assertThat(each.getCloudJobConfig().getJobConfig().getJobName(), is("failover_job"));
                     break;
                 case 1:
-                    assertThat(each.getJobConfig().getJobName(), is("ready_job"));
+                    assertThat(each.getCloudJobConfig().getJobConfig().getJobName(), is("ready_job"));
                     break;
                 default:
                     break;
@@ -203,9 +203,9 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertLoadJobConfig() {
-        Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
-        when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
-        assertThat(facadeService.load("test_job"), is(jobConfigOptional));
+        Optional<CloudJobConfiguration> cloudJobConfig = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+        when(jobConfigService.load("test_job")).thenReturn(cloudJobConfig);
+        assertThat(facadeService.load("test_job"), is(cloudJobConfig));
     }
     
     @Test

@@ -163,7 +163,7 @@ public final class CloudAppRestfulApi {
             disableAppService.add(appName);
             for (CloudJobConfiguration each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.unschedule(each.getJobName());
+                    producerManager.unschedule(each.getJobConfig().getJobName());
                 }
             }
         }
@@ -181,7 +181,7 @@ public final class CloudAppRestfulApi {
             disableAppService.remove(appName);
             for (CloudJobConfiguration each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.reschedule(each.getJobName());
+                    producerManager.reschedule(each.getJobConfig().getJobName());
                 }
             }
         }
@@ -205,7 +205,7 @@ public final class CloudAppRestfulApi {
     private void removeAppAndJobConfigurations(final String appName) {
         for (CloudJobConfiguration each : jobConfigService.loadAll()) {
             if (appName.equals(each.getAppName())) {
-                producerManager.deregister(each.getJobName());
+                producerManager.deregister(each.getJobConfig().getJobName());
             }
         }
         disableAppService.remove(appName);

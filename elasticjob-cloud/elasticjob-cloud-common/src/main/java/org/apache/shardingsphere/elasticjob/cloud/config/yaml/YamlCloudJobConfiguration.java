@@ -89,7 +89,7 @@ public final class YamlCloudJobConfiguration {
         for (Object each : props.keySet()) {
             jobConfig.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
         }
-        return new CloudJobConfiguration(appName, jobConfig, cpuCount, memoryMB, jobExecutionType);
+        return new CloudJobConfiguration(appName, cpuCount, memoryMB, jobExecutionType, jobConfig);
     }
     
     /**
@@ -104,7 +104,7 @@ public final class YamlCloudJobConfiguration {
         result.setCpuCount(cloudJobConfig.getCpuCount());
         result.setMemoryMB(cloudJobConfig.getMemoryMB());
         result.setJobExecutionType(cloudJobConfig.getJobExecutionType());
-        result.setJobName(cloudJobConfig.getJobName());
+        result.setJobName(cloudJobConfig.getJobConfig().getJobName());
         result.setCron(cloudJobConfig.getJobConfig().getCron());
         result.setShardingTotalCount(cloudJobConfig.getJobConfig().getShardingTotalCount());
         result.setShardingItemParameters(cloudJobConfig.getJobConfig().getShardingItemParameters());

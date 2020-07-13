@@ -96,8 +96,8 @@ public final class RunningService {
     }
     
     private boolean isDaemon(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
-        return cloudJobConfigurationOptional.isPresent() && CloudJobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
+        Optional<CloudJobConfiguration> cloudJobConfig = configurationService.load(jobName);
+        return cloudJobConfig.isPresent() && CloudJobExecutionType.DAEMON == cloudJobConfig.get().getJobExecutionType();
     }
     
     /**

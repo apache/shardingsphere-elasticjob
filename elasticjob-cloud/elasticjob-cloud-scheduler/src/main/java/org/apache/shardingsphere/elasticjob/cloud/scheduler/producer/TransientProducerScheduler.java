@@ -85,10 +85,10 @@ final class TransientProducerScheduler {
     }
     
     // TODO Concurrency optimization
-    synchronized void register(final CloudJobConfiguration jobConfig) {
-        String cron = jobConfig.getJobConfig().getCron();
+    synchronized void register(final CloudJobConfiguration cloudJobConfig) {
+        String cron = cloudJobConfig.getJobConfig().getCron();
         JobKey jobKey = buildJobKey(cron);
-        repository.put(jobKey, jobConfig.getJobName());
+        repository.put(jobKey, cloudJobConfig.getJobConfig().getJobName());
         try {
             if (!scheduler.checkExists(jobKey)) {
                 scheduler.scheduleJob(buildJobDetail(jobKey), buildTrigger(jobKey.getName()));
@@ -109,9 +109,9 @@ final class TransientProducerScheduler {
         return TriggerBuilder.newTrigger().withIdentity(cron).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
     }
     
-    synchronized void deregister(final CloudJobConfiguration jobConfig) {
-        repository.remove(jobConfig.getJobName());
-        String cron = jobConfig.getJobConfig().getCron();
+    synchronized void deregister(final CloudJobConfiguration cloudJobConfig) {
+        repository.remove(cloudJobConfig.getJobConfig().getJobName());
+        String cron = cloudJobConfig.getJobConfig().getCron();
         if (!repository.containsKey(buildJobKey(cron))) {
             try {
                 scheduler.unscheduleJob(TriggerKey.triggerKey(cron));

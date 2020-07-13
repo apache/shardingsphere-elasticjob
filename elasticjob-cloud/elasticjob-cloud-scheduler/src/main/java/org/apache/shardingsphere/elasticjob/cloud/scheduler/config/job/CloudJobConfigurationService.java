@@ -39,19 +39,19 @@ public final class CloudJobConfigurationService {
     /**
      * Add cloud job configuration.
      * 
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
-    public void add(final CloudJobConfiguration jobConfig) {
-        regCenter.persist(CloudJobConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
+    public void add(final CloudJobConfiguration cloudJobConfig) {
+        regCenter.persist(CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), CloudJobConfigurationGsonFactory.toJson(cloudJobConfig));
     }
     
     /**
      * Update cloud job configuration.
      *
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
-    public void update(final CloudJobConfiguration jobConfig) {
-        regCenter.update(CloudJobConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        regCenter.update(CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), CloudJobConfigurationGsonFactory.toJson(cloudJobConfig));
     }
     
     /**

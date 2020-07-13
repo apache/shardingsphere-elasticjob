@@ -96,14 +96,14 @@ public final class FailoverService {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            Optional<CloudJobConfiguration> jobConfig = configService.load(each);
-            if (!jobConfig.isPresent()) {
+            Optional<CloudJobConfiguration> cloudJobConfig = configService.load(each);
+            if (!cloudJobConfig.isPresent()) {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
-                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
+                result.add(new JobContext(cloudJobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
             }
         }
         return result;
