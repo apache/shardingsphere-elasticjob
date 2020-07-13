@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.config.yaml;
+package org.apache.shardingsphere.elasticjob.cloud.config.yaml;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Test;
 
@@ -27,18 +29,22 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class YamlJobConfigurationTest {
+public final class YamlCloudJobConfigurationTest {
     
-    private static final String YAML = "cron: 0/1 * * * * ?\n"
+    private static final String YAML = "appName: app\n"
+            + "cpuCount: 1.0\n"
+            + "cron: 0/1 * * * * ?\n"
             + "description: Job description\n"
             + "disabled: false\n"
             + "failover: false\n"
             + "jobErrorHandlerType: IGNORE\n"
+            + "jobExecutionType: DAEMON\n"
             + "jobExecutorServiceHandlerType: CPU\n"
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
             + "maxTimeDiffSeconds: 0\n"
+            + "memoryMB: 128.0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
@@ -48,11 +54,14 @@ public final class YamlJobConfigurationTest {
             + "shardingItemParameters: 0=A,1=B,2=C\n"
             + "shardingTotalCount: 3\n";
     
-    private static final String YAML_WITH_NULL = "cron: 0/1 * * * * ?\n"
+    private static final String YAML_WITH_NULL = "appName: app\n"
+            + "cpuCount: 1.0\n"
             + "disabled: false\n"
             + "failover: false\n"
+            + "jobExecutionType: DAEMON\n"
             + "jobName: test_job\n"
             + "maxTimeDiffSeconds: 0\n"
+            + "memoryMB: 128.0\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
@@ -61,38 +70,46 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertToJobConfiguration() {
-        YamlJobConfiguration yamlJobConfiguration = new YamlJobConfiguration();
-        yamlJobConfiguration.setJobName("test_job");
-        yamlJobConfiguration.setCron("0/1 * * * * ?");
-        yamlJobConfiguration.setShardingTotalCount(3);
-        yamlJobConfiguration.setShardingItemParameters("0=A,1=B,2=C");
-        yamlJobConfiguration.setJobParameter("param");
-        yamlJobConfiguration.setMonitorExecution(true);
-        yamlJobConfiguration.setFailover(true);
-        yamlJobConfiguration.setMisfire(true);
-        yamlJobConfiguration.setJobShardingStrategyType("AVG_ALLOCATION");
-        yamlJobConfiguration.setJobExecutorServiceHandlerType("CPU");
-        yamlJobConfiguration.setJobErrorHandlerType("IGNORE");
-        yamlJobConfiguration.setDescription("Job description");
-        yamlJobConfiguration.getProps().setProperty("key", "value");
-        yamlJobConfiguration.setDisabled(true);
-        yamlJobConfiguration.setOverwrite(true);
-        JobConfiguration actual = yamlJobConfiguration.toJobConfiguration();
+        YamlCloudJobConfiguration yamlCloudJobConfiguration = new YamlCloudJobConfiguration();
+        yamlCloudJobConfiguration.setAppName("app");
+        yamlCloudJobConfiguration.setCpuCount(1d);
+        yamlCloudJobConfiguration.setMemoryMB(128d);
+        yamlCloudJobConfiguration.setJobExecutionType(CloudJobExecutionType.DAEMON);
+        yamlCloudJobConfiguration.setJobName("test_job");
+        yamlCloudJobConfiguration.setCron("0/1 * * * * ?");
+        yamlCloudJobConfiguration.setShardingTotalCount(3);
+        yamlCloudJobConfiguration.setShardingItemParameters("0=A,1=B,2=C");
+        yamlCloudJobConfiguration.setJobParameter("param");
+        yamlCloudJobConfiguration.setMonitorExecution(true);
+        yamlCloudJobConfiguration.setFailover(true);
+        yamlCloudJobConfiguration.setMisfire(true);
+        yamlCloudJobConfiguration.setJobShardingStrategyType("AVG_ALLOCATION");
+        yamlCloudJobConfiguration.setJobExecutorServiceHandlerType("CPU");
+        yamlCloudJobConfiguration.setJobErrorHandlerType("IGNORE");
+        yamlCloudJobConfiguration.setDescription("Job description");
+        yamlCloudJobConfiguration.getProps().setProperty("key", "value");
+        yamlCloudJobConfiguration.setDisabled(true);
+        yamlCloudJobConfiguration.setOverwrite(true);
+        CloudJobConfiguration actual = yamlCloudJobConfiguration.toJobConfiguration();
+        assertThat(actual.getAppName(), is("app"));
+        assertThat(actual.getCpuCount(), is(1d));
+        assertThat(actual.getMemoryMB(), is(128d));
+        assertThat(actual.getJobExecutionType(), is(CloudJobExecutionType.DAEMON));
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(actual.getJobParameter(), is("param"));
-        assertTrue(actual.isMonitorExecution());
-        assertTrue(actual.isFailover());
-        assertTrue(actual.isMisfire());
-        assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
-        assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
-        assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
-        assertThat(actual.getDescription(), is("Job description"));
-        assertThat(actual.getProps().getProperty("key"), is("value"));
-        assertTrue(actual.isDisabled());
-        assertTrue(actual.isOverwrite());
+        assertThat(actual.getJobConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getJobConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getJobConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(actual.getJobConfig().getJobParameter(), is("param"));
+        assertTrue(actual.getJobConfig().isMonitorExecution());
+        assertTrue(actual.getJobConfig().isFailover());
+        assertTrue(actual.getJobConfig().isMisfire());
+        assertThat(actual.getJobConfig().getJobShardingStrategyType(), is("AVG_ALLOCATION"));
+        assertThat(actual.getJobConfig().getJobExecutorServiceHandlerType(), is("CPU"));
+        assertThat(actual.getJobConfig().getJobErrorHandlerType(), is("IGNORE"));
+        assertThat(actual.getJobConfig().getDescription(), is("Job description"));
+        assertThat(actual.getJobConfig().getProps().getProperty("key"), is("value"));
+        assertTrue(actual.getJobConfig().isDisabled());
+        assertTrue(actual.getJobConfig().isOverwrite());
     }
     
     @Test
@@ -104,7 +121,12 @@ public final class YamlJobConfigurationTest {
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("CPU").jobErrorHandlerType("IGNORE")
                 .description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
-        YamlJobConfiguration actual = YamlJobConfiguration.fromJobConfiguration(jobConfiguration);
+        CloudJobConfiguration cloudJobConfiguration = new CloudJobConfiguration("app", jobConfiguration, 1d, 128d, CloudJobExecutionType.DAEMON);
+        YamlCloudJobConfiguration actual = YamlCloudJobConfiguration.fromCloudJobConfiguration(cloudJobConfiguration);
+        assertThat(actual.getAppName(), is("app"));
+        assertThat(actual.getCpuCount(), is(1d));
+        assertThat(actual.getMemoryMB(), is(128d));
+        assertThat(actual.getJobExecutionType(), is(CloudJobExecutionType.DAEMON));
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -124,7 +146,11 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertMarshal() {
-        YamlJobConfiguration actual = new YamlJobConfiguration();
+        YamlCloudJobConfiguration actual = new YamlCloudJobConfiguration();
+        actual.setAppName("app");
+        actual.setCpuCount(1d);
+        actual.setMemoryMB(128d);
+        actual.setJobExecutionType(CloudJobExecutionType.DAEMON);
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
         actual.setShardingTotalCount(3);
@@ -140,16 +166,19 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertMarshalWithNullValue() {
-        YamlJobConfiguration actual = new YamlJobConfiguration();
+        YamlCloudJobConfiguration actual = new YamlCloudJobConfiguration();
+        actual.setAppName("app");
+        actual.setCpuCount(1d);
+        actual.setMemoryMB(128d);
+        actual.setJobExecutionType(CloudJobExecutionType.DAEMON);
         actual.setJobName("test_job");
-        actual.setCron("0/1 * * * * ?");
         actual.setShardingTotalCount(3);
         assertThat(YamlEngine.marshal(actual), is(YAML_WITH_NULL));
     }
     
     @Test
     public void assertUnmarshal() {
-        YamlJobConfiguration actual = YamlEngine.unmarshal(YAML, YamlJobConfiguration.class);
+        YamlCloudJobConfiguration actual = YamlEngine.unmarshal(YAML, YamlCloudJobConfiguration.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
@@ -167,9 +196,12 @@ public final class YamlJobConfigurationTest {
     
     @Test
     public void assertUnmarshalWithNullValue() {
-        YamlJobConfiguration actual = YamlEngine.unmarshal(YAML_WITH_NULL, YamlJobConfiguration.class);
+        YamlCloudJobConfiguration actual = YamlEngine.unmarshal(YAML_WITH_NULL, YamlCloudJobConfiguration.class);
+        assertThat(actual.getAppName(), is("app"));
+        assertThat(actual.getCpuCount(), is(1d));
+        assertThat(actual.getMemoryMB(), is(128d));
+        assertThat(actual.getJobExecutionType(), is(CloudJobExecutionType.DAEMON));
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertNull(actual.getShardingItemParameters());
         assertNull(actual.getJobParameter());
