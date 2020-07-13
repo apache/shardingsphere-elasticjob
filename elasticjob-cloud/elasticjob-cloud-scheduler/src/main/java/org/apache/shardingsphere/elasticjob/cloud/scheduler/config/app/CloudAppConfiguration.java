@@ -37,9 +37,9 @@ public final class CloudAppConfiguration {
     
     private final String bootstrapScript;
     
-    private double cpuCount = 1;
+    private double cpuCount = 1d;
     
-    private double memoryMB = 128;
+    private double memoryMB = 128d;
     
     private boolean appCacheEnable = true;
     
