@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 import java.util.Optional;
@@ -77,7 +76,7 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
+    public void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRegisterStatistics> latestOne = Optional.empty();
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
@@ -89,7 +88,7 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() throws SchedulerException {
+    public void assertExecute() {
         Optional<JobRegisterStatistics> latestOne = Optional.of(new JobRegisterStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -3)));
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
