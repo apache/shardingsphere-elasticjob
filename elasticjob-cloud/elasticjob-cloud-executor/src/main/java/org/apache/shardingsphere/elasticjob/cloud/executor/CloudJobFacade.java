@@ -20,10 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
@@ -42,22 +38,18 @@ public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
-    private final JobTypeConfiguration jobConfig;
+    private final JobConfiguration jobConfig;
     
     private final JobEventBus jobEventBus;
     
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {
-        JobConfiguration result = JobConfiguration.newBuilder(jobConfig.getCoreConfig().getJobName(), jobConfig.getCoreConfig().getShardingTotalCount())
-                .cron(jobConfig.getCoreConfig().getCron()).shardingItemParameters(jobConfig.getCoreConfig().getShardingItemParameters()).jobParameter(jobConfig.getCoreConfig().getJobParameter())
-                .failover(jobConfig.getCoreConfig().isFailover()).misfire(jobConfig.getCoreConfig().isMisfire()).description(jobConfig.getCoreConfig().getDescription())
-                .jobExecutorServiceHandlerType(jobConfig.getCoreConfig().getJobExecutorServiceHandlerType())
-                .jobErrorHandlerType(jobConfig.getCoreConfig().getJobErrorHandlerType()).build();
-        if (JobType.DATAFLOW == jobConfig.getJobType()) {
-            result.getProps().setProperty("streaming.process", Boolean.toString(((DataflowJobConfiguration) jobConfig).isStreamingProcess()));
-        } else if (JobType.SCRIPT == jobConfig.getJobType()) {
-            result.getProps().setProperty("script.command.line", ((ScriptJobConfiguration) jobConfig).getScriptCommandLine());
-        }
+        JobConfiguration result = JobConfiguration.newBuilder(jobConfig.getJobName(), jobConfig.getShardingTotalCount())
+                .cron(jobConfig.getCron()).shardingItemParameters(jobConfig.getShardingItemParameters()).jobParameter(jobConfig.getJobParameter())
+                .failover(jobConfig.isFailover()).misfire(jobConfig.isMisfire()).description(jobConfig.getDescription())
+                .jobExecutorServiceHandlerType(jobConfig.getJobExecutorServiceHandlerType())
+                .jobErrorHandlerType(jobConfig.getJobErrorHandlerType()).build();
+        result.getProps().putAll(jobConfig.getProps());
         return result;
     }
     

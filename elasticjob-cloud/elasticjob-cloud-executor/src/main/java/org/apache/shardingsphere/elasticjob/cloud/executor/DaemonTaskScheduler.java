@@ -22,8 +22,8 @@ import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -64,7 +64,7 @@ public final class DaemonTaskScheduler {
     
     private final String elasticJobType;
     
-    private final JobCoreConfiguration jobConfig;
+    private final JobConfiguration jobConfig;
     
     private final JobFacade jobFacade;
     

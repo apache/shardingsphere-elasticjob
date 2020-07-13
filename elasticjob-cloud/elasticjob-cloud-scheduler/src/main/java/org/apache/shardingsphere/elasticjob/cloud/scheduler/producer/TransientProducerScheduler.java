@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
@@ -86,7 +86,7 @@ final class TransientProducerScheduler {
     
     // TODO Concurrency optimization
     synchronized void register(final CloudJobConfiguration jobConfig) {
-        String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
+        String cron = jobConfig.getJobConfig().getCron();
         JobKey jobKey = buildJobKey(cron);
         repository.put(jobKey, jobConfig.getJobName());
         try {
@@ -111,7 +111,7 @@ final class TransientProducerScheduler {
     
     synchronized void deregister(final CloudJobConfiguration jobConfig) {
         repository.remove(jobConfig.getJobName());
-        String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
+        String cron = jobConfig.getJobConfig().getCron();
         if (!repository.containsKey(buildJobKey(cron))) {
             try {
                 scheduler.unscheduleJob(TriggerKey.triggerKey(cron));

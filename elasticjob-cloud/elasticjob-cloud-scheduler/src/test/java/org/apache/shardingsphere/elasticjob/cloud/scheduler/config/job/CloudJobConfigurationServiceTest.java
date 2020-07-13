@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -106,8 +107,6 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
-        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

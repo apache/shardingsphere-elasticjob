@@ -18,9 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
 import com.google.common.collect.Lists;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
@@ -29,9 +27,10 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEv
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobExecutionTypeStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.Test;
@@ -251,15 +250,6 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
         TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
         assertThat(taskResultStatistics.getSuccessCount(), is(0));
         assertThat(taskResultStatistics.getFailedCount(), is(0));
-    }
-    
-    @Test
-    public void assertGetJobTypeStatistics() throws Exception {
-        String result = RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/statistics/jobs/type");
-        JobTypeStatistics jobTypeStatistics = GsonFactory.getGson().fromJson(result, JobTypeStatistics.class);
-        assertThat(jobTypeStatistics.getSimpleJobCount(), is(0));
-        assertThat(jobTypeStatistics.getDataflowJobCount(), is(0));
-        assertThat(jobTypeStatistics.getScriptJobCount(), is(0));
     }
     
     @Test

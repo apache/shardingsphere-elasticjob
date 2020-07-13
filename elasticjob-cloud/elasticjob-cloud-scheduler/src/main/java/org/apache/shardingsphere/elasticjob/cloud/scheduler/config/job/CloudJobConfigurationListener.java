@@ -23,6 +23,8 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -49,7 +51,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     }
     
     @Override
-    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
+    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) {
         String path = null == event.getData() ? "" : event.getData().getPath();
         if (isJobConfigNode(event, path, Type.NODE_ADDED)) {
             CloudJobConfiguration jobConfig = getJobConfig(event);
@@ -64,7 +66,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
                 readyService.remove(Collections.singletonList(jobConfig.getJobName()));
             }
-            if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
+            if (!jobConfig.getJobConfig().isMisfire()) {
                 readyService.setMisfireDisabled(jobConfig.getJobName());
             }
             producerManager.reschedule(jobConfig.getJobName());

@@ -17,11 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.api;
 
-import org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.mesos.MesosExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutor;
 
 /**
  * Job bootstrap.
@@ -31,9 +32,24 @@ public final class JobBootstrap {
     
     /**
      * Execute.
+     * 
+     * @param elasticJob elastic job
      */
-    public static void execute() {
-        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor());
-        System.exit(Protos.Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
+    public static void execute(final ElasticJob elasticJob) {
+        execute(new TaskExecutor(elasticJob));
     }
+    
+    /**
+     * Execute.
+     *
+     * @param elasticJobType elastic job type
+     */
+    public static void execute(final String elasticJobType) {
+        execute(new TaskExecutor(elasticJobType));
+    }
+    
+    private static void execute(final TaskExecutor taskExecutor) {
+        MesosExecutorDriver driver = new MesosExecutorDriver(taskExecutor);
+        System.exit(Protos.Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
+    } 
 }

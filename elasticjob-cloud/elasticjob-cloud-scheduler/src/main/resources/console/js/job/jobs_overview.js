@@ -208,20 +208,14 @@ function renderJob(job) {
     $("#job-type").val(job.jobType);
     $("#script-command-line").val(job.scriptCommandLine);
     if("SIMPLE" === job.jobType) {
-        $("#job-class").attr("value", job.jobClass);
-        $("#job-class-model").show();
         $("#streaming-process").hide();
         $("#streaming-process-box").hide();
         $("#bootstrap-script-div").hide();
     } else if("DATAFLOW" === job.jobType) {
-        $("#job-class").attr("value", job.jobClass);
-        $("#job-class-model").show();
         $("#streaming-process").show();
         $("#streaming-process-box").show();
         $("#bootstrap-script-div").hide();
     } else if("SCRIPT" === job.jobType) {
-        $("#job-class").attr("");
-        $("#job-class-model").hide();
         $("#streaming-process").hide();
         $("#streaming-process-box").hide();
         $("#bootstrap-script-div").show();

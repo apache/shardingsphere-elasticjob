@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
@@ -127,19 +127,6 @@ public final class StatisticManagerTest {
         assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(10));
         assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(10));
         verify(rdbRepository, times(4)).getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
-    }
-    
-    @Test
-    public void assertJobTypeStatistics() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(statisticManager, "configurationService", configurationService);
-        when(configurationService.loadAll()).thenReturn(Lists.newArrayList(
-                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_simple"), 
-                CloudJobConfigurationBuilder.createDataflowCloudJobConfiguration("test_job_dataflow"), 
-                CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("test_job_script")));
-        assertThat(statisticManager.getJobTypeStatistics().getSimpleJobCount(), is(1));
-        assertThat(statisticManager.getJobTypeStatistics().getDataflowJobCount(), is(1));
-        assertThat(statisticManager.getJobTypeStatistics().getScriptJobCount(), is(1));
-        verify(configurationService, times(3)).loadAll();
     }
     
     @Test

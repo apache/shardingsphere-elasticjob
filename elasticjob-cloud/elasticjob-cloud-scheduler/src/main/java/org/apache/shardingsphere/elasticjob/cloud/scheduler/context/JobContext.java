@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.context;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ public final class JobContext {
      * @return Job running context
      */
     public static JobContext from(final CloudJobConfiguration jobConfig, final ExecutionType type) {
-        int shardingTotalCount = jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int shardingTotalCount = jobConfig.getJobConfig().getShardingTotalCount();
         List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             shardingItems.add(i);
