@@ -36,7 +36,6 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
@@ -167,7 +166,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && jobConfig.getTypeConfig().getCoreConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
         String script = appConfig.getBootstrapScript();
         if (isCommandExecutor) {
-            script = ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine();
+            script = jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
         Protos.CommandInfo.URI uri = buildURI(appConfig, isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);

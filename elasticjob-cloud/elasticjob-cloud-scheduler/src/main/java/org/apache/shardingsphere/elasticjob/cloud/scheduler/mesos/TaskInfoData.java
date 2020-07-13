@@ -20,10 +20,11 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,10 +57,10 @@ public final class TaskInfoData {
         result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron() : "");
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
         result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            result.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess()));
+        if (jobConfig.getTypeConfig().getCoreConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            result.put("streamingProcess", jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
         } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
-            result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
+            result.put("scriptCommandLine", jobConfig.getTypeConfig().getCoreConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
         result.put("beanName", jobConfig.getBeanName());
         result.put("applicationContext", jobConfig.getApplicationContext());

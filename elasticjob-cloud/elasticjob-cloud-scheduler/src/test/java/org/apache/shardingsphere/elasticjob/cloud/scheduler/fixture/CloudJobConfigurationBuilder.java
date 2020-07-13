@@ -25,6 +25,8 @@ import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJobConfigurationBuilder {
@@ -126,7 +128,8 @@ public final class CloudJobConfigurationBuilder {
      */
     public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration("test_app",
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), true),
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3)
+                        .failover(false).misfire(false).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build()),
                 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT);
     }
     
@@ -148,8 +151,8 @@ public final class CloudJobConfigurationBuilder {
      * @return cloud job configuration
      */
     public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName, final int shardingTotalCount) {
-        return new CloudJobConfiguration("test_app",
-                new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", shardingTotalCount).failover(false).misfire(false).build(), "test.sh"),
+        return new CloudJobConfiguration("test_app", new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", shardingTotalCount)
+                        .failover(false).misfire(false).setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build()),
                 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT);
     }
 }

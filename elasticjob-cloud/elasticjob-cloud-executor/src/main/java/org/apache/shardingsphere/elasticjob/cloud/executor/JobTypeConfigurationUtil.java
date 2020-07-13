@@ -25,6 +25,8 @@ import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.simple.SimpleJobConfiguration;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.Map;
 
@@ -48,9 +50,11 @@ public final class JobTypeConfigurationUtil {
         JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            return new DataflowJobConfiguration(jobCoreConfig, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
+            jobCoreConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));
+            return new DataflowJobConfiguration(jobCoreConfig);
         } else if (JobType.SCRIPT.name().equals(jobType)) {
-            return new ScriptJobConfiguration(jobCoreConfig, jobConfigurationMap.get("scriptCommandLine"));
+            jobCoreConfig.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, jobConfigurationMap.get("scriptCommandLine"));
+            return new ScriptJobConfiguration(jobCoreConfig);
         }
         return new SimpleJobConfiguration(jobCoreConfig);
     }
