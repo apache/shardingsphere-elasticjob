@@ -18,13 +18,12 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.collect.Sets;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
@@ -34,13 +33,14 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.Di
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,7 +88,7 @@ public final class FacadeServiceTest {
     private FacadeService facadeService;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         facadeService = new FacadeService(regCenter);
         ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
         ReflectionUtils.setFieldValue(facadeService, "appConfigService", appConfigService);

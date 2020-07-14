@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
@@ -30,7 +31,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
@@ -50,7 +50,7 @@ public final class CloudJobConfigurationListenerTest {
     private CloudJobConfigurationListener cloudJobConfigurationListener;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "producerManager", producerManager);
         ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "readyService", readyService);
     }
