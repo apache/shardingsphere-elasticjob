@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
@@ -69,20 +69,20 @@ public final class ShardingListenerManagerTest {
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsNotConfigPath() {
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, "");
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_CREATED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathButCurrentShardingTotalCountIsZero() {
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteYamlConstants.getJobYaml());
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsEqualToNewShardingTotalCount() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 3);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteYamlConstants.getJobYaml());
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
         verify(shardingService, times(0)).setReshardingFlag();
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
@@ -90,26 +90,26 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 5);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteYamlConstants.getJobYaml());
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYaml());
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsNotServerStatusPath() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/other", Type.NODE_ADDED, "");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/other", Type.NODE_CREATED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdate() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/status", Type.NODE_UPDATED, "");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/status", Type.NODE_CHANGED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsInstanceChangeButJobInstanceIsShutdown() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_CREATED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
@@ -117,7 +117,7 @@ public final class ShardingListenerManagerTest {
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_CREATED, "");
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -126,7 +126,7 @@ public final class ShardingListenerManagerTest {
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_CHANGED, "");
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");
     }

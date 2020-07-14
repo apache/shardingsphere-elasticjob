@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (Type.NODE_REMOVED == eventType && guaranteeNode.isStartedRootNode(path)) {
+            if (Type.NODE_DELETED == eventType && guaranteeNode.isStartedRootNode(path)) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
                         ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskStart();
@@ -65,7 +64,7 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (Type.NODE_REMOVED == eventType && guaranteeNode.isCompletedRootNode(path)) {
+            if (Type.NODE_DELETED == eventType && guaranteeNode.isCompletedRootNode(path)) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
                         ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskComplete();

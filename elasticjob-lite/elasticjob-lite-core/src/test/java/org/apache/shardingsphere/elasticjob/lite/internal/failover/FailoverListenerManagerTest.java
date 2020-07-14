@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -78,7 +78,7 @@ public final class FailoverListenerManagerTest {
     
     @Test
     public void assertJobCrashedJobListenerWhenFailoverDisabled() {
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_DELETED, "");
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
@@ -87,7 +87,7 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_ADDED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CREATED, "");
         verify(failoverService, times(0)).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -97,7 +97,7 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/other/127.0.0.1@-@0", Type.NODE_REMOVED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/other/127.0.0.1@-@0", Type.NODE_DELETED, "");
         verify(failoverService, times(0)).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -107,7 +107,7 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_DELETED, "");
         verify(failoverService, times(0)).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -118,7 +118,7 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
         when(shardingService.getShardingItems("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_REMOVED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_DELETED, "");
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(failoverService).setCrashedFailoverFlag(2);
         verify(failoverService, times(2)).failoverIfNecessary();
@@ -131,7 +131,7 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
         when(failoverService.getFailoverItems("127.0.0.1@-@1")).thenReturn(Collections.singletonList(1));
-        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_REMOVED, "");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_DELETED, "");
         verify(failoverService).setCrashedFailoverFlag(1);
         verify(failoverService).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
@@ -139,25 +139,25 @@ public final class FailoverListenerManagerTest {
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/other", Type.NODE_ADDED, LiteYamlConstants.getJobYaml());
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/other", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, "");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CREATED, "");
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteYamlConstants.getJobYaml());
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYaml());
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteYamlConstants.getJobYamlWithFailover(false));
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYamlWithFailover(false));
         verify(failoverService).removeFailoverInfo();
     }
 }

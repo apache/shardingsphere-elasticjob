@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -49,26 +49,25 @@ public final class MonitorExecutionListenerManagerTest {
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", TreeCacheEvent.Type.NODE_ADDED, LiteYamlConstants.getJobYaml());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/other", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_ADDED, "");
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CREATED, "");
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteYamlConstants.getJobYaml());
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYaml());
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
     @Test
     public void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged(
-                "/test_job/config", TreeCacheEvent.Type.NODE_UPDATED, LiteYamlConstants.getJobYamlWithMonitorExecution(false));
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYamlWithMonitorExecution(false));
         verify(executionService).clearAllRunningInfo();
     }
 }

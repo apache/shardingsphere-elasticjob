@@ -17,9 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.fixture.FooJobListener;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.shardingsphere.elasticjob.lite.internal.listener.fixture.FooJobListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +35,7 @@ import static org.mockito.Mockito.when;
 public final class JobListenerTest {
     
     @Mock
-    private TreeCacheEvent event;
+    private ChildData childData;
     
     @Mock
     private List list;
@@ -50,15 +49,16 @@ public final class JobListenerTest {
     
     @Test
     public void assertChildEventWhenEventDataIsEmpty() {
-        when(event.getData()).thenReturn(null);
-        fooJobListener.childEvent(null, event);
+        when(childData.getPath()).thenReturn("");
+        fooJobListener.event(null, null, childData);
         verify(list, times(0)).clear();
     }
     
     @Test
     public void assertChildEventSuccess() {
-        when(event.getData()).thenReturn(new ChildData("/test_job", null, null));
-        fooJobListener.childEvent(null, event);
+        when(childData.getPath()).thenReturn("/test");
+        when(childData.getData()).thenReturn("test".getBytes());
+        fooJobListener.event(null, null, childData);
         verify(list).clear();
     }
 }

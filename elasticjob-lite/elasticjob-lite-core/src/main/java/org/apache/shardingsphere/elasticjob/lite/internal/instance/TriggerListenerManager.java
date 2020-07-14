@@ -21,7 +21,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobLi
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * Job trigger listener manager.
@@ -50,7 +49,7 @@ public final class TriggerListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != eventType) {
+            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_CHANGED != eventType) {
                 return;
             }
             instanceService.clearTriggerFlag();
