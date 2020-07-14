@@ -17,11 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.TaskNode;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.After;
 import org.junit.Before;
@@ -138,12 +139,12 @@ public final class RunningServiceTest {
     
     @Test
     public void assertIsTaskRunning() {
-        assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
+        assertTrue(runningService.isTaskRunning(MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
     }
     
     @Test
     public void assertIsTaskNotRunning() {
-        assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(2).build().getTaskNodePath())));
+        assertFalse(runningService.isTaskRunning(MetaInfo.from(TaskNode.builder().shardingItem(2).build().getTaskNodePath())));
     }
     
     @Test

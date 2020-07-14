@@ -172,7 +172,7 @@ public final class RunningService {
      * @param metaInfo task meta info
      * @return true is running, otherwise not
      */
-    public boolean isTaskRunning(final TaskContext.MetaInfo metaInfo) {
+    public boolean isTaskRunning(final MetaInfo metaInfo) {
         for (TaskContext each : getRunningTasks(metaInfo.getJobName())) {
             if (each.getMetaInfo().equals(metaInfo)) {
                 return true;

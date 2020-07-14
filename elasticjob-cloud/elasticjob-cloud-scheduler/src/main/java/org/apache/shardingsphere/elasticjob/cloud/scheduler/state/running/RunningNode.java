@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.StateNode;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.StateNode;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 
 /**
  * Running node.
@@ -39,6 +39,6 @@ final class RunningNode {
     }
     
     static String getRunningTaskNodePath(final String taskMetaInfo) {
-        return String.format(RUNNING_TASK, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
+        return String.format(RUNNING_TASK, MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

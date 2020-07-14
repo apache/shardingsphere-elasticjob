@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
-import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,6 +32,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Snapshot service.
@@ -100,7 +101,7 @@ public final class SnapshotService {
                 List<String> result = new ArrayList<>();
                 String jobName = cmdLine.split("@")[1];
                 dumpDirectly("/" + jobName, jobName, result);
-                outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
+                outputMessage(writer, SensitiveInfoUtils.filterSensitiveIps(result).stream().collect(Collectors.joining("\n")) + "\n");
             }
         }
     }
@@ -117,9 +118,9 @@ public final class SnapshotService {
             String treeCachePath = null == treeCacheData ? "" : treeCacheData.getPath();
             String treeCacheValue = null == treeCacheData ? "" : new String(treeCacheData.getData());
             if (zkValue.equals(treeCacheValue) && zkPath.equals(treeCachePath)) {
-                result.add(Joiner.on(" | ").join(zkPath, zkValue));
+                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).toString());
             } else {
-                result.add(Joiner.on(" | ").join(zkPath, zkValue, treeCachePath, treeCacheValue));
+                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).add(treeCachePath).add(treeCacheValue).toString());
             }
             dumpDirectly(zkPath, jobName, result);
         }

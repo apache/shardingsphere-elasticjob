@@ -17,17 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.tracing;
 
-import com.google.common.base.Joiner;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerFactory;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerFactory;
 
+import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -57,8 +57,8 @@ public final class JobEventBus {
     }
     
     private ExecutorService createExecutorService(final int threadSize) {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-                threadSize, threadSize, 5L, TimeUnit.MINUTES, new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(Joiner.on("-").join("job-event", "%s")).build());
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, 
+                new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(new StringJoiner("-").add("job-event").add("%s").toString()).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }

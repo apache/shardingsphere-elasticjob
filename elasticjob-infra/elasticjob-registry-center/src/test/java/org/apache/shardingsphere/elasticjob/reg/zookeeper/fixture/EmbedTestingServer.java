@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture;
 
-import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
@@ -39,7 +38,7 @@ public final class EmbedTestingServer {
      * @return connection string
      */
     public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
+        return "localhost:" + PORT;
     }
     
     /**

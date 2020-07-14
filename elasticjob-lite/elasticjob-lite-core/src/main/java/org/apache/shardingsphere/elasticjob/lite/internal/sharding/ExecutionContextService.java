@@ -17,10 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -31,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Execution context service.
@@ -69,8 +70,9 @@ public final class ExecutionContextService {
     
     private String buildTaskId(final JobConfiguration jobConfig, final List<Integer> shardingItems) {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
-        return Joiner.on("@-@").join(jobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", 
-                null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId()); 
+        String shardingItemsString = shardingItems.stream().map(Object::toString).collect(Collectors.joining(","));
+        String jobInstanceId = null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
+        return new StringJoiner("@-@").add(jobConfig.getJobName()).add(shardingItemsString).add("READY").add(jobInstanceId).toString(); 
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {

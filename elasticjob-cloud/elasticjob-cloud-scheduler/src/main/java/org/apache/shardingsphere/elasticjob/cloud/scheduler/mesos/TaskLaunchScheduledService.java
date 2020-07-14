@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
@@ -42,12 +41,14 @@ import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParame
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -55,7 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Task launch schedule service.
@@ -227,11 +230,15 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         if (isCommandExecutor) {
             CommandLine commandLine = CommandLine.parse(script);
             commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
-            result.setValue(Joiner.on(" ").join(commandLine.getExecutable(), Joiner.on(" ").join(commandLine.getArguments())));
+            result.setValue(new StringJoiner("-").add(commandLine.getExecutable()).add(getArguments(commandLine)).toString());
         } else {
             result.setValue(script);
         }
         return result.build();
+    }
+    
+    private String getArguments(final CommandLine commandLine) {
+        return Arrays.stream(commandLine.getArguments()).collect(Collectors.joining(" "));
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {
@@ -240,7 +247,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
-        TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
+        MetaInfo metaInfo = taskContext.getMetaInfo();
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                 Source.CLOUD_SCHEDULER, taskContext.getType().toString(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {

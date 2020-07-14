@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.gson.JsonArray;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.AbstractCloudRestfulApiTest;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
@@ -53,9 +54,9 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     public void assertExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
+        Collection<ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
         assertThat(executorStateInfo.size(), is(1));
-        MesosStateService.ExecutorStateInfo executor = executorStateInfo.iterator().next();
+        ExecutorStateInfo executor = executorStateInfo.iterator().next();
         assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
         assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
@@ -64,9 +65,9 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     public void assertAllExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        Collection<MesosStateService.ExecutorStateInfo> executorStateInfo = service.executors();
+        Collection<ExecutorStateInfo> executorStateInfo = service.executors();
         assertThat(executorStateInfo.size(), is(1));
-        MesosStateService.ExecutorStateInfo executor = executorStateInfo.iterator().next();
+        ExecutorStateInfo executor = executorStateInfo.iterator().next();
         assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
         assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
