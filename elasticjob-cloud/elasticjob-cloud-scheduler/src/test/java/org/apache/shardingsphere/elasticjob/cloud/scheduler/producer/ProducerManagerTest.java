@@ -17,21 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
-import com.google.common.collect.Lists;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
@@ -39,9 +39,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,7 +85,7 @@ public final class ProducerManagerTest {
     private final CloudJobConfiguration daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("daemon_test_job", CloudJobExecutionType.DAEMON);
 
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         ReflectionUtils.setFieldValue(producerManager, "appConfigService", appConfigService);
         ReflectionUtils.setFieldValue(producerManager, "configService", configService);
@@ -159,7 +159,7 @@ public final class ProducerManagerTest {
             verify(schedulerDriver).killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
         }
         verify(runningService).remove("transient_test_job");
-        verify(readyService).remove(Lists.newArrayList("transient_test_job"));
+        verify(readyService).remove(Collections.singletonList("transient_test_job"));
     }
     
     @Test
@@ -182,7 +182,7 @@ public final class ProducerManagerTest {
         verify(disableJobService).remove("transient_test_job");
         verify(configService).remove("transient_test_job");
         verify(runningService).remove("transient_test_job");
-        verify(readyService).remove(Lists.newArrayList("transient_test_job"));
+        verify(readyService).remove(Collections.singletonList("transient_test_job"));
     }
     
     @Test

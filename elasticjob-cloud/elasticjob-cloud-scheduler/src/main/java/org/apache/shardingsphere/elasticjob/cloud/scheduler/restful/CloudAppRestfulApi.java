@@ -19,13 +19,14 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
@@ -163,7 +164,7 @@ public final class CloudAppRestfulApi {
             disableAppService.add(appName);
             for (CloudJobConfiguration each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.unschedule(each.getJobName());
+                    producerManager.unschedule(each.getJobConfig().getJobName());
                 }
             }
         }
@@ -181,7 +182,7 @@ public final class CloudAppRestfulApi {
             disableAppService.remove(appName);
             for (CloudJobConfiguration each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.reschedule(each.getJobName());
+                    producerManager.reschedule(each.getJobConfig().getJobName());
                 }
             }
         }
@@ -205,7 +206,7 @@ public final class CloudAppRestfulApi {
     private void removeAppAndJobConfigurations(final String appName) {
         for (CloudJobConfiguration each : jobConfigService.loadAll()) {
             if (appName.equals(each.getAppName())) {
-                producerManager.deregister(each.getJobName());
+                producerManager.deregister(each.getJobConfig().getJobName());
             }
         }
         disableAppService.remove(appName);
@@ -214,8 +215,8 @@ public final class CloudAppRestfulApi {
     
     private void stopExecutors(final String appName) {
         try {
-            Collection<MesosStateService.ExecutorStateInfo> executorBriefInfo = mesosStateService.executors(appName);
-            for (MesosStateService.ExecutorStateInfo each : executorBriefInfo) {
+            Collection<ExecutorStateInfo> executorBriefInfo = mesosStateService.executors(appName);
+            for (ExecutorStateInfo each : executorBriefInfo) {
                 producerManager.sendFrameworkMessage(ExecutorID.newBuilder().setValue(each.getId()).build(),
                         SlaveID.newBuilder().setValue(each.getSlaveId()).build(), "STOP".getBytes());
             }

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
-import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
@@ -32,15 +31,7 @@ public final class EmbedTestingServer {
     private static final int PORT = 3181;
     
     private static volatile TestingServer testingServer;
-
-    /**
-     * Get connection url.
-     * @return connection url
-     */
-    public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
-    }
-
+    
     /**
      * Start the embed server.
      */

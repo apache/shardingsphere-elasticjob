@@ -20,10 +20,10 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.dataflow.DataflowJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public final class TaskInfoData {
     
     private final ShardingContexts shardingContexts;
     
-    private final CloudJobConfiguration jobConfig;
+    private final CloudJobConfiguration cloudJobConfig;
     
     /**
      * Serialize.
@@ -52,19 +52,15 @@ public final class TaskInfoData {
     
     private Map<String, String> buildJobConfigurationContext() {
         Map<String, String> result = new LinkedHashMap<>(16, 1);
-        result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
-        result.put("jobName", jobConfig.getJobName());
-        result.put("jobClass", jobConfig.getTypeConfig().getJobClass());
-        result.put("cron", CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron() : "");
-        result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobExecutorServiceHandlerType());
-        result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobErrorHandlerType());
-        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            result.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess()));
-        } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
-            result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
+        result.put("jobName", cloudJobConfig.getJobConfig().getJobName());
+        result.put("cron", CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType() ? cloudJobConfig.getJobConfig().getCron() : "");
+        result.put("executorServiceHandler", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
+        result.put("jobExceptionHandler", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
+        if (cloudJobConfig.getJobConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
+            result.put("streamingProcess", cloudJobConfig.getJobConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
+        } else if (cloudJobConfig.getJobConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
+            result.put("scriptCommandLine", cloudJobConfig.getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
         }
-        result.put("beanName", jobConfig.getBeanName());
-        result.put("applicationContext", jobConfig.getApplicationContext());
         return result;
     }
 }

@@ -22,13 +22,14 @@ import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
@@ -96,14 +97,14 @@ public final class FailoverService {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            Optional<CloudJobConfiguration> jobConfig = configService.load(each);
-            if (!jobConfig.isPresent()) {
+            Optional<CloudJobConfiguration> cloudJobConfig = configService.load(each);
+            if (!cloudJobConfig.isPresent()) {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
-                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
+                result.add(new JobContext(cloudJobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
             }
         }
         return result;
@@ -112,7 +113,7 @@ public final class FailoverService {
     private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskIdList, final Set<HashCode> assignedTasks) {
         List<Integer> result = new ArrayList<>(taskIdList.size());
         for (String each : taskIdList) {
-            TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(each);
+            MetaInfo metaInfo = MetaInfo.from(each);
             if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
                 result.add(metaInfo.getShardingItems().get(0));
             }
@@ -125,8 +126,8 @@ public final class FailoverService {
      * 
      * @param metaInfoList collection of task meta infos to be removed
      */
-    public void remove(final Collection<TaskContext.MetaInfo> metaInfoList) {
-        for (TaskContext.MetaInfo each : metaInfoList) {
+    public void remove(final Collection<MetaInfo> metaInfoList) {
+        for (MetaInfo each : metaInfoList) {
             regCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
         }
     }
@@ -137,7 +138,7 @@ public final class FailoverService {
      * @param metaInfo task meta info
      * @return failover task id
      */
-    public Optional<String> getTaskId(final TaskContext.MetaInfo metaInfo) {
+    public Optional<String> getTaskId(final MetaInfo metaInfo) {
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(metaInfo.toString());
         return regCenter.isExisted(failoverTaskNodePath) ? Optional.of(regCenter.get(failoverTaskNodePath)) : Optional.empty();
     }
@@ -174,7 +175,7 @@ public final class FailoverService {
         for (String each : failOverTasks) {
             String originalTaskId = regCenter.get(FailoverNode.getFailoverTaskNodePath(each));
             if (!Strings.isNullOrEmpty(originalTaskId)) {
-                result.add(new FailoverTaskInfo(TaskContext.MetaInfo.from(each), originalTaskId));
+                result.add(new FailoverTaskInfo(MetaInfo.from(each), originalTaskId));
             }
         }
         return result;

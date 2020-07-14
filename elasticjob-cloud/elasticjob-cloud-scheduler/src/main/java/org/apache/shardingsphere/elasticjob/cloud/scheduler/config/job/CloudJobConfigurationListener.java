@@ -23,8 +23,12 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Collections;
@@ -49,25 +53,25 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     }
     
     @Override
-    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
+    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) {
         String path = null == event.getData() ? "" : event.getData().getPath();
         if (isJobConfigNode(event, path, Type.NODE_ADDED)) {
-            CloudJobConfiguration jobConfig = getJobConfig(event);
-            if (null != jobConfig) {
-                producerManager.schedule(jobConfig);
+            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(event);
+            if (null != cloudJobConfig) {
+                producerManager.schedule(cloudJobConfig);
             }
         } else if (isJobConfigNode(event, path, Type.NODE_UPDATED)) {
-            CloudJobConfiguration jobConfig = getJobConfig(event);
-            if (null == jobConfig) {
+            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(event);
+            if (null == cloudJobConfig) {
                 return;
             }
-            if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-                readyService.remove(Collections.singletonList(jobConfig.getJobName()));
+            if (CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
+                readyService.remove(Collections.singletonList(cloudJobConfig.getJobConfig().getJobName()));
             }
-            if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
-                readyService.setMisfireDisabled(jobConfig.getJobName());
+            if (!cloudJobConfig.getJobConfig().isMisfire()) {
+                readyService.setMisfireDisabled(cloudJobConfig.getJobConfig().getJobName());
             }
-            producerManager.reschedule(jobConfig.getJobName());
+            producerManager.reschedule(cloudJobConfig.getJobConfig().getJobName());
         } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
             String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);
@@ -78,9 +82,9 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
         return type == event.getType() && path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
     }
     
-    private CloudJobConfiguration getJobConfig(final TreeCacheEvent event) {
+    private CloudJobConfiguration getCloudJobConfiguration(final TreeCacheEvent event) {
         try {
-            return CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
+            return YamlEngine.unmarshal(new String(event.getData().getData()), CloudJobConfigurationPOJO.class).toCloudJobConfiguration();
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());

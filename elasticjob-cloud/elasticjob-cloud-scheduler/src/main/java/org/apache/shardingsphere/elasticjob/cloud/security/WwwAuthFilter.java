@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.security;
 
-import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
@@ -33,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 /**
  * WWW auth filter.
@@ -65,11 +65,11 @@ public final class WwwAuthFilter implements Filter {
     private String guestPassword;
     
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) {
         Properties props = new Properties();
         URL classLoaderURL = Thread.currentThread().getContextClassLoader().getResource("");
         if (null != classLoaderURL) {
-            String configFilePath = Joiner.on(FILE_SEPARATOR).join(classLoaderURL.getPath(), "conf", "auth.properties");
+            String configFilePath = new StringJoiner(FILE_SEPARATOR).add(classLoaderURL.getPath()).add("conf").add("auth.properties").toString();
             try {
                 props.load(new FileInputStream(configFilePath));
             } catch (final IOException ex) {

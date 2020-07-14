@@ -17,13 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
-import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.executor.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobTypeConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
@@ -33,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Local task executor.
@@ -59,9 +58,8 @@ public final class LocalTaskExecutor {
     /**
      * Execute job.
      */
-    @SuppressWarnings("unchecked")
     public void execute() {
-        createElasticJobExecutor(new CloudJobFacade(getShardingContexts(), getJobTypeConfiguration(), new JobEventBus())).execute();
+        createElasticJobExecutor(new CloudJobFacade(getShardingContexts(), getJobConfiguration(), new JobEventBus())).execute();
     }
     
     private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
@@ -73,11 +71,11 @@ public final class LocalTaskExecutor {
     private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
         shardingItemMap.put(shardingItem, new ShardingItemParameters(jobConfiguration.getShardingItemParameters()).getMap().get(shardingItem));
-        return new ShardingContexts(Joiner.on("@-@").join(jobConfiguration.getJobName(), shardingItem, "READY", "foo_slave_id", "foo_uuid"),
-                jobConfiguration.getJobName(), jobConfiguration.getShardingTotalCount(), jobConfiguration.getJobParameter(), shardingItemMap);
+        String taskId = new StringJoiner("@-@").add(jobConfiguration.getJobName()).add(shardingItem + "").add("READY").add("foo_slave_id").add("foo_uuid").toString();
+        return new ShardingContexts(taskId, jobConfiguration.getJobName(), jobConfiguration.getShardingTotalCount(), jobConfiguration.getJobParameter(), shardingItemMap);
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration() {
+    private JobConfiguration getJobConfiguration() {
         Map<String, String> jobConfigurationMap = new HashMap<>();
         jobConfigurationMap.put("jobName", jobConfiguration.getJobName());
         if (jobConfiguration.getProps().containsKey("streaming.process")) {

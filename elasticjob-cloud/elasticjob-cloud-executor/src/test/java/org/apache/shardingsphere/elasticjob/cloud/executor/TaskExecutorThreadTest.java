@@ -25,7 +25,6 @@ import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -54,7 +53,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -63,7 +62,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
@@ -71,7 +70,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildSpringScriptTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -80,7 +79,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
@@ -92,7 +91,7 @@ public final class TaskExecutorThreadTest {
     @Ignore
     public void assertLaunchTaskWithWrongClass() {
         TaskInfo taskInfo = buildWrongClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor().new TaskThread(executorDriver, taskInfo);
+        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();    
         } catch (final JobSystemException ex) {
@@ -117,7 +116,7 @@ public final class TaskExecutorThreadTest {
     }
     
     private TaskInfo buildSpringScriptTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), null, JobType.SCRIPT)).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), null)).build();
     }
     
     private TaskInfo.Builder buildTaskInfo(final Map<String, String> jobConfigurationContext) {
@@ -147,15 +146,14 @@ public final class TaskExecutorThreadTest {
     }
     
     private Map<String, String> buildBaseJobConfigurationContextMapWithJobClassAndCron(final String jobClass, final String cron) {
-        return buildBaseJobConfigurationContextMap(jobClass, cron, JobType.SIMPLE);
+        return buildBaseJobConfigurationContextMap(jobClass, cron);
     }
     
-    private Map<String, String> buildBaseJobConfigurationContextMap(final String jobClass, final String cron, final JobType jobType) {
+    private Map<String, String> buildBaseJobConfigurationContextMap(final String jobClass, final String cron) {
         Map<String, String> result = new HashMap<>();
         result.put("jobName", "test_job");
         result.put("cron", cron);
         result.put("jobClass", jobClass);
-        result.put("jobType", jobType.name());
         result.put("scriptCommandLine", "echo \"\"");
         return result;
     }

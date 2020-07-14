@@ -24,17 +24,6 @@ function validate() {
             validating: "glyphicon glyphicon-refresh"
         },
         fields: {
-            jobClass: {
-                validators: {
-                    notEmpty: {
-                        message: $.i18n.prop("job-class-not-null")
-                    },
-                    regexp: {
-                        regexp: /^[\w\.]+$/,
-                        message: $.i18n.prop("job-class-regexp-limit")
-                    }
-                }
-            },
             jobName: {
                 jobNameCheck: true,
                 validators: {
@@ -210,35 +199,11 @@ function submitJobForm(type, url, modal) {
     });
 }
 
-function dataControl() {
-    $("#job-type").change(function() {
-        var jobType = $("#job-type").val();
-        if("SIMPLE" === jobType) {
-            $("#job-class-model").show();
-            $("#streaming-process").hide();
-            $("#streaming-process-box").hide();
-            $("#bootstrap-script-div").hide();
-        } else if("DATAFLOW" === jobType) {
-            $("#job-class-model").show();
-            $("#streaming-process").show();
-            $("#streaming-process-box").show();
-            $("#bootstrap-script-div").hide();
-        } else if("SCRIPT" === jobType) {
-            $("#job-class-model").hide();
-            $("#streaming-process").hide();
-            $("#streaming-process-box").hide();
-            $("#bootstrap-script-div").show();
-        }
-    });
-}
-
 function getJob() {
     return {
         jobName: $("#job-name").val(),
         appName: $("#job-app-name").val(),
-        jobClass: $("#job-class").val(),
         cron: $("#cron").val(),
-        jobType: $("#job-type").val(),
         cpuCount: $("#cpu-count").val(),
         jobExecutionType: $("#job-execution-type").val(),
         memoryMB: $("#job-memory").val(),

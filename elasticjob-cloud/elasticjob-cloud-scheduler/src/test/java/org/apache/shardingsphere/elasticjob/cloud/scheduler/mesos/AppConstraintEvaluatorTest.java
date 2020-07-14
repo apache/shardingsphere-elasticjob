@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.collect.ImmutableList;
 import com.netflix.fenzo.ConstraintEvaluator;
 import com.netflix.fenzo.SchedulingResult;
 import com.netflix.fenzo.TaskRequest;
@@ -26,10 +25,11 @@ import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.plugins.VMLeaseObject;
 import org.apache.mesos.Protos;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
@@ -103,7 +103,7 @@ public final class AppConstraintEvaluatorTest {
     
     @Test
     public void assertExistExecutorOnS0() throws Exception {
-        when(facadeService.loadExecutorInfo()).thenReturn(ImmutableList.of(new MesosStateService.ExecutorStateInfo("foo-app@-@S0", "S0")));
+        when(facadeService.loadExecutorInfo()).thenReturn(Collections.singletonList(new ExecutorStateInfo("foo-app@-@S0", "S0")));
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
         assertThat(result.getResultMap().size(), is(2));
@@ -171,7 +171,7 @@ public final class AppConstraintEvaluatorTest {
         TaskRequest result = mock(TaskRequest.class);
         when(result.getCPUs()).thenReturn(1.0d);
         when(result.getMemory()).thenReturn(128.0d);
-        when(result.getHardConstraints()).thenAnswer((Answer<List<? extends ConstraintEvaluator>>) invocationOnMock -> ImmutableList.of(AppConstraintEvaluator.getInstance()));
+        when(result.getHardConstraints()).thenAnswer((Answer<List<? extends ConstraintEvaluator>>) invocationOnMock -> Collections.singletonList(AppConstraintEvaluator.getInstance()));
         when(result.getId()).thenReturn(new TaskContext(jobName, Collections.singletonList(0), ExecutionType.READY).getId());
         return result;
     }

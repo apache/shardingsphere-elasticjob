@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import com.netflix.fenzo.ConstraintEvaluator;
 import com.netflix.fenzo.TaskRequest;
@@ -36,7 +36,7 @@ public final class JobTaskRequest implements TaskRequest {
     
     private final TaskContext taskContext;
     
-    private final CloudJobConfiguration jobConfig;
+    private final CloudJobConfiguration cloudJobConfig;
     
     @Override
     public String getId() {
@@ -50,12 +50,12 @@ public final class JobTaskRequest implements TaskRequest {
     
     @Override
     public double getCPUs() {
-        return jobConfig.getCpuCount();
+        return cloudJobConfig.getCpuCount();
     }
     
     @Override
     public double getMemory() {
-        return jobConfig.getMemoryMB();
+        return cloudJobConfig.getMemoryMB();
     }
     
     @Override

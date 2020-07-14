@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -53,7 +53,7 @@ public final class JobConfigurationAPIImplTest {
     @Test
     public void assertGetDataflowJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
-        YamlJobConfiguration actual = jobConfigAPI.getJobConfiguration("test_job");
+        JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
         assertThat(actual.getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY), is("true"));
         verify(regCenter).get("/test_job/config");
@@ -62,30 +62,30 @@ public final class JobConfigurationAPIImplTest {
     @Test
     public void assertGetScriptJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
-        YamlJobConfiguration actual = jobConfigAPI.getJobConfiguration("test_job");
+        JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
         assertThat(actual.getProps().getProperty(ScriptJobProperties.SCRIPT_KEY), is("echo"));
         verify(regCenter).get("/test_job/config");
     }
     
-    private void assertJobConfig(final YamlJobConfiguration yamlJobConfiguration) {
-        assertThat(yamlJobConfiguration.getJobName(), is("test_job"));
-        assertThat(yamlJobConfiguration.getShardingTotalCount(), is(3));
-        assertThat(yamlJobConfiguration.getCron(), is("0/1 * * * * ?"));
-        assertNull(yamlJobConfiguration.getShardingItemParameters());
-        assertThat(yamlJobConfiguration.getJobParameter(), is("param"));
-        assertThat(yamlJobConfiguration.isMonitorExecution(), is(true));
-        assertThat(yamlJobConfiguration.getMaxTimeDiffSeconds(), is(-1));
-        assertFalse(yamlJobConfiguration.isFailover());
-        assertTrue(yamlJobConfiguration.isMisfire());
-        assertNull(yamlJobConfiguration.getJobShardingStrategyType());
-        assertThat(yamlJobConfiguration.getReconcileIntervalMinutes(), is(10));
-        assertThat(yamlJobConfiguration.getDescription(), is(""));
+    private void assertJobConfig(final JobConfigurationPOJO pojo) {
+        assertThat(pojo.getJobName(), is("test_job"));
+        assertThat(pojo.getShardingTotalCount(), is(3));
+        assertThat(pojo.getCron(), is("0/1 * * * * ?"));
+        assertNull(pojo.getShardingItemParameters());
+        assertThat(pojo.getJobParameter(), is("param"));
+        assertThat(pojo.isMonitorExecution(), is(true));
+        assertThat(pojo.getMaxTimeDiffSeconds(), is(-1));
+        assertFalse(pojo.isFailover());
+        assertTrue(pojo.isMisfire());
+        assertNull(pojo.getJobShardingStrategyType());
+        assertThat(pojo.getReconcileIntervalMinutes(), is(10));
+        assertThat(pojo.getDescription(), is(""));
     }
     
     @Test
     public void assertUpdateJobConfig() {
-        YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
+        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("0/1 * * * * ?");
         jobConfiguration.setShardingTotalCount(3);
@@ -103,14 +103,14 @@ public final class JobConfigurationAPIImplTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfJobNameIsEmpty() {
-        YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
+        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("");
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfCronIsEmpty() {
-        YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
+        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("");
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
@@ -118,7 +118,7 @@ public final class JobConfigurationAPIImplTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
-        YamlJobConfiguration jobConfiguration = new YamlJobConfiguration();
+        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("0/1 * * * * ?");
         jobConfiguration.setShardingTotalCount(0);

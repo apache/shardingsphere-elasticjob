@@ -28,9 +28,10 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
@@ -62,13 +63,12 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     }
     
     static AppConstraintEvaluator getInstance() {
-        Preconditions.checkNotNull(instance);
-        return instance;
+        return Preconditions.checkNotNull(instance);
     }
     
     void loadAppRunningState() {
         try {
-            for (MesosStateService.ExecutorStateInfo each : facadeService.loadExecutorInfo()) {
+            for (ExecutorStateInfo each : facadeService.loadExecutorInfo()) {
                 runningApps.add(each.getId());
             }
         } catch (final JSONException | UniformInterfaceException | ClientHandlerException e) {
@@ -138,20 +138,20 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     }
     
     private CloudAppConfiguration getAppConfiguration(final String taskId) throws LackConfigException {
-        CloudJobConfiguration jobConfig = getJobConfiguration(TaskContext.from(taskId));
-        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(jobConfig.getAppName());
+        CloudJobConfiguration cloudJobConfig = getJobConfiguration(TaskContext.from(taskId));
+        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(cloudJobConfig.getAppName());
         if (!appConfigOptional.isPresent()) {
-            throw new LackConfigException("APP", jobConfig.getAppName());
+            throw new LackConfigException("APP", cloudJobConfig.getAppName());
         }
         return appConfigOptional.get();
     }
     
     private CloudJobConfiguration getJobConfiguration(final TaskContext taskContext) throws LackConfigException {
-        Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
+        if (!cloudJobConfig.isPresent()) {
             throw new LackConfigException("JOB", taskContext.getMetaInfo().getJobName());
         }
-        return jobConfigOptional.get();
+        return cloudJobConfig.get();
     }
     
     private class LackConfigException extends Exception {

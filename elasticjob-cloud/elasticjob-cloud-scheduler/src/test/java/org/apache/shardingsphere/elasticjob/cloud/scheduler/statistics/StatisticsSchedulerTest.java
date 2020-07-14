@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.StatisticJob;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.TestStatisticJob;
 import org.junit.Before;
@@ -26,7 +27,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +40,7 @@ public class StatisticsSchedulerTest {
     private Scheduler scheduler;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         statisticsScheduler = new StatisticsScheduler();
         ReflectionUtils.setFieldValue(statisticsScheduler, "scheduler", scheduler);
     }

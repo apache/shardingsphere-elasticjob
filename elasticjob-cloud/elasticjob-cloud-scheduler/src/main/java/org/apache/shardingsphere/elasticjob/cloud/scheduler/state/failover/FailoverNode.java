@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.StateNode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.StateNode;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 
 /**
  * Failover node.
@@ -39,6 +39,6 @@ final class FailoverNode {
     }
     
     static String getFailoverTaskNodePath(final String taskMetaInfo) {
-        return String.format(FAILOVER_TASK, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
+        return String.format(FAILOVER_TASK, MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

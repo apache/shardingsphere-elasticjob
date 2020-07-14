@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
@@ -29,9 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -77,11 +76,11 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
+    public void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRegisterStatistics> latestOne = Optional.empty();
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
-        when(configurationService.loadAll()).thenReturn(Lists.newArrayList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(configurationService.loadAll()).thenReturn(Collections.singletonList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         registeredJobStatisticJob.execute(null);
         verify(repository).findLatestJobRegisterStatistics();
         verify(repository).add(any(JobRegisterStatistics.class));
@@ -89,11 +88,11 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() throws SchedulerException {
+    public void assertExecute() {
         Optional<JobRegisterStatistics> latestOne = Optional.of(new JobRegisterStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -3)));
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
-        when(configurationService.loadAll()).thenReturn(Lists.newArrayList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(configurationService.loadAll()).thenReturn(Collections.singletonList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         registeredJobStatisticJob.execute(null);
         verify(repository).findLatestJobRegisterStatistics();
         verify(repository, times(3)).add(any(JobRegisterStatistics.class));

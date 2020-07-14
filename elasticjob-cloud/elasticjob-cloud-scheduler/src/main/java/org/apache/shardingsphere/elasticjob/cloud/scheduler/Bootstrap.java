@@ -54,7 +54,7 @@ public final class Bootstrap {
         final CountDownLatch latch = new CountDownLatch(1);
         latch.await();
         Runtime.getRuntime().addShutdownHook(new Thread("shutdown-hook") {
-        
+            
             @Override
             public void run() {
                 electionService.stop();

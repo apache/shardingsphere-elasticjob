@@ -22,8 +22,8 @@ import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobCoreConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -64,7 +64,7 @@ public final class DaemonTaskScheduler {
     
     private final String elasticJobType;
     
-    private final JobCoreConfiguration jobConfig;
+    private final JobConfiguration jobConfig;
     
     private final JobFacade jobFacade;
     
@@ -160,6 +160,8 @@ public final class DaemonTaskScheduler {
         @Setter
         private Protos.TaskID taskId;
         
+        private volatile ElasticJobExecutor jobExecutor;
+        
         @Override
         public void execute(final JobExecutionContext context) {
             ShardingContexts shardingContexts = jobFacade.getShardingContexts();
@@ -168,22 +170,30 @@ public final class DaemonTaskScheduler {
             if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
                 shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
                 jobFacade.getShardingContexts().setAllowSendJobEvent(false);
-                if (null == elasticJob) {
-                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                } else {
-                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                }
+                getJobExecutor().execute();
             } else {
                 jobFacade.getShardingContexts().setAllowSendJobEvent(true);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-                if (null == elasticJob) {
-                    new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                } else {
-                    new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                }
+                getJobExecutor().execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
                 shardingContexts.setCurrentJobEventSamplingCount(0);
             }
+        }
+        
+        private ElasticJobExecutor getJobExecutor() {
+            if (null == jobExecutor) {
+                createJobExecutor();
+            }
+            return jobExecutor;
+        }
+        
+        private synchronized void createJobExecutor() {
+            if (null != jobExecutor) {
+                return;
+            }
+            jobExecutor = null == elasticJob
+                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade)
+                    : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
         }
     }
 }

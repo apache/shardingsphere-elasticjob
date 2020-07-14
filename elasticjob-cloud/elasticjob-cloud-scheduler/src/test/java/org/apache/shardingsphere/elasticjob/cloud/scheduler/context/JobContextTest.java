@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.context;
 
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.junit.Test;
 
@@ -29,8 +29,8 @@ public final class JobContextTest {
     
     @Test
     public void assertFrom() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
-        JobContext actual = JobContext.from(jobConfig, ExecutionType.READY);
+        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        JobContext actual = JobContext.from(cloudJobConfig, ExecutionType.READY);
         assertThat(actual.getAssignedShardingItems().size(), is(10));
         for (int i = 0; i < actual.getAssignedShardingItems().size(); i++) {
             assertThat(actual.getAssignedShardingItems().get(i), is(i));

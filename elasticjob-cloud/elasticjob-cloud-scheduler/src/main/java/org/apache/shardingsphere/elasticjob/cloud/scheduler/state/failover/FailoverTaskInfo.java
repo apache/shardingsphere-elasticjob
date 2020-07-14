@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 
 /**
  * Failover task info.
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public final class FailoverTaskInfo {
     
-    private final TaskContext.MetaInfo taskInfo;
+    private final MetaInfo taskInfo;
     
     private final String originalTaskId;
 }

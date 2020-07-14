@@ -86,11 +86,6 @@ function bindDetailJobButton() {
             success: function(result) {
                 $(".box-body").remove();
                 $("#detail-job-body").load("html/job/detail_job.html", null, function() {
-                    if("SCRIPT" === result.jobType) {
-                        $("#bootstrap-script-div").show();
-                    } else {
-                        $("#bootstrap-script-div").hide();
-                    }
                     renderJob(result);
                     doLocale();
                     tooltipLocale();
@@ -205,26 +200,6 @@ function renderJob(job) {
     $("#failover").prop("checked", job.failover);
     $("#misfire").prop("checked", job.misfire);
     $("#streaming-process").prop("checked", job.streamingProcess);
-    $("#job-type").val(job.jobType);
     $("#script-command-line").val(job.scriptCommandLine);
-    if("SIMPLE" === job.jobType) {
-        $("#job-class").attr("value", job.jobClass);
-        $("#job-class-model").show();
-        $("#streaming-process").hide();
-        $("#streaming-process-box").hide();
-        $("#bootstrap-script-div").hide();
-    } else if("DATAFLOW" === job.jobType) {
-        $("#job-class").attr("value", job.jobClass);
-        $("#job-class-model").show();
-        $("#streaming-process").show();
-        $("#streaming-process-box").show();
-        $("#bootstrap-script-div").hide();
-    } else if("SCRIPT" === job.jobType) {
-        $("#job-class").attr("");
-        $("#job-class-model").hide();
-        $("#streaming-process").hide();
-        $("#streaming-process-box").hide();
-        $("#bootstrap-script-div").show();
-    }
 }
 

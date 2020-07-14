@@ -24,6 +24,6 @@ public final class CloudJobMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        JobBootstrap.execute();
+        JobBootstrap.execute("SCRIPT");
     }
 }
