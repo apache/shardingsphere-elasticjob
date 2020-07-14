@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -83,7 +84,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertFindAllJobs() throws Exception {
         when(getRegCenter().isExisted("/config/app")).thenReturn(true);
-        when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Lists.newArrayList("test_app"));
+        when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Collections.singletonList("test_app"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/app/list"), is("[" + CloudAppJsonConstants.getAppJson("test_app") + "]"));
         verify(getRegCenter()).isExisted("/config/app");
@@ -107,7 +108,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertDisable() throws Exception {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
-        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/disable", "POST"), is(204));
@@ -118,7 +119,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertEnable() throws Exception {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
-        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(RestfulTestsUtil.sentRequest("http://127.0.0.1:19000/api/app/test_app/enable", "POST"), is(204));

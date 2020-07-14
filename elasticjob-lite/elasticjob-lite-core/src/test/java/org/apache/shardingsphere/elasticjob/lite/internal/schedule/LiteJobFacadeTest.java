@@ -18,18 +18,18 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.collect.Lists;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -160,8 +160,8 @@ public final class LiteJobFacadeTest {
     public void assertGetShardingContextWhenIsFailoverDisable() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
-        when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
-        when(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContexts);
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(executionContextService.getJobShardingContext(Arrays.asList(0, 1))).thenReturn(shardingContexts);
         assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }
@@ -171,8 +171,8 @@ public final class LiteJobFacadeTest {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
-        when(executionService.getDisabledItems(Lists.newArrayList(0, 1))).thenReturn(Collections.singletonList(1));
-        when(executionContextService.getJobShardingContext(Lists.newArrayList(0))).thenReturn(shardingContexts);
+        when(executionService.getDisabledItems(Arrays.asList(0, 1))).thenReturn(Collections.singletonList(1));
+        when(executionContextService.getJobShardingContext(Collections.singletonList(0))).thenReturn(shardingContexts);
         assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }

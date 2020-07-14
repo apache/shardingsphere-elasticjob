@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -88,7 +87,7 @@ public final class ExecutionContextServiceTest {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         ShardingContexts expected = new ShardingContexts("fake_task_id", "test_job", 3, "", map);
-        assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
+        assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
     }
     
     private void assertShardingContext(final ShardingContexts actual, final ShardingContexts expected) {

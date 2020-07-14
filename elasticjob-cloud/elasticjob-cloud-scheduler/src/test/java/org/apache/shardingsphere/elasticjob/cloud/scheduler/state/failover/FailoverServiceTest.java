@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
@@ -176,7 +175,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertGetAllFailoverTasksWhenJobNodeHasNoChild() {
         when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
-        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Collections.singletonList("test_job"));
         when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"))).thenReturn(Collections.emptyList());
         assertTrue(failoverService.getAllFailoverTasks().isEmpty());
         verify(regCenter).isExisted(FailoverNode.ROOT);
@@ -190,9 +189,9 @@ public final class FailoverServiceTest {
         String uuid2 = UUID.randomUUID().toString();
         String uuid3 = UUID.randomUUID().toString();
         when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
-        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job_1", "test_job_2"));
-        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_1"))).thenReturn(Lists.newArrayList("test_job_1@-@0", "test_job_1@-@1"));
-        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_2"))).thenReturn(Lists.newArrayList("test_job_2@-@0"));
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_1"))).thenReturn(Arrays.asList("test_job_1@-@0", "test_job_1@-@1"));
+        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_2"))).thenReturn(Collections.singletonList("test_job_2@-@0"));
         when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@0"))).thenReturn(uuid1);
         when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@1"))).thenReturn(uuid2);
         when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_2@-@0"))).thenReturn(uuid3);

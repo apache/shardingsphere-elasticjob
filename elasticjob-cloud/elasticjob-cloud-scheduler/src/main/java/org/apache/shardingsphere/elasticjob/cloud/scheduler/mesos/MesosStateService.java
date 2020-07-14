@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sun.jersey.api.client.Client;
@@ -33,6 +32,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -134,14 +135,14 @@ public class MesosStateService {
     }
     
     private Collection<JSONObject> findExecutors(final JSONArray frameworks, final String appName) throws JSONException {
-        List<JSONObject> result = Lists.newArrayList();
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         String frameworkID;
         if (frameworkIDOptional.isPresent()) {
             frameworkID = frameworkIDOptional.get();
         } else {
-            return result;
+            return Collections.emptyList();
         }
+        List<JSONObject> result = new LinkedList<>();
         for (int i = 0; i < frameworks.length(); i++) {
             JSONObject framework = frameworks.getJSONObject(i);
             if (!framework.getString("id").equals(frameworkID)) {

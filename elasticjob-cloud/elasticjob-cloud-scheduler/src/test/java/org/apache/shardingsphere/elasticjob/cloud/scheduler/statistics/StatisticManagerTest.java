@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
@@ -36,6 +35,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
@@ -132,8 +133,8 @@ public final class StatisticManagerTest {
     @Test
     public void assertJobExecutionTypeStatistics() {
         ReflectionUtils.setFieldValue(statisticManager, "configurationService", configurationService);
-        when(configurationService.loadAll()).thenReturn(Lists.newArrayList(
-                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", CloudJobExecutionType.DAEMON),
+        when(configurationService.loadAll()).thenReturn(Arrays.asList(
+                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", CloudJobExecutionType.DAEMON), 
                 CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_2", CloudJobExecutionType.TRANSIENT)));
         assertThat(statisticManager.getJobExecutionTypeStatistics().getDaemonJobCount(), is(1));
         assertThat(statisticManager.getJobExecutionTypeStatistics().getTransientJobCount(), is(1));
@@ -149,8 +150,7 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindTaskRunningStatisticsWhenRdbIsConfigured() {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findTaskRunningStatistics(any(Date.class)))
-            .thenReturn(Lists.newArrayList(new TaskRunningStatistics(10, new Date())));
+        when(rdbRepository.findTaskRunningStatistics(any(Date.class))).thenReturn(Collections.singletonList(new TaskRunningStatistics(10, new Date())));
         assertThat(statisticManager.findTaskRunningStatisticsWeekly().size(), is(1));
         verify(rdbRepository).findTaskRunningStatistics(any(Date.class));
     }
@@ -164,8 +164,7 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindJobRunningStatisticsWhenRdbIsConfigured() {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findJobRunningStatistics(any(Date.class)))
-            .thenReturn(Lists.newArrayList(new JobRunningStatistics(10, new Date())));
+        when(rdbRepository.findJobRunningStatistics(any(Date.class))).thenReturn(Collections.singletonList(new JobRunningStatistics(10, new Date())));
         assertThat(statisticManager.findJobRunningStatisticsWeekly().size(), is(1));
         verify(rdbRepository).findJobRunningStatistics(any(Date.class));
     }
@@ -179,8 +178,7 @@ public final class StatisticManagerTest {
     @Test
     public void assertFindJobRegisterStatisticsWhenRdbIsConfigured() {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.findJobRegisterStatistics(any(Date.class)))
-            .thenReturn(Lists.newArrayList(new JobRegisterStatistics(10, new Date())));
+        when(rdbRepository.findJobRegisterStatistics(any(Date.class))).thenReturn(Collections.singletonList(new JobRegisterStatistics(10, new Date())));
         assertThat(statisticManager.findJobRegisterStatisticsSinceOnline().size(), is(1));
         verify(rdbRepository).findJobRegisterStatistics(any(Date.class));
     }
@@ -218,7 +216,7 @@ public final class StatisticManagerTest {
     public void assertFindTaskResultStatisticsDailyWhenRdbIsConfigured() {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
-            .thenReturn(Lists.newArrayList(new TaskResultStatistics(10, 5, StatisticInterval.MINUTE, new Date())));
+            .thenReturn(Collections.singletonList(new TaskResultStatistics(10, 5, StatisticInterval.MINUTE, new Date())));
         assertThat(statisticManager.findTaskResultStatisticsDaily().size(), is(1));
         verify(rdbRepository).findTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
     }

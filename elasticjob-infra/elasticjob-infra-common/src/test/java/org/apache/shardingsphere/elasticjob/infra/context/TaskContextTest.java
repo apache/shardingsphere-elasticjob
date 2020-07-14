@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.infra.context;
 
-import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.infra.context.fixture.TaskNode;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -31,7 +32,7 @@ public final class TaskContextTest {
     
     @Test
     public void assertNew() {
-        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
         assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
         assertThat(actual.getType(), is(ExecutionType.READY));
@@ -41,13 +42,13 @@ public final class TaskContextTest {
     
     @Test
     public void assertNewWithoutSlaveId() {
-        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY);
+        TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY);
         assertThat(actual.getSlaveId(), is("unassigned-slave"));
     }
     
     @Test
     public void assertGetMetaInfo() {
-        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getMetaInfo().toString(), is("test_job@-@0"));
     }
     
@@ -108,7 +109,7 @@ public final class TaskContextTest {
     
     @Test
     public void assertSetSlaveId() {
-        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getSlaveId(), is("slave-S0"));
         actual.setSlaveId("slave-S1");
         assertThat(actual.getSlaveId(), is("slave-S1"));
@@ -116,7 +117,7 @@ public final class TaskContextTest {
     
     @Test
     public void assertSetIdle() {
-        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "slave-S0");
         assertFalse(actual.isIdle());
         actual.setIdle(true);
         assertTrue(actual.isIdle());

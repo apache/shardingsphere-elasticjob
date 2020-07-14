@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler;
 import com.netflix.fenzo.SchedulingResult;
@@ -27,13 +26,13 @@ import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.functions.Action2;
 import com.netflix.fenzo.plugins.VMLeaseObject;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.After;
@@ -44,6 +43,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -87,10 +87,10 @@ public final class TaskLaunchScheduledServiceTest {
     
     @Test
     public void assertRunOneIteration() {
-        when(facadeService.getEligibleJobContext()).thenReturn(Lists.newArrayList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job", CloudJobExecutionType.DAEMON, 1), ExecutionType.FAILOVER)));
+        when(facadeService.getEligibleJobContext()).thenReturn(
+                Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job", CloudJobExecutionType.DAEMON, 1), ExecutionType.FAILOVER)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
-        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
+        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Collections.singletonList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("failover_job", ExecutionType.FAILOVER))));
         when(taskScheduler.scheduleOnce(ArgumentMatchers.anyList(), ArgumentMatchers.anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.load("failover_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
@@ -105,10 +105,10 @@ public final class TaskLaunchScheduledServiceTest {
     
     @Test
     public void assertRunOneIterationWithScriptJob() {
-        when(facadeService.getEligibleJobContext()).thenReturn(Lists.newArrayList(
-                JobContext.from(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1), ExecutionType.READY)));
+        when(facadeService.getEligibleJobContext()).thenReturn(
+                Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1), ExecutionType.READY)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
-        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
+        vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Collections.singletonList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("script_job", ExecutionType.READY))));
         when(taskScheduler.scheduleOnce(ArgumentMatchers.anyList(), ArgumentMatchers.anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
