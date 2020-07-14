@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,7 +57,7 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     
     @Test
     public void assertGetRawCache() {
-        assertThat(zkRegCenter.getRawCache("/test"), instanceOf(TreeCache.class));
+        assertThat(zkRegCenter.getRawCache("/test"), instanceOf(CuratorCache.class));
     }
     
     @Test

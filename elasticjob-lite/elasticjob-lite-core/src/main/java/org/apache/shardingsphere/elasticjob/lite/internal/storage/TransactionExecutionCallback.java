@@ -17,7 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.api.transaction.CuratorOp;
+import org.apache.curator.framework.api.transaction.TransactionOp;
+
+import java.util.List;
 
 /**
  * Transaction execution callback.
@@ -25,10 +28,11 @@ import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 public interface TransactionExecutionCallback {
     
     /**
-     * Execute in transaction.
+     * Create curator operators.
      * 
-     * @param curatorTransactionFinal transaction execution context
+     * @param transactionOp transaction operation
+     * @return curator operations
      * @throws Exception exception
      */
-    void execute(CuratorTransactionFinal curatorTransactionFinal) throws Exception;
+    List<CuratorOp> createCuratorOperators(TransactionOp transactionOp) throws Exception;
 }
