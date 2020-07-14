@@ -20,10 +20,12 @@ package org.apache.shardingsphere.elasticjob.reg.boot;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-public class ZookeeperConfigurationFactory {
+@ConfigurationProperties(prefix = "elasticjob.reg-center")
+public class ZookeeperProperties {
 
     /**
      * Server list of ZooKeeper.

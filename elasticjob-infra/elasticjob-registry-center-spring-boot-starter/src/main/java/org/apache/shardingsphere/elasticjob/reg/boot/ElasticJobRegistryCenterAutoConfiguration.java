@@ -18,32 +18,21 @@
 package org.apache.shardingsphere.elasticjob.reg.boot;
 
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(ZookeeperProperties.class)
 public class ElasticJobRegistryCenterAutoConfiguration {
-
-    /**
-     * Create a ZookeeperConfigurationFactory.
-     *
-     * @return ZookeeperConfigurationFactory
-     */
-    @Bean
-    @ConfigurationProperties(prefix = "elasticjob.reg-center")
-    public ZookeeperConfigurationFactory zookeeperConfigurationFactory() {
-        return new ZookeeperConfigurationFactory();
-    }
-
     /**
      * Create a ZookeeperRegistryCenter bean via factory.
      *
-     * @param zookeeperConfigurationFactory factory
+     * @param zookeeperProperties factory
      * @return ZookeeperRegistryCenter
      */
     @Bean(initMethod = "init")
-    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperConfigurationFactory zookeeperConfigurationFactory) {
-        return new ZookeeperRegistryCenter(zookeeperConfigurationFactory.toZookeeperConfiguration());
+    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {
+        return new ZookeeperRegistryCenter(zookeeperProperties.toZookeeperConfiguration());
     }
 }

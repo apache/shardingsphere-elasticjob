@@ -32,6 +32,7 @@ import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -47,6 +48,7 @@ import java.util.Map;
 @AutoConfigureAfter(ElasticJobRegistryCenterAutoConfiguration.class)
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)
 @Import(ElasticJobStartupRunner.class)
+@EnableConfigurationProperties(ElasticJobProperties.class)
 public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
@@ -57,25 +59,13 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
 
     /**
-     * Unmarshal jobs configurations.
-     *
-     * @return unmarshalled ElasticJobDefinitions
-     */
-    @Bean
-    @ConfigurationProperties(prefix = "elasticjob.jobs")
-    public ElasticJobDefinitions elasticJobDefinitions() {
-        return new ElasticJobDefinitions();
-    }
-
-
-    /**
      * Create JobBootstrap instances.
      *
      * @throws ClassNotFoundException if the Class configured under classed jobs not found
      */
     @PostConstruct
     public void createJobBootstrapBeans() throws ClassNotFoundException {
-        ElasticJobDefinitions elasticJobDefinitions = this.applicationContext.getBean(ElasticJobDefinitions.class);
+        ElasticJobProperties elasticJobProperties = this.applicationContext.getBean(ElasticJobProperties.class);
 
         // Looking for a better way
         final SingletonBeanRegistry beanFactory = ((ConfigurableApplicationContext) this.applicationContext).getBeanFactory();
@@ -91,8 +81,8 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                             + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticjobTracingAutoConfiguration].");
         }
 
-        for (String elasticJobClassName : elasticJobDefinitions.getClassed().keySet()) {
-            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobDefinitions.getClassed().get(elasticJobClassName);
+        for (String elasticJobClassName : elasticJobProperties.getClassed().keySet()) {
+            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobProperties.getClassed().get(elasticJobClassName);
             for (JobConfigurationPOJO jobConfigurationPojo : jobConfigurationPojoList) {
                 JobConfiguration jobConfiguration = jobConfigurationPojo.toJobConfiguration();
                 ElasticJob elasticJob = (ElasticJob) applicationContext.getBean(
@@ -112,8 +102,8 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                 }
             }
         }
-        for (String elasticJobType : elasticJobDefinitions.getTyped().keySet()) {
-            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobDefinitions.getTyped().get(elasticJobType);
+        for (String elasticJobType : elasticJobProperties.getTyped().keySet()) {
+            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobProperties.getTyped().get(elasticJobType);
             for (JobConfigurationPOJO jobConfigurationPojo : jobConfigurationPojoList) {
                 JobConfiguration jobConfiguration = jobConfigurationPojo.toJobConfiguration();
                 if (!Strings.isNullOrEmpty(jobConfiguration.getCron())) {
