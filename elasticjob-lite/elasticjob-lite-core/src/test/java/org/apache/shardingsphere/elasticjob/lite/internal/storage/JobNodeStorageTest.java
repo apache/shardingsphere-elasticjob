@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorTransaction;
-import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.api.transaction.CuratorMultiTransaction;
+import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
+import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
@@ -36,6 +36,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -159,51 +160,67 @@ public final class JobNodeStorageTest {
     @Test
     public void assertExecuteInTransactionSuccess() throws Exception {
         CuratorFramework client = mock(CuratorFramework.class);
-        CuratorTransaction curatorTransaction = mock(CuratorTransaction.class);
-        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
-        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
-        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
         when(regCenter.getRawClient()).thenReturn(client);
-        when(client.inTransaction()).thenReturn(curatorTransaction);
-        when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
-        when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
-        when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
-        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
-        verify(regCenter).getRawClient();
-        verify(client).inTransaction();
-        verify(curatorTransaction).check();
-        verify(transactionCheckBuilder).forPath("/");
-        verify(curatorTransactionBridge, times(2)).and();
-        verify(curatorTransactionFinal).create();
-        verify(transactionCreateBuilder).forPath("/test_transaction");
-        verify(curatorTransactionFinal).commit();
+        TransactionOp transactionOp = mockTransactionOp(client);
+        CuratorOp checkOp = mockCheckOp(transactionOp);
+        CuratorOp createOp = mockCreateOp(transactionOp);
+        CuratorMultiTransaction transaction = mockTransaction(client);
+        jobNodeStorage.executeInTransaction(input -> Collections.singletonList(input.create().forPath("/test_transaction")));
+        verify(transaction).forOperations(Arrays.asList(checkOp, createOp));
     }
-
+    
+    private TransactionOp mockTransactionOp(final CuratorFramework client) {
+        TransactionOp result = mock(TransactionOp.class);
+        when(client.transactionOp()).thenReturn(result);
+        return result;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private CuratorOp mockCheckOp(final TransactionOp transactionOperation) throws Exception {
+        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
+        when(transactionOperation.check()).thenReturn(transactionCheckBuilder);
+        CuratorOp result = mock(CuratorOp.class);
+        when(transactionCheckBuilder.forPath("/")).thenReturn(result);
+        return result;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private CuratorOp mockCreateOp(final TransactionOp transactionOperation) throws Exception {
+        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
+        when(transactionOperation.create()).thenReturn(transactionCreateBuilder);
+        CuratorOp result = mock(CuratorOp.class);
+        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(result);
+        return result;
+    }
+    
+    private CuratorMultiTransaction mockTransaction(final CuratorFramework client) {
+        CuratorMultiTransaction result = mock(CuratorMultiTransaction.class);
+        when(client.transaction()).thenReturn(result);
+        return result;
+    }
+    
     @Test(expected = RuntimeException.class)
     public void assertExecuteInTransactionFailure() throws Exception {
         CuratorFramework client = mock(CuratorFramework.class);
-        CuratorTransaction curatorTransaction = mock(CuratorTransaction.class);
-        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
-        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
-        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
         when(regCenter.getRawClient()).thenReturn(client);
-        when(client.inTransaction()).thenReturn(curatorTransaction);
-        when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
-        when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        when(curatorTransactionBridge.and()).thenThrow(new RuntimeException());
-        jobNodeStorage.executeInTransaction(curatorTransactionFinalForCallback -> curatorTransactionFinalForCallback.create().forPath("/test_transaction").and());
-        verify(regCenter).getRawClient();
-        verify(client).inTransaction();
-        verify(curatorTransaction).check();
-        verify(transactionCheckBuilder).forPath("/");
-        verify(curatorTransactionBridge, times(2)).and();
-        verify(curatorTransactionFinal).create();
-        verify(curatorTransactionFinal, times(0)).commit();
+        TransactionOp transactionOp = mockTransactionOp(client);
+        CuratorOp checkOp = mockCheckOp(transactionOp);
+        CuratorOp createFailedOp = mockCreateFailedOp(transactionOp);
+        CuratorMultiTransaction transaction = mockTransaction(client);
+        try {
+            jobNodeStorage.executeInTransaction(input -> Collections.singletonList(input.create().forPath("/test_transaction")));
+        } finally {
+            verify(transaction, times(0)).forOperations(Arrays.asList(checkOp, createFailedOp));
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private CuratorOp mockCreateFailedOp(final TransactionOp transactionOperation) throws Exception {
+        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
+        when(transactionOperation.create()).thenReturn(transactionCreateBuilder);
+        CuratorOp result = mock(CuratorOp.class);
+        when(transactionCreateBuilder.forPath("/test_transaction")).thenThrow(new RuntimeException());
+        return result;
     }
     
     @Test
