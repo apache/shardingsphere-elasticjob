@@ -35,6 +35,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadySer
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -135,7 +136,7 @@ public final class FacadeServiceTest {
         facadeService.removeLaunchTasksFromQueue(Arrays.asList(
                 TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()),
                 TaskContext.from(TaskNode.builder().build().getTaskNodeValue())));
-        verify(failoverService).remove(Collections.singletonList(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
+        verify(failoverService).remove(Collections.singletonList(MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
         verify(readyService).remove(Sets.newHashSet("test_job"));
     }
     

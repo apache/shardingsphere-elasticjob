@@ -31,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResul
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.Test;
@@ -188,7 +189,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().getChildrenKeys("/state/failover/test_job")).thenReturn(Collections.singletonList("test_job@-@0"));
         String originalTaskId = UUID.randomUUID().toString();
         when(getRegCenter().get("/state/failover/test_job/test_job@-@0")).thenReturn(originalTaskId);
-        FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(TaskContext.MetaInfo.from("test_job@-@0"), originalTaskId);
+        FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(MetaInfo.from("test_job@-@0"), originalTaskId);
         Collection<FailoverTaskInfo> expectedResult = Collections.singletonList(expectedFailoverTask);
         assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/tasks/failover"), is(GsonFactory.getGson().toJson(expectedResult)));
         verify(getRegCenter()).isExisted("/state/failover");

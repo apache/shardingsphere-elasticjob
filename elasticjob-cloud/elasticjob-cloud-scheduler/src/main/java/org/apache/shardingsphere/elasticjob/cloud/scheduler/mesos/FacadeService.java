@@ -33,6 +33,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadySer
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
 
@@ -210,7 +211,7 @@ public final class FacadeService {
      * @param metaInfo task meta info
      * @return failover task id
      */
-    public Optional<String> getFailoverTaskId(final TaskContext.MetaInfo metaInfo) {
+    public Optional<String> getFailoverTaskId(final MetaInfo metaInfo) {
         return failoverService.getTaskId(metaInfo);
     }
     

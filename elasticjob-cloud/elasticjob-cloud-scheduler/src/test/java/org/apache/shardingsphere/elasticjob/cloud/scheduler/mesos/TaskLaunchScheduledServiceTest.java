@@ -33,6 +33,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConf
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferBuilder;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.After;
@@ -94,8 +95,7 @@ public final class TaskLaunchScheduledServiceTest {
                 Sets.newHashSet(mockTaskAssignmentResult("failover_job", ExecutionType.FAILOVER))));
         when(taskScheduler.scheduleOnce(ArgumentMatchers.anyList(), ArgumentMatchers.anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.load("failover_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
-        when(facadeService.getFailoverTaskId(any(TaskContext.MetaInfo.class)))
-                .thenReturn(Optional.of(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "failover_job", ExecutionType.FAILOVER.name())));
+        when(facadeService.getFailoverTaskId(any(MetaInfo.class))).thenReturn(Optional.of(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "failover_job", ExecutionType.FAILOVER.name())));
         when(taskScheduler.getTaskAssigner()).thenReturn(mock(Action2.class));
         taskLaunchScheduledService.runOneIteration();
         verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.anyList());

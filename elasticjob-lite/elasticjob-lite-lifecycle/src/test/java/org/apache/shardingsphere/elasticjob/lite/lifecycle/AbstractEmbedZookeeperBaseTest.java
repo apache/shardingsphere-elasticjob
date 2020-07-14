@@ -17,9 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle;
 
-import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 import org.apache.curator.test.TestingServer;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 import org.junit.BeforeClass;
 
 import java.io.File;
@@ -63,6 +62,6 @@ public abstract class AbstractEmbedZookeeperBaseTest {
      * @return connection string
      */
     public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
+        return "localhost:" + PORT;
     }
 }
