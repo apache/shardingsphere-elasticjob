@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import com.google.protobuf.ByteString;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
@@ -32,8 +33,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -57,10 +58,17 @@ public final class TaskExecutorTest {
     private TaskExecutor taskExecutor;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         taskExecutor = new TaskExecutor(new TestJob());
-        ReflectionUtils.setFieldValue(taskExecutor, "executorService", executorService);
+        setExecutorService();
         executorInfo = ExecutorInfo.getDefaultInstance();
+    }
+    
+    @SneakyThrows
+    private void setExecutorService() {
+        Field field = TaskExecutor.class.getDeclaredField("executorService");
+        field.setAccessible(true);
+        field.set(taskExecutor, executorService);
     }
     
     @Test

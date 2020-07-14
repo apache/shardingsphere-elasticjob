@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,6 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +58,7 @@ public final class TransientProducerSchedulerTest {
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         transientProducerScheduler = new TransientProducerScheduler(readyService);
         ReflectionUtils.setFieldValue(transientProducerScheduler, "scheduler", scheduler);
     }

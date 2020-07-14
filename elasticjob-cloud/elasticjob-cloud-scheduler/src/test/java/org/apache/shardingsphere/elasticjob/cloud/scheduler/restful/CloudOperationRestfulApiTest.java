@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
 import org.junit.Test;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

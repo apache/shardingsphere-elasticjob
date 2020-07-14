@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
 import com.google.common.collect.Lists;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
@@ -36,7 +37,6 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -201,14 +201,14 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertFindJobExecutionEventsWhenNotConfigRDB() throws Exception {
-        ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), null);
+        ReflectionUtils.setStaticFieldValue(CloudJobRestfulApi.class, "jobEventRdbSearch", null);
         assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/executions"), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
                 Collections.<JobExecutionEvent>emptyList()))));
     }
     
     @Test
     public void assertFindJobExecutionEvents() throws Exception {
-        ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
+        ReflectionUtils.setStaticFieldValue(CloudJobRestfulApi.class, "jobEventRdbSearch", getJobEventRdbSearch());
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         when(getJobEventRdbSearch().findJobExecutionEvents(any(JobEventRdbSearch.Condition.class))).thenReturn(new JobEventRdbSearch.Result<>(0,
                 Lists.newArrayList(jobExecutionEvent)));
@@ -219,14 +219,14 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertFindJobStatusTraceEventEventsWhenNotConfigRDB() throws Exception {
-        ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), null);
+        ReflectionUtils.setStaticFieldValue(CloudJobRestfulApi.class, "jobEventRdbSearch", null);
         assertThat(RestfulTestsUtil.sentGetRequest("http://127.0.0.1:19000/api/job/events/statusTraces"), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
                 Collections.<JobExecutionEvent>emptyList()))));
     }
     
     @Test
     public void assertFindJobStatusTraceEvent() throws Exception {
-        ReflectionUtils.setFieldValue(CloudJobRestfulApi.class, CloudJobRestfulApi.class.getDeclaredField("jobEventRdbSearch"), getJobEventRdbSearch());
+        ReflectionUtils.setStaticFieldValue(CloudJobRestfulApi.class, "jobEventRdbSearch", getJobEventRdbSearch());
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent("test-job", 
                 "fake_task_id", "fake_slave_id", JobStatusTraceEvent.Source.LITE_EXECUTOR, ExecutionType.READY.toString(), "0", JobStatusTraceEvent.State.TASK_RUNNING, "message is empty.");
         when(getJobEventRdbSearch().findJobStatusTraceEvents(any(JobEventRdbSearch.Condition.class))).thenReturn(new Result<>(0,
