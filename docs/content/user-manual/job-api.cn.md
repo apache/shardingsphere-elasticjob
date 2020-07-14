@@ -9,15 +9,15 @@ chapter = true
 
 ### a. Java
 
-请使用JDK1.7及其以上版本。[详情参见](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+请使用 Java 8 及其以上版本。
 
 ### b. Zookeeper
 
-请使用Zookeeper 3.4.6及其以上版本。[详情参见](https://zookeeper.apache.org/doc/trunk/zookeeperStarted.html)
+请使用Zookeeper 3.6.0 及其以上版本。[详情参见](https://zookeeper.apache.org/)
 
 ### c. Maven
 
-请使用Maven 3.0.4及其以上版本。[详情参见](http://maven.apache.org/install.html)
+请使用 Maven 3.0.4 及其以上版本。[详情参见](http://maven.apache.org/install.html)
 
 ## 1. 作业开发
 
