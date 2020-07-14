@@ -46,7 +46,7 @@ public final class JobConfigurationPOJO {
     
     private boolean misfire;
     
-    private int maxTimeDiffSeconds;
+    private int maxTimeDiffSeconds = -1;
     
     private int reconcileIntervalMinutes;
     
