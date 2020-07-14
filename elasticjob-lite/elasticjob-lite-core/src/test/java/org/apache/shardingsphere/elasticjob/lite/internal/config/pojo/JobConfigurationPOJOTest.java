@@ -38,7 +38,7 @@ public final class JobConfigurationPOJOTest {
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
-            + "maxTimeDiffSeconds: 0\n"
+            + "maxTimeDiffSeconds: -1\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
@@ -52,7 +52,7 @@ public final class JobConfigurationPOJOTest {
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
-            + "maxTimeDiffSeconds: 0\n"
+            + "maxTimeDiffSeconds: -1\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
@@ -130,6 +130,7 @@ public final class JobConfigurationPOJOTest {
         actual.setShardingTotalCount(3);
         actual.setShardingItemParameters("0=A,1=B,2=C");
         actual.setJobParameter("param");
+        actual.setMaxTimeDiffSeconds(-1);
         actual.setJobShardingStrategyType("AVG_ALLOCATION");
         actual.setJobExecutorServiceHandlerType("CPU");
         actual.setJobErrorHandlerType("IGNORE");
@@ -144,6 +145,7 @@ public final class JobConfigurationPOJOTest {
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
         actual.setShardingTotalCount(3);
+        actual.setMaxTimeDiffSeconds(-1);
         assertThat(YamlEngine.marshal(actual), is(YAML_WITH_NULL));
     }
     
