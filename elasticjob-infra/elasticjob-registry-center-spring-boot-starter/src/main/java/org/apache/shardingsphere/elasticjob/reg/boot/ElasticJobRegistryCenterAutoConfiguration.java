@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.config;
+package org.apache.shardingsphere.elasticjob.reg.boot;
 
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnExpression("'${regCenter.serverList}'.length() > 0")
-public class RegistryCenterConfig {
-    
+public class ElasticJobRegistryCenterAutoConfiguration {
+
+    /**
+     * Create a ZookeeperConfigurationFactory.
+     *
+     * @return ZookeeperConfigurationFactory
+     */
+    @Bean
+    @ConfigurationProperties(prefix = "elasticjob.reg-center")
+    public ZookeeperConfigurationFactory zookeeperConfigurationFactory() {
+        return new ZookeeperConfigurationFactory();
+    }
+
+    /**
+     * Create a ZookeeperRegistryCenter bean via factory.
+     *
+     * @param zookeeperConfigurationFactory factory
+     * @return ZookeeperRegistryCenter
+     */
     @Bean(initMethod = "init")
-    public ZookeeperRegistryCenter regCenter(@Value("${regCenter.serverList}") final String serverList, @Value("${regCenter.namespace}") final String namespace) {
-        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(serverList, namespace));
+    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperConfigurationFactory zookeeperConfigurationFactory) {
+        return new ZookeeperRegistryCenter(zookeeperConfigurationFactory.toZookeeperConfiguration());
     }
 }

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.config;
+package org.apache.shardingsphere.elasticjob.lite.boot;
 
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-@Configuration
-public class TracingConfig {
-    
-    @Resource
-    private DataSource dataSource;
-    
-    @Bean
-    public TracingConfiguration tracingConfiguration() {
-        return new TracingConfiguration<>("RDB", dataSource);
-    }
+@Getter
+@Setter
+public class ElasticJobDefinitions {
+
+    private Map<String, List<JobConfigurationPOJO>> typed = new LinkedHashMap<>();
+
+    private Map<String, List<JobConfigurationPOJO>> classed = new LinkedHashMap<>();
 }
