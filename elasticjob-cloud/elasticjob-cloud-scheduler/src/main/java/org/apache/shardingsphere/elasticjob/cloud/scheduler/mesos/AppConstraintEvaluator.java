@@ -28,9 +28,10 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
@@ -62,13 +63,12 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     }
     
     static AppConstraintEvaluator getInstance() {
-        Preconditions.checkNotNull(instance);
-        return instance;
+        return Preconditions.checkNotNull(instance);
     }
     
     void loadAppRunningState() {
         try {
-            for (MesosStateService.ExecutorStateInfo each : facadeService.loadExecutorInfo()) {
+            for (ExecutorStateInfo each : facadeService.loadExecutorInfo()) {
                 runningApps.add(each.getId());
             }
         } catch (final JSONException | UniformInterfaceException | ClientHandlerException e) {
