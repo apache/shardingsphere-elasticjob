@@ -9,8 +9,8 @@ chapter = true
 
 ```xml
 <dependency>
-    <groupId>io.elasticjob</groupId>
-    <artifactId>elastic-job-cloud-executor</artifactId>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-cloud-executor</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
@@ -18,7 +18,7 @@ chapter = true
 ## 作业开发
 
 ```java
-public class MyElasticJob implements SimpleJob {
+public class MyJob implements SimpleJob {
     
     @Override
     public void execute(ShardingContext context) {
@@ -38,30 +38,33 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-## Java启动方式
+## 作业启动
 
-需定义`Main`方法并调用`JobBootstrap.execute()`，例子如下：
+需定义 `Main` 方法并调用 `JobBootstrap.execute()`，例子如下：
 
 ```java
-public class JobDemo {
+public class MyJobDemo {
     
     public static void main(final String[] args) {
-        JobBootstrap.execute();
+        JobBootstrap.execute(new MyJob());
     }
 }
 ```
 
-## 打包作业
-tar -cvf yourJobs.tar.gz yourJobs
+## 作业打包
 
-## 发布APP
-
-```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","appURL":"http://app_host:8080/yourJobs.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elastic_job_cloud_host:8899/api/app
+```bash
+tar -cvf my-job.tar.gz my-job
 ```
 
-## 发布作业
+## 作业发布
 
-```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://elastic_job_cloud_host:8899/api/job/register
+```bash
+curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","appURL":"http://app_host:8080/my-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elasticjob_cloud_host:8899/api/app
+```
+
+## 作业调度
+
+```bash
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://elasticjob_cloud_host:8899/api/job/register
 ```
