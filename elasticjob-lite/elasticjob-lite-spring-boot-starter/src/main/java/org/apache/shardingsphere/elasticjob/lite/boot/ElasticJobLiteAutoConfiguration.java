@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.boot;
 
+import com.google.common.base.Strings;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -26,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigu
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.boot.ElasticJobRegistryCenterAutoConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
