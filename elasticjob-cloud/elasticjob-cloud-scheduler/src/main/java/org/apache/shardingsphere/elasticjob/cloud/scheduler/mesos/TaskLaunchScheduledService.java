@@ -48,7 +48,6 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,7 +56,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Task launch schedule service.
@@ -237,7 +235,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private String getArguments(final CommandLine commandLine) {
-        return Arrays.stream(commandLine.getArguments()).collect(Collectors.joining(" "));
+        return String.join(" ", commandLine.getArguments());
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {
