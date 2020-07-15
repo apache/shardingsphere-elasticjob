@@ -61,7 +61,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     public void createJobBootstrapBeans() throws ClassNotFoundException {
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
 
-        // Looking for a better way
+        // TODO Looking for a better way
         final SingletonBeanRegistry beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
 
         final CoordinatorRegistryCenter registryCenter = applicationContext.getBean(CoordinatorRegistryCenter.class);
