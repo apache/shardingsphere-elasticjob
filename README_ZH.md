@@ -1,6 +1,6 @@
 # [ElasticJob - 分布式作业调度解决方案](http://shardingsphere.apache.org/elasticjob/)
 
-**官方网站: http://shardingsphere.apache.org/elasticjob/**
+**官方网站: https://shardingsphere.apache.org/elasticjob/**
 
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob-lite.svg)](https://starchart.cc/apache/shardingsphere-elasticjob-lite)
 
@@ -26,7 +26,11 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ### ElasticJob Lite
 
-![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/lite/img/architecture/elastic_job_lite.png)
+![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
+
+### ElasticJob Cloud
+
+![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
 ## 功能列表
 
@@ -58,74 +62,3 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
   - 作业管控端
   - 作业执行历史数据追踪
   - 注册中心管理
-
-## [Roadmap](ROADMAP.md)
-
-## 快速入门
-
-### 引入maven依赖
-
-```xml
-<!-- 引入elasticjob-lite核心模块 -->
-<dependency>
-    <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-lite-core</artifactId>
-    <version>${latest.release.version}</version>
-</dependency>
-
-<!-- 使用springframework自定义命名空间时引入 -->
-<dependency>
-    <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-lite-spring</artifactId>
-    <version>${latest.release.version}</version>
-</dependency>
-```
-
-### 作业开发
-
-```java
-public class MyElasticJob implements SimpleJob {
-    
-    @Override
-    public void execute(ShardingContext context) {
-        switch (context.getShardingItem()) {
-            case 0: 
-                // do something by sharding item 0
-                break;
-            case 1: 
-                // do something by sharding item 1
-                break;
-            case 2: 
-                // do something by sharding item 2
-                break;
-            // case n: ...
-        }
-    }
-}
-```
-
-### 作业配置
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://shardingsphere.apache.org/schema/elasticjob
-                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
-                           ">
-    <!--配置作业注册中心 -->
-    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
-   
-    <!--配置任务快照服务 -->
-    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999"/>
-
-    <!--配置作业类 -->
-    <bean id="simpleJob" class="xxx.MyElasticJob" />
-    
-    <!--配置作业 -->
-    <elasticjob:simple id="oneOffElasticJob" job-ref="simpleJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
-</beans>
-```
