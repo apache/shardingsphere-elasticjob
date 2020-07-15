@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.executor;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.cloud.config.JobTypeConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 @Getter
 public final class JobConfigurationContext {
     
-    private final JobTypeConfiguration typeConfig;
+    private final JobConfiguration jobConfig;
     
     private final String beanName;
     
@@ -38,9 +38,9 @@ public final class JobConfigurationContext {
     private final boolean isTransient;
     
     public JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
-        typeConfig = JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
+        jobConfig = JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
         beanName = jobConfigurationMap.get("beanName");
         applicationContext = jobConfigurationMap.get("applicationContext");
-        isTransient = Strings.isNullOrEmpty(typeConfig.getCoreConfig().getCron());
+        isTransient = Strings.isNullOrEmpty(jobConfig.getCron());
     }
 }

@@ -18,13 +18,15 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCache;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Collections;
@@ -34,7 +36,7 @@ import java.util.concurrent.Executors;
  * Cloud job configuration change listener.
  */
 @Slf4j
-public final class CloudJobConfigurationListener implements TreeCacheListener {
+public final class CloudJobConfigurationListener implements CuratorCacheListener {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -49,38 +51,38 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     }
     
     @Override
-    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
-        String path = null == event.getData() ? "" : event.getData().getPath();
-        if (isJobConfigNode(event, path, Type.NODE_ADDED)) {
-            CloudJobConfiguration jobConfig = getJobConfig(event);
-            if (null != jobConfig) {
-                producerManager.schedule(jobConfig);
+    public void event(final Type type, final ChildData oldData, final ChildData data) {
+        String path = data.getPath();
+        if (Type.NODE_CREATED == type && isJobConfigNode(path)) {
+            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(data);
+            if (null != cloudJobConfig) {
+                producerManager.schedule(cloudJobConfig);
             }
-        } else if (isJobConfigNode(event, path, Type.NODE_UPDATED)) {
-            CloudJobConfiguration jobConfig = getJobConfig(event);
-            if (null == jobConfig) {
+        } else if (Type.NODE_CHANGED == type && isJobConfigNode(path)) {
+            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(data);
+            if (null == cloudJobConfig) {
                 return;
             }
-            if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-                readyService.remove(Collections.singletonList(jobConfig.getJobName()));
+            if (CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
+                readyService.remove(Collections.singletonList(cloudJobConfig.getJobConfig().getJobName()));
             }
-            if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
-                readyService.setMisfireDisabled(jobConfig.getJobName());
+            if (!cloudJobConfig.getJobConfig().isMisfire()) {
+                readyService.setMisfireDisabled(cloudJobConfig.getJobConfig().getJobName());
             }
-            producerManager.reschedule(jobConfig.getJobName());
-        } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
+            producerManager.reschedule(cloudJobConfig.getJobConfig().getJobName());
+        } else if (Type.NODE_DELETED == type && isJobConfigNode(path)) {
             String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);
         }
     }
     
-    private boolean isJobConfigNode(final TreeCacheEvent event, final String path, final Type type) {
-        return type == event.getType() && path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
+    private boolean isJobConfigNode(final String path) {
+        return path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
     }
     
-    private CloudJobConfiguration getJobConfig(final TreeCacheEvent event) {
+    private CloudJobConfiguration getCloudJobConfiguration(final ChildData data) {
         try {
-            return CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
+            return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class).toCloudJobConfiguration();
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());
@@ -93,22 +95,22 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
      * Start the listener service of the cloud job service.
      */
     public void start() {
-        getCache().getListenable().addListener(this, Executors.newSingleThreadExecutor());
+        getCache().listenable().addListener(this, Executors.newSingleThreadExecutor());
     }
     
     /**
      * Stop the listener service of the cloud job service.
      */
     public void stop() {
-        getCache().getListenable().removeListener(this);
+        getCache().listenable().removeListener(this);
     }
     
-    private TreeCache getCache() {
-        TreeCache result = (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
+    private CuratorCache getCache() {
+        CuratorCache result = (CuratorCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
         if (null != result) {
             return result;
         }
         regCenter.addCacheData(CloudJobConfigurationNode.ROOT);
-        return (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
+        return (CuratorCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
     }
 }

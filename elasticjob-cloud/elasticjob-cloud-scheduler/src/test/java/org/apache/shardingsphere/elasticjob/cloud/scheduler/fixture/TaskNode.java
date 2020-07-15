@@ -17,13 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import com.google.common.base.Joiner;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import lombok.Builder;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
+
+import java.util.StringJoiner;
 
 @Builder
 public final class TaskNode {
+    
+    private static final String DELIMITER = "@-@";
     
     private String jobName;
     
@@ -34,13 +37,13 @@ public final class TaskNode {
     private String slaveId;
     
     private String uuid;
-
+    
     /**
      * Get task node path.
      * @return task node path
      */
     public String getTaskNodePath() {
-        return Joiner.on("@-@").join(null == jobName ? "test_job" : jobName, shardingItem);
+        return new StringJoiner(DELIMITER).add(null == jobName ? "test_job" : jobName).add("" + shardingItem).toString();
     }
 
     /**
@@ -48,14 +51,15 @@ public final class TaskNode {
      * @return task node value
      */
     public String getTaskNodeValue() {
-        return Joiner.on("@-@").join(getTaskNodePath(), null == type ? ExecutionType.READY : type, null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
+        return new StringJoiner(DELIMITER)
+                .add(getTaskNodePath()).add(null == type ? ExecutionType.READY.toString() : type.toString()).add(null == slaveId ? "slave-S0" : slaveId).add(null == uuid ? "0" : uuid).toString();
     }
 
     /**
      * Get task meta info.
      * @return meta info
      */
-    public TaskContext.MetaInfo getMetaInfo() {
-        return TaskContext.MetaInfo.from(Joiner.on("@-@").join("test_job", 0));
+    public MetaInfo getMetaInfo() {
+        return MetaInfo.from(new StringJoiner(DELIMITER).add("test_job").add("0").toString());
     }
 }

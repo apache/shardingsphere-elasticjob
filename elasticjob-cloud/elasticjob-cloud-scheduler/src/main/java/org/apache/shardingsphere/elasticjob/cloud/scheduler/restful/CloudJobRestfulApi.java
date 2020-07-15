@@ -20,11 +20,9 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
@@ -35,10 +33,11 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobExecutionTypeStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobTypeStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.JobConfigurationGsonTypeAdapter;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
@@ -108,7 +107,7 @@ public final class CloudJobRestfulApi {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobRestfulApi.regCenter = regCenter;
         CloudJobRestfulApi.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new JobConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
@@ -116,25 +115,25 @@ public final class CloudJobRestfulApi {
     /**
      * Register cloud job.
      * 
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void register(final CloudJobConfiguration jobConfig) {
-        producerManager.register(jobConfig);
+    public void register(final CloudJobConfiguration cloudJobConfig) {
+        producerManager.register(cloudJobConfig);
     }
     
     /**
      * Update cloud job.
      *
-     * @param jobConfig cloud job configuration
+     * @param cloudJobConfig cloud job configuration
      */
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(final CloudJobConfiguration jobConfig) {
-        producerManager.update(jobConfig);
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        producerManager.update(cloudJobConfig);
     }
     
     /**
@@ -217,11 +216,11 @@ public final class CloudJobRestfulApi {
     @Path("/jobs/{jobName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response detail(@PathParam("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (!jobConfig.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(jobConfig.get()).build();
+        return Response.ok(cloudJobConfig.get()).build();
     }
     
     /**
@@ -416,18 +415,6 @@ public final class CloudJobRestfulApi {
         } else {
             return Collections.emptyList();
         }
-    }
-    
-    /**
-     * Get job type statistics.
-     * 
-     * @return job type statistics
-     */
-    @GET
-    @Path("/statistics/jobs/type")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public JobTypeStatistics getJobTypeStatistics() {
-        return statisticManager.getJobTypeStatistics();
     }
     
     /**

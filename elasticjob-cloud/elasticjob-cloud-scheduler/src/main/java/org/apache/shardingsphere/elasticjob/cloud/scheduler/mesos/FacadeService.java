@@ -18,20 +18,22 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverTaskInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
 
@@ -157,21 +159,21 @@ public final class FacadeService {
      * @param taskContext task running context
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
+        if (!cloudJobConfigOptional.isPresent()) {
             return;
         }
-        if (isDisable(jobConfigOptional.get())) {
+        if (isDisable(cloudJobConfigOptional.get())) {
             return;
         }
-        CloudJobConfiguration jobConfig = jobConfigOptional.get();
-        if (jobConfig.getTypeConfig().getCoreConfig().isFailover() || CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+        CloudJobConfiguration cloudJobConfig = cloudJobConfigOptional.get();
+        if (cloudJobConfig.getJobConfig().isFailover() || CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
     }
     
-    private boolean isDisable(final CloudJobConfiguration jobConfiguration) {
-        return disableAppService.isDisabled(jobConfiguration.getAppName()) || disableJobService.isDisabled(jobConfiguration.getJobName());
+    private boolean isDisable(final CloudJobConfiguration cloudJobConfig) {
+        return disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -209,7 +211,7 @@ public final class FacadeService {
      * @param metaInfo task meta info
      * @return failover task id
      */
-    public Optional<String> getFailoverTaskId(final TaskContext.MetaInfo metaInfo) {
+    public Optional<String> getFailoverTaskId(final MetaInfo metaInfo) {
         return failoverService.getTaskId(metaInfo);
     }
     
@@ -219,11 +221,11 @@ public final class FacadeService {
      * @param jobName job name
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(jobName);
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = jobConfigService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
             return;
         }
-        if (isDisable(jobConfigOptional.get())) {
+        if (isDisable(cloudJobConfig.get())) {
             return;
         }
         readyService.addDaemon(jobName);
@@ -322,7 +324,7 @@ public final class FacadeService {
      * @return collection of executor info
      * @throws JSONException json exception
      */
-    public Collection<MesosStateService.ExecutorStateInfo> loadExecutorInfo() throws JSONException {
+    public Collection<ExecutorStateInfo> loadExecutorInfo() throws JSONException {
         return mesosStateService.executors();
     }
     

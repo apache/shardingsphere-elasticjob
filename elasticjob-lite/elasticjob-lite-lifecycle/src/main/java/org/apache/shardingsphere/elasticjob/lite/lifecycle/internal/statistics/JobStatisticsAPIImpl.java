@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
@@ -69,7 +69,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         if (null == jobConfigYaml) {
             return null;
         }
-        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigYaml, YamlJobConfiguration.class).toJobConfiguration();
+        JobConfiguration jobConfig = YamlEngine.unmarshal(jobConfigYaml, JobConfigurationPOJO.class).toJobConfiguration();
         result.setDescription(jobConfig.getDescription());
         result.setCron(jobConfig.getCron());
         result.setInstanceCount(getJobInstanceCount(jobName));

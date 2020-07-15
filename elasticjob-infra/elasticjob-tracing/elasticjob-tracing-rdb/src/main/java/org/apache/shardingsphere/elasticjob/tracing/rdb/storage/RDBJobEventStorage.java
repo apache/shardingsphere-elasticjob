@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultDatabaseType;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -70,7 +71,7 @@ public final class RDBJobEventStorage {
     public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         databaseType = getDatabaseType(dataSource);
-        sqlMapper = new RDBStorageSQLMapper(null == databaseType ? "sql92" : databaseType.getSQLPropertiesFile());
+        sqlMapper = new RDBStorageSQLMapper(databaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
     
@@ -83,7 +84,7 @@ public final class RDBJobEventStorage {
                 }
             }
         }
-        return null;
+        return new DefaultDatabaseType();
     }
     
     private void initTablesAndIndexes() throws SQLException {

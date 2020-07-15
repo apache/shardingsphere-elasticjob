@@ -17,26 +17,26 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -86,36 +86,36 @@ public final class ProducerManager {
     /**
      * Register the job.
      * 
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void register(final CloudJobConfiguration jobConfig) {
-        if (disableJobService.isDisabled(jobConfig.getJobName())) {
-            throw new JobConfigurationException("Job '%s' has been disable.", jobConfig.getJobName());
+    public void register(final CloudJobConfiguration cloudJobConfig) {
+        if (disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName())) {
+            throw new JobConfigurationException("Job '%s' has been disable.", cloudJobConfig.getJobConfig().getJobName());
         }
-        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
+        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(cloudJobConfig.getAppName());
         if (!appConfigFromZk.isPresent()) {
-            throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
+            throw new AppConfigurationException("Register app '%s' firstly.", cloudJobConfig.getAppName());
         }
-        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(cloudJobConfig.getJobConfig().getJobName());
         if (jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("Job '%s' already existed.", jobConfig.getJobName());
+            throw new JobConfigurationException("Job '%s' already existed.", cloudJobConfig.getJobConfig().getJobName());
         }
-        configService.add(jobConfig);
-        schedule(jobConfig);
+        configService.add(cloudJobConfig);
+        schedule(cloudJobConfig);
     }
     
     /**
      * Update the job.
      *
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void update(final CloudJobConfiguration jobConfig) {
-        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(cloudJobConfig.getJobConfig().getJobName());
         if (!jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
+            throw new JobConfigurationException("Cannot found job '%s', please register first.", cloudJobConfig.getJobConfig().getJobName());
         }
-        configService.update(jobConfig);
-        reschedule(jobConfig.getJobName());
+        configService.update(cloudJobConfig);
+        reschedule(cloudJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -135,16 +135,16 @@ public final class ProducerManager {
     /**
      * Schedule the job.
      *
-     * @param jobConfig cloud job config
+     * @param cloudJobConfig cloud job configuration
      */
-    public void schedule(final CloudJobConfiguration jobConfig) {
-        if (disableAppService.isDisabled(jobConfig.getAppName()) || disableJobService.isDisabled(jobConfig.getJobName())) {
+    public void schedule(final CloudJobConfiguration cloudJobConfig) {
+        if (disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName())) {
             return;
         }
-        if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
-            transientProducerScheduler.register(jobConfig);
-        } else if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-            readyService.addDaemon(jobConfig.getJobName());
+        if (CloudJobExecutionType.TRANSIENT == cloudJobConfig.getJobExecutionType()) {
+            transientProducerScheduler.register(cloudJobConfig);
+        } else if (CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
+            readyService.addDaemon(cloudJobConfig.getJobConfig().getJobName());
         }
     }
     
@@ -158,7 +158,7 @@ public final class ProducerManager {
             schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
         }
         runningService.remove(jobName);
-        readyService.remove(Lists.newArrayList(jobName));
+        readyService.remove(Collections.singletonList(jobName));
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
         jobConfig.ifPresent(transientProducerScheduler::deregister);
     }

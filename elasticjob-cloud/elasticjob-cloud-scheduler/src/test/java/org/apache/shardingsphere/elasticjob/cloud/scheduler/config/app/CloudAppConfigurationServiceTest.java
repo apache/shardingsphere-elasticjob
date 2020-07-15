@@ -40,6 +40,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudAppConfigurationServiceTest {
     
+    private static final String YAML = "appCacheEnable: true\n"
+            + "appName: test_app\n"
+            + "appURL: http://localhost/app.jar\n"
+            + "bootstrapScript: bin/start.sh\n"
+            + "cpuCount: 1.0\n"
+            + "eventTraceSamplingCount: 0\n"
+            + "memoryMB: 128.0\n";
+    
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
@@ -50,14 +58,14 @@ public final class CloudAppConfigurationServiceTest {
     public void assertAdd() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.add(appConfig);
-        verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).persist("/config/app/test_app", YAML);
     }
     
     @Test
     public void assertUpdate() {
         CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.update(appConfig);
-        verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(regCenter).update("/config/app/test_app", YAML);
     }
     
     @Test

@@ -44,7 +44,7 @@ public final class LaunchingTasks {
     public LaunchingTasks(final Collection<JobContext> eligibleJobContexts) {
         eligibleJobContextsMap = new HashMap<>(eligibleJobContexts.size(), 1);
         for (JobContext each : eligibleJobContexts) {
-            eligibleJobContextsMap.put(each.getJobConfig().getJobName(), each);
+            eligibleJobContextsMap.put(each.getCloudJobConfig().getJobConfig().getJobName(), each);
         }
     }
     
@@ -59,7 +59,8 @@ public final class LaunchingTasks {
     private Collection<TaskRequest> createTaskRequests(final JobContext jobContext) {
         Collection<TaskRequest> result = new ArrayList<>(jobContext.getAssignedShardingItems().size());
         for (int each : jobContext.getAssignedShardingItems()) {
-            result.add(new JobTaskRequest(new TaskContext(jobContext.getJobConfig().getJobName(), Collections.singletonList(each), jobContext.getType()), jobContext.getJobConfig()));
+            result.add(new JobTaskRequest(
+                    new TaskContext(jobContext.getCloudJobConfig().getJobConfig().getJobName(), Collections.singletonList(each), jobContext.getType()), jobContext.getCloudJobConfig()));
         }
         return result;
     }
@@ -69,7 +70,7 @@ public final class LaunchingTasks {
         Collection<String> result = new HashSet<>(assignedJobShardingTotalCountMap.size(), 1);
         for (Map.Entry<String, Integer> entry : assignedJobShardingTotalCountMap.entrySet()) {
             JobContext jobContext = eligibleJobContextsMap.get(entry.getKey());
-            if (ExecutionType.FAILOVER != jobContext.getType() && !entry.getValue().equals(jobContext.getJobConfig().getTypeConfig().getCoreConfig().getShardingTotalCount())) {
+            if (ExecutionType.FAILOVER != jobContext.getType() && !entry.getValue().equals(jobContext.getCloudJobConfig().getJobConfig().getShardingTotalCount())) {
                 log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", entry.getKey());
                 result.add(entry.getKey());
             }

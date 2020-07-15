@@ -18,15 +18,17 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
-import org.apache.curator.framework.recipes.cache.TreeCache;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.framework.api.transaction.CuratorOp;
+import org.apache.curator.framework.api.transaction.TransactionOp;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -180,13 +182,16 @@ public final class JobNodeStorage {
     /**
      * Execute operator in transaction.
      * 
-     * @param callback execute callback
+     * @param callback transaction execution callback
      */
     public void executeInTransaction(final TransactionExecutionCallback callback) {
         try {
-            CuratorTransactionFinal curatorTransactionFinal = getClient().inTransaction().check().forPath("/").and();
-            callback.execute(curatorTransactionFinal);
-            curatorTransactionFinal.commit();
+            List<CuratorOp> operations = new LinkedList<>();
+            CuratorFramework client = getClient();
+            TransactionOp transactionOp = client.transactionOp();
+            operations.add(transactionOp.check().forPath("/"));
+            operations.addAll(callback.createCuratorOperators(transactionOp));
+            client.transaction().forOperations(operations);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -238,9 +243,9 @@ public final class JobNodeStorage {
      * 
      * @param listener data listener
      */
-    public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) regCenter.getRawCache("/" + jobName);
-        cache.getListenable().addListener(listener);
+    public void addDataListener(final CuratorCacheListener listener) {
+        CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
+        cache.listenable().addListener(listener);
     }
     
     /**

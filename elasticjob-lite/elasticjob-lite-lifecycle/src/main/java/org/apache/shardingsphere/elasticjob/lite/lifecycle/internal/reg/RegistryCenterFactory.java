@@ -47,7 +47,7 @@ public final class RegistryCenterFactory {
      * @return registry center
      */
     public static CoordinatorRegistryCenter createCoordinatorRegistryCenter(final String connectString, final String namespace, final String digest) {
-        Hasher hasher = Hashing.md5().newHasher().putString(connectString, Charsets.UTF_8).putString(namespace, Charsets.UTF_8);
+        Hasher hasher = Hashing.sha256().newHasher().putString(connectString, Charsets.UTF_8).putString(namespace, Charsets.UTF_8);
         if (!Strings.isNullOrEmpty(digest)) {
             hasher.putString(digest, Charsets.UTF_8);
         }

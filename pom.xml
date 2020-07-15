@@ -47,10 +47,10 @@
         <springframework.version>[3.1.0.RELEASE,)</springframework.version>
         <springboot.version>2.3.1.RELEASE</springboot.version>
         
-        <guava.version>18.0</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.2</quartz.version>
-        <curator.version>2.10.0</curator.version>
+        <curator.version>5.1.0</curator.version>
         <lombok.version>1.18.12</lombok.version>
         <aspectj.version>1.9.1</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -69,7 +69,6 @@
         <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.7.21</mockito.version>
-        <unitils.core.version>3.4.2</unitils.core.version>
         
         <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
@@ -299,12 +298,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-inline</artifactId>
                 <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.unitils</groupId>
-                <artifactId>unitils-core</artifactId>
-                <version>${unitils.core.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

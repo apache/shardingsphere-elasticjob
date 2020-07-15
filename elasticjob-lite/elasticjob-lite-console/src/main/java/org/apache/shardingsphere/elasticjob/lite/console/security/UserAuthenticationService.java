@@ -66,7 +66,6 @@ public class UserAuthenticationService {
         String response = authorizationMap.get("response");
         String password;
         AuthenticationResult authenticationResult;
-        
         if (rootUsername.equals(username)) {
             password = rootPassword;
             authenticationResult = new AuthenticationResult(true, false);
@@ -76,10 +75,9 @@ public class UserAuthenticationService {
         } else {
             return new AuthenticationResult(false, false);
         }
-        
-        String hash1 = Hashing.md5().hashBytes((username + ":" + realm + ":" + password).getBytes()).toString();
-        String hash2 = Hashing.md5().hashBytes((method + ":" + uri).getBytes()).toString();
-        String exceptResponse = Hashing.md5().hashBytes((hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + hash2).getBytes()).toString();
+        String hash1 = Hashing.sha256().hashBytes((username + ":" + realm + ":" + password).getBytes()).toString();
+        String hash2 = Hashing.sha256().hashBytes((method + ":" + uri).getBytes()).toString();
+        String exceptResponse = Hashing.sha256().hashBytes((hash1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + hash2).getBytes()).toString();
         
         if (StringUtils.equals(response, exceptResponse)) {
             return authenticationResult;

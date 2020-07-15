@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
-import com.google.common.base.Strings;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -29,32 +29,37 @@ import org.apache.mesos.Protos.TaskInfo;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
  * Task executor.
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
 public final class TaskExecutor implements Executor {
     
-    private final ExecutorService executorService;
+    private final ElasticJob elasticJob;
     
-    private final Map<String, ClassPathXmlApplicationContext> applicationContexts = new HashMap<>();
+    private final String elasticJobType;
+    
+    private final ExecutorService executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
-    public TaskExecutor() {
-        executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
+    public TaskExecutor(final ElasticJob elasticJob) {
+        this(elasticJob, null);
+    }
+    
+    public TaskExecutor(final String elasticJobType) {
+        this(null, elasticJobType);
     }
     
     @Override
@@ -122,57 +127,26 @@ public final class TaskExecutor implements Executor {
             @SuppressWarnings("unchecked")
             JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
             try {
-                ElasticJob elasticJob = getElasticJobInstance(jobConfig);
-                final CloudJobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getTypeConfig(), jobEventBus);
+                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getJobConfig(), jobEventBus);
                 if (jobConfig.isTransient()) {
-                    if (null == elasticJob) {
-                        new ElasticJobExecutor(jobConfig.getTypeConfig().getJobClass(), jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                    } else {
-                        new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade).execute();
-                    }
-                    
+                    createElasticJobExecutor(jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
-                    new DaemonTaskScheduler(elasticJob, jobConfig.getTypeConfig().getJobClass(), jobConfig.getTypeConfig().getCoreConfig(), jobFacade, executorDriver, taskInfo.getTaskId()).init();
+                    new DaemonTaskScheduler(elasticJob, elasticJobType, jobConfig.getJobConfig(), jobFacade, executorDriver, taskInfo.getTaskId()).init();
                 }
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
                 // CHECKSTYLE:ON
-                log.error("ElasticJob Cloud Executor error", ex);
+                log.error("ElasticJob Cloud Executor error:", ex);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).setMessage(ExceptionUtils.transform(ex)).build());
                 executorDriver.stop();
                 throw ex;
             }
         }
         
-        private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
-            if (!Strings.isNullOrEmpty(jobConfig.getBeanName()) && !Strings.isNullOrEmpty(jobConfig.getApplicationContext())) {
-                return getElasticJobBean(jobConfig);
-            }
-            return getElasticJobClass(jobConfig);
-        }
-        
-        private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
-            String applicationContextFile = jobConfig.getApplicationContext();
-            if (null == applicationContexts.get(applicationContextFile)) {
-                synchronized (applicationContexts) {
-                    applicationContexts.computeIfAbsent(applicationContextFile, ClassPathXmlApplicationContext::new);
-                }
-            }
-            return (ElasticJob) applicationContexts.get(applicationContextFile).getBean(jobConfig.getBeanName());
-        }
-        
-        private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {
-            String jobClass = jobConfig.getTypeConfig().getJobClass();
-            try {
-                Class<?> elasticJobClass = Class.forName(jobClass);
-                if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
-                    throw new JobSystemException("ElasticJob: Class '%s' must implements ElasticJob interface.", jobClass);
-                }
-                return (ElasticJob) elasticJobClass.newInstance();
-            } catch (final ReflectiveOperationException ex) {
-                return null;
-            }
+        private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
+            return null == elasticJob
+                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade) : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
         }
     }
 }

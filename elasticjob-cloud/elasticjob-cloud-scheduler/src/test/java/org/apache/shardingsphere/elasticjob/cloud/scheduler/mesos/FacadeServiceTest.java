@@ -18,13 +18,12 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.collect.Sets;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
@@ -34,13 +33,15 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.Di
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.RunningService;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,7 +89,7 @@ public final class FacadeServiceTest {
     private FacadeService facadeService;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
         facadeService = new FacadeService(regCenter);
         ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
         ReflectionUtils.setFieldValue(facadeService, "appConfigService", appConfigService);
@@ -118,10 +119,10 @@ public final class FacadeServiceTest {
         for (JobContext each : actual) {
             switch (i) {
                 case 0:
-                    assertThat(each.getJobConfig().getJobName(), is("failover_job"));
+                    assertThat(each.getCloudJobConfig().getJobConfig().getJobName(), is("failover_job"));
                     break;
                 case 1:
-                    assertThat(each.getJobConfig().getJobName(), is("ready_job"));
+                    assertThat(each.getCloudJobConfig().getJobConfig().getJobName(), is("ready_job"));
                     break;
                 default:
                     break;
@@ -135,7 +136,7 @@ public final class FacadeServiceTest {
         facadeService.removeLaunchTasksFromQueue(Arrays.asList(
                 TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()),
                 TaskContext.from(TaskNode.builder().build().getTaskNodeValue())));
-        verify(failoverService).remove(Collections.singletonList(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
+        verify(failoverService).remove(Collections.singletonList(MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
         verify(readyService).remove(Sets.newHashSet("test_job"));
     }
     
@@ -203,9 +204,9 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertLoadJobConfig() {
-        Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
-        when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
-        assertThat(facadeService.load("test_job"), is(jobConfigOptional));
+        Optional<CloudJobConfiguration> cloudJobConfig = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+        when(jobConfigService.load("test_job")).thenReturn(cloudJobConfig);
+        assertThat(facadeService.load("test_job"), is(cloudJobConfig));
     }
     
     @Test

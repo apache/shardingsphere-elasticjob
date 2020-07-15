@@ -17,7 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public final class CloudAppConfigurationService {
      * @param appConfig cloud app configuration
      */
     public void add(final CloudAppConfiguration appConfig) {
-        regCenter.persist(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), CloudAppConfigurationGsonFactory.toJson(appConfig));
+        regCenter.persist(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(CloudAppConfigurationPOJO.fromCloudAppConfiguration(appConfig)));
     }
     
     /**
@@ -49,7 +52,7 @@ public final class CloudAppConfigurationService {
      * @param appConfig cloud app configuration
      */
     public void update(final CloudAppConfiguration appConfig) {
-        regCenter.update(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), CloudAppConfigurationGsonFactory.toJson(appConfig));
+        regCenter.update(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(CloudAppConfigurationPOJO.fromCloudAppConfiguration(appConfig)));
     }
     
     /**
@@ -59,7 +62,8 @@ public final class CloudAppConfigurationService {
      * @return cloud app configuration
      */
     public Optional<CloudAppConfiguration> load(final String appName) {
-        return Optional.ofNullable(CloudAppConfigurationGsonFactory.fromJson(regCenter.get(CloudAppConfigurationNode.getRootNodePath(appName))));
+        String configContent = regCenter.get(CloudAppConfigurationNode.getRootNodePath(appName));
+        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudAppConfigurationPOJO.class).toCloudAppConfiguration());
     }
     
     /**

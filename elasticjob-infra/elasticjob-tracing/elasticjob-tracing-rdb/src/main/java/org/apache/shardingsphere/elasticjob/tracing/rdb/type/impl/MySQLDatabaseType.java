@@ -30,16 +30,6 @@ public final class MySQLDatabaseType implements DatabaseType {
     }
     
     @Override
-    public String getDatabaseProductName() {
-        return "MySQL";
-    }
-    
-    @Override
-    public String getSQLPropertiesFile() {
-        return "mysql.properties";
-    }
-    
-    @Override
     public int getDuplicateRecordErrorCode() {
         return 1062;
     }

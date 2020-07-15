@@ -17,18 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.yaml.YamlJobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import java.util.List;
 
@@ -74,7 +73,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().isShutdown(jobName) && isFailoverEnabled() && Type.NODE_REMOVED == eventType && instanceNode.isInstancePath(path)) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && isFailoverEnabled() && Type.NODE_DELETED == eventType && instanceNode.isInstancePath(path)) {
                 String jobInstanceId = path.substring(instanceNode.getInstanceFullPath().length() + 1);
                 if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
                     return;
@@ -99,7 +98,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !YamlEngine.unmarshal(data, YamlJobConfiguration.class).toJobConfiguration().isFailover()) {
+            if (configNode.isConfigPath(path) && Type.NODE_CHANGED == eventType && !YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration().isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }

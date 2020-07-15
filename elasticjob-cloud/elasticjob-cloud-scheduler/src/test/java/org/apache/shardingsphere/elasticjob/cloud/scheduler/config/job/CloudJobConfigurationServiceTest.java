@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -40,6 +41,24 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationServiceTest {
     
+    private static final String YAML = "appName: test_app\n"
+            + "cpuCount: 1.0\n"
+            + "cron: 0/30 * * * * ?\n"
+            + "description: ''\n"
+            + "disabled: false\n"
+            + "failover: true\n"
+            + "jobExecutionType: TRANSIENT\n"
+            + "jobName: test_job\n"
+            + "jobParameter: ''\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "memoryMB: 128.0\n"
+            + "misfire: true\n"
+            + "monitorExecution: true\n"
+            + "overwrite: false\n"
+            + "reconcileIntervalMinutes: 10\n"
+            + "shardingItemParameters: ''\n"
+            + "shardingTotalCount: 10\n";
+        
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
@@ -48,23 +67,16 @@ public final class CloudJobConfigurationServiceTest {
     
     @Test
     public void assertAdd() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
-        configService.add(jobConfig);
-        verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
+        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        configService.add(cloudJobConfig);
+        verify(regCenter).persist("/config/job/test_job", YAML);
     }
     
     @Test
     public void assertUpdate() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
-        configService.update(jobConfig);
-        verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
-    }
-    
-    @Test
-    public void assertAddSpringJob() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudSpringJobConfiguration("test_spring_job");
-        configService.add(jobConfig);
-        verify(regCenter).persist("/config/job/test_spring_job", CloudJsonConstants.getSpringJobJson());
+        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        configService.update(cloudJobConfig);
+        verify(regCenter).update("/config/job/test_job", YAML);
     }
     
     @Test
@@ -81,7 +93,7 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
-        assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
+        assertThat(actual.iterator().next().getJobConfig().getJobName(), is("test_job_1"));
         verify(regCenter).isExisted("/config/job");
         verify(regCenter).getChildrenKeys("/config/job");
         verify(regCenter).get("/config/job/test_job_1");
@@ -98,7 +110,7 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getJobName(), is("test_job"));
+        assertThat(actual.get().getJobConfig().getJobName(), is("test_job"));
     }
     
     @Test
@@ -106,8 +118,6 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
-        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

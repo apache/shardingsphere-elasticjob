@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
@@ -34,21 +33,22 @@ import org.apache.mesos.Protos.OfferID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.api.JobType;
-import org.apache.shardingsphere.elasticjob.cloud.config.script.ScriptJobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,7 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Task launch schedule service.
@@ -152,60 +154,59 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private Protos.TaskInfo getTaskInfo(final Protos.Offer offer, final TaskAssignmentResult taskAssignmentResult) {
         TaskContext taskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfigOptional.isPresent()) {
+        Optional<CloudJobConfiguration> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
+        if (!cloudJobConfig.isPresent()) {
             return null;
         }
-        CloudJobConfiguration jobConfig = jobConfigOptional.get();
-        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(jobConfig.getAppName());
-        if (!appConfigOptional.isPresent()) {
+        Optional<CloudAppConfiguration> appConfig = facadeService.loadAppConfig(cloudJobConfig.get().getAppName());
+        if (!appConfig.isPresent()) {
             return null;
         }
-        CloudAppConfiguration appConfig = appConfigOptional.get();
         taskContext.setSlaveId(offer.getSlaveId().getValue());
-        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig, jobConfig);
-        boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
-        String script = appConfig.getBootstrapScript();
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get());
+        boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == cloudJobConfig.get().getJobExecutionType()
+                && cloudJobConfig.get().getJobConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
+        String script = appConfig.get().getBootstrapScript();
         if (isCommandExecutor) {
-            script = ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine();
+            script = cloudJobConfig.get().getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
-        Protos.CommandInfo.URI uri = buildURI(appConfig, isCommandExecutor);
+        Protos.CommandInfo.URI uri = buildURI(appConfig.get(), isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
         if (isCommandExecutor) {
-            return buildCommandExecutorTaskInfo(taskContext, jobConfig, shardingContexts, offer, command);
+            return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get(), shardingContexts, offer, command);
         } else {
-            return buildCustomizedExecutorTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, offer, command);
+            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get(), shardingContexts, offer, command);
         }
     }
     
-    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig) {
-        Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
+    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration cloudJobConfig) {
+        Map<Integer, String> shardingItemParameters = new ShardingItemParameters(cloudJobConfig.getJobConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.getOrDefault(shardingItem, ""));
-        return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
-                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
+        return new ShardingContexts(taskContext.getId(), cloudJobConfig.getJobConfig().getJobName(), cloudJobConfig.getJobConfig().getShardingTotalCount(),
+                cloudJobConfig.getJobConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
     
-    private Protos.TaskInfo buildCommandExecutorTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
+    private Protos.TaskInfo buildCommandExecutorTaskInfo(final TaskContext taskContext, final CloudJobConfiguration cloudJobConfig, final ShardingContexts shardingContexts,
                                                          final Protos.Offer offer, final Protos.CommandInfo command) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
-                .addResources(buildResource("cpus", jobConfig.getCpuCount(), offer.getResourcesList()))
-                .addResources(buildResource("mem", jobConfig.getMemoryMB(), offer.getResourcesList()))
-                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
+                .addResources(buildResource("cpus", cloudJobConfig.getCpuCount(), offer.getResourcesList()))
+                .addResources(buildResource("mem", cloudJobConfig.getMemoryMB(), offer.getResourcesList()))
+                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, cloudJobConfig).serialize()));
         return result.setCommand(command).build();
     }
     
-    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, 
+    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration cloudJobConfig, 
                                                             final ShardingContexts shardingContexts, final Protos.Offer offer, final Protos.CommandInfo command) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
-                .addResources(buildResource("cpus", jobConfig.getCpuCount(), offer.getResourcesList()))
-                .addResources(buildResource("mem", jobConfig.getMemoryMB(), offer.getResourcesList()))
-                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
+                .addResources(buildResource("cpus", cloudJobConfig.getCpuCount(), offer.getResourcesList()))
+                .addResources(buildResource("mem", cloudJobConfig.getMemoryMB(), offer.getResourcesList()))
+                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, cloudJobConfig).serialize()));
         Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder()
-                .setValue(taskContext.getExecutorId(jobConfig.getAppName()))).setCommand(command)
+                .setValue(taskContext.getExecutorId(cloudJobConfig.getAppName()))).setCommand(command)
                 .addResources(buildResource("cpus", appConfig.getCpuCount(), offer.getResourcesList()))
                 .addResources(buildResource("mem", appConfig.getMemoryMB(), offer.getResourcesList()));
         if (env.getTracingConfiguration().isPresent()) {
@@ -229,11 +230,15 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         if (isCommandExecutor) {
             CommandLine commandLine = CommandLine.parse(script);
             commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
-            result.setValue(Joiner.on(" ").join(commandLine.getExecutable(), Joiner.on(" ").join(commandLine.getArguments())));
+            result.setValue(new StringJoiner("-").add(commandLine.getExecutable()).add(getArguments(commandLine)).toString());
         } else {
             result.setValue(script);
         }
         return result.build();
+    }
+    
+    private String getArguments(final CommandLine commandLine) {
+        return Arrays.stream(commandLine.getArguments()).collect(Collectors.joining(" "));
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {
@@ -242,7 +247,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
-        TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
+        MetaInfo metaInfo = taskContext.getMetaInfo();
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                 Source.CLOUD_SCHEDULER, taskContext.getType().toString(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {

@@ -26,8 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
+import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -43,6 +44,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +57,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;
     
-    private final Map<String, TreeCache> caches = new ConcurrentHashMap<>();
+    private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
     
     @Getter
     private CuratorFramework client;
@@ -108,7 +110,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void close() {
-        for (Entry<String, TreeCache> each : caches.entrySet()) {
+        for (Entry<String, CuratorCache> each : caches.entrySet()) {
             each.getValue().close();
         }
         waitForCacheClose();
@@ -130,19 +132,19 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public String get(final String key) {
-        TreeCache cache = findTreeCache(key);
+        CuratorCache cache = findCuratorCache(key);
         if (null == cache) {
             return getDirectly(key);
         }
-        ChildData resultInCache = cache.getCurrentData(key);
-        if (null != resultInCache) {
-            return null == resultInCache.getData() ? null : new String(resultInCache.getData(), Charsets.UTF_8);
+        Optional<ChildData> resultInCache = cache.get(key);
+        if (resultInCache.isPresent()) {
+            return null == resultInCache.get().getData() ? null : new String(resultInCache.get().getData(), Charsets.UTF_8);
         }
         return getDirectly(key);
     }
     
-    private TreeCache findTreeCache(final String key) {
-        for (Entry<String, TreeCache> entry : caches.entrySet()) {
+    private CuratorCache findCuratorCache(final String key) {
+        for (Entry<String, CuratorCache> entry : caches.entrySet()) {
             if (key.startsWith(entry.getKey())) {
                 return entry.getValue();
             }
@@ -221,7 +223,8 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public void update(final String key, final String value) {
         try {
-            client.inTransaction().check().forPath(key).and().setData().forPath(key, value.getBytes(Charsets.UTF_8)).and().commit();
+            TransactionOp transactionOp = client.transactionOp();
+            client.transaction().forOperations(transactionOp.check().forPath(key), transactionOp.setData().forPath(key, value.getBytes(Charsets.UTF_8)));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -299,7 +302,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void addCacheData(final String cachePath) {
-        TreeCache cache = new TreeCache(client, cachePath);
+        CuratorCache cache = CuratorCache.build(client, cachePath);
         try {
             cache.start();
         //CHECKSTYLE:OFF
@@ -312,7 +315,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void evictCacheData(final String cachePath) {
-        TreeCache cache = caches.remove(cachePath + "/");
+        CuratorCache cache = caches.remove(cachePath + "/");
         if (null != cache) {
             cache.close();
         }

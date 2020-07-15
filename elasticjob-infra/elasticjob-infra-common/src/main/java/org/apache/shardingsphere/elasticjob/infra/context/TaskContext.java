@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.infra.context;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import lombok.EqualsAndHashCode;
@@ -28,6 +27,7 @@ import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,7 +62,7 @@ public final class TaskContext {
         metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
-        id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
+        id = new StringJoiner(DELIMITER).add(metaInfo.toString()).add(type.toString()).add(slaveId).add(UUID.randomUUID().toString()).toString();
     }
     
     private TaskContext(final String id, final MetaInfo metaInfo, final ExecutionType type, final String slaveId) {
@@ -110,7 +110,7 @@ public final class TaskContext {
      * @return task name
      */
     public String getTaskName() {
-        return Joiner.on(DELIMITER).join(metaInfo, type, slaveId);
+        return new StringJoiner(DELIMITER).add(metaInfo.toString()).add(type.toString()).add(slaveId).toString();
     }
 
     /**
@@ -120,7 +120,7 @@ public final class TaskContext {
      * @return executor ID
      */
     public String getExecutorId(final String appName) {
-        return Joiner.on(DELIMITER).join(appName, slaveId);
+        return new StringJoiner(DELIMITER).add(appName).add(slaveId).toString();
     }
 
     /**
@@ -150,7 +150,7 @@ public final class TaskContext {
         
         @Override
         public String toString() {
-            return Joiner.on(DELIMITER).join(jobName, Joiner.on(",").join(shardingItems));
+            return new StringJoiner(DELIMITER).add(jobName).add(shardingItems.stream().map(Object::toString).collect(Collectors.joining(","))).toString();
         }
     }
 }

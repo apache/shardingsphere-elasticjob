@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.Test;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +45,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetZookeeperConfiguration() throws NoSuchFieldException {
+    public void assertGetZookeeperConfiguration() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.ZOOKEEPER_DIGEST.getKey(), "test");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
@@ -68,7 +68,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetEventTraceRdbConfiguration() throws NoSuchFieldException {
+    public void assertGetEventTraceRdbConfiguration() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
@@ -85,7 +85,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetEventTraceRdbConfigurationMap() throws NoSuchFieldException {
+    public void assertGetEventTraceRdbConfigurationMap() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
@@ -100,7 +100,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertReconcileConfiguration() throws NoSuchFieldException {
+    public void assertReconcileConfiguration() {
         FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
         assertThat(configuration.getReconcileIntervalMinutes(), is(-1));
         assertFalse(configuration.isEnabledReconcile());

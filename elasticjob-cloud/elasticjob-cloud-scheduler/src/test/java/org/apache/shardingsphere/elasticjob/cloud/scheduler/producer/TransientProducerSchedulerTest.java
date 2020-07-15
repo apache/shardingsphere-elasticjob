@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
+import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,6 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,16 +49,16 @@ public final class TransientProducerSchedulerTest {
 
     private TransientProducerScheduler transientProducerScheduler;
     
-    private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+    private final CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
+    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(cloudJobConfig.getJobConfig().getCron()).build();
     
-    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
-                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getTypeConfig().getCoreConfig().getCron())
+    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cloudJobConfig.getJobConfig().getCron())
+                        .withSchedule(CronScheduleBuilder.cronSchedule(cloudJobConfig.getJobConfig().getCron())
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
-    public void setUp() throws NoSuchFieldException, SchedulerException {
+    public void setUp() {
         transientProducerScheduler = new TransientProducerScheduler(readyService);
         ReflectionUtils.setFieldValue(transientProducerScheduler, "scheduler", scheduler);
     }
@@ -66,15 +66,15 @@ public final class TransientProducerSchedulerTest {
     @Test
     public void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
-        transientProducerScheduler.register(jobConfig);
+        transientProducerScheduler.register(cloudJobConfig);
         verify(scheduler).checkExists(jobDetail.getKey());
         verify(scheduler).scheduleJob(jobDetail, trigger);
     }
     
     @Test
     public void assertDeregister() throws SchedulerException {
-        transientProducerScheduler.deregister(jobConfig);
-        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getTypeConfig().getCoreConfig().getCron()));
+        transientProducerScheduler.deregister(cloudJobConfig);
+        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(cloudJobConfig.getJobConfig().getCron()));
     }
     
     @Test

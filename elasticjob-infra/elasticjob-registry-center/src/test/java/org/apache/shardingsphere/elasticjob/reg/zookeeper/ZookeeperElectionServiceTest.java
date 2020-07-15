@@ -62,7 +62,7 @@ public class ZookeeperElectionServiceTest {
         anotherClient.start();
         anotherClient.blockUntilConnected();
         anotherService.start();
-        KillSession.kill(client.getZookeeperClient().getZooKeeper(), EmbedTestingServer.getConnectionString());
+        KillSession.kill(client.getZookeeperClient().getZooKeeper());
         service.stop();
         verify(anotherElectionCandidate).startLeadership();
     }

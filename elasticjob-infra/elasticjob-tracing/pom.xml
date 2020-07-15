@@ -32,5 +32,6 @@
     <modules>
         <module>elasticjob-tracing-api</module>
         <module>elasticjob-tracing-rdb</module>
+        <module>elasticjob-tracing-spring-boot-starter</module>
     </modules>
 </project>
