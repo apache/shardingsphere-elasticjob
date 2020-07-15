@@ -1,3 +1,33 @@
-baseurl = "https://shardingsphere.apache.org/elasticjob/lite"
+baseURL = "https://shardingsphere.apache.org/elasticjob/current/"
 canonifyurls = true
+languageCode = "en-us"
+title = "ElasticJob"
 theme = "hugo-theme-learn"
+
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir= true
+
+[Languages]
+[Languages.en]
+#baseURL = "https://shardingsphere.apache.org/elasticjob/current/"
+title = "ElasticJob"
+weight = 1
+languageName = "English"
+
+[Languages.cn]
+#baseURL = "https://shardingsphere.apache.org/elasticjob/current/"
+title = "ElasticJob"
+weight = 2
+languageName = "Chinese"
+
+[params]
+  # Change default color scheme with a variant one. Can be "red", "blue", "green".
+  themeVariant = "black"
+  # Disable search function. It will hide search bar
+  disableSearch = true
+
+[markup]
+[markup.tableOfContents]
+endLevel = 3
+ordered = false
+startLevel = 2

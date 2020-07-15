@@ -1,0 +1,98 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="box-body">
+    <div role="tabpanel" class="tab-pane active" onsubmit="return false;">
+        <form id="app-form" class="form-horizontal">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-name" class="col-sm-6 control-label" data-lang="app-name"><i>*</i></label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="yourappName" id="app-name" name="appName" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="bootstrap-script" class="col-sm-6 control-label" data-lang="app-bootstrap-script"><i>*</i></label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="bin/start.sh" id="bootstrap-script" name=bootstrapScript class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="cpu-count" class="col-sm-6 control-label" data-lang="app-cpu-count"><i>*</i></label>
+                        <div class="col-sm-6">
+                            <input type="number" value="1.0" min="0.1" step="0.1" id="cpu-count" name="cpuCount" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-memory" class="col-sm-6 control-label" data-lang="app-memory"><i>*</i></label>
+                        <div class="col-sm-6">
+                            <input type="number" value="128" min="16" id="app-memory" name="appMemory" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="event-trace-sampling-count" class="col-sm-6 control-label" data-lang="app-event-trace-sampling-count"><i>*</i></label>
+                        <div class="col-sm-6">
+                            <input type="number" value="0" min="0" id="event-trace-sampling-count" name="eventTraceSamplingCount" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-cache-enable" class="col-sm-6 control-label" data-lang="app-cache-enable"></label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" checked="checked"  id="app-cache-enable" name="appCacheEnable" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="width-appURL">
+                        <label for="app-url" class="col-sm-2 control-label" data-lang="app-url"><i>*</i></label>
+                        <div class="col-sm-8">
+                            <div class="app-width-size">
+                                <input type="text" placeholder="http://file_host:8080/foo-job.tar.gz" id="app-url" name="appURL" class="form-control" data-toggle="tooltip" data-placement="bottom" title="必须是可以通过网络访问到的路径。如：http://file_host:8080/your-job.tar.gz"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="center-font">
+                    <button id="save-button" type="submit" class="btn-xs btn-primary" data-lang="operation-submit"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/app/app_common.js"></script>
+<script src="js/app/add_app.js"></script>

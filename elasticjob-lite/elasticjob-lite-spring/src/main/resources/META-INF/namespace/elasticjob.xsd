@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<xsd:schema xmlns="http://shardingsphere.apache.org/schema/elasticjob"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://shardingsphere.apache.org/schema/elasticjob"
+            elementFormDefault="qualified">
+    
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
+    
+    <xsd:element name="listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="distributed-listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" use="required" />
+            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="job">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:all>
+                        <xsd:element ref="beans:props" minOccurs="0" />
+                        <xsd:element ref="listener" minOccurs="0" />
+                        <xsd:element ref="distributed-listener" minOccurs="0" />
+                    </xsd:all>
+                    <xsd:attribute name="job-ref" type="xsd:string" />
+                    <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                    <xsd:attribute name="tracing-ref" type="xsd:string" />
+                    <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
+                    <xsd:attribute name="cron" type="xsd:string" />
+                    <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
+                    <xsd:attribute name="job-parameter" type="xsd:string" />
+                    <xsd:attribute name="monitor-execution" type="xsd:string" default="true" />
+                    <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1" />
+                    <xsd:attribute name="failover" type="xsd:string" default="false" />
+                    <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10" />
+                    <xsd:attribute name="misfire" type="xsd:string" default="true" />
+                    <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
+                    <xsd:attribute name="job-executor-service-handler-type" type="xsd:string" />
+                    <xsd:attribute name="job-error-handler-type" type="xsd:string" />
+                    <xsd:attribute name="description" type="xsd:string" />
+                    <xsd:attribute name="disabled" type="xsd:string" default="false" />
+                    <xsd:attribute name="overwrite" type="xsd:string" default="false" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="zookeeper">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="server-lists" type="xsd:string" use="required" />
+                    <xsd:attribute name="namespace" type="xsd:string" use="required" />
+                    <xsd:attribute name="base-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-retries" type="xsd:string" />
+                    <xsd:attribute name="session-timeout-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="connection-timeout-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="digest" type="xsd:string" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="rdb-event-trace">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="data-source-ref" type="xsd:string" use="required" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="snapshot">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                    <xsd:attribute name="dump-port" type="xsd:string" default="-1" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

@@ -1,0 +1,158 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="box-body">
+    <div role="tabpanel" class="tab-pane active" onsubmit="return false;">
+        <form id="job-config-form" class="form-horizontal">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="job-name" class="col-sm-6 control-label" data-lang="job-name"></label>
+                            <div class="col-sm-6">
+                                <input type="text" id="job-name" name="jobName" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="cron" class="col-sm-6 control-label" data-lang="job-cron"></label>
+                            <div class="col-sm-6">
+                                <input type="text" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业启动时间的cron表达式" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="sharding-total-count" class="col-sm-6 control-label" data-lang="job-sharding-total-count"></label>
+                            <div class="col-sm-6">
+                                <input type="number" min=1 id="sharding-total-count" name="shardingTotalCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业分片总数"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="job-parameter" class="col-sm-6 control-label" data-lang="job-parameter"></label>
+                            <div class="col-sm-6">
+                                <input type="text" id="job-parameter" name="jobParameter" class="form-control" data-toggle="tooltip" data-placement="bottom" title="可以配置多个相同的作业，但是用不同的参数作为不同的调度实例" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="max-time-diff-seconds" class="col-sm-6 control-label" data-lang="job-max-time-diff-seconds"></label>
+                            <div class="col-sm-6">
+                                <input type="number" id="max-time-diff-seconds" name="maxTimeDiffSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="如果时间误差超过配置秒数则作业启动时将抛异常。配置为-1表示不检查时间误差。" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="reconcile-interval-minutes" class="col-sm-6 control-label" data-lang="job-reconcile-interval-minutes"></label>
+                            <div class="col-sm-6">
+                                <input type="number" id="reconcile-interval-minutes" name="reconcileIntervalMinutes" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复周期。配置为-1表示不启用修复动作。" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="monitor-execution" class="col-sm-6 control-label" data-lang="job-monitor-execution"></label>
+                            <div class="col-sm-6">
+                                <input type="checkbox" id="monitor-execution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="failover" class="col-sm-6 control-label" data-lang="job-failover"></label>
+                            <div class="col-sm-6">
+                                <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="是否开启任务执行失效转移，开启表示如果作业在一次任务执行中途宕机，允许将该次未完成的任务在另一作业节点上补偿执行。" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="misfire" class="col-sm-6 control-label" data-lang="job-misfire"></label>
+                            <div class="col-sm-6">
+                                <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <div id="streaming-process-group" hidden="hidden">
+                                <label for="streaming-process" class="col-sm-6 control-label" data-lang="job-streaming-process"></label>
+                                <div class="col-sm-6">
+                                    <input type="checkbox" id="streaming-process" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sharding-item-parameters" class="col-sm-2 control-label" data-lang="job-sharding-item-parameters"></label>
+                    <div class="col-sm-9">
+                        <textarea id="sharding-item-parameters" name="shardingItemParameters" class="form-control" data-toggle="tooltip" data-placement="bottom" title="分片序列号和参数用等号分隔，多个键值对用逗号分隔，类似map。分片序列号从0开始，不可大于或等于作业分片总数。如：0=a,1=b,2=c"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job-sharding-strategy-type" class="col-sm-2 control-label" data-lang="job-sharding-strategy-type"></label>
+                    <div class="col-sm-9">
+                        <input type="text" id="job-sharding-strategy-type" name="jobShardingStrategyType" class="form-control" data-toggle="tooltip" data-placement="bottom" title="默认使用按照IP地址顺序分片策略，可参照文档定制化分片策略" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job-executor-service-handler-type" class="col-sm-2 control-label" data-lang="job-executor-service-handler-type"></label>
+                    <div class="col-sm-9">
+                        <input type="text" id="job-executor-service-handler-type" name="jobExecutorServiceHandlerType" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job-error-handler-type" class="col-sm-2 control-label" data-lang="job-error-handler-type"></label>
+                    <div class="col-sm-9">
+                        <input type="text" id="job-error-handler-type" name="jobErrorHandlerType" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`JobErrorHandler`接口，定制异常处理流程，默认实现是记录日志但不抛出异常。" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-sm-2 control-label" data-lang="job-description"></label>
+                    <div class="col-sm-9">
+                        <textarea id="description" name="description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group" id="script-command-line-group" hidden="hidden">
+                    <label for="script-command-line" class="col-sm-2 control-label" data-lang="job-script-command-line"></label>
+                    <div class="col-sm-9">
+                        <input type="text" id="script-command-line" name="scriptCommandLine" class="form-control" data-toggle="tooltip" data-placement="bottom" title="执行脚本的全路径名称，可以包含参数" />
+                    </div>
+                </div>
+                <button type="reset" class="btn-xs btn-inverse" id="reset" data-lang="operation-reset"></button>
+                <button id="update-job-info-btn" type="submit" class="btn-xs btn-primary" data-lang="operation-submit"></button>
+            </form>
+    </div>
+</div>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/util/common.js"></script>
+<script src="js/status/job/job_config.js"></script>

@@ -1,114 +1,64 @@
-# Elastic-Job - 分布式作业调度解决方案
-[![Total Lines](https://tokei.rs/b1/github/elasticjob/elastic-job-lite?category=lines)](https://github.com/elasticjob/elastic-job-lite)
-[![Build Status](https://secure.travis-ci.org/elasticjob/elastic-job-lite.png?branch=master)](https://travis-ci.org/elasticjob/elastic-job-lite)
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/elaticjob.shardingsphere.apache.org/elastic-job-lite/badge.svg)](https://maven-badges.herokuapp.com/maven-central/elaticjob.shardingsphere.apache.org/elastic-job-lite)
-[![Gitter](https://badges.gitter.im/Elastic-JOB/elastic-job-lite.svg)](https://gitter.im/Elastic-JOB/elasticjob?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
-[![GitHub release](https://img.shields.io/github/release/elasticjob/elastic-job.svg)](https://github.com/elasticjob/elastic-job/releases)
+# [ElasticJob - 分布式作业调度解决方案](http://shardingsphere.apache.org/elasticjob/)
+
+**官方网站: https://shardingsphere.apache.org/elasticjob/**
+
+[![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
+
+ElasticJob 是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
+
+ElasticJob-Lite 定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务；
+ElasticJob-Cloud 使用 Mesos + Docker（TODO）的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
+
+ElasticJob 的各个产品使用统一的作业 API，开发者仅需要一次开发，即可随意部署。
+
+ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://shardingsphere.apache.org/) 的子项目。
+欢迎通过[邮件列表](mailto:dev@shardingsphere.apache.org)参与讨论。
+
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-# 概述
+[![GitHub release](https://img.shields.io/github/release/apache/shardingsphere-elasticjob.svg)](https://github.com/apache/shardingsphere-elasticjob/releases)
 
-Elastic-Job是一个分布式调度解决方案，由两个相互独立的子项目Elastic-Job-Lite和Elastic-Job-Cloud组成。
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
+[![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
 
-Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供分布式任务的协调服务。
+## 架构图
 
-# 功能列表
+### ElasticJob-Lite
 
-* 分布式调度协调
-* 弹性扩容缩容
-* 失效转移
-* 错过执行作业重触发
-* 作业分片一致性，保证同一分片在分布式环境中仅一个执行实例
-* 自诊断并修复分布式不稳定造成的问题
-* 支持并行调度
-* 支持作业生命周期操作
-* 丰富的作业类型
-* Spring整合以及命名空间提供
-* 运维平台
+![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
-# 架构图
+### ElasticJob-Cloud
 
-## Elastic-Job-Lite
+![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
-![Elastic-Job-Lite Architecture](docs/static/img/architecture/elastic_job_lite.png)
+## 功能列表
 
+- 弹性调度
+  - 支持任务在分布式场景下的分片和高可用
+  - 能够水平扩展任务的吞吐量和执行效率
+  - 任务处理能力随资源配备弹性伸缩
 
-# [Release Notes](https://github.com/elasticjob/elastic-job/releases)
+- 资源分配
+  - 在适合的时间将适合的资源分配给任务并使其生效
+  - 相同任务聚合至相同的执行器统一处理
+  - 动态调配追加资源至新分配的任务
 
-# [Roadmap](ROADMAP.md)
+- 作业治理
+  - 失效转移
+  - 错过作业重新执行
+  - 自诊断修复
 
-# 快速入门
+- 作业依赖(TODO)
+  - 基于有向无环图（DAG）的作业间依赖
+  - 基于有向无环图（DAG）的作业分片间依赖
 
-## 引入maven依赖
+- 作业开放生态
+  - 可扩展的作业类型统一接口
+  - 丰富的作业类型库，如数据流、脚本、HTTP、文件、大数据等
+  - 易于对接业务作业，能够与 Spring 依赖注入无缝整合
 
-```xml
-<!-- 引入elastic-job-lite核心模块 -->
-<dependency>
-    <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-core</artifactId>
-    <version>${latest.release.version}</version>
-</dependency>
-
-<!-- 使用springframework自定义命名空间时引入 -->
-<dependency>
-    <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elastic-job-lite-spring</artifactId>
-    <version>${latest.release.version}</version>
-</dependency>
-```
-
-## 作业开发
-
-```java
-public class MyElasticJob implements SimpleJob {
-    
-    @Override
-    public void execute(ShardingContext context) {
-        switch (context.getShardingItem()) {
-            case 0: 
-                // do something by sharding item 0
-                break;
-            case 1: 
-                // do something by sharding item 1
-                break;
-            case 2: 
-                // do something by sharding item 2
-                break;
-            // case n: ...
-        }
-    }
-}
-```
-
-## 作业配置
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://elasticjob.shardingsphere.apache.org/schema/reg"
-    xmlns:job="http://elasticjob.shardingsphere.apache.org/schema/job"
-    xmlns:monitor="http://elasticjob.shardingsphere.apache.org/schema/monitor"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/reg
-                        http://elasticjob.shardingsphere.apache.org/schema/reg/reg.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/job
-                        http://elasticjob.shardingsphere.apache.org/schema/job/job.xsd
-                        http://elasticjob.shardingsphere.apache.org/schema/monitor
-                        http://elasticjob.shardingsphere.apache.org/schema/monitor/monitor.xsd
-                        ">
-    <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="elastic-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
-   
-    <!--配置任务监控 -->
-    <monitor:embed id="monitor1" registry-center-ref="regCenter" monitor-port="9999"/>    
-
-    <!--配置作业类 -->
-    <bean id="simpleJob" class="xxx.MyElasticJob" />
-    
-    <!--配置作业 -->
-    <job:simple id="oneOffElasticJob" job-ref="simpleJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
-</beans>
-```
+- 可视化管控端
+  - 作业管控端
+  - 作业执行历史数据追踪
+  - 注册中心管理

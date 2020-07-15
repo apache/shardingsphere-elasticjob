@@ -18,25 +18,27 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>elastic-job-example</artifactId>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-example</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
     <version>3.0.0.M1-SNAPSHOT</version>
     
     <modules>
-        <module>elastic-job-example-jobs</module>
-        <module>elastic-job-example-embed-zk</module>
+        <module>elasticjob-example-jobs</module>
+        <module>elasticjob-example-embed-zk</module>
         
-        <module>elastic-job-example-lite-java</module>
-        <module>elastic-job-example-lite-spring</module>
-        <module>elastic-job-example-lite-springboot</module>
+        <module>elasticjob-example-lite-java</module>
+        <module>elasticjob-example-lite-spring</module>
+        <module>elasticjob-example-lite-springboot</module>
+        
+        <module>elasticjob-example-cloud</module>
     </modules>
     
     <properties>
         <java.version>1.8</java.version>
         <elastic-job.version>3.0.0.M1-SNAPSHOT</elastic-job.version>
-        <curator.version>2.10.0</curator.version>
+        <curator.version>5.1.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
@@ -49,18 +51,24 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <artifactId>elastic-job-common-core</artifactId>
+                <artifactId>elasticjob-lite-core</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>
             <dependency>
-                <artifactId>elastic-job-lite-core</artifactId>
+                <groupId>org.apache.shardingsphere.elasticjob</groupId>
+                <artifactId>elasticjob-simple-executor</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>elasticjob-lite-spring</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>
+
             <dependency>
-                <artifactId>elastic-job-lite-spring</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
+                <artifactId>elasticjob-cloud-executor</artifactId>
                 <version>${elastic-job.version}</version>
             </dependency>
             
