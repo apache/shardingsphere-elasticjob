@@ -41,6 +41,7 @@ import org.springframework.context.annotation.Import;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Configuration
 @AutoConfigureAfter(ElasticJobRegistryCenterAutoConfiguration.class)
@@ -60,27 +61,33 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     @PostConstruct
     public void createJobBootstrapBeans() throws ClassNotFoundException {
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
-
         // TODO Looking for a better way
-        final SingletonBeanRegistry beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
-
-        final CoordinatorRegistryCenter registryCenter = applicationContext.getBean(CoordinatorRegistryCenter.class);
-        TracingConfiguration<?> tracingConfiguration = null;
-        Map<String, TracingConfiguration> tracingConfigurationBeans = this.applicationContext.getBeansOfType(TracingConfiguration.class);
-        if (tracingConfigurationBeans.size() == 1) {
-            tracingConfiguration = tracingConfigurationBeans.values().stream().findAny().orElse(null);
-        } else if (tracingConfigurationBeans.size() > 1) {
-            throw new BeanCreationException(
-                    "More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
-                            + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticjobTracingAutoConfiguration].");
+        SingletonBeanRegistry beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+        CoordinatorRegistryCenter registryCenter = applicationContext.getBean(CoordinatorRegistryCenter.class);
+        TracingConfiguration tracingConfiguration = getTracingConfiguration();
+        registerClassedJobs(elasticJobProperties, beanFactory, registryCenter, tracingConfiguration);
+        registerTypedJobs(elasticJobProperties, beanFactory, registryCenter, tracingConfiguration);
+    }
+    
+    private TracingConfiguration getTracingConfiguration() {
+        Map<String, TracingConfiguration> tracingConfigurationBeans = applicationContext.getBeansOfType(TracingConfiguration.class);
+        if (tracingConfigurationBeans.isEmpty()) {
+            return null;
         }
-
-        for (String elasticJobClassName : elasticJobProperties.getClassed().keySet()) {
-            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobProperties.getClassed().get(elasticJobClassName);
-            for (JobConfigurationPOJO jobConfigurationPojo : jobConfigurationPojoList) {
-                JobConfiguration jobConfiguration = jobConfigurationPojo.toJobConfiguration();
-                ElasticJob elasticJob = (ElasticJob) applicationContext.getBean(
-                        Thread.currentThread().getContextClassLoader().loadClass(elasticJobClassName));
+        if (1 == tracingConfigurationBeans.size()) {
+            return tracingConfigurationBeans.values().iterator().next();
+        }
+        throw new BeanCreationException(
+                "More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
+                        + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticjobTracingAutoConfiguration].");
+    }
+    
+    private void registerClassedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory,
+                                     final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) throws ClassNotFoundException {
+        for (Entry<String, List<JobConfigurationPOJO>> entry : elasticJobProperties.getClassed().entrySet()) {
+            for (JobConfigurationPOJO each : entry.getValue()) {
+                JobConfiguration jobConfiguration = each.toJobConfiguration();
+                ElasticJob elasticJob = (ElasticJob) applicationContext.getBean(Thread.currentThread().getContextClassLoader().loadClass(entry.getKey()));
                 if (Strings.isNullOrEmpty(jobConfiguration.getCron())) {
                     beanFactory.registerSingleton(jobConfiguration.getJobName() + "OneOffJobBootstrap", new OneOffJobBootstrap(registryCenter, elasticJob, jobConfiguration, tracingConfiguration));
                 } else {
@@ -89,16 +96,19 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                 }
             }
         }
-        for (String each : elasticJobProperties.getTyped().keySet()) {
-            List<JobConfigurationPOJO> jobConfigurationPojoList = elasticJobProperties.getTyped().get(each);
-            for (JobConfigurationPOJO jobConfigurationPojo : jobConfigurationPojoList) {
-                JobConfiguration jobConfiguration = jobConfigurationPojo.toJobConfiguration();
+    }
+    
+    private void registerTypedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory, 
+                                   final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) {
+        for (Entry<String, List<JobConfigurationPOJO>> entry : elasticJobProperties.getTyped().entrySet()) {
+            for (JobConfigurationPOJO each : entry.getValue()) {
+                JobConfiguration jobConfiguration = each.toJobConfiguration();
                 if (Strings.isNullOrEmpty(jobConfiguration.getCron())) {
                     beanFactory.registerSingleton(
-                            jobConfiguration.getJobName() + "OneOffJobBootstrap", new OneOffJobBootstrap(registryCenter, each, jobConfiguration, tracingConfiguration));
+                            jobConfiguration.getJobName() + "OneOffJobBootstrap", new OneOffJobBootstrap(registryCenter, entry.getKey(), jobConfiguration, tracingConfiguration));
                 } else {
                     beanFactory.registerSingleton(
-                            jobConfiguration.getJobName() + "ScheduleJobBootstrap", new ScheduleJobBootstrap(registryCenter, each, jobConfiguration, tracingConfiguration));
+                            jobConfiguration.getJobName() + "ScheduleJobBootstrap", new ScheduleJobBootstrap(registryCenter, entry.getKey(), jobConfiguration, tracingConfiguration));
                 }
             }
         }
