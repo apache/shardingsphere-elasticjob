@@ -32,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 /**
  * WWW auth filter.
@@ -69,7 +68,7 @@ public final class WwwAuthFilter implements Filter {
         Properties props = new Properties();
         URL classLoaderURL = Thread.currentThread().getContextClassLoader().getResource("");
         if (null != classLoaderURL) {
-            String configFilePath = new StringJoiner(FILE_SEPARATOR).add(classLoaderURL.getPath()).add("conf").add("auth.properties").toString();
+            String configFilePath = String.join(FILE_SEPARATOR, classLoaderURL.getPath(), "conf", "auth.properties");
             try {
                 props.load(new FileInputStream(configFilePath));
             } catch (final IOException ex) {

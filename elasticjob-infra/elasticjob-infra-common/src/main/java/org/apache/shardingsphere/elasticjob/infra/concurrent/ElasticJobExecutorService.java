@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.infra.concurrent;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
-import java.util.StringJoiner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,7 +38,7 @@ public final class ElasticJobExecutorService {
     public ElasticJobExecutorService(final String namingPattern, final int threadSize) {
         workQueue = new LinkedBlockingQueue<>();
         threadPoolExecutor = new ThreadPoolExecutor(
-                threadSize, threadSize, 5L, TimeUnit.MINUTES, workQueue, new BasicThreadFactory.Builder().namingPattern(new StringJoiner("-").add(namingPattern).add("%s").toString()).build());
+                threadSize, threadSize, 5L, TimeUnit.MINUTES, workQueue, new BasicThreadFactory.Builder().namingPattern(String.join("-", namingPattern, "%s")).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
     }
     

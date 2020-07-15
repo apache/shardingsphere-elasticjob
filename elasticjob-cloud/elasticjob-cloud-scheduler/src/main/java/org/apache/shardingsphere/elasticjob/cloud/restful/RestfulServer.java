@@ -30,10 +30,9 @@ import org.eclipse.jetty.util.resource.Resource;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.EnumSet;
-import java.util.StringJoiner;
 
 /**
- * Rest api embed server.
+ * RESTful API embed server.
  */
 @Slf4j
 public final class RestfulServer {
@@ -100,7 +99,7 @@ public final class RestfulServer {
     
     private ServletHolder getServletHolder(final String packages) {
         ServletHolder result = new ServletHolder(ServletContainer.class);
-        result.setInitParameter(PackagesResourceConfig.PROPERTY_PACKAGES, new StringJoiner(",").add(RestfulServer.class.getPackage().getName()).add(packages).toString());
+        result.setInitParameter(PackagesResourceConfig.PROPERTY_PACKAGES, String.join(",", RestfulServer.class.getPackage().getName(), packages));
         result.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", PackagesResourceConfig.class.getName());
         result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", Boolean.TRUE.toString());
         result.setInitParameter("resteasy.scan.providers", Boolean.TRUE.toString());

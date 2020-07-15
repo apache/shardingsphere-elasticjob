@@ -20,8 +20,6 @@ package org.apache.shardingsphere.elasticjob.infra.context.fixture;
 import lombok.Builder;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 
-import java.util.StringJoiner;
-
 @Builder
 public final class TaskNode {
     
@@ -41,11 +39,10 @@ public final class TaskNode {
      * @return the value of task node
      */
     public String getTaskNodeValue() {
-        return new StringJoiner("@-@")
-                .add(getTaskNodePath()).add(null == type ? ExecutionType.READY.toString() : type.toString()).add(null == slaveId ? "slave-S0" : slaveId).add(null == uuid ? "0" : uuid).toString();
+        return String.join("@-@", getTaskNodePath(), null == type ? ExecutionType.READY.toString() : type.toString(), null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
     }
     
     private String getTaskNodePath() {
-        return new StringJoiner("@-@").add(null == jobName ? "test_job" : jobName).add(shardingItem + "").toString();
+        return String.join("@-@", null == jobName ? "test_job" : jobName, shardingItem + "");
     }
 }
