@@ -5,4 +5,4 @@ weight = 2
 chapter = true
 +++
 
-TODO
+In shortest time, this chapter provides users with a simplest quick start with ElasticJob.
