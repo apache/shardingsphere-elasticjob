@@ -22,7 +22,7 @@ cd ..
 DEPLOY_DIR=`pwd`
 CONF_DIR=${DEPLOY_DIR}/conf
 LIB_DIR=${DEPLOY_DIR}/lib/*
-CONTAINER_MAIN=Bootstrap
+CONTAINER_MAIN=org.apache.shardingsphere.elasticjob.cloud.scheduler.Bootstrap
 JAVA_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.library.path=/usr/local/lib:/usr/lib:/usr/lib64"
 
 source ${CONF_DIR}/elasticjob-cloud-scheduler.properties

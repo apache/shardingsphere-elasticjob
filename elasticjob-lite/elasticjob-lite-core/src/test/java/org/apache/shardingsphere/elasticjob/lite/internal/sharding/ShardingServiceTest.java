@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
 import org.apache.curator.framework.api.transaction.TransactionDeleteBuilder;
+import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
@@ -32,8 +32,8 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleCo
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.TransactionExecutionCallback;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -235,31 +235,32 @@ public final class ShardingServiceTest {
         assertFalse(shardingService.hasShardingInfoInOfflineServers());
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertPersistShardingInfoTransactionExecutionCallback() throws Exception {
-        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
-        TransactionDeleteBuilder transactionDeleteBuilder = mock(TransactionDeleteBuilder.class);
-        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
-        when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
-        when(transactionCreateBuilder.forPath("/test_job/sharding/0/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
-        when(transactionCreateBuilder.forPath("/test_job/sharding/1/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
-        when(transactionCreateBuilder.forPath("/test_job/sharding/2/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        when(curatorTransactionFinal.delete()).thenReturn(transactionDeleteBuilder);
-        when(transactionDeleteBuilder.forPath("/test_job/leader/sharding/necessary")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        when(curatorTransactionFinal.delete()).thenReturn(transactionDeleteBuilder);
-        when(transactionDeleteBuilder.forPath("/test_job/leader/sharding/processing")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
+        TransactionOp transactionOp = mock(TransactionOp.class);
+        TransactionCreateBuilder transactionCreateBuilder0 = mock(TransactionCreateBuilder.class);
+        TransactionCreateBuilder transactionCreateBuilder1 = mock(TransactionCreateBuilder.class);
+        TransactionCreateBuilder transactionCreateBuilder2 = mock(TransactionCreateBuilder.class);
+        when(transactionOp.create()).thenReturn(transactionCreateBuilder0, transactionCreateBuilder1, transactionCreateBuilder2);
+        CuratorOp createOp0 = mock(CuratorOp.class);
+        CuratorOp createOp1 = mock(CuratorOp.class);
+        CuratorOp createOp2 = mock(CuratorOp.class);
+        when(transactionCreateBuilder0.forPath("/test_job/sharding/0/instance", "host0@-@0".getBytes())).thenReturn(createOp0);
+        when(transactionCreateBuilder1.forPath("/test_job/sharding/1/instance", "host0@-@0".getBytes())).thenReturn(createOp1);
+        when(transactionCreateBuilder2.forPath("/test_job/sharding/2/instance", "host0@-@0".getBytes())).thenReturn(createOp2);
+        TransactionDeleteBuilder transactionNecessaryDeleteBuilder = mock(TransactionDeleteBuilder.class);
+        TransactionDeleteBuilder transactionProcessingDeleteBuilder = mock(TransactionDeleteBuilder.class);
+        when(transactionOp.delete()).thenReturn(transactionNecessaryDeleteBuilder, transactionProcessingDeleteBuilder);
+        CuratorOp necessaryDeleteOp = mock(CuratorOp.class);
+        when(transactionNecessaryDeleteBuilder.forPath("/test_job/leader/sharding/necessary")).thenReturn(necessaryDeleteOp);
+        CuratorOp processingDeleteOp = mock(CuratorOp.class);
+        when(transactionProcessingDeleteBuilder.forPath("/test_job/leader/sharding/processing")).thenReturn(processingDeleteOp);
         Map<JobInstance, List<Integer>> shardingResult = new HashMap<>();
         shardingResult.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2));
         ShardingService.PersistShardingInfoTransactionExecutionCallback actual = shardingService.new PersistShardingInfoTransactionExecutionCallback(shardingResult);
-        actual.execute(curatorTransactionFinal);
-        verify(curatorTransactionFinal, times(3)).create();
-        verify(curatorTransactionFinal, times(2)).delete();
-        verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/necessary");
-        verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/processing");
-        verify(curatorTransactionBridge, times(5)).and();
+        assertThat(actual.createCuratorOperators(transactionOp), is(Arrays.asList(createOp0, createOp1, createOp2, necessaryDeleteOp, processingDeleteOp)));
+        verify(transactionOp, times(3)).create();
+        verify(transactionOp, times(2)).delete();
     }
 }

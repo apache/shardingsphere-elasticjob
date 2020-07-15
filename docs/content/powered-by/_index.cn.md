@@ -9,7 +9,7 @@ chapter = true
 
 欢迎采用了 ElasticJob 的公司在此登记，您的支持是我们最大的动力。
 
-请按`公司名` + `首页` + `应用案例（可选）` 的格式在[此处](https://github.com/apache/shardingsphere-elasticjob-lite/issues/254)登记。
+请按`公司名` + `首页` + `应用案例（可选）` 的格式在[此处](https://github.com/apache/shardingsphere-elasticjob/issues/254)登记。
 
 ## 谁在使用 ElasticJob?
 

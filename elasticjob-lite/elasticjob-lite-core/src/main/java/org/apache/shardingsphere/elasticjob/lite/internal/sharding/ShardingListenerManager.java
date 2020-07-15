@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
@@ -26,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListe
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerNode;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 /**
  * Sharding listener manager.
@@ -82,7 +81,7 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         }
         
         private boolean isInstanceChange(final Type eventType, final String path) {
-            return instanceNode.isInstancePath(path) && Type.NODE_UPDATED != eventType;
+            return instanceNode.isInstancePath(path) && Type.NODE_CHANGED != eventType;
         }
         
         private boolean isServerChange(final String path) {

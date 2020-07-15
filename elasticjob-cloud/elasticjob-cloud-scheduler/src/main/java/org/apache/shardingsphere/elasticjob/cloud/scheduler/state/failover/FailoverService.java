@@ -114,7 +114,7 @@ public final class FailoverService {
         List<Integer> result = new ArrayList<>(taskIdList.size());
         for (String each : taskIdList) {
             MetaInfo metaInfo = MetaInfo.from(each);
-            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
+            if (assignedTasks.add(Hashing.sha256().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
                 result.add(metaInfo.getShardingItems().get(0));
             }
         }

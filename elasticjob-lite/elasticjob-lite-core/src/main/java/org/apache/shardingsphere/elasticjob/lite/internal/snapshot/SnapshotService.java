@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -32,6 +32,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -113,14 +114,14 @@ public final class SnapshotService {
             if (null == zkValue) {
                 zkValue = "";
             }
-            TreeCache treeCache = (TreeCache) regCenter.getRawCache("/" + jobName);
-            ChildData treeCacheData = treeCache.getCurrentData(zkPath);
-            String treeCachePath = null == treeCacheData ? "" : treeCacheData.getPath();
-            String treeCacheValue = null == treeCacheData ? "" : new String(treeCacheData.getData());
-            if (zkValue.equals(treeCacheValue) && zkPath.equals(treeCachePath)) {
+            CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
+            Optional<ChildData> cacheData = cache.get(zkPath);
+            String cachePath = cacheData.map(ChildData::getPath).orElse("");
+            String cacheValue = cacheData.map(childData -> new String(childData.getData())).orElse("");
+            if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
                 result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).toString());
             } else {
-                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).add(treeCachePath).add(treeCacheValue).toString());
+                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).add(cachePath).add(cacheValue).toString());
             }
             dumpDirectly(zkPath, jobName, result);
         }

@@ -37,4 +37,6 @@
     </root>
     
     <logger name="org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.infra.handler.error.impl.LogJobErrorHandler" level="OFF" />
+    <logger name="org.apache.curator.framework.listen.MappingListenerManager" level="OFF" />
 </configuration>
