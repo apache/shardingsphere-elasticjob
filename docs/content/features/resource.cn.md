@@ -5,11 +5,11 @@ weight = 2
 chapter = true
 +++
 
-资源分配功能为 ElasticJob Cloud 所特有的功能。
+资源分配功能为 ElasticJob-Cloud 所特有的功能。
 
 ## 作业运行模式
 
-ElasticJob Cloud 分为瞬时作业和常驻作业 2 种运行模式。
+ElasticJob-Cloud 分为瞬时作业和常驻作业 2 种运行模式。
 
 ### 瞬时作业
 
@@ -23,7 +23,7 @@ ElasticJob Cloud 分为瞬时作业和常驻作业 2 种运行模式。
 
 ## 调度器
 
-ElasticJob Cloud 基于 Mesos 的 Framework 开发，用于资源调度和应用分发，需要独立启动并提供服务。
+ElasticJob-Cloud 基于 Mesos 的 Framework 开发，用于资源调度和应用分发，需要独立启动并提供服务。
 
 ## 作业应用
 
@@ -32,7 +32,7 @@ ElasticJob Cloud 基于 Mesos 的 Framework 开发，用于资源调度和应用
 
 ## 作业
 
-即实际运行的具体任务，和 ElasticJob Lite 共用同样的作业生态。
+即实际运行的具体任务，和 ElasticJob-Lite 共用同样的作业生态。
 在注册作业之前必须先注册作业应用。
 
 ## 资源

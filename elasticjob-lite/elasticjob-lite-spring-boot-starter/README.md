@@ -1,4 +1,4 @@
-# ElasticJob Lite SpringBoot Starter
+# ElasticJob-Lite Spring Boot Starter
 
 ## Getting Started
 

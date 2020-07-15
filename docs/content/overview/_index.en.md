@@ -11,13 +11,13 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob is a distributed scheduled job solution. 
-It is composited from 2 independent sub projects: ElasticJob Lite and ElasticJob Cloud.
+ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
 
-ElasticJob Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
+ElasticJob-Lite is a lightweight, decentralized solution that provides distributed task sharding services;
+ElasticJob-Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
 
-ElasticJob Lite and ElasticJob Cloud provide unified API. 
-Developers only need code one time, then decide to deploy Lite or Cloud as you want.
+Elasticjob uses a unified job API for each product. 
+Developers only need code one time and can deploy at will.
 
 ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
 
@@ -33,13 +33,13 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ## Architecture
 
-### ElasticJob Lite
+### ElasticJob-Lite
 
-![ElasticJob Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
+![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
-### ElasticJob Cloud
+### ElasticJob-Cloud
 
-![ElasticJob Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
+![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
 ## Features
 
