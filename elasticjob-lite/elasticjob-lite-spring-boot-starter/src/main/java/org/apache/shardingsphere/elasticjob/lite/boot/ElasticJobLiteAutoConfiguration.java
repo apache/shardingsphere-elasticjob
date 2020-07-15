@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.boot;
 
+import com.google.common.base.Strings;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -26,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigu
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.boot.ElasticJobRegistryCenterAutoConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -50,9 +50,9 @@ import java.util.Map.Entry;
 @EnableConfigurationProperties(ElasticJobProperties.class)
 @Setter
 public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware {
-    
+
     private ApplicationContext applicationContext;
-    
+
     /**
      * Create job bootstrap instances.
      *
@@ -68,7 +68,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
         registerClassedJobs(elasticJobProperties, beanFactory, registryCenter, tracingConfiguration);
         registerTypedJobs(elasticJobProperties, beanFactory, registryCenter, tracingConfiguration);
     }
-    
+
     private TracingConfiguration getTracingConfiguration() {
         Map<String, TracingConfiguration> tracingConfigurationBeans = applicationContext.getBeansOfType(TracingConfiguration.class);
         if (tracingConfigurationBeans.isEmpty()) {
@@ -81,7 +81,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                 "More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
                         + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticjobTracingAutoConfiguration].");
     }
-    
+
     private void registerClassedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory,
                                      final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) throws ClassNotFoundException {
         for (Entry<String, List<JobConfigurationPOJO>> entry : elasticJobProperties.getClassed().entrySet()) {
@@ -97,8 +97,8 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
             }
         }
     }
-    
-    private void registerTypedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory, 
+
+    private void registerTypedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory,
                                    final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) {
         for (Entry<String, List<JobConfigurationPOJO>> entry : elasticJobProperties.getTyped().entrySet()) {
             for (JobConfigurationPOJO each : entry.getValue()) {
