@@ -5,10 +5,9 @@ weight = 2
 chapter = true
 +++
 
-## 引入 Maven 依赖
+## 引入 maven 依赖
 
 ```xml
-<!-- 引入elastic-job-cloud执行器模块 -->
 <dependency>
     <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-cloud-executor</artifactId>
