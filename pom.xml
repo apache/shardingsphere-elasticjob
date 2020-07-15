@@ -36,6 +36,7 @@
         <module>elasticjob-executor</module>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
+        <module>elasticjob-distribution</module>
     </modules>
     
     <properties>
