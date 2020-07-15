@@ -7,7 +7,7 @@ chapter = true
 
 ## 1. 使用 API 配置启动
 
-### 引入 maven 依赖
+### 引入 Maven 依赖
 
 ```xml
 <dependency>
