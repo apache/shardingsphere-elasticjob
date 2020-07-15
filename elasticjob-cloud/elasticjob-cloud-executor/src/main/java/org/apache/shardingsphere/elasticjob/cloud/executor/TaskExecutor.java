@@ -137,7 +137,7 @@ public final class TaskExecutor implements Executor {
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
                 // CHECKSTYLE:ON
-                log.error("ElasticJob Cloud Executor error:", ex);
+                log.error("ElasticJob-Cloud Executor error:", ex);
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).setMessage(ExceptionUtils.transform(ex)).build());
                 executorDriver.stop();
                 throw ex;

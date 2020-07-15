@@ -23,7 +23,7 @@ chapter = true
 - [ ] Unified Schedule API
 - [ ] Unified Resource API
 
-## ElasticJob Lite
+## ElasticJob-Lite
 
 - [x] Distributed Features
     - [x] High Availability
@@ -49,3 +49,49 @@ chapter = true
     - [x] Namespace
     - [x] Bean Injection
     - [ ] Spring Boot Starter
+
+## ElasticJob-Cloud
+- [x] Transient Job
+    - [x] High Availability
+    - [x] Elastic scale in/out
+    - [x] Failover
+    - [x] Misfire
+    - [x] Idempotency
+- [x] Daemon Job
+    - [x] High Availability
+    - [x] Elastic scale in/out
+    - [ ] Failover
+    - [ ] Misfire
+    - [x] Idempotency
+- [x] Mesos Scheduler
+    - [x] High Availability
+    - [x] Reconcile
+    - [ ] Redis Based Queue Improvement
+    - [ ] Http Driver
+- [x] Mesos Executor
+    - [x] Executor Reuse Pool
+    - [ ] Progress Reporting
+    - [ ] Health Detection
+    - [ ] Log Redirect
+- [x] Lifecycle Management
+    - [x] Job Add/Remove
+    - [ ] Job Pause/Resume
+    - [x] Job Disable/Enable
+    - [ ] Job Shutdown
+    - [x] App Add/Remove
+    - [x] App Disable/Enable
+    - [x] Restful API
+    - [x] Web Console
+- [ ] Job Dependency
+    - [ ] Listener
+    - [ ] Workflow
+    - [ ] DAG
+- [x] Job Distribution
+    - [x] Mesos Based Distribution
+    - [ ] Docker Based Distribution
+- [x] Resources Management
+    - [x] Resources Allocate
+    - [ ] Cross Data Center
+    - [ ] A/B Test
+- [x] Spring Integrate
+    - [x] Bean Injection

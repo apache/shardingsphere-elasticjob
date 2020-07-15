@@ -7,9 +7,9 @@ chapter = true
 
 ## 应用部署
 
-1. 启动 ElasticJob Lite 指定注册中心的 Zookeeper。
+1. 启动 ElasticJob-Lite 指定注册中心的 Zookeeper。
 
-2. 运行包含 ElasticJob Lite 和业务代码的 jar 文件。不限于 jar 或 war 的启动方式。
+2. 运行包含 ElasticJob-Lite 和业务代码的 jar 文件。不限于 jar 或 war 的启动方式。
 
 ## 运维平台和 RESTFul API 部署(可选)
 

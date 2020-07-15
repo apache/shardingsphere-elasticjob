@@ -10,7 +10,7 @@ ElasticJob 目前提供了基于关系型数据库两种事件订阅方式记录
 
 ## 通过代码配置开启事件追踪
 
-ElasticJob Lite 在配置中提供了 TracingConfiguration，目前支持数据库方式配置。
+ElasticJob-Lite 在配置中提供了 TracingConfiguration，目前支持数据库方式配置。
 
 ```java
     // 初始化数据源
