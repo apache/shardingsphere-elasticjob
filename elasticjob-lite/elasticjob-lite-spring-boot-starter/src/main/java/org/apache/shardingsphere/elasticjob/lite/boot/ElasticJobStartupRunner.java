@@ -17,31 +17,25 @@
 
 package org.apache.shardingsphere.elasticjob.lite.boot;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+@Setter
+@Slf4j
 public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationContextAware {
-
-    private final Logger logger = LoggerFactory.getLogger(ElasticJobStartupRunner.class);
-
+    
     private ApplicationContext applicationContext;
-
+    
     @Override
-    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    @Override
-    public void run(final String... args) throws Exception {
-        logger.info("Starting ElasticJob Bootstrap.");
-        this.applicationContext.getBeansOfType(ScheduleJobBootstrap.class).values().forEach(ScheduleJobBootstrap::schedule);
-        this.applicationContext.getBeansOfType(OneOffJobBootstrap.class).values().forEach(OneOffJobBootstrap::execute);
-        logger.info("ElasticJob Bootstrap started.");
+    public void run(final String... args) {
+        log.info("Starting ElasticJob Bootstrap.");
+        applicationContext.getBeansOfType(ScheduleJobBootstrap.class).values().forEach(ScheduleJobBootstrap::schedule);
+        applicationContext.getBeansOfType(OneOffJobBootstrap.class).values().forEach(OneOffJobBootstrap::execute);
+        log.info("ElasticJob Bootstrap started.");
     }
 }
