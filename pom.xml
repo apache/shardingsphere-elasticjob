@@ -36,6 +36,7 @@
         <module>elasticjob-executor</module>
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
+        <module>elasticjob-distribution</module>
     </modules>
     
     <properties>
@@ -316,6 +317,7 @@
     </dependencyManagement>
     
     <build>
+        <finalName>apache-shardingsphere-elasticjob-${project.version}</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
