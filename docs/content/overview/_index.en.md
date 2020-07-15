@@ -35,7 +35,7 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ### ElasticJob Lite
 
-![ElasticJob Lite Architecture](docs/static/img/architecture/elastic_job_lite.png)
+![ElasticJob Lite Architecture](docs/static/img/architecture/elasticjob_lite.png)
 
 ## Features
 
