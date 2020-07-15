@@ -15,8 +15,9 @@ ElasticJob 的发布版包括源码包及其对应的二进制包。
 | 版本 | 发布日期 | 说明 | 下载 |
 | - | - | - | - |
 | 3.0.0-alpha | Coming soon  | 源码 | [[src]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob Lite 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob Lite Console 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
+|             |              | ElasticJob-Lite 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
+|             |              | ElasticJob-Lite-Console 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
+|             |              | ElasticJob-Cloud 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
 
 ## 全部版本
 
