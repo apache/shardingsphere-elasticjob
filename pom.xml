@@ -679,9 +679,9 @@
     </licenses>
     
     <scm>
-        <connection>scm:git:https://github.com/apache/shardingsphere-elasticjob-lite.git</connection>
-        <developerConnection>scm:git:https://github.com/apache/shardingsphere-elasticjob-lite.git</developerConnection>
-        <url>https://github.com/apache/shardingsphere-elasticjob-lite.git</url>
+        <connection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</developerConnection>
+        <url>https://github.com/apache/shardingsphere-elasticjob.git</url>
         <tag>HEAD</tag>
     </scm>
     
