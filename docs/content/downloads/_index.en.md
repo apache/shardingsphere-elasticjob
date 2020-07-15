@@ -17,6 +17,7 @@ The downloads are distributed via mirror sites and should be checked for tamperi
 | 3.0.0-alpha | Coming soon  | Source codes | [[src]]() [[asc]]() [[sha512]]() |
 |             |              | ElasticJob Lite Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
 |             |              | ElasticJob Lite Console Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
+|             |              | ElasticJob-Cloud Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
 
 ## All releases
 
