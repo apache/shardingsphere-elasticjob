@@ -1,5 +1,5 @@
 +++
-pre = "<b>4.2. </b>"
+pre = "<b>4.1.2. </b>"
 title = "作业配置"
 weight = 2
 chapter = true

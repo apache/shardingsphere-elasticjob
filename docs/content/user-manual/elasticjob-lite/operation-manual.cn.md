@@ -1,5 +1,5 @@
 +++
-pre = "<b>4.12. </b>"
+pre = "<b>4.1.12. </b>"
 title = "操作手册"
 weight = 12
 chapter = true
