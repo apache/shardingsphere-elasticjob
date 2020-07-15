@@ -44,7 +44,7 @@ public class MyJob implements SimpleJob {
     JobConfiguration jobConfig = JobConfiguration.newBuilder("MyJob", 3).cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
 ```
 
-## 作业启动
+## 作业调度
 
 ```java
 public class MyJobDemo {
