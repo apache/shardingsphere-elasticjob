@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.codehaus.jettison.json.JSONException;
@@ -139,11 +140,11 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     
     private CloudAppConfiguration getAppConfiguration(final String taskId) throws LackConfigException {
         CloudJobConfiguration cloudJobConfig = getJobConfiguration(TaskContext.from(taskId));
-        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(cloudJobConfig.getAppName());
+        Optional<CloudAppConfigurationPOJO> appConfigOptional = facadeService.loadAppConfig(cloudJobConfig.getAppName());
         if (!appConfigOptional.isPresent()) {
             throw new LackConfigException("APP", cloudJobConfig.getAppName());
         }
-        return appConfigOptional.get();
+        return appConfigOptional.get().toCloudAppConfiguration();
     }
     
     private CloudJobConfiguration getJobConfiguration(final TaskContext taskContext) throws LackConfigException {

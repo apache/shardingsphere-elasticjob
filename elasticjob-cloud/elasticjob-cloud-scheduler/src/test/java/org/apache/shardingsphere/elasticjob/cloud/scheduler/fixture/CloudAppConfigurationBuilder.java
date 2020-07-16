@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudAppConfigurationBuilder {
@@ -29,7 +30,8 @@ public final class CloudAppConfigurationBuilder {
      * @param appName app name
      * @return CloudAppConfiguration
      */
-    public static CloudAppConfiguration createCloudAppConfiguration(final String appName) {
-        return new CloudAppConfiguration(appName, "http://localhost/app.jar", "bin/start.sh");
+    public static CloudAppConfigurationPOJO createCloudAppConfiguration(final String appName) {
+        return CloudAppConfigurationPOJO.fromCloudAppConfiguration(new CloudAppConfiguration(appName,
+                "http://localhost/app.jar", "bin/start.sh"));
     }
 }

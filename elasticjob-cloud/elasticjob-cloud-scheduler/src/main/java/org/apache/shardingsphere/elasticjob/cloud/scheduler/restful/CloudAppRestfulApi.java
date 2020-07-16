@@ -21,15 +21,13 @@ import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
@@ -81,7 +79,6 @@ public final class CloudAppRestfulApi {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudAppRestfulApi.regCenter = regCenter;
         CloudAppRestfulApi.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
     }
     
     /**
@@ -91,8 +88,8 @@ public final class CloudAppRestfulApi {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void register(final CloudAppConfiguration appConfig) {
-        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(appConfig.getAppName());
+    public void register(final CloudAppConfigurationPOJO appConfig) {
+        Optional<CloudAppConfigurationPOJO> appConfigFromZk = appConfigService.load(appConfig.getAppName());
         if (appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("app '%s' already existed.", appConfig.getAppName());
         }
@@ -106,7 +103,7 @@ public final class CloudAppRestfulApi {
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(final CloudAppConfiguration appConfig) {
+    public void update(final CloudAppConfigurationPOJO appConfig) {
         appConfigService.update(appConfig);
     }
     
@@ -120,7 +117,7 @@ public final class CloudAppRestfulApi {
     @Path("/{appName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response detail(@PathParam("appName") final String appName) {
-        Optional<CloudAppConfiguration> appConfig = appConfigService.load(appName);
+        Optional<CloudAppConfigurationPOJO> appConfig = appConfigService.load(appName);
         if (!appConfig.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -135,7 +132,7 @@ public final class CloudAppRestfulApi {
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<CloudAppConfiguration> findAllApps() {
+    public Collection<CloudAppConfigurationPOJO> findAllApps() {
         return appConfigService.loadAll();
     }
     
