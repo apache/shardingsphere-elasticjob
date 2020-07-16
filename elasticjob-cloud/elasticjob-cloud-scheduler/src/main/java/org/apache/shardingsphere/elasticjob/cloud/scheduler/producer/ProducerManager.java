@@ -25,8 +25,8 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
@@ -92,7 +92,7 @@ public final class ProducerManager {
         if (disableJobService.isDisabled(cloudJobConfig.getJobName())) {
             throw new JobConfigurationException("Job '%s' has been disable.", cloudJobConfig.getJobName());
         }
-        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(cloudJobConfig.getAppName());
+        Optional<CloudAppConfigurationPOJO> appConfigFromZk = appConfigService.load(cloudJobConfig.getAppName());
         if (!appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("Register app '%s' firstly.", cloudJobConfig.getAppName());
         }

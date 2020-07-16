@@ -42,8 +42,8 @@ public final class CloudAppConfigurationService {
      *
      * @param appConfig cloud app configuration
      */
-    public void add(final CloudAppConfiguration appConfig) {
-        regCenter.persist(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(CloudAppConfigurationPOJO.fromCloudAppConfiguration(appConfig)));
+    public void add(final CloudAppConfigurationPOJO appConfig) {
+        regCenter.persist(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(appConfig));
     }
     
     /**
@@ -51,8 +51,8 @@ public final class CloudAppConfigurationService {
      *
      * @param appConfig cloud app configuration
      */
-    public void update(final CloudAppConfiguration appConfig) {
-        regCenter.update(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(CloudAppConfigurationPOJO.fromCloudAppConfiguration(appConfig)));
+    public void update(final CloudAppConfigurationPOJO appConfig) {
+        regCenter.update(CloudAppConfigurationNode.getRootNodePath(appConfig.getAppName()), YamlEngine.marshal(appConfig));
     }
     
     /**
@@ -61,9 +61,9 @@ public final class CloudAppConfigurationService {
      * @param appName application name
      * @return cloud app configuration
      */
-    public Optional<CloudAppConfiguration> load(final String appName) {
+    public Optional<CloudAppConfigurationPOJO> load(final String appName) {
         String configContent = regCenter.get(CloudAppConfigurationNode.getRootNodePath(appName));
-        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudAppConfigurationPOJO.class).toCloudAppConfiguration());
+        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudAppConfigurationPOJO.class));
     }
     
     /**
@@ -71,14 +71,14 @@ public final class CloudAppConfigurationService {
      *
      * @return collection of the registered cloud app configuration
      */
-    public Collection<CloudAppConfiguration> loadAll() {
+    public Collection<CloudAppConfigurationPOJO> loadAll() {
         if (!regCenter.isExisted(CloudAppConfigurationNode.ROOT)) {
             return Collections.emptyList();
         }
         List<String> appNames = regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT);
-        Collection<CloudAppConfiguration> result = new ArrayList<>(appNames.size());
+        Collection<CloudAppConfigurationPOJO> result = new ArrayList<>(appNames.size());
         for (String each : appNames) {
-            Optional<CloudAppConfiguration> config = load(each);
+            Optional<CloudAppConfigurationPOJO> config = load(each);
             config.ifPresent(result::add);
         }
         return result;

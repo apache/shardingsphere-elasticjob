@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
@@ -201,7 +201,7 @@ public final class FacadeService {
      * @param appName app name
      * @return cloud app config
      */
-    public Optional<CloudAppConfiguration> loadAppConfig(final String appName) {
+    public Optional<CloudAppConfigurationPOJO> loadAppConfig(final String appName) {
         return appConfigService.load(appName);
     }
     
