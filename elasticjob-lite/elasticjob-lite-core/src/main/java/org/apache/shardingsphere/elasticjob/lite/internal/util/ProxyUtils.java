@@ -41,6 +41,8 @@ public final class ProxyUtils {
 
     /**
      * Check whether the given object is a CGLIB proxy.
+     * @param object job object
+     * @return if the object is cglib proxy
      */
     public static boolean isCglibProxy(final Object object) {
         return object.getClass().getName().contains("$$EnhancerBySpringCGLIB");
