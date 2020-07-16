@@ -38,7 +38,7 @@ A lightweight, decentralized solution that provides distributed task sharding se
 
 ### ElasticJob-Cloud
 
-Use Mesos to manage and isolate resources and processes.
+Uses Mesos to manage and isolate resources.
 
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
