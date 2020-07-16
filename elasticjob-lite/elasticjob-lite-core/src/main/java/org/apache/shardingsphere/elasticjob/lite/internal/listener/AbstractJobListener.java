@@ -27,15 +27,16 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 public abstract class AbstractJobListener implements CuratorCacheListener {
     
     @Override
-    public final void event(final Type type, final ChildData oldData, final ChildData data) {
-        if (null == data) {
+    public final void event(final Type type, final ChildData oldData, final ChildData newData) {
+        if (null == newData && null == oldData) {
             return;
         }
-        String path = data.getPath();
+        String path = Type.NODE_DELETED == type ? oldData.getPath() : newData.getPath();
+        byte[] data = Type.NODE_DELETED == type ? oldData.getData() : newData.getData();
         if (path.isEmpty()) {
             return;
         }
-        dataChanged(path, type, null == data.getData() ? "" : new String(data.getData(), Charsets.UTF_8));
+        dataChanged(path, type, null == data ? "" : new String(data, Charsets.UTF_8));
     }
     
     protected abstract void dataChanged(String path, Type eventType, String data);
