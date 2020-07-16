@@ -13,9 +13,6 @@ chapter = true
 
 ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
 
-ElasticJob-Lite is a lightweight, decentralized solution that provides distributed task sharding services;
-ElasticJob-Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
-
 Elasticjob uses a unified job API for each product. 
 Developers only need code one time and can deploy at will.
 
@@ -31,15 +28,26 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
 [![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
 
-## Architecture
+## Introduction
 
 ### ElasticJob-Lite
+
+A lightweight, decentralized solution that provides distributed task sharding services.
 
 ![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
 ### ElasticJob-Cloud
 
+A Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
+
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
+
+|                   | *ElasticJob-Lite* | *ElasticJob-Cloud* |
+| ----------------- | ----------------- | ------------------ |
+| Decentralization  | Yes               | No                 |
+| Resource Assign   | No                | Yes                |
+| Job Execution     | Daemon            | Daemon + Transient |
+| Deploy Dependency | ZooKeeper         | ZooKeeper + Mesos  |
 
 ## Features
 
