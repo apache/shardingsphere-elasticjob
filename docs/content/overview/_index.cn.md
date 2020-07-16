@@ -36,7 +36,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ### ElasticJob-Cloud
 
-使用 Mesos + Docker（TODO）的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
+使用 Mesos 的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
 
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 

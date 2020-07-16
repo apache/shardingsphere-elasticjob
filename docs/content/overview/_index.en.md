@@ -38,7 +38,7 @@ A lightweight, decentralized solution that provides distributed task sharding se
 
 ### ElasticJob-Cloud
 
-A Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
+Use Mesos to manage and isolate resources and processes.
 
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
