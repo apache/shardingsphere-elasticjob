@@ -11,9 +11,9 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob 是一个分布式调度解决方案，由 2 个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
-
-ElasticJob 的各个产品使用统一的作业 API，开发者仅需一次开发，即可随意部署。
+ElasticJob 是一个分布式调度解决方案，由两个相互独立的子项目 ElasticJob Lite 和 ElasticJob Cloud 组成。
+它通过弹性调度、资源管控、以及作业治理的功能，打造一个适用于互联网场景的分布式调度解决方案，并通过开放的架构设计，提供多元化的作业生态。
+它的各个产品使用统一的作业 API，开发者仅需一次开发，即可随意部署。
 
 ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://shardingsphere.apache.org/) 的子项目。
 欢迎通过[邮件列表](mailto:dev@shardingsphere.apache.org)参与讨论。
@@ -28,6 +28,9 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ## 简介
 
+使用 ElasticJob 能够让开发工程师不再担心任务的线性吞吐量提升等非功能需求，使他们能够更加专注于面向业务编码设计；
+同时，它也能够解放运维工程师，使他们不必再担心任务的可用性和相关管理需求，只通过轻松的增加服务节点即可达到自动化运维的目的。
+
 ### ElasticJob-Lite
 
 定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务。
@@ -36,7 +39,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ### ElasticJob-Cloud
 
-使用 Mesos 的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
+采用自研 Mesos Framework 的解决方案，额外提供资源治理、应用分发以及进程隔离等功能。
 
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
 
