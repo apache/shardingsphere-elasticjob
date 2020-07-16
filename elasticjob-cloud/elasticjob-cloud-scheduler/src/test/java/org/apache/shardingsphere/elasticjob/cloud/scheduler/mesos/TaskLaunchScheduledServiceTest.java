@@ -106,7 +106,7 @@ public final class TaskLaunchScheduledServiceTest {
     @Test
     public void assertRunOneIterationWithScriptJob() {
         when(facadeService.getEligibleJobContext()).thenReturn(
-                Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1), ExecutionType.READY)));
+                Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1).toCloudJobConfiguration(), ExecutionType.READY)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
         vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Collections.singletonList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("script_job", ExecutionType.READY))));

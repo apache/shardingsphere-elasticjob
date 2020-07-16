@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -96,7 +96,7 @@ public final class RunningService {
     }
     
     private boolean isDaemon(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = configurationService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configurationService.load(jobName);
         return cloudJobConfig.isPresent() && CloudJobExecutionType.DAEMON == cloudJobConfig.get().getJobExecutionType();
     }
     
@@ -152,7 +152,7 @@ public final class RunningService {
     }
     
     private boolean isDaemonOrAbsent(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfigurationOptional = configurationService.load(jobName);
         return !cloudJobConfigurationOptional.isPresent() || CloudJobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
     }
     
