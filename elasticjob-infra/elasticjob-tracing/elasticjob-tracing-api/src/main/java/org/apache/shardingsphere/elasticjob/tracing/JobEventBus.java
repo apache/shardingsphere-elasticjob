@@ -27,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerFactory;
 
-import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -58,7 +57,7 @@ public final class JobEventBus {
     
     private ExecutorService createExecutorService(final int threadSize) {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, 
-                new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(new StringJoiner("-").add("job-event").add("%s").toString()).build());
+                new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(String.join("-", "job-event", "%s")).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }

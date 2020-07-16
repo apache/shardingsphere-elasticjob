@@ -33,8 +33,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  * Snapshot service.
@@ -102,7 +100,7 @@ public final class SnapshotService {
                 List<String> result = new ArrayList<>();
                 String jobName = cmdLine.split("@")[1];
                 dumpDirectly("/" + jobName, jobName, result);
-                outputMessage(writer, SensitiveInfoUtils.filterSensitiveIps(result).stream().collect(Collectors.joining("\n")) + "\n");
+                outputMessage(writer, String.join("\n", SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
             }
         }
     }
@@ -119,9 +117,9 @@ public final class SnapshotService {
             String cachePath = cacheData.map(ChildData::getPath).orElse("");
             String cacheValue = cacheData.map(childData -> new String(childData.getData())).orElse("");
             if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
-                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).toString());
+                result.add(String.join(" | ", zkPath, zkValue));
             } else {
-                result.add(new StringJoiner(" | ").add(zkPath).add(zkValue).add(cachePath).add(cacheValue).toString());
+                result.add(String.join(" | ", zkPath, zkValue, cachePath, cacheValue));
             }
             dumpDirectly(zkPath, jobName, result);
         }
@@ -141,7 +139,7 @@ public final class SnapshotService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                log.error("Elastic job: Snapshot service close failure, error is: ", ex);
+                log.error("ElasticJob: Snapshot service close failure, error is: ", ex);
             }
         }
     }

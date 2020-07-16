@@ -27,7 +27,6 @@ import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,7 +61,7 @@ public final class TaskContext {
         metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
-        id = new StringJoiner(DELIMITER).add(metaInfo.toString()).add(type.toString()).add(slaveId).add(UUID.randomUUID().toString()).toString();
+        id = String.join(DELIMITER, metaInfo.toString(), type.toString(), slaveId, UUID.randomUUID().toString());
     }
     
     private TaskContext(final String id, final MetaInfo metaInfo, final ExecutionType type, final String slaveId) {
@@ -110,7 +109,7 @@ public final class TaskContext {
      * @return task name
      */
     public String getTaskName() {
-        return new StringJoiner(DELIMITER).add(metaInfo.toString()).add(type.toString()).add(slaveId).toString();
+        return String.join(DELIMITER, metaInfo.toString(), type.toString(), slaveId);
     }
 
     /**
@@ -120,7 +119,7 @@ public final class TaskContext {
      * @return executor ID
      */
     public String getExecutorId(final String appName) {
-        return new StringJoiner(DELIMITER).add(appName).add(slaveId).toString();
+        return String.join(DELIMITER, appName, slaveId);
     }
 
     /**
@@ -149,8 +148,8 @@ public final class TaskContext {
         }
         
         @Override
-        public String toString() {
-            return new StringJoiner(DELIMITER).add(jobName).add(shardingItems.stream().map(Object::toString).collect(Collectors.joining(","))).toString();
+        public final String toString() {
+            return String.join(DELIMITER, jobName, shardingItems.stream().map(Object::toString).collect(Collectors.joining(",")));
         }
     }
 }
