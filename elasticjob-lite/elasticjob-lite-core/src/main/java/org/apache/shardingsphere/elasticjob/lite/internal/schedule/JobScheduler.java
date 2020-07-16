@@ -20,13 +20,12 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.SetUpFacade;
-import org.apache.shardingsphere.elasticjob.lite.internal.util.ProxyUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.quartz.JobBuilder;
@@ -90,8 +89,7 @@ public final class JobScheduler {
         this.tracingConfig = tracingConfig;
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        String jobClassName = ProxyUtils.isCglibProxy(elasticJob) ? ProxyUtils.getTargetClass(elasticJob).getName() : elasticJob.getClass().getName();
-        this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
+        this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJob.getClass().getName(), jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }
