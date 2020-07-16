@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -67,14 +67,14 @@ public final class CloudJobConfigurationServiceTest {
     
     @Test
     public void assertAdd() {
-        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        CloudJobConfigurationPOJO cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.add(cloudJobConfig);
         verify(regCenter).persist("/config/job/test_job", YAML);
     }
     
     @Test
     public void assertUpdate() {
-        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        CloudJobConfigurationPOJO cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.update(cloudJobConfig);
         verify(regCenter).update("/config/job/test_job", YAML);
     }
@@ -91,9 +91,9 @@ public final class CloudJobConfigurationServiceTest {
         when(regCenter.isExisted("/config/job")).thenReturn(true);
         when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
-        Collection<CloudJobConfiguration> actual = configService.loadAll();
+        Collection<CloudJobConfigurationPOJO> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
-        assertThat(actual.iterator().next().getJobConfig().getJobName(), is("test_job_1"));
+        assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
         verify(regCenter).isExisted("/config/job");
         verify(regCenter).getChildrenKeys("/config/job");
         verify(regCenter).get("/config/job/test_job_1");
@@ -108,15 +108,15 @@ public final class CloudJobConfigurationServiceTest {
     @Test
     public void assertLoadWithConfig() {
         when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        Optional<CloudJobConfiguration> actual = configService.load("test_job");
+        Optional<CloudJobConfigurationPOJO> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
-        assertThat(actual.get().getJobConfig().getJobName(), is("test_job"));
+        assertThat(actual.get().getJobName(), is("test_job"));
     }
     
     @Test
     public void assertLoadWithSpringConfig() {
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
-        Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
+        Optional<CloudJobConfigurationPOJO> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());
     }
     

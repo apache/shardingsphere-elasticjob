@@ -35,7 +35,9 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+<<<<<<< HEAD
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
@@ -48,7 +50,6 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,9 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Task launch schedule service.
@@ -154,7 +153,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private Protos.TaskInfo getTaskInfo(final Protos.Offer offer, final TaskAssignmentResult taskAssignmentResult) {
         TaskContext taskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        Optional<CloudJobConfiguration> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
         if (!cloudJobConfig.isPresent()) {
             return null;
         }
@@ -163,19 +162,19 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             return null;
         }
         taskContext.setSlaveId(offer.getSlaveId().getValue());
-        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get());
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get().toCloudJobConfiguration());
         boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == cloudJobConfig.get().getJobExecutionType()
-                && cloudJobConfig.get().getJobConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
+                && cloudJobConfig.get().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
         String script = appConfig.get().getBootstrapScript();
         if (isCommandExecutor) {
-            script = cloudJobConfig.get().getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
+            script = cloudJobConfig.get().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
         Protos.CommandInfo.URI uri = buildURI(appConfig.get(), isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
         if (isCommandExecutor) {
-            return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get(), shardingContexts, offer, command);
+            return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get().toCloudJobConfiguration(), shardingContexts, offer, command);
         } else {
-            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get(), shardingContexts, offer, command);
+            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get().toCloudJobConfiguration(), shardingContexts, offer, command);
         }
     }
     
@@ -230,7 +229,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         if (isCommandExecutor) {
             CommandLine commandLine = CommandLine.parse(script);
             commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
-            result.setValue(new StringJoiner("-").add(commandLine.getExecutable()).add(getArguments(commandLine)).toString());
+            result.setValue(String.join("-", commandLine.getExecutable(), getArguments(commandLine)));
         } else {
             result.setValue(script);
         }
@@ -238,7 +237,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     }
     
     private String getArguments(final CommandLine commandLine) {
-        return Arrays.stream(commandLine.getArguments()).collect(Collectors.joining(" "));
+        return String.join(" ", commandLine.getArguments());
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {

@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -72,7 +71,7 @@ public final class ExecutionContextService {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
         String shardingItemsString = shardingItems.stream().map(Object::toString).collect(Collectors.joining(","));
         String jobInstanceId = null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
-        return new StringJoiner("@-@").add(jobConfig.getJobName()).add(shardingItemsString).add("READY").add(jobInstanceId).toString(); 
+        return String.join("@-@", jobConfig.getJobName(), shardingItemsString, "READY", jobInstanceId); 
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {

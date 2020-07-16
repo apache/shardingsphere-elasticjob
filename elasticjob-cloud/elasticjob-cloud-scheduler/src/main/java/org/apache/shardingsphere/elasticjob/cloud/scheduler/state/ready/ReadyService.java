@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
@@ -67,13 +67,13 @@ public final class ReadyService {
             log.warn("Cannot add transient job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent() || CloudJobExecutionType.TRANSIENT != cloudJobConfig.get().getJobExecutionType()) {
             return;
         }
         String readyJobNode = ReadyNode.getReadyJobNodePath(jobName);
         String times = regCenter.getDirectly(readyJobNode);
-        if (cloudJobConfig.get().getJobConfig().isMisfire()) {
+        if (cloudJobConfig.get().isMisfire()) {
             regCenter.persist(readyJobNode, Integer.toString(null == times ? 1 : Integer.parseInt(times) + 1));
         } else {
             regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
@@ -90,7 +90,7 @@ public final class ReadyService {
             log.warn("Cannot add daemon job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent() || CloudJobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType() || runningService.isJobRunning(jobName)) {
             return;
         }
@@ -103,7 +103,7 @@ public final class ReadyService {
      * @param jobName job name
      */
     public void setMisfireDisabled(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
         if (cloudJobConfig.isPresent() && null != regCenter.getDirectly(ReadyNode.getReadyJobNodePath(jobName))) {
             regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
         }
@@ -126,13 +126,13 @@ public final class ReadyService {
             if (ineligibleJobNames.contains(each)) {
                 continue;
             }
-            Optional<CloudJobConfiguration> jobConfig = configService.load(each);
+            Optional<CloudJobConfigurationPOJO> jobConfig = configService.load(each);
             if (!jobConfig.isPresent()) {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
             if (!runningService.isJobRunning(each)) {
-                result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
+                result.add(JobContext.from(jobConfig.get().toCloudJobConfiguration(), ExecutionType.READY));
             }
         }
         return result;

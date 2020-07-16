@@ -21,6 +21,7 @@ import com.google.common.collect.Sets;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
@@ -110,8 +111,10 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertGetEligibleJobContext() {
-        Collection<JobContext> failoverJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER));
-        Collection<JobContext> readyJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY));
+        Collection<JobContext> failoverJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder
+                .createCloudJobConfiguration("failover_job").toCloudJobConfiguration(), ExecutionType.FAILOVER));
+        Collection<JobContext> readyJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder
+                .createCloudJobConfiguration("ready_job").toCloudJobConfiguration(), ExecutionType.READY));
         when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
         when(readyService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(readyJobContexts);
         Collection<JobContext> actual = facadeService.getEligibleJobContext();
@@ -205,7 +208,7 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertLoadJobConfig() {
-        Optional<CloudJobConfiguration> cloudJobConfig = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
         when(jobConfigService.load("test_job")).thenReturn(cloudJobConfig);
         assertThat(facadeService.load("test_job"), is(cloudJobConfig));
     }

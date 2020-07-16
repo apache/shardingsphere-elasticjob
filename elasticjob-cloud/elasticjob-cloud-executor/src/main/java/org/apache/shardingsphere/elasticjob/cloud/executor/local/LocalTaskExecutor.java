@@ -31,7 +31,6 @@ import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 
 /**
  * Local task executor.
@@ -71,7 +70,7 @@ public final class LocalTaskExecutor {
     private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
         shardingItemMap.put(shardingItem, new ShardingItemParameters(jobConfiguration.getShardingItemParameters()).getMap().get(shardingItem));
-        String taskId = new StringJoiner("@-@").add(jobConfiguration.getJobName()).add(shardingItem + "").add("READY").add("foo_slave_id").add("foo_uuid").toString();
+        String taskId = String.join("@-@", jobConfiguration.getJobName(), shardingItem + "", "READY", "foo_slave_id", "foo_uuid");
         return new ShardingContexts(taskId, jobConfiguration.getJobName(), jobConfiguration.getShardingTotalCount(), jobConfiguration.getJobParameter(), shardingItemMap);
     }
     

@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
@@ -51,25 +51,26 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
     }
     
     @Override
+
     public void event(final Type type, final ChildData oldData, final ChildData data) {
         String path = data.getPath();
         if (Type.NODE_CREATED == type && isJobConfigNode(path)) {
-            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(data);
+            CloudJobConfigurationPOJO cloudJobConfig = getCloudJobConfiguration(data);
             if (null != cloudJobConfig) {
                 producerManager.schedule(cloudJobConfig);
             }
         } else if (Type.NODE_CHANGED == type && isJobConfigNode(path)) {
-            CloudJobConfiguration cloudJobConfig = getCloudJobConfiguration(data);
+            CloudJobConfigurationPOJO cloudJobConfig = getCloudJobConfiguration(data);
             if (null == cloudJobConfig) {
                 return;
             }
             if (CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
-                readyService.remove(Collections.singletonList(cloudJobConfig.getJobConfig().getJobName()));
+                readyService.remove(Collections.singletonList(cloudJobConfig.getJobName()));
             }
-            if (!cloudJobConfig.getJobConfig().isMisfire()) {
-                readyService.setMisfireDisabled(cloudJobConfig.getJobConfig().getJobName());
+            if (!cloudJobConfig.isMisfire()) {
+                readyService.setMisfireDisabled(cloudJobConfig.getJobName());
             }
-            producerManager.reschedule(cloudJobConfig.getJobConfig().getJobName());
+            producerManager.reschedule(cloudJobConfig.getJobName());
         } else if (Type.NODE_DELETED == type && isJobConfigNode(path)) {
             String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);
@@ -79,10 +80,10 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
     private boolean isJobConfigNode(final String path) {
         return path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
     }
-    
-    private CloudJobConfiguration getCloudJobConfiguration(final ChildData data) {
+
+    private CloudJobConfigurationPOJO getCloudJobConfiguration(final ChildData data) {
         try {
-            return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class).toCloudJobConfiguration();
+            return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());
