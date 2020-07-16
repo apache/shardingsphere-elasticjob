@@ -35,7 +35,6 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
@@ -164,23 +163,23 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             return null;
         }
         taskContext.setSlaveId(offer.getSlaveId().getValue());
-        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get().toCloudAppConfiguration(), cloudJobConfig.get());
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get());
         boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == cloudJobConfig.get().getJobExecutionType()
                 && cloudJobConfig.get().getJobConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
         String script = appConfig.get().getBootstrapScript();
         if (isCommandExecutor) {
             script = cloudJobConfig.get().getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
-        Protos.CommandInfo.URI uri = buildURI(appConfig.get().toCloudAppConfiguration(), isCommandExecutor);
+        Protos.CommandInfo.URI uri = buildURI(appConfig.get(), isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
         if (isCommandExecutor) {
             return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get(), shardingContexts, offer, command);
         } else {
-            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get().toCloudAppConfiguration(), cloudJobConfig.get(), shardingContexts, offer, command);
+            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get(), shardingContexts, offer, command);
         }
     }
     
-    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration cloudJobConfig) {
+    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfigurationPOJO appConfig, final CloudJobConfiguration cloudJobConfig) {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(cloudJobConfig.getJobConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
@@ -199,7 +198,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         return result.setCommand(command).build();
     }
     
-    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration cloudJobConfig, 
+    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfigurationPOJO appConfig, final CloudJobConfiguration cloudJobConfig,
                                                             final ShardingContexts shardingContexts, final Protos.Offer offer, final Protos.CommandInfo command) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
@@ -216,7 +215,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         return result.setExecutor(executorBuilder.build()).build();
     }
     
-    private Protos.CommandInfo.URI buildURI(final CloudAppConfiguration appConfig, final boolean isCommandExecutor) {
+    private Protos.CommandInfo.URI buildURI(final CloudAppConfigurationPOJO appConfig, final boolean isCommandExecutor) {
         Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appConfig.getAppURL()).setCache(appConfig.isAppCacheEnable());
         if (isCommandExecutor && !SupportedExtractionType.isExtraction(appConfig.getAppURL())) {
             result.setExecutable(true);
