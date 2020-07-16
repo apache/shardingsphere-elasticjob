@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
@@ -35,15 +35,12 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegiste
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.JobConfigurationGsonTypeAdapter;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -107,7 +104,6 @@ public final class CloudJobRestfulApi {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobRestfulApi.regCenter = regCenter;
         CloudJobRestfulApi.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new JobConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
@@ -120,7 +116,7 @@ public final class CloudJobRestfulApi {
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void register(final CloudJobConfiguration cloudJobConfig) {
+    public void register(final CloudJobConfigurationPOJO cloudJobConfig) {
         producerManager.register(cloudJobConfig);
     }
     
@@ -132,7 +128,7 @@ public final class CloudJobRestfulApi {
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(final CloudJobConfiguration cloudJobConfig) {
+    public void update(final CloudJobConfigurationPOJO cloudJobConfig) {
         producerManager.update(cloudJobConfig);
     }
     
@@ -169,7 +165,7 @@ public final class CloudJobRestfulApi {
     @POST
     @Path("/{jobName}/enable")
     public void enable(@PathParam("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> configOptional = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> configOptional = configService.load(jobName);
         if (configOptional.isPresent()) {
             facadeService.enableJob(jobName);
             producerManager.reschedule(jobName);
@@ -199,7 +195,7 @@ public final class CloudJobRestfulApi {
     @Path("/trigger")
     @Consumes(MediaType.APPLICATION_JSON)
     public void trigger(final String jobName) {
-        Optional<CloudJobConfiguration> config = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> config = configService.load(jobName);
         if (config.isPresent() && CloudJobExecutionType.DAEMON == config.get().getJobExecutionType()) {
             throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
         }
@@ -216,7 +212,7 @@ public final class CloudJobRestfulApi {
     @Path("/jobs/{jobName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response detail(@PathParam("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -231,7 +227,7 @@ public final class CloudJobRestfulApi {
     @GET
     @Path("/jobs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<CloudJobConfiguration> findAllJobs() {
+    public Collection<CloudJobConfigurationPOJO> findAllJobs() {
         return configService.loadAll();
     }
     

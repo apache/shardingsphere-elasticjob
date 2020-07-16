@@ -35,6 +35,7 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
@@ -151,7 +152,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private Protos.TaskInfo getTaskInfo(final Protos.Offer offer, final TaskAssignmentResult taskAssignmentResult) {
         TaskContext taskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        Optional<CloudJobConfiguration> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
         if (!cloudJobConfig.isPresent()) {
             return null;
         }
@@ -160,19 +161,19 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             return null;
         }
         taskContext.setSlaveId(offer.getSlaveId().getValue());
-        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get());
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig.get(), cloudJobConfig.get().toCloudJobConfiguration());
         boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == cloudJobConfig.get().getJobExecutionType()
-                && cloudJobConfig.get().getJobConfig().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
+                && cloudJobConfig.get().getProps().contains(ScriptJobProperties.SCRIPT_KEY);
         String script = appConfig.get().getBootstrapScript();
         if (isCommandExecutor) {
-            script = cloudJobConfig.get().getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
+            script = cloudJobConfig.get().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY);
         }
         Protos.CommandInfo.URI uri = buildURI(appConfig.get(), isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
         if (isCommandExecutor) {
-            return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get(), shardingContexts, offer, command);
+            return buildCommandExecutorTaskInfo(taskContext, cloudJobConfig.get().toCloudJobConfiguration(), shardingContexts, offer, command);
         } else {
-            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get(), shardingContexts, offer, command);
+            return buildCustomizedExecutorTaskInfo(taskContext, appConfig.get(), cloudJobConfig.get().toCloudJobConfiguration(), shardingContexts, offer, command);
         }
     }
     

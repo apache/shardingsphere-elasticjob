@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.JobRunningStatisticJob;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.RegisteredJobStatisticJob;
@@ -212,7 +212,7 @@ public final class StatisticManager {
     public JobExecutionTypeStatistics getJobExecutionTypeStatistics() {
         int transientJobCnt = 0;
         int daemonJobCnt = 0;
-        for (CloudJobConfiguration each : configurationService.loadAll()) {
+        for (CloudJobConfigurationPOJO each : configurationService.loadAll()) {
             if (CloudJobExecutionType.TRANSIENT.equals(each.getJobExecutionType())) {
                 transientJobCnt++;
             } else if (CloudJobExecutionType.DAEMON.equals(each.getJobExecutionType())) {

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
@@ -162,9 +162,9 @@ public final class CloudAppRestfulApi {
     public void disable(@PathParam("appName") final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.add(appName);
-            for (CloudJobConfiguration each : jobConfigService.loadAll()) {
+            for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.unschedule(each.getJobConfig().getJobName());
+                    producerManager.unschedule(each.getJobName());
                 }
             }
         }
@@ -180,9 +180,9 @@ public final class CloudAppRestfulApi {
     public void enable(@PathParam("appName") final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.remove(appName);
-            for (CloudJobConfiguration each : jobConfigService.loadAll()) {
+            for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
                 if (appName.equals(each.getAppName())) {
-                    producerManager.reschedule(each.getJobConfig().getJobName());
+                    producerManager.reschedule(each.getJobName());
                 }
             }
         }
@@ -204,9 +204,9 @@ public final class CloudAppRestfulApi {
     }
     
     private void removeAppAndJobConfigurations(final String appName) {
-        for (CloudJobConfiguration each : jobConfigService.loadAll()) {
+        for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
             if (appName.equals(each.getAppName())) {
-                producerManager.deregister(each.getJobConfig().getJobName());
+                producerManager.deregister(each.getJobName());
             }
         }
         disableAppService.remove(appName);

@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
@@ -34,9 +35,9 @@ public final class CloudJobConfigurationBuilder {
      * @param jobName job name
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, 
-                JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build());
+    public static CloudJobConfigurationPOJO createCloudJobConfiguration(final String jobName) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT,
+                JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build()));
     }
     
     /**
@@ -46,8 +47,9 @@ public final class CloudJobConfigurationBuilder {
      * @param jobExecutionType job execution type
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final CloudJobExecutionType jobExecutionType) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, jobExecutionType, JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build());
+    public static CloudJobConfigurationPOJO createCloudJobConfiguration(final String jobName, final CloudJobExecutionType jobExecutionType) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration("test_app", 1.0d, 128.0d,
+                jobExecutionType, JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build()));
     }
     
     /**
@@ -70,9 +72,9 @@ public final class CloudJobConfigurationBuilder {
      * @param misfire misfire
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final boolean misfire) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, 
-                JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(misfire).build());
+    public static CloudJobConfigurationPOJO createCloudJobConfiguration(final String jobName, final boolean misfire) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT,
+                JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(misfire).build()));
     }
     
     /**
@@ -82,8 +84,9 @@ public final class CloudJobConfigurationBuilder {
      * @param appName app name
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final String appName) {
-        return new CloudJobConfiguration(appName, 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build());
+    public static CloudJobConfigurationPOJO createCloudJobConfiguration(final String jobName, final String appName) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration(appName, 1.0d, 128.0d,
+                CloudJobExecutionType.TRANSIENT, JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build()));
     }
     
     /**
@@ -92,9 +95,9 @@ public final class CloudJobConfigurationBuilder {
      * @param jobName job name
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
-                "test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, JobConfiguration.newBuilder(jobName, 3).cron("0/30 * * * * ?").failover(false).misfire(true).build());
+    public static CloudJobConfigurationPOJO createOtherCloudJobConfiguration(final String jobName) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration(
+                "test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, JobConfiguration.newBuilder(jobName, 3).cron("0/30 * * * * ?").failover(false).misfire(true).build()));
     }
     
     /**
@@ -125,7 +128,7 @@ public final class CloudJobConfigurationBuilder {
      * @param jobName job name
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName) {
+    public static CloudJobConfigurationPOJO createScriptCloudJobConfiguration(final String jobName) {
         return createScriptCloudJobConfiguration(jobName, 3);
     }
     
@@ -136,8 +139,8 @@ public final class CloudJobConfigurationBuilder {
      * @param shardingTotalCount sharding total count
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName, final int shardingTotalCount) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, 
-                JobConfiguration.newBuilder(jobName, shardingTotalCount).cron("0/30 * * * * ?").failover(false).misfire(false).setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build());
+    public static CloudJobConfigurationPOJO createScriptCloudJobConfiguration(final String jobName, final int shardingTotalCount) {
+        return CloudJobConfigurationPOJO.fromCloudJobConfiguration(new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT,
+                JobConfiguration.newBuilder(jobName, shardingTotalCount).cron("0/30 * * * * ?").failover(false).misfire(false).setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build()));
     }
 }

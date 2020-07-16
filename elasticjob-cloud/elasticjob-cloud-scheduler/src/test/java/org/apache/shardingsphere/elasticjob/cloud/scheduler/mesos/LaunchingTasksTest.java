@@ -70,8 +70,8 @@ public final class LaunchingTasksTest {
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
         when(facadeService.getEligibleJobContext()).thenReturn(Arrays.asList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY),
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job").toCloudJobConfiguration(), ExecutionType.READY),
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job").toCloudJobConfiguration(), ExecutionType.FAILOVER)));
         launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
     }
     
