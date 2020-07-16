@@ -41,7 +41,7 @@ public class MyJob implements SimpleJob {
 ## Configure Job
 
 ```java
-    JobConfiguration jobConfig = JobConfiguration.newBuilder("MyJob", 3).cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
+    JobConfiguration jobConfig = JobConfiguration.newBuilder("MyJob", 3).cron("0/5 * * * * ?").build();
 ```
 
 ## Schedule Job
