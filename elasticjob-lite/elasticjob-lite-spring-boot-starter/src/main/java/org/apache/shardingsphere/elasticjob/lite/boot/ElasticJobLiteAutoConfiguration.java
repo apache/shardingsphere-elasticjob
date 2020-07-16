@@ -79,7 +79,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
         }
         throw new BeanCreationException(
                 "More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
-                        + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticjobTracingAutoConfiguration].");
+                        + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticJobTracingAutoConfiguration].");
     }
     
     private void registerClassedJobs(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry beanFactory,

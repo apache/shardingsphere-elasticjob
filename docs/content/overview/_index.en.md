@@ -11,9 +11,9 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
+ElasticJob is a distributed scheduling solution consisting of two separate projects, ElasticJob-Lite and ElasticJob-Cloud.
 
-Elasticjob uses a unified job API for each product. 
+It uses a unified job API for each project.
 Developers only need code one time and can deploy at will.
 
 ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
