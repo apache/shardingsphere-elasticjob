@@ -5,4 +5,5 @@ weight = 1
 chapter = true
 +++
 
-TODO
+This chapter will introduce the use of ElasticJob-Lite. 
+Please refer to [Example](https://github.com/apache/shardingsphere-elasticjob/tree/master/examples) for more details.
