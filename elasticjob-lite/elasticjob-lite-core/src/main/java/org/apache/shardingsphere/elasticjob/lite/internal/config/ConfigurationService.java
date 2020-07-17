@@ -62,28 +62,28 @@ public final class ConfigurationService {
     /**
      * Set up job configuration.
      * 
-     * @param jobIdentification job identification
+     * @param jobClassName job class name
      * @param jobConfig job configuration to be updated
      * @return accepted job configuration
      */
-    public JobConfiguration setUpJobConfiguration(final String jobIdentification, final JobConfiguration jobConfig) {
-        checkConflictJob(jobIdentification, jobConfig);
+    public JobConfiguration setUpJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
+        checkConflictJob(jobClassName, jobConfig);
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || jobConfig.isOverwrite()) {
             jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, YamlEngine.marshal(JobConfigurationPOJO.fromJobConfiguration(jobConfig)));
-            jobNodeStorage.replaceJobRootNode(jobIdentification);
+            jobNodeStorage.replaceJobRootNode(jobClassName);
             return jobConfig;
         }
         return load(false);
     }
     
-    private void checkConflictJob(final String newJobIdentification, final JobConfiguration jobConfig) {
+    private void checkConflictJob(final String newJobClassName, final JobConfiguration jobConfig) {
         if (!jobNodeStorage.isJobRootNodeExisted()) {
             return;
         }
-        String originalJobIdentification = jobNodeStorage.getJobRootNodeData();
-        if (null != originalJobIdentification && !originalJobIdentification.equals(newJobIdentification)) {
+        String originalJobClassName = jobNodeStorage.getJobRootNodeData();
+        if (null != originalJobClassName && !originalJobClassName.equals(newJobClassName)) {
             throw new JobConfigurationException(
-                    "Job conflict with register center. The job name '%s' is existed in register center", jobConfig.getJobName());
+                    "Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", jobConfig.getJobName(), originalJobClassName, newJobClassName);
         }
     }
     
