@@ -17,7 +17,7 @@ ElasticJob 中任务分片项的概念，使得任务可以在分布式的环境
 
 举例说明，如果作业分为 4 片，用两台服务器执行，则每个服务器分到 2 片，分别负责作业的 50% 的负载，如下图所示。
 
-[分片作业](https://shardingsphere.apache.org/elasticjob/current/img/elastic/sharding.png)
+![分片作业](https://shardingsphere.apache.org/elasticjob/current/img/elastic/sharding.png)
 
 ### 分片项
 
@@ -37,7 +37,7 @@ ElasticJob 并不直接提供数据处理的功能，而是将分片项分配至
 ElasticJob 提供最灵活的方式，最大限度的提高执行作业的吞吐量。
 当新增加作业服务器时，ElasticJob 会通过注册中心的临时节点的变化感知到新服务器的存在，并在下次任务调度的时候重新分片，新的服务器会承载一部分作业分片，如下图所示。
 
-[作业扩容](https://shardingsphere.apache.org/elasticjob/current/img/elastic/sacle-out.png)
+![作业扩容](https://shardingsphere.apache.org/elasticjob/current/img/elastic/sacle-out.png)
 
 将分片项设置为大于服务器的数量，最好是大于服务器倍数的数量，作业将会合理的利用分布式资源，动态的分配分片项。
 
@@ -50,7 +50,7 @@ ElasticJob 提供最灵活的方式，最大限度的提高执行作业的吞吐
 当作业服务器在运行中宕机时，注册中心同样会通过临时节点感知，并将在下次运行时将分片转移至仍存活的服务器，以达到作业高可用的效果。
 本次由于服务器宕机而未执行完的作业，则可以通过失效转移的方式继续执行。如下图所示。
 
-[作业高可用](https://shardingsphere.apache.org/elasticjob/current/img/elastic/ha.png)
+![作业高可用](https://shardingsphere.apache.org/elasticjob/current/img/elastic/ha.png)
 
 将分片总数设置为 1，并使用多于 1 台的服务器执行作业，作业将会以 1 主 n 从的方式执行。
-一旦执行作业的服务器崩溃，等待执行的服务器将会在下次作业启动时替补执行。开启失效转移功能效果更好，可以保证在本次作业执行时崩溃，备机立即启动替补执行。
+一旦执行作业的服务器宕机，等待执行的服务器将会在下次作业启动时替补执行。开启失效转移功能效果更好，可以保证在本次作业在执行时宕机的情况下，备机立即启动替补执行。
