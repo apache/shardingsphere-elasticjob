@@ -127,3 +127,8 @@ ElasticJob 并未包含 Spring 的依赖，请用户自行添加需要的版本�
 * 新增作业时，必须先发布打包部署后的作业APP。
 
 * 作业配置参数cpuCount,memoryMB分别代表作业运行时需要用到的CPU及内存。
+
+## 15. 对于多网卡的机器，任务启动如何获取IP或是否可配置网卡信息？
+
+回答：
+ElasticJob默认获取网卡列表中第一个非回环可用IPV4的地址。当用户配置多网卡后，可通过设置系统变量(elasticjob.preferred.network.interface)获取指定网卡地址。
