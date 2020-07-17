@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.setup;
+package org.apache.shardingsphere.elasticjob.lite.spring.setup;
 
+import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public class JobIdentificationStrategyFactoryTest {
+public final class JobClassNameProviderFactoryTest {
     
     @Test
-    public void assertGetDefaultStrategy() {
-        assertThat(JobIdentificationStrategyFactory.getStrategy(), instanceOf(JobClassNameIdentificationStrategy.class));
+    public void assertGetStrategy() {
+        assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(SpringProxyJobClassNameProvider.class));
     }
 }

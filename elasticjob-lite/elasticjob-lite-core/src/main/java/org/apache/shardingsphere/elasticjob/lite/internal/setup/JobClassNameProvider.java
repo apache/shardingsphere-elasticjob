@@ -17,29 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-import java.util.ServiceLoader;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 
 /**
- * Job identification strategy factory.
+ * Job class name provider.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class JobIdentificationStrategyFactory {
-    
-    private static final JobIdentificationStrategy DEFAULT_STRATEGY = new JobClassNameIdentificationStrategy();
+public interface JobClassNameProvider {
     
     /**
-     * Get job identification strategy.
+     * Get job class name.
      *
-     * @return job identification strategy
+     * @param elasticJob job instance
+     * @param jobName    job name
+     * @return job class name
      */
-    public static JobIdentificationStrategy getStrategy() {
-        ServiceLoader<JobIdentificationStrategy> strategies = ServiceLoader.load(JobIdentificationStrategy.class);
-        if (strategies.iterator().hasNext()) {
-            return strategies.iterator().next();
-        }
-        return DEFAULT_STRATEGY;
-    }
+    String getJobClassName(ElasticJob elasticJob, String jobName);
 }

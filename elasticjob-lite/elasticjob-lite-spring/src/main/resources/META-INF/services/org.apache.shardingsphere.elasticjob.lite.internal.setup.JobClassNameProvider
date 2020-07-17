@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.spring.setup.JobClassNameBySpringIdentificationStrategy
+org.apache.shardingsphere.elasticjob.lite.spring.setup.SpringProxyJobClassNameProvider

@@ -17,15 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.junit.Test;
 
-/**
- * Identify job with job class name.
- */
-public class JobClassNameIdentificationStrategy implements JobIdentificationStrategy {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+
+public final class JobClassNameProviderFactoryTest {
     
-    @Override
-    public String identify(final ElasticJob elasticJob, final String jobName) {
-        return elasticJob.getClass().getName();
+    @Test
+    public void assertGetDefaultStrategy() {
+        assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(SimpleJobClassNameProvider.class));
     }
 }
