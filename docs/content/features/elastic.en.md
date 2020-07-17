@@ -1,7 +1,7 @@
 +++
-pre = "<b>3.1. </b>"
+pre = "<b>3.2. </b>"
 title = "Elastic Schedule"
-weight = 1
+weight = 2
 chapter = true
 +++
 

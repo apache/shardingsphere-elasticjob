@@ -1,7 +1,7 @@
 +++
-pre = "<b>3.1. </b>"
+pre = "<b>3.2. </b>"
 title = "弹性调度"
-weight = 1
+weight = 2
 chapter = true
 +++
 

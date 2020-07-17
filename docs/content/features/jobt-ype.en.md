@@ -1,7 +1,7 @@
 +++
-pre = "<b>3.4. </b>"
+pre = "<b>3.6. </b>"
 title = "Job Open Ecosystem"
-weight = 4
+weight = 6
 chapter = true
 +++
 
