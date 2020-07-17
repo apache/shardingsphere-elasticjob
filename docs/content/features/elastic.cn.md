@@ -50,7 +50,7 @@ ElasticJob 提供最灵活的方式，最大限度的提高执行作业的吞吐
 当作业服务器在运行中宕机时，注册中心同样会通过临时节点感知，并将在下次运行时将分片转移至仍存活的服务器，以达到作业高可用的效果。
 本次由于服务器宕机而未执行完的作业，则可以通过失效转移的方式继续执行。如下图所示。
 
-[作业扩容](https://shardingsphere.apache.org/elasticjob/current/img/elastic/ha.png)
+[作业高可用](https://shardingsphere.apache.org/elasticjob/current/img/elastic/ha.png)
 
 将分片总数设置为 1，并使用多于 1 台的服务器执行作业，作业将会以 1 主 n 从的方式执行。
 一旦执行作业的服务器崩溃，等待执行的服务器将会在下次作业启动时替补执行。开启失效转移功能效果更好，可以保证在本次作业执行时崩溃，备机立即启动替补执行。
