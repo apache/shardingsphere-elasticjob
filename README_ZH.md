@@ -73,3 +73,17 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
   - 作业管控端
   - 作业执行历史数据追踪
   - 注册中心管理
+
+## 环境要求
+
+### Java
+
+请使用 Java 8 及其以上版本。
+
+### ZooKeeper
+
+请使用 Zookeeper 3.6.0 及其以上版本。[详情参见](https://zookeeper.apache.org/)
+
+### Mesos（仅 ElasticJob-Cloud 使用）
+
+请使用 Mesos 1.1.0 及其兼容版本。[详情参见](https://mesos.apache.org/)

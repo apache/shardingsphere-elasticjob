@@ -78,3 +78,17 @@ Uses Mesos to manage and isolate resources.
   - Job administration
   - Job event trace query
   - Registry center management
+
+## Environment Required
+
+### Java
+
+Java 8 or above required.
+
+### ZooKeeper
+
+Zookeeper or above required. [See details](https://zookeeper.apache.org/)
+
+### Mesos (ElasticJob-Cloud only)
+
+Mesos 1.1.0 or compatible version required (For ElasticJob-Cloud only). [See details](https://mesos.apache.org/)
