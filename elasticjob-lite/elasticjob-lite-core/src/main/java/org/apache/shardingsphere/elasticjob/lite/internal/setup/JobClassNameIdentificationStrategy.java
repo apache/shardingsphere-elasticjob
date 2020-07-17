@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
  * Identify job with job class name.
  */
 public class JobClassNameIdentificationStrategy implements JobIdentificationStrategy {
-
+    
     @Override
     public String identify(final ElasticJob elasticJob, final String jobName) {
         return elasticJob.getClass().getName();

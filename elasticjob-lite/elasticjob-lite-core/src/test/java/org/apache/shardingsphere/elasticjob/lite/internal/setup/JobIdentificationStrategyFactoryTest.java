@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
-public class JobIdentificationStrategyFactoryTest {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
+public class JobIdentificationStrategyFactoryTest {
+    
     @Test
     public void assertGetDefaultStrategy() {
         assertThat(JobIdentificationStrategyFactory.getStrategy(), instanceOf(JobClassNameIdentificationStrategy.class));

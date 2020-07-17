@@ -23,11 +23,12 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
  * Job identification strategy.
  */
 public interface JobIdentificationStrategy {
-
+    
     /**
      * Identify job.
+     *
      * @param elasticJob job instance
-     * @param jobName job name
+     * @param jobName    job name
      * @return job identification
      */
     String identify(ElasticJob elasticJob, String jobName);
