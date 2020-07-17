@@ -62,12 +62,12 @@ public final class SetUpFacade {
     /**
      * Set up job configuration.
      *
-     * @param jobClassName job class name
+     * @param jobIdentification job identification
      * @param jobConfig job configuration to be updated
      * @return accepted job configuration
      */
-    public JobConfiguration setUpJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
-        return configService.setUpJobConfiguration(jobClassName, jobConfig);
+    public JobConfiguration setUpJobConfiguration(final String jobIdentification, final JobConfiguration jobConfig) {
+        return configService.setUpJobConfiguration(jobIdentification, jobConfig);
     }
     
     /**
