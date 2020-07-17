@@ -1,6 +1,6 @@
 +++
 pre = "<b>3.5. </b>"
-title = "Misfired"
+title = "Misfire"
 weight = 5
 chapter = true
 +++
