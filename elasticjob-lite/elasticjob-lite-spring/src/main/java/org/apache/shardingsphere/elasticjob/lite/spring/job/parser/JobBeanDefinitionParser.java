@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,12 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
             factory.setInitMethodName("schedule");
         }
         factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
-        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
+        String jobType = element.getAttribute(JobBeanDefinitionTag.JOB_TYPE_ATTRIBUTE);
+        if (!Strings.isNullOrEmpty(jobType)) {
+            factory.addConstructorArgValue(jobType);
+        } else {
+            factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
+        }
         factory.addConstructorArgValue(createJobConfigurationBeanDefinition(element, parserContext));
         String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
         if (!Strings.isNullOrEmpty(tracingRef)) {

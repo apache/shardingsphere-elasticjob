@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 public final class JobBeanDefinitionTag {
     
     public static final String JOB_REF_ATTRIBUTE = "job-ref";
+    
+    public static final String JOB_TYPE_ATTRIBUTE = "job-type";
     
     public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
     
