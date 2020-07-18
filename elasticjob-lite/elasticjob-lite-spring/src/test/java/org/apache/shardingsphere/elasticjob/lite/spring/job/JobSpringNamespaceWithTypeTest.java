@@ -41,8 +41,8 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     }
     
     @Test
-    public void JobScriptWithJobTypeTest() {
-        BlockUtils.sleep(1000l);
+    public void jobScriptWithJobTypeTest() {
+        BlockUtils.sleep(1000L);
         assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
     }
 }
