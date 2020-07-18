@@ -67,7 +67,7 @@ The list here will be shown according to the registration date.
     <li><a href="https://www.jinhui365.com/" rel="nofollow">JinHui365</a></li>
     <li><a href="https://www.zyzc8.com/" rel="nofollow">ZhongChuang Technology</a></li>
     <li><a href="https://www.maihaoche.com/" rel="nofollow">MaiHaoche</a></li>
-    <li><a href="https://g.10086.cn/" rel="nofollow">10086</a></li>
+    <li><a href="https://g.10086.cn/" rel="nofollow">MiguFun</a></li>
     <li><a href="http://www.deepdraw.cn/" rel="nofollow">DeepDraw</a></li>
     <li><a href="http://www.gdyuanpeng.com/" rel="nofollow">YY Cloud</a></li>
     <li><a href="https://nexposter.com/" rel="nofollow">Nex Poster</a></li>
