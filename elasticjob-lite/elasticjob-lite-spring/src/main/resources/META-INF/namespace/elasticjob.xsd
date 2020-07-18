@@ -23,7 +23,7 @@
             elementFormDefault="qualified">
 
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
-
+    
     <xsd:element name="listener">
         <xsd:complexType>
             <xsd:attribute name="class" type="xsd:string" use="required" />
@@ -36,7 +36,7 @@
             <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" use="required" />
         </xsd:complexType>
     </xsd:element>
-
+    
     <xsd:element name="job">
         <xsd:complexType>
             <xsd:complexContent>
@@ -69,7 +69,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-
+    
     <xsd:element name="zookeeper">
         <xsd:complexType>
             <xsd:complexContent>
@@ -86,7 +86,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-
+    
     <xsd:element name="rdb-event-trace">
         <xsd:complexType>
             <xsd:complexContent>
@@ -96,7 +96,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-
+    
     <xsd:element name="snapshot">
         <xsd:complexType>
             <xsd:complexContent>
