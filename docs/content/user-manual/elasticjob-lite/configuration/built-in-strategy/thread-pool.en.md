@@ -1,5 +1,5 @@
 +++
-title = "Job Thread Pool Strategy"
+title = "Thread Pool Strategy"
 weight = 2
 +++
 

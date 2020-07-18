@@ -39,9 +39,9 @@ chapter = true
 | misfire                       | boolean    | 否       | true           | 是否开启错过任务重新执行 |
 | maxTimeDiffSeconds            | int        | 否       | -1             | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为-1表示不校验时间误差 |
 | reconcileIntervalMinutes      | int        | 否       | 10             | 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复<br />单位：分钟 |
-| jobShardingStrategyType       | String     | 否       | AVG_ALLOCATION | 作业分片策略类型<br />策略类型的详情，请参见[内置分片策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/sharding) |
-| jobExecutorServiceHandlerType | String     | 否       | CPU            | 作业线程池处理策略<br />策略类型的详情，请参见[内置线程池策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/thread-pool) |
-| jobErrorHandlerType           | String     | 否       |                | 配置作业异常处理策略   |
+| jobShardingStrategyType       | String     | 否       | AVG_ALLOCATION | 作业分片策略类型<br />策略类型的详情，请参见[内置分片策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/sharding)         |
+| jobExecutorServiceHandlerType | String     | 否       | CPU            | 作业线程池处理策略<br />策略类型的详情，请参见[内置线程池策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/thread-pool)   |
+| jobErrorHandlerType           | String     | 否       |                | 作业错误处理策略<br />策略类型的详情，请参见[内置错误处理策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler) |
 | description                   | String     | 否       |                | 作业描述信息 |
 | props                         | Properties | 否       |                | 作业属性配置信息，对于 Dataflow 类型任务，配置 streaming.process=true 开启流式处理任务。对于 Script 类型任务，配置 script.command.line 指定运行脚本 |
 | disabled                      | boolean    | 否       | false          | 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动      |
