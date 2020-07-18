@@ -20,7 +20,7 @@ Through the way of DI (Dependency Injection), developers can easily use data sou
                         http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
     <!-- Configure registry center for job -->
-    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="my-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- Configure job java bean -->
     <bean id="myJob" class="xxx.MyJob">

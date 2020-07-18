@@ -4,10 +4,7 @@ weight = 4
 chapter = true
 +++
 
-ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器配合使用。
-开发者能够便捷的在作业中通过依赖注入使用 Spring 容器管理的数据源等对象，并使用占位符从属性文件中取值。
-
-## 作业配置
+## 监听器配置
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -23,18 +20,12 @@ ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器
     <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="my-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- 配置作业 Bean -->
-    <bean id="myJob" class="xxx.MyJob">
-        <property name="fooService" ref="xxx.FooService" />
-    </bean>
+    <bean id="myJob" class="xxx.MyJob" />
     
-    <!-- 配置基于 class 的作业调度 -->   
-    <elasticjob:job id="${myJob.id}" job-ref="myJob" registry-center-ref="regCenter" sharding-total-count="${myJob.shardingTotalCount}" cron="${myJob.cron}" />
-    
-    <!-- 配置基于 type 的作业调度 -->   
-    <elasticjob:job id="${myScriptJob.id}" job-type="SCRIPT" registry-center-ref="regCenter" sharding-total-count="${myScriptJob.shardingTotalCount}" cron="${myScriptJob.cron}">
-        <props>
-            <prop key="script.command.line">${myScriptJob.scriptCommandLine}</prop>
-        </props>
+    <elasticjob:job id="${myJob.id}" job-ref="myJob" registry-center-ref="regCenter" sharding-total-count="3" cron="0/1 * * * * ?">
+        <!-- 配置作业监听器 -->
+        <elasticjob:listener class="xxx.MyJobListener" />
+        <elasticjob:distributed-listener class="xxx.MyDistributeOnceJobListener" started-timeout-milliseconds="10000" completed-timeout-milliseconds="20000" />
     </elasticjob:job>
 </beans>
 ```
