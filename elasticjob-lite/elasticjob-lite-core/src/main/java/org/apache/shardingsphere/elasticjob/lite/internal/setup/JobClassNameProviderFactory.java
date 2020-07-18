@@ -32,7 +32,7 @@ public final class JobClassNameProviderFactory {
     
     private static final List<JobClassNameProvider> PROVIDERS = new LinkedList<>();
     
-    private static final JobClassNameProvider DEFAULT_STRATEGY = new SimpleJobClassNameProvider();
+    private static final JobClassNameProvider DEFAULT_PROVIDER = new SimpleJobClassNameProvider();
     
     static {
         for (JobClassNameProvider each : ServiceLoader.load(JobClassNameProvider.class)) {
@@ -46,6 +46,6 @@ public final class JobClassNameProviderFactory {
      * @return job class name provider
      */
     public static JobClassNameProvider getProvider() {
-        return PROVIDERS.isEmpty() ? DEFAULT_STRATEGY : PROVIDERS.get(0);
+        return PROVIDERS.isEmpty() ? DEFAULT_PROVIDER : PROVIDERS.get(0);
     }
 }
