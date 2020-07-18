@@ -17,15 +17,32 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.job;
 
+import static org.junit.Assert.assertTrue;
+import javax.annotation.Resource;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
 public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit4SpringContextTests {
     
+    private final String scriptJobName = "scriptElasticJob_job_type";
+    
+    @Resource
+    private CoordinatorRegistryCenter regCenter;
+    
+    @After
+    public void tearDown() {
+        JobRegistry.getInstance().shutdown(scriptJobName);
+    }
+    
     @Test
-    public void jobScriptWithJobTypeTest() {
-        System.out.println("JobScriptWithJobTypeTest");
+    public void JobScriptWithJobTypeTest() {
+        BlockUtils.sleep(1000l);
+        assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
     }
 }
