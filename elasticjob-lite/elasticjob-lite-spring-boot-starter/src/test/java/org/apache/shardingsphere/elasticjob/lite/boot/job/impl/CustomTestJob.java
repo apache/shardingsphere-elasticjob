@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.boot.job.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.lite.boot.job.CustomJob;
 import org.apache.shardingsphere.elasticjob.lite.boot.repository.BarRepository;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class CustomTestJob implements CustomJob {
 
     @Autowired
@@ -41,6 +43,6 @@ public class CustomTestJob implements CustomJob {
             results.add(data);
             i += shardingContext.getShardingTotalCount();
         }
-        System.out.println(results);
+        log.info("{}", results);
     }
 }
