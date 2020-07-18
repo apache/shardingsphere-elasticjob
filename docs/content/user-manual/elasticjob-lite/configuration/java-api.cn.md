@@ -43,6 +43,6 @@ chapter = true
 | jobExecutorServiceHandlerType | String     | 否       | CPU            | 作业线程池处理策略<br />策略类型的详情，请参见[内置线程池策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/thread-pool)   |
 | jobErrorHandlerType           | String     | 否       |                | 作业错误处理策略<br />策略类型的详情，请参见[内置错误处理策略列表](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler) |
 | description                   | String     | 否       |                | 作业描述信息 |
-| props                         | Properties | 否       |                | 作业属性配置信息，对于 Dataflow 类型任务，配置 streaming.process=true 开启流式处理任务。对于 Script 类型任务，配置 script.command.line 指定运行脚本 |
+| props                         | Properties | 否       |                | 作业属性配置信息<br />属性配置的详情，请参见[作业属性配置列表](/cn/user-manual/elasticjob-lite/configuration/props) |
 | disabled                      | boolean    | 否       | false          | 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动      |
 | overwrite                     | boolean    | 否       | false          | 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准 |
