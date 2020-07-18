@@ -7,7 +7,7 @@ chapter = true
 ElasticJob-Lite provides a custom Spring namespace, which can be used with the Spring.
 Through the way of DI (Dependency Injection), developers can easily use data sources and other objects that managed by the Spring container in their jobs, and use placeholders to get values ​​from property files.
 
-## Config job for Spring namespace
+## Job configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -41,4 +41,4 @@ Through the way of DI (Dependency Injection), developers can easily use data sou
 
 ## Job start
 
-If the Spring container start, the xml that configures the Spring namespace will be loaded, and the job will be automatically started.
+If the Spring container start, the `XML` that configures the Spring namespace will be loaded, and the job will be automatically started.
