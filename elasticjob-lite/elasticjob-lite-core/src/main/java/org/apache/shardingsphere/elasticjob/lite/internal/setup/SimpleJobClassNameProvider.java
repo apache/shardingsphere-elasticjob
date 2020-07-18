@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 public final class SimpleJobClassNameProvider implements JobClassNameProvider {
     
     @Override
-    public String getJobClassName(final ElasticJob elasticJob, final String jobName) {
+    public String getJobClassName(final ElasticJob elasticJob) {
         return elasticJob.getClass().getName();
     }
 }

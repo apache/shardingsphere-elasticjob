@@ -28,8 +28,7 @@ public interface JobClassNameProvider {
      * Get job class name.
      *
      * @param elasticJob job instance
-     * @param jobName    job name
      * @return job class name
      */
-    String getJobClassName(ElasticJob elasticJob, String jobName);
+    String getJobClassName(ElasticJob elasticJob);
 }

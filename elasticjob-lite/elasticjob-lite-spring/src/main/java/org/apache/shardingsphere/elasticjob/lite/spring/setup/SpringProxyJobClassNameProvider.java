@@ -31,7 +31,7 @@ import org.springframework.aop.support.AopUtils;
 public final class SpringProxyJobClassNameProvider implements JobClassNameProvider {
 
     @Override
-    public String getJobClassName(final ElasticJob elasticJob, final String jobName) {
+    public String getJobClassName(final ElasticJob elasticJob) {
         return AopUtils.isAopProxy(elasticJob) ? AopTargetUtils.getTarget(elasticJob).getClass().getName() : elasticJob.getClass().getName();
     }
 }

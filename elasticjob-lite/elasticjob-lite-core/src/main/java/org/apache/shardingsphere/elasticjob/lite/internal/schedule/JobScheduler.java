@@ -90,7 +90,7 @@ public final class JobScheduler {
         this.tracingConfig = tracingConfig;
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob, jobConfig.getJobName());
+        String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
         jobScheduleController = createJobScheduleController();
