@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 
 /**
- * Simple provider for get job class name.
+ * Simple job class name provider.
  */
 public final class SimpleJobClassNameProvider implements JobClassNameProvider {
     
