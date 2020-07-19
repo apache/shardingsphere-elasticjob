@@ -5,7 +5,7 @@ weight = 2
 chapter = true
 +++
 
-Elastic-Job-Cloud 提供应用发布及作业注册等 RESTful API， 可通过 curl 操作。
+ElasticJob-Cloud 提供应用发布及作业注册等 RESTful API， 可通过 curl 操作。
 
 ## 应用 API
 
@@ -33,7 +33,7 @@ url：app
 
 **appName:**
 
-为 Elastic-Job-Cloud 的作业应用唯一标识。
+为 ElasticJob-Cloud 的作业应用唯一标识。
 
 **appURL:**
 

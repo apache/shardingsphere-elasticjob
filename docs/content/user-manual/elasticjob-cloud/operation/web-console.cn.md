@@ -4,7 +4,7 @@ weight = 3
 chapter = true
 +++
 
-运维平台内嵌于elastic-job-cloud-scheduler的jar包中, 无需额外启动WEB付服务器, 可通过修改配置文件中http_port参数来调整启动端口,默认端口为8899，访问地址为http://{your_scheduler_ip}:8899。
+运维平台内嵌于elasticjob-cloud-scheduler的jar包中, 无需额外启动WEB付服务器, 可通过修改配置文件中http_port参数来调整启动端口,默认端口为8899，访问地址为http://{your_scheduler_ip}:8899。
 
 ## 登录
 
