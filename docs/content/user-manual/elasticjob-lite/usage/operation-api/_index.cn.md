@@ -12,7 +12,7 @@ ElasticJob-Lite 提供了 Java API，可以通过直接对注册中心进行操�
 
 类名称：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI`
 
-###  获取作业配置
+### 获取作业配置
 
 方法签名：YamlJobConfiguration getJobConfiguration(String jobName)
 
