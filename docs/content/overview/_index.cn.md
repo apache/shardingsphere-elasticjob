@@ -89,7 +89,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 ### ZooKeeper
 
-请使用 Zookeeper 3.6.0 及其以上版本。[详情参见](https://zookeeper.apache.org/)
+请使用 ZooKeeper 3.6.0 及其以上版本。[详情参见](https://zookeeper.apache.org/)
 
 ### Mesos（仅 ElasticJob-Cloud 使用）
 
