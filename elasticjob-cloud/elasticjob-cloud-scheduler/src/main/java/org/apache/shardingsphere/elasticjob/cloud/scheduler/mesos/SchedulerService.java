@@ -19,23 +19,22 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.console.ConsoleBootstrap;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.MesosConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
-
-import java.util.Optional;
 
 /**
  * Scheduler service.
@@ -60,7 +59,7 @@ public final class SchedulerService {
     
     private final Service taskLaunchScheduledService;
     
-    private final RestfulService restfulService;
+    private final ConsoleBootstrap consoleBootstrap;
     
     private final ReconcileService reconcileService;
     
@@ -75,7 +74,7 @@ public final class SchedulerService {
         cloudJobConfigurationListener = new CloudJobConfigurationListener(regCenter, producerManager);
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         reconcileService = new ReconcileService(schedulerDriver, facadeService);
-        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager, reconcileService);
+        consoleBootstrap = new ConsoleBootstrap(regCenter, producerManager, reconcileService);
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
@@ -118,7 +117,7 @@ public final class SchedulerService {
         statisticManager.startup();
         cloudJobConfigurationListener.start();
         taskLaunchScheduledService.startAsync();
-        restfulService.start();
+        consoleBootstrap.start();
         schedulerDriver.start();
         if (env.getFrameworkConfiguration().isEnabledReconcile()) {
             reconcileService.startAsync();
@@ -129,7 +128,6 @@ public final class SchedulerService {
      * Stop.
      */
     public void stop() {
-        restfulService.stop();
         taskLaunchScheduledService.stopAsync();
         cloudJobConfigurationListener.stop();
         statisticManager.shutdown();

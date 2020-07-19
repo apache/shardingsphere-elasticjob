@@ -92,7 +92,7 @@ public final class BootstrapEnvironment {
     
     /**
      * Get zookeeper config.
-     * 
+     *
      * @return zookeeper config
      */
     // TODO Other zkConfig values ​​are configurable

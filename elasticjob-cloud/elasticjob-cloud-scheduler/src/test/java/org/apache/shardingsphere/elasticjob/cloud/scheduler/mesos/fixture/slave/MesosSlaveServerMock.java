@@ -17,25 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.codehaus.jettison.json.JSONException;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-@Path("/")
+@Controller
+@RequestMapping("/")
 public class MesosSlaveServerMock {
-
+    
     /**
      * Check slave server state.
+     *
      * @return json object
      * @throws JSONException json exception
      */
-    @GET
-    @Path("/state")
-    public JsonObject state() throws JSONException {
-        return (JsonObject) new JsonParser().parse("{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohon"
+    @ResponseBody
+    @GetMapping(value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String state() throws JSONException {
+        return "{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohon"
                 + "gtao\",\"start_time\":1488179767.60204,\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"pid\":\"slave(1)@"
                 + "127.0.0.1:9051\",\"hostname\":\"127.0.0.1\",\"resources\":{\"disk\":416050.0,\"mem\":6883.0,\"gpus\":0.0,\""
                 + "cpus\":4.0,\"ports\":\"[31000-32000]\"},\"reserved_resources\":{},\"unreserved_resources\":{\"disk\":416050.0,\""
@@ -87,6 +89,6 @@ public class MesosSlaveServerMock {
                 + "-61cf824a660d-S0\",\"state\":\"TASK_RUNNING\",\"resources\":{\"disk\":0.0,\"mem\":128.0,\"gpus\":0.0,\"cpus\":0.5},"
                 + "\"statuses\":[{\"state\":\"TASK_RUNNING\",\"timestamp\":1488186955.00174,\"container_status\":{\"network_infos\""
                 + ":[{\"ip_addresses\":[{\"ip_address\":\"127.0.0.1\"}]}]}}]}],\"queued_tasks\":[],\"completed_tasks\":[]}],\""
-                + "completed_executors\":[]}],\"completed_frameworks\":[]}");
+                + "completed_executors\":[]}],\"completed_frameworks\":[]}";
     }
 }

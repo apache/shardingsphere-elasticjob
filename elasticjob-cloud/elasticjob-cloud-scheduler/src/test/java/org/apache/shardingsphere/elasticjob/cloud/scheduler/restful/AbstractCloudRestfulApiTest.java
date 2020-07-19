@@ -17,18 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
 
+import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.restful.RestfulServer;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.console.ConsoleBootstrap;
+import org.apache.shardingsphere.elasticjob.cloud.console.controller.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMockConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMockConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,12 +48,6 @@ public abstract class AbstractCloudRestfulApiTest {
     @Getter(AccessLevel.PROTECTED)
     private static JobEventRdbSearch jobEventRdbSearch;
     
-    private static RestfulService restfulService;
-    
-    private static RestfulServer masterServer;
-    
-    private static RestfulServer slaveServer;
-    
     @BeforeClass
     public static void setUpClass() throws Exception {
         initRestfulServer();
@@ -66,23 +60,22 @@ public abstract class AbstractCloudRestfulApiTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
-        restfulService = new RestfulService(regCenter, new RestfulServerConfiguration(19000), producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
-        restfulService.start();
+        ConsoleBootstrap consoleBootstrap = new ConsoleBootstrap(regCenter, producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
+        consoleBootstrap.start();
     }
     
     private static void initMesosServer() throws Exception {
         MesosStateService.register("127.0.0.1", 9050);
-        masterServer = new RestfulServer(9050);
-        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), null, null);
-        slaveServer = new RestfulServer(9051);
-        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), null, null);
+        ConsoleBootstrap.ConsoleApplication.setPort(9050);
+        ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosMasterServerMockConfiguration.class});
+        ConsoleBootstrap.ConsoleApplication.start();
+        ConsoleBootstrap.ConsoleApplication.setPort(9051);
+        ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosSlaveServerMockConfiguration.class});
+        ConsoleBootstrap.ConsoleApplication.start();
     }
     
     @AfterClass
-    public static void tearDown() {
-        restfulService.stop();
-        masterServer.stop();
-        slaveServer.stop();
+    public static void tearDown() throws IOException {
         MesosStateService.deregister();
     }
     

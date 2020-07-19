@@ -15,16 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.restful;
+package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Restful api exception.
- */
-public final class RestfulException extends RuntimeException {
+ * Mesos slave server configuration.
+ **/
+@Configuration
+public class MesosSlaveServerMockConfiguration {
     
-    private static final long serialVersionUID = -7594937349408972960L;
-    
-    public RestfulException(final Throwable cause) {
-        super(cause);
+    /**
+     * inject mesos slave server mock.
+     *
+     * @return mesos slave server mock
+     */
+    @Bean
+    public MesosSlaveServerMock mesosSlaveServerMock() {
+        return new MesosSlaveServerMock();
     }
 }
