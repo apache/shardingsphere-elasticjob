@@ -1,7 +1,7 @@
 +++
-pre = "<b>5.2. </b>"
+pre = "<b>5.1. </b>"
 title = "Job Sharding Strategy"
-weight = 2
+weight = 1
 chapter = true
 +++
 
