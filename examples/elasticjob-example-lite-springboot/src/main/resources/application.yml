@@ -27,3 +27,7 @@ elasticjob:
           shardingTotalCount: 3
           props:
             script.command.line: "echo SCRIPT Job: "
+        - jobName: manualScriptJob
+          shardingTotalCount: 9
+          props:
+            script.command.line: "echo Manual SCRIPT Job: "
