@@ -19,10 +19,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-lite</artifactId>
+        <artifactId>elasticjob-lite-spring</artifactId>
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring-namespace</artifactId>
     <name>${project.artifactId}</name>
     
     <dependencies>
