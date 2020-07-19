@@ -26,7 +26,7 @@ JOB_EXECUTION_LOG 记录每次作业的执行历史。
 分为两个步骤：
 
 1. 作业开始执行时向数据库插入数据，除 failure_cause 和 complete_time 外的其他字段均不为空。
-1. 作业完成执行时向数据库更新数据，更新 is_success, complete_time 和 failure_cause(如果作业执行失败)。
+2. 作业完成执行时向数据库更新数据，更新 is_success, complete_time 和 failure_cause(如果作业执行失败)。
 
 ## JOB_STATUS_TRACE_LOG 字段含义
 
