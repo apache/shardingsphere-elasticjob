@@ -35,4 +35,3 @@ Configuration:
 | *Name*               | *Data Type*   | *Description*           | *Default Value*  |
 | -------------------- | ------------- | ----------------------- | ---------------- |
 | script.command.line  | String        | Script content or path  | -                |
-
