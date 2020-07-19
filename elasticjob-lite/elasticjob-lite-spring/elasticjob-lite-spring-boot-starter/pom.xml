@@ -23,7 +23,7 @@
         <artifactId>elasticjob-lite-spring</artifactId>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <version>3.0.0.M1-SNAPSHOT</version>
-    </parent>
+    </parent>ElasticJobStartupRunner
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
@@ -51,6 +51,16 @@
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-registry-center-spring-boot-starter</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -50,7 +50,12 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
             factory.setInitMethodName("schedule");
         }
         factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.REGISTRY_CENTER_REF_ATTRIBUTE));
-        factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
+        String jobType = element.getAttribute(JobBeanDefinitionTag.JOB_TYPE_ATTRIBUTE);
+        if (!Strings.isNullOrEmpty(jobType)) {
+            factory.addConstructorArgValue(jobType);
+        } else {
+            factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
+        }
         factory.addConstructorArgValue(createJobConfigurationBeanDefinition(element, parserContext));
         String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
         if (!Strings.isNullOrEmpty(tracingRef)) {

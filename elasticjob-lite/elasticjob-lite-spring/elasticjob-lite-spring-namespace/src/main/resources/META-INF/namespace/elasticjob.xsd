@@ -21,7 +21,7 @@
             xmlns:beans="http://www.springframework.org/schema/beans"
             targetNamespace="http://shardingsphere.apache.org/schema/elasticjob"
             elementFormDefault="qualified">
-    
+
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
     <xsd:element name="listener">
@@ -47,6 +47,7 @@
                         <xsd:element ref="distributed-listener" minOccurs="0" />
                     </xsd:all>
                     <xsd:attribute name="job-ref" type="xsd:string" />
+                    <xsd:attribute name="job-type" type="xsd:string" />
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
                     <xsd:attribute name="tracing-ref" type="xsd:string" />
                     <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
@@ -101,7 +102,7 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="dump-port" type="xsd:string" default="-1" />
+                    <xsd:attribute name="dump-port" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
