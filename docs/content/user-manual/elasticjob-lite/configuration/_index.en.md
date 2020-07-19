@@ -13,7 +13,7 @@ ElasticJob-Lite has provided 3 kinds of configuration methods for different situ
 
 ## Registry Center Configuration
 
-### Configuration Items
+### Configuration
 
 | Name                          | Data Type     | Default Value | Description                                              |
 | ----------------------------- |:------------- |:------------- |:-------------------------------------------------------- |
@@ -34,7 +34,7 @@ Include IP and port, multiple addresses are separated by commas, such as: `host1
 
 ## Job Configuration
 
-### Configuration Items
+### Configuration
 
 | Name                          | Data Type       | Default Value        | Description                                                                           |
 | ----------------------------- |:--------------- |:-------------------- |:------------------------------------------------------------------------------------  |
@@ -110,24 +110,24 @@ It can be used for deployment, forbid jobs to start, and then start them uniform
 
 If the value is `true`, local configuration override registry center configuration every time the job is started.
 
-## Job Listener Configuration Items
+## Job Listener Configuration
 
-### Common Listener Configuration Items
+### Common Listener Configuration
 
-Configuration Items: no
+Configuration: no
 
-### Distributed Listener Configuration Items
+### Distributed Listener Configuration
 
-Configuration Items
+Configuration
 
 | Name                           | Data Type    | Default Value  | Description                                                 |
 | ------------------------------ |:------------ |:-------------- |:----------------------------------------------------------- |
 | started-timeout-milliseconds   | long         | Long.MAX_VALUE | The timeout in milliseconds before the last job is executed |
 | completed-timeout-milliseconds | long         | Long.MAX_VALUE | The timeout in milliseconds after the last job is executed  |
 
-## Event Tracing Configuration Items
+## Event Tracing Configuration
 
-### Configuration Items
+### Configuration
 
 | Name    | Data Type      | Default Value | Description                                 |
 | ------- |:-------------- |:------------- |:------------------------------------------- |
