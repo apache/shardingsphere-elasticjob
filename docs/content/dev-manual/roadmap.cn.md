@@ -33,7 +33,7 @@ chapter = true
     - [x] Idempotency
     - [x] Reconcile
 - [x] Registry Center
-    - [x] Zookeeper
+    - [x] ZooKeeper
     - [ ] Other Registry Center Supported
 - [x] Lifecycle Management
     - [x] Add/Remove

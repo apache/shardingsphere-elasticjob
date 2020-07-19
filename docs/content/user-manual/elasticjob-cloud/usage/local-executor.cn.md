@@ -4,7 +4,7 @@ weight = 2
 chapter = true
 +++
 
-在开发 Elastic-Job-Cloud 作业时，开发人员可以脱离 Mesos 环境，在本地运行和调试作业。
+在开发 ElasticJob-Cloud 作业时，开发人员可以脱离 Mesos 环境，在本地运行和调试作业。
 可以利用本地运行模式充分的调试业务功能以及单元测试，完成之后再部署至 Mesos 集群。
 
 本地运行作业无需安装 Mesos 环境。
