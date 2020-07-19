@@ -5,7 +5,7 @@ weight = 4
 chapter = true
 +++
 
-## Core
+## Kernel
 
 - [x] Unified Job Config API
     - [x] Core Config
