@@ -204,7 +204,7 @@ public final class ReadyServiceTest {
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         when(runningService.isJobRunning("eligible_job")).thenReturn(false);
         assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job").toCloudJobConfiguration(), ExecutionType.READY))).size(), is(1));
         verify(regCenter).isExisted("/state/ready");
         verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");

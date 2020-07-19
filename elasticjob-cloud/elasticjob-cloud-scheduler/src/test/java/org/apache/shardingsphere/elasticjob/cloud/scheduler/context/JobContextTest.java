@@ -29,7 +29,7 @@ public final class JobContextTest {
     
     @Test
     public void assertFrom() {
-        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+        CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job").toCloudJobConfiguration();
         JobContext actual = JobContext.from(cloudJobConfig, ExecutionType.READY);
         assertThat(actual.getAssignedShardingItems().size(), is(10));
         for (int i = 0; i < actual.getAssignedShardingItems().size(); i++) {

@@ -11,12 +11,12 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob is a distributed scheduling solution consisting of two separate projects, Lite and Cloud.
+ElasticJob is a distributed scheduling solution consisting of two separate projects, ElasticJob-Lite and ElasticJob-Cloud.
 
-ElasticJob-Lite is a lightweight, decentralized solution that provides distributed task sharding services;
-ElasticJob-Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
-
-Elasticjob uses a unified job API for each product. 
+Through the functions of flexible scheduling, resource management and job management, 
+it creates a distributed scheduling solution suitable for Internet scenarios, 
+and provides diversified job ecosystem through open architecture design.
+It uses a unified job API for each project.
 Developers only need code one time and can deploy at will.
 
 ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub project on May 28 2020.
@@ -31,15 +31,29 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
 [![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
 
-## Architecture
+## Introduction
+
+Using ElasticJob can make developers no longer worry about the non functional requirements such as jobs scale out, so that they can focus more on business coding;
+At the same time, it can release operators too, so that they do not have to worry about jobs high availability and management, and can automatic operation by simply adding servers.
 
 ### ElasticJob-Lite
+
+A lightweight, decentralized solution that provides distributed task sharding services.
 
 ![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
 ### ElasticJob-Cloud
 
+Uses Mesos to manage and isolate resources.
+
 ![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
+
+|                   | *ElasticJob-Lite* | *ElasticJob-Cloud* |
+| ----------------- | ----------------- | ------------------ |
+| Decentralization  | Yes               | No                 |
+| Resource Assign   | No                | Yes                |
+| Job Execution     | Daemon            | Daemon + Transient |
+| Deploy Dependency | ZooKeeper         | ZooKeeper + Mesos  |
 
 ## Features
 
@@ -71,3 +85,17 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
   - Job administration
   - Job event trace query
   - Registry center management
+
+## Environment Required
+
+### Java
+
+Java 8 or above required.
+
+### ZooKeeper
+
+Zookeeper or above required. [See details](https://zookeeper.apache.org/)
+
+### Mesos (ElasticJob-Cloud only)
+
+Mesos 1.1.0 or compatible version required. [See details](https://mesos.apache.org/)

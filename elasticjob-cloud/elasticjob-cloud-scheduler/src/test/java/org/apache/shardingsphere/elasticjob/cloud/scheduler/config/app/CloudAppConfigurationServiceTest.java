@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -56,14 +57,14 @@ public final class CloudAppConfigurationServiceTest {
     
     @Test
     public void assertAdd() {
-        CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
+        CloudAppConfigurationPOJO appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.add(appConfig);
         verify(regCenter).persist("/config/app/test_app", YAML);
     }
     
     @Test
     public void assertUpdate() {
-        CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
+        CloudAppConfigurationPOJO appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.update(appConfig);
         verify(regCenter).update("/config/app/test_app", YAML);
     }
@@ -80,7 +81,7 @@ public final class CloudAppConfigurationServiceTest {
         when(regCenter.isExisted("/config/app")).thenReturn(true);
         when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
         when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
-        Collection<CloudAppConfiguration> actual = configService.loadAll();
+        Collection<CloudAppConfigurationPOJO> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
         assertThat(actual.iterator().next().getAppName(), is("test_app_1"));
         verify(regCenter).isExisted("/config/app");
@@ -97,7 +98,7 @@ public final class CloudAppConfigurationServiceTest {
     @Test
     public void assertLoadWithConfig() {
         when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        Optional<CloudAppConfiguration> actual = configService.load("test_app");
+        Optional<CloudAppConfigurationPOJO> actual = configService.load("test_app");
         assertTrue(actual.isPresent());
         assertThat(actual.get().getAppName(), is("test_app"));
     }

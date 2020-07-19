@@ -20,11 +20,16 @@ package org.apache.shardingsphere.elasticjob.infra.env;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.net.Inet6Address;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * IP address utility.
@@ -33,6 +38,8 @@ import java.util.Enumeration;
 public final class IpUtils {
     
     public static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)){3})";
+    
+    private static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
     
     private static volatile String cachedIpAddress;
     
@@ -45,42 +52,93 @@ public final class IpUtils {
         if (null != cachedIpAddress) {
             return cachedIpAddress;
         }
-        Enumeration<NetworkInterface> netInterfaces;
-        try {
-            netInterfaces = NetworkInterface.getNetworkInterfaces();
-        } catch (final SocketException ex) {
-            throw new HostException(ex);
-        }
-        String localIpAddress = null;
-        while (netInterfaces.hasMoreElements()) {
-            NetworkInterface netInterface = netInterfaces.nextElement();
-            Enumeration<InetAddress> ipAddresses = netInterface.getInetAddresses();
+        NetworkInterface networkInterface = findNetworkInterface();
+        if (null != networkInterface) {
+            Enumeration<InetAddress> ipAddresses = networkInterface.getInetAddresses();
             while (ipAddresses.hasMoreElements()) {
                 InetAddress ipAddress = ipAddresses.nextElement();
-                if (isPublicIpAddress(ipAddress)) {
-                    String publicIpAddress = ipAddress.getHostAddress();
-                    cachedIpAddress = publicIpAddress;
-                    return publicIpAddress;
-                }
-                if (isLocalIpAddress(ipAddress)) {
-                    localIpAddress = ipAddress.getHostAddress();
+                if (isValidAddress(ipAddress)) {
+                    cachedIpAddress = ipAddress.getHostAddress();
+                    return cachedIpAddress;
                 }
             }
         }
-        cachedIpAddress = localIpAddress;
-        return localIpAddress;
+        throw new HostException("ip is null");
     }
     
-    private static boolean isPublicIpAddress(final InetAddress ipAddress) {
-        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
+    private static NetworkInterface findNetworkInterface() {
+        Enumeration<NetworkInterface> interfaces;
+        try {
+            interfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (final SocketException ex) {
+            throw new HostException(ex);
+        }
+        List<NetworkInterface> validNetworkInterfaces = new LinkedList<>();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+            if (ignoreNetworkInterface(networkInterface)) {
+                continue;
+            }
+            validNetworkInterfaces.add(networkInterface);
+        }
+        NetworkInterface result = null;
+        for (NetworkInterface each : validNetworkInterfaces) {
+            if (isPreferredNetworkInterface(each)) {
+                result = each;
+                break;
+            }
+        }
+        if (null == result) {
+            result = getFirstNetworkInterface(validNetworkInterfaces);
+        }
+        return result;
     }
     
-    private static boolean isLocalIpAddress(final InetAddress ipAddress) {
-        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
+    private static NetworkInterface getFirstNetworkInterface(final List<NetworkInterface> validNetworkInterfaces) {
+        NetworkInterface result = null;
+        for (NetworkInterface each : validNetworkInterfaces) {
+            Enumeration<InetAddress> addresses = each.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress inetAddress = addresses.nextElement();
+                if (isValidAddress(inetAddress)) {
+                    result = each;
+                    break;
+                }
+            }
+        }
+        if (null == result && !validNetworkInterfaces.isEmpty()) {
+            result = validNetworkInterfaces.get(0);
+        }
+        return result;
     }
     
-    private static boolean isV6IpAddress(final InetAddress ipAddress) {
-        return ipAddress.getHostAddress().contains(":");
+    private static boolean isPreferredNetworkInterface(final NetworkInterface networkInterface) {
+        String preferredNetworkInterface = System.getProperty(PREFERRED_NETWORK_INTERFACE);
+        return Objects.equals(networkInterface.getDisplayName(), preferredNetworkInterface);
+    }
+    
+    private static boolean ignoreNetworkInterface(final NetworkInterface networkInterface) {
+        try {
+            return null == networkInterface
+                    || networkInterface.isLoopback()
+                    || networkInterface.isVirtual()
+                    || !networkInterface.isUp();
+        } catch (final SocketException ex) {
+            return true;
+        }
+    }
+    
+    private static boolean isValidAddress(final InetAddress inetAddress) {
+        try {
+            return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
+                    && !isIp6Address(inetAddress) && inetAddress.isReachable(100);
+        } catch (final IOException ex) {
+            return false;
+        }
+    }
+    
+    private static boolean isIp6Address(final InetAddress ipAddress) {
+        return ipAddress instanceof Inet6Address;
     }
     
     /**

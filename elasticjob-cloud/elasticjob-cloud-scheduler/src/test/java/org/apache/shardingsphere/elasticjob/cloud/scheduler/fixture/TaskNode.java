@@ -21,8 +21,6 @@ import lombok.Builder;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 
-import java.util.StringJoiner;
-
 @Builder
 public final class TaskNode {
     
@@ -43,7 +41,7 @@ public final class TaskNode {
      * @return task node path
      */
     public String getTaskNodePath() {
-        return new StringJoiner(DELIMITER).add(null == jobName ? "test_job" : jobName).add("" + shardingItem).toString();
+        return String.join(DELIMITER, null == jobName ? "test_job" : jobName, "" + shardingItem);
     }
 
     /**
@@ -51,8 +49,7 @@ public final class TaskNode {
      * @return task node value
      */
     public String getTaskNodeValue() {
-        return new StringJoiner(DELIMITER)
-                .add(getTaskNodePath()).add(null == type ? ExecutionType.READY.toString() : type.toString()).add(null == slaveId ? "slave-S0" : slaveId).add(null == uuid ? "0" : uuid).toString();
+        return String.join(DELIMITER, getTaskNodePath(), null == type ? ExecutionType.READY.toString() : type.toString(), null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
     }
 
     /**
@@ -60,6 +57,6 @@ public final class TaskNode {
      * @return meta info
      */
     public MetaInfo getMetaInfo() {
-        return MetaInfo.from(new StringJoiner(DELIMITER).add("test_job").add("0").toString());
+        return MetaInfo.from(String.join(DELIMITER, "test_job", "0"));
     }
 }

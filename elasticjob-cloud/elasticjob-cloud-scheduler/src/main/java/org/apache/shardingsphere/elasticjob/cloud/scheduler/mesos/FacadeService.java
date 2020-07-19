@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.context.JobContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
@@ -159,21 +159,21 @@ public final class FacadeService {
      * @param taskContext task running context
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> cloudJobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
+        Optional<CloudJobConfigurationPOJO> cloudJobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
         if (!cloudJobConfigOptional.isPresent()) {
             return;
         }
         if (isDisable(cloudJobConfigOptional.get())) {
             return;
         }
-        CloudJobConfiguration cloudJobConfig = cloudJobConfigOptional.get();
-        if (cloudJobConfig.getJobConfig().isFailover() || CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
+        CloudJobConfigurationPOJO cloudJobConfig = cloudJobConfigOptional.get();
+        if (cloudJobConfig.isFailover() || CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
     }
     
-    private boolean isDisable(final CloudJobConfiguration cloudJobConfig) {
-        return disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobConfig().getJobName());
+    private boolean isDisable(final CloudJobConfigurationPOJO cloudJobConfig) {
+        return disableAppService.isDisabled(cloudJobConfig.getAppName()) || disableJobService.isDisabled(cloudJobConfig.getJobName());
     }
     
     /**
@@ -191,7 +191,7 @@ public final class FacadeService {
      * @param jobName job name
      * @return cloud job config
      */
-    public Optional<CloudJobConfiguration> load(final String jobName) {
+    public Optional<CloudJobConfigurationPOJO> load(final String jobName) {
         return jobConfigService.load(jobName);
     }
     
@@ -201,7 +201,7 @@ public final class FacadeService {
      * @param appName app name
      * @return cloud app config
      */
-    public Optional<CloudAppConfiguration> loadAppConfig(final String appName) {
+    public Optional<CloudAppConfigurationPOJO> loadAppConfig(final String appName) {
         return appConfigService.load(appName);
     }
     
@@ -221,7 +221,7 @@ public final class FacadeService {
      * @param jobName job name
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = jobConfigService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = jobConfigService.load(jobName);
         if (!cloudJobConfig.isPresent()) {
             return;
         }
@@ -296,7 +296,7 @@ public final class FacadeService {
      * @return true is disabled, otherwise not
      */
     public boolean isJobDisabled(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfiguration = jobConfigService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> jobConfiguration = jobConfigService.load(jobName);
         return !jobConfiguration.isPresent() || disableAppService.isDisabled(jobConfiguration.get().getAppName()) || disableJobService.isDisabled(jobName);
     }
     
