@@ -4,7 +4,7 @@ weight = 1
 chapter = true
 +++
 
-## Scheduler 部署步骤
+## 调度器部署步骤
 
 1. 启动 ElasticJob-Cloud-Scheduler 和 Mesos 指定作为注册中心的 ZooKeeper
 1. 启动 Mesos Master 和 Mesos Agent
@@ -17,7 +17,7 @@ chapter = true
 1. 将打包作业的 tar.gz 文件放至网络可访问的位置，如：ftp或http。打包的 tar.gz 文件中 `main` 方法需要调用 ElasticJob-Cloud 提供的 `JobBootstrap.execute` 方法
 1. 使用 curl 命令调用 RESTful API 发布应用及注册作业。详情请参见：[配置指南](/cn/user-manual/elasticjob-cloud/configuration)
 
-## Scheduler 配置步骤
+## 调度器配置步骤
 
 可修改 `conf\elasticjob-cloud-scheduler.properties` 文件变更系统配置。
 

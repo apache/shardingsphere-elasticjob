@@ -87,7 +87,7 @@ Java 8 or above required.
 
 ### ZooKeeper
 
-Zookeeper or above required. [See details](https://zookeeper.apache.org/)
+ZooKeeper or above required. [See details](https://zookeeper.apache.org/)
 
 ### Mesos (ElasticJob-Cloud only)
 
