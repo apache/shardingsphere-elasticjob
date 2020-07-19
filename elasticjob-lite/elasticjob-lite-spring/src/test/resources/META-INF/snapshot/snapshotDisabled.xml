@@ -34,5 +34,5 @@
                           max-sleep-time-milliseconds="${regCenter1.maxSleepTimeMilliseconds}"
                           max-retries="${regCenter1.maxRetries}"/>
     
-    <elasticjob:snapshot id="jobSnapshotDisabled" registry-center-ref="regCenter1" dump-port="-1"/>
+    <elasticjob:snapshot id="jobSnapshotDisabled" registry-center-ref="regCenter1" dump-port="9987"/>
 </beans>

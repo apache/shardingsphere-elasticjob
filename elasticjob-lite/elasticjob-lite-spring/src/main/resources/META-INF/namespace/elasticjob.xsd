@@ -102,7 +102,7 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="dump-port" type="xsd:string" default="-1" />
+                    <xsd:attribute name="dump-port" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
