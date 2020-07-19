@@ -96,7 +96,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-
+    
     <xsd:element name="snapshot">
         <xsd:complexType>
             <xsd:complexContent>

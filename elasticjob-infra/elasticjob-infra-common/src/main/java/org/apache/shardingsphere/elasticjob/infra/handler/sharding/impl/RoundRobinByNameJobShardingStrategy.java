@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sharding sharding which for round robin by name job.
+ * Sharding strategy which for round robin by name job.
  */
 public final class RoundRobinByNameJobShardingStrategy implements JobShardingStrategy {
     
