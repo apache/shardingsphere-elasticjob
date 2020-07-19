@@ -1,11 +1,11 @@
 +++
-pre = "<b>5.2. </b>"
+pre = "<b>5.5. </b>"
 title = "Roadmap"
-weight = 2
+weight = 5
 chapter = true
 +++
 
-## Core
+## Kernel
 
 - [x] Unified Job Config API
     - [x] Core Config

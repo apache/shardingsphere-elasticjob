@@ -34,7 +34,7 @@ public final class JobTaskRequestTest {
     
     private final JobTaskRequest jobTaskRequest = 
             new JobTaskRequest(new TaskContext("test_job", Collections.singletonList(0), ExecutionType
-                    .READY, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+                    .READY, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job").toCloudJobConfiguration());
     
     @Test
     public void assertGetId() {

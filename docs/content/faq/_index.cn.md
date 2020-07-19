@@ -114,16 +114,16 @@ ElasticJob 并未包含 Spring 的依赖，请用户自行添加需要的版本�
 
 回答：
 
-任务在mesos有单独的agent可提供所需的资源时才会启动，否则会等待直到有足够的资源。
+任务在mesos有单独的 agent 可提供所需的资源时才会启动，否则会等待直到有足够的资源。
 
 **增加JOB APP API**
 
-* 将作业打包部署后发布作业APP。
+* 将作业打包部署后发布作业 APP。
 
-* 作业APP配置参数cpuCount,memoryMB分别代表应用启动时需要用到的CPU及内存。
+* 作业APP配置参数 cpuCount, memory MB分别代表应用启动时需要用到的 CPU 及内存。
 
-**调整JOB API**
+**调整 JOB API**
 
 * 新增作业时，必须先发布打包部署后的作业APP。
 
-* 作业配置参数cpuCount,memoryMB分别代表作业运行时需要用到的CPU及内存。
+* 作业配置参数 cpuCount, memoryMB 分别代表作业运行时需要用到的 CPU 及内存。

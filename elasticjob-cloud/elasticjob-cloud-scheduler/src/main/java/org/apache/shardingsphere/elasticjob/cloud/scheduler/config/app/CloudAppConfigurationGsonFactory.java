@@ -17,15 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app;
 
-import org.apache.shardingsphere.elasticjob.cloud.util.json.CloudConfigurationConstants;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.io.IOException;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.CloudConfigurationConstants;
+import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 
 /**
  * Cloud app configuration gson factory.
@@ -39,7 +38,6 @@ public final class CloudAppConfigurationGsonFactory {
     
     /**
      * Convert cloud app configuration to json string.
-     *
      * @param cloudAppConfig cloud app config
      * @return json string
      */
@@ -49,7 +47,6 @@ public final class CloudAppConfigurationGsonFactory {
     
     /**
      * Convert json string to cloud app configuration.
-     *
      * @param cloudAppConfigJson json string of the cloud app configuration
      * @return cloud app configuration
      */
@@ -61,7 +58,7 @@ public final class CloudAppConfigurationGsonFactory {
      * Json adapter of the cloud app configuration.
      */
     public static final class CloudAppConfigurationGsonTypeAdapter extends TypeAdapter<CloudAppConfiguration> {
-    
+        
         @Override
         public CloudAppConfiguration read(final JsonReader in) throws IOException {
             String appURL = "";
@@ -103,7 +100,7 @@ public final class CloudAppConfigurationGsonFactory {
             in.endObject();
             return new CloudAppConfiguration(appName, appURL, bootstrapScript, cpuCount, memoryMB, appCacheEnable, eventTraceSamplingCount);
         }
-    
+        
         @Override
         public void write(final JsonWriter out, final CloudAppConfiguration value) throws IOException {
             out.beginObject();

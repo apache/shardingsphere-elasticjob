@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sharding sharding which for average by sharding item.
+ * Sharding strategy which for average by sharding item.
  * 
  * <p>
  * If the job server number and sharding count cannot be divided, 

@@ -32,13 +32,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.search.JobEventRdbSearch;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
@@ -52,7 +52,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunning
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.JobConfigurationGsonTypeAdapter;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -99,41 +98,37 @@ public final class CloudJobController {
     
     /**
      * Init.
-     *
      * @param regCenter       registry center
      * @param producerManager producer manager
      */
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobController.regCenter = regCenter;
         CloudJobController.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new JobConfigurationGsonTypeAdapter());
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
     
     /**
      * Register cloud job.
-     *
-     * @param cloudJobConfigPOJO cloud job configuration POJO
+     * @param cloudJobConfig cloud job configuration
      */
     @PostMapping("/register")
-    public void register(@RequestBody final CloudJobConfigurationPOJO cloudJobConfigPOJO) {
-        producerManager.register(cloudJobConfigPOJO.toCloudJobConfiguration());
+    public void register(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
+        producerManager.register(cloudJobConfig);
     }
     
     /**
      * Update cloud job.
-     *
-     * @param cloudJobConfigPOJO cloud job configuration POJO
+     * @param cloudJobConfig cloud job configuration
      */
     @PutMapping("/update")
-    public void update(@RequestBody final CloudJobConfigurationPOJO cloudJobConfigPOJO) {
-        producerManager.update(cloudJobConfigPOJO.toCloudJobConfiguration());
+    public void update(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
+        producerManager.update(cloudJobConfig);
     }
     
     /**
      * Deregister cloud job.
-     *
      * @param jobName job name
      */
     @DeleteMapping("/deregister")
@@ -143,7 +138,6 @@ public final class CloudJobController {
     
     /**
      * Check whether the cloud job is disabled or not.
-     *
      * @param jobName job name
      * @return true is disabled, otherwise not
      */
@@ -154,12 +148,11 @@ public final class CloudJobController {
     
     /**
      * Enable cloud job.
-     *
      * @param jobName job name
      */
     @PostMapping("/{jobName}/enable")
     public void enable(@PathVariable("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> configOptional = configService.load(jobName);
+        Optional<CloudJobConfigurationPOJO> configOptional = configService.load(jobName);
         if (configOptional.isPresent()) {
             facadeService.enableJob(jobName);
             producerManager.reschedule(jobName);
@@ -168,7 +161,6 @@ public final class CloudJobController {
     
     /**
      * Disable cloud job.
-     *
      * @param jobName job name
      */
     @PostMapping("/{jobName}/disable")
@@ -181,12 +173,11 @@ public final class CloudJobController {
     
     /**
      * Trigger job once.
-     *
      * @param jobName job name
      */
     @PostMapping("/trigger")
-    public void trigger(final String jobName) {
-        Optional<CloudJobConfiguration> config = configService.load(jobName);
+    public void trigger(@RequestBody final String jobName) {
+        Optional<CloudJobConfigurationPOJO> config = configService.load(jobName);
         if (config.isPresent() && CloudJobExecutionType.DAEMON == config.get().getJobExecutionType()) {
             throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
         }
@@ -195,29 +186,26 @@ public final class CloudJobController {
     
     /**
      * Query job detail.
-     *
      * @param jobName job name
      * @return the job detail
      */
     @GetMapping("/jobs/{jobName}")
     public CloudJobConfigurationPOJO detail(@PathVariable("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
-        return cloudJobConfig.map(CloudJobConfigurationPOJO::fromCloudJobConfiguration).orElse(null);
+        Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
+        return cloudJobConfig.orElse(null);
     }
     
     /**
      * Find all jobs.
-     *
      * @return all jobs
      */
     @GetMapping("/jobs")
     public Collection<CloudJobConfigurationPOJO> findAllJobs() {
-        return configService.loadAll().stream().map(CloudJobConfigurationPOJO::fromCloudJobConfiguration).collect(Collectors.toList());
+        return configService.loadAll();
     }
     
     /**
      * Find all running tasks.
-     *
      * @return all running tasks
      */
     @GetMapping("tasks/running")
@@ -231,7 +219,6 @@ public final class CloudJobController {
     
     /**
      * Find all ready tasks.
-     *
      * @return collection of all ready tasks
      */
     @GetMapping("tasks/ready")
@@ -249,7 +236,6 @@ public final class CloudJobController {
     
     /**
      * Find all failover tasks.
-     *
      * @return collection of all the failover tasks
      */
     @GetMapping("tasks/failover")
@@ -263,7 +249,6 @@ public final class CloudJobController {
     
     /**
      * Find job execution events.
-     *
      * @param requestParams request params
      * @return job execution event
      * @throws ParseException parse exception
@@ -278,7 +263,6 @@ public final class CloudJobController {
     
     /**
      * Find job status trace events.
-     *
      * @param requestParams request params
      * @return job status trace event
      * @throws ParseException parse exception
@@ -331,7 +315,6 @@ public final class CloudJobController {
     
     /**
      * Find task result statistics.
-     *
      * @param since time span
      * @return task result statistics
      */
@@ -346,7 +329,6 @@ public final class CloudJobController {
     
     /**
      * Get task result statistics.
-     *
      * @param period time period
      * @return task result statistics
      */
@@ -368,7 +350,6 @@ public final class CloudJobController {
     
     /**
      * Find task running statistics.
-     *
      * @param since time span
      * @return task result statistics
      */
@@ -383,7 +364,6 @@ public final class CloudJobController {
     
     /**
      * Get job execution type statistics.
-     *
      * @return job execution statistics
      */
     @GetMapping("/statistics/jobs/executionType")
@@ -393,7 +373,6 @@ public final class CloudJobController {
     
     /**
      * Find job running statistics in the recent week.
-     *
      * @param since time span
      * @return collection of job running statistics in the recent week
      */
@@ -408,7 +387,6 @@ public final class CloudJobController {
     
     /**
      * Find job register statistics.
-     *
      * @return collection of job register statistics since online
      */
     @GetMapping("/statistics/jobs/register")

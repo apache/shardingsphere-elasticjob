@@ -5,7 +5,7 @@ weight = 1
 chapter = true
 +++
 
-## 引入 maven 依赖
+## 引入 Maven 依赖
 
 ```xml
 <dependency>
@@ -41,7 +41,7 @@ public class MyJob implements SimpleJob {
 ## 作业配置
 
 ```java
-    JobConfiguration jobConfig = JobConfiguration.newBuilder("MyJob", 3).cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
+    JobConfiguration jobConfig = JobConfiguration.newBuilder("MyJob", 3).cron("0/5 * * * * ?").build();
 ```
 
 ## 作业调度

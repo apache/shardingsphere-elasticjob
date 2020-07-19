@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.boot;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +34,6 @@ public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationCo
     public void run(final String... args) {
         log.info("Starting ElasticJob Bootstrap.");
         applicationContext.getBeansOfType(ScheduleJobBootstrap.class).values().forEach(ScheduleJobBootstrap::schedule);
-        applicationContext.getBeansOfType(OneOffJobBootstrap.class).values().forEach(OneOffJobBootstrap::execute);
         log.info("ElasticJob Bootstrap started.");
     }
 }

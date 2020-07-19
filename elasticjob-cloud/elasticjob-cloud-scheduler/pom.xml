@@ -178,12 +178,20 @@
                <directory>src/main/resources</directory>
                <excludes>
                    <exclude>bin/*</exclude>
-                   <exclude>conf/*</exclude>
                    <exclude>assembly/*</exclude>
                </excludes>
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>conf/*.properties</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

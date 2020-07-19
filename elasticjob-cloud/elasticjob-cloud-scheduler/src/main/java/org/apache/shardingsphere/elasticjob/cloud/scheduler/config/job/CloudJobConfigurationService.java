@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -43,9 +42,9 @@ public final class CloudJobConfigurationService {
      * 
      * @param cloudJobConfig cloud job configuration
      */
-    public void add(final CloudJobConfiguration cloudJobConfig) {
+    public void add(final CloudJobConfigurationPOJO cloudJobConfig) {
         regCenter.persist(
-                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(CloudJobConfigurationPOJO.fromCloudJobConfiguration(cloudJobConfig)));
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobName()), YamlEngine.marshal(cloudJobConfig));
     }
     
     /**
@@ -53,9 +52,9 @@ public final class CloudJobConfigurationService {
      *
      * @param cloudJobConfig cloud job configuration
      */
-    public void update(final CloudJobConfiguration cloudJobConfig) {
+    public void update(final CloudJobConfigurationPOJO cloudJobConfig) {
         regCenter.update(
-                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobConfig().getJobName()), YamlEngine.marshal(CloudJobConfigurationPOJO.fromCloudJobConfiguration(cloudJobConfig)));
+                CloudJobConfigurationNode.getRootNodePath(cloudJobConfig.getJobName()), YamlEngine.marshal(cloudJobConfig));
     }
     
     /**
@@ -63,12 +62,12 @@ public final class CloudJobConfigurationService {
      *
      * @return collection of the registered cloud job configuration
      */
-    public Collection<CloudJobConfiguration> loadAll() {
+    public Collection<CloudJobConfigurationPOJO> loadAll() {
         if (!regCenter.isExisted(CloudJobConfigurationNode.ROOT)) {
             return Collections.emptyList();
         }
         List<String> jobNames = regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT);
-        Collection<CloudJobConfiguration> result = new ArrayList<>(jobNames.size());
+        Collection<CloudJobConfigurationPOJO> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
             load(each).ifPresent(result::add);
         }
@@ -81,9 +80,9 @@ public final class CloudJobConfigurationService {
      * @param jobName job name
      * @return cloud job configuration
      */
-    public Optional<CloudJobConfiguration> load(final String jobName) {
+    public Optional<CloudJobConfigurationPOJO> load(final String jobName) {
         String configContent = regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName));
-        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudJobConfigurationPOJO.class).toCloudJobConfiguration());
+        return Strings.isNullOrEmpty(configContent) ? Optional.empty() : Optional.of(YamlEngine.unmarshal(configContent, CloudJobConfigurationPOJO.class));
     }
     
     /**

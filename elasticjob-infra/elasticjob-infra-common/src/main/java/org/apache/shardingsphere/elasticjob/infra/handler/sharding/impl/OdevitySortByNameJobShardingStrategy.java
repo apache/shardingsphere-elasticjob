@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sharding sharding which for hash with job name to determine IP asc or desc.
+ * Sharding strategy which for hash with job name to determine IP asc or desc.
  * 
  * <p>
  * IP address asc if job name' hashcode is odd;
