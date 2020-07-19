@@ -23,7 +23,7 @@
         <artifactId>elasticjob-lite-spring</artifactId>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <version>3.0.0.M1-SNAPSHOT</version>
-    </parent>ElasticJobStartupRunner
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
