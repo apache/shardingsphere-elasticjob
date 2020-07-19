@@ -26,7 +26,7 @@ The database which is the value of the event tracing property `event_trace_rdb_u
 There are two steps:
 
 1. When the job is executed, program will create one record in the `JOB_EXECUTION_LOG`, and all fields except `failure_cause` and `complete_time` are not empty.
-2. When the job completes execution, program will update the record, update the columns of `is_success`, `complete_time` and `failure_cause`(if the job execution fails).
+1. When the job completes execution, program will update the record, update the columns of `is_success`, `complete_time` and `failure_cause`(if the job execution fails).
 
 ## JOB_STATUS_TRACE_LOG columns
 
