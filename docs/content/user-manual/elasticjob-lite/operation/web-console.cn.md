@@ -4,27 +4,24 @@ weight = 4
 chapter = true
 +++
 
-解压缩`elasticjob-lite-console-${version}.tar.gz`并执行bin\start.sh。打开浏览器访问`http://localhost:8899/`即可访问控制台。8899为默认端口号，可通过启动脚本输入-p自定义端口号。
-
-`elasticjob-lite-console-${version}.tar.gz`可通过mvn install编译获取。
+解压缩 `elasticjob-lite-console-${version}.tar.gz` 并执行 `bin\start.sh`。
+打开浏览器访问 `http://localhost:8899/` 即可访问控制台。
+8899 为默认端口号，可通过启动脚本输入 `-p` 自定义端口号。
 
 ## 登录
 
-提供两种账户，管理员及访客，管理员拥有全部操作权限，访客仅拥有察看权限。默认管理员用户名和密码是root/root，访客用户名和密码是guest/guest，可通过conf\auth.properties修改管理员及访客用户名及密码。
+控制台提供两种账户：管理员及访客。
+管理员拥有全部操作权限，访客仅拥有察看权限。
+默认管理员用户名和密码是 root/root，访客用户名和密码是 guest/guest，可通过 `conf\auth.properties` 修改管理员及访客用户名及密码。
 
 ## 功能列表
 
-* 登录安全控制
-
-* 注册中心、事件追踪数据源管理
-
-* 快捷修改作业设置
-
-* 作业和服务器维度状态查看
-
-* 操作作业禁用\启用、停止和删除等生命周期
-
-* 事件追踪查询
+- 登录安全控制
+- 注册中心、事件追踪数据源管理
+- 快捷修改作业设置
+- 作业和服务器维度状态查看
+- 操作作业禁用\启用、停止和删除等生命周期
+- 事件追踪查询
 
 ## 设计理念
 
@@ -36,4 +33,6 @@ chapter = true
 
 * 添加作业
 
-作业在首次运行时将自动添加。ElasticJob-Lite 以 jar 方式启动，并无作业分发功能。如需完全通过运维平台发布作业，请使用 ElasticJob-Cloud。
+作业在首次运行时将自动添加。
+ElasticJob-Lite 以 jar 方式启动，并无作业分发功能。
+如需完全通过运维平台发布作业，请使用 ElasticJob-Cloud。
