@@ -43,7 +43,7 @@ public class JobDemo {
 }
 ```
 
-### One-time scheduling
+### One-Off scheduling
 
 ```java
 public class JobDemo {
@@ -67,4 +67,32 @@ public class JobDemo {
         ...
     }
 }
+```
+
+## Job Dump
+
+Using ElasticJob may meet some distributed problem which is not easy to observe.
+
+Because of developer can not debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
+
+Please refer to [Operation Manual](/cn/user-manual/elasticjob-lite/operation/dump) for more details.
+
+The example below is how to configure spring namespace for open listener port to dump.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://shardingsphere.apache.org/schema/elasticjob
+                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                         ">
+    <!--Configure register center -->
+    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    
+    <!--Configure snapshot for dump service -->
+    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999" />    
+</beans>
 ```
