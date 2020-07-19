@@ -68,3 +68,26 @@ public class JobDemo {
     }
 }
 ```
+
+## 配置作业导出端口
+
+使用 ElasticJob-Lite 过程中可能会碰到一些分布式问题，导致作业运行不稳定。
+
+由于无法在生产环境调试，通过 dump 命令可以把作业内部相关信息导出，方便开发者调试分析；
+
+导出命令的使用请参见[运维指南](/cn/user-manual/elasticjob-lite/operation/dump)。
+
+以下示例用于展示如何通过 SnapshotService 开启用于导出命令的监听端口。
+
+```java
+public class JobMain {
+    
+    public static void main(final String[] args) {
+        SnapshotService snapshotService = new SnapshotService(regCenter, 9888).listen();
+    }
+    
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // 创建注册中心
+    }
+}
+```

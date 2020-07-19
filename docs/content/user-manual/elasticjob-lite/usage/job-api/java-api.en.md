@@ -43,7 +43,7 @@ public class JobDemo {
 }
 ```
 
-### One-time scheduling
+### One-Off scheduling
 
 ```java
 public class JobDemo {
@@ -65,6 +65,29 @@ public class JobDemo {
     private static JobConfiguration createJobConfiguration() {
         // Create job configuration
         ...
+    }
+}
+```
+
+## 配置作业导出端口
+
+Using ElasticJob may meet some distributed problem which is not easy to observe.
+
+Because of developer can not debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
+
+Please refer to [Operation Manual](/cn/user-manual/elasticjob-lite/operation/dump) for more details.
+
+The example below is how to configure SnapshotService for open listener port to dump.
+
+```java
+public class JobMain {
+    
+    public static void main(final String[] args) {
+        SnapshotService snapshotService = new SnapshotService(regCenter, 9888).listen();
+    }
+    
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // Create registry center
     }
 }
 ```
