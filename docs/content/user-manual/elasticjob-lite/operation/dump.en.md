@@ -1,5 +1,5 @@
 +++
-title = "Dump Job Runtime Info"
+title = "Dump Job Information"
 weight = 2
 chapter = true
 +++
