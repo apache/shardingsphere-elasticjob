@@ -60,7 +60,8 @@ public final class SnapshotService {
      */
     public void listen() {
         if (port < 0) {
-            return;
+            log.error("Elastic job: Snapshot service port must greater than 0, the port is '{}'", port);
+            throw new RuntimeException("config Snapshot service port must greater than 0.");
         }
         try {
             log.info("Elastic job: Snapshot service is running, the port is '{}'", port);
