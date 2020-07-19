@@ -129,7 +129,7 @@ Configuration Items
 
 ### Configuration Items
 
-| Name    | Data Type | Default Value | Description                                 |
-| ------- |:--------- |:------------- |:------------------------------------------- |
-| type    | String    |               | The type of event tracing storage adapter   |
-| storage | Generics  |               | The object of event tracing storage adapter |
+| Name    | Data Type      | Default Value | Description                                 |
+| ------- |:-------------- |:------------- |:------------------------------------------- |
+| type    | String         |               | The type of event tracing storage adapter   |
+| storage | Generics Type  |               | The object of event tracing storage adapter |
