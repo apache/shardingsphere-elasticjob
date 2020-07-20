@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-tracing-spring-boot-starter</artifactId>
+            <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
