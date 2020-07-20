@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.apache.shardingsphere.elasticjob.lite.boot.ElasticJobLiteAutoConfiguration
+  org.apache.shardingsphere.elasticjob.lite.spring.boot.ElasticJobLiteAutoConfiguration
