@@ -28,7 +28,6 @@ import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -88,12 +87,11 @@ public final class TaskExecutorThreadTest {
     }
     
     @Test
-    @Ignore
     public void assertLaunchTaskWithWrongClass() {
         TaskInfo taskInfo = buildWrongClass();
         TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         try {
-            taskThread.run();    
+            taskThread.run();
         } catch (final JobSystemException ex) {
             assertTrue(ex.getMessage().startsWith("ElasticJob: Class 'WrongClass' initialize failure, the error message is 'WrongClass'."));
         }
