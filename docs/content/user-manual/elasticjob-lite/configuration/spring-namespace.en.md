@@ -9,7 +9,7 @@ To use the Spring namespace, user need to add the dependency of the `elasticjob-
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-lite-spring</artifactId>
+    <artifactId>elasticjob-lite-spring-namespace</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
