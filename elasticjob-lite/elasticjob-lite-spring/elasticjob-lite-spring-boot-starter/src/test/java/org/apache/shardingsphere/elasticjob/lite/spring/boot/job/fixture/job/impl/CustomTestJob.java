@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.impl;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.CustomJob;
-import org.apache.shardingsphere.elasticjob.lite.spring.boot.repository.BarRepository;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.CustomJob;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository.BarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

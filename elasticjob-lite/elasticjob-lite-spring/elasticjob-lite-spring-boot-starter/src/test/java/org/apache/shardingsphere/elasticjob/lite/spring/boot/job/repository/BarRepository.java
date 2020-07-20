@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.repository.impl;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.boot.repository.BarRepository;
-import org.springframework.stereotype.Repository;
+/**
+ * Bar Repository.
+ */
+public interface BarRepository {
 
-@Repository
-public class BarRepositoryImpl implements BarRepository {
-
-    private static final String[] DATA = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-
-    @Override
-    public String getById(final int id) {
-        return id >= 0 && id < DATA.length ? DATA[id] : null;
-    }
+    /**
+     * Get data by id.
+     *
+     * @param id id
+     * @return data
+     */
+    String getById(int id);
 }

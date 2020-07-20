@@ -15,28 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.executor;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
- * Print Job Executor.
+ * ElasticJob startup runner.
  */
+@Setter
 @Slf4j
-public class PrintJobExecutor implements TypedJobItemExecutor {
-
+public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationContextAware {
+    
+    private ApplicationContext applicationContext;
+    
     @Override
-    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        log.info(jobConfig.getProps().getProperty(PrintJobProperties.CONTENT_KEY));
-    }
-
-    @Override
-    public String getType() {
-        return "PRINT";
+    public void run(final String... args) {
+        log.info("Starting ElasticJob Bootstrap.");
+        applicationContext.getBeansOfType(ScheduleJobBootstrap.class).values().forEach(ScheduleJobBootstrap::schedule);
+        log.info("ElasticJob Bootstrap started.");
     }
 }

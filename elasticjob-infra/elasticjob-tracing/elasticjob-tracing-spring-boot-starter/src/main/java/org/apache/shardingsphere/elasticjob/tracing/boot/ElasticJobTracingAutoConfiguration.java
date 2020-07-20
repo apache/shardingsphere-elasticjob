@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.boot;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.boot.ElasticJobLiteAutoConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;

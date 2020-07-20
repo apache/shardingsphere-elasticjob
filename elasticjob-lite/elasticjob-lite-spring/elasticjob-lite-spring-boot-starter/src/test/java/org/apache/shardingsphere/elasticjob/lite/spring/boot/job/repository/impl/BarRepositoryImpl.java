@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository.impl;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository.BarRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CustomJob extends ElasticJob {
+@Repository
+public class BarRepositoryImpl implements BarRepository {
 
-    /**
-     * Execute custom job.
-     *
-     * @param shardingContext sharding context
-     */
-    void execute(ShardingContext shardingContext);
+    private static final String[] DATA = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+
+    @Override
+    public String getById(final int id) {
+        return id >= 0 && id < DATA.length ? DATA[id] : null;
+    }
 }
