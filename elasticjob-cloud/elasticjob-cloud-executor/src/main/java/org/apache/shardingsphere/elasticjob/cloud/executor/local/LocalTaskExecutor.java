@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.prod.CloudJobFacade;
+import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobTypeConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
@@ -62,9 +62,7 @@ public final class LocalTaskExecutor {
     }
     
     private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
-        return null == elasticJob
-                ? new ElasticJobExecutor(elasticJobType, jobConfiguration, jobFacade)
-                : new ElasticJobExecutor(elasticJob, jobConfiguration, jobFacade);
+        return null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfiguration, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfiguration, jobFacade);
     }
     
     private ShardingContexts getShardingContexts() {
