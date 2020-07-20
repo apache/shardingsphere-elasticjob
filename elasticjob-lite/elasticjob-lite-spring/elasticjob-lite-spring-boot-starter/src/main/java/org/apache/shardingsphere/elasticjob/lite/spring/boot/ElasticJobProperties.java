@@ -26,6 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ElasticJob properties.
+ */
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "elasticjob.jobs")

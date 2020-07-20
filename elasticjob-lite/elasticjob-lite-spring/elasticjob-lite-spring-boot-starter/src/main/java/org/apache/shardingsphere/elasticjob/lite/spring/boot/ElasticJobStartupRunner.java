@@ -24,6 +24,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+/**
+ * ElasticJob startup runner.
+ */
 @Setter
 @Slf4j
 public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationContextAware {

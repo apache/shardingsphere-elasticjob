@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * ElasticJob-Lite auto configuration.
+ */
 @Configuration
 @AutoConfigureAfter(ElasticJobRegistryCenterAutoConfiguration.class)
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)
