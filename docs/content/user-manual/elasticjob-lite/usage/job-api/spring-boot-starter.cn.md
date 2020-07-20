@@ -15,30 +15,19 @@ ElasticJob-Lite 提供自定义的 Spring Boot Starter，可以与 Spring Boot �
 作业逻辑实现与 ElasticJob 的其他使用方式并没有较大的区别，只需将当前作业注册为 Spring 容器中的 bean。
 
 **线程安全问题**
+
 Bean 默认是单例的，如果该作业实现会在同一个进程内被创建出多个 `JobBootstrap` 的实例，
 可以考虑设置 Scope 为 `prototype`。
 
 ```java
 @Component
 public class SpringBootDataflowJob implements DataflowJob<Foo> {
-
+    
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
-        switch (context.getShardingItem()) {
-            case 0:
-                List<Foo> data = // 获取“分片0”需要处理的数据
-                return data;
-            case 1:
-                List<Foo> data = // 获取“分片1”需要处理的数据
-                return data;
-            case 2:
-                List<Foo> data = // 获取“分片2”需要处理的数据
-                return data;
-            // case n: ...
-        }
-
+        // 获取数据
     }
-
+    
     @Override
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
         // 处理数据
@@ -55,6 +44,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
 Starter 会根据该配置自动创建 `OneOffJobBootstrap` 或 `ScheduleJobBootstrap` 的实例并注册到 Spring 容器中。
 
 配置参考：
+
 ```yaml
 elasticjob:
   regCenter:
@@ -76,7 +66,6 @@ elasticjob:
             script.command.line: "echo SCRIPT Job: "
 ```
 
-
 ## 作业启动
 
 ### 定时调度
@@ -89,11 +78,10 @@ elasticjob:
 通过 `execute()` 方法执行作业。
 
 **关于@DependsOn注解**
+
 JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 Starter 创建 JobBootstrap，将无法注入 JobBoostrap 的实例。
 
 也可以通过 ApplicationContext 获取 JobBootstrap 的 Bean。
-
-此处欢迎各位开发者提出改进方案。
 
 ```java
 @RestController

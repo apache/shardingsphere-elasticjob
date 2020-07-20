@@ -8,7 +8,7 @@ ElasticJob-Lite 提供了自动配置 TracingConfiguration 的 Tracing Spring Bo
 开发者只需注册一个 DataSource 到 Spring 容器中，
 Starter 就会自动创建一个 TracingConfiguration 并注册到 Spring 容器中。
 
-## 引入 elasticjob-tracing-spring-boot-starter
+## 引入 Maven 依赖
 
 ```xml
 <dependency>
@@ -18,9 +18,8 @@ Starter 就会自动创建一个 TracingConfiguration 并注册到 Spring 容器
 </dependency>
 ```
 
-## 借助 spring-boot-starter-jdbc 注册 DataSource
+引入 spring-boot-starter-jdbc 注册数据源。
 
-引入依赖：
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -29,7 +28,8 @@ Starter 就会自动创建一个 TracingConfiguration 并注册到 Spring 容器
 </dependency>
 ```
 
-配置 DataSource：
+## 配置
+
 ```yaml
 spring:
   datasource:
@@ -39,7 +39,7 @@ spring:
     password:
 ```
 
-## 使用
+## 作业启动
 
 TracingConfiguration 会自动注册到容器中，如果与 elasticjob-lite-spring-boot-starter 配合使用，
 开发者无需进行其他额外的操作，作业启动器会自动使用创建的 TracingConfiguration。

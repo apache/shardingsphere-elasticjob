@@ -12,36 +12,26 @@ What developers need to solve distributed scheduling problem are job implementat
 
 ### Implements ElasticJob
 
-Job implementation is similar to other usage of ElasticJob. The difference is that jobs will be registered into the Spring IoC container.
+Job implementation is similar to other usage of ElasticJob. 
+The difference is that jobs will be registered into the Spring IoC container.
 
 **Thread-Safety Issue**
-Bean is singleton by default. Consider setting Bean Scope to `prototype` if the instance of ElasticJob would be used by more than a JobBootstrap.
+
+Bean is singleton by default. 
+Consider setting Bean Scope to `prototype` if the instance of ElasticJob would be used by more than a JobBootstrap.
 
 ```java
 @Component
 public class SpringBootDataflowJob implements DataflowJob<Foo> {
-
+    
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
-        switch (context.getShardingItem()) {
-            case 0:
-                List<Foo> data = // get data from database by sharding item 0
-                return data;
-            case 1:
-                List<Foo> data = // get data from database by sharding item 1
-                return data;
-            case 2:
-                List<Foo> data = // get data from database by sharding item 2
-                return data;
-            // case n: ...
-        }
-
+        // fetch data
     }
-
+    
     @Override
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
         // process data
-        // ...
     }
 }
 ```
@@ -56,6 +46,7 @@ They should be configured under `elasticjob.jobs.classed`.
 The Starter will create instances of `OneOffJobBootstrap` or `ScheduleJobBootstrap` and register them into the Spring IoC container automatically. 
 
 Configuration reference:
+
 ```yaml
 elasticjob:
   regCenter:
@@ -77,7 +68,7 @@ elasticjob:
             script.command.line: "echo SCRIPT Job: "
 ```
 
-## Job start
+## Job Start
 
 ### Schedule Job
 
@@ -90,20 +81,19 @@ Developers can inject the `OneOffJobBootstrap` bean into where they plan to invo
 Trigger the job by invoking `execute()` method manually.
 
 **About @DependsOn Annotation**
+
 JobBootstraps are created by the Starter dynamically. It's unable to inject the `JobBootstrap` beans if the beans which depends on `JobBootstrap` were instantiated earlier than the instantiation of `JobBootstrap`.
 
 Developers can also retrieve `JobBootstrap` beans by ApplicationContext.
-
-Improvement is welcome.
 
 ```java
 @RestController
 @DependsOn("org.apache.shardingsphere.elasticjob.lite.boot.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
-
+    
     @Resource(name = "manualScriptJobOneOffJobBootstrap")
     private OneOffJobBootstrap manualScriptJob;
-
+    
     @GetMapping("/execute")
     public String executeOneOffJob() {
         manualScriptJob.execute();
@@ -111,4 +101,3 @@ public class OneOffJobController {
     }
 }
 ```
-
