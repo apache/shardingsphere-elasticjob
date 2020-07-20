@@ -23,11 +23,14 @@ import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJsonConstants {
-
-    private static final String JOB_JSON = "{\"appName\":\"test_app\",\"cpuCount\":1.0,\"memoryMB\":128.0,\"jobExecutionType\":\"%s\",\"jobName\":\"%s\","
-            + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"monitorExecution\":false,\"failover\":true,"
-            + "\"misfire\":%s,\"maxTimeDiffSeconds\":0,\"reconcileIntervalMinutes\":0,\"description\":\"\",\"props\":{},\"disabled\":false,\"overwrite\":false}";
-
+    
+    private static final String JOB_JSON = "{\"appName\":\"test_app\",\"cpuCount\":1.0,\"memoryMB\":128.0," +
+            "\"jobExecutionType\":\"%s\",\"jobName\":\"%s\",\"cron\":\"0/30 * * * * ?\"," +
+            "\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"monitorExecution\":false," +
+            "\"failover\":true,\"misfire\":%s,\"maxTimeDiffSeconds\":0,\"reconcileIntervalMinutes\":0," +
+            "\"jobShardingStrategyType\":null,\"jobExecutorServiceHandlerType\":null,\"jobErrorHandlerType\":null," +
+            "\"description\":\"\",\"props\":{},\"disabled\":false,\"overwrite\":false}";
+    
     private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
             + "\"appName\":\"test_spring_app\",\"cpuCount\":1.0,\"memoryMB\":128.0,"

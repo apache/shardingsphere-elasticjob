@@ -74,7 +74,7 @@ public final class SchedulerService {
         cloudJobConfigurationListener = new CloudJobConfigurationListener(regCenter, producerManager);
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         reconcileService = new ReconcileService(schedulerDriver, facadeService);
-        consoleBootstrap = new ConsoleBootstrap(regCenter, producerManager, reconcileService);
+        consoleBootstrap = new ConsoleBootstrap(regCenter, env.getRestfulServerConfiguration(), producerManager, reconcileService);
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {

@@ -131,8 +131,8 @@ public final class CloudJobController {
      * Deregister cloud job.
      * @param jobName job name
      */
-    @DeleteMapping("/deregister")
-    public void deregister(@RequestBody final String jobName) {
+    @DeleteMapping("/{jobName}/deregister")
+    public void deregister(@PathVariable final String jobName) {
         producerManager.deregister(jobName);
     }
     
@@ -319,7 +319,7 @@ public final class CloudJobController {
      * @return task result statistics
      */
     @GetMapping("/statistics/tasks/results")
-    public List<TaskResultStatistics> findTaskResultStatistics(@RequestParam("since") final String since) {
+    public List<TaskResultStatistics> findTaskResultStatistics(@RequestParam(value = "since", required = false) final String since) {
         if ("last24hours".equals(since)) {
             return statisticManager.findTaskResultStatisticsDaily();
         } else {
@@ -333,7 +333,7 @@ public final class CloudJobController {
      * @return task result statistics
      */
     @GetMapping("/statistics/tasks/results/{period}")
-    public TaskResultStatistics getTaskResultStatistics(@PathVariable("period") final String period) {
+    public TaskResultStatistics getTaskResultStatistics(@PathVariable(value = "period", required = false) final String period) {
         switch (period) {
             case "online":
                 return statisticManager.getTaskResultStatisticsSinceOnline();
@@ -354,7 +354,7 @@ public final class CloudJobController {
      * @return task result statistics
      */
     @GetMapping("/statistics/tasks/running")
-    public List<TaskRunningStatistics> findTaskRunningStatistics(@RequestParam("since") final String since) {
+    public List<TaskRunningStatistics> findTaskRunningStatistics(@RequestParam(value = "since", required = false) final String since) {
         if ("lastWeek".equals(since)) {
             return statisticManager.findTaskRunningStatisticsWeekly();
         } else {
@@ -377,7 +377,7 @@ public final class CloudJobController {
      * @return collection of job running statistics in the recent week
      */
     @GetMapping("/statistics/jobs/running")
-    public List<JobRunningStatistics> findJobRunningStatistics(@RequestParam("since") final String since) {
+    public List<JobRunningStatistics> findJobRunningStatistics(@RequestParam(value = "since", required = false) final String since) {
         if ("lastWeek".equals(since)) {
             return statisticManager.findJobRunningStatisticsWeekly();
         } else {

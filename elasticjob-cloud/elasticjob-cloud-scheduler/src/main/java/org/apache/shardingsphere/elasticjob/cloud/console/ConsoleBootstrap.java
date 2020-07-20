@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudAppController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudJobController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudOperationController;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -35,7 +36,8 @@ import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerF
  */
 public class ConsoleBootstrap {
     
-    public ConsoleBootstrap(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager, final ReconcileService reconcileService) {
+    public ConsoleBootstrap(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager, final ReconcileService reconcileService) {
+        ConsoleApplication.port = config.getPort();
         CloudJobController.init(regCenter, producerManager);
         CloudAppController.init(regCenter, producerManager);
         CloudOperationController.init(regCenter, reconcileService);

@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
+package org.apache.shardingsphere.elasticjob.cloud.console;
 
 import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.cloud.console.ConsoleBootstrap;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.search.JobEventRdbSearch;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class AbstractCloudRestfulApiTest {
+public abstract class AbstractCloudControllerTest {
     
     @Getter(AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter;
@@ -60,7 +60,7 @@ public abstract class AbstractCloudRestfulApiTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
-        ConsoleBootstrap consoleBootstrap = new ConsoleBootstrap(regCenter, producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
+        ConsoleBootstrap consoleBootstrap = new ConsoleBootstrap(regCenter, new RestfulServerConfiguration(19000), producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
         consoleBootstrap.start();
     }
     

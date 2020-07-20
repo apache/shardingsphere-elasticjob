@@ -19,7 +19,8 @@ package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.gson.JsonArray;
+import java.util.Collection;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
@@ -49,7 +50,6 @@ public final class CloudOperationController {
     
     /**
      * Init.
-     *
      * @param regCenter        registry center
      * @param reconcileService reconcile service
      */
@@ -85,13 +85,12 @@ public final class CloudOperationController {
     
     /**
      * Get sandbox of the cloud job by app name.
-     *
      * @param appName application name
      * @return sandbox info
      * @throws JSONException parse json exception
      */
     @GetMapping("/sandbox")
-    public JsonArray sandbox(@RequestParam("appName") final String appName) throws JSONException {
+    public Collection<Map<String, String>> sandbox(@RequestParam("appName") final String appName) throws JSONException {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(appName), "Lack param 'appName'");
         return mesosStateService.sandbox(appName);
     }
