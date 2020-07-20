@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,28 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.boot.executor;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.CustomJob;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.repository.BarRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-/**
- * Print Job Executor.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
 @Slf4j
-public class PrintJobExecutor implements TypedJobItemExecutor {
+public class CustomTestJob implements CustomJob {
+
+    @Autowired
+    private BarRepository barRepository;
 
     @Override
-    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        log.info(jobConfig.getProps().getProperty(PrintJobProperties.CONTENT_KEY));
-    }
-
-    @Override
-    public String getType() {
-        return "PRINT";
+    public void execute(final ShardingContext shardingContext) {
+        int i = shardingContext.getShardingItem();
+        List<String> results = new ArrayList<>();
+        String data;
+        while (null != (data = barRepository.getById(i))) {
+            results.add(data);
+            i += shardingContext.getShardingTotalCount();
+        }
+        log.info("{}", results);
     }
 }

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,17 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.boot.job;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.executor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
 
-public interface CustomJob extends ElasticJob {
+/**
+ * Print Job Executor.
+ */
+@Slf4j
+public class PrintJobExecutor implements TypedJobItemExecutor {
 
-    /**
-     * Execute custom job.
-     *
-     * @param shardingContext sharding context
-     */
-    void execute(ShardingContext shardingContext);
+    @Override
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+        log.info(jobConfig.getProps().getProperty(PrintJobProperties.CONTENT_KEY));
+    }
+
+    @Override
+    public String getType() {
+        return "PRINT";
+    }
 }

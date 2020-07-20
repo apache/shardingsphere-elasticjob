@@ -88,7 +88,7 @@ Developers can also retrieve `JobBootstrap` beans by ApplicationContext.
 
 ```java
 @RestController
-@DependsOn("org.apache.shardingsphere.elasticjob.lite.boot.ElasticJobLiteAutoConfiguration")
+@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
     
     @Resource(name = "manualScriptJobOneOffJobBootstrap")

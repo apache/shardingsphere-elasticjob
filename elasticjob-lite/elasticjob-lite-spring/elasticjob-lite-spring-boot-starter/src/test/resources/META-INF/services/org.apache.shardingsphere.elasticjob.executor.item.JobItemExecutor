@@ -14,5 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-org.apache.shardingsphere.elasticjob.lite.boot.executor.CustomClassedJobExecutor
-org.apache.shardingsphere.elasticjob.lite.boot.executor.PrintJobExecutor
+org.apache.shardingsphere.elasticjob.lite.spring.boot.executor.CustomClassedJobExecutor
+org.apache.shardingsphere.elasticjob.lite.spring.boot.executor.PrintJobExecutor

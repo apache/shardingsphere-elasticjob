@@ -30,7 +30,7 @@ elasticjob:
     namespace: elasticjob-lite-spring-boot-starter
   jobs:
     classed:
-      org.apache.shardingsphere.elasticjob.lite.boot.job.impl.CustomTestJob:
+      org.apache.shardingsphere.elasticjob.lite.spring.boot.job.impl.CustomTestJob:
         - jobName: customTestJob
           shardingTotalCount: 3
     typed:

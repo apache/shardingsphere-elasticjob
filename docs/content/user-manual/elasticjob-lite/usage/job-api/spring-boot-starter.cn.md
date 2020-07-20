@@ -85,7 +85,7 @@ JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 
 
 ```java
 @RestController
-@DependsOn("org.apache.shardingsphere.elasticjob.lite.boot.ElasticJobLiteAutoConfiguration")
+@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
 
     @Resource(name = "manualScriptJobOneOffJobBootstrap")
