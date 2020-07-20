@@ -128,7 +128,7 @@ public final class TaskExecutor implements Executor {
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
             Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
-            JobConfiguration jobConfig = JobTypeConfigurationUtil.createJobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
+            JobConfiguration jobConfig = JobConfigurationUtil.createJobConfiguration((Map<String, String>) data.get("jobConfigContext"));
             try {
                 JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
                 if (isTransient(jobConfig)) {

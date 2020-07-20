@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
-import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobTypeConfigurationUtil;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ShardingItemParameters;
@@ -81,6 +81,6 @@ public final class LocalTaskExecutor {
         if (jobConfiguration.getProps().containsKey("script.command.line")) {
             jobConfigurationMap.put("scriptCommandLine", jobConfiguration.getProps().getProperty("script.command.line"));
         }
-        return JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
+        return JobConfigurationUtil.createJobConfiguration(jobConfigurationMap);
     }
 }
