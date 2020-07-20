@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-spring-namespace</artifactId>
+            <artifactId>elasticjob-lite-spring</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
