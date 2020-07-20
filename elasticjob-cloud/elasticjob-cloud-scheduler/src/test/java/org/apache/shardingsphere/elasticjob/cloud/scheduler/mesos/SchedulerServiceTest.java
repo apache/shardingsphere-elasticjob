@@ -111,6 +111,7 @@ public class SchedulerServiceTest {
         setReconcileEnabled(true);
         schedulerService.stop();
         InOrder inOrder = getInOrder();
+        inOrder.verify(consoleBootstrap).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();
@@ -125,6 +126,7 @@ public class SchedulerServiceTest {
         setReconcileEnabled(false);
         schedulerService.stop();
         InOrder inOrder = getInOrder();
+        inOrder.verify(consoleBootstrap).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();

@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console;
 
-
 import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpDelete;
@@ -33,7 +32,7 @@ import org.apache.http.util.EntityUtils;
 public final class HttpTestsUtil {
     
     /**
-     * send post request
+     * send post request.
      * @param url the url
      * @return the http status code
      * @throws Exception exception when error
@@ -46,7 +45,7 @@ public final class HttpTestsUtil {
     }
     
     /**
-     * send post request
+     * send post request.
      * @param url     the url
      * @param content the content
      * @return the http status code
@@ -64,7 +63,7 @@ public final class HttpTestsUtil {
     }
     
     /**
-     * send put request
+     * send put request.
      * @param url     the url
      * @param content the content
      * @return the http status code
@@ -96,7 +95,7 @@ public final class HttpTestsUtil {
     }
     
     /**
-     * send get request
+     * send get request.
      * @param url     the url
      * @param content the content
      * @return the http response
@@ -115,7 +114,7 @@ public final class HttpTestsUtil {
     }
     
     /**
-     * send delete request
+     * send delete request.
      * @param url the url
      * @return the http status code
      * @throws Exception exception when error

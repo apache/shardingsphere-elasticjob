@@ -30,11 +30,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Console bootstrap for Cloud.
  */
 public class ConsoleBootstrap {
+    
+    private ConfigurableApplicationContext context;
     
     public ConsoleBootstrap(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager, final ReconcileService reconcileService) {
         ConsoleApplication.port = config.getPort();
@@ -47,7 +50,14 @@ public class ConsoleBootstrap {
      * Startup RESTful server.
      */
     public void start() {
-        ConsoleApplication.start();
+        context = ConsoleApplication.start();
+    }
+    
+    /**
+     * Stop RESTful server.
+     */
+    public void stop() {
+        context.close();
     }
     
     @SpringBootApplication
@@ -61,13 +71,14 @@ public class ConsoleBootstrap {
         
         /**
          * Startup RESTful server.
+         * @return ConfigurableApplicationContext
          */
-        public static void start() {
+        public static ConfigurableApplicationContext start() {
             SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(ConsoleApplication.class);
             if (ArrayUtils.isNotEmpty(extraSources)) {
                 applicationBuilder.sources(extraSources);
             }
-            applicationBuilder.build().run();
+            return applicationBuilder.build().run();
         }
         
         @Override

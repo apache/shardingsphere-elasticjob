@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -48,6 +49,12 @@ public abstract class AbstractCloudControllerTest {
     @Getter(AccessLevel.PROTECTED)
     private static JobEventRdbSearch jobEventRdbSearch;
     
+    private static ConsoleBootstrap consoleBootstrap;
+    
+    private static ConfigurableApplicationContext masterServer;
+    
+    private static ConfigurableApplicationContext slaveServer;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         initRestfulServer();
@@ -60,7 +67,8 @@ public abstract class AbstractCloudControllerTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
-        ConsoleBootstrap consoleBootstrap = new ConsoleBootstrap(regCenter, new RestfulServerConfiguration(19000), producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
+        consoleBootstrap = new ConsoleBootstrap(regCenter, new RestfulServerConfiguration(19000),
+                producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
         consoleBootstrap.start();
     }
     
@@ -68,14 +76,17 @@ public abstract class AbstractCloudControllerTest {
         MesosStateService.register("127.0.0.1", 9050);
         ConsoleBootstrap.ConsoleApplication.setPort(9050);
         ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosMasterServerMockConfiguration.class});
-        ConsoleBootstrap.ConsoleApplication.start();
+        masterServer = ConsoleBootstrap.ConsoleApplication.start();
         ConsoleBootstrap.ConsoleApplication.setPort(9051);
         ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosSlaveServerMockConfiguration.class});
-        ConsoleBootstrap.ConsoleApplication.start();
+        slaveServer = ConsoleBootstrap.ConsoleApplication.start();
     }
     
     @AfterClass
     public static void tearDown() throws IOException {
+        consoleBootstrap.stop();
+        masterServer.stop();
+        slaveServer.stop();
         MesosStateService.deregister();
     }
     

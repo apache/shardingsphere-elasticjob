@@ -128,6 +128,7 @@ public final class SchedulerService {
      * Stop.
      */
     public void stop() {
+        consoleBootstrap.stop();
         taskLaunchScheduledService.stopAsync();
         cloudJobConfigurationListener.stop();
         statisticManager.shutdown();

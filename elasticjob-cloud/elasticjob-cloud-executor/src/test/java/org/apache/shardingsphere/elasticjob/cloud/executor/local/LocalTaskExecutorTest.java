@@ -62,7 +62,7 @@ public final class LocalTaskExecutorTest {
         assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
         assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is("dbName=dangdang"));
         assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(1));
-        assertThat(TestSimpleJob.getShardingParameters().size(), is(1));
+        assertThat(TestSimpleJob.getShardingParameters().size(), is(2));
         assertThat(TestSimpleJob.getShardingParameters().iterator().next(), is("Shanghai"));
     }
     

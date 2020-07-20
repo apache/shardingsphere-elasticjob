@@ -61,7 +61,6 @@ public final class ConsoleRestControllerAdvice implements ResponseBodyAdvice<Obj
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> toResponse(final Exception ex) {
-        log.error("CONSOLE ERROR", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.transform(ex));
     }
 }
