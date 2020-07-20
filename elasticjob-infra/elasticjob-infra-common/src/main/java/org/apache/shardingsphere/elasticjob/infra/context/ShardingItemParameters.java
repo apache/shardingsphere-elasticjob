@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
+package org.apache.shardingsphere.elasticjob.infra.context;
 
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
