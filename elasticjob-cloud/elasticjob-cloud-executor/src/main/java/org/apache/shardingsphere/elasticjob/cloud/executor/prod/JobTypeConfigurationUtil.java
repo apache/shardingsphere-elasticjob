@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.executor;
+package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
