@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.executor;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.executor;
 
 public class PrintJobProperties {
 

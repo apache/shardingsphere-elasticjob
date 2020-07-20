@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.fixture;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -15,26 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot.executor;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.CustomJob;
 
-/**
- * Custom Classed Executor.
- */
-public class CustomClassedJobExecutor implements ClassedJobItemExecutor<CustomJob> {
+public interface CustomJob extends ElasticJob {
 
-    @Override
-    public void process(final CustomJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
-        elasticJob.execute(shardingContext);
-    }
-
-    @Override
-    public Class<CustomJob> getElasticJobClass() {
-        return CustomJob.class;
-    }
+    /**
+     * Execute custom job.
+     *
+     * @param shardingContext sharding context
+     */
+    void execute(ShardingContext shardingContext);
 }

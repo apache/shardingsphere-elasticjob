@@ -15,25 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
+import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ElasticJob properties.
+ */
+@Getter
 @Setter
-@Slf4j
-public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationContextAware {
-    
-    private ApplicationContext applicationContext;
-    
-    @Override
-    public void run(final String... args) {
-        log.info("Starting ElasticJob Bootstrap.");
-        applicationContext.getBeansOfType(ScheduleJobBootstrap.class).values().forEach(ScheduleJobBootstrap::schedule);
-        log.info("ElasticJob Bootstrap started.");
-    }
+@ConfigurationProperties(prefix = "elasticjob.jobs")
+public class ElasticJobProperties {
+
+    private Map<String, List<JobConfigurationPOJO>> typed = new LinkedHashMap<>();
+
+    private Map<String, List<JobConfigurationPOJO>> classed = new LinkedHashMap<>();
 }

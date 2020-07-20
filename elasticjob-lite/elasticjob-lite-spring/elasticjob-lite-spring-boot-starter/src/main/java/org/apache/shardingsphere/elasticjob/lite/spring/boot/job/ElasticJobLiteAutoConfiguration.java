@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import com.google.common.base.Strings;
 import lombok.Setter;
@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * ElasticJob-Lite auto configuration.
+ */
 @Configuration
 @AutoConfigureAfter(ElasticJobRegistryCenterAutoConfiguration.class)
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)

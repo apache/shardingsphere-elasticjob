@@ -15,23 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.boot;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+/**
+ * Bar Repository.
+ */
+public interface BarRepository {
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-@Getter
-@Setter
-@ConfigurationProperties(prefix = "elasticjob.jobs")
-public class ElasticJobProperties {
-
-    private Map<String, List<JobConfigurationPOJO>> typed = new LinkedHashMap<>();
-
-    private Map<String, List<JobConfigurationPOJO>> classed = new LinkedHashMap<>();
+    /**
+     * Get data by id.
+     *
+     * @param id id
+     * @return data
+     */
+    String getById(int id);
 }
