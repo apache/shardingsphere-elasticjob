@@ -30,7 +30,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-lite-spring-boot-starter</module>
         <module>elasticjob-lite-spring-namespace</module>
-		<module>elasticjob-lite-spring-boot-starter</module>
     </modules>
 </project>

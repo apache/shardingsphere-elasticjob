@@ -15,7 +15,7 @@ Through methods such as `getShardingTotalCount()`, `getShardingItem()`, user can
 
 ElasticJob provides two class-based job types which are `Simple` and `Dataflow`; and also provides a type-based job which is `Script`. Users can extend job types by implementing the SPI interface.
 
-## Simple job
+## Simple Job
 
 It means simple implementation, without any encapsulation type. Need to implement `SimpleJob` interface.
 This interface only provides a single method for coverage, and this method will be executed periodically.

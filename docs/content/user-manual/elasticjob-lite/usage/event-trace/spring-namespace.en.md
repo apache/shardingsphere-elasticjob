@@ -1,10 +1,20 @@
 +++
-title = "Spring Namespace"
+title = "Use Spring Namespace"
 weight = 3
 chapter = true
 +++
 
-## Event tracing configuration
+## Import Maven Dependency
+
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-lite-spring-namespace</artifactId>
+    <version>${elasticjob.latest.version}</version>
+</dependency>
+```
+
+## Configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -37,7 +47,7 @@ chapter = true
 </beans>
 ```
 
-## Job start
+## Job Start
 
 If the Spring container start, the `XML` that configures the Spring namespace will be loaded, and the job will be automatically started.
 
