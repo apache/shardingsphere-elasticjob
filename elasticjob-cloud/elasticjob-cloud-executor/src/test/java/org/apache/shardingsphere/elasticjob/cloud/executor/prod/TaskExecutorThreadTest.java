@@ -77,7 +77,8 @@ public final class TaskExecutorThreadTest {
     }
     
     // TODO the test case is not reach to catch block
-    @Test//(expected = JobSystemException.class)
+    @Test
+    //(expected = JobSystemException.class)
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
