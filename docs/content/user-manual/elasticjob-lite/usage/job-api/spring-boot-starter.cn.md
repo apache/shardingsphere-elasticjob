@@ -1,5 +1,5 @@
 +++
-title = "Spring Boot Starter"
+title = "使用 Spring Boot Starter"
 weight = 3
 chapter = true
 +++

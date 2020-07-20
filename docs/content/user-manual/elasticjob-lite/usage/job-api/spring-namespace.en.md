@@ -1,5 +1,5 @@
 +++
-title = "Spring Namespace"
+title = "Use Spring Namespace"
 weight = 4
 chapter = true
 +++
