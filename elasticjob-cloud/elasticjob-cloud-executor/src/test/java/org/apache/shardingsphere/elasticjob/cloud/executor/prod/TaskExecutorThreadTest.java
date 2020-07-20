@@ -26,6 +26,7 @@ import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.TaskExecutor.TaskThread;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -61,35 +62,37 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
-
+    
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildSpringScriptTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
     }
     
-    @Test
+    // TODO the test case is not reach to catch block
+    @Test//(expected = JobSystemException.class)
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
-            assertTrue(ex.getMessage().startsWith("ElasticJob: Class 'org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutorThreadTest' must implements ElasticJob interface."));
+            assertTrue(ex.getMessage().startsWith(String.format("ElasticJob: Class '%s' must implements ElasticJob interface.", TaskExecutorThreadTest.class.getSimpleName())));
+            throw ex;
         }
     }
     
     @Test
     public void assertLaunchTaskWithWrongClass() {
         TaskInfo taskInfo = buildWrongClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
