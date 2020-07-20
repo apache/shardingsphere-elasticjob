@@ -25,9 +25,9 @@
         <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    
     <artifactId>elasticjob-tracing-spring-boot-starter</artifactId>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
@@ -73,5 +73,4 @@
             <scope>test</scope>
         </dependency>
  </dependencies>
-
 </project>
