@@ -23,21 +23,10 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class JobConfigurationContextTest {
-    
-    @Test
-    public void assertSpringSimpleJobConfigurationContext() {
-        Map<String, String> context = buildJobConfigurationContextMap();
-        context.put("beanName", "springSimpleJobName");
-        context.put("applicationContext", "applicationContext.xml");
-        assertThat(new JobConfigurationContext(context).getBeanName(), is("springSimpleJobName"));
-        assertThat(new JobConfigurationContext(context).getApplicationContext(), is("applicationContext.xml"));
-    }
     
     @Test
     public void assertSimpleJobConfigurationContextWithExecutionType() {

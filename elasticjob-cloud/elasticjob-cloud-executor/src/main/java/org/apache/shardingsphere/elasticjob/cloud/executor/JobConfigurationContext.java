@@ -31,16 +31,10 @@ public final class JobConfigurationContext {
     
     private final JobConfiguration jobConfig;
     
-    private final String beanName;
-    
-    private final String applicationContext;
-    
     private final boolean isTransient;
     
     public JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         jobConfig = JobTypeConfigurationUtil.createJobConfigurationContext(jobConfigurationMap);
-        beanName = jobConfigurationMap.get("beanName");
-        applicationContext = jobConfigurationMap.get("applicationContext");
         isTransient = Strings.isNullOrEmpty(jobConfig.getCron());
     }
 }
