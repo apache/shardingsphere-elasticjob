@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
+import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
@@ -118,21 +120,21 @@ public final class TaskExecutor implements Executor {
         
         private final TaskInfo taskInfo;
         
+        @SuppressWarnings("unchecked")
         @Override
         public void run() {
             Thread.currentThread().setContextClassLoader(TaskThread.class.getClassLoader());
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
             Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
-            @SuppressWarnings("unchecked")
-            JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
+            JobConfiguration jobConfig = JobTypeConfigurationUtil.createJobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
             try {
-                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getJobConfig(), jobEventBus);
-                if (jobConfig.isTransient()) {
+                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
+                if (isTransient(jobConfig)) {
                     createElasticJobExecutor(jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
-                    new DaemonTaskScheduler(elasticJob, elasticJobType, jobConfig.getJobConfig(), jobFacade, executorDriver, taskInfo.getTaskId()).init();
+                    new DaemonTaskScheduler(elasticJob, elasticJobType, jobConfig, jobFacade, executorDriver, taskInfo.getTaskId()).init();
                 }
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
@@ -143,7 +145,11 @@ public final class TaskExecutor implements Executor {
                 throw ex;
             }
         }
-        
+    
+        private boolean isTransient(final JobConfiguration jobConfig) {
+            return Strings.isNullOrEmpty(jobConfig.getCron());
+        }
+    
         private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
             return null == elasticJob
                     ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade) : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);

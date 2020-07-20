@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
@@ -43,7 +44,7 @@ public class CloudJobFacadeTest {
     
     private ShardingContexts shardingContexts;
     
-    private JobConfigurationContext jobConfig;
+    private JobConfiguration jobConfig;
     
     @Mock
     private JobEventBus eventBus;
@@ -53,8 +54,8 @@ public class CloudJobFacadeTest {
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobConfig = new JobConfigurationContext(getJobConfigurationMap(false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig.getJobConfig(), eventBus);
+        jobConfig = JobTypeConfigurationUtil.createJobConfigurationContext(getJobConfigurationMap(false));
+        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
