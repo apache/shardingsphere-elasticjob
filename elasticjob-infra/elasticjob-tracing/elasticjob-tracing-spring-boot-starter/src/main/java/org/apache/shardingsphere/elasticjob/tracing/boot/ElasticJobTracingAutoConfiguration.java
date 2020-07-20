@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.boot;
 
-import org.apache.shardingsphere.elasticjob.lite.boot.ElasticJobLiteAutoConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -29,16 +29,19 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
+/**
+ * ElasticJob tracing auto configuration.
+ */
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @AutoConfigureBefore(ElasticJobLiteAutoConfiguration.class)
 public class ElasticJobTracingAutoConfiguration {
 
     /**
-     * Create a bean of TracingConfiguration.
+     * Create a bean of tracing configuration.
      *
      * @param dataSource required by constructor
-     * @return a bean of TracingConfiguration
+     * @return a bean of tracing configuration
      */
     @Bean
     @ConditionalOnBean(DataSource.class)

@@ -24,9 +24,9 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.cloud.executor.JobTypeConfigurationUtil;
-import org.apache.shardingsphere.elasticjob.cloud.util.config.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.infra.context.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 
 import java.util.HashMap;
