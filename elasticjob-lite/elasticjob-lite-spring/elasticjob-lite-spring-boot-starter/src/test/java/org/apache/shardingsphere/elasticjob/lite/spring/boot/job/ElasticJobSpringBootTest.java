@@ -37,12 +37,12 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootApplication
 @ActiveProfiles("elasticjob")
 public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
-
+    
     @BeforeClass
     public static void init() {
         EmbedTestingServer.start();
     }
-
+    
     @Test
     public void testJobScheduleCreation() {
         assertNotNull(applicationContext);

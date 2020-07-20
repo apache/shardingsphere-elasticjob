@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.restful;
 
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
