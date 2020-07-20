@@ -8,7 +8,7 @@ ElasticJob-Lite provides a Spring Boot Starter to configure TracingConfiguration
 What developers need to do is register a bean of DataSource into the Spring IoC Container.
 Then the Starter will create an instance of TracingConfiguration and register it into the container.
 
-## Introduce elasticjob-tracing-spring-boot-starter dependency
+## Import Maven Dependency
 
 ```xml
 <dependency>
@@ -18,9 +18,8 @@ Then the Starter will create an instance of TracingConfiguration and register it
 </dependency>
 ```
 
-## Register DataSource via spring-boot-starter-jdbc
+Import spring-boot-starter-jdbc for DataSource register.
 
-Introduce dependency:
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -29,7 +28,8 @@ Introduce dependency:
 </dependency>
 ```
 
-Configure DataSource:
+## Configuration
+
 ```yaml
 spring:
   datasource:
@@ -39,7 +39,7 @@ spring:
     password:
 ```
 
-## Usage
+## Job Start
 
 TracingConfiguration will be registered into the IoC container imperceptibly.
 If elasticjob-lite-spring-boot-starter was introduced, developers need to do nothing else. 

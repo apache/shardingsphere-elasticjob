@@ -25,11 +25,6 @@ import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -82,18 +77,9 @@ public final class LocalTaskExecutorTest {
     }
     
     @Test
-    public void assertScriptJob() throws IOException {
+    public void assertScriptJob() {
         new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder("TestScriptJob", 3).cron("*/2 * * * * ?")
-                .setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), 1).execute();
-    }
-    
-    private static String buildScriptCommandLine() throws IOException {
-        if (System.getProperties().getProperty("os.name").contains("Windows")) {
-            return Paths.get(LocalTaskExecutorTest.class.getResource("/script/TestScriptJob.bat").getPath().substring(1)).toString();
-        }
-        Path result = Paths.get(LocalTaskExecutorTest.class.getResource("/script/TestScriptJob.sh").getPath());
-        Files.setPosixFilePermissions(result, PosixFilePermissions.fromString("rwxr-xr-x"));
-        return result.toString();
+                .setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build(), 1).execute();
     }
     
     @Test(expected = JobConfigurationException.class)

@@ -34,11 +34,9 @@ import java.util.Optional;
 import java.util.Set;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.search.JobEventRdbSearch;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
@@ -51,7 +49,6 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegiste
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunningStatistics;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -104,7 +101,6 @@ public final class CloudJobController {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobController.regCenter = regCenter;
         CloudJobController.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
         Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }

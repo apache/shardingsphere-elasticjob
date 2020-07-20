@@ -22,17 +22,14 @@ import java.util.Optional;
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.cloud.exception.AppConfigurationException;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
-import org.apache.shardingsphere.elasticjob.cloud.util.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
@@ -79,7 +76,6 @@ public final class CloudAppController {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudAppController.regCenter = regCenter;
         CloudAppController.producerManager = producerManager;
-        GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
     }
     
     /**
