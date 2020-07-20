@@ -1,10 +1,22 @@
 +++
-title = "Spring 命名空间"
+title = "使用 Spring 命名空间"
 weight = 3
 chapter = true
 +++
 
-## 事件追踪配置
+## 引入 Maven 依赖
+
+引入 elasticjob-lite-spring
+
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-lite-spring-namespace</artifactId>
+    <version>${elasticjob.latest.version}</version>
+</dependency>
+```
+
+## 配置
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

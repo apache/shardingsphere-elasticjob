@@ -1,11 +1,11 @@
 +++
-pre = "<b>5.4. </b>"
+pre = "<b>5.5. </b>"
 title = "Roadmap"
-weight = 4
+weight = 5
 chapter = true
 +++
 
-## Core
+## Kernel
 
 - [x] Unified Job Config API
     - [x] Core Config
@@ -33,7 +33,7 @@ chapter = true
     - [x] Idempotency
     - [x] Reconcile
 - [x] Registry Center
-    - [x] Zookeeper
+    - [x] ZooKeeper
     - [ ] Other Registry Center Supported
 - [x] Lifecycle Management
     - [x] Add/Remove

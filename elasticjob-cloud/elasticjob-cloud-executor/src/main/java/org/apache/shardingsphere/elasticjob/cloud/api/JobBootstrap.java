@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.mesos.MesosExecutorDriver;
 import org.apache.mesos.Protos;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutor;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.TaskExecutor;
 
 /**
  * Job bootstrap.
