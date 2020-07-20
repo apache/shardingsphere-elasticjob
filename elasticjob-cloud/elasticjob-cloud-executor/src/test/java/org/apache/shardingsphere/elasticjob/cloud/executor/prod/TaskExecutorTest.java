@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.executor;
+package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
 import com.google.protobuf.ByteString;
 import lombok.SneakyThrows;
@@ -27,7 +27,7 @@ import org.apache.mesos.Protos.FrameworkInfo;
 import org.apache.mesos.Protos.SlaveInfo;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
-import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public final class TaskExecutorTest {
     
     @Before
     public void setUp() {
-        taskExecutor = new TaskExecutor(new TestJob());
+        taskExecutor = new TaskExecutor(new TestSimpleJob());
         setExecutorService();
         executorInfo = ExecutorInfo.getDefaultInstance();
     }

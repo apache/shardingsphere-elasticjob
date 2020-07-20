@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.executor;
+package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -26,9 +26,9 @@ import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import java.util.Map;
 
 /**
- * Job type configuration utility.
+ * Job configuration utility.
  */
-public final class JobTypeConfigurationUtil {
+public final class JobConfigurationUtil {
     
     /**
      * Create job configuration context.
@@ -36,7 +36,7 @@ public final class JobTypeConfigurationUtil {
      * @param jobConfigurationMap job configuration map
      * @return job type configuration
      */
-    public static JobConfiguration createJobConfigurationContext(final Map<String, String> jobConfigurationMap) {
+    public static JobConfiguration createJobConfiguration(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");

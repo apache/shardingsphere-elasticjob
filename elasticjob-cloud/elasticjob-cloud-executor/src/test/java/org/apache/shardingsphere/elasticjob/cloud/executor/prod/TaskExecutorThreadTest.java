@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.executor;
+package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.SerializationUtils;
@@ -25,10 +25,10 @@ import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.TaskExecutor.TaskThread;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -53,7 +53,7 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
@@ -62,38 +62,40 @@ public final class TaskExecutorThreadTest {
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
-
+    
     @Test
     public void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildSpringScriptTransientTaskInfo();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
     }
     
+    // TODO the test case is not reach to catch block
     @Test
+    //(expected = JobSystemException.class)
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         try {
             taskThread.run();
         } catch (final JobSystemException ex) {
-            assertTrue(ex.getMessage().startsWith("ElasticJob: Class 'org.apache.shardingsphere.elasticjob.cloud.executor.TaskExecutorThreadTest' must implements ElasticJob interface."));
+            assertTrue(ex.getMessage().startsWith(String.format("ElasticJob: Class '%s' must implements ElasticJob interface.", TaskExecutorThreadTest.class.getSimpleName())));
+            throw ex;
         }
     }
     
     @Test
-    @Ignore
     public void assertLaunchTaskWithWrongClass() {
         TaskInfo taskInfo = buildWrongClass();
-        TaskExecutor.TaskThread taskThread = new TaskExecutor(new TestJob()).new TaskThread(executorDriver, taskInfo);
+        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         try {
-            taskThread.run();    
+            taskThread.run();
         } catch (final JobSystemException ex) {
             assertTrue(ex.getMessage().startsWith("ElasticJob: Class 'WrongClass' initialize failure, the error message is 'WrongClass'."));
         }
@@ -112,11 +114,11 @@ public final class TaskExecutorThreadTest {
     }
     
     private TaskInfo buildJavaTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestJob.class.getCanonicalName(), null)).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestSimpleJob.class.getCanonicalName(), null)).build();
     }
     
     private TaskInfo buildSpringScriptTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), null)).build();
+        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestSimpleJob.class.getCanonicalName(), null)).build();
     }
     
     private TaskInfo.Builder buildTaskInfo(final Map<String, String> jobConfigurationContext) {
@@ -135,7 +137,7 @@ public final class TaskExecutorThreadTest {
     }
     
     private Map<String, String> buildSpringJobConfigurationContextMap() {
-        Map<String, String> context = buildBaseJobConfigurationContextMapWithJobClass(TestJob.class.getCanonicalName());
+        Map<String, String> context = buildBaseJobConfigurationContextMapWithJobClass(TestSimpleJob.class.getCanonicalName());
         context.put("beanName", "testJob");
         context.put("applicationContext", "applicationContext.xml");
         return context;
