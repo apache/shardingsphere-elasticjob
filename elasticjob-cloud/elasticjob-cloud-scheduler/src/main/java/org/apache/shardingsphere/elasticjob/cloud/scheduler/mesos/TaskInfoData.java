@@ -22,11 +22,10 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Task info data.
@@ -56,10 +55,8 @@ public final class TaskInfoData {
         result.put("cron", CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType() ? cloudJobConfig.getJobConfig().getCron() : "");
         result.put("executorServiceHandler", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
         result.put("jobExceptionHandler", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
-        if (cloudJobConfig.getJobConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            result.put("streamingProcess", cloudJobConfig.getJobConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
-        } else if (cloudJobConfig.getJobConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
-            result.put("scriptCommandLine", cloudJobConfig.getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
+        for (Entry<Object, Object> entry : cloudJobConfig.getJobConfig().getProps().entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue().toString());
         }
         return result;
     }
