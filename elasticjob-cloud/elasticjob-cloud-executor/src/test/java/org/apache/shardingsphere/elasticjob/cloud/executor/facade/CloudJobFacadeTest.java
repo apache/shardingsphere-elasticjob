@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.facade;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
@@ -42,11 +41,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CloudJobFacadeTest {
+public final class CloudJobFacadeTest {
     
     private ShardingContexts shardingContexts;
-    
-    private JobConfiguration jobConfig;
     
     @Mock
     private JobEventBus eventBus;
@@ -56,8 +53,7 @@ public class CloudJobFacadeTest {
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobConfig = JobConfigurationUtil.createJobConfiguration(getJobConfigurationMap(false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, JobConfigurationUtil.createJobConfiguration(getJobConfigurationMap()), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -66,10 +62,10 @@ public class CloudJobFacadeTest {
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
-    private Map<String, String> getJobConfigurationMap(final boolean streamingProcess) {
-        Map<String, String> result = new HashMap<>(10, 1);
+    private Map<String, String> getJobConfigurationMap() {
+        Map<String, String> result = new HashMap<>(2, 1);
         result.put("jobName", "test_job");
-        result.put("streamingProcess", Boolean.toString(streamingProcess));
+        result.put("streamingProcess", Boolean.FALSE.toString());
         return result;
     }
     
