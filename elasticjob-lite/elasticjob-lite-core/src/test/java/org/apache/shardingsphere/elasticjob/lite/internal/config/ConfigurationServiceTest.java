@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;

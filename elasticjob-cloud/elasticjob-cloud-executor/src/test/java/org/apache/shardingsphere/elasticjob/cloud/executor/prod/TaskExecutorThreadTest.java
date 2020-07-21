@@ -24,20 +24,22 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.prod.TaskExecutor.TaskThread;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -57,14 +59,6 @@ public final class TaskExecutorThreadTest {
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
-    }
-    
-    @Test
-    public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
-        TaskInfo taskInfo = buildSpringDaemonTaskInfo();
-        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
-        taskThread.run();
-        verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
     
     @Test
@@ -102,61 +96,37 @@ public final class TaskExecutorThreadTest {
     }
     
     private TaskInfo buildWrongClass() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron("WrongClass", null)).build();
+        return buildTaskInfo(buildJobConfigurationYaml()).build();
     }
     
     private TaskInfo buildWrongElasticJobClass() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TaskExecutorThreadTest.class.getCanonicalName(), null)).build();
-    }
-    
-    private TaskInfo buildSpringDaemonTaskInfo() {
-        return buildTaskInfo(buildSpringJobConfigurationContextMap()).build();
+        return buildTaskInfo(buildJobConfigurationYaml()).build();
     }
     
     private TaskInfo buildJavaTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestSimpleJob.class.getCanonicalName(), null)).build();
+        return buildTaskInfo(buildJobConfigurationYaml()).build();
     }
     
     private TaskInfo buildSpringScriptTransientTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestSimpleJob.class.getCanonicalName(), null)).build();
+        return buildTaskInfo(buildJobConfigurationYaml()).build();
     }
     
-    private TaskInfo.Builder buildTaskInfo(final Map<String, String> jobConfigurationContext) {
-        return TaskInfo.newBuilder().setData(ByteString.copyFrom(serialize(jobConfigurationContext)))
+    private TaskInfo.Builder buildTaskInfo(final String jobConfigurationYaml) {
+        return TaskInfo.newBuilder().setData(ByteString.copyFrom(serialize(jobConfigurationYaml)))
                 .setName("test_job").setTaskId(TaskID.newBuilder().setValue(taskId)).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0"));
     }
     
-    private byte[] serialize(final Map<String, String> jobConfigurationContext) {
+    private byte[] serialize(final String jobConfigurationYaml) {
         // CHECKSTYLE:OFF
         LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
         // CHECKSTYLE:ON
         ShardingContexts shardingContexts = new ShardingContexts(taskId, "test_job", 1, "", Collections.singletonMap(1, "a"));
         result.put("shardingContext", shardingContexts);
-        result.put("jobConfigContext", jobConfigurationContext);
+        result.put("jobConfigContext", jobConfigurationYaml);
         return SerializationUtils.serialize(result);
     }
     
-    private Map<String, String> buildSpringJobConfigurationContextMap() {
-        Map<String, String> context = buildBaseJobConfigurationContextMapWithJobClass(TestSimpleJob.class.getCanonicalName());
-        context.put("beanName", "testJob");
-        context.put("applicationContext", "applicationContext.xml");
-        return context;
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClass(final String jobClass) {
-        return buildBaseJobConfigurationContextMapWithJobClassAndCron(jobClass, "0/1 * * * * ?");
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClassAndCron(final String jobClass, final String cron) {
-        return buildBaseJobConfigurationContextMap(jobClass, cron);
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMap(final String jobClass, final String cron) {
-        Map<String, String> result = new HashMap<>();
-        result.put("jobName", "test_job");
-        result.put("cron", cron);
-        result.put("jobClass", jobClass);
-        result.put("scriptCommandLine", "echo \"\"");
-        return result;
+    private String buildJobConfigurationYaml() {
+        return YamlEngine.marshal(JobConfigurationPOJO.fromJobConfiguration(JobConfiguration.newBuilder("test_job", 1).setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build()));
     }
 }

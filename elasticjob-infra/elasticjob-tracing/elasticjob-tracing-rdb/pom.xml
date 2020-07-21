@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-tracing</artifactId>
-        <version>3.0.0.M1-SNAPSHOT</version>
+        <version>3.0.0-alpha-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-tracing-rdb</artifactId>
     <name>${project.artifactId}</name>
@@ -34,6 +34,7 @@
             <artifactId>elasticjob-tracing-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>

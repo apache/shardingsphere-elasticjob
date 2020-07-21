@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@DependsOn("ElasticJobLiteAutoConfiguration")
+@DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
 
     @Resource(name = "manualScriptJobOneOffJobBootstrap")

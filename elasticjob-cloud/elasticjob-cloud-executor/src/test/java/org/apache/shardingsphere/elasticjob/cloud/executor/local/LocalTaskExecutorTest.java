@@ -18,72 +18,46 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestDataflowJob;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestDataflowJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public final class LocalTaskExecutorTest {
     
-    @Before
-    public void setUp() {
-        TestSimpleJob.setShardingContext(null);
-        TestDataflowJob.setInput(null);
-        TestDataflowJob.setOutput(null);
-    }
-    
     @Test
     public void assertSimpleJob() {
-        new LocalTaskExecutor(new TestSimpleJob(), JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3).cron("*/2 * * * * ?").build(), 1).execute();
-        assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
-        assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(1));
-        assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
-        assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(1));
-        assertNull(TestSimpleJob.getShardingContext().getShardingParameter());
-        assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is(""));
-    }
-    
-    @Test
-    public void assertSpringSimpleJob() {
-        new LocalTaskExecutor(new TestSimpleJob(), 
-                JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3).cron("*/2 * * * * ?")
-                        .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobParameter("dbName=dangdang").build(), 1).execute();
-        assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
-        assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
-        assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is("dbName=dangdang"));
-        assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(1));
-        assertThat(TestSimpleJob.getShardingParameters().size(), is(1));
-        assertThat(TestSimpleJob.getShardingParameters().iterator().next(), is("Shanghai"));
+        TestSimpleJob simpleJob = new TestSimpleJob();
+        new LocalTaskExecutor(simpleJob, JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3)
+                .cron("*/2 * * * * ?").shardingItemParameters("0=A,1=B").build(), 1).execute();
+        assertThat(simpleJob.getShardingParameters(), is(Collections.singletonList("B")));
     }
     
     @Test
     public void assertDataflowJob() {
-        TestDataflowJob.setInput(Arrays.asList("1", "2", "3"));
-        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 10).cron("*/2 * * * * ?").build(), 5).execute();
-        assertFalse(TestDataflowJob.getOutput().isEmpty());
-        for (String each : TestDataflowJob.getOutput()) {
-            assertTrue(each.endsWith("-d"));
-        }
+        TestDataflowJob dataflowJob = new TestDataflowJob();
+        new LocalTaskExecutor(dataflowJob, JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 3)
+                .cron("*/2 * * * * ?").setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build(), 1).execute();
+        assertFalse(dataflowJob.getOutput().isEmpty());
+        assertThat(dataflowJob.getOutput(), is(Collections.singletonList("1-d")));
     }
     
     @Test
     public void assertScriptJob() {
-        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder("TestScriptJob", 3).cron("*/2 * * * * ?")
-                .setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build(), 1).execute();
+        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder("TestScriptJob", 3)
+                .cron("*/2 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build(), 1).execute();
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void assertNotExistsJobClass() {
+    public void assertNotExistsJobType() {
         new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute();
     }
 }
