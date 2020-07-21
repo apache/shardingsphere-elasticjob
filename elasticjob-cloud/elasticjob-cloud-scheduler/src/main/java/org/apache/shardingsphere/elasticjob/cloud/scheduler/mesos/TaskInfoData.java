@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Task info data.
@@ -45,20 +45,7 @@ public final class TaskInfoData {
     public byte[] serialize() {
         Map<String, Object> result = new LinkedHashMap<>(2, 1);
         result.put("shardingContext", shardingContexts);
-        result.put("jobConfigContext", buildJobConfigurationContext());
+        result.put("jobConfigContext", YamlEngine.marshal(JobConfigurationPOJO.fromJobConfiguration(cloudJobConfig.getJobConfig())));
         return SerializationUtils.serialize((LinkedHashMap) result);
-    }
-    
-    private Map<String, String> buildJobConfigurationContext() {
-        Map<String, String> result = new LinkedHashMap<>();
-        result.put("jobName", cloudJobConfig.getJobConfig().getJobName());
-        result.put("cron", CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType() ? cloudJobConfig.getJobConfig().getCron() : "");
-        result.put("jobExecutorServiceHandlerType", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
-        result.put("jobErrorHandlerType", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
-        // TODO consider about use properties to pass information from scheduler to executor
-        for (Entry<Object, Object> entry : cloudJobConfig.getJobConfig().getProps().entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue().toString());
-        }
-        return result;
     }
 }

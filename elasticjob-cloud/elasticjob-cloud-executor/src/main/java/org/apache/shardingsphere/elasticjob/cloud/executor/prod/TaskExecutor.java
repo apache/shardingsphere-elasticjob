@@ -35,6 +35,8 @@ import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
@@ -128,7 +130,7 @@ public final class TaskExecutor implements Executor {
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
             Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
-            JobConfiguration jobConfig = JobConfigurationUtil.createJobConfiguration((Map<String, String>) data.get("jobConfigContext"));
+            JobConfiguration jobConfig = YamlEngine.unmarshal(data.get("jobConfigContext").toString(), JobConfigurationPOJO.class).toJobConfiguration();
             try {
                 JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
                 if (isTransient(jobConfig)) {

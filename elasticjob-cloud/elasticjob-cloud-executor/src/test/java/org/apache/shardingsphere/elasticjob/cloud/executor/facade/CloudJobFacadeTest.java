@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.facade;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -53,7 +54,7 @@ public final class CloudJobFacadeTest {
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobFacade = new CloudJobFacade(shardingContexts, JobConfigurationUtil.createJobConfiguration(getJobConfigurationMap()), eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -62,11 +63,8 @@ public final class CloudJobFacadeTest {
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
-    private Map<String, String> getJobConfigurationMap() {
-        Map<String, String> result = new HashMap<>(2, 1);
-        result.put("jobName", "test_job");
-        result.put("streamingProcess", Boolean.FALSE.toString());
-        return result;
+    private JobConfiguration getJobConfiguration() {
+        return JobConfiguration.newBuilder("test_job", 1).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     
     @Test
