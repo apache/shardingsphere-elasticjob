@@ -39,7 +39,7 @@ public final class JobConfigurationUtil {
         String jobName = jobConfigurationMap.remove("jobName");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(jobConfigurationMap.remove("cron"))
-                .jobExecutorServiceHandlerType(jobConfigurationMap.remove("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.remove("jobExceptionHandler")).build();
+                .jobExecutorServiceHandlerType(jobConfigurationMap.remove("jobExecutorServiceHandlerType")).jobErrorHandlerType(jobConfigurationMap.remove("jobErrorHandlerType")).build();
         jobConfigurationMap.forEach((key, value) -> result.getProps().setProperty(key, value));
         return result;
     }

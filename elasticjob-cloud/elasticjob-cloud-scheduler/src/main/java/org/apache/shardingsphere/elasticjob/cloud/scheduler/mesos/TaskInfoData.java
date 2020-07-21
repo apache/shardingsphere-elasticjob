@@ -53,8 +53,8 @@ public final class TaskInfoData {
         Map<String, String> result = new LinkedHashMap<>(16, 1);
         result.put("jobName", cloudJobConfig.getJobConfig().getJobName());
         result.put("cron", CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType() ? cloudJobConfig.getJobConfig().getCron() : "");
-        result.put("executorServiceHandler", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
-        result.put("jobExceptionHandler", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
+        result.put("jobExecutorServiceHandlerType", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
+        result.put("jobErrorHandlerType", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
         for (Entry<Object, Object> entry : cloudJobConfig.getJobConfig().getProps().entrySet()) {
             result.put(entry.getKey().toString(), entry.getValue().toString());
         }
