@@ -4,21 +4,13 @@ weight = 2
 chapter = true
 +++
 
-ElasticJob-Lite 提供了自动配置 TracingConfiguration 的 Tracing Spring Boot Starter，
+ElasticJob-Lite 的 Spring Boot Starter 集成了 TracingConfiguration 自动配置，
 开发者只需注册一个 DataSource 到 Spring 容器中，
-Starter 就会自动创建一个 TracingConfiguration 并注册到 Spring 容器中。
+Starter 就会自动创建一个 TracingConfiguration 实例并注册到 Spring 容器中。
 
 ## 引入 Maven 依赖
 
-```xml
-<dependency>
-    <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-tracing-spring-boot-starter</artifactId>
-    <version>${elasticjob.latest.version}</version>
-</dependency>
-```
-
-引入 spring-boot-starter-jdbc 注册数据源。
+引入 spring-boot-starter-jdbc 注册数据源或自行创建一个 DataSource Bean。
 
 ```xml
 <dependency>
