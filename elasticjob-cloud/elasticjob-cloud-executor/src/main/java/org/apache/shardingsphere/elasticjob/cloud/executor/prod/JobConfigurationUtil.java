@@ -20,8 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.Map;
 
@@ -34,20 +32,15 @@ public final class JobConfigurationUtil {
      * Create job configuration context.
      * 
      * @param jobConfigurationMap job configuration map
-     * @return job type configuration
+     * @return job configuration
      */
     public static JobConfiguration createJobConfiguration(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
-        String jobName = jobConfigurationMap.get("jobName");
-        String cron = jobConfigurationMap.get("cron");
+        String jobName = jobConfigurationMap.remove("jobName");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
-        JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(cron)
-                .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
-        if (jobConfigurationMap.containsKey("streamingProcess")) {
-            result.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, jobConfigurationMap.get("streamingProcess"));
-        } else if (jobConfigurationMap.containsKey("scriptCommandLine")) {
-            result.getProps().setProperty(ScriptJobProperties.SCRIPT_KEY, jobConfigurationMap.get("scriptCommandLine"));
-        }
+        JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(jobConfigurationMap.remove("cron"))
+                .jobExecutorServiceHandlerType(jobConfigurationMap.remove("jobExecutorServiceHandlerType")).jobErrorHandlerType(jobConfigurationMap.remove("jobErrorHandlerType")).build();
+        jobConfigurationMap.forEach((key, value) -> result.getProps().setProperty(key, value));
         return result;
     }
 }

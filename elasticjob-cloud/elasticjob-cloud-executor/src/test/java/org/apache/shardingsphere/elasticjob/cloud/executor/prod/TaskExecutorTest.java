@@ -27,7 +27,7 @@ import org.apache.mesos.Protos.FrameworkInfo;
 import org.apache.mesos.Protos.SlaveInfo;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,32 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture;
+package org.apache.shardingsphere.elasticjob.cloud.executor.fixture;
 
+import com.google.common.base.Strings;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.LinkedList;
 
-public final class TestDataflowJob implements DataflowJob<String> {
+@Getter
+public final class TestSimpleJob implements SimpleJob {
     
-    @Setter
-    private static List<String> input;
-    
-    @Getter
-    @Setter
-    private static List<String> output;
+    private final Collection<String> shardingParameters = new LinkedList<>();
     
     @Override
-    public List<String> fetchData(final ShardingContext shardingContext) {
-        return input;
-    }
-    
-    @Override
-    public void processData(final ShardingContext shardingContext, final List<String> data) {
-        output = input.stream().map(s -> input + "-d").collect(Collectors.toList());
+    public void execute(final ShardingContext shardingContext) {
+        if (!Strings.isNullOrEmpty(shardingContext.getShardingParameter())) {
+            shardingParameters.add(shardingContext.getShardingParameter());
+        }
     }
 }
