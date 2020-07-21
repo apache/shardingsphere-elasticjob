@@ -51,7 +51,7 @@ public final class TaskExecutorThreadTest {
     private final String taskId = String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY);
     
     @Test
-    public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
+    public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
@@ -60,10 +60,14 @@ public final class TaskExecutorThreadTest {
     }
     
     @Test
-    public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
+    public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() throws InterruptedException {
         TaskInfo taskInfo = buildSpringDaemonTaskInfo();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
+        // add sleep time(> 1s(cron time "0/1 * * * * ?")) for execute DaemonJob, if job execute over,DaemonTaskScheduler.shutdown by man-made
+        // for resolve https://github.com/apache/shardingsphere-elasticjob/issues/1198
+        Thread.sleep(1500L);
+        DaemonTaskScheduler.shutdown(taskInfo.getTaskId());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
     
