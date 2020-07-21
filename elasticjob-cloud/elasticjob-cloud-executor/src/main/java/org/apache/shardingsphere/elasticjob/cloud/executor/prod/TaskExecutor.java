@@ -57,7 +57,7 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     
-    private static volatile ElasticJobExecutor jobExecutor;
+    private volatile ElasticJobExecutor jobExecutor;
     
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
