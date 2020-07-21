@@ -123,7 +123,7 @@ public final class BootstrapEnvironmentTest {
 
     @Test
     public void asserGetFrameworkHostPort() {
-       assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("127.0.0.1:8899"));
+       assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("localhost:8899"));
     }
 
 }
