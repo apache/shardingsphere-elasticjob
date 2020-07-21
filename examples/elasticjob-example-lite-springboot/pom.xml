@@ -51,11 +51,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-tracing-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-example-embed-zk</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

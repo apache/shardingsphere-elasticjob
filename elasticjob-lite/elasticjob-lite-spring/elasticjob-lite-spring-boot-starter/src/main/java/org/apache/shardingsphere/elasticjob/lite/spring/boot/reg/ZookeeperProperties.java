@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.boot;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.reg;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -15,24 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.boot;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing;
 
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@EnableConfigurationProperties(ZookeeperProperties.class)
-public class ElasticJobRegistryCenterAutoConfiguration {
+import javax.sql.DataSource;
+
+/**
+ * ElasticJob tracing auto configuration.
+ */
+public class ElasticJobTracingConfiguration {
+
     /**
-     * Create a ZookeeperRegistryCenter bean via factory.
+     * Create a bean of tracing configuration.
      *
-     * @param zookeeperProperties factory
-     * @return ZookeeperRegistryCenter
+     * @param dataSource required by constructor
+     * @return a bean of tracing configuration
      */
-    @Bean(initMethod = "init")
-    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {
-        return new ZookeeperRegistryCenter(zookeeperProperties.toZookeeperConfiguration());
+    @Bean
+    @ConditionalOnBean(DataSource.class)
+    @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = "RDB")
+    public TracingConfiguration<?> tracingConfiguration(final DataSource dataSource) {
+        return new TracingConfiguration<>("RDB", dataSource);
     }
 }

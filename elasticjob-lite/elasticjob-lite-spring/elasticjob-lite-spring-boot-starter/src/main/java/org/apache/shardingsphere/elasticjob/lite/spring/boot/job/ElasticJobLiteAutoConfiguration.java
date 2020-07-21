@@ -24,13 +24,15 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ElasticJobRegistryCenterConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing.ElasticJobTracingConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.boot.ElasticJobRegistryCenterAutoConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -47,9 +49,9 @@ import java.util.Map.Entry;
  * ElasticJob-Lite auto configuration.
  */
 @Configuration
-@AutoConfigureAfter(ElasticJobRegistryCenterAutoConfiguration.class)
+@AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)
-@Import(ElasticJobStartupRunner.class)
+@Import({ElasticJobRegistryCenterConfiguration.class, ElasticJobTracingConfiguration.class, ElasticJobStartupRunner.class})
 @EnableConfigurationProperties(ElasticJobProperties.class)
 @Setter
 public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware {
