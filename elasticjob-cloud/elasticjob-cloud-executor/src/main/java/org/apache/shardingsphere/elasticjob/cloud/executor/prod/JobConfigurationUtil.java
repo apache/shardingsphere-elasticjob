@@ -32,7 +32,7 @@ public final class JobConfigurationUtil {
      * Create job configuration context.
      * 
      * @param jobConfigurationMap job configuration map
-     * @return job type configuration
+     * @return job configuration
      */
     public static JobConfiguration createJobConfiguration(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
