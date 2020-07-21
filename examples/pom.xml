@@ -24,7 +24,7 @@
     <artifactId>elasticjob-example</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
-    <version>3.0.0.M1-SNAPSHOT</version>
+    <version>3.0.0-alpha-SNAPSHOT</version>
     
     <modules>
         <module>elasticjob-example-jobs</module>
@@ -39,7 +39,7 @@
     
     <properties>
         <java.version>1.8</java.version>
-        <elastic-job.version>3.0.0.M1-SNAPSHOT</elastic-job.version>
+        <elastic-job.version>3.0.0-alpha-SNAPSHOT</elastic-job.version>
         <curator.version>5.1.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
