@@ -75,10 +75,8 @@ public final class TaskExecutorThreadTest {
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
     }
-    
-    // TODO the test case is not reach to catch block
-    @Test
-    //(expected = JobSystemException.class)
+
+    @Test(expected = JobSystemException.class)
     public void assertLaunchTaskWithWrongElasticJobClass() {
         TaskInfo taskInfo = buildWrongElasticJobClass();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);

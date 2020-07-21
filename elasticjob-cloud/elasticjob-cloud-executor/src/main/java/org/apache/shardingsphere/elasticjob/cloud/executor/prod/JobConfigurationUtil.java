@@ -19,8 +19,10 @@ package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.util.Map;
@@ -41,6 +43,18 @@ public final class JobConfigurationUtil {
         String jobName = jobConfigurationMap.get("jobName");
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
+        String jobClass = jobConfigurationMap.get("jobClass");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
+        try {
+            Class clazz = Class.forName(jobClass);
+            if (!ElasticJob.class.isAssignableFrom(clazz)) {
+                throw new JobSystemException("ElasticJob: Class '%s' must implements ElasticJob interface.", clazz.getSimpleName());
+            }
+        } catch (ClassNotFoundException e) {
+            throw new JobSystemException("ElasticJob: Class '%s' initialize failure, the error message is '%s'.", jobClass, jobClass);
+        } catch (JobSystemException e) {
+            throw e;
+        }
         JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(cron)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
         if (jobConfigurationMap.containsKey("streamingProcess")) {
