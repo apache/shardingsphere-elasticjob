@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.junit.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
@@ -51,11 +50,5 @@ public class AopTargetUtilsTest {
         ElasticJob proxy = new TargetJob();
         assertFalse(AopUtils.isAopProxy(proxy));
         AopTargetUtils.getTarget(proxy);
-    }
-}
-
-class TargetJob implements ElasticJob {
-    public void execute(final ShardingContext shardingContext) {
-
     }
 }
