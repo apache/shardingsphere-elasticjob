@@ -19,27 +19,21 @@ package org.apache.shardingsphere.elasticjob.cloud.executor.fixture;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Collection;
+import java.util.LinkedList;
 
+@Getter
 public final class TestSimpleJob implements SimpleJob {
     
-    @Getter
-    @Setter
-    private static ShardingContext shardingContext;
-    
-    @Getter
-    private static Set<String> shardingParameters = new ConcurrentSkipListSet<>();
+    private final Collection<String> shardingParameters = new LinkedList<>();
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        TestSimpleJob.shardingContext = shardingContext;
         if (!Strings.isNullOrEmpty(shardingContext.getShardingParameter())) {
-            shardingParameters.add(shardingContext.getShardingParameter());    
+            shardingParameters.add(shardingContext.getShardingParameter());
         }
     }
 }

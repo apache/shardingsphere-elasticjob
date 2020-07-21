@@ -22,21 +22,21 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Getter
 public final class TestDataflowJob implements DataflowJob<String> {
     
-    @Getter
-    private List<String> output;
+    private List<String> output = new LinkedList<>();
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
-        return Arrays.asList("1", "2", "3");
+        return Arrays.asList("0", "1", "2");
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<String> data) {
-        output = data.stream().map(each -> each + "-d").collect(Collectors.toList());
+        output.add(data.get(shardingContext.getShardingItem()) + "-d");
     }
 }
