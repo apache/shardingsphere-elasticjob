@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-distribution</artifactId>
-        <version>3.0.0.M1-SNAPSHOT</version>
+        <version>3.0.0-alpha-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-lite-distribution</artifactId>
     <packaging>pom</packaging>
@@ -36,11 +36,6 @@
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-lite-spring-namespace</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
