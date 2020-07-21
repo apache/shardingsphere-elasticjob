@@ -106,17 +106,6 @@ public final class CloudJobConfigurationBuilder {
      * @param jobName job name
      * @return cloud job configuration
      */
-    public static CloudJobConfiguration createCloudSpringJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
-                "test_spring_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, JobConfiguration.newBuilder(jobName, 10).cron("0/30 * * * * ?").failover(true).misfire(true).build());
-    }
-    
-    /**
-     * Create cloud job configuration.
-     * 
-     * @param jobName job name
-     * @return cloud job configuration
-     */
     public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, 
                 JobConfiguration.newBuilder(jobName, 3).cron("0/30 * * * * ?").failover(false).misfire(false).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build());

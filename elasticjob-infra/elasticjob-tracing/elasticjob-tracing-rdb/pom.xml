@@ -34,6 +34,7 @@
             <artifactId>elasticjob-tracing-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
