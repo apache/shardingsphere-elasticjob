@@ -522,8 +522,6 @@
                         </ignoreMethodAnnotations>
                         <excludes>
                             <exclude>org/apache/**/*Test.class</exclude>
-                            <exclude>org/apache/**/Test*.class</exclude>
-                            <exclude>org/apache/job/lite/console/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
