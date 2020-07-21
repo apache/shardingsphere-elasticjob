@@ -18,29 +18,25 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.fixture;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public final class TestDataflowJob implements DataflowJob<String> {
     
-    @Setter
-    private static List<String> input;
-    
     @Getter
-    @Setter
-    private static List<String> output;
+    private List<String> output;
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
-        return input;
+        return Arrays.asList("1", "2", "3");
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<String> data) {
-        output = input.stream().map(s -> input + "-d").collect(Collectors.toList());
+        output = data.stream().map(each -> each + "-d").collect(Collectors.toList());
     }
 }

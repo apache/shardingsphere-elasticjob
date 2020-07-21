@@ -25,8 +25,6 @@ import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -38,8 +36,6 @@ public final class LocalTaskExecutorTest {
     @Before
     public void setUp() {
         TestSimpleJob.setShardingContext(null);
-        TestDataflowJob.setInput(null);
-        TestDataflowJob.setOutput(null);
     }
     
     @Test
@@ -68,10 +64,10 @@ public final class LocalTaskExecutorTest {
     
     @Test
     public void assertDataflowJob() {
-        TestDataflowJob.setInput(Arrays.asList("1", "2", "3"));
-        new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 10).cron("*/2 * * * * ?").build(), 5).execute();
-        assertFalse(TestDataflowJob.getOutput().isEmpty());
-        for (String each : TestDataflowJob.getOutput()) {
+        TestDataflowJob dataflowJob = new TestDataflowJob();
+        new LocalTaskExecutor(dataflowJob, JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 10).cron("*/2 * * * * ?").build(), 5).execute();
+        assertFalse(dataflowJob.getOutput().isEmpty());
+        for (String each : dataflowJob.getOutput()) {
             assertTrue(each.endsWith("-d"));
         }
     }
