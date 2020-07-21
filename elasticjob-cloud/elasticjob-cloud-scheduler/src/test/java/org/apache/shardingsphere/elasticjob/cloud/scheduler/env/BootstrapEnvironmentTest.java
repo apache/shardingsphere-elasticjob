@@ -111,4 +111,19 @@ public final class BootstrapEnvironmentTest {
         assertThat(configuration.getReconcileIntervalMinutes(), is(0));
         assertFalse(configuration.isEnabledReconcile());
     }
+
+    @Test
+    public void assertGetMesosRole() {
+        assertThat(bootstrapEnvironment.getMesosRole(), is(Optional.empty()));
+        Properties properties = new Properties();
+        properties.setProperty(BootstrapEnvironment.EnvironmentArgument.MESOS_ROLE.getKey(), "0");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        assertThat(bootstrapEnvironment.getMesosRole(), is(Optional.of("0")));
+    }
+
+    @Test
+    public void asserGetFrameworkHostPort() {
+       assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("127.0.0.1:8899"));
+    }
+
 }
