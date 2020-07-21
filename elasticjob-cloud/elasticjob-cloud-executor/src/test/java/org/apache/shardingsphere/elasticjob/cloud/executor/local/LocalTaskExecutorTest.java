@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.local;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestDataflowJob;
-import org.apache.shardingsphere.elasticjob.cloud.executor.local.fixture.TestSimpleJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestDataflowJob;
+import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
