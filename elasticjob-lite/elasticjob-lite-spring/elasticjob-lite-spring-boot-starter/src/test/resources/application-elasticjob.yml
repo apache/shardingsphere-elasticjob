@@ -29,13 +29,11 @@ elasticjob:
     serverLists: localhost:18181
     namespace: elasticjob-lite-spring-boot-starter
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob:
-        - jobName: customTestJob
-          shardingTotalCount: 3
-    typed:
-      PRINT:
-        - jobName: printTestJob
-          shardingTotalCount: 3
-          props:
-            print.content: "test print job"
+    customTestJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      shardingTotalCount: 3
+    printTestJob:
+      elasticJobType: PRINT
+      shardingTotalCount: 3
+      props:
+        print.content: "test print job"
