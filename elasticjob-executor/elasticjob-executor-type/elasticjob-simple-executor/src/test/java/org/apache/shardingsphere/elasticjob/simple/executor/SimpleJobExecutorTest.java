@@ -27,13 +27,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SimpleJobExecutorTest {
+public final class SimpleJobExecutorTest {
     
     @Mock
     private FooSimpleJob fooSimpleJob;
@@ -52,13 +53,13 @@ public class SimpleJobExecutorTest {
     }
     
     @Test
-    public void testProcess() {
+    public void assertProcess() {
         jobExecutor.process(fooSimpleJob, jobConfig, jobFacade, any());
         verify(fooSimpleJob, times(1)).execute(any());
     }
     
     @Test
-    public void testGetElasticJobClass() {
-        assertEquals(jobExecutor.getElasticJobClass(), SimpleJob.class);
+    public void assertGetElasticJobClass() {
+        assertThat(jobExecutor.getElasticJobClass(), is(SimpleJob.class));
     }
 }
