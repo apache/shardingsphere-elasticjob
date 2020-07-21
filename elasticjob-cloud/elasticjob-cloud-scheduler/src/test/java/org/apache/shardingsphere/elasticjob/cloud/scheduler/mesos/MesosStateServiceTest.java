@@ -17,24 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import com.google.gson.JsonArray;
+import java.util.Collection;
+import java.util.Map;
+import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.AbstractCloudRestfulApiTest;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Collection;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
+public class MesosStateServiceTest extends AbstractCloudControllerTest {
     
     @Mock
     private CoordinatorRegistryCenter registryCenter;
@@ -43,10 +42,10 @@ public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     public void assertSandbox() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        JsonArray sandbox = service.sandbox("foo_app");
+        Collection<Map<String, String>> sandbox = service.sandbox("foo_app");
         assertThat(sandbox.size(), is(1));
-        assertThat(sandbox.get(0).getAsJsonObject().get("hostname").getAsString(), is("127.0.0.1"));
-        assertThat(sandbox.get(0).getAsJsonObject().get("path").getAsString(), is("/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/"
+        assertThat(sandbox.iterator().next().get("hostname"), is("127.0.0.1"));
+        assertThat(sandbox.iterator().next().get("path"), is("/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/"
                 + "frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1"));
     }
     

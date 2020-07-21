@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.restful;
+package org.apache.shardingsphere.elasticjob.cloud.console.security;
 
-import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
- * Restful API exception mapper.
- */
-@Provider
-public final class RestfulExceptionMapper implements ExceptionMapper<Throwable> {
+ * Authentication result.
+ **/
+@Getter
+@Setter
+@RequiredArgsConstructor
+public final class AuthenticationResult {
     
-    @Override
-    public Response toResponse(final Throwable cause) {
-        return Response.ok(ExceptionUtils.transform(cause), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
-    }
+    private final boolean success;
+    
+    private final boolean isGuest;
 }

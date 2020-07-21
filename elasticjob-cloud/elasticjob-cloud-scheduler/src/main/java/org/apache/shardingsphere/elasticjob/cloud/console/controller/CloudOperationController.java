@@ -15,28 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.scheduler.restful;
+package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.gson.JsonArray;
+import java.util.Collection;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONException;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Cloud operation restful api.
  */
-@Path("/operate")
 @Slf4j
-public final class CloudOperationRestfulApi {
+@RestController
+@RequestMapping("/operate")
+public final class CloudOperationController {
     
     private static ReconcileService reconcileService;
     
@@ -48,20 +50,18 @@ public final class CloudOperationRestfulApi {
     
     /**
      * Init.
-     * 
-     * @param regCenter registry center
+     * @param regCenter        registry center
      * @param reconcileService reconcile service
      */
     public static void init(final CoordinatorRegistryCenter regCenter, final ReconcileService reconcileService) {
-        CloudOperationRestfulApi.reconcileService = reconcileService;
-        CloudOperationRestfulApi.mesosStateService = new MesosStateService(regCenter);
+        CloudOperationController.reconcileService = reconcileService;
+        CloudOperationController.mesosStateService = new MesosStateService(regCenter);
     }
     
     /**
      * Explicit reconcile service.
      */
-    @POST
-    @Path("/reconcile/explicit")
+    @PostMapping("/reconcile/explicit")
     public void explicitReconcile() {
         validReconcileInterval();
         reconcileService.explicitReconcile();
@@ -70,8 +70,7 @@ public final class CloudOperationRestfulApi {
     /**
      * Implicit reconcile service.
      */
-    @POST
-    @Path("/reconcile/implicit")
+    @PostMapping("/reconcile/implicit")
     public void implicitReconcile() {
         validReconcileInterval();
         reconcileService.implicitReconcile();
@@ -86,14 +85,12 @@ public final class CloudOperationRestfulApi {
     
     /**
      * Get sandbox of the cloud job by app name.
-     *
      * @param appName application name
      * @return sandbox info
      * @throws JSONException parse json exception
      */
-    @GET
-    @Path("/sandbox")
-    public JsonArray sandbox(@QueryParam("appName") final String appName) throws JSONException {
+    @GetMapping("/sandbox")
+    public Collection<Map<String, String>> sandbox(@RequestParam("appName") final String appName) throws JSONException {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(appName), "Lack param 'appName'");
         return mesosStateService.sandbox(appName);
     }

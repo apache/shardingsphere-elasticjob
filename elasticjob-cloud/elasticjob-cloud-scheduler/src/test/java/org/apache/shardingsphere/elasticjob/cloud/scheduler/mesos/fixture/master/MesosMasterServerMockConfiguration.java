@@ -15,17 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.restful;
+package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master;
 
-import org.junit.Test;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-
-public final class RestfulExceptionTest {
+/**
+ * Mesos master server configuration.
+ **/
+@Configuration
+public class MesosMasterServerMockConfiguration {
     
-    @Test
-    public void assertRestfulException() {
-        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    /**
+     * inject mesos master server mock.
+     *
+     * @return mesos master server mock.
+     */
+    @Bean
+    public MesosMasterServerMock mesosMasterServerMock() {
+        return new MesosMasterServerMock();
     }
 }

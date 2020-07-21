@@ -111,11 +111,10 @@ function bindDeleteJobButton() {
         $("#delete-job-confirm").on("click", function() {
             if(flag) {
                 $.ajax({
-                    url: "/api/job/deregister",
+                    url: "/api/job/" + jobName + "/deregister",
                     type: "DELETE",
                     contentType: "application/json",
-                    data: jobName,
-                    success: function(result) {
+                    success: function() {
                         $("#job-table").bootstrapTable("refresh");
                         $("#delete-data").hide();
                         refreshJobNavTag();

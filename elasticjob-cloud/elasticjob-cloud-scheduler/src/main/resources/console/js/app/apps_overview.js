@@ -93,6 +93,7 @@ function bindModifyAppButton() {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
             url: "/api/app/" + appName,
+            contentType: "application/json",
             success: function(result) {
                 if(null !== result) {
                     $(".box-body").remove();
