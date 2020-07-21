@@ -32,7 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,8 +63,9 @@ public final class DataflowJobExecutorTest {
         jobExecutor = new DataflowJobExecutor();
     }
     
+    @SuppressWarnings("unchecked")
     @Test
-    public void testProcessWithStreamingExecute() {
+    public void assertProcessWithStreamingExecute() {
         List<String> data = Arrays.asList("DataflowJob1", "DataflowJob2");
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("true");
@@ -73,8 +75,9 @@ public final class DataflowJobExecutorTest {
         verify(elasticJob, times(1)).processData(shardingContext, data);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
-    public void testProcessWithOneOffExecute() {
+    public void assertProcessWithOneOffExecute() {
         List<String> data = Arrays.asList("DataflowJob1", "DataflowJob2");
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("false");
@@ -84,7 +87,7 @@ public final class DataflowJobExecutorTest {
     }
     
     @Test
-    public void testGetElasticJobClass() {
-        assertEquals(DataflowJob.class, jobExecutor.getElasticJobClass());
+    public void assertGetElasticJobClass() {
+        assertThat(jobExecutor.getElasticJobClass(), is(DataflowJob.class));
     }
 }

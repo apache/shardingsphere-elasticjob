@@ -35,9 +35,10 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
@@ -51,35 +52,35 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testZookeeperProperties() {
+    public void assertZookeeperProperties() {
         assertNotNull(applicationContext);
-        ZookeeperProperties zookeeperProperties = applicationContext.getBean(ZookeeperProperties.class);
-        assertEquals(EmbedTestingServer.getConnectionString(), zookeeperProperties.getServerLists());
-        assertEquals("elasticjob-lite-spring-boot-starter", zookeeperProperties.getNamespace());
+        ZookeeperProperties actual = applicationContext.getBean(ZookeeperProperties.class);
+        assertThat(actual.getServerLists(), is(EmbedTestingServer.getConnectionString()));
+        assertThat(actual.getNamespace(), is("elasticjob-lite-spring-boot-starter"));
     }
 
     @Test
-    public void testRegistryCenterCreation() {
+    public void assertRegistryCenterCreation() {
         assertNotNull(applicationContext);
         ZookeeperRegistryCenter zookeeperRegistryCenter = applicationContext.getBean(ZookeeperRegistryCenter.class);
         assertNotNull(zookeeperRegistryCenter);
         zookeeperRegistryCenter.persist("/foo", "bar");
-        assertEquals("bar", zookeeperRegistryCenter.get("/foo"));
+        assertThat(zookeeperRegistryCenter.get("/foo"), is("bar"));
     }
 
     @Test
-    public void testTracingConfigurationCreation() throws SQLException {
+    public void assertTracingConfigurationCreation() throws SQLException {
         assertNotNull(applicationContext);
         TracingConfiguration tracingConfiguration = applicationContext.getBean(TracingConfiguration.class);
         assertNotNull(tracingConfiguration);
-        assertEquals("RDB", tracingConfiguration.getType());
+        assertThat(tracingConfiguration.getType(), is("RDB"));
         assertTrue(tracingConfiguration.getStorage() instanceof DataSource);
         DataSource dataSource = (DataSource) tracingConfiguration.getStorage();
         assertNotNull(dataSource.getConnection());
     }
 
     @Test
-    public void testJobScheduleCreation() {
+    public void assertJobScheduleCreation() {
         assertNotNull(applicationContext);
         Map<String, ElasticJob> elasticJobBeans = applicationContext.getBeansOfType(ElasticJob.class);
         assertFalse(elasticJobBeans.isEmpty());

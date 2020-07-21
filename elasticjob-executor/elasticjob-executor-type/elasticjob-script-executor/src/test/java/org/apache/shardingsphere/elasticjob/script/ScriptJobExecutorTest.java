@@ -33,7 +33,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,27 +63,27 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void testProcessWithJobConfigurationException() {
+    public void assertProcessWithJobConfigurationException() {
         when(jobConfig.getProps()).thenReturn(properties);
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
     
     @Test(expected = JobSystemException.class)
-    public void testProcessWithJobSystemException() {
+    public void assertProcessWithJobSystemException() {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("demo.sh");
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
     
     @Test
-    public void testProcess() {
+    public void assertProcess() {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("echo script-job");
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
     
     @Test
-    public void testGetType() {
-        assertEquals("SCRIPT", jobExecutor.getType());
+    public void assertGetType() {
+        assertThat(jobExecutor.getType(), is("SCRIPT"));
     }
 }
