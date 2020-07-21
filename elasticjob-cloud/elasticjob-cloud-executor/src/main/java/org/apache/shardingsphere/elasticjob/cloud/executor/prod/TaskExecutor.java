@@ -57,6 +57,8 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     
+    private static volatile ElasticJobExecutor jobExecutor;
+    
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
     public TaskExecutor(final ElasticJob elasticJob) {
@@ -134,7 +136,7 @@ public final class TaskExecutor implements Executor {
             try {
                 JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
                 if (isTransient(jobConfig)) {
-                    createElasticJobExecutor(jobFacade).execute();
+                    getJobExecutor(jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
                     new DaemonTaskScheduler(elasticJob, elasticJobType, jobConfig, jobFacade, executorDriver, taskInfo.getTaskId()).init();
@@ -152,10 +154,21 @@ public final class TaskExecutor implements Executor {
         private boolean isTransient(final JobConfiguration jobConfig) {
             return Strings.isNullOrEmpty(jobConfig.getCron());
         }
+        
+        private ElasticJobExecutor getJobExecutor(final JobFacade jobFacade) {
+            if (null == jobExecutor) {
+                createJobExecutor(jobFacade);
+            }
+            return jobExecutor;
+        }
     
-        private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
-            return null == elasticJob
-                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade) : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
+        private synchronized void createJobExecutor(final JobFacade jobFacade) {
+            if (null != jobExecutor) {
+                return;
+            }
+            jobExecutor = null == elasticJob
+                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade)
+                    : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
         }
     }
 }
