@@ -15,25 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.controller;
+package org.apache.shardingsphere.elasticjob.lite.spring.boot.reg;
 
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
-import javax.annotation.Resource;
-
-@RestController
-@DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
-public class OneOffJobController {
-
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
-    private OneOffJobBootstrap manualScriptJob;
-
-    @GetMapping("/execute")
-    public String executeOneOffJob() {
-        manualScriptJob.execute();
-        return "{\"msg\":\"OK\"}";
+@EnableConfigurationProperties(ZookeeperProperties.class)
+public class ElasticJobRegistryCenterConfiguration {
+    /**
+     * Create a ZookeeperRegistryCenter bean via factory.
+     *
+     * @param zookeeperProperties factory
+     * @return ZookeeperRegistryCenter
+     */
+    @Bean(initMethod = "init")
+    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {
+        return new ZookeeperRegistryCenter(zookeeperProperties.toZookeeperConfiguration());
     }
 }

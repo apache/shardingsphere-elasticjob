@@ -33,6 +33,5 @@
         <module>elasticjob-infra-common</module>
         <module>elasticjob-registry-center</module>
         <module>elasticjob-tracing</module>
-        <module>elasticjob-registry-center-spring-boot-starter</module>
     </modules>
 </project>
