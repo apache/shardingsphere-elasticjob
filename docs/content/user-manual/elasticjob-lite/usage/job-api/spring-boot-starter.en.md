@@ -40,9 +40,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
 
 Configure the Zookeeper which will be used by ElasticJob via configuration files.
 
-Those jobs which have implemented ElasticJob are `classed` job. 
-They should be configured under `elasticjob.jobs.classed`.
-`elasticjob.jobs.classed` is a Map which using qualified class name as keys and List<JobConfigurationPOJO> as values.
+`elasticjob.jobs` is a Map. Using key as job name. Specific job type and configuration in value.
 The Starter will create instances of `OneOffJobBootstrap` or `ScheduleJobBootstrap` and register them into the Spring IoC container automatically. 
 
 Configuration reference:
@@ -53,19 +51,17 @@ elasticjob:
     serverLists: localhost:6181
     namespace: elasticjob-lite-springboot
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.example.job.SpringBootDataflowJob:
-        - jobName: dataflowJob
-          cron: 0/5 * * * * ?
-          shardingTotalCount: 3
-          shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
-    typed:
-      SCRIPT:
-        - jobName: scriptJob
-          cron: 0/10 * * * * ?
-          shardingTotalCount: 3
-          props:
-            script.command.line: "echo SCRIPT Job: "
+    dataflowJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    scriptJob:
+      elasticJobType: SCRIPT
+      cron: 0/10 * * * * ?
+      shardingTotalCount: 3
+      props:
+        script.command.line: "echo SCRIPT Job: "
 ```
 
 ## Job Start

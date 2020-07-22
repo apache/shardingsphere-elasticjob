@@ -19,9 +19,16 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.sun.jersey.api.client.Client;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +37,6 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Mesos state service.
@@ -54,9 +54,8 @@ public class MesosStateService {
     
     /**
      * Register master info of Mesos.
-     * 
      * @param hostName hostname of master
-     * @param port port of master
+     * @param port     port of master
      */
     public static synchronized void register(final String hostName, final int port) {
         stateUrl = String.format("http://%s:%d/state", hostName, port);
@@ -71,14 +70,13 @@ public class MesosStateService {
     
     /**
      * Get sandbox info.
-     * 
      * @param appName app name
      * @return sandbox info in json format
      * @throws JSONException parse json exception
      */
-    public JsonArray sandbox(final String appName) throws JSONException {
+    public Collection<Map<String, String>> sandbox(final String appName) throws JSONException {
         JSONObject state = fetch(stateUrl);
-        JsonArray result = new JsonArray();
+        List<Map<String, String>> result = new ArrayList<>();
         for (JSONObject each : findExecutors(state.getJSONArray("frameworks"), appName)) {
             JSONArray slaves = state.getJSONArray("slaves");
             String slaveHost = null;
@@ -93,9 +91,9 @@ public class MesosStateService {
             String workDir = slaveState.getJSONObject("flags").getString("work_dir");
             Collection<JSONObject> executorsOnSlave = findExecutors(slaveState.getJSONArray("frameworks"), appName);
             for (JSONObject executorOnSlave : executorsOnSlave) {
-                JsonObject r = new JsonObject();
-                r.addProperty("hostname", slaveState.getString("hostname"));
-                r.addProperty("path", executorOnSlave.getString("directory").replace(workDir, ""));
+                Map<String, String> r = new LinkedHashMap<>();
+                r.put("hostname", slaveState.getString("hostname"));
+                r.put("path", executorOnSlave.getString("directory").replace(workDir, ""));
                 result.add(r);
             }
         }
@@ -104,7 +102,6 @@ public class MesosStateService {
     
     /**
      * Get executor by app name.
-     * 
      * @param appName app name
      * @return executor state info
      * @throws JSONException parse json exception
@@ -121,7 +118,6 @@ public class MesosStateService {
     
     /**
      * Get all executors.
-     *
      * @return collection of executor state info
      * @throws JSONException parse json exception
      */

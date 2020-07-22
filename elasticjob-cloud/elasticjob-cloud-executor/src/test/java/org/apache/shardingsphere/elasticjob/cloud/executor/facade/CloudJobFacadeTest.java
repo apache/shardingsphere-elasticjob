@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.cloud.executor.facade;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -42,11 +42,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CloudJobFacadeTest {
+public final class CloudJobFacadeTest {
     
     private ShardingContexts shardingContexts;
-    
-    private JobConfiguration jobConfig;
     
     @Mock
     private JobEventBus eventBus;
@@ -56,8 +54,7 @@ public class CloudJobFacadeTest {
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobConfig = JobConfigurationUtil.createJobConfiguration(getJobConfigurationMap(false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), eventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -66,11 +63,8 @@ public class CloudJobFacadeTest {
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
-    private Map<String, String> getJobConfigurationMap(final boolean streamingProcess) {
-        Map<String, String> result = new HashMap<>(10, 1);
-        result.put("jobName", "test_job");
-        result.put("streamingProcess", Boolean.toString(streamingProcess));
-        return result;
+    private JobConfiguration getJobConfiguration() {
+        return JobConfiguration.newBuilder("test_job", 1).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     
     @Test

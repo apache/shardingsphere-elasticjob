@@ -23,6 +23,7 @@ import org.apache.mesos.Protos.TaskState;
 import org.apache.mesos.Protos.TaskStatus;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.DaemonTaskScheduler.DaemonJob;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
@@ -53,11 +54,11 @@ public final class DaemonTaskSchedulerTest {
     
     private TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
     
-    private DaemonTaskScheduler.DaemonJob daemonJob;
+    private DaemonJob daemonJob;
     
     @Before
     public void setUp() {
-        daemonJob = new DaemonTaskScheduler.DaemonJob();
+        daemonJob = new DaemonJob();
         daemonJob.setJobFacade(jobFacade);
         daemonJob.setElasticJobType("SCRIPT");
         daemonJob.setExecutorDriver(executorDriver);
@@ -92,7 +93,6 @@ public final class DaemonTaskSchedulerTest {
     }
     
     private JobConfiguration createJobConfiguration() {
-        return JobConfiguration.newBuilder("test_script_job", 3).cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE")
-                .setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build();
+        return JobConfiguration.newBuilder("test_script_job", 3).cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE").setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build();
     }
 }

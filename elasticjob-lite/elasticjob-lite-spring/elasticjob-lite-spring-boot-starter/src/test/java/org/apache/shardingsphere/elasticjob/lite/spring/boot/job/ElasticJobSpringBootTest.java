@@ -19,8 +19,11 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,10 +31,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
 @SpringBootApplication
@@ -42,13 +50,41 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
     public static void init() {
         EmbedTestingServer.start();
     }
-    
+
     @Test
-    public void testJobScheduleCreation() {
+    public void assertZookeeperProperties() {
+        assertNotNull(applicationContext);
+        ZookeeperProperties actual = applicationContext.getBean(ZookeeperProperties.class);
+        assertThat(actual.getServerLists(), is(EmbedTestingServer.getConnectionString()));
+        assertThat(actual.getNamespace(), is("elasticjob-lite-spring-boot-starter"));
+    }
+
+    @Test
+    public void assertRegistryCenterCreation() {
+        assertNotNull(applicationContext);
+        ZookeeperRegistryCenter zookeeperRegistryCenter = applicationContext.getBean(ZookeeperRegistryCenter.class);
+        assertNotNull(zookeeperRegistryCenter);
+        zookeeperRegistryCenter.persist("/foo", "bar");
+        assertThat(zookeeperRegistryCenter.get("/foo"), is("bar"));
+    }
+
+    @Test
+    public void assertTracingConfigurationCreation() throws SQLException {
+        assertNotNull(applicationContext);
+        TracingConfiguration tracingConfiguration = applicationContext.getBean(TracingConfiguration.class);
+        assertNotNull(tracingConfiguration);
+        assertThat(tracingConfiguration.getType(), is("RDB"));
+        assertTrue(tracingConfiguration.getStorage() instanceof DataSource);
+        DataSource dataSource = (DataSource) tracingConfiguration.getStorage();
+        assertNotNull(dataSource.getConnection());
+    }
+
+    @Test
+    public void assertJobScheduleCreation() {
         assertNotNull(applicationContext);
         Map<String, ElasticJob> elasticJobBeans = applicationContext.getBeansOfType(ElasticJob.class);
         assertFalse(elasticJobBeans.isEmpty());
-        Map<String, OneOffJobBootstrap> jobBootstrapBeans = applicationContext.getBeansOfType(OneOffJobBootstrap.class);
+        Map<String, JobBootstrap> jobBootstrapBeans = applicationContext.getBeansOfType(JobBootstrap.class);
         assertFalse(jobBootstrapBeans.isEmpty());
         BlockUtils.waitingShortTime();
     }

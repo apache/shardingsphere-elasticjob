@@ -43,7 +43,7 @@ function validate() {
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {
-                                        if (null !== data) {
+                                        if (null !== data && undefined !== data && "" !== data) {
                                             result = false;
                                         }
                                     }

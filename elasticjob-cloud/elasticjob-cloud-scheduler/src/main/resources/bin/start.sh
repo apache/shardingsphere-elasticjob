@@ -32,4 +32,4 @@ if [ ${hostname} = "" ] || [ ${hostname} = "127.0.0.1" ] || [ ${hostname} = "loc
 fi
 export LIBPROCESS_IP=${hostname}
 
-java ${JAVA_OPTS} -classpath ${CONF_DIR}/*:${LIB_DIR}:. ${CONTAINER_MAIN}
+java ${JAVA_OPTS} -classpath ${CONF_DIR}:${LIB_DIR}:. ${CONTAINER_MAIN}

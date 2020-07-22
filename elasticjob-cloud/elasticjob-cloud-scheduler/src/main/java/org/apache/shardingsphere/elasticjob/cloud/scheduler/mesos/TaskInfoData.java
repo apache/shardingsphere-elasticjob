@@ -21,9 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
-import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,21 +45,7 @@ public final class TaskInfoData {
     public byte[] serialize() {
         Map<String, Object> result = new LinkedHashMap<>(2, 1);
         result.put("shardingContext", shardingContexts);
-        result.put("jobConfigContext", buildJobConfigurationContext());
+        result.put("jobConfigContext", YamlEngine.marshal(JobConfigurationPOJO.fromJobConfiguration(cloudJobConfig.getJobConfig())));
         return SerializationUtils.serialize((LinkedHashMap) result);
-    }
-    
-    private Map<String, String> buildJobConfigurationContext() {
-        Map<String, String> result = new LinkedHashMap<>(16, 1);
-        result.put("jobName", cloudJobConfig.getJobConfig().getJobName());
-        result.put("cron", CloudJobExecutionType.DAEMON == cloudJobConfig.getJobExecutionType() ? cloudJobConfig.getJobConfig().getCron() : "");
-        result.put("executorServiceHandler", cloudJobConfig.getJobConfig().getJobExecutorServiceHandlerType());
-        result.put("jobExceptionHandler", cloudJobConfig.getJobConfig().getJobErrorHandlerType());
-        if (cloudJobConfig.getJobConfig().getProps().containsKey(DataflowJobProperties.STREAM_PROCESS_KEY)) {
-            result.put("streamingProcess", cloudJobConfig.getJobConfig().getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY));
-        } else if (cloudJobConfig.getJobConfig().getProps().containsKey(ScriptJobProperties.SCRIPT_KEY)) {
-            result.put("scriptCommandLine", cloudJobConfig.getJobConfig().getProps().getProperty(ScriptJobProperties.SCRIPT_KEY));
-        }
-        return result;
     }
 }
