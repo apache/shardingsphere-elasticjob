@@ -5,7 +5,7 @@ chapter = true
 +++
 
 ElasticJob-Lite 的 Spring Boot Starter 集成了 TracingConfiguration 自动配置，
-开发者只需注册一个 DataSource 到 Spring 容器中，
+开发者只需注册一个 DataSource 到 Spring 容器中并在配置文件指定事件追踪数据源类型，
 Starter 就会自动创建一个 TracingConfiguration 实例并注册到 Spring 容器中。
 
 ## 引入 Maven 依赖
@@ -29,9 +29,13 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+
+elasticjob:
+  tracing:
+    type: RDB
 ```
 
 ## 作业启动
 
-TracingConfiguration 会自动注册到容器中，如果与 elasticjob-lite-spring-boot-starter 配合使用，
+指定事件追踪数据源类型为 RDB，TracingConfiguration 会自动注册到容器中，如果与 elasticjob-lite-spring-boot-starter 配合使用，
 开发者无需进行其他额外的操作，作业启动器会自动使用创建的 TracingConfiguration。
