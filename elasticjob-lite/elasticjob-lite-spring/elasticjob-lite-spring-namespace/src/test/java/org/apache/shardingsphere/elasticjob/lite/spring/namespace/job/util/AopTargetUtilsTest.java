@@ -25,7 +25,7 @@ import org.springframework.aop.support.AopUtils;
 import static org.junit.Assert.*;
 
 public final class AopTargetUtilsTest {
-
+    
     @Test
     public void jdkDynamicProxyForGetTarget() {
         ElasticJob target = new TargetJob();
@@ -35,7 +35,7 @@ public final class AopTargetUtilsTest {
         assertTrue(AopUtils.isJdkDynamicProxy(proxy));
         assertEquals(AopTargetUtils.getTarget(proxy), target);
     }
-
+    
     @Test
     public void cglibProxyForGetTarget() {
         ElasticJob target = new TargetJob();
@@ -46,7 +46,7 @@ public final class AopTargetUtilsTest {
         AopTargetUtils.getTarget(proxy);
         assertEquals(AopTargetUtils.getTarget(proxy), target);
     }
-
+    
     @Test
     public void noneProxyForGetTarget() {
         ElasticJob proxy = new TargetJob();
