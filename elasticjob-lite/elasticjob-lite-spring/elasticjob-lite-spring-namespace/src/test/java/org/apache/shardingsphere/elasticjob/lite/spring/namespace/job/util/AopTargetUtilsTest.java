@@ -45,7 +45,6 @@ public final class AopTargetUtilsTest {
         pf.setProxyTargetClass(true);
         ElasticJob proxy = (ElasticJob) pf.getProxy();
         assertTrue(AopUtils.isCglibProxy(proxy));
-        AopTargetUtils.getTarget(proxy);
         assertEquals(AopTargetUtils.getTarget(proxy), target);
     }
     
