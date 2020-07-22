@@ -20,8 +20,13 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
-public class TargetJob implements ElasticJob {
+public final class TargetJob implements ElasticJob {
     
+    /**
+     * Mocker object for AopTargetUtilsTest.
+     *
+     * @param shardingContext shardingContext
+     */
     public void execute(final ShardingContext shardingContext) {
     
     }
