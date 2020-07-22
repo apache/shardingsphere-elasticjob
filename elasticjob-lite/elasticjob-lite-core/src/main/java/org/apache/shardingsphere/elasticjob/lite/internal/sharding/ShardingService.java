@@ -209,7 +209,6 @@ public final class ShardingService {
                     result.add(transactionOp.create().forPath(jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()));
                 }
             }
-            System.out.println(jobNodePath.getFullPath(ShardingNode.NECESSARY));
             result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)));
             result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.PROCESSING)));
             return result;
