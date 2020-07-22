@@ -27,7 +27,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class IOUtilsTest {
+public final class IOUtilsTest {
     
     @Test
     public void assertToStringFromInputStream() throws Exception {
