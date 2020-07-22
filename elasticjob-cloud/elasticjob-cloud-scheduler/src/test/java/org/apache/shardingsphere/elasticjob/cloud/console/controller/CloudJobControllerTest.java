@@ -25,7 +25,7 @@ import java.util.UUID;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
-import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestsUtil;
+import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestUtil;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.search.JobEventRdbSearch;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
@@ -72,65 +72,65 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     public void assertRegister() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(200));
         verify(getRegCenter()).persist("/config/job/test_job", YAML);
-        HttpTestsUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
+        HttpTestUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
     }
     
     @Test
     public void assertRegisterWithoutApp() throws Exception {
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(500));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(500));
     }
     
     @Test
     public void assertRegisterWithExistedName() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().isExisted("/config/test_job")).thenReturn(false);
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(200));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(500));
-        HttpTestsUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(500));
+        HttpTestUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
     }
     
     @Test
     public void assertRegisterWithBadRequest() throws Exception {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/register", "\"{\"jobName\":\"wrong_job\"}"), is(500));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", "\"{\"jobName\":\"wrong_job\"}"), is(500));
     }
     
     @Test
     public void assertUpdate() throws Exception {
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(true);
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.put("http://127.0.0.1:19000/api/job/update", CloudJsonConstants.getJobJson()), is(200));
+        assertThat(HttpTestUtil.put("http://127.0.0.1:19000/api/job/update", CloudJsonConstants.getJobJson()), is(200));
         verify(getRegCenter()).update("/config/job/test_job", YAML);
-        HttpTestsUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
+        HttpTestUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
     }
     
     @Test
     public void assertDeregister() throws Exception {
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
-        assertThat(HttpTestsUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister"), is(200));
+        assertThat(HttpTestUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister"), is(200));
         verify(getRegCenter(), times(3)).get("/config/job/test_job");
     }
     
     @Test
     public void assertTriggerWithDaemonJob() throws Exception {
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/trigger", "test_job"), is(500));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/trigger", "test_job"), is(500));
     }
     
     @Test
     public void assertTriggerWithTransientJob() throws Exception {
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/trigger", "test_job"), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/trigger", "test_job"), is(200));
     }
     
     @Test
     public void assertDetail() throws Exception {
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/jobs/test_job"), is(CloudJsonConstants.getJobJson()));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/jobs/test_job"), is(CloudJsonConstants.getJobJson()));
         verify(getRegCenter()).get("/config/job/test_job");
     }
     
@@ -139,7 +139,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/jobs"), is("[" + CloudJsonConstants.getJobJson() + "]"));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/jobs"), is("[" + CloudJsonConstants.getJobJson() + "]"));
         verify(getRegCenter()).isExisted("/config/job");
         verify(getRegCenter()).getChildrenKeys("/config/job");
         verify(getRegCenter()).get("/config/job/test_job");
@@ -151,7 +151,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         TaskContext actualTaskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         when(getRegCenter().get("/config/job/" + actualTaskContext.getMetaInfo().getJobName())).thenReturn(CloudJsonConstants.getJobJson());
         runningService.add(actualTaskContext);
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/tasks/running"), is(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/tasks/running")));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/tasks/running"), is(HttpTestUtil.get("http://127.0.0.1:19000/api/job/tasks/running")));
     }
     
     @Test
@@ -163,7 +163,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         expectedMap.put("jobName", "test_job");
         expectedMap.put("times", "1");
         Collection<Map<String, String>> expectedResult = Collections.singletonList(expectedMap);
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/tasks/ready"), is(GsonFactory.getGson().toJson(expectedResult)));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/tasks/ready"), is(GsonFactory.getGson().toJson(expectedResult)));
         verify(getRegCenter()).isExisted("/state/ready");
         verify(getRegCenter()).getChildrenKeys("/state/ready");
         verify(getRegCenter()).get("/state/ready/test_job");
@@ -178,7 +178,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         when(getRegCenter().get("/state/failover/test_job/test_job@-@0")).thenReturn(originalTaskId);
         FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(TaskContext.MetaInfo.from("test_job@-@0"), originalTaskId);
         Collection<FailoverTaskInfo> expectedResult = Collections.singletonList(expectedFailoverTask);
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/tasks/failover"), is(GsonFactory.getGson().toJson(expectedResult)));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/tasks/failover"), is(GsonFactory.getGson().toJson(expectedResult)));
         verify(getRegCenter()).isExisted("/state/failover");
         verify(getRegCenter()).getChildrenKeys("/state/failover");
         verify(getRegCenter()).getChildrenKeys("/state/failover/test_job");
@@ -188,19 +188,19 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     @Test
     public void assertFindJobExecutionEventsWhenNotConfigRDB() throws Exception {
         ReflectionUtils.setStaticFieldValue(CloudJobController.class, "jobEventRdbSearch", null);
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/events/executions"), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/events/executions"), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
                 Collections.<JobExecutionEvent>emptyList()))));
     }
     
     @Test
     public void assertGetTaskResultStatistics() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertGetTaskResultStatisticsWithSinceParameter() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results?since=last24hours"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results?since=last24hours"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
@@ -208,7 +208,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     public void assertGetTaskResultStatisticsWithPathParameter() throws Exception {
         String[] parameters = {"online", "lastWeek", "lastHour", "lastMinute"};
         for (String each : parameters) {
-            String result = HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results/" + each);
+            String result = HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results/" + each);
             TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
             assertThat(taskResultStatistics.getSuccessCount(), is(0));
             assertThat(taskResultStatistics.getFailedCount(), is(0));
@@ -217,7 +217,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     
     @Test
     public void assertGetTaskResultStatisticsWithErrorPathParameter() throws Exception {
-        String result = HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results/errorPath");
+        String result = HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/results/errorPath");
         TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
         assertThat(taskResultStatistics.getSuccessCount(), is(0));
         assertThat(taskResultStatistics.getFailedCount(), is(0));
@@ -225,7 +225,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     
     @Test
     public void assertGetJobExecutionTypeStatistics() throws Exception {
-        String result = HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/executionType");
+        String result = HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/executionType");
         JobExecutionTypeStatistics jobExecutionTypeStatistics = GsonFactory.getGson().fromJson(result, JobExecutionTypeStatistics.class);
         assertThat(jobExecutionTypeStatistics.getDaemonJobCount(), is(0));
         assertThat(jobExecutionTypeStatistics.getTransientJobCount(), is(0));
@@ -233,38 +233,38 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     
     @Test
     public void assertFindTaskRunningStatistics() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/running"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/running"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertFindTaskRunningStatisticsWeekly() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/running?since=lastWeek"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/tasks/running?since=lastWeek"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertFindJobRunningStatistics() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/running"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/running"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertFindJobRunningStatisticsWeekly() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/running?since=lastWeek"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/running?since=lastWeek"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertFindJobRegisterStatisticsSinceOnline() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/register"),
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/statistics/jobs/register"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
     public void assertIsDisabled() throws Exception {
         when(getRegCenter().isExisted("/state/disable/job/test_job")).thenReturn(true);
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/job/test_job/disable"), is("true"));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/test_job/disable"), is("true"));
     }
     
     @Test
@@ -273,7 +273,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/test_job/disable"), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/test_job/disable"), is(200));
         verify(getRegCenter()).persist("/state/disable/job/test_job", "test_job");
     }
     
@@ -283,7 +283,7 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/job/test_job/enable", "test_job"), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/test_job/enable", "test_job"), is(200));
         verify(getRegCenter()).remove("/state/disable/job/test_job");
     }
 }

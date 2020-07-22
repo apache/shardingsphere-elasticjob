@@ -18,28 +18,25 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonParseException;
 import com.netflix.fenzo.ConstraintEvaluator;
 import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskTrackerState;
 import com.netflix.fenzo.VirtualMachineCurrentState;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.codehaus.jettison.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 
 /**
  * App constrain evaluator.
@@ -56,7 +53,7 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     
     /**
      * Init.
-     * 
+     *
      * @param facadeService Mesos facade service
      */
     public static void init(final FacadeService facadeService) {
@@ -72,7 +69,7 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
             for (ExecutorStateInfo each : facadeService.loadExecutorInfo()) {
                 runningApps.add(each.getId());
             }
-        } catch (final JSONException | UniformInterfaceException | ClientHandlerException e) {
+        } catch (final JsonParseException e) {
             clearAppRunningState();
         }
     }
@@ -146,7 +143,7 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
         }
         return appConfigOptional.get();
     }
-
+    
     private CloudJobConfiguration getJobConfiguration(final TaskContext taskContext) throws LackConfigException {
         Optional<CloudJobConfigurationPOJO> cloudJobConfig = facadeService.load(taskContext.getMetaInfo().getJobName());
         if (!cloudJobConfig.isPresent()) {

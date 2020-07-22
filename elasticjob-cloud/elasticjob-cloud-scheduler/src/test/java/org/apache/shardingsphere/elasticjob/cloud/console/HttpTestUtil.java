@@ -17,7 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -28,30 +32,37 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClientException;
 
-public final class HttpTestsUtil {
+/**
+ * Http utils.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class HttpTestUtil {
     
     /**
-     * send post request.
-     * @param url the url
-     * @return the http status code
-     * @throws Exception exception when error
+     * Send post request.
+     *
+     * @param url url
+     * @return http status code
      */
-    public static int post(final String url) throws Exception {
+    public static int post(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(url);
             return httpClient.execute(httpPost).getStatusLine().getStatusCode();
+        } catch (IOException e) {
+            throw new HttpClientException("send a post request for '%s' failed", e, url);
         }
     }
     
     /**
-     * send post request.
-     * @param url     the url
-     * @param content the content
-     * @return the http status code
-     * @throws Exception exception when error
+     * Send post request.
+     *
+     * @param url url
+     * @param content content
+     * @return http status code
      */
-    public static int post(final String url, final String content) throws Exception {
+    public static int post(final String url, final String content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(url);
             StringEntity entity = new StringEntity(content, "utf-8");
@@ -59,17 +70,19 @@ public final class HttpTestsUtil {
             entity.setContentType("application/json");
             httpPost.setEntity(entity);
             return httpClient.execute(httpPost).getStatusLine().getStatusCode();
+        } catch (IOException e) {
+            throw new HttpClientException("send a post request for '%s' with parameter '%s' failed", e, url, content);
         }
     }
     
     /**
-     * send put request.
-     * @param url     the url
-     * @param content the content
-     * @return the http status code
-     * @throws Exception exception when error
+     * Send put request.
+     *
+     * @param url url
+     * @param content content
+     * @return http status code
      */
-    public static int put(final String url, final String content) throws Exception {
+    public static int put(final String url, final String content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPut httpPut = new HttpPut(url);
             StringEntity entity = new StringEntity(content, "utf-8");
@@ -77,31 +90,35 @@ public final class HttpTestsUtil {
             entity.setContentType("application/json");
             httpPut.setEntity(entity);
             return httpClient.execute(httpPut).getStatusLine().getStatusCode();
+        } catch (IOException e) {
+            throw new HttpClientException("send a put request for '%s' with parameter '%s' failed", e, url, content);
         }
     }
     
     /**
      * Send get request.
-     * @param url the url
-     * @return the http response
-     * @throws Exception exception when error
+     *
+     * @param url url
+     * @return http result
      */
-    public static String get(final String url) throws Exception {
+    public static String get(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(url);
             HttpEntity entity = httpClient.execute(httpGet).getEntity();
             return EntityUtils.toString(entity);
+        } catch (IOException e) {
+            throw new HttpClientException("send a get request for '%s' failed", e, url);
         }
     }
     
     /**
-     * send get request.
-     * @param url     the url
-     * @param content the content
-     * @return the http response
-     * @throws Exception exception when error
+     * Send get request.
+     *
+     * @param url url
+     * @param content content
+     * @return http result
      */
-    public static String get(final String url, final Map<String, String> content) throws Exception {
+    public static String get(final String url, final Map<String, String> content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             URIBuilder uriBuilder = new URIBuilder(url);
             for (Map.Entry<String, String> entry : content.entrySet()) {
@@ -110,19 +127,23 @@ public final class HttpTestsUtil {
             HttpGet httpGet = new HttpGet(uriBuilder.build());
             HttpEntity entity = httpClient.execute(httpGet).getEntity();
             return EntityUtils.toString(entity);
+        } catch (IOException | URISyntaxException e) {
+            throw new HttpClientException("send a get request for '%s' failed", e, url);
         }
     }
     
     /**
-     * send delete request.
-     * @param url the url
-     * @return the http status code
-     * @throws Exception exception when error
+     * Send delete request.
+     *
+     * @param url url
+     * @return http status code
      */
-    public static int delete(final String url) throws Exception {
+    public static int delete(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpDelete httpDelete = new HttpDelete(url);
             return httpClient.execute(httpDelete).getStatusLine().getStatusCode();
+        } catch (IOException e) {
+            throw new HttpClientException("send a delete request for '%s' failed", e, url);
         }
     }
 }
