@@ -44,16 +44,17 @@ public final class JobConfigurationUtil {
         String cron = jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         String jobClass = jobConfigurationMap.get("jobClass");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
-        try {
-            Class clazz = Class.forName(jobClass);
-            if (!ElasticJob.class.isAssignableFrom(clazz)) {
-                throw new JobSystemException("ElasticJob: Class '%s' must implements ElasticJob interface.", clazz.getSimpleName());
+        if (!Strings.isNullOrEmpty(jobClass)) {
+            try {
+                Class clazz = Class.forName(jobClass);
+                if (!ElasticJob.class.isAssignableFrom(clazz)) {
+                    throw new JobSystemException("ElasticJob: Class '%s' must implements ElasticJob interface.", clazz.getSimpleName());
+                }
+            } catch (ClassNotFoundException e) {
+                throw new JobSystemException("ElasticJob: Class '%s' initialize failure, the error message is '%s'.", jobClass, jobClass);
+            } catch (JobSystemException e) {
+                throw e;
             }
-        } catch (ClassNotFoundException e) {
-            throw new JobSystemException("ElasticJob: Class '%s' initialize failure, the error message is '%s'.", jobClass, jobClass);
-        } catch (JobSystemException e) {
-            throw e;
         }
         JobConfiguration result = JobConfiguration.newBuilder(jobName, ignoredShardingTotalCount).cron(cron)
                 .jobExecutorServiceHandlerType(jobConfigurationMap.get("executorServiceHandler")).jobErrorHandlerType(jobConfigurationMap.get("jobExceptionHandler")).build();
