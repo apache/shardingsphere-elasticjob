@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

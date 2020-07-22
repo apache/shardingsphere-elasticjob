@@ -29,7 +29,6 @@ import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob;
 import org.apache.shardingsphere.elasticjob.cloud.executor.prod.TaskExecutor.TaskThread;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
@@ -41,7 +40,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,39 +66,6 @@ public final class TaskExecutorThreadTest {
         taskThread.run();
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
-    }
-    
-    // TODO the test case is not reach to catch block
-    @Test
-    //(expected = JobSystemException.class)
-    public void assertLaunchTaskWithWrongElasticJobClass() {
-        TaskInfo taskInfo = buildWrongElasticJobClass();
-        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
-        try {
-            taskThread.run();
-        } catch (final JobSystemException ex) {
-            assertTrue(ex.getMessage().startsWith(String.format("ElasticJob: Class '%s' must implements ElasticJob interface.", TaskExecutorThreadTest.class.getSimpleName())));
-            throw ex;
-        }
-    }
-    
-    @Test
-    public void assertLaunchTaskWithWrongClass() {
-        TaskInfo taskInfo = buildWrongClass();
-        TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
-        try {
-            taskThread.run();
-        } catch (final JobSystemException ex) {
-            assertTrue(ex.getMessage().startsWith("ElasticJob: Class 'WrongClass' initialize failure, the error message is 'WrongClass'."));
-        }
-    }
-    
-    private TaskInfo buildWrongClass() {
-        return buildTaskInfo(buildJobConfigurationYaml()).build();
-    }
-    
-    private TaskInfo buildWrongElasticJobClass() {
-        return buildTaskInfo(buildJobConfigurationYaml()).build();
     }
     
     private TaskInfo buildJavaTransientTaskInfo() {
