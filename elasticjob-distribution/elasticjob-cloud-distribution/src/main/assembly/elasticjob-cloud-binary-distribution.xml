@@ -22,7 +22,7 @@
         <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>${project.build.finalName}-elasticjob-cloud-bin</baseDirectory>
+    <baseDirectory>${project.build.finalName}-cloud-bin</baseDirectory>
     
     <fileSets>
         <fileSet>
