@@ -41,7 +41,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClient
 public final class HttpTestUtil {
     
     /**
-     * send post request.
+     * Send post request.
      *
      * @param url url
      * @return http status code
@@ -56,7 +56,7 @@ public final class HttpTestUtil {
     }
     
     /**
-     * send post request.
+     * Send post request.
      *
      * @param url url
      * @param content content
@@ -76,7 +76,7 @@ public final class HttpTestUtil {
     }
     
     /**
-     * send put request.
+     * Send put request.
      *
      * @param url url
      * @param content content
@@ -112,7 +112,7 @@ public final class HttpTestUtil {
     }
     
     /**
-     * send get request.
+     * Send get request.
      *
      * @param url url
      * @param content content
@@ -133,7 +133,7 @@ public final class HttpTestUtil {
     }
     
     /**
-     * send delete request.
+     * Send delete request.
      *
      * @param url url
      * @return http status code

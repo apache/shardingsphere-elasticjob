@@ -38,7 +38,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClient
 public final class HttpClientUtils {
     
     /**
-     * http get request.
+     * Http get request.
      *
      * @param url url
      * @return http result
@@ -48,7 +48,7 @@ public final class HttpClientUtils {
     }
     
     /**
-     * http get request.
+     * Http get request.
      *
      * @param url url
      * @param paramValues param values
@@ -98,7 +98,7 @@ public final class HttpClientUtils {
     }
     
     /**
-     * http post request.
+     * Http post request.
      *
      * @param url url
      * @return http result
@@ -108,7 +108,7 @@ public final class HttpClientUtils {
     }
     
     /**
-     * http post request.
+     * Http post request.
      *
      * @param url url
      * @param paramValues param values
