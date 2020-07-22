@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
+import com.google.gson.JsonParseException;
 import java.util.Collection;
 import java.util.Optional;
 import org.apache.mesos.Protos.ExecutorID;
@@ -32,7 +33,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerMan
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.codehaus.jettison.json.JSONException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -191,7 +191,7 @@ public final class CloudAppController {
                 producerManager.sendFrameworkMessage(ExecutorID.newBuilder().setValue(each.getId()).build(),
                         SlaveID.newBuilder().setValue(each.getSlaveId()).build(), "STOP".getBytes());
             }
-        } catch (final JSONException ex) {
+        } catch (final JsonParseException ex) {
             throw new JobSystemException(ex);
         }
     }

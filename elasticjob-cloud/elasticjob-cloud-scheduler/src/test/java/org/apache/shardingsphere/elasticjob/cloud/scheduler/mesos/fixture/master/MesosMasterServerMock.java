@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master;
 
-import org.codehaus.jettison.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +29,11 @@ public class MesosMasterServerMock {
     
     /**
      * Check master server state.
-     *
      * @return json object
-     * @throws JSONException json exception
      */
     @ResponseBody
     @GetMapping(value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String state() throws JSONException {
+    public String state() {
         return "{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohongtao\",\"start_time\""
                 + ":1488179758.62289,\"elected_time\":1488179758.69795,\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d\",\"pid\":\"master@127.0.0.1:9050\",\"hostname\":\"127.0.0.1\","
                 + "\"activated_slaves\":1.0,\"deactivated_slaves\":0.0,\"leader\":\"master@127.0.0.1:9050\",\"leader_info\":{\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d\","

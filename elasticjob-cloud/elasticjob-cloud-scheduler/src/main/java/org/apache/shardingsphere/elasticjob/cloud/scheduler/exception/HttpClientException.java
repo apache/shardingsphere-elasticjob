@@ -15,20 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.cloud.scheduler.exception;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class SingleThreadJobExecutorServiceHandlerTest {
+/**
+ * Http request exception.
+ */
+public class HttpClientException extends RuntimeException {
     
-    @Test
-    public void assertGetPoolSizeAndType() {
-        SingleThreadJobExecutorServiceHandler singleThreadJobExecutorServiceHandler = (SingleThreadJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("SINGLE_THREAD");
-        assertThat(singleThreadJobExecutorServiceHandler.getPoolSize(), is(1));
-        assertThat(singleThreadJobExecutorServiceHandler.getType(), is("SINGLE_THREAD"));
+    public HttpClientException(final Exception cause) {
+        super(cause);
+    }
+    
+    public HttpClientException(final String errorMessage, final Object... args) {
+        super(String.format(errorMessage, args));
+    }
+    
+    public HttpClientException(final String errorMessage, final Exception cause, final Object... args) {
+        super(String.format(errorMessage, args), cause);
     }
 }

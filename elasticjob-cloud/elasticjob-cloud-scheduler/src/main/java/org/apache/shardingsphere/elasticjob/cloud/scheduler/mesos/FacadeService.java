@@ -17,6 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.google.gson.JsonParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
@@ -35,16 +44,6 @@ import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.codehaus.jettison.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Mesos facade service.
@@ -89,7 +88,6 @@ public final class FacadeService {
     
     /**
      * Get eligible job.
-     * 
      * @return collection of eligible job context
      */
     public Collection<JobContext> getEligibleJobContext() {
@@ -103,7 +101,6 @@ public final class FacadeService {
     
     /**
      * Remove launched task from queue.
-     * 
      * @param taskContexts task running contexts
      */
     public void removeLaunchTasksFromQueue(final List<TaskContext> taskContexts) {
@@ -127,7 +124,6 @@ public final class FacadeService {
     
     /**
      * Add task to running queue.
-     *
      * @param taskContext task running context
      */
     public void addRunning(final TaskContext taskContext) {
@@ -136,9 +132,8 @@ public final class FacadeService {
     
     /**
      * Update daemon task status.
-     * 
      * @param taskContext task running context
-     * @param isIdle set to idle or not
+     * @param isIdle      set to idle or not
      */
     public void updateDaemonStatus(final TaskContext taskContext, final boolean isIdle) {
         runningService.updateIdle(taskContext, isIdle);
@@ -146,7 +141,6 @@ public final class FacadeService {
     
     /**
      * Remove task from running queue.
-     *
      * @param taskContext task running context
      */
     public void removeRunning(final TaskContext taskContext) {
@@ -155,7 +149,6 @@ public final class FacadeService {
     
     /**
      * Record task to failover queue.
-     * 
      * @param taskContext task running context
      */
     public void recordFailoverTask(final TaskContext taskContext) {
@@ -178,7 +171,6 @@ public final class FacadeService {
     
     /**
      * Add transient job to ready queue.
-     *
      * @param jobName job name
      */
     public void addTransient(final String jobName) {
@@ -187,7 +179,6 @@ public final class FacadeService {
     
     /**
      * Load cloud job config.
-     *
      * @param jobName job name
      * @return cloud job config
      */
@@ -197,7 +188,6 @@ public final class FacadeService {
     
     /**
      * Load app config by app name.
-     *
      * @param appName app name
      * @return cloud app config
      */
@@ -207,7 +197,6 @@ public final class FacadeService {
     
     /**
      * Get failover task id by task meta info.
-     *
      * @param metaInfo task meta info
      * @return failover task id
      */
@@ -217,7 +206,6 @@ public final class FacadeService {
     
     /**
      * Add daemon job to ready queue.
-     *
      * @param jobName job name
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
@@ -233,7 +221,6 @@ public final class FacadeService {
     
     /**
      * Determine whether the task is running or not.
-     *
      * @param taskContext task running context
      * @return true is running, otherwise not
      */
@@ -244,8 +231,7 @@ public final class FacadeService {
     
     /**
      * Add mapping of the task primary key and host name.
-     *
-     * @param taskId task primary key
+     * @param taskId   task primary key
      * @param hostname host name
      */
     public void addMapping(final String taskId, final String hostname) {
@@ -254,7 +240,6 @@ public final class FacadeService {
     
     /**
      * Retrieve hostname and then remove task.
-     *
      * @param taskId task primary key
      * @return hostname of the removed task
      */
@@ -264,7 +249,6 @@ public final class FacadeService {
     
     /**
      * Get all ready tasks.
-     *
      * @return ready tasks
      */
     public Map<String, Integer> getAllReadyTasks() {
@@ -273,7 +257,6 @@ public final class FacadeService {
     
     /**
      * Get all running tasks.
-     *
      * @return running tasks
      */
     public Map<String, Set<TaskContext>> getAllRunningTasks() {
@@ -282,7 +265,6 @@ public final class FacadeService {
     
     /**
      * Get all failover tasks.
-     *
      * @return failover tasks
      */
     public Map<String, Collection<FailoverTaskInfo>> getAllFailoverTasks() {
@@ -291,7 +273,6 @@ public final class FacadeService {
     
     /**
      * Determine whether the job is disable or not.
-     * 
      * @param jobName job name
      * @return true is disabled, otherwise not
      */
@@ -302,7 +283,6 @@ public final class FacadeService {
     
     /**
      * Enable job.
-     *
      * @param jobName job name
      */
     public void enableJob(final String jobName) {
@@ -311,7 +291,6 @@ public final class FacadeService {
     
     /**
      * Disable job.
-     *
      * @param jobName job name
      */
     public void disableJob(final String jobName) {
@@ -320,11 +299,10 @@ public final class FacadeService {
     
     /**
      * Get all running executor info.
-     * 
      * @return collection of executor info
-     * @throws JSONException json exception
+     * @throws JsonParseException parse json exception
      */
-    public Collection<ExecutorStateInfo> loadExecutorInfo() throws JSONException {
+    public Collection<ExecutorStateInfo> loadExecutorInfo() throws JsonParseException {
         return mesosStateService.executors();
     }
     

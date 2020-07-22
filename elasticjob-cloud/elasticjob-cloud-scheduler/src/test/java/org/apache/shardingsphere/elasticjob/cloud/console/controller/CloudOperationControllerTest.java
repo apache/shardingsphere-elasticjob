@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
-import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestsUtil;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
+import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -35,30 +35,30 @@ public class CloudOperationControllerTest extends AbstractCloudControllerTest {
     @Test
     public void assertExplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationController(), "lastReconcileTime", 0);
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/operate/reconcile/explicit", ""), is(200));
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/operate/reconcile/explicit", ""), is(500));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/operate/reconcile/explicit", ""), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/operate/reconcile/explicit", ""), is(500));
     }
     
     @Test
     public void assertImplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationController(), "lastReconcileTime", 0);
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/operate/reconcile/implicit", ""), is(200));
-        assertThat(HttpTestsUtil.post("http://127.0.0.1:19000/api/operate/reconcile/implicit", ""), is(500));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/operate/reconcile/implicit", ""), is(200));
+        assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/operate/reconcile/implicit", ""), is(500));
     }
     
     @Test
     public void assertSandbox() throws Exception {
         when(getRegCenter().getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[{\"hostname\":\"127.0.0.1\","
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[{\"hostname\":\"127.0.0.1\","
                 + "\"path\":\"/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@"
                 + "d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1\"}]"));
     }
     
     @Test
     public void assertNoFrameworkSandbox() throws Exception {
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
         when(getRegCenter().getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("not-exists");
-        assertThat(HttpTestsUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/operate/sandbox?appName=foo_app"), is("[]"));
     }
     
 }
