@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class AopTargetUtilsTest {
@@ -35,7 +36,7 @@ public final class AopTargetUtilsTest {
         pf.addInterface(ElasticJob.class);
         ElasticJob proxy = (ElasticJob) pf.getProxy();
         assertTrue(AopUtils.isJdkDynamicProxy(proxy));
-        assertEquals(AopTargetUtils.getTarget(proxy), target);
+        assertThat(AopTargetUtils.getTarget(proxy), is(target));
     }
     
     @Test
@@ -45,13 +46,13 @@ public final class AopTargetUtilsTest {
         pf.setProxyTargetClass(true);
         ElasticJob proxy = (ElasticJob) pf.getProxy();
         assertTrue(AopUtils.isCglibProxy(proxy));
-        assertEquals(AopTargetUtils.getTarget(proxy), target);
+        assertThat(AopTargetUtils.getTarget(proxy), is(target));
     }
     
     @Test
     public void assertNoneProxyForGetTarget() {
         ElasticJob proxy = new TargetJob();
         assertFalse(AopUtils.isAopProxy(proxy));
-        assertEquals(AopTargetUtils.getTarget(proxy), proxy);
+        assertThat(AopTargetUtils.getTarget(proxy), is(proxy));
     }
 }
