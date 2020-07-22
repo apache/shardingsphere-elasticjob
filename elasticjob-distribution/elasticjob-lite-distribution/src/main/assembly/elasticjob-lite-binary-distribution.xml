@@ -22,7 +22,7 @@
         <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>${project.build.finalName}-elasticjob-lite-bin</baseDirectory>
+    <baseDirectory>${project.build.finalName}-lite-bin</baseDirectory>
     
     <fileSets>
         <fileSet>
