@@ -55,5 +55,9 @@ public final class EmbedTestingServer {
             }));
         }
     }
+    
+    public static String getConnectionString() {
+        return "localhost:" + PORT;
+    }
 }
 
