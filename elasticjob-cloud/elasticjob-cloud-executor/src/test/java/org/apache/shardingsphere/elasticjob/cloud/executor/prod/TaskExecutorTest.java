@@ -38,6 +38,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -126,5 +130,21 @@ public final class TaskExecutorTest {
     @Test
     public void assertError() {
         taskExecutor.error(executorDriver, "");
+    }
+    
+    @Test
+    @SneakyThrows
+    public void assertConstructor() {
+        TestSimpleJob testSimpleJob = new TestSimpleJob();
+        taskExecutor = new TaskExecutor(testSimpleJob);
+        Field fieldElasticJob = TaskExecutor.class.getDeclaredField("elasticJob");
+        fieldElasticJob.setAccessible(true);
+        Field fieldElasticJobType = TaskExecutor.class.getDeclaredField("elasticJobType");
+        fieldElasticJobType.setAccessible(true);
+        assertTrue(fieldElasticJob.get(taskExecutor) == testSimpleJob);
+        assertNull(fieldElasticJobType.get(taskExecutor));
+        taskExecutor = new TaskExecutor("simpleJob");
+        assertThat(fieldElasticJobType.get(taskExecutor), is("simpleJob"));
+        assertNull(fieldElasticJob.get(taskExecutor));
     }
 }

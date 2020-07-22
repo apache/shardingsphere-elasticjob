@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
 
-import org.apache.shardingsphere.elasticjob.lite.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.junit.Test;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class CPUUsageJobExecutorServiceHandlerTest {
+public class TargetJob implements ElasticJob {
     
-    @Test
-    public void assertGetPoolSizeAndType() {
-        CPUUsageJobExecutorServiceHandler cpuUsageJobExecutorServiceHandler = (CPUUsageJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("CPU");
-        assertThat(cpuUsageJobExecutorServiceHandler.getPoolSize(), is(Runtime.getRuntime().availableProcessors() * 2));
-        assertThat(cpuUsageJobExecutorServiceHandler.getType(), is("CPU"));
+    /**
+     * Mocker object for AopTargetUtilsTest.
+     *
+     * @param shardingContext shardingContext
+     */
+    public void execute(final ShardingContext shardingContext) {
+    
     }
 }

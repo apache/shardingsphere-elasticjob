@@ -39,8 +39,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
 
 在配置文件中指定 ElasticJob 所使用的 Zookeeper。配置前缀为 `elasticjob.reg-center`。
 
-实现了 ElasticJob 的作业逻辑属于 classed 类型作业，需要配置在 `elasticjob.jobs.classed` 下，
-`elasticjob.jobs.classed` 是一个 Map，限定类名作为 key，value 是一个 List<JobConfigurationPOJO>，
+`elasticjob.jobs` 是一个 Map，key 为作业名称，value 为作业类型与配置。
 Starter 会根据该配置自动创建 `OneOffJobBootstrap` 或 `ScheduleJobBootstrap` 的实例并注册到 Spring 容器中。
 
 配置参考：
@@ -51,19 +50,17 @@ elasticjob:
     serverLists: localhost:6181
     namespace: elasticjob-lite-springboot
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.example.job.SpringBootDataflowJob:
-        - jobName: dataflowJob
-          cron: 0/5 * * * * ?
-          shardingTotalCount: 3
-          shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
-    typed:
-      SCRIPT:
-        - jobName: scriptJob
-          cron: 0/10 * * * * ?
-          shardingTotalCount: 3
-          props:
-            script.command.line: "echo SCRIPT Job: "
+    dataflowJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    scriptJob:
+      elasticJobType: SCRIPT
+      cron: 0/10 * * * * ?
+      shardingTotalCount: 3
+      props:
+        script.command.line: "echo SCRIPT Job: "
 ```
 
 ## 作业启动
@@ -79,7 +76,7 @@ elasticjob:
 
 **关于@DependsOn注解**
 
-JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 Starter 创建 JobBootstrap，将无法注入 JobBoostrap 的实例。
+JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 Starter 创建 JobBootstrap，将无法注入 JobBootstrap 的实例。
 
 也可以通过 ApplicationContext 获取 JobBootstrap 的 Bean。
 
