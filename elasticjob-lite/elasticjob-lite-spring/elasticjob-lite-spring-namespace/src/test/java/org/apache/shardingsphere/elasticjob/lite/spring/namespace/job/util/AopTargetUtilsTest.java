@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public final class AopTargetUtilsTest {
     
     @Test
-    public void jdkDynamicProxyForGetTarget() {
+    public void assertJdkDynamicProxyForGetTarget() {
         ElasticJob target = new TargetJob();
         ProxyFactory pf = new ProxyFactory(target);
         pf.addInterface(ElasticJob.class);
@@ -37,7 +37,7 @@ public final class AopTargetUtilsTest {
     }
     
     @Test
-    public void cglibProxyForGetTarget() {
+    public void assertCglibProxyForGetTarget() {
         ElasticJob target = new TargetJob();
         ProxyFactory pf = new ProxyFactory(target);
         pf.setProxyTargetClass(true);
@@ -48,7 +48,7 @@ public final class AopTargetUtilsTest {
     }
     
     @Test
-    public void noneProxyForGetTarget() {
+    public void assertNoneProxyForGetTarget() {
         ElasticJob proxy = new TargetJob();
         assertFalse(AopUtils.isAopProxy(proxy));
         assertEquals(AopTargetUtils.getTarget(proxy), proxy);
