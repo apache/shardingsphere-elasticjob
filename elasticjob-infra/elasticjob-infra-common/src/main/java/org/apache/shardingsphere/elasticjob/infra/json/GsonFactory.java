@@ -35,11 +35,12 @@ public final class GsonFactory {
     
     private static volatile Gson gson = GSON_BUILDER.create();
     
-    private static JsonParser jsonParser = new JsonParser();
+    private static final JsonParser JSON_PARSER = new JsonParser();
     
     /**
      * Register type adapter.
-     * @param type        Gson type
+     *
+     * @param type Gson type
      * @param typeAdapter Gson type adapter
      */
     public static synchronized void registerTypeAdapter(final Type type, final TypeAdapter typeAdapter) {
@@ -49,6 +50,7 @@ public final class GsonFactory {
     
     /**
      * Get gson instance.
+     *
      * @return gson instance
      */
     public static Gson getGson() {
@@ -57,9 +59,10 @@ public final class GsonFactory {
     
     /**
      * Get json parser.
-     * @return json parser instance.
+     *
+     * @return json parser instance
      */
     public static JsonParser getJsonParser() {
-        return jsonParser;
+        return JSON_PARSER;
     }
 }

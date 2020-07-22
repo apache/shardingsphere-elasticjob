@@ -20,6 +20,8 @@ package org.apache.shardingsphere.elasticjob.cloud.console;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -35,12 +37,14 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClient
 /**
  * Http utils.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpTestUtil {
     
     /**
      * send post request.
-     * @param url the url
-     * @return the http status code
+     *
+     * @param url url
+     * @return http status code
      */
     public static int post(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -53,9 +57,10 @@ public final class HttpTestUtil {
     
     /**
      * send post request.
-     * @param url     the url
-     * @param content the content
-     * @return the http status code
+     *
+     * @param url url
+     * @param content content
+     * @return http status code
      */
     public static int post(final String url, final String content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -72,9 +77,10 @@ public final class HttpTestUtil {
     
     /**
      * send put request.
-     * @param url     the url
-     * @param content the content
-     * @return the http status code
+     *
+     * @param url url
+     * @param content content
+     * @return http status code
      */
     public static int put(final String url, final String content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -91,8 +97,9 @@ public final class HttpTestUtil {
     
     /**
      * Send get request.
-     * @param url the url
-     * @return the http response
+     *
+     * @param url url
+     * @return http result
      */
     public static String get(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -106,9 +113,10 @@ public final class HttpTestUtil {
     
     /**
      * send get request.
-     * @param url     the url
-     * @param content the content
-     * @return the http response
+     *
+     * @param url url
+     * @param content content
+     * @return http result
      */
     public static String get(final String url, final Map<String, String> content) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -126,8 +134,9 @@ public final class HttpTestUtil {
     
     /**
      * send delete request.
-     * @param url the url
-     * @return the http status code
+     *
+     * @param url url
+     * @return http status code
      */
     public static int delete(final String url) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

@@ -25,18 +25,22 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClientException;
 
 /**
  * Http client utils.
  */
-public class HttpClientUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class HttpClientUtils {
     
     /**
      * http get request.
-     * @param url thr url
+     *
+     * @param url url
      * @return http result
      */
     public static HttpResult httpGet(final String url) {
@@ -45,56 +49,58 @@ public class HttpClientUtils {
     
     /**
      * http get request.
-     * @param url           thr url
-     * @param paramValues   the param values
-     * @param encoding      the encoding
-     * @param readTimeoutMs the read timeout
+     *
+     * @param url url
+     * @param paramValues param values
+     * @param encoding encoding
+     * @param readTimeoutMillisecond read timeout millisecond
      * @return http result
      */
-    public static HttpResult httpGet(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMs) {
-        HttpURLConnection conn = null;
+    public static HttpResult httpGet(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMillisecond) {
+        HttpURLConnection connection = null;
         try {
             String encodedContent = encodingParams(paramValues, encoding);
             String urlWithParam = url + (null == encodedContent ? "" : ("?" + encodedContent));
-            conn = (HttpURLConnection) new URL(urlWithParam).openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout((int) readTimeoutMs);
-            conn.setReadTimeout((int) readTimeoutMs);
-            conn.connect();
-            String resp;
-            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
-                resp = IOUtils.toString(conn.getInputStream(), encoding);
+            connection = (HttpURLConnection) new URL(urlWithParam).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout((int) readTimeoutMillisecond);
+            connection.setReadTimeout((int) readTimeoutMillisecond);
+            connection.connect();
+            String response;
+            if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
+                response = IOUtils.toString(connection.getInputStream(), encoding);
             } else {
-                resp = IOUtils.toString(conn.getErrorStream(), encoding);
+                response = IOUtils.toString(connection.getErrorStream(), encoding);
             }
-            return new HttpResult(conn.getResponseCode(), resp);
-        } catch (IOException ex) {
+            return new HttpResult(connection.getResponseCode(), response);
+        } catch (final IOException ex) {
             throw new HttpClientException(ex);
         } finally {
-            if (conn != null) {
-                conn.disconnect();
+            if (null != connection) {
+                connection.disconnect();
             }
         }
     }
     
     private static String encodingParams(final List<String> paramValues, final String encoding) throws UnsupportedEncodingException {
-        if (null == paramValues) {
+        if (null == paramValues || 0 == paramValues.size()) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         for (Iterator<String> iter = paramValues.iterator(); iter.hasNext();) {
-            sb.append(iter.next()).append("=");
-            sb.append(URLEncoder.encode(iter.next(), encoding));
+            stringBuilder.append(iter.next()).append("=");
+            stringBuilder.append(URLEncoder.encode(iter.next(), encoding));
             if (iter.hasNext()) {
-                sb.append("&");
+                stringBuilder.append("&");
             }
         }
-        return sb.toString();
+        return stringBuilder.toString();
     }
     
     /**
      * http post request.
-     * @param url thr url
+     *
+     * @param url url
      * @return http result
      */
     public static HttpResult httpPost(final String url) {
@@ -103,34 +109,35 @@ public class HttpClientUtils {
     
     /**
      * http post request.
-     * @param url           thr url
-     * @param paramValues   the param values
-     * @param encoding      the encoding
-     * @param readTimeoutMs the read timeout
+     *
+     * @param url url
+     * @param paramValues param values
+     * @param encoding encoding
+     * @param readTimeoutMillisecond read timeout millisecond
      * @return http result
      */
-    public static HttpResult httpPost(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMs) {
-        HttpURLConnection conn = null;
+    public static HttpResult httpPost(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMillisecond) {
+        HttpURLConnection connection = null;
         try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestMethod("POST");
-            conn.setConnectTimeout((int) readTimeoutMs);
-            conn.setReadTimeout((int) readTimeoutMs);
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.getOutputStream().write(encodingParams(paramValues, encoding).getBytes(StandardCharsets.UTF_8));
-            String resp;
-            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
-                resp = IOUtils.toString(conn.getInputStream(), encoding);
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("POST");
+            connection.setConnectTimeout((int) readTimeoutMillisecond);
+            connection.setReadTimeout((int) readTimeoutMillisecond);
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.getOutputStream().write(encodingParams(paramValues, encoding).getBytes(StandardCharsets.UTF_8));
+            String response;
+            if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
+                response = IOUtils.toString(connection.getInputStream(), encoding);
             } else {
-                resp = IOUtils.toString(conn.getErrorStream(), encoding);
+                response = IOUtils.toString(connection.getErrorStream(), encoding);
             }
-            return new HttpResult(conn.getResponseCode(), resp);
-        } catch (IOException ex) {
+            return new HttpResult(connection.getResponseCode(), response);
+        } catch (final IOException ex) {
             throw new HttpClientException(ex);
         } finally {
-            if (null != conn) {
-                conn.disconnect();
+            if (null != connection) {
+                connection.disconnect();
             }
         }
     }

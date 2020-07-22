@@ -50,7 +50,8 @@ public final class CloudOperationController {
     
     /**
      * Init.
-     * @param regCenter        registry center
+     *
+     * @param regCenter registry center
      * @param reconcileService reconcile service
      */
     public static void init(final CoordinatorRegistryCenter regCenter, final ReconcileService reconcileService) {
@@ -85,6 +86,7 @@ public final class CloudOperationController {
     
     /**
      * Get sandbox of the cloud job by app name.
+     *
      * @param appName application name
      * @return sandbox info
      * @throws JsonParseException parse json exception

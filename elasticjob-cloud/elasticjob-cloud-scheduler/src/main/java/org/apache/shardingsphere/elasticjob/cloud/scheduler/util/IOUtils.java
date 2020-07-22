@@ -24,39 +24,44 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * IO utils.
  */
-public class IOUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class IOUtils {
     
     /**
-     * convert input stream to string.
-     * @param input    the input stream
-     * @param encoding the encoding
-     * @return string
+     * Convert InputStream to String.
+     *
+     * @param inputStream input stream
+     * @param encoding encoding
+     * @return result of the String type
      * @throws IOException IOException
      */
-    public static String toString(final InputStream input, final String encoding) throws IOException {
-        return (null == encoding) ? toString(new InputStreamReader(input, StandardCharsets.UTF_8)) : toString(new InputStreamReader(input, encoding));
+    public static String toString(final InputStream inputStream, final String encoding) throws IOException {
+        return (null == encoding) ? toString(new InputStreamReader(inputStream, StandardCharsets.UTF_8)) : toString(new InputStreamReader(inputStream, encoding));
     }
     
     /**
-     * convert input stream to string.
-     * @param reader the reader
-     * @return string
+     * Convert Reader to String.
+     *
+     * @param reader reader
+     * @return result of the String type
      * @throws IOException IOException
      */
     public static String toString(final Reader reader) throws IOException {
-        CharArrayWriter sw = new CharArrayWriter();
-        copy(reader, sw);
-        return sw.toString();
+        CharArrayWriter charArrayWriter = new CharArrayWriter();
+        copy(reader, charArrayWriter);
+        return charArrayWriter.toString();
     }
     
     private static void copy(final Reader input, final Writer output) throws IOException {
-        char[] buffer = new char[1 << 12];
-        for (int n; (n = input.read(buffer)) >= 0;) {
-            output.write(buffer, 0, n);
+        char[] buffer = new char[4096];
+        for (int length; (length = input.read(buffer)) >= 0;) {
+            output.write(buffer, 0, length);
         }
     }
 }

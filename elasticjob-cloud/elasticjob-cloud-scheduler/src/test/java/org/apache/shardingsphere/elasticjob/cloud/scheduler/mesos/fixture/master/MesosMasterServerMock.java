@@ -29,6 +29,7 @@ public class MesosMasterServerMock {
     
     /**
      * Check master server state.
+     *
      * @return json object
      */
     @ResponseBody

@@ -55,8 +55,9 @@ public class MesosStateService {
     
     /**
      * Register master info of Mesos.
+     *
      * @param hostName hostname of master
-     * @param port     port of master
+     * @param port port of master
      */
     public static synchronized void register(final String hostName, final int port) {
         stateUrl = String.format("http://%s:%d/state", hostName, port);
@@ -71,6 +72,7 @@ public class MesosStateService {
     
     /**
      * Get sandbox info.
+     *
      * @param appName app name
      * @return sandbox info in json format
      * @throws JsonParseException parse json exception
@@ -103,6 +105,7 @@ public class MesosStateService {
     
     /**
      * Get executor by app name.
+     *
      * @param appName app name
      * @return executor state info
      * @throws JsonParseException parse json exception
@@ -119,6 +122,7 @@ public class MesosStateService {
     
     /**
      * Get all executors.
+     *
      * @return collection of executor state info
      * @throws JsonParseException parse json exception
      */

@@ -29,6 +29,7 @@ public class MesosSlaveServerMock {
     
     /**
      * Check slave server state.
+     *
      * @return json object
      */
     @ResponseBody
