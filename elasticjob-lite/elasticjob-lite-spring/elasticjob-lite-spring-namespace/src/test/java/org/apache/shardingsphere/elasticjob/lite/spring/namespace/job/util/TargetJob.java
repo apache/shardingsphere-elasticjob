@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 public class TargetJob implements ElasticJob {
-
+    
     public void execute(final ShardingContext shardingContext) {
 
     }

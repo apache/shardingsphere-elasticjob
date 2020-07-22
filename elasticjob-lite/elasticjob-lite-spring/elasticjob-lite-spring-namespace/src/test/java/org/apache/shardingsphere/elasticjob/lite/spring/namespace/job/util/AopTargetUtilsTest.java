@@ -22,33 +22,35 @@ import org.junit.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class AopTargetUtilsTest {
+public final class AopTargetUtilsTest {
 
     @Test
     public void jdkDynamicProxyForGetTarget() {
-        ProxyFactory pf = new ProxyFactory(new TargetJob());
+        ElasticJob target = new TargetJob();
+        ProxyFactory pf = new ProxyFactory(target);
         pf.addInterface(ElasticJob.class);
         ElasticJob proxy = (ElasticJob) pf.getProxy();
         assertTrue(AopUtils.isJdkDynamicProxy(proxy));
-        AopTargetUtils.getTarget(proxy);
+        assertEquals(AopTargetUtils.getTarget(proxy), target);
     }
 
     @Test
     public void cglibProxyForGetTarget() {
-        ProxyFactory pf = new ProxyFactory(new TargetJob());
+        ElasticJob target = new TargetJob();
+        ProxyFactory pf = new ProxyFactory(target);
         pf.setProxyTargetClass(true);
         ElasticJob proxy = (ElasticJob) pf.getProxy();
         assertTrue(AopUtils.isCglibProxy(proxy));
         AopTargetUtils.getTarget(proxy);
+        assertEquals(AopTargetUtils.getTarget(proxy), target);
     }
 
     @Test
     public void noneProxyForGetTarget() {
         ElasticJob proxy = new TargetJob();
         assertFalse(AopUtils.isAopProxy(proxy));
-        AopTargetUtils.getTarget(proxy);
+        assertEquals(AopTargetUtils.getTarget(proxy), proxy);
     }
 }
