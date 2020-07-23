@@ -50,7 +50,7 @@ public final class ElasticJobExecutorServiceTest {
         assertTrue(executorServiceObject.isShutdown());
     }
     
-    class FooTask implements Runnable {
+    static class FooTask implements Runnable {
         
         @Override
         public void run() {

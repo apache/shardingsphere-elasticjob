@@ -65,7 +65,7 @@ public final class DaemonTaskSchedulerTest {
     @Mock
     private ElasticJob elasticJob;
     
-    private TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
+    private final TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
     
     private DaemonJob daemonJob;
     

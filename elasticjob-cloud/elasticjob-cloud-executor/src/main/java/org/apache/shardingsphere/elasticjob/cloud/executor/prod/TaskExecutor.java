@@ -125,7 +125,6 @@ public final class TaskExecutor implements Executor {
         
         private final TaskInfo taskInfo;
         
-        @SuppressWarnings("unchecked")
         @Override
         public void run() {
             Thread.currentThread().setContextClassLoader(TaskThread.class.getClassLoader());

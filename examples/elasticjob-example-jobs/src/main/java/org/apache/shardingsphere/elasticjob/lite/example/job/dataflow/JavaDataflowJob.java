@@ -29,7 +29,7 @@ import java.util.List;
 
 public class JavaDataflowJob implements DataflowJob<Foo> {
     
-    private FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
+    private final FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
     
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {

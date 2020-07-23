@@ -101,7 +101,7 @@ public final class ExecutionService {
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
         JobConfiguration jobConfig = configService.load(true);
-        if (null == jobConfig || !jobConfig.isMonitorExecution()) {
+        if (!jobConfig.isMonitorExecution()) {
             return false;
         }
         for (int each : items) {

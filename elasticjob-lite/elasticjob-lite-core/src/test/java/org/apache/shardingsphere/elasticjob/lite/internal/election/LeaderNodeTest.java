@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class LeaderNodeTest {
     
-    private LeaderNode leaderNode = new LeaderNode("test_job");
+    private final LeaderNode leaderNode = new LeaderNode("test_job");
     
     @Test
     public void assertIsLeaderInstancePath() {

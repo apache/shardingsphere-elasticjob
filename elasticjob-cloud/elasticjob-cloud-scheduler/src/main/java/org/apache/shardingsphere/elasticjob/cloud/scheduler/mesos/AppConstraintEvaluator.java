@@ -24,11 +24,6 @@ import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskTrackerState;
 import com.netflix.fenzo.VirtualMachineCurrentState;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +32,12 @@ import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurat
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * App constrain evaluator.
@@ -152,7 +153,7 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
         return cloudJobConfig.get().toCloudJobConfiguration();
     }
     
-    private class LackConfigException extends Exception {
+    private static class LackConfigException extends Exception {
         
         LackConfigException(final String scope, final String configName) {
             super(String.format("Lack %s's config %s", scope, configName));

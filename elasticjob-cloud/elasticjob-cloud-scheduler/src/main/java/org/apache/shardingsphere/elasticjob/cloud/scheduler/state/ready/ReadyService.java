@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class ReadyService {
     
-    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
     
     private final CoordinatorRegistryCenter regCenter;
     

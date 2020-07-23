@@ -29,7 +29,7 @@ import java.util.List;
 
 public class JavaSimpleJob implements SimpleJob {
     
-    private FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
+    private final FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
     
     @Override
     public void execute(final ShardingContext shardingContext) {

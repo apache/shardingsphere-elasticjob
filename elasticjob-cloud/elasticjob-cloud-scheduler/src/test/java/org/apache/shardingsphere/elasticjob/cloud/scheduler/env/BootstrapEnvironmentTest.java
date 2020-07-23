@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
     
-    private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getINSTANCE();
     
     @Test
     public void assertGetMesosConfiguration() {

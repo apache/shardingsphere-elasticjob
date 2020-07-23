@@ -23,15 +23,15 @@ import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 @Builder
 public final class TaskNode {
     
-    private String jobName;
+    private final String jobName;
     
-    private int shardingItem;
+    private final int shardingItem;
     
-    private ExecutionType type;
+    private final ExecutionType type;
     
-    private String slaveId;
+    private final String slaveId;
     
-    private String uuid;
+    private final String uuid;
     
     /**
      * Get the value of task node.

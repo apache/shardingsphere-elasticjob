@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class FooRepository {
 
-    private Map<Long, Foo> data = new ConcurrentHashMap<>(300, 1);
+    private final Map<Long, Foo> data = new ConcurrentHashMap<>(300, 1);
 
     public FooRepository() {
         init();

@@ -64,7 +64,7 @@ public final class SchedulerService {
     private final ReconcileService reconcileService;
     
     public SchedulerService(final CoordinatorRegistryCenter regCenter) {
-        env = BootstrapEnvironment.getInstance();
+        env = BootstrapEnvironment.getINSTANCE();
         facadeService = new FacadeService(regCenter);
         statisticManager = StatisticManager.getInstance(regCenter, env.getTracingConfiguration().orElse(null));
         TaskScheduler taskScheduler = getTaskScheduler();

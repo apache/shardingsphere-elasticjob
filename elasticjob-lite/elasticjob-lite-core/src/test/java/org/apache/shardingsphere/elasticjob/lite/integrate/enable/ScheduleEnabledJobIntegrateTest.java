@@ -40,6 +40,6 @@ public final class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTe
         while (!((DetailedFooJob) getElasticJob()).isCompleted()) {
             BlockUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }

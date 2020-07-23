@@ -33,15 +33,15 @@ public final class JobRegistry {
     
     private static volatile JobRegistry instance;
     
-    private Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
+    private final Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
     
-    private Map<String, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>();
+    private final Map<String, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>();
     
-    private Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
+    private final Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
     
-    private Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
+    private final Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
     
-    private Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
+    private final Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
     
     /**
      * Get instance of job registry.

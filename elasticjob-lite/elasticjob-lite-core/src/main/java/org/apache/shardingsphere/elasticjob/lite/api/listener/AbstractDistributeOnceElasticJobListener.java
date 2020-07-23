@@ -17,14 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.listener;
 
-import java.util.Set;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.infra.env.TimeService;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
+
+import java.util.Set;
 
 /**
  * Distributed once elasticjob listener.
@@ -42,7 +43,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Setter
     private GuaranteeService guaranteeService;
     
-    private TimeService timeService = new TimeService();
+    private final TimeService timeService = new TimeService();
     
     public AbstractDistributeOnceElasticJobListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
         this.startedTimeoutMilliseconds = startedTimeoutMilliseconds <= 0L ? Long.MAX_VALUE : startedTimeoutMilliseconds;

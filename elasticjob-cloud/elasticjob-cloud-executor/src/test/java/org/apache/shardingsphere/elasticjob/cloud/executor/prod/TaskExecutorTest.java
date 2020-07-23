@@ -41,7 +41,6 @@ import java.util.concurrent.ExecutorService;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -55,9 +54,9 @@ public final class TaskExecutorTest {
     
     private ExecutorInfo executorInfo;
     
-    private SlaveInfo slaveInfo = SlaveInfo.getDefaultInstance();
+    private final SlaveInfo slaveInfo = SlaveInfo.getDefaultInstance();
     
-    private FrameworkInfo frameworkInfo = FrameworkInfo.getDefaultInstance();
+    private final FrameworkInfo frameworkInfo = FrameworkInfo.getDefaultInstance();
     
     private TaskExecutor taskExecutor;
     
@@ -141,7 +140,7 @@ public final class TaskExecutorTest {
         fieldElasticJob.setAccessible(true);
         Field fieldElasticJobType = TaskExecutor.class.getDeclaredField("elasticJobType");
         fieldElasticJobType.setAccessible(true);
-        assertTrue(fieldElasticJob.get(taskExecutor) == testSimpleJob);
+        assertThat(fieldElasticJob.get(taskExecutor), is(testSimpleJob));
         assertNull(fieldElasticJobType.get(taskExecutor));
         taskExecutor = new TaskExecutor("simpleJob");
         assertThat(fieldElasticJobType.get(taskExecutor), is("simpleJob"));

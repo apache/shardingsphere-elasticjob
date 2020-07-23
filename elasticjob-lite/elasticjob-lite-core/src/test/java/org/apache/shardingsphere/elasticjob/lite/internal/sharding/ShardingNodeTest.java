@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 public final class ShardingNodeTest {
     
-    private ShardingNode shardingNode = new ShardingNode("test_job");
+    private final ShardingNode shardingNode = new ShardingNode("test_job");
     
     @Test
     public void assertGetRunningNode() {

@@ -17,16 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
+import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestUtil;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppJsonConstants;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
-import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -45,14 +46,14 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
             + "memoryMB: 128.0\n";
     
     @Test
-    public void assertRegister() throws Exception {
+    public void assertRegister() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
         verify(getRegCenter()).persist("/config/app/test_app", YAML);
     }
     
     @Test
-    public void assertRegisterWithExistedName() throws Exception {
+    public void assertRegisterWithExistedName() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -60,12 +61,12 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertRegisterWithBadRequest() throws Exception {
+    public void assertRegisterWithBadRequest() {
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", "\"{\"appName\":\"wrong_job\"}"), is(500));
     }
     
     @Test
-    public void assertUpdate() throws Exception {
+    public void assertUpdate() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(true);
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.put("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
@@ -73,21 +74,21 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertDetail() throws Exception {
+    public void assertDetail() {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/test_app"), is(CloudAppJsonConstants.getAppJson("test_app")));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
-    public void assertDetailWithNotExistedJob() throws Exception {
+    public void assertDetailWithNotExistedJob() {
         Map<String, String> content = new HashMap<>(1);
         content.put("appName", "");
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/notExistedJobName", content), is(""));
     }
     
     @Test
-    public void assertFindAllJobs() throws Exception {
+    public void assertFindAllJobs() {
         when(getRegCenter().isExisted("/config/app")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Collections.singletonList("test_app"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -98,20 +99,20 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertDeregister() throws Exception {
+    public void assertDeregister() {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.delete("http://127.0.0.1:19000/api/app/test_app"), is(200));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
-    public void assertIsDisabled() throws Exception {
+    public void assertIsDisabled() {
         when(getRegCenter().isExisted("/state/disable/app/test_app")).thenReturn(true);
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/test_app/disable"), is("true"));
     }
     
     @Test
-    public void assertDisable() throws Exception {
+    public void assertDisable() {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -122,7 +123,7 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertEnable() throws Exception {
+    public void assertEnable() {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));

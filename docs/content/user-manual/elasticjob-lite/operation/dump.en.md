@@ -6,7 +6,7 @@ chapter = true
 
 Using ElasticJob may meet some distributed problem which is not easy to observe.
 
-Because of developer can not debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
+Because of developer cannot debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
 
 For security reason, the information dumped had already mask sensitive information, it instead of real IP address to `ip1`, `ip2` ...  
 
