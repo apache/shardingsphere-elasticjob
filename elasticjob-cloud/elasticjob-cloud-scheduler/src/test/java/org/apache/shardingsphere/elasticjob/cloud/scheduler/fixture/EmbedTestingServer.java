@@ -56,6 +56,11 @@ public final class EmbedTestingServer {
         }
     }
     
+    /**
+     * Get the connection string.
+     *
+     * @return connection string
+     */
     public static String getConnectionString() {
         return "localhost:" + PORT;
     }

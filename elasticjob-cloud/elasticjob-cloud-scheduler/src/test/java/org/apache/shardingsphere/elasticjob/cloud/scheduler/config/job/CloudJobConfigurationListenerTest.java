@@ -43,6 +43,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationListenerTest {
     
+    private static ZookeeperRegistryCenter regCenter;
+    
     @Mock
     private ProducerManager producerManager;
     
@@ -51,8 +53,6 @@ public final class CloudJobConfigurationListenerTest {
     
     @InjectMocks
     private CloudJobConfigurationListener cloudJobConfigurationListener;
-    
-    private static ZookeeperRegistryCenter regCenter;
     
     @Before
     public void setUp() {
