@@ -19,20 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
@@ -65,6 +51,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.sql.DataSource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Cloud job restful api.
@@ -101,7 +102,7 @@ public final class CloudJobController {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobController.regCenter = regCenter;
         CloudJobController.producerManager = producerManager;
-        Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getInstance().getTracingConfiguration();
+        Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getINSTANCE().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
     
@@ -252,7 +253,7 @@ public final class CloudJobController {
     @GetMapping("events/executions")
     public JobEventRdbSearch.Result<JobExecutionEvent> findJobExecutionEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
         if (!isRdbConfigured()) {
-            return new JobEventRdbSearch.Result<>(0, Collections.<JobExecutionEvent>emptyList());
+            return new JobEventRdbSearch.Result<>(0, Collections.emptyList());
         }
         return jobEventRdbSearch.findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
     }
@@ -266,7 +267,7 @@ public final class CloudJobController {
     @GetMapping("events/statusTraces")
     public JobEventRdbSearch.Result<JobStatusTraceEvent> findJobStatusTraceEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
         if (!isRdbConfigured()) {
-            return new JobEventRdbSearch.Result<>(0, Collections.<JobStatusTraceEvent>emptyList());
+            return new JobEventRdbSearch.Result<>(0, Collections.emptyList());
         }
         return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
     }

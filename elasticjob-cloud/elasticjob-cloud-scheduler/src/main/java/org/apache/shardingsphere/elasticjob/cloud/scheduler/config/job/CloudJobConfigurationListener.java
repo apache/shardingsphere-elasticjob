@@ -72,7 +72,7 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
             }
             producerManager.reschedule(cloudJobConfig.getJobName());
         } else if (Type.NODE_DELETED == type && isJobConfigNode(path)) {
-            String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
+            String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1);
             producerManager.unschedule(jobName);
         }
     }

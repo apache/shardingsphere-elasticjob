@@ -17,17 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.statistics.type.job;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Job execution type statistics.
  */
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class JobExecutionTypeStatistics {
     
-    private int transientJobCount;
+    private final int transientJobCount;
     
-    private int daemonJobCount;
+    private final int daemonJobCount;
 }

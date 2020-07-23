@@ -46,10 +46,10 @@ public final class Bootstrap {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws InterruptedException {
         // CHECKSTYLE:ON
-        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
+        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(BootstrapEnvironment.getINSTANCE().getZookeeperConfiguration());
         regCenter.init();
         final ZookeeperElectionService electionService = new ZookeeperElectionService(
-                BootstrapEnvironment.getInstance().getFrameworkHostPort(), (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, new SchedulerElectionCandidate(regCenter));
+                BootstrapEnvironment.getINSTANCE().getFrameworkHostPort(), (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, new SchedulerElectionCandidate(regCenter));
         electionService.start();
         final CountDownLatch latch = new CountDownLatch(1);
         latch.await();

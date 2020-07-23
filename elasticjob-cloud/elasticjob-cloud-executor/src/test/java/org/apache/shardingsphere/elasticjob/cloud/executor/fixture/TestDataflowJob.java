@@ -28,7 +28,7 @@ import java.util.List;
 @Getter
 public final class TestDataflowJob implements DataflowJob<String> {
     
-    private List<String> output = new LinkedList<>();
+    private final List<String> output = new LinkedList<>();
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {

@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class ServerNodeTest {
     
-    private ServerNode serverNode = new ServerNode("test_job");
+    private final ServerNode serverNode = new ServerNode("test_job");
     
     @BeforeClass
     public static void setUp() {

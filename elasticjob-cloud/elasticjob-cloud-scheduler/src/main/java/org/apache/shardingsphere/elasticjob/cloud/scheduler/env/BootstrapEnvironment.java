@@ -39,7 +39,7 @@ import java.util.Properties;
 public final class BootstrapEnvironment {
     
     @Getter
-    private static BootstrapEnvironment instance = new BootstrapEnvironment();
+    private static final BootstrapEnvironment INSTANCE = new BootstrapEnvironment();
     
     private static final String PROPERTIES_PATH = "conf/elasticjob-cloud-scheduler.properties";
     

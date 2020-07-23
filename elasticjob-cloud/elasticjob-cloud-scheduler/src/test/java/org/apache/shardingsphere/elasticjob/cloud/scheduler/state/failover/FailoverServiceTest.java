@@ -71,7 +71,7 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertAddWhenJobIsOverQueueSize() {
-        when(regCenter.getNumChildren(FailoverNode.ROOT)).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
+        when(regCenter.getNumChildren(FailoverNode.ROOT)).thenReturn(BootstrapEnvironment.getINSTANCE().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());

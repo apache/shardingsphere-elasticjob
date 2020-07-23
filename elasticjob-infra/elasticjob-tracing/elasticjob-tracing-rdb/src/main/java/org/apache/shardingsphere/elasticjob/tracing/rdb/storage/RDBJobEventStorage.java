@@ -58,7 +58,7 @@ public final class RDBJobEventStorage {
     
     private final DataSource dataSource;
     
-    private DatabaseType databaseType;
+    private final DatabaseType databaseType;
     
     private final RDBStorageSQLMapper sqlMapper;
     

@@ -49,12 +49,12 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     }
     
     private void setJobEnable() {
-        getRegCenter().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), ServerStatus.ENABLED.name());
+        getREGISTRY_CENTER().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), ServerStatus.ENABLED.name());
     }
     
     private void assertEnabledRegCenterInfo() {
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        getRegCenter().remove("/" + getJobName() + "/leader/election");
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }

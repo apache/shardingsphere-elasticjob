@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Getter(AccessLevel.PROTECTED)
-    private ZookeeperConfiguration zkConfig;
+    private final ZookeeperConfiguration zkConfig;
     
     private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
     

@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import java.util.Collection;
-import java.util.Map;
 import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.HANode;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
@@ -27,6 +25,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Collection;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -39,7 +40,7 @@ public class MesosStateServiceTest extends AbstractCloudControllerTest {
     private CoordinatorRegistryCenter registryCenter;
     
     @Test
-    public void assertSandbox() throws Exception {
+    public void assertSandbox() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<Map<String, String>> sandbox = service.sandbox("foo_app");
@@ -50,7 +51,7 @@ public class MesosStateServiceTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertExecutors() throws Exception {
+    public void assertExecutors() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
@@ -61,7 +62,7 @@ public class MesosStateServiceTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertAllExecutors() throws Exception {
+    public void assertAllExecutors() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<ExecutorStateInfo> executorStateInfo = service.executors();

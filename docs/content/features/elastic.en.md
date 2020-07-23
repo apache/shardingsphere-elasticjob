@@ -45,7 +45,7 @@ If the server C is down, then server A = 0,1,2,3,4 and B = 5,6,7,8,9, maximizing
 
 ## High Availability
 
-When a server is down when executing a sharding item, the registry is also aware of that and the sharding item will be transferred to another living server, thus achieve the goal of high availability.
+When a server is down when executing a sharding item, the registry is also aware of that, and the sharding item will be transferred to another living server, thus achieve the goal of high availability.
 The unfinished job from a crashed server will be transferred and executed continuously, as follows.
 
 ![HA](https://shardingsphere.apache.org/elasticjob/current/img/elastic/ha.png)
