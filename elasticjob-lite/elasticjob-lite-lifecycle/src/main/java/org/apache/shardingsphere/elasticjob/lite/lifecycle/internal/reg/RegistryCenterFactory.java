@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
@@ -28,6 +27,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,9 +47,9 @@ public final class RegistryCenterFactory {
      * @return registry center
      */
     public static CoordinatorRegistryCenter createCoordinatorRegistryCenter(final String connectString, final String namespace, final String digest) {
-        Hasher hasher = Hashing.sha256().newHasher().putString(connectString, Charsets.UTF_8).putString(namespace, Charsets.UTF_8);
+        Hasher hasher = Hashing.sha256().newHasher().putString(connectString, StandardCharsets.UTF_8).putString(namespace, StandardCharsets.UTF_8);
         if (!Strings.isNullOrEmpty(digest)) {
-            hasher.putString(digest, Charsets.UTF_8);
+            hasher.putString(digest, StandardCharsets.UTF_8);
         }
         HashCode hashCode = hasher.hash();
         CoordinatorRegistryCenter result = REG_CENTER_REGISTRY.get(hashCode);
