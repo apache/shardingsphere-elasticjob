@@ -12,8 +12,8 @@ For security reason, the information dumped had already mask sensitive informati
 
 ## Open Listener Port
 
-Using Java API please refer to [Java API usage](/en/user-manual/elasticjob-lite/usage/java-api) for more details.
-Using Spring please refer to [Spring usage](/en/user-manual/elasticjob-lite/usage/spring-namespace) for more details.
+Using Java API please refer to [Java API usage](/en/user-manual/elasticjob-lite/usage/job-api/java-api) for more details.
+Using Spring please refer to [Spring usage](/en/user-manual/elasticjob-lite/usage/job-api/spring-namespace) for more details.
 
 ## Execute Dump
 
