@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.failover;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -32,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,7 +114,8 @@ public final class FailoverService {
         List<Integer> result = new ArrayList<>(taskIdList.size());
         for (String each : taskIdList) {
             MetaInfo metaInfo = MetaInfo.from(each);
-            if (assignedTasks.add(Hashing.sha256().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
+            if (assignedTasks.add(Hashing.sha256().newHasher().putString(jobName, StandardCharsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash())
+                    && !runningService.isTaskRunning(metaInfo)) {
                 result.add(metaInfo.getShardingItems().get(0));
             }
         }
