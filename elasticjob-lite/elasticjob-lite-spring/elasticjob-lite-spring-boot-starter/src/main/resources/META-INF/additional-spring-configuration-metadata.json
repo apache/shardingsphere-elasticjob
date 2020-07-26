@@ -24,8 +24,11 @@
     },
     {
       "name": "elasticjob.tracing",
-      "type": "org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties",
       "description": "Event Trace configurations."
+    },
+    {
+      "name": "elasticjob.dump",
+      "description": "Snapshot service configurations."
     }
   ],
   "properties": [
@@ -88,6 +91,18 @@
     {
       "name": "elasticjob.jobs",
       "type": "java.util.Map<java.lang.String,org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobConfigurationProperties>"
+    },
+    {
+      "name": "elasticjob.dump.port",
+      "type": "java.lang.Integer",
+      "description": "A port for configuring SnapshotService.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.snapshot.SnapshotServiceProperties"
+    },
+    {
+      "name": "elasticjob.dump.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Enable SnapshotService."
     }
   ],
   "hints": [
@@ -103,21 +118,6 @@
     {
       "name": "elasticjob.jobs.keys",
       "values": [
-        {
-          "value": "simpleJob"
-        }
-      ]
-    },
-    {
-      "name": "elasticjob.jobs.values",
-      "values": [],
-      "providers": [
-        {
-          "name": "class-reference",
-          "parameters": {
-            "target": "org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobConfigurationProperties"
-          }
-        }
       ]
     }
   ]
