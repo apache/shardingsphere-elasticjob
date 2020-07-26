@@ -117,6 +117,7 @@ public final class DaemonTaskSchedulerTest {
         Field field = DaemonTaskScheduler.class.getDeclaredField("RUNNING_SCHEDULERS");
         field.setAccessible(true);
         assertTrue(((ConcurrentHashMap) field.get(scheduler)).containsKey(taskId.getValue()));
+        DaemonTaskScheduler.shutdown(taskId);
     }
     
     @Test
