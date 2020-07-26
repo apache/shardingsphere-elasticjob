@@ -120,3 +120,29 @@ elasticjob:
 ```
 elasticjob.tracing.type=RDB
 ```
+
+### Dump Job Info Configuration
+
+Prefix: `elasticjob.dump`
+
+| Property name    | Default value | Required |
+| -----------------|:------------- |:-------- |
+| enabled          | true          | No       |
+| port             |               | Yes      |
+
+Designate a port as dump port in configurations. The Spring Boot Starter will enable dumping automatically.
+If the port for job dump was missing, dump won't be enabled.
+
+Reference: 
+
+**YAML**
+```yaml
+elasticjob:
+  dump:
+    port: 9888
+```
+
+**Properties**
+```
+elasticjob.dump.port=9888
+```
