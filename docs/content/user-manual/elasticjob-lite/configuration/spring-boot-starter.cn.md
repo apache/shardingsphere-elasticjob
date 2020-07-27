@@ -120,3 +120,29 @@ elasticjob:
 ```
 elasticjob.tracing.type=RDB
 ```
+
+## 作业信息导出配置
+
+配置前缀：`elasticjob.dump`
+
+| 属性名           | 缺省值        | 是否必填 |
+| -----------------|:------------- |:-------- |
+| enabled          | true          | 否       |
+| port             |               | 是       |
+
+Spring Boot 提供了作业信息导出端口快速配置，只需在配置中指定导出所用的端口号即可启用导出功能。
+如果没有指定端口号，导出功能不会生效。
+
+配置参考：
+
+**YAML**
+```yaml
+elasticjob:
+  dump:
+    port: 9888
+```
+
+**Properties**
+```
+elasticjob.dump.port=9888
+```
