@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
@@ -39,6 +38,7 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Getter(AccessLevel.PROTECTED)
-    private ZookeeperConfiguration zkConfig;
+    private final ZookeeperConfiguration zkConfig;
     
     private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
     
@@ -80,7 +80,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             builder.connectionTimeoutMs(zkConfig.getConnectionTimeoutMilliseconds());
         }
         if (!Strings.isNullOrEmpty(zkConfig.getDigest())) {
-            builder.authorization("digest", zkConfig.getDigest().getBytes(Charsets.UTF_8))
+            builder.authorization("digest", zkConfig.getDigest().getBytes(StandardCharsets.UTF_8))
                     .aclProvider(new ACLProvider() {
                     
                         @Override
@@ -138,7 +138,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         }
         Optional<ChildData> resultInCache = cache.get(key);
         if (resultInCache.isPresent()) {
-            return null == resultInCache.get().getData() ? null : new String(resultInCache.get().getData(), Charsets.UTF_8);
+            return null == resultInCache.get().getData() ? null : new String(resultInCache.get().getData(), StandardCharsets.UTF_8);
         }
         return getDirectly(key);
     }
@@ -155,7 +155,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public String getDirectly(final String key) {
         try {
-            return new String(client.getData().forPath(key), Charsets.UTF_8);
+            return new String(client.getData().forPath(key), StandardCharsets.UTF_8);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -209,7 +209,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public void persist(final String key, final String value) {
         try {
             if (!isExisted(key)) {
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes(Charsets.UTF_8));
+                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes(StandardCharsets.UTF_8));
             } else {
                 update(key, value);
             }
@@ -224,7 +224,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public void update(final String key, final String value) {
         try {
             TransactionOp transactionOp = client.transactionOp();
-            client.transaction().forOperations(transactionOp.check().forPath(key), transactionOp.setData().forPath(key, value.getBytes(Charsets.UTF_8)));
+            client.transaction().forOperations(transactionOp.check().forPath(key), transactionOp.setData().forPath(key, value.getBytes(StandardCharsets.UTF_8)));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -238,7 +238,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             if (isExisted(key)) {
                 client.delete().deletingChildrenIfNeeded().forPath(key);
             }
-            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
+            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -249,7 +249,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public String persistSequential(final String key, final String value) {
         try {
-            return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(Charsets.UTF_8));
+            return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON

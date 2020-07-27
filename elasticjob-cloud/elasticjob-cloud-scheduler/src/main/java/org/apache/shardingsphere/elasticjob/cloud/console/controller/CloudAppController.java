@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
+import com.google.gson.JsonParseException;
 import java.util.Collection;
 import java.util.Optional;
 import org.apache.mesos.Protos.ExecutorID;
@@ -32,7 +33,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerMan
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.codehaus.jettison.json.JSONException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,8 +70,9 @@ public final class CloudAppController {
     
     /**
      * Init.
+     *
      * @param producerManager producer manager
-     * @param regCenter       registry center
+     * @param regCenter registry center
      */
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudAppController.regCenter = regCenter;
@@ -80,6 +81,7 @@ public final class CloudAppController {
     
     /**
      * Register app config.
+     *
      * @param appConfig cloud app config
      */
     @PostMapping
@@ -93,6 +95,7 @@ public final class CloudAppController {
     
     /**
      * Update app config.
+     *
      * @param appConfig cloud app config
      */
     @PutMapping
@@ -102,6 +105,7 @@ public final class CloudAppController {
     
     /**
      * Query app config.
+     *
      * @param appName app name
      * @return cloud app config
      */
@@ -113,6 +117,7 @@ public final class CloudAppController {
     
     /**
      * Find all registered app configs.
+     *
      * @return collection of registered app configs
      */
     @GetMapping("/list")
@@ -122,6 +127,7 @@ public final class CloudAppController {
     
     /**
      * Query the app is disabled or not.
+     *
      * @param appName app name
      * @return true is disabled, otherwise not
      */
@@ -132,6 +138,7 @@ public final class CloudAppController {
     
     /**
      * Disable app config.
+     *
      * @param appName app name
      */
     @PostMapping("/{appName}/disable")
@@ -148,6 +155,7 @@ public final class CloudAppController {
     
     /**
      * Enable app.
+     *
      * @param appName app name
      */
     @PostMapping("/{appName}/enable")
@@ -164,6 +172,7 @@ public final class CloudAppController {
     
     /**
      * Deregister app.
+     *
      * @param appName app name
      */
     @DeleteMapping("/{appName}")
@@ -191,7 +200,7 @@ public final class CloudAppController {
                 producerManager.sendFrameworkMessage(ExecutorID.newBuilder().setValue(each.getId()).build(),
                         SlaveID.newBuilder().setValue(each.getSlaveId()).build(), "STOP".getBytes());
             }
-        } catch (final JSONException ex) {
+        } catch (final JsonParseException ex) {
             throw new JobSystemException(ex);
         }
     }

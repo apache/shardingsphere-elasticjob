@@ -17,18 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import lombok.SneakyThrows;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.lang.reflect.Field;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -49,7 +52,6 @@ public class ZookeeperElectionServiceTest {
     }
     
     @Test
-    @Ignore
     public void assertContend() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
@@ -64,6 +66,16 @@ public class ZookeeperElectionServiceTest {
         anotherService.start();
         KillSession.kill(client.getZookeeperClient().getZooKeeper());
         service.stop();
+        blockUtilHasLeadership(anotherService);
         verify(anotherElectionCandidate).startLeadership();
+    }
+    
+    @SneakyThrows
+    private void blockUtilHasLeadership(final Object obj) {
+        Field field = ZookeeperElectionService.class.getDeclaredField("leaderSelector");
+        field.setAccessible(true);
+        while (!((LeaderSelector) field.get(obj)).hasLeadership()) {
+            Thread.sleep(100);
+        }
     }
 }

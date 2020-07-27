@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
-import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
@@ -65,8 +64,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     }
     
     private boolean isFailoverEnabled() {
-        JobConfiguration jobConfig = configService.load(true);
-        return null != jobConfig && jobConfig.isFailover();
+        return configService.load(true).isFailover();
     }
     
     class JobCrashedJobListener extends AbstractJobListener {

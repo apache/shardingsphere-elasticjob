@@ -54,7 +54,7 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>elasticjob-lite-bin</id>
+                                <id>lite-bin</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>

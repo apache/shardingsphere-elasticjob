@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 public final class FailoverNodeTest {
     
-    private FailoverNode failoverNode = new FailoverNode("test_job");
+    private final FailoverNode failoverNode = new FailoverNode("test_job");
     
     @Test
     public void assertGetItemsNode() {

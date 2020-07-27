@@ -30,3 +30,5 @@ elasticjob:
       shardingTotalCount: 9
       props:
         script.command.line: "echo Manual SCRIPT Job: "
+  dump:
+    port: 9888

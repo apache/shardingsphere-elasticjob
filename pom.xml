@@ -63,9 +63,7 @@
         <gson.version>2.6.1</gson.version>
         <mesos.version>1.1.0</mesos.version>
         <fenzo.version>0.11.1</fenzo.version>
-        <jersey.version>1.19</jersey.version>
-        <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
-        
+
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <h2.version>1.4.184</h2.version>
@@ -86,8 +84,9 @@
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-        <coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
@@ -209,26 +208,6 @@
                 <version>${fenzo.version}</version>
             </dependency>
             
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-servlet</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-all-server</artifactId>
-                <version>${jetty-all-server.version}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
@@ -498,6 +477,11 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${coveralls-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>${cobertura-maven-plugin.version}</version>
@@ -522,14 +506,29 @@
                         </ignoreMethodAnnotations>
                         <excludes>
                             <exclude>org/apache/**/*Test.class</exclude>
+                            <exclude>org/apache/shardingsphere/elasticjob/cloud/api/JobBootstrap.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.rat</groupId>

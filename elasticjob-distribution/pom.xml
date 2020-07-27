@@ -35,5 +35,6 @@
         <module>elasticjob-src-distribution</module>
         <module>elasticjob-lite-distribution</module>
         <module>elasticjob-cloud-distribution</module>
+        <module>elasticjob-cloud-scheduler-distribution</module>
     </modules>
 </project>

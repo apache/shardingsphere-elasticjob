@@ -22,8 +22,11 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJsonConstants;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationListenerTest {
     
+    private static ZookeeperRegistryCenter regCenter;
+    
     @Mock
     private ProducerManager producerManager;
     
@@ -53,6 +58,18 @@ public final class CloudJobConfigurationListenerTest {
     public void setUp() {
         ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "producerManager", producerManager);
         ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "readyService", readyService);
+        initRegistryCenter();
+        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "regCenter", regCenter);
+    }
+    
+    private void initRegistryCenter() {
+        EmbedTestingServer.start();
+        ZookeeperConfiguration configuration = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), CloudJobConfigurationListenerTest.class.getName());
+        configuration.setDigest("digest:password");
+        configuration.setSessionTimeoutMilliseconds(5000);
+        configuration.setConnectionTimeoutMilliseconds(5000);
+        regCenter = new ZookeeperRegistryCenter(configuration);
+        regCenter.init();
     }
     
     @Test
@@ -111,4 +128,22 @@ public final class CloudJobConfigurationListenerTest {
         cloudJobConfigurationListener.event(Type.NODE_DELETED, null, new ChildData("/config/job/test_job", null, "".getBytes()));
         verify(producerManager).unschedule("test_job");
     }
+    
+    @Test
+    public void assertChildEventWhenStateIsUpdateAndIsConfigPath() {
+        cloudJobConfigurationListener.event(Type.NODE_CHANGED, null, new ChildData("/config/job/test_job", null, "".getBytes()));
+    }
+    
+    @Test
+    public void assertStart() {
+        cloudJobConfigurationListener.start();
+    }
+    
+    @Test
+    public void assertStop() {
+        regCenter.addCacheData(CloudJobConfigurationNode.ROOT);
+        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "regCenter", regCenter);
+        cloudJobConfigurationListener.stop();
+    }
+    
 }

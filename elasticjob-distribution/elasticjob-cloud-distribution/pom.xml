@@ -46,7 +46,7 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>elasticjob-cloud-bin</id>
+                                <id>cloud-bin</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>

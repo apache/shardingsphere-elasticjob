@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console;
 
-import java.io.IOException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
@@ -72,7 +71,7 @@ public abstract class AbstractCloudControllerTest {
         consoleBootstrap.start();
     }
     
-    private static void initMesosServer() throws Exception {
+    private static void initMesosServer() {
         MesosStateService.register("127.0.0.1", 9050);
         ConsoleBootstrap.ConsoleApplication.setPort(9050);
         ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosMasterServerMockConfiguration.class});
@@ -83,7 +82,7 @@ public abstract class AbstractCloudControllerTest {
     }
     
     @AfterClass
-    public static void tearDown() throws IOException {
+    public static void tearDown() {
         consoleBootstrap.stop();
         masterServer.stop();
         slaveServer.stop();

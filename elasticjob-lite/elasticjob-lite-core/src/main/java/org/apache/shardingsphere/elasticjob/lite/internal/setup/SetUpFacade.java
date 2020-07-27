@@ -47,7 +47,7 @@ public final class SetUpFacade {
     
     private final ReconcileService reconcileService;
     
-    private ListenerManager listenerManager;
+    private final ListenerManager listenerManager;
     
     public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);

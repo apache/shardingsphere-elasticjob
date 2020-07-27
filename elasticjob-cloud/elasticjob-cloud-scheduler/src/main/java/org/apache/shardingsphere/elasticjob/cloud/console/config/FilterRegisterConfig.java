@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.config;
 
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
 import org.apache.shardingsphere.elasticjob.cloud.console.security.UserAuthenticationService;
 import org.apache.shardingsphere.elasticjob.cloud.console.security.WwwAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,16 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
+
 /**
  * Filter register config.
  **/
 @Configuration
 public class FilterRegisterConfig {
     
-    private UserAuthenticationService userAuthenticationService;
+    private final UserAuthenticationService userAuthenticationService;
     
     @Autowired
     public FilterRegisterConfig(final UserAuthenticationService userAuthenticationService) {

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TimeServiceTest {
     
-    private TimeService timeService = new TimeService();
+    private final TimeService timeService = new TimeService();
     
     @Test
     public void assertGetCurrentMillis() {

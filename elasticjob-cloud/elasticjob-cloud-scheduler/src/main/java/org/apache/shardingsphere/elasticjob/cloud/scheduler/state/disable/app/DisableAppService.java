@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 @Slf4j
 public class DisableAppService {
     
-    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
     
     private final CoordinatorRegistryCenter regCenter;
     

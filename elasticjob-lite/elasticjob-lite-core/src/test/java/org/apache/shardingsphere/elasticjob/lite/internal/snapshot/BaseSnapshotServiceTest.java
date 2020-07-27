@@ -36,12 +36,12 @@ public abstract class BaseSnapshotServiceTest {
     
     static final int DUMP_PORT = 9000;
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
-    private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
+    private static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
     
     @Getter(value = AccessLevel.PROTECTED)
-    private static SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
+    private static SnapshotService snapshotService = new SnapshotService(REG_CENTER, DUMP_PORT);
     
     private final ScheduleJobBootstrap bootstrap;
     
@@ -49,19 +49,19 @@ public abstract class BaseSnapshotServiceTest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     public BaseSnapshotServiceTest(final ElasticJob elasticJob) {
-        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
+        bootstrap = new ScheduleJobBootstrap(REG_CENTER, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
     @BeforeClass
     public static void init() {
         EmbedTestingServer.start();
-        zkConfig.setConnectionTimeoutMilliseconds(30000);
-        regCenter.init();
+        ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
+        REG_CENTER.init();
     }
     
     @Before
     public final void setUp() {
-        regCenter.init();
+        REG_CENTER.init();
         bootstrap.schedule();
     }
     

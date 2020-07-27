@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.JobBuilder;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 
 import static org.mockito.Mockito.verify;
@@ -40,7 +39,7 @@ public final class ProducerJobTest {
     @Mock
     private ReadyService readyService;
     
-    private TransientProducerRepository repository = new TransientProducerRepository();
+    private final TransientProducerRepository repository = new TransientProducerRepository();
     
     private TransientProducerScheduler.ProducerJob producerJob;
     
@@ -52,7 +51,7 @@ public final class ProducerJobTest {
     }
     
     @Test
-    public void assertExecute() throws JobExecutionException {
+    public void assertExecute() {
         when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity("0/30 * * * * ?").build());
         repository.put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
         producerJob.execute(jobExecutionContext);

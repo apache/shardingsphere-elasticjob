@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,17 +34,17 @@ public final class TransientProducerRepositoryTest {
     
     private final String jobName = "test_job";
     
-    private TransientProducerRepository transientProducerRepository = new TransientProducerRepository();
+    private final TransientProducerRepository transientProducerRepository = new TransientProducerRepository();
     
     @Test
-    public void assertPutJobKey() throws JobExecutionException {
+    public void assertPutJobKey() {
         transientProducerRepository.put(jobKey, jobName);
         assertThat(transientProducerRepository.get(jobKey).get(0), is(jobName));
         transientProducerRepository.remove(jobName);
     }
     
     @Test
-    public void assertPutJobWithChangedCron() throws JobExecutionException {
+    public void assertPutJobWithChangedCron() {
         transientProducerRepository.put(jobKey, jobName);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");
         transientProducerRepository.put(newJobKey, jobName);
@@ -55,7 +54,7 @@ public final class TransientProducerRepositoryTest {
     }
     
     @Test
-    public void assertPutMoreJobWithChangedCron() throws JobExecutionException {
+    public void assertPutMoreJobWithChangedCron() {
         String jobName2 = "other_test_job";
         transientProducerRepository.put(jobKey, jobName);
         transientProducerRepository.put(jobKey, jobName2);
@@ -68,7 +67,7 @@ public final class TransientProducerRepositoryTest {
     }
     
     @Test
-    public void assertRemoveJobKey() throws JobExecutionException {
+    public void assertRemoveJobKey() {
         transientProducerRepository.put(jobKey, jobName);
         transientProducerRepository.remove(jobName);
         assertTrue(transientProducerRepository.get(jobKey).isEmpty());

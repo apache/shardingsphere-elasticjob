@@ -73,7 +73,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private final JobEventBus jobEventBus;
     
-    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
     
     @Override
     protected String serviceName() {
