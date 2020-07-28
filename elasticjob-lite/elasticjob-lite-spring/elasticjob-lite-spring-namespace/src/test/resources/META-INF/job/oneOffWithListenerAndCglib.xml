@@ -21,30 +21,30 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd 
+                           http://www.springframework.org/schema/context 
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop 
                            http://www.springframework.org/schema/aop/spring-aop.xsd
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
     <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.aspect,org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service" />
-    <aop:aspectj-autoproxy />
+    <aop:aspectj-autoproxy proxy-target-class="true" />
     
-    <import resource="base.xml" />
+    <import resource="base.xml"/>
     
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.DataflowElasticJob" />
     
-    <elasticjob:job id="simpleElasticJob_namespace_listener_jdk_proxy" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
-             cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
+    <elasticjob:job id="simpleElasticJob_namespace_listener_cglib" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
+             sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}"
              disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
-        <elasticjob:listener class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener.SimpleJdkDynamicProxyListener" />
+        <elasticjob:listener class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener.SimpleCglibListener" />
     </elasticjob:job>
-    <elasticjob:job id="dataflowElasticJob_namespace_listener_jdk_proxy" job-ref="dataflowJob" registry-center-ref="regCenter" 
-             cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" 
+    <elasticjob:job id="dataflowElasticJob_namespace_listener_cglib" job-ref="dataflowJob" registry-center-ref="regCenter" 
+             sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述"
              overwrite="true">
         <props>
             <prop key="streaming.process">true</prop>
