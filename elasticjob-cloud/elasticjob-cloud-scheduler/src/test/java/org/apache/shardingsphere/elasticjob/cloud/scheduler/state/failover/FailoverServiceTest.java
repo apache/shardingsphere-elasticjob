@@ -153,7 +153,9 @@ public final class FailoverServiceTest {
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
         when(regCenter.get("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(taskNode.getTaskNodeValue());
-        assertThat(failoverService.getTaskId(taskNode.getMetaInfo()).get(), is(taskNode.getTaskNodeValue()));
+        Optional<String> taskId = failoverService.getTaskId(taskNode.getMetaInfo());
+        assertTrue(taskId.isPresent());
+        assertThat(taskId.get(), is(taskNode.getTaskNodeValue()));
         verify(regCenter, times(2)).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
     }
     

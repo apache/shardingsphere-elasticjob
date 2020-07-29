@@ -86,7 +86,7 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
             return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());
+            log.warn("Wrong Cloud Job Configuration with:", ex);
             // CHECKSTYLE:ON
             return null;
         }
