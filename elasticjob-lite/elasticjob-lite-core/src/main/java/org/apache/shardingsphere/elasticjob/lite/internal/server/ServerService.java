@@ -50,7 +50,10 @@ public final class ServerService {
      */
     public void persistOnline(final boolean enabled) {
         if (!JobRegistry.getInstance().isShutdown(jobName)) {
-            jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? ServerStatus.ENABLED.name() : ServerStatus.DISABLED.name());
+            String serversNode = serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp());
+            if (!jobNodeStorage.isJobNodeExisted(serversNode)) {
+                jobNodeStorage.fillJobNode(serversNode, enabled ? ServerStatus.ENABLED.name() : ServerStatus.DISABLED.name());
+            }
         }
     }
     
