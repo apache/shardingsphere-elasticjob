@@ -74,7 +74,7 @@ Uses Mesos to manage and isolate resources.
   - Support rich job type lib, such as dataflow, script, HTTP, file, big data
   - Focus business SDK, can work with Spring IOC
 
-- Admin Console
+- [Admin Console](https://github.com/apache/shardingsphere-elasticjob-ui)
   - Job administration
   - Job event trace query
   - Registry center management

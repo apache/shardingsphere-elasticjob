@@ -69,7 +69,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
   - 丰富的作业类型库，如数据流、脚本、HTTP、文件、大数据等
   - 易于对接业务作业，能够与 Spring 依赖注入无缝整合
 
-- 可视化管控端
+- [可视化管控端](https://github.com/apache/shardingsphere-elasticjob-ui)
   - 作业管控端
   - 作业执行历史数据追踪
   - 注册中心管理
