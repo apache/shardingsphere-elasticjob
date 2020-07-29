@@ -10,7 +10,7 @@
 1. Change maven groupId to org.apache.shardingsphere.elasticjob
 1. Change package name to org.apache.shardingsphere.elasticjob
 1. Change spring namespace name to http://shardingsphere.apache.org/schema/elasticjob
-1. New job API, use SPI for customize job type for easy extension
+1. New job API, use SPI to customize job type
 1. Use SPI to introduce configuration strategies
 1. Split console and UI from job core modules
 
@@ -22,8 +22,8 @@
 
 ### Bug Fixes
 
-1. Cloud's executor thread ContextClassLoader is empty
-1. Enable job from web console have no effect
+1. Fix bug for executor thread ContextClassLoader is empty with ElasticJob-Cloud
+1. Fix bug for enable job from web console have no effect
 1. Shutdown job when application exit
 1. Fix NPE when failover out-of-order in Curator asynchronized persist
 1. Get correct job class name when using CGLIB proxy
