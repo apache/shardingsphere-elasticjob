@@ -33,7 +33,7 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ## Introduction
 
-Using ElasticJob can make developers no longer worry about the non functional requirements such as jobs scale out, so that they can focus more on business coding;
+Using ElasticJob can make developers no longer worry about the non-functional requirements such as jobs scale out, so that they can focus more on business coding;
 At the same time, it can release operators too, so that they do not have to worry about jobs high availability and management, and can automatic operation by simply adding servers.
 
 ### ElasticJob-Lite

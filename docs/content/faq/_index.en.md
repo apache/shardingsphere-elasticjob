@@ -34,7 +34,7 @@ Answer:
 `ElasticJob-Lite` adopts a decentralized design. If the configuration of each client is inconsistent and is not controlled, the configuration of the client which is last started will be the final configuration of the registry center.
 
 `ElasticJob-Lite` proposes the concept of `overwrite`, which can be configured through `JobConfiguration` or `Spring` namespace.
-`overwrite=true` indicates that the client's configuration is allowed override the registry center, and on the contrary is not allowed.
+`overwrite=true` indicates that the client's configuration is allowed to override the registry center, and on the contrary is not allowed.
 If there is no configuration of related jobs in the registry center, regardless of whether the property of `overwrite` is configured, the client's configuration will be still written into the registry center.
 
 ## 4. What happens if the job can't communicate with the registry center?
