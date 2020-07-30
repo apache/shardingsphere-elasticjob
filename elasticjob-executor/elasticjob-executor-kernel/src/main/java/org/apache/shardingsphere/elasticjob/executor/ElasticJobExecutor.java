@@ -113,6 +113,8 @@ public final class ElasticJobExecutor {
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+        } finally {
+            executorService.shutdown();
         }
     }
     
