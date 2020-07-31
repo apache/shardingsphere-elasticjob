@@ -25,7 +25,7 @@
         <artifactId>elasticjob-distribution</artifactId>
         <version>3.0.0-alpha-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-cloud-distribution</artifactId>
+    <artifactId>elasticjob-cloud-executor-distribution</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
