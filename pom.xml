@@ -668,8 +668,9 @@
         </plugins>
     </reporting>
     
-    <url>http://shardingsphere.apache.org</url>
+    <url>http://shardingsphere.apache.org/elasticjob/</url>
     <description>Distributed scheduled job solution</description>
+    
     <licenses>
         <license>
             <name>Apache License 2.0</name>
