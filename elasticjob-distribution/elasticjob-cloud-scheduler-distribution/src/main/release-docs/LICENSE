@@ -296,7 +296,6 @@ The following components are provided under a BSD license. See project link for 
 The text of each license is also included at licenses/LICENSE-[project].txt.
 
     asm-5.0.4: https://github.com/jdf/javalin/tree/master/lib/asm-3.1, BSD 3-clause
-    xmlunit-core-2.7.0: https://mvnrepository.com/artifact/xmlunit/xmlunit, BSD 3-clause
 
 ========================================================================
 EPL licenses
