@@ -74,7 +74,7 @@
                 <!-- system ignore -->
                 <exclude>**/.DS_Store</exclude>
                 <exclude>**/Thumbs.db</exclude>
-    
+                
                 <!-- modules ignore -->
                 <exclude>docs/**</exclude>
                 <exclude>examples/**</exclude>

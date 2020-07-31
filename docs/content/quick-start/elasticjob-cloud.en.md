@@ -40,7 +40,7 @@ public class MyJob implements SimpleJob {
 
 ## Develop Job Bootstrap
 
-Define `main` method and call `JobBootstrap.execute()`, example as follow:
+Define `main` method and call `JobBootstrap.execute()`, example as follows:
 
 ```java
 public class MyJobDemo {

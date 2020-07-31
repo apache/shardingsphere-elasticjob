@@ -30,7 +30,7 @@
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
-    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.spring.fixture.aspect,org.apache.shardingsphere.elasticjob.lite.spring.fixture.service" />
+    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.aspect,org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service" />
     <aop:aspectj-autoproxy proxy-target-class="true" />
     
     <import resource="base.xml"/>

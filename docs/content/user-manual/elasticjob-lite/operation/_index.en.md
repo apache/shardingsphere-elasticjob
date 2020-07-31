@@ -5,4 +5,4 @@ weight = 3
 chapter = true
 +++
 
-This chapter is a operation manual for ElasticJob-Lite.
+This chapter is an operation manual for ElasticJob-Lite.

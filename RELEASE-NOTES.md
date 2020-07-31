@@ -1,15 +1,42 @@
-## 3.0.0.M1
+## 3.0.0-alpha
+
+### Build & Dependencies
+
+1. Upgrade to Java 8
+1. Upgrade ZooKeeper to 3.6.x
+
+### API Changes
+
+1. Change maven groupId to org.apache.shardingsphere.elasticjob
+1. Change package name to org.apache.shardingsphere.elasticjob
+1. Change spring namespace name to http://shardingsphere.apache.org/schema/elasticjob
+1. New job API, use SPI to customize job type
+1. Use SPI to introduce configuration strategies
+1. Split console and UI from job core modules
+
+### New Features
+
+1. Add One-off job executor
+1. Add Spring Boot Starter for ElasticJob-Lite
+1. Add more databases support for event trace persist
 
 ### Bug Fixes
 
-1. [ISSUE #384](https://github.com/elasticjob/elastic-job/issues/384) Cloud's executor thread ContextClassLoader is empty
+1. Fix bug for executor thread ContextClassLoader is empty with ElasticJob-Cloud
+1. Fix bug for enable job from web console have no effect
+1. Shutdown job when application exit
+1. Fix NPE when failover out-of-order in Curator asynchronized persist
+1. Get correct job class name when using CGLIB proxy
 
+###  Change Logs
+
+1. [MILESTONE](https://github.com/apache/shardingsphere-elasticjob/milestone/1)
 
 ## 2.1.5
 
 ### New Features
 
-1. [ISSUE #373](https://github.com/elasticjob/elastic-job/issues/373) Cloud can distinguishes processing TASK_UNREACHABLE,TASK_UNKNOWN,TASK_DROPPED,TASK_GONE,etc
+1. [ISSUE #373](https://github.com/elasticjob/elastic-job/issues/373) Cloud can distinguish processing TASK_UNREACHABLE,TASK_UNKNOWN,TASK_DROPPED,TASK_GONE,etc
 
 ### Bug Fixes
 

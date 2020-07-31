@@ -28,7 +28,7 @@
     <artifactId>elasticjob-src-distribution</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-
+    
     <profiles>
         <profile>
             <id>release</id>

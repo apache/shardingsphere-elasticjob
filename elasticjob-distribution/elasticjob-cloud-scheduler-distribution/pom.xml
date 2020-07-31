@@ -26,7 +26,7 @@
     <artifactId>elasticjob-cloud-scheduler-distribution</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-
+    
     <properties>
         <springframework.version>5.2.7.RELEASE</springframework.version>
     </properties>
@@ -103,7 +103,7 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.13</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -169,7 +169,7 @@
             <artifactId>mockito-inline</artifactId>
         </dependency>
     </dependencies>
-
+    
     <profiles>
         <profile>
             <id>release</id>
