@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobC
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.CloudJobDisableListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,13 +68,16 @@ public class SchedulerServiceTest {
     @Mock
     private ReconcileService reconcileService;
     
+    @Mock
+    private CloudJobDisableListener cloudJobDisableListener;
+    
     private SchedulerService schedulerService;
     
     @Before
     public void setUp() {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,
                 producerManager, statisticManager, cloudJobConfigurationListener,
-                taskLaunchScheduledService, consoleBootstrap, reconcileService);
+                taskLaunchScheduledService, consoleBootstrap, reconcileService, cloudJobDisableListener);
     }
     
     @Test
