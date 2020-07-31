@@ -22,7 +22,7 @@
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>${project.build.finalName}-cloud-scheduler-bin</baseDirectory>
-
+    
     <fileSets>
         <fileSet>
             <directory>src/main/resources/conf</directory>
