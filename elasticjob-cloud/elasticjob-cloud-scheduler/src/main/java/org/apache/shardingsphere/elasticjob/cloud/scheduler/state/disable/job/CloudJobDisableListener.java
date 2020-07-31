@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 
 /**
- * Cloud job state listener.
+ * Cloud job disable listener.
  */
 public final class CloudJobDisableListener implements CuratorCacheListener {
     
