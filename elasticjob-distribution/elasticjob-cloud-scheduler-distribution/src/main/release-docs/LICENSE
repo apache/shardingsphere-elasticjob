@@ -215,7 +215,6 @@ Apache 2.0 licenses
 The following components are provided under the Apache License. See project link for details.
 The text of each license is the standard Apache 2.0 license.
 
-    accessors-smart-1.2: https://mvnrepository.com/artifact/net.minidev/accessors-smart/1.1, Apache 2.0
     android-json-0.0.20131108.vaadin1: https://mvnrepository.com/artifact/com.vaadin.external.google/android-json/0.0.20131108.vaadin1, Apache 2.0
     apiguardian-api-1.1.0: https://github.com/apiguardian-team/apiguardian, Apache 2.0
     assertj-core-3.16.1: https://mvnrepository.com/artifact/org.assertj/assertj-core/2.6.0, Apache 2.0
