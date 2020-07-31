@@ -244,12 +244,6 @@
                 <version>${springframework.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-connector-java.version}</version>
-                <scope>provided</scope>
-            </dependency>
             
             <dependency>
                 <groupId>com.h2database</groupId>
