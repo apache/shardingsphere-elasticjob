@@ -212,5 +212,31 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>dockerfile-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>cloud-scheduler-bin</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <repository>apache/shardingsphere-elasticjob-cloud-scheduler</repository>
+                            <tag>${project.version}</tag>
+                            <buildArgs>
+                                <APP_NAME>${project.build.finalName}-cloud-scheduler-bin</APP_NAME>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
