@@ -113,8 +113,6 @@ public final class ElasticJobExecutor {
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
-        } finally {
-            executorService.shutdown();
         }
     }
     
@@ -186,5 +184,12 @@ public final class ElasticJobExecutor {
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
+    }
+    
+    /**
+     * Shutdown executor.
+     */
+    public void shutdown() {
+        executorService.shutdown();
     }
 }
