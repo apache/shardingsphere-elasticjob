@@ -79,7 +79,7 @@ public final class CloudAppConfigurationListenerTest {
     }
     
     @Test
-    public void assertEnableWithNoJobNamePath() {
+    public void assertEnableWithNoAppNamePath() {
         cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/config/app", null, "".getBytes()));
         verify(mesosStateService, times(0)).executors(ArgumentMatchers.any());
         verify(producerManager, times(0)).sendFrameworkMessage(any(Protos.ExecutorID.class), any(Protos.SlaveID.class), any());
