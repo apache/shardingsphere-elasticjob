@@ -28,14 +28,14 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"exampleApp",
 
 2. Java启动方式作业注册:
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_script","appName":"exampleApp","jobExecutionType":"TRANSIENT","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0, scriptCommandLine="script/demo.sh"}' http://localhost:8899/api/job/register
 
 3. Spring启动方式作业注册:
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple_spring","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob","beanName":"springSimpleJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple_spring","appName":"exampleApp","jobExecutionType":"TRANSIENT","jobClass":"org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob","beanName":"springSimpleJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":1,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
 
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow_spring","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob","beanName":"springDataflowJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow_spring","appName":"exampleApp","jobExecutionType":"DAEMON","jobClass":"org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob","beanName":"springDataflowJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://localhost:8899/api/job/register
