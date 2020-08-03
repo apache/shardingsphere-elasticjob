@@ -107,7 +107,6 @@ chapter = true
 <ul>
     <li><a href="https://www.meizu.com/" rel="nofollow">魅族</a></li>
     <li><a href="https://www.oneplus.com/cn" rel="nofollow">一加科技</a></li>
-    <li><a href="https://www.ultrapower.com.cn/" rel="nofollow">神州泰岳</a></li>
 </ul>
 
 ### 物联网
@@ -121,6 +120,7 @@ chapter = true
 
 ### 软件开发及服务
 <ul>
+    <li><a href="https://www.ultrapower.com.cn/" rel="nofollow">神州泰岳</a></li>
     <li><a href="http://www.duiba.com.cn" rel="nofollow">兑吧</a></li>
     <li><a href="http://www.cig.com.cn/" rel="nofollow">新意互动</a></li>
     <li><a href="https://cn.yeahmobi.com/" rel="nofollow">Yeahmobi</a></li>
