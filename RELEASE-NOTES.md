@@ -19,6 +19,7 @@
 1. Add One-off job executor
 1. Add Spring Boot Starter for ElasticJob-Lite
 1. Add more databases support for event trace persist
+1. User indicate IP address via system environment supported
 
 ### Bug Fixes
 
