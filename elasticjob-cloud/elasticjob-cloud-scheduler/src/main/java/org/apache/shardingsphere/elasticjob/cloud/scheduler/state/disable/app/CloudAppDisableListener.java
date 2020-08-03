@@ -47,7 +47,7 @@ public final class CloudAppDisableListener implements CuratorCacheListener {
     
     @Override
     public void event(final Type type, final ChildData oldData, final ChildData data) {
-        String path = data.getPath();
+        String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_CREATED == type && isAppDisableNode(path)) {
             String appName = path.substring(DisableAppNode.ROOT.length() + 1);
             if (Objects.nonNull(appName)) {

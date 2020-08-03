@@ -87,21 +87,24 @@ public final class CloudJobDisableListenerTest {
     
     @Test
     public void assertEnableWithInvalidPath() {
-        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/other/test_job", null, "".getBytes()));
+        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/other/test_job", null, "".getBytes()),
+                new ChildData("/other/test_job", null, "".getBytes()));
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
         verify(producerManager, times(0)).reschedule(ArgumentMatchers.any());
     }
     
     @Test
     public void assertEnableWithNoJobNamePath() {
-        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/state/disable/job", null, "".getBytes()));
+        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/job", null, "".getBytes()),
+                new ChildData("/state/disable/job", null, "".getBytes()));
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
         verify(producerManager, times(0)).reschedule(ArgumentMatchers.any());
     }
     
     @Test
     public void assertEnable() {
-        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/state/disable/job/job_test", null, "".getBytes()));
+        cloudJobDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/job/job_test", null, "".getBytes()),
+                new ChildData("/state/disable/job/job_test", null, "".getBytes()));
         verify(producerManager).reschedule(eq("job_test"));
     }
     

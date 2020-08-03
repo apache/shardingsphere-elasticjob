@@ -82,7 +82,8 @@ public final class CloudJobConfigurationListenerTest {
     
     @Test
     public void assertChildEventWhenIsRootConfigPath() {
-        cloudJobConfigurationListener.event(Type.NODE_DELETED, null, new ChildData("/config/job", null, "".getBytes()));
+        cloudJobConfigurationListener.event(Type.NODE_DELETED, new ChildData("/config/job", null, "".getBytes()),
+                new ChildData("/config/job", null, "".getBytes()));
         verify(producerManager, times(0)).schedule(ArgumentMatchers.any());
         verify(producerManager, times(0)).reschedule(ArgumentMatchers.any());
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
@@ -125,7 +126,8 @@ public final class CloudJobConfigurationListenerTest {
     
     @Test
     public void assertChildEventWhenStateIsRemovedAndIsJobConfigPath() {
-        cloudJobConfigurationListener.event(Type.NODE_DELETED, null, new ChildData("/config/job/test_job", null, "".getBytes()));
+        cloudJobConfigurationListener.event(Type.NODE_DELETED, new ChildData("/config/job/test_job", null, "".getBytes()),
+                new ChildData("/config/job/test_job", null, "".getBytes()));
         verify(producerManager).unschedule("test_job");
     }
     

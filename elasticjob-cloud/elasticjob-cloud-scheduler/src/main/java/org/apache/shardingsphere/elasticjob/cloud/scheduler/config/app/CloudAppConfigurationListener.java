@@ -50,9 +50,8 @@ public final class CloudAppConfigurationListener implements CuratorCacheListener
     }
     
     @Override
-
     public void event(final Type type, final ChildData oldData, final ChildData data) {
-        String path = data.getPath();
+        String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_DELETED == type && isJobAppConfigNode(path)) {
             String appName = path.substring(CloudAppConfigurationNode.ROOT.length() + 1);
             stopExecutors(appName);
