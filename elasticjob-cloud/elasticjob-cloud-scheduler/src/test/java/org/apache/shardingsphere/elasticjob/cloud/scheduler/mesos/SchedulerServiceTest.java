@@ -20,10 +20,12 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import com.google.common.util.concurrent.Service;
 import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.cloud.console.ConsoleBootstrap;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.CloudAppDisableListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.CloudJobDisableListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.junit.Before;
@@ -71,13 +73,20 @@ public class SchedulerServiceTest {
     @Mock
     private CloudJobDisableListener cloudJobDisableListener;
     
+    @Mock
+    private CloudAppConfigurationListener cloudAppConfigurationListener;
+    
+    @Mock
+    private CloudAppDisableListener cloudAppDisableListener;
+    
     private SchedulerService schedulerService;
     
     @Before
     public void setUp() {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,
                 producerManager, statisticManager, cloudJobConfigurationListener,
-                taskLaunchScheduledService, consoleBootstrap, reconcileService, cloudJobDisableListener);
+                taskLaunchScheduledService, consoleBootstrap, reconcileService, cloudJobDisableListener,
+                cloudAppConfigurationListener, cloudAppDisableListener);
     }
     
     @Test
