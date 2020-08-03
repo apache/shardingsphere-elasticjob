@@ -17,9 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.infra.env;
 
+import lombok.SneakyThrows;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
+
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 
 public final class IpUtilsTest {
     
@@ -29,7 +34,12 @@ public final class IpUtilsTest {
     }
     
     @Test
+    @SneakyThrows
     public void assertGetHostName() {
         assertNotNull(IpUtils.getHostName());
+        Field field = IpUtils.class.getDeclaredField("cachedHostName");
+        field.setAccessible(true);
+        String hostName = (String) field.get(null);
+        assertThat(hostName, is(IpUtils.getHostName()));
     }
 }

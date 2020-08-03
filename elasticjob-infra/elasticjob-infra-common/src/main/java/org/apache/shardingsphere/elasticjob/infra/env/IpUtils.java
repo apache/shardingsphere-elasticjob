@@ -43,6 +43,8 @@ public final class IpUtils {
     
     private static volatile String cachedIpAddress;
     
+    private static volatile String cachedHostName;
+    
     /**
      * Get IP address for localhost.
      * 
@@ -147,10 +149,14 @@ public final class IpUtils {
      * @return host name for localhost
      */
     public static String getHostName() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (final UnknownHostException ex) {
-            return "unknown";
+        if (null != cachedHostName) {
+            return cachedHostName;
         }
+        try {
+            cachedHostName = InetAddress.getLocalHost().getHostName();
+        } catch (final UnknownHostException ex) {
+            cachedHostName = "unknown";
+        }
+        return cachedHostName;
     }
 }
