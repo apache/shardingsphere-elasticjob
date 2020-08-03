@@ -73,21 +73,24 @@ public final class CloudAppConfigurationListenerTest {
     
     @Test
     public void assertRemoveWithInvalidPath() {
-        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/other/test_app", null, "".getBytes()));
+        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/other/test_app", null, "".getBytes()),
+                new ChildData("/other/test_app", null, "".getBytes()));
         verify(mesosStateService, times(0)).executors(ArgumentMatchers.any());
         verify(producerManager, times(0)).sendFrameworkMessage(any(Protos.ExecutorID.class), any(Protos.SlaveID.class), any());
     }
     
     @Test
     public void assertRemoveWithNoAppNamePath() {
-        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/config/app", null, "".getBytes()));
+        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/config/app", null, "".getBytes()),
+                new ChildData("/config/app", null, "".getBytes()));
         verify(mesosStateService, times(0)).executors(ArgumentMatchers.any());
         verify(producerManager, times(0)).sendFrameworkMessage(any(Protos.ExecutorID.class), any(Protos.SlaveID.class), any());
     }
     
     @Test
     public void assertRemoveApp() {
-        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/config/app/test_app", null, "".getBytes()));
+        cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/config/app/test_app", null, "".getBytes()),
+                new ChildData("/config/app/test_app", null, "".getBytes()));
         verify(mesosStateService).executors("test_app");
     }
     

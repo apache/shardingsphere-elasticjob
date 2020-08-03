@@ -91,21 +91,24 @@ public final class CloudAppDisableListenerTest {
     
     @Test
     public void assertEnableWithInvalidPath() {
-        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/other/test_app", null, "".getBytes()));
+        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/other/test_app", null, "".getBytes()),
+                new ChildData("/other/test_app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
         verify(producerManager, times(0)).reschedule(ArgumentMatchers.any());
     }
     
     @Test
     public void assertEnableWithNoAppNamePath() {
-        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/state/disable/app", null, "".getBytes()));
+        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/app", null, "".getBytes()),
+                new ChildData("/state/disable/app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
     }
     
     @Test
     public void assertEnable() {
-        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, null, new ChildData("/state/disable/app/app_test", null, "".getBytes()));
+        cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/app/app_test", null, "".getBytes()),
+                new ChildData("/state/disable/app/app_test", null, "".getBytes()));
         verify(jobConfigService).loadAll();
     }
     

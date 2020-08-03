@@ -51,9 +51,8 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
     }
     
     @Override
-
     public void event(final Type type, final ChildData oldData, final ChildData data) {
-        String path = data.getPath();
+        String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_CREATED == type && isJobConfigNode(path)) {
             CloudJobConfigurationPOJO cloudJobConfig = getCloudJobConfiguration(data);
             if (null != cloudJobConfig) {
