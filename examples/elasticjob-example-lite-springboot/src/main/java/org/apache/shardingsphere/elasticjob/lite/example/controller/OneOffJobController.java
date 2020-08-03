@@ -27,10 +27,10 @@ import javax.annotation.Resource;
 @RestController
 @DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
-
+    
     @Resource(name = "manualScriptJobOneOffJobBootstrap")
     private OneOffJobBootstrap manualScriptJob;
-
+    
     @GetMapping("/execute")
     public String executeOneOffJob() {
         manualScriptJob.execute();

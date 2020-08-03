@@ -32,12 +32,12 @@ import java.util.List;
 
 @Component
 public class SpringBootSimpleJob implements SimpleJob {
-
+    
     private final Logger logger = LoggerFactory.getLogger(SpringBootSimpleJob.class);
-
+    
     @Autowired
     private FooRepository fooRepository;
-
+    
     @Override
     public void execute(ShardingContext shardingContext) {
         logger.info("Item: {} | Time: {} | Thread: {} | {}",
