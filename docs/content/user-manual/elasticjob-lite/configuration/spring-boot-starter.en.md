@@ -46,7 +46,7 @@ Configuration:
 | Property name                     | Required |
 | --------------------------------- |:-------- |
 | elasticJobClass / elasticJobType  | Yes      |
-| cron                              | No       |
+| cron / jobBootstrapBeanName       | No       |
 | sharding-total-count              | Yes      |
 | sharding-item-parameters          | No       |
 | job-parameter                     | No       |
@@ -63,7 +63,12 @@ Configuration:
 | disabled                          | No       |
 | overwrite                         | No       |
 
-**[elasticJobClass] are [elasticJobType] mutually exclusive.**
+**"elasticJobClass" and "elasticJobType" are mutually exclusive.**
+
+If cron was configured, the job will be created as a ScheduleJobBootstrap.
+The Starter will start scheduling when application is ready.
+Otherwise, the job will be created as a OneOffJobBootstrap with a name specified by "jobBootstrapBeanName".
+It requires manual injection and execution.
 
 Reference: 
 
@@ -82,6 +87,12 @@ elasticjob:
       shardingTotalCount: 3
       props:
         script.command.line: "echo SCRIPT Job: "
+    manualScriptJob:
+      elasticJobType: SCRIPT
+      jobBootstrapBeanName: manualScriptJobBean
+      shardingTotalCount: 9
+      props:
+        script.command.line: "echo Manual SCRIPT Job: "
 ```
 
 **Properties**
@@ -94,6 +105,10 @@ elasticjob.jobs.scriptJob.elastic-job-type=SCRIPT
 elasticjob.jobs.scriptJob.cron=0/5 * * * * ?
 elasticjob.jobs.scriptJob.sharding-total-count=3
 elasticjob.jobs.scriptJob.props.script.command.line=echo SCRIPT Job:
+elasticjob.jobs.manualScriptJob.elastic-job-type=SCRIPT
+elasticjob.jobs.manualScriptJob.job-bootstrap-bean-name=manualScriptJobBean
+elasticjob.jobs.manualScriptJob.sharding-total-count=3
+elasticjob.jobs.manualScriptJob.props.script.command.line=echo Manual SCRIPT Job:
 ```
 
 ## Event Trace Configuration

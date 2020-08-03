@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
@@ -87,5 +88,12 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         Map<String, JobBootstrap> jobBootstrapBeans = applicationContext.getBeansOfType(JobBootstrap.class);
         assertFalse(jobBootstrapBeans.isEmpty());
         BlockUtils.waitingShortTime();
+    }
+    
+    @Test
+    public void assertOneOffJobBootstrapBeanName() {
+        assertNotNull(applicationContext);
+        assertNotNull(applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class));
+        assertNotNull(applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class));
     }
 }

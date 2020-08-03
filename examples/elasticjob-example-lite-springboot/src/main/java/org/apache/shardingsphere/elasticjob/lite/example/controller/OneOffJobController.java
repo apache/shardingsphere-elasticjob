@@ -28,7 +28,7 @@ import javax.annotation.Resource;
 @DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
     
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
+    @Resource(name = "manualScriptJobBean")
     private OneOffJobBootstrap manualScriptJob;
     
     @GetMapping("/execute")

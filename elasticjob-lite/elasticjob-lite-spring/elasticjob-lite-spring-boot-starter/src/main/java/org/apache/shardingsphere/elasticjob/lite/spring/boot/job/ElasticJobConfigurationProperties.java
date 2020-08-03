@@ -33,6 +33,8 @@ public class ElasticJobConfigurationProperties {
     private String elasticJobType;
 
     private String cron;
+    
+    private String jobBootstrapBeanName;
 
     private int shardingTotalCount;
 
