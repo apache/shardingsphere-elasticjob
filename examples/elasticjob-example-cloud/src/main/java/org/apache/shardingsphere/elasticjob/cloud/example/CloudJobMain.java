@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.dangdang.ddframe.job.example;
+package org.apache.shardingsphere.elasticjob.cloud.example;
 
 import org.apache.shardingsphere.elasticjob.cloud.api.JobBootstrap;
 
