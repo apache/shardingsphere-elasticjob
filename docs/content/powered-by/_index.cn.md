@@ -36,6 +36,7 @@ chapter = true
 ### 金融行业
 <ul>
     <li><a href="https://www.bestpay.com.cn/" rel="nofollow">甜橙金融(翼支付)</a></li>
+    <li><a href="http://www.wxsbank.com/" rel="nofollow">无锡锡商银行</a></li>
     <li><a href="https://www.ppdai.com/" rel="nofollow">拍拍贷</a></li>
     <li><a href="https://www.ysepay.com/" rel="nofollow">银盛支付</a></li>
     <li><a href="https://www.zhongan.com/" rel="nofollow">众安保险</a></li>
@@ -46,7 +47,6 @@ chapter = true
     <li><a href="https://www.kaniu.com/" rel="nofollow">卡牛信用管家</a></li>
     <li><a href="http://www.jiedaibao.com/" rel="nofollow">借贷宝</a></li>
     <li><a href="https://www.jinhui365.com/" rel="nofollow">金汇金融</a></li>
-    <li><a href="http://www.wxsbank.com/" rel="nofollow">无锡锡商银行</a></li>
 </ul>
 
 ### 数字化与云服务
@@ -56,19 +56,22 @@ chapter = true
     <li><a href="https://www.treebear.cn/" rel="nofollow">树熊网络</a></li>
 </ul>
 
-### 出行与物流
+### 出行
 <ul>
-    <li><a href="http://www.yto.net.cn/" rel="nofollow">圆通速递</a></li>
     <li><a href="http://www.juneyaoair.com/" rel="nofollow">吉祥航空</a></li>
     <li><a href="https://www.caocaokeji.cn/" rel="nofollow">曹操出行</a></li>
     <li><a href="https://www.tuhu.cn/" rel="nofollow">途虎养车</a></li>
-    <li><a href="https://auto.ifeng.com/" rel="nofollow">凤凰汽车</a></li>
     <li><a href="https://www.01zhuanche.com/" rel="nofollow">首汽约车</a></li>
-    <li><a href="http://www.haoyunhu56.com/" rel="nofollow">好运虎物流</a></li>
-    <li><a href="http://www.dekuncn.com/" rel="nofollow">德坤物流</a></li>
     <li><a href="https://www.itrip.com/" rel="nofollow">iTrip爱去</a></li>
     <li><a href="https://www.maihaoche.com/" rel="nofollow">卖好车</a></li>
     <li><a href="https://www.ttpai.cn/" rel="nofollow">天天拍车</a></li>
+</ul>
+
+### 物流
+<ul>
+    <li><a href="http://www.yto.net.cn/" rel="nofollow">圆通速递</a></li> 
+    <li><a href="http://www.haoyunhu56.com/" rel="nofollow">好运虎物流</a></li>
+    <li><a href="http://www.dekuncn.com/" rel="nofollow">德坤物流</a></li>
 </ul>
 
 ### 房地产
@@ -95,15 +98,16 @@ chapter = true
 ### 新闻资讯
 <ul>
     <li><a href="http://bj.fangjia.com/" rel="nofollow">房价网</a></li>
+    <li><a href="https://auto.ifeng.com/" rel="nofollow">凤凰汽车</a></li>
     <li><a href="https://www.taoguba.com.cn/" rel="nofollow">淘股吧</a></li>
     <li><a href="https://www.fanhaoyue.com/" rel="nofollow">饭好约</a></li>
 </ul>
 
 ### 通信科技
 <ul>
-    <li><a href="https://www.ultrapower.com.cn/" rel="nofollow">神州泰岳</a></li>
-    <li><a href="https://www.oneplus.com/cn" rel="nofollow">一加科技</a></li>
     <li><a href="https://www.meizu.com/" rel="nofollow">魅族</a></li>
+    <li><a href="https://www.oneplus.com/cn" rel="nofollow">一加科技</a></li>
+    <li><a href="https://www.ultrapower.com.cn/" rel="nofollow">神州泰岳</a></li>
 </ul>
 
 ### 物联网
