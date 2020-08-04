@@ -46,7 +46,8 @@ Configuration:
 | Property name                     | Required |
 | --------------------------------- |:-------- |
 | elasticJobClass / elasticJobType  | Yes      |
-| cron / jobBootstrapBeanName       | No       |
+| cron                              | No       |
+| jobBootstrapBeanName              | No       |
 | sharding-total-count              | Yes      |
 | sharding-item-parameters          | No       |
 | job-parameter                     | No       |

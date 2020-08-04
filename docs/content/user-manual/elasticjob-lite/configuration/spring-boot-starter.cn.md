@@ -46,7 +46,8 @@ elasticjob.reg-center.server-lists=localhost:6181
 | 属性名                            | 是否必填 |
 | --------------------------------- |:-------- |
 | elasticJobClass / elasticJobType  | 是       |
-| cron / jobBootstrapBeanName       | 否       |
+| cron                              | 否       |
+| jobBootstrapBeanName              | 否       |
 | sharding-total-count              | 是       |
 | sharding-item-parameters          | 否       |
 | job-parameter                     | 否       |
