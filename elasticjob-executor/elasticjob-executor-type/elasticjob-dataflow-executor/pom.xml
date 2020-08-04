@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-executor-type</artifactId>
-        <version>3.0.0-alpha</version>
+        <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-dataflow-executor</artifactId>
     <name>${project.artifactId}</name>

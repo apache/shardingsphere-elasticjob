@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-executor</artifactId>
-        <version>3.0.0-alpha</version>
+        <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-executor-type</artifactId>
     <packaging>pom</packaging>
