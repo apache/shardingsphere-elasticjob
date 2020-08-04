@@ -27,6 +27,7 @@ elasticjob:
         script.command.line: "echo SCRIPT Job: "
     manualScriptJob:
       elasticJobType: SCRIPT
+      jobBootstrapBeanName: manualScriptJobBean
       shardingTotalCount: 9
       props:
         script.command.line: "echo Manual SCRIPT Job: "

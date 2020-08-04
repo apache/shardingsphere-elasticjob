@@ -80,6 +80,9 @@ JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 
 
 也可以通过 ApplicationContext 获取 JobBootstrap 的 Bean。
 
+`OneOffJobBootstrap` bean 的名称通过属性 jobBootstrapBeanName 配置，注入时需要指定依赖的 bean 名称。
+具体配置请参考[配置文档](/cn/user-manual/elasticjob-lite/configuration/spring-boot-starter)。
+
 ```java
 @RestController
 @DependsOn("ElasticJobLiteAutoConfiguration")

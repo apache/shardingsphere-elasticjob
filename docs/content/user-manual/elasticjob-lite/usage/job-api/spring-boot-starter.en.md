@@ -82,6 +82,9 @@ JobBootstraps are created by the Starter dynamically. It's unable to inject the 
 
 Developers can also retrieve `JobBootstrap` beans by ApplicationContext.
 
+The bean name of `OneOffJobBootstrap` is specified by property "jobBootstrapBeanName",
+Please refer to [Spring Boot Starter Configuration](/en/user-manual/elasticjob-lite/configuration/spring-boot-starter).
+
 ```java
 @RestController
 @DependsOn("ElasticJobLiteAutoConfiguration")
