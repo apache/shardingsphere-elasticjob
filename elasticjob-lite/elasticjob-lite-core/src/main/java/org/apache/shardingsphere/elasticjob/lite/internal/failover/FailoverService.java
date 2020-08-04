@@ -80,8 +80,9 @@ public final class FailoverService {
 
     public boolean isFailoverRunning(List<Integer> failoverShardingItems) {
         String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
+        String node;
         for (int item : failoverShardingItems) {
-            String node = FailoverNode.getRunningNode(item);
+            node = FailoverNode.getRunningNode(item);
             if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
                 return true;
             }
