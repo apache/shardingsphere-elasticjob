@@ -77,7 +77,18 @@ public final class FailoverService {
         return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty()
                 && !JobRegistry.getInstance().isJobRunning(jobName);
     }
-    
+
+    public boolean isFailoverRunning(List<Integer> failoverShardingItems) {
+        String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
+        for (int item : failoverShardingItems) {
+            String node = FailoverNode.getRunningNode(item);
+            if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Update sharding items status when failover execution complete.
      * 
@@ -86,6 +97,7 @@ public final class FailoverService {
     public void updateFailoverComplete(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getRunningNode(each));
         }
     }
     
@@ -144,6 +156,10 @@ public final class FailoverService {
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(Integer.parseInt(each)));
         }
+
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ROOT)) {
+            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getRunningNode(Integer.parseInt(each)));
+        }
     }
     
     class FailoverLeaderExecutionCallback implements LeaderExecutionCallback {
@@ -160,6 +176,7 @@ public final class FailoverService {
             // TODO Instead of using triggerJob, use executor for unified scheduling
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
             if (null != jobScheduleController) {
+                jobNodeStorage.fillEphemeralJobNode(FailoverNode.getRunningNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
                 jobScheduleController.triggerJob();
             }
         }

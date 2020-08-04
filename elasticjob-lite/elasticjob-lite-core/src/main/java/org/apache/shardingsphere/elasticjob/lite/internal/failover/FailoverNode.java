@@ -25,8 +25,9 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
  * Failover node.
  */
 public final class FailoverNode {
-    
-    private static final String FAILOVER = "failover";
+    public static final String ROOT = "failover";
+
+    private static final String FAILOVER = ROOT;
     
     private static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
     
@@ -37,7 +38,11 @@ public final class FailoverNode {
     static final String LATCH = LEADER_ROOT + "/latch";
     
     private static final String EXECUTION_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVER;
-    
+
+    static final String RUNNING_APPENDIX = "running";
+
+    static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
+
     private final JobNodePath jobNodePath;
     
     public FailoverNode(final String jobName) {
@@ -67,5 +72,15 @@ public final class FailoverNode {
     
     private boolean isFailoverPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ShardingNode.ROOT)) && path.endsWith(FailoverNode.FAILOVER);
+    }
+
+    /**
+     * Get failover running node.
+     *
+     * @param item sharding item
+     * @return failover running node
+     */
+    public static String getRunningNode(final int item) {
+        return String.format(RUNNING, item);
     }
 }
