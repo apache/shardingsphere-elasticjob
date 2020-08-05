@@ -340,8 +340,8 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
-                    monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
+            return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter,
+                    misfire || monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
         }
     }

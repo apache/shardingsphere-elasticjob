@@ -131,7 +131,8 @@ public final class LiteJobFacade implements JobFacade {
     
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
-        return !isNeedSharding() && configService.load(true).isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+        JobConfiguration jobConfiguration = configService.load(true);
+        return !isNeedSharding() && jobConfiguration.isMonitorExecution() && jobConfiguration.isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
     @Override
