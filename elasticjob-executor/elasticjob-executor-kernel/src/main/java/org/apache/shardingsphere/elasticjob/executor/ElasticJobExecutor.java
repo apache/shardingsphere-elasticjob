@@ -139,12 +139,6 @@ public final class ElasticJobExecutor {
     
     private void process(final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        if (1 == items.size()) {
-            int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, item);
-            process(shardingContexts, item, jobExecutionEvent);
-            return;
-        }
         CountDownLatch latch = new CountDownLatch(items.size());
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
