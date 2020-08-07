@@ -4,7 +4,7 @@
 
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob 是一个分布式调度解决方案，由两个相互独立的子项目 ElasticJob Lite 和 ElasticJob Cloud 组成。
+ElasticJob 是面向互联网生态和海量任务的分布式调度解决方案，由两个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
 它通过弹性调度、资源管控、以及作业治理的功能，打造一个适用于互联网场景的分布式调度解决方案，并通过开放的架构设计，提供多元化的作业生态。
 它的各个产品使用统一的作业 API，开发者仅需一次开发，即可随意部署。
 
