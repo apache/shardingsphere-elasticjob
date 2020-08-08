@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 70 家公司。
+共计 71 家公司。
 
 ### 电子商务
 <ul>
@@ -78,6 +78,7 @@ chapter = true
 <ul>
     <li><a href="http://www.ziroom.com/" rel="nofollow">自如网</a></li>
     <li><a href="https://www.ucommune.com/" rel="nofollow">优客工场</a></li>
+    <li><a href="https://www.lianjia.com/" rel="nofollow">链家网</a></li>
 </ul>
 
 ### 互联网教育
