@@ -20,5 +20,5 @@ ElasticJob-Lite is a lightweight, decentralized solution that provides distribut
 | Job Execution     | `Daemon`          | Daemon + Transient |
 | Deploy Dependency | `ZooKeeper`       | ZooKeeper + Mesos  |
 
-The advantages of Elasticjob Lite are no centralized design and less external dependence, 
+The advantages of Elasticjob-Lite are no centralized design and less external dependence, 
 which is suitable for business application with stable resource allocation.

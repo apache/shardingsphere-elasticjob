@@ -8,6 +8,8 @@ chapter = true
 ElasticJob will not re-shard during this execution, but wait for the next scheduling before starting the re-sharding process.
 When the server is down during job execution, failover allows the unfinished task to be compensated and executed on another job node.
 
+Enable failover and monitorExecution together to take effect.
+
 ## Concept
 
 Failover is a temporary compensation execution mechanism for the currently executed job. When the next job is run, the current job allocation will be adjusted through resharding.
