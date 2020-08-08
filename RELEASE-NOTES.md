@@ -256,6 +256,7 @@
 1. [ISSUE #110](https://github.com/elasticjob/elastic-job/issues/110) Trigger the task manually
 
 ### Bug Fixes
+
 1. [ISSUE #99](https://github.com/elasticjob/elastic-job/issues/99) After deleting a task asynchronously caused the job to be deleted, the task that has not yet ended continues to create zk data
 
 ## 1.1.0
@@ -292,6 +293,7 @@
 1. [ISSUE #93](https://github.com/elasticjob/elastic-job/issues/93) The registry configuration provides default values for baseSleepTimeMilliseconds, maxSleepTimeMilliseconds, and maxRetries
 
 ### Bug Fixes
+
 1. [ISSUE #92](https://github.com/elasticjob/elastic-job/issues/92) Modifying the total shard parameter results in a listening throw timeout exception performed by only a single node
 
 ## 1.0.6
@@ -377,4 +379,5 @@
 1. [ISSUE #53](https://github.com/elasticjob/elastic-job/issues/53) Dataflow's Sequence type tasks use multithreaded fetch data
 
 ## 1.0.1
+
 1. Initial version
