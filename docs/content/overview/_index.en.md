@@ -15,7 +15,7 @@ ElasticJob is a distributed scheduling solution consisting of two separate proje
 
 Through the functions of flexible scheduling, resource management and job management, 
 it creates a distributed scheduling solution suitable for Internet scenarios, 
-and provides diversified job ecosystem through open architecture design.
+and provides a diversified job ecosystem through open architecture design.
 It uses a unified job API for each project.
 Developers only need code one time and can deploy at will.
 
