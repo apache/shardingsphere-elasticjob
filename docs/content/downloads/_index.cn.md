@@ -14,10 +14,10 @@ ElasticJob 的发布版包括源码包及其对应的二进制包。
 
 | 版本 | 发布日期 | 说明 | 下载 |
 | - | - | - | - |
-| 3.0.0-alpha | Coming soon  | 源码 | [[src]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud-Scheduler 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
+| 3.0.0-alpha | Aug 9, 2020  | 源码 | [[src]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.sha512) |
+|             |              | ElasticJob-Lite 二进制包 | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.sha512) |
+|             |              | ElasticJob-Cloud-Scheduler 二进制包 | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.sha512) |
+|             |              | ElasticJob-Cloud-Executor 二进制包 | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.sha512) |
 
 **ElasticJob-UI**
 

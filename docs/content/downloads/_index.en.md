@@ -14,10 +14,10 @@ The downloads are distributed via mirror sites and should be checked for tamperi
 
 | Version | Release date | Description | Downloads |
 | - | - | - | - |
-| 3.0.0-alpha | Coming soon  | Source codes | [[src]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud-Scheduler Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
+| 3.0.0-alpha | Aug 9, 2020  | Source codes | [[src]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.sha512) |
+|             |              | ElasticJob-Lite Binary Distribution | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.sha512) |
+|             |              | ElasticJob-Cloud-Scheduler Binary Distribution | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.sha512) |
+|             |              | ElasticJob-Cloud-Executor Binary Distribution | [[tar]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz) [[asc]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.asc) [[sha512]](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.sha512) |
 
 **ElasticJob-UI**
 
