@@ -41,6 +41,7 @@ chapter = true
     <li><a href="https://www.ysepay.com/" rel="nofollow">银盛支付</a></li>
     <li><a href="https://www.zhongan.com/" rel="nofollow">众安保险</a></li>
     <li><a href="http://www.jchl.com/" rel="nofollow">金财互联</a></li>
+    <li><a href="http://www.icinfo.cn/" rel="nofollow">浙江汇信科技</a></li>
     <li><a href="https://www.lianlianpay.com/" rel="nofollow">连连支付</a></li>
     <li><a href="http://www.yaolaivip.com/" rel="nofollow">耀莱在线</a></li>
     <li><a href="https://www.laocaibao.com/" rel="nofollow">捞财宝</a></li>
@@ -128,6 +129,7 @@ chapter = true
     <li><a href="http://www.leimingtech.com/" rel="nofollow">雷铭科技</a></li>
     <li><a href="https://www.zyzc8.com/" rel="nofollow">众畅网络科技</a></li>
     <li><a href="http://www.deepdraw.cn/" rel="nofollow">深绘智能</a></li>
+    <li><a href="https://www.go-future.cn/" rel="nofollow">未来信封</a></li>
 </ul>
 
 ### 医疗健康
