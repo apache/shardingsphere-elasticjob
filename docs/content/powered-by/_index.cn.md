@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 71 家公司。
+共计 73 家公司。
 
 ### 电子商务
 <ul>
