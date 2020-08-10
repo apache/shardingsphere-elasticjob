@@ -41,9 +41,9 @@ Total: 73 companies.
     <li><a href="https://www.ysepay.com/" rel="nofollow">YinSheng E-Pay</a></li>
     <li><a href="https://www.zhongan.com/" rel="nofollow">ZhongAn Tech</a></li>
     <li><a href="http://www.jchl.com/" rel="nofollow">JinCaiHuLian</a></li>
-    <li><a href="http://www.icinfo.cn/" rel="nofollow">IcInfo</a></li>
     <li><a href="https://www.lianlianpay.com/" rel="nofollow">Lianlian Pay</a></li>
     <li><a href="http://www.yaolaivip.com/" rel="nofollow">SR online</a></li>
+    <li><a href="http://www.icinfo.cn/" rel="nofollow">IcInfo</a></li>
     <li><a href="https://www.laocaibao.com/" rel="nofollow">LaoCaiBao</a></li>
     <li><a href="https://www.kaniu.com/" rel="nofollow">NiuCard</a></li>
     <li><a href="http://www.jiedaibao.com/" rel="nofollow">JieDaiBao</a></li>
