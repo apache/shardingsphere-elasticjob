@@ -15,16 +15,14 @@ ElasticJob 的发布版包括源码包及其对应的二进制包。
 
 ##### ElasticJob - 版本: 3.0.0-alpha ( 发布日期: Aug 9, 2020 )
 
-- 源码: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip) ] [ [ASC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.asc) ] [ [SHA512](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.sha512) ]
-- ElasticJob-Lite 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz) ] [ [ASC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.asc) ] [ [SHA512](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.sha512) ]
-- ElasticJob-Cloud-Scheduler 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz) ] [ [ASC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.asc) ] [ [SHA512](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.sha512) ]
-- ElasticJob-Cloud-Executor 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz) ] [ [ASC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.asc) ] [ [SHA512](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.sha512) ]
+- 源码: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-src.zip.sha512) ]
+- ElasticJob-Lite 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Scheduler 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-scheduler-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Executor 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-executor-bin.tar.gz.sha512) ]
 
-##### ElasticJob-UI - 版本: 3.0.0-alpha ( 发布日期: Coming soon )
+##### ElasticJob-UI - 版本: 3.0.0-alpha ( 发布日期: 即将发布 )
 
-- 源码: [ [SRC]() ] [ [ASC]() ]  [[SHA512]() ]
-- ElasticJob-Lite-UI 二进制包: [ [TAR]() ] [ [ASC]() ] [ [SHA512]() ]
-- ElasticJob-Cloud-UI 二进制包: [ [TAR]() ] [ [ASC]() ] [ [SHA512]() ]
+即将发布
 
 ## 全部版本
 
