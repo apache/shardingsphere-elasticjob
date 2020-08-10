@@ -62,6 +62,7 @@ public final class JavaMain {
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
         TracingConfiguration<DataSource> tracingConfig = new TracingConfiguration<>("RDB", setUpEventTraceDataSource());
+        setUpHttpJob(regCenter, tracingConfig);
         setUpSimpleJob(regCenter, tracingConfig);
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
@@ -81,6 +82,14 @@ public final class JavaMain {
         result.setUsername(EVENT_RDB_STORAGE_USERNAME);
         result.setPassword(EVENT_RDB_STORAGE_PASSWORD);
         return result;
+    }
+    
+    private static void setUpHttpJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        new ScheduleJobBootstrap(regCenter, "HTTP", JobConfiguration.newBuilder("javaHttpJob", 3)
+                .setProperty(HttpJobProperties.URI_KEY, "https://github.com")
+                .setProperty(HttpJobProperties.METHOD_KEY, "GET")
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build(), tracingConfig).schedule();
+        
     }
     
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
