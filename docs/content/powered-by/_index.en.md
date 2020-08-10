@@ -13,7 +13,7 @@ Please register [here](https://github.com/apache/shardingsphere-elasticjob/issue
 
 ## Who are using ElasticJob?
 
-Total: 71 companies.
+Total: 73 companies.
 
 ### E-commerce
 <ul>
@@ -41,6 +41,7 @@ Total: 71 companies.
     <li><a href="https://www.ysepay.com/" rel="nofollow">YinSheng E-Pay</a></li>
     <li><a href="https://www.zhongan.com/" rel="nofollow">ZhongAn Tech</a></li>
     <li><a href="http://www.jchl.com/" rel="nofollow">JinCaiHuLian</a></li>
+    <li><a href="http://www.icinfo.cn/" rel="nofollow">IcInfo</a></li>
     <li><a href="https://www.lianlianpay.com/" rel="nofollow">Lianlian Pay</a></li>
     <li><a href="http://www.yaolaivip.com/" rel="nofollow">SR online</a></li>
     <li><a href="https://www.laocaibao.com/" rel="nofollow">LaoCaiBao</a></li>
@@ -128,6 +129,7 @@ Total: 71 companies.
     <li><a href="http://www.leimingtech.com/" rel="nofollow">LeiMing</a></li>
     <li><a href="https://www.zyzc8.com/" rel="nofollow">ZhongChuang Technology</a></li>
     <li><a href="http://www.deepdraw.cn/" rel="nofollow">DeepDraw</a></li>
+    <li><a href="https://www.go-future.cn/" rel="nofollow">WeiLaiXinFeng</a></li>
 </ul>
 
 ### Health Care
