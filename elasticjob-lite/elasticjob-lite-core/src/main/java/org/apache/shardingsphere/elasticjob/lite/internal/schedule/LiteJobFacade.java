@@ -79,7 +79,8 @@ public final class LiteJobFacade implements JobFacade {
         this.dagService = null;
     }
 
-    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig, final JobDagConfiguration jobDagConfiguration) {
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners,
+                         final TracingConfiguration tracingConfig, final JobDagConfiguration jobDagConfiguration) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionContextService = new ExecutionContextService(regCenter, jobName);

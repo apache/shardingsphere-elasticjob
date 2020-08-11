@@ -44,7 +44,7 @@ public final class TestTracingListener implements TracingListener {
     }
 
     @Override
-    public void listen(DagJobExecutionEvent dagJobExecutionEvent) {
+    public void listen(final DagJobExecutionEvent dagJobExecutionEvent) {
         jobEventCaller.call();
         executionEventCalled = true;
     }

@@ -28,7 +28,6 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.queue.DistributedDelayQueue;
 import org.apache.curator.framework.recipes.queue.QueueBuilder;
@@ -505,7 +504,7 @@ public class DagService implements CuratorCacheListener {
      * @param data new data.
      */
     @Override
-    public void event(Type type, ChildData oldData, ChildData data) {
+    public void event(final Type type, final ChildData oldData, final ChildData data) {
         if (!(type == Type.NODE_CHANGED || type == Type.NODE_CREATED)) {
             return;
         }
