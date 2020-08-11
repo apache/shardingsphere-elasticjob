@@ -20,12 +20,16 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobDagConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.infra.exception.DagRuntimeException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.lite.internal.dag.DagService;
+import org.apache.shardingsphere.elasticjob.lite.internal.dag.DagStates;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
@@ -40,6 +44,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.St
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Lite job facade.
@@ -60,6 +65,8 @@ public final class LiteJobFacade implements JobFacade {
     private final List<ElasticJobListener> elasticJobListeners;
     
     private final JobEventBus jobEventBus;
+
+    private final DagService dagService;
     
     public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig) {
         configService = new ConfigurationService(regCenter, jobName);
@@ -69,8 +76,24 @@ public final class LiteJobFacade implements JobFacade {
         failoverService = new FailoverService(regCenter, jobName);
         this.elasticJobListeners = elasticJobListeners;
         this.jobEventBus = null == tracingConfig ? new JobEventBus() : new JobEventBus(tracingConfig);
+        this.dagService = null;
     }
-    
+
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final TracingConfiguration tracingConfig, final JobDagConfiguration jobDagConfiguration) {
+        configService = new ConfigurationService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionContextService = new ExecutionContextService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        failoverService = new FailoverService(regCenter, jobName);
+        this.elasticJobListeners = elasticJobListeners;
+        this.jobEventBus = null == tracingConfig ? new JobEventBus() : new JobEventBus(tracingConfig);
+        if (null == jobDagConfiguration) {
+            this.dagService = null;
+        } else {
+            this.dagService = new DagService(regCenter, jobName, jobEventBus, jobDagConfiguration);
+        }
+    }
+
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {
         return configService.load(fromCache);
@@ -100,7 +123,15 @@ public final class LiteJobFacade implements JobFacade {
             failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
         }
     }
-    
+
+    @Override
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Map<Integer, String> itemErrorMessages) {
+        executionService.registerJobCompleted(shardingContexts, itemErrorMessages);
+        if (configService.load(true).isFailover()) {
+            failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
+        }
+    }
+
     @Override
     public ShardingContexts getShardingContexts() {
         boolean isFailover = configService.load(true).isFailover();
@@ -166,5 +197,34 @@ public final class LiteJobFacade implements JobFacade {
         if (!Strings.isNullOrEmpty(message)) {
             log.trace(message);
         }
+    }
+
+    @Override
+    public boolean isDagJob() {
+        return dagService != null;
+    }
+
+    @Override
+    public void dagStatesCheck() {
+        if (dagService.getDagStates() == DagStates.RUNNING) {
+            return;
+        }
+        if (dagService.getDagStates() == DagStates.PAUSE) {
+            throw new DagRuntimeException("Dag Job states PAUSE");
+        }
+
+        if (dagService.isDagRootJob()) {
+            dagService.changeDagStatesAndReGraph();
+        }
+
+        if (dagService.getDagStates() != DagStates.RUNNING) {
+            log.info("DAG states not right {}", dagService.getDagStates().getValue());
+            throw new DagRuntimeException("Dag states Not right!");
+        }
+    }
+
+    @Override
+    public void dagJobDependenciesCheck() {
+        dagService.checkJobDependenciesState();
     }
 }

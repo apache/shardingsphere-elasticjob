@@ -82,10 +82,10 @@ public final class JobScheduler {
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners, tracingConfig);
-        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners, tracingConfig, jobConfig.getJobDagConfiguration());
+        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -102,9 +102,9 @@ public final class JobScheduler {
         this.elasticJobListeners = Arrays.asList(elasticJobListeners);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners, tracingConfig);
-        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), this.elasticJobListeners, tracingConfig, jobConfig.getJobDagConfiguration());
+        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, this.elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }

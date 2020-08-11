@@ -66,7 +66,9 @@ public final class JobConfiguration {
     private final boolean disabled;
     
     private final boolean overwrite;
-    
+
+    private final JobDagConfiguration jobDagConfiguration;
+
     /**
      * Create ElasticJob configuration builder.
      *
@@ -114,7 +116,9 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
-    
+
+        private JobDagConfiguration jobDagConfiguration;
+
         /**
          * Cron expression.
          *
@@ -331,7 +335,18 @@ public final class JobConfiguration {
             this.overwrite = overwrite;
             return this;
         }
-        
+
+        /**
+         * Set Dag configuration.
+         *
+         * @param jobDagConfiguration dag configuration
+         * @return ElasticJob configuration builder
+         */
+        public Builder jobDagConfiguration(final JobDagConfiguration jobDagConfiguration) {
+            this.jobDagConfiguration = jobDagConfiguration;
+            return this;
+        }
+
         /**
          * Build ElasticJob configuration.
          * 
@@ -340,9 +355,15 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
+
+            if (null != jobDagConfiguration) {
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobDagConfiguration.getDagName()), "dagName can not be empty When use DAG");
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobDagConfiguration.getDagDependencies()), "dagDependencies can not be empty When use DAG");
+            }
+
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite, jobDagConfiguration);
         }
     }
 }

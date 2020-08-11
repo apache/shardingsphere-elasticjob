@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.DagOperateAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.JobOperateAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate.ShardingOperateAPIImpl;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.reg.RegistryCenterFactory;
@@ -103,5 +104,17 @@ public final class JobAPIFactory {
      */
     public static ShardingStatisticsAPI createShardingStatisticsAPI(final String connectString, final String namespace, final String digest) {
         return new ShardingStatisticsAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
+    }
+
+    /**
+     * Create dag operate API.
+     *
+     * @param connectString registry center connect string
+     * @param namespace registry center namespace
+     * @param digest registry center digest
+     * @return job sharding statistics API
+     */
+    public static DagOperateAPI createDagOperateAPI(final String connectString, final String namespace, final String digest) {
+        return new DagOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
 }

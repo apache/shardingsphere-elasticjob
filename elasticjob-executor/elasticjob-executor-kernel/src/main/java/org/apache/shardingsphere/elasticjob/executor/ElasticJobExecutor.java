@@ -86,6 +86,19 @@ public final class ElasticJobExecutor {
         } catch (final JobExecutionEnvironmentException cause) {
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
+
+        if (jobFacade.isDagJob()) {
+            try {
+                jobFacade.dagStatesCheck();
+                jobFacade.dagJobDependenciesCheck();
+                //CHECKSTYLE:OFF
+            } catch (Exception e) {
+                //CHECKSTYLE:ON
+                log.error("DAG job - {} exception! Check !", jobConfig.getJobName(), e);
+                return;
+            }
+        }
+
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
         jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()));
         if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {
@@ -127,8 +140,7 @@ public final class ElasticJobExecutor {
         try {
             process(shardingContexts, executionSource);
         } finally {
-            // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
-            jobFacade.registerJobCompleted(shardingContexts);
+            jobFacade.registerJobCompleted(shardingContexts, itemErrorMessages);
             if (itemErrorMessages.isEmpty()) {
                 jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
             } else {

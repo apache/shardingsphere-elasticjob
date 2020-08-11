@@ -19,7 +19,9 @@ package org.apache.shardingsphere.elasticjob.infra.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobDagConfiguration;
 
 import java.util.Properties;
 
@@ -63,6 +65,18 @@ public final class JobConfigurationPOJO {
     private boolean disabled;
     
     private boolean overwrite;
+
+    private String dagName;
+
+    private String dagDependencies;
+
+    private int retryTimes;
+
+    private int retryInterval;
+
+    private boolean dagRunAlone;
+
+    private boolean dagSkipWhenFail;
     
     /**
      * Convert to job configuration.
@@ -70,12 +84,17 @@ public final class JobConfigurationPOJO {
      * @return job configuration
      */
     public JobConfiguration toJobConfiguration() {
+        JobDagConfiguration jobDagConfiguration = null;
+        if (StringUtils.isNotEmpty(dagName)) {
+            jobDagConfiguration = new JobDagConfiguration(dagName, dagDependencies, retryTimes, retryInterval, dagRunAlone, dagSkipWhenFail);
+        }
+
         JobConfiguration result = JobConfiguration.newBuilder(jobName, shardingTotalCount)
                 .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
-                .description(description).disabled(disabled).overwrite(overwrite).build();
+                .description(description).disabled(disabled).overwrite(overwrite).jobDagConfiguration(jobDagConfiguration).build();
         for (Object each : props.keySet()) {
             result.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
         }
@@ -107,6 +126,14 @@ public final class JobConfigurationPOJO {
         result.setProps(jobConfiguration.getProps());
         result.setDisabled(jobConfiguration.isDisabled());
         result.setOverwrite(jobConfiguration.isOverwrite());
+        if (jobConfiguration.getJobDagConfiguration() != null) {
+            result.setDagName(jobConfiguration.getJobDagConfiguration().getDagName());
+            result.setDagDependencies(jobConfiguration.getJobDagConfiguration().getDagDependencies());
+            result.setRetryTimes(jobConfiguration.getJobDagConfiguration().getRetryTimes());
+            result.setRetryInterval(jobConfiguration.getJobDagConfiguration().getRetryInterval());
+            result.setDagRunAlone(jobConfiguration.getJobDagConfiguration().isDagRunAlone());
+            result.setDagSkipWhenFail(jobConfiguration.getJobDagConfiguration().isDagSkipWhenFail());
+        }
         return result;
     }
 }

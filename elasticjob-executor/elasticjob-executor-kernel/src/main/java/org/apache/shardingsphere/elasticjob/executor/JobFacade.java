@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Job facade.
@@ -63,7 +64,15 @@ public interface JobFacade {
      * @param shardingContexts sharding contexts
      */
     void registerJobCompleted(ShardingContexts shardingContexts);
-    
+
+    /**
+     * Register job completed. And error sharding items.
+     *
+     * @param shardingContexts sharding contexts
+     * @param itemErrorMessages error items
+     */
+    void registerJobCompleted(ShardingContexts shardingContexts, Map<Integer, String> itemErrorMessages);
+
     /**
      * Get sharding contexts.
      *
@@ -130,4 +139,21 @@ public interface JobFacade {
      * @param message job message
      */
     void postJobStatusTraceEvent(String taskId, State state, String message);
+
+    /**
+     * Is current job belong to DAG.
+     *
+     * @return is dag job
+     */
+    boolean isDagJob();
+
+    /**
+     * Check Dag Group States.
+     */
+    void dagStatesCheck();
+
+    /**
+     * check current job's dependencies are all success.
+     */
+    void dagJobDependenciesCheck();
 }

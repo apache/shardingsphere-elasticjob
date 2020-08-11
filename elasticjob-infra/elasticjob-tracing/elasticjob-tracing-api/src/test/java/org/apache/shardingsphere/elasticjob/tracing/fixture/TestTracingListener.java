@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.fixture;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
@@ -41,7 +42,13 @@ public final class TestTracingListener implements TracingListener {
     public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
         jobEventCaller.call();
     }
-    
+
+    @Override
+    public void listen(DagJobExecutionEvent dagJobExecutionEvent) {
+        jobEventCaller.call();
+        executionEventCalled = true;
+    }
+
     /**
      * Set executionEventCalled to false.
      */

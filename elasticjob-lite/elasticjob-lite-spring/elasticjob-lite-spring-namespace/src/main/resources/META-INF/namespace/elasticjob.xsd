@@ -65,6 +65,12 @@
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
+                    <xsd:attribute name="dag-name" type="xsd:string" />
+                    <xsd:attribute name="dag-dependencies" type="xsd:string" />
+                    <xsd:attribute name="dag-retry-times" type="xsd:string" default="0" />
+                    <xsd:attribute name="dag-retry-interval" type="xsd:string" default="0" />
+                    <xsd:attribute name="dag-run-alone" type="xsd:string" default="false" />
+                    <xsd:attribute name="dag-skip-when-fail" type="xsd:string" default="false" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
