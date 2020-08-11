@@ -38,14 +38,14 @@ public final class HttpJobProperties {
     public static final String DATA_KEY = "http.data";
     
     /**
-     * Http connect timeout.
+     * Http connect timeout in milliseconds.
      */
-    public static final String CONNECT_TIMEOUT_KEY = "http.connect.timeout";
+    public static final String CONNECT_TIMEOUT_KEY = "http.connect.timeout.milliseconds";
     
     /**
-     * Http read timeout.
+     * Http read timeout in milliseconds.
      */
-    public static final String READ_TIMEOUT_KEY = "http.read.timeout";
+    public static final String READ_TIMEOUT_KEY = "http.read.timeout.milliseconds";
     
     /**
      * Http content type.
@@ -53,7 +53,7 @@ public final class HttpJobProperties {
     public static final String CONTENT_TYPE_KEY = "http.content.type";
     
     /**
-     * Http transparent sharding context.
+     * Http sharding context.
      */
-    public static final String TRANSPARENT_SHARDING_CONTEXT_KEY = "shardingContext";
+    public static final String SHARDING_CONTEXT_KEY = "shardingContext";
 }

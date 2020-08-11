@@ -64,7 +64,7 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
             String data = httpParam.getData();
             if (!Strings.isNullOrEmpty(data)) {
                 StringBuilder builder = new StringBuilder(data);
-                builder.append("&").append(HttpJobProperties.TRANSPARENT_SHARDING_CONTEXT_KEY);
+                builder.append("&").append(HttpJobProperties.SHARDING_CONTEXT_KEY);
                 builder.append("=").append(GsonFactory.getGson().toJson(shardingContext));
                 data = builder.toString();
                 DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());

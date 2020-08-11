@@ -13,7 +13,7 @@ ElasticJob 的作业分类基于 class 和 type 两种类型。
 基于 class 的作业接口的方法参数 `shardingContext` 包含作业配置、片和运行时信息。
 可通过 `getShardingTotalCount()`, `getShardingItem()` 等方法分别获取分片总数，运行在本作业服务器的分片序列号等。
 
-ElasticJob 目前提供 Simple、Dataflow 这两种基于 class 的作业类型，并提供 Script 这一种基于 type 的作业类型，用户可通过实现 SPI 接口自行扩展作业类型。
+ElasticJob 目前提供 Simple、Dataflow 这两种基于 class 的作业类型，并提供 Script、HTTP 这两种基于 type 的作业类型，用户可通过实现 SPI 接口自行扩展作业类型。
 
 ## 简单作业
 
@@ -102,4 +102,40 @@ echo sharding execution context is $*
 
 ```
 sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","shardingItem":0,"shardingParameter":"A"}
+```
+
+## HTTP作业
+
+可通过属性配置`http.url`,`http.method`,`http.data`等配置待请求的http信息。
+如果设置了`http.data`, 分片信息也将以`shardingContext`为key传递到url接口，值为json格式。
+
+```java
+
+public class HttpJobMain {
+    
+    public static void main(String[] args) {
+        
+        new ScheduleJobBootstrap(regCenter, "HTTP", JobConfiguration.newBuilder("javaHttpJob", 1)
+                .setProperty(HttpJobProperties.URI_KEY, "http://xxx.com/execute")
+                .setProperty(HttpJobProperties.METHOD_KEY, "POST")
+                .setProperty(HttpJobProperties.DATA_KEY, "source=ejob")
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing").build()).schedule();
+    }
+}
+```
+```java
+@Controller
+@Slf4j
+public class HttpJobController {
+    
+    @RequestMapping(path = "/execute", method = RequestMethod.POST)
+    public void execute(String source, String shardingContext) {
+        log.info("execute from source : {}, shardingContext : {}", source, shardingContext);
+    }
+}
+```
+
+execute接口将输出：
+```
+execute from source : ejob, shardingContext : {"jobName":"scriptElasticDemoJob","shardingTotalCount":3,"jobParameter":"","shardingItem":0,"shardingParameter":"Beijing"}
 ```
