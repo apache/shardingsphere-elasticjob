@@ -87,3 +87,9 @@ Make sure that the `Web Console`'s version is consistent with `ElasticJob`, othe
 Answer:
 
 Shard to be adjusted indicates the state when the job has started but has not yet obtained the shard.
+
+## 11. Why is there a task scheduling delay in the first startup?
+
+Answer:
+
+ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set -Djava.net.preferIPv4Stack=true.
