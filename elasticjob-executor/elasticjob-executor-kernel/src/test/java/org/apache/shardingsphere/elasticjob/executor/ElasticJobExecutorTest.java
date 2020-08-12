@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -131,10 +132,19 @@ public final class ElasticJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
-            verify(jobFacade).registerJobCompleted(shardingContexts);
+            verify(jobFacade).registerJobCompleted(shardingContexts, getItemErrorMessage(shardingContexts));
         }
     }
-    
+
+    private Map<Integer, String> getItemErrorMessage(final ShardingContexts shardingContexts) {
+        Map<Integer, String> itemErrorMsg = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
+        itemErrorMsg.put(0, "java.lang.RuntimeException" + System.lineSeparator());
+        if (shardingContexts.getShardingItemParameters().size() > 1) {
+            itemErrorMsg.put(1, "java.lang.RuntimeException" + System.lineSeparator());
+        }
+        return itemErrorMsg;
+    }
+
     private String getErrorMessage(final ShardingContexts shardingContexts) {
         return 1 == shardingContexts.getShardingItemParameters().size()
                 ? "{0=java.lang.RuntimeException" + System.lineSeparator() + "}"
@@ -190,7 +200,7 @@ public final class ElasticJobExecutorTest {
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
         verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
-        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts);
+        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts, new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1));
     }
     
     @Test(expected = JobSystemException.class)
@@ -245,7 +255,7 @@ public final class ElasticJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
-        verify(jobFacade).registerJobCompleted(shardingContexts);
+        verify(jobFacade).registerJobCompleted(shardingContexts, new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1));
         verify(jobFacade).afterJobExecuted(shardingContexts);
     }
 }

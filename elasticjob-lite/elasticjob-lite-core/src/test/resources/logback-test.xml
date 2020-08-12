@@ -25,7 +25,7 @@
     
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>ERROR</level>
         </filter>
         <encoder charset="${log.charset}">
             <pattern>${log.pattern}</pattern>

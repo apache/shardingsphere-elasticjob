@@ -37,6 +37,8 @@ public final class LifecycleYamlConstants {
             + "overwrite: false\n";
     
     private static final String DATAFLOW_JOB_YAML = "cron: 0/1 * * * * ?\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: false\n"
             + "description: ''\n"
             + "disabled: false\n"
             + "failover: false\n"
@@ -49,6 +51,8 @@ public final class LifecycleYamlConstants {
             + "props:\n"
             + "  streaming.process: 'true'\n"
             + "reconcileIntervalMinutes: 10\n"
+            + "retryInterval: 0\n"
+            + "retryTimes: 0\n"
             + "shardingTotalCount: 3\n";
     
     private static final String SCRIPT_JOB_YAML = "jobName: test_job\n"

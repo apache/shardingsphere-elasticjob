@@ -30,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 public final class JobConfigurationPOJOTest {
     
     private static final String YAML = "cron: 0/1 * * * * ?\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: false\n"
             + "description: Job description\n"
             + "disabled: false\n"
             + "failover: false\n"
@@ -45,10 +47,14 @@ public final class JobConfigurationPOJOTest {
             + "props:\n"
             + "  key: value\n"
             + "reconcileIntervalMinutes: 0\n"
+            + "retryInterval: 0\n"
+            + "retryTimes: 0\n"
             + "shardingItemParameters: 0=A,1=B,2=C\n"
             + "shardingTotalCount: 3\n";
     
     private static final String YAML_WITH_NULL = "cron: 0/1 * * * * ?\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: false\n"
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
@@ -57,6 +63,8 @@ public final class JobConfigurationPOJOTest {
             + "monitorExecution: false\n"
             + "overwrite: false\n"
             + "reconcileIntervalMinutes: 0\n"
+            + "retryInterval: 0\n"
+            + "retryTimes: 0\n"
             + "shardingTotalCount: 3\n";
     
     @Test

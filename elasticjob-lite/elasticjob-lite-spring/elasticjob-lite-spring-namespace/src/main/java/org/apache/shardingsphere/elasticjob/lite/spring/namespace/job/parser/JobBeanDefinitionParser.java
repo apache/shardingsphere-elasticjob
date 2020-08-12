@@ -30,6 +30,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
@@ -114,6 +115,9 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     }
 
     private BeanDefinition createJobDagConfig(final Element element) {
+        if (StringUtils.isEmpty(element.getAttribute(JobBeanDefinitionTag.DAG_NAME))) {
+            return null;
+        }
         BeanDefinitionBuilder jobDagConfig = BeanDefinitionBuilder.rootBeanDefinition(JobDagConfiguration.class);
         jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_NAME));
         jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_DEPENDENCIES));
