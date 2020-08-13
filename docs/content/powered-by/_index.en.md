@@ -13,7 +13,7 @@ Please register [here](https://github.com/apache/shardingsphere-elasticjob/issue
 
 ## Who are using ElasticJob?
 
-Total: 73 companies.
+Total: 74 companies.
 
 ### E-commerce
 <ul>
@@ -138,6 +138,11 @@ Total: 73 companies.
     <li><a href="http://www.yunyichina.cn/" rel="nofollow">Glory</a></li>
     <li><a href="https://www.120yibao.com/" rel="nofollow">YIBAO</a></li>
     <li><a href="https://www.sytown.cn/" rel="nofollow">SYTown</a></li>
+</ul>
+
+### Retail
+<ul>
+    <li><a href="http://www.yonghui.com.cn/" rel="nofollow">YH</a></li>
 </ul>
 
 <img src="https://shardingsphere.apache.org/community/image/powered-by.png" width = "30%" height = "30%" align="right" alt="Powered By ShardingSphere" />
