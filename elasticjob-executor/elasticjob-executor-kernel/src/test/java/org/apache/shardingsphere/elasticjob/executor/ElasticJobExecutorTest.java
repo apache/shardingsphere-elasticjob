@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.executor;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobDagConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
@@ -71,7 +72,15 @@ public final class ElasticJobExecutorTest {
         return JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
     }
-    
+
+    private JobConfiguration createJobConfigurationWithDag() {
+        JobDagConfiguration jobDagConfiguration = new JobDagConfiguration("fakeDag", "job1,job2", 3, 400,
+                false, false);
+        return JobConfiguration.newBuilder("test_job", 3)
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc")
+                .jobDagConfiguration(jobDagConfiguration).build();
+    }
+
     @SneakyThrows
     private void setJobItemExecutor() {
         Field field = ElasticJobExecutor.class.getDeclaredField("jobItemExecutor");
@@ -88,7 +97,17 @@ public final class ElasticJobExecutorTest {
             verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
     }
-    
+
+    @Test
+    public void assertExecuteWhenDagConfigEmpty() {
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
+        when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
+        when(jobFacade.isDagJob()).thenReturn(true);
+        elasticJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+    }
+
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());

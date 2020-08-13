@@ -187,7 +187,7 @@ public class DagService implements CuratorCacheListener {
      * Persist Dag config into zk.
      * always overwrite.
      */
-    public void regDagConfig() {
+    private void regDagConfig() {
         this.dagNodeStorage.persistDagConfig(genDependenciesString());
         this.delayQueue = initDelayQueue();
         this.jobStateCache = CuratorCache.build((CuratorFramework) regCenter.getRawClient(), this.dagNodeStorage.pathOfJobNodeState());
@@ -278,7 +278,7 @@ public class DagService implements CuratorCacheListener {
      *
      * @param allDagNode dag config info.
      */
-    public void checkCycle(final Map<String, Set<String>> allDagNode) {
+    private void checkCycle(final Map<String, Set<String>> allDagNode) {
         Map<String, Set<String>> cloneMap = Maps.newHashMap();
         allDagNode.forEach((key, value) -> cloneMap.put(key, Sets.newHashSet(value)));
 
@@ -330,7 +330,6 @@ public class DagService implements CuratorCacheListener {
      * When dag job start run ,check it's dependencies jobs states.
      */
     public void checkJobDependenciesState() {
-        // 检查当前job 已经是终态不允许再次执行
         DagJobStates currentJobRunStates = dagNodeStorage.getDagJobRunStates(jobName);
         if (currentJobRunStates == DagJobStates.SUCCESS || currentJobRunStates == DagJobStates.FAIL) {
             log.info("DAG- {} job- {} 's states is {},Can not run again!", jobDagConfig.getDagName(), jobName, currentJobRunStates);
@@ -411,7 +410,7 @@ public class DagService implements CuratorCacheListener {
      *
      * @return true if no job running.
      */
-    public boolean hasNoJobRunning() {
+    private boolean hasNoJobRunning() {
         return dagNodeStorage.getDagJobListByState(DagJobStates.RUNNING).isEmpty();
     }
 
@@ -429,12 +428,13 @@ public class DagService implements CuratorCacheListener {
         List<String> nextList = Lists.newLinkedList();
 
         allDagRunJobs.values().forEach(s -> {
-            if (s.removeIf(x -> successList.contains(x))) {
+            if (s.removeIf(x -> successList.contains(x) || skipList.contains(x))) {
                 s.add("self");
             }
         });
 
         successList.stream().forEach(j -> allDagRunJobs.remove(j));
+        skipList.stream().forEach(j -> allDagRunJobs.remove(j));
 
         allDagRunJobs.entrySet().forEach(x -> {
             if (x.getValue().isEmpty() || (x.getValue().size() == 1 && x.getValue().contains("self"))) {
@@ -444,7 +444,6 @@ public class DagService implements CuratorCacheListener {
 
         nextList.removeAll(runningList);
         nextList.removeAll(failList);
-        nextList.remove(skipList);
 
         log.info("Dag-{} acquire next should Trigger jobs: {}", dagName, nextList);
         if (log.isDebugEnabled()) {

@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
@@ -80,5 +81,12 @@ public final class RDBTracingListenerTest {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.");
         jobEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
+    }
+
+    @Test
+    public void assertDagJobExecutionEvent() {
+        DagJobExecutionEvent dagJobExecutionEvent = new DagJobExecutionEvent("dagName", JOB_NAME, "batchno", "1", "message is empty.");
+        jobEventBus.post(dagJobExecutionEvent);
+        verify(repository, atMost(1)).addDagJobExecutionEvent(dagJobExecutionEvent);
     }
 }

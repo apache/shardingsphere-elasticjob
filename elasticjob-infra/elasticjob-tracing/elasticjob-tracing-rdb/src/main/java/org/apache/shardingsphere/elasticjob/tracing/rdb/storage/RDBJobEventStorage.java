@@ -94,6 +94,7 @@ public final class RDBJobEventStorage {
         try (Connection connection = dataSource.getConnection()) {
             createJobExecutionTableAndIndexIfNeeded(connection);
             createJobStatusTraceTableAndIndexIfNeeded(connection);
+            createDagJobExecutionTableAndIndexIfNeeded(connection);
         }
     }
     
@@ -394,7 +395,7 @@ public final class RDBJobEventStorage {
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForDagJobExecutionLog())) {
             preparedStatement.setString(1, dagJobExecutionEvent.getId());
-            preparedStatement.setString(2, dagJobExecutionEvent.getGroupName());
+            preparedStatement.setString(2, dagJobExecutionEvent.getDagName());
             preparedStatement.setString(3, dagJobExecutionEvent.getJobName());
             preparedStatement.setString(4, dagJobExecutionEvent.getExecTime());
             preparedStatement.setString(5, dagJobExecutionEvent.getExecDate());

@@ -54,4 +54,9 @@ public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     public void assertCreateShardingStatisticsAPI() {
         assertThat(JobAPIFactory.createShardingStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(ShardingStatisticsAPI.class));
     }
+
+    @Test
+    public void assertCreateDagOperateAPI() {
+        assertThat(JobAPIFactory.createDagOperateAPI(getConnectionString(), "namespace", null), instanceOf(DagOperateAPI.class));
+    }
 }

@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
@@ -85,7 +86,13 @@ public final class RDBJobEventStorageTest {
             assertThat(jobStatusTraceEvent.getOriginalTaskId(), is("original_fake_failed_failover_task_id"));
         }
     }
-    
+
+    @Test
+    public void assertAddDagJobExecutionEvent() {
+        DagJobExecutionEvent dagJobExecutionEvent = new DagJobExecutionEvent("fake_dag", "fake_job", "batchno", "1", "message is empty.");
+        assertTrue(storage.addDagJobExecutionEvent(dagJobExecutionEvent));
+    }
+
     @Test
     public void assertUpdateJobExecutionEventWhenSuccess() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);

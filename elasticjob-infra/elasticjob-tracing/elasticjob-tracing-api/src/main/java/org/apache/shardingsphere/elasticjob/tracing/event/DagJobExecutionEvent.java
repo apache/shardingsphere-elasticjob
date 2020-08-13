@@ -34,7 +34,7 @@ import java.util.UUID;
 public class DagJobExecutionEvent implements JobEvent {
     private String id;
 
-    private String groupName;
+    private String dagName;
 
     private String jobName;
 
@@ -48,17 +48,17 @@ public class DagJobExecutionEvent implements JobEvent {
 
     private String message;
 
-    public DagJobExecutionEvent(final String groupName, final String jobName, final String batchNo, final String state,
+    public DagJobExecutionEvent(final String dagName, final String jobName, final String batchNo, final String state,
                                 final String message) {
-        this(groupName, jobName, DateFormatUtils.format(new Date(), "HHmmss"),
+        this(dagName, jobName, DateFormatUtils.format(new Date(), "HHmmss"),
                 DateFormatUtils.format(new Date(), "yyyyMMdd"),
                 batchNo, state, message);
     }
 
-    public DagJobExecutionEvent(final String groupName, final String jobName, final String execTime, final String execDate,
+    public DagJobExecutionEvent(final String dagName, final String jobName, final String execTime, final String execDate,
                                 final String batchNo, final String state, final String message) {
         this.id = UUID.randomUUID().toString();
-        this.groupName = groupName;
+        this.dagName = dagName;
         this.jobName = jobName;
         this.execTime = execTime;
         this.execDate = execDate;
@@ -67,10 +67,10 @@ public class DagJobExecutionEvent implements JobEvent {
         this.message = truncateMessage(message);
     }
 
-    public DagJobExecutionEvent(final String id, final String groupName, final String jobName, final String execTime,
+    public DagJobExecutionEvent(final String id, final String dagName, final String jobName, final String execTime,
                                 final String execDate, final String batchNo, final String state, final String message) {
         this.id = id;
-        this.groupName = groupName;
+        this.dagName = dagName;
         this.jobName = jobName;
         this.execTime = execTime;
         this.execDate = execDate;

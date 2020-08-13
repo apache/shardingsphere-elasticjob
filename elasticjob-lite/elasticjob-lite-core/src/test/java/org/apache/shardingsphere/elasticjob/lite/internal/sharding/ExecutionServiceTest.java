@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.lite.internal.state.JobStateEnum;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
@@ -82,6 +83,9 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).fillEphemeralJobNode("sharding/1/running", "");
         verify(jobNodeStorage).fillEphemeralJobNode("sharding/2/running", "");
         assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
+        verify(jobNodeStorage).createJobNodeIfNeeded("state/state", JobStateEnum.RUNNING);
+        verify(jobNodeStorage).createJobNodeIfNeeded("proc/succ");
+        verify(jobNodeStorage).createJobNodeIfNeeded("proc/fail");
     }
     
     @Test
@@ -104,7 +108,37 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
     }
-    
+
+    private Map<Integer, String> itemErrorMessages() {
+        Map<Integer, String> items = new HashMap<>(2);
+        items.put(0, "Some error!");
+        items.put(1, "Some error!");
+        return items;
+    }
+
+    @Test
+    public void assertRegisterJobCompletedWithItemWithoutMonitorExecution() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
+        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()), itemErrorMessages());
+        verify(jobNodeStorage, times(0)).removeJobNodeIfExisted(any());
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded(any());
+        assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
+    }
+
+    @Test
+    public void assertRegisterJobCompletedWithItemWithMonitorExecution() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
+        executionService.registerJobCompleted(getShardingContext(), itemErrorMessages());
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
+        assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
+        verify(jobNodeStorage).createJobNodeIfNeeded("proc/fail/0");
+        verify(jobNodeStorage).createJobNodeIfNeeded("proc/fail/1");
+    }
+
     @Test
     public void assertClearAllRunningInfo() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());

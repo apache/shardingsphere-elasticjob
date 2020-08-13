@@ -17,10 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.infra.exception;
 
-/**
- * Dag states Exception.
- *
- **/
-public class DagStatesException extends RuntimeException {
+import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public class DagRuntimeExceptionTest {
+
+    @Test
+    public void assertGetMessage() {
+        assertThat(new DagRuntimeException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
+    }
+
+    @Test
+    public void assertGetCause() {
+        assertThat(new DagRuntimeException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    }
 }

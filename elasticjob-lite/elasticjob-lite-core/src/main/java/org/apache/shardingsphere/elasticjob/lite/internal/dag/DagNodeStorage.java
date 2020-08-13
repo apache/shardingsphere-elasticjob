@@ -25,12 +25,13 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.shardingsphere.elasticjob.lite.internal.state.JobStateEnum;
 import org.apache.shardingsphere.elasticjob.lite.internal.state.JobStateNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -321,7 +322,7 @@ public class DagNodeStorage {
     }
 
     private Set<String> splitJobDeps(final String j) {
-        return Splitter.on(",").splitToList(j).stream().collect(Collectors.toSet());
+        return Splitter.on(",").trimResults().splitToList(j).stream().collect(Collectors.toSet());
     }
 
     /**
@@ -396,12 +397,14 @@ public class DagNodeStorage {
         }
         log.debug("Dag-{} trigger job-[{}] in transaction.", dagName, job);
         try {
-            CuratorTransactionFinal curatorTransactionFinal = getClient().inTransaction().create().forPath(pathOfDagRunningJob(job), "".getBytes()).and();
+            CuratorFramework rawClient = (CuratorFramework) regCenter.getRawClient();
+            List<CuratorOp> opList = new ArrayList<>();
+            opList.add(rawClient.transactionOp().create().forPath(pathOfDagRunningJob(job)));
             JobNodePath jobNodePath = new JobNodePath(job);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-                curatorTransactionFinal.setData().forPath(jobNodePath.getInstanceNodePath(each), "TRIGGER".getBytes()).and();
+                opList.add(rawClient.transactionOp().setData().forPath(jobNodePath.getInstanceNodePath(each), "TRIGGER".getBytes()));
             }
-            curatorTransactionFinal.commit();
+            rawClient.transaction().forOperations(opList);
             //CHECKSTYLE:OFF
         } catch (Exception exp) {
             //CHECKSTYLE:ON
@@ -418,12 +421,14 @@ public class DagNodeStorage {
     public void triggerRetryJob() {
         log.debug("Dag-{} trigger RETRY job-[{}] in transaction.", dagName, jobName);
         try {
-            CuratorTransactionFinal curatorTransactionFinal = getClient().inTransaction().delete().forPath(pathOfDagRetryJob(jobName)).and();
+            CuratorFramework rawClient = (CuratorFramework) regCenter.getRawClient();
+            List<CuratorOp> opList = new ArrayList<>();
+            opList.add(rawClient.transactionOp().delete().forPath(pathOfDagRetryJob(jobName)));
             JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-                curatorTransactionFinal.setData().forPath(jobNodePath.getInstanceNodePath(each), "TRIGGER".getBytes()).and();
+                opList.add(rawClient.transactionOp().setData().forPath(jobNodePath.getInstanceNodePath(each), "TRIGGER".getBytes()));
             }
-            curatorTransactionFinal.commit();
+            rawClient.transaction().forOperations(opList);
             //CHECKSTYLE:OFF
         } catch (final Exception exp) {
             //CHECKSTYLE:ON

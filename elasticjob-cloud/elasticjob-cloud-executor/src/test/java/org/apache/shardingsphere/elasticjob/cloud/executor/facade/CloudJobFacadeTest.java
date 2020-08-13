@@ -133,4 +133,19 @@ public final class CloudJobFacadeTest {
     public void assertPostJobStatusTraceEvent() {
         jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.");
     }
+
+    @Test
+    public void assertIsDagJob() {
+        assertFalse(jobFacade.isDagJob());
+    }
+
+    @Test
+    public void assertDagStatesCheck() {
+        jobFacade.dagStatesCheck();
+    }
+
+    @Test
+    public void assertDagJobDependenciesCheck() {
+        jobFacade.dagJobDependenciesCheck();
+    }
 }
