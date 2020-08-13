@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 73 家公司。
+共计 74 家公司。
 
 ### 电子商务
 <ul>
@@ -139,5 +139,11 @@ chapter = true
     <li><a href="https://www.120yibao.com/" rel="nofollow">壹宝健康</a></li>
     <li><a href="https://www.sytown.cn/" rel="nofollow">尚一健康</a></li>
 </ul>
+
+### 零售业
+<ul>
+    <li><a href="http://www.yonghui.com.cn/" rel="nofollow">永辉超市</a></li>
+</ul>
+
 
 <img src="https://shardingsphere.apache.org/community/image/powered-by.png" width = "30%" height = "30%" align="right" alt="Powered By ShardingSphere" />
