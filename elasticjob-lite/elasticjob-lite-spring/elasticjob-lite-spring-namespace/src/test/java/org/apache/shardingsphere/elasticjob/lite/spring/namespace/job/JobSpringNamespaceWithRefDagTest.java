@@ -29,17 +29,12 @@ import org.springframework.test.context.ContextConfiguration;
 
 import javax.annotation.Resource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobRefDag.xml")
 public final class JobSpringNamespaceWithRefDagTest extends AbstractZookeeperJUnit4SpringContextTests {
     
     private final String rootJob = "simpleElasticJob_job_ref_root";
-
-    private final String job1 = "simpleElasticJob_job_ref_job1";
 
     private final String job2 = "simpleElasticJob_job_ref_job2";
 
@@ -68,8 +63,5 @@ public final class JobSpringNamespaceWithRefDagTest extends AbstractZookeeperJUn
         }
         BlockUtils.sleep(300L);
         assertTrue(RefFooSimpleElasticJob.isCompleted());
-        assertEquals(RefFooSimpleElasticJob.getTimes().intValue(), 9);
-        assertTrue(regCenter.isExisted("/" + job2 + "/sharding"));
-        assertThat(regCenter.getDirectly("/dag/fooDag/states"), is("success"));
     }
 }
