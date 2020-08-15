@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
 import org.quartz.JobKey;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
@@ -34,16 +35,7 @@ final class TransientProducerRepository {
     
     synchronized void put(final JobKey jobKey, final String jobName) {
         remove(jobName);
-        List<String> taskList = cronTasks.get(jobKey);
-        if (null == taskList) {
-            taskList = new CopyOnWriteArrayList<>();
-            taskList.add(jobName);
-            cronTasks.put(jobKey, taskList);
-            return;
-        }
-        if (!taskList.contains(jobName)) {
-            taskList.add(jobName);
-        }
+        List<String> taskList = cronTasks.computeIfAbsent(jobKey, k -> Collections.singletonList(jobName));
     }
     
     synchronized void remove(final String jobName) {
