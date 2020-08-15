@@ -33,7 +33,7 @@ final class TransientProducerRepository {
     
     synchronized void put(final JobKey jobKey, final String jobName) {
         remove(jobName);
-        List<String> taskList = cronTasks.computeIfAbsent(jobKey, k -> Collections.singletonList(jobName));
+        cronTasks.computeIfAbsent(jobKey, k -> Collections.singletonList(jobName));
     }
     
     synchronized void remove(final String jobName) {
