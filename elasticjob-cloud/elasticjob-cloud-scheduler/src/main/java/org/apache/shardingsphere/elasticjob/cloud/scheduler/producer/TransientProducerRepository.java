@@ -19,12 +19,10 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
 import org.quartz.JobKey;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Transient producer repository.
