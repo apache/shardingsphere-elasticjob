@@ -65,4 +65,16 @@ public final class JobBeanDefinitionTag {
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
+
+    public static final String DAG_NAME = "dag-name";
+
+    public static final String DAG_DEPENDENCIES = "dag-dependencies";
+
+    public static final String DAG_RETRY_TIMES = "dag-retry-times";
+
+    public static final String DAG_RETRY_INTERVAL = "dag-retry-interval";
+
+    public static final String DAG_RUN_ALONE = "dag-run-alone";
+
+    public static final String DAG_SKIP_WHEN_FAIL = "dag-skip-when-fail";
 }

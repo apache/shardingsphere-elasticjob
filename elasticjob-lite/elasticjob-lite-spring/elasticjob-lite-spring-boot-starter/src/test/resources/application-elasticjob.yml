@@ -33,9 +33,13 @@ elasticjob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
       jobBootstrapBeanName: customTestJobBean
       shardingTotalCount: 3
+      dagName: dagA
+      dagDependencies: job1,printTestJob
     printTestJob:
       elasticJobType: PRINT
       jobBootstrapBeanName: printTestJobBean
       shardingTotalCount: 3
       props:
         print.content: "test print job"
+      dagName: dagA
+      dagDependencies: job1,customTestJob

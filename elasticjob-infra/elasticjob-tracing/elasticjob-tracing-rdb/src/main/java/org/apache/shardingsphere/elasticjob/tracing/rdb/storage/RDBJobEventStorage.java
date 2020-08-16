@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.tracing.event.DagJobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
@@ -53,6 +54,8 @@ public final class RDBJobEventStorage {
     private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
     
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
+
+    private static final String TABLE_DAG_JOB_EXECUTION_LOG = "DAG_JOB_EXECUTION_LOG";
     
     private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
     
@@ -91,6 +94,7 @@ public final class RDBJobEventStorage {
         try (Connection connection = dataSource.getConnection()) {
             createJobExecutionTableAndIndexIfNeeded(connection);
             createJobStatusTraceTableAndIndexIfNeeded(connection);
+            createDagJobExecutionTableAndIndexIfNeeded(connection);
         }
     }
     
@@ -112,7 +116,16 @@ public final class RDBJobEventStorage {
         }
         createTaskIdIndexIfNeeded(connection);
     }
-    
+
+    private void createDagJobExecutionTableAndIndexIfNeeded(final Connection connection) throws SQLException {
+        DatabaseMetaData dbMetaData = connection.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, TABLE_DAG_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
+            if (!resultSet.next()) {
+                createDagJobExecutionTable(connection);
+            }
+        }
+    }
+
     private void createTaskIdIndexIfNeeded(final Connection connection) throws SQLException {
         DatabaseMetaData dbMetaData = connection.getMetaData();
         try (ResultSet resultSet = dbMetaData.getIndexInfo(connection.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, false, false)) {
@@ -133,7 +146,13 @@ public final class RDBJobEventStorage {
             preparedStatement.execute();
         }
     }
-    
+
+    private void createDagJobExecutionTable(final Connection connection) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getCreateTableForDagJobExecutionLog())) {
+            preparedStatement.execute();
+        }
+    }
+
     private void createJobStatusTraceTable(final Connection connection) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getCreateTableForJobStatusTraceLog())) {
             preparedStatement.execute();
@@ -360,6 +379,36 @@ public final class RDBJobEventStorage {
         } catch (final SQLException | ParseException ex) {
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error(ex.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Add dag execution event to db.
+     *
+     * @param dagJobExecutionEvent dag execution event
+     * @return add success?
+     */
+    public boolean addDagJobExecutionEvent(final DagJobExecutionEvent dagJobExecutionEvent) {
+        boolean result = false;
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForDagJobExecutionLog())) {
+            preparedStatement.setString(1, dagJobExecutionEvent.getId());
+            preparedStatement.setString(2, dagJobExecutionEvent.getDagName());
+            preparedStatement.setString(3, dagJobExecutionEvent.getJobName());
+            preparedStatement.setString(4, dagJobExecutionEvent.getExecTime());
+            preparedStatement.setString(5, dagJobExecutionEvent.getExecDate());
+            preparedStatement.setString(6, dagJobExecutionEvent.getBatchNo());
+            preparedStatement.setString(7, dagJobExecutionEvent.getState());
+            preparedStatement.setString(8, dagJobExecutionEvent.getMessage());
+            preparedStatement.execute();
+            result = true;
+        } catch (final SQLException ex) {
+            if (!isDuplicateRecord(ex)) {
+                // TODO log failure directly to output log, consider to be configurable in the future
+                log.error(ex.getMessage());
+            }
         }
         return result;
     }

@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
@@ -37,6 +38,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -95,5 +97,20 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class));
         assertNotNull(applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class));
+    }
+
+    @Test
+    public void assertJobDagConfiguration() {
+        assertNotNull(applicationContext);
+        ElasticJobProperties bean = applicationContext.getBean(ElasticJobProperties.class);
+        assertNotNull(bean);
+        assertNotNull(bean.getJobs());
+        Map<String, ElasticJobConfigurationProperties> jobs = bean.getJobs();
+        jobs.forEach((key, value) -> {
+            JobConfiguration job = value.toJobConfiguration("name");
+            assertNotNull(job);
+            assertNotNull(job.getJobDagConfiguration());
+            assertEquals(job.getJobDagConfiguration().getDagName(), "dagA");
+        });
     }
 }

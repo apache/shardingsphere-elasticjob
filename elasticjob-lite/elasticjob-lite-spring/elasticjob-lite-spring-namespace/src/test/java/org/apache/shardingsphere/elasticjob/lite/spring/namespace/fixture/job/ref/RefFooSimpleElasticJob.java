@@ -23,10 +23,15 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service.FooService;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class RefFooSimpleElasticJob implements SimpleJob {
 
     @Getter
     private static volatile boolean completed;
+
+    @Getter
+    private static volatile AtomicInteger times = new AtomicInteger(0);
     
     @Getter
     @Setter
@@ -36,6 +41,7 @@ public class RefFooSimpleElasticJob implements SimpleJob {
     public void execute(final ShardingContext shardingContext) {
         fooService.foo();
         completed = true;
+        times.getAndIncrement();
     }
     
     /**

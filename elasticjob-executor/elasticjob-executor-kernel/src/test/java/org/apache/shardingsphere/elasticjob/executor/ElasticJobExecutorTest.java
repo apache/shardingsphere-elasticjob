@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.executor;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobDagConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
@@ -35,6 +36,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -70,7 +72,15 @@ public final class ElasticJobExecutorTest {
         return JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
     }
-    
+
+    private JobConfiguration createJobConfigurationWithDag() {
+        JobDagConfiguration jobDagConfiguration = new JobDagConfiguration("fakeDag", "job1,job2", 3, 400,
+                false, false);
+        return JobConfiguration.newBuilder("test_job", 3)
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc")
+                .jobDagConfiguration(jobDagConfiguration).build();
+    }
+
     @SneakyThrows
     private void setJobItemExecutor() {
         Field field = ElasticJobExecutor.class.getDeclaredField("jobItemExecutor");
@@ -87,7 +97,17 @@ public final class ElasticJobExecutorTest {
             verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
     }
-    
+
+    @Test
+    public void assertExecuteWhenDagConfigEmpty() {
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
+        when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
+        when(jobFacade.isDagJob()).thenReturn(true);
+        elasticJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+    }
+
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
@@ -131,10 +151,19 @@ public final class ElasticJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
-            verify(jobFacade).registerJobCompleted(shardingContexts);
+            verify(jobFacade).registerJobCompleted(shardingContexts, getItemErrorMessage(shardingContexts));
         }
     }
-    
+
+    private Map<Integer, String> getItemErrorMessage(final ShardingContexts shardingContexts) {
+        Map<Integer, String> itemErrorMsg = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
+        itemErrorMsg.put(0, "java.lang.RuntimeException" + System.lineSeparator());
+        if (shardingContexts.getShardingItemParameters().size() > 1) {
+            itemErrorMsg.put(1, "java.lang.RuntimeException" + System.lineSeparator());
+        }
+        return itemErrorMsg;
+    }
+
     private String getErrorMessage(final ShardingContexts shardingContexts) {
         return 1 == shardingContexts.getShardingItemParameters().size()
                 ? "{0=java.lang.RuntimeException" + System.lineSeparator() + "}"
@@ -190,7 +219,7 @@ public final class ElasticJobExecutorTest {
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
         verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
-        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts);
+        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts, new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1));
     }
     
     @Test(expected = JobSystemException.class)
@@ -245,7 +274,7 @@ public final class ElasticJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
-        verify(jobFacade).registerJobCompleted(shardingContexts);
+        verify(jobFacade).registerJobCompleted(shardingContexts, new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1));
         verify(jobFacade).afterJobExecuted(shardingContexts);
     }
 }

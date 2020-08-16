@@ -29,6 +29,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.So
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Cloud job facade.
@@ -68,7 +69,12 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
     }
-    
+
+    @Override
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Map<Integer, String> itemErrorMessages) {
+
+    }
+
     @Override
     public ShardingContexts getShardingContexts() {
         return shardingContexts;
@@ -111,5 +117,20 @@ public final class CloudJobFacade implements JobFacade {
         TaskContext taskContext = TaskContext.from(taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
                 Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
+    }
+
+    @Override
+    public boolean isDagJob() {
+        return false;
+    }
+
+    @Override
+    public void dagStatesCheck() {
+
+    }
+
+    @Override
+    public void dagJobDependenciesCheck() {
+
     }
 }

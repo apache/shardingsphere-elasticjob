@@ -30,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 public final class JobConfigurationPOJOTest {
     
     private static final String YAML = "cron: 0/1 * * * * ?\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: false\n"
             + "description: Job description\n"
             + "disabled: false\n"
             + "failover: false\n"
@@ -45,10 +47,39 @@ public final class JobConfigurationPOJOTest {
             + "props:\n"
             + "  key: value\n"
             + "reconcileIntervalMinutes: 0\n"
+            + "retryInterval: 0\n"
+            + "retryTimes: 0\n"
             + "shardingItemParameters: 0=A,1=B,2=C\n"
             + "shardingTotalCount: 3\n";
-    
+
+    private static final String DAG_YAML = "cron: 0/1 * * * * ?\n"
+            + "dagDependencies: jobA,jobB\n"
+            + "dagName: fooDag\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: true\n"
+            + "description: Job description\n"
+            + "disabled: false\n"
+            + "failover: false\n"
+            + "jobErrorHandlerType: IGNORE\n"
+            + "jobExecutorServiceHandlerType: CPU\n"
+            + "jobName: test_job\n"
+            + "jobParameter: param\n"
+            + "jobShardingStrategyType: AVG_ALLOCATION\n"
+            + "maxTimeDiffSeconds: -1\n"
+            + "misfire: false\n"
+            + "monitorExecution: false\n"
+            + "overwrite: false\n"
+            + "props:\n"
+            + "  key: value\n"
+            + "reconcileIntervalMinutes: 0\n"
+            + "retryInterval: 500\n"
+            + "retryTimes: 3\n"
+            + "shardingItemParameters: 0=A,1=B,2=C\n"
+            + "shardingTotalCount: 3\n";
+
     private static final String YAML_WITH_NULL = "cron: 0/1 * * * * ?\n"
+            + "dagRunAlone: false\n"
+            + "dagSkipWhenFail: false\n"
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
@@ -57,6 +88,8 @@ public final class JobConfigurationPOJOTest {
             + "monitorExecution: false\n"
             + "overwrite: false\n"
             + "reconcileIntervalMinutes: 0\n"
+            + "retryInterval: 0\n"
+            + "retryTimes: 0\n"
             + "shardingTotalCount: 3\n";
     
     @Test
@@ -185,5 +218,39 @@ public final class JobConfigurationPOJOTest {
         assertTrue(actual.getProps().isEmpty());
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
+    }
+
+    @Test
+    public void assertMarshalWithDag() {
+        JobConfigurationPOJO actual = new JobConfigurationPOJO();
+        actual.setJobName("test_job");
+        actual.setCron("0/1 * * * * ?");
+        actual.setShardingTotalCount(3);
+        actual.setShardingItemParameters("0=A,1=B,2=C");
+        actual.setJobParameter("param");
+        actual.setMaxTimeDiffSeconds(-1);
+        actual.setJobShardingStrategyType("AVG_ALLOCATION");
+        actual.setJobExecutorServiceHandlerType("CPU");
+        actual.setJobErrorHandlerType("IGNORE");
+        actual.setDescription("Job description");
+        actual.getProps().setProperty("key", "value");
+        actual.setDagSkipWhenFail(true);
+        actual.setDagRunAlone(false);
+        actual.setDagName("fooDag");
+        actual.setDagDependencies("jobA,jobB");
+        actual.setRetryInterval(500);
+        actual.setRetryTimes(3);
+        assertThat(YamlEngine.marshal(actual), is(DAG_YAML));
+    }
+
+    @Test
+    public void assertUnMarshalWithDag() {
+        JobConfigurationPOJO actual = YamlEngine.unmarshal(DAG_YAML, JobConfigurationPOJO.class);
+        assertThat(actual.getDagName(), is("fooDag"));
+        assertThat(actual.getDagDependencies(), is("jobA,jobB"));
+        assertThat(actual.getRetryInterval(), is(500));
+        assertThat(actual.getRetryTimes(), is(3));
+        assertTrue(actual.isDagSkipWhenFail());
+        assertFalse(actual.isDagRunAlone());
     }
 }

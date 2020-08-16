@@ -20,7 +20,9 @@ package org.apache.shardingsphere.elasticjob.api;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -86,5 +88,31 @@ public final class JobConfigurationTest {
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithInvalidShardingTotalCount() {
         JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void assertBuildWithEmptyDagJobConfiguration() {
+        JobDagConfiguration jobDagConfiguration = new JobDagConfiguration();
+        JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").jobDagConfiguration(jobDagConfiguration).build();
+    }
+
+    @Test
+    public void assertBuildNullDagJobConfiguration() {
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").jobDagConfiguration(null).build();
+        assertNull(actual.getJobDagConfiguration());
+    }
+
+    @Test
+    public void assertBuildDagJobConfiguration() {
+        JobDagConfiguration jobDagConfiguration = new JobDagConfiguration("fake_dag", "fake_dependencies", 3, 500, true, false);
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").jobDagConfiguration(jobDagConfiguration).build();
+        assertThat(actual.getJobName(), is("test_job"));
+        assertNotNull(actual.getJobDagConfiguration());
+        assertTrue(actual.getJobDagConfiguration().isDagRunAlone());
+        assertFalse(actual.getJobDagConfiguration().isDagSkipWhenFail());
+        assertEquals(actual.getJobDagConfiguration().getDagName(), "fake_dag");
+        assertEquals(actual.getJobDagConfiguration().getDagDependencies(), "fake_dependencies");
+        assertEquals(actual.getJobDagConfiguration().getRetryTimes(), 3);
+        assertEquals(actual.getJobDagConfiguration().getRetryInterval(), 500);
     }
 }

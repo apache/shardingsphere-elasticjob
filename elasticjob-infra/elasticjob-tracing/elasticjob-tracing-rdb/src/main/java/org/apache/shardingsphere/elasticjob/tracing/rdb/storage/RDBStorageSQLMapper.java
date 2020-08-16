@@ -50,6 +50,10 @@ public final class RDBStorageSQLMapper {
     private final String selectForJobStatusTraceLog;
     
     private final String selectOriginalTaskIdForJobStatusTraceLog;
+
+    private final String createTableForDagJobExecutionLog;
+
+    private final String insertForDagJobExecutionLog;
     
     public RDBStorageSQLMapper(final String sqlPropertiesFileName) {
         Properties props = loadProps(sqlPropertiesFileName);
@@ -64,6 +68,8 @@ public final class RDBStorageSQLMapper {
         insertForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.INSERT");
         selectForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT");
         selectOriginalTaskIdForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT_ORIGINAL_TASK_ID");
+        createTableForDagJobExecutionLog = props.getProperty("DAG_JOB_EXECUTION_LOG.TABLE.CREATE");
+        insertForDagJobExecutionLog = props.getProperty("DAG_JOB_EXECUTION_LOG.INSERT");
     }
     
     @SneakyThrows

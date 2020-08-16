@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.parser;
 
 import com.google.common.base.Strings;
+import org.apache.shardingsphere.elasticjob.api.JobDagConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
@@ -84,6 +86,7 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         result.addConstructorArgValue(parsePropsElement(element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.OVERWRITE_ATTRIBUTE));
+        result.addConstructorArgValue(createJobDagConfig(element));
         return result.getBeanDefinition();
     }
     
@@ -109,5 +112,19 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
             result.add(factory.getBeanDefinition());
         }
         return result;
+    }
+
+    private BeanDefinition createJobDagConfig(final Element element) {
+        if (StringUtils.isEmpty(element.getAttribute(JobBeanDefinitionTag.DAG_NAME))) {
+            return null;
+        }
+        BeanDefinitionBuilder jobDagConfig = BeanDefinitionBuilder.rootBeanDefinition(JobDagConfiguration.class);
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_NAME));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_DEPENDENCIES));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_RETRY_TIMES));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_RETRY_INTERVAL));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_RUN_ALONE));
+        jobDagConfig.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DAG_SKIP_WHEN_FAIL));
+        return jobDagConfig.getBeanDefinition();
     }
 }

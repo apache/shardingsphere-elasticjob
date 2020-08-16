@@ -20,10 +20,13 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.exception.DagRuntimeException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.lite.internal.dag.DagService;
+import org.apache.shardingsphere.elasticjob.lite.internal.dag.DagStates;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
@@ -41,6 +44,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,6 +72,9 @@ public final class LiteJobFacadeTest {
     
     @Mock
     private ElasticJobListenerCaller caller;
+
+    @Mock
+    private DagService dagService;
     
     private LiteJobFacade liteJobFacade;
     
@@ -80,6 +87,7 @@ public final class LiteJobFacadeTest {
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
         ReflectionUtils.setFieldValue(liteJobFacade, "jobEventBus", jobEventBus);
+        ReflectionUtils.setFieldValue(liteJobFacade, "dagService", dagService);
     }
     
     @Test
@@ -211,5 +219,22 @@ public final class LiteJobFacadeTest {
     public void assertPostJobExecutionEvent() {
         liteJobFacade.postJobExecutionEvent(null);
         verify(jobEventBus).post(null);
+    }
+
+    @Test
+    public void assertIsDagJob() {
+        assertTrue(liteJobFacade.isDagJob());
+    }
+
+    @Test(expected = DagRuntimeException.class)
+    public void assertDagStatesCheck() {
+        when(dagService.getDagStates()).thenReturn(DagStates.PAUSE);
+        liteJobFacade.dagStatesCheck();
+    }
+
+    @Test
+    public void assertDagJobDependenciesCheck() {
+        liteJobFacade.dagJobDependenciesCheck();
+        verify(dagService, times(1)).checkJobDependenciesState();
     }
 }
