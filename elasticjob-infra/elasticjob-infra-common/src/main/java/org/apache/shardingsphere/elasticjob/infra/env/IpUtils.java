@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,48 +26,58 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.net.Inet6Address;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * IP address utility.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IpUtils {
-    
+
     public static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)){3})";
-    
+
     private static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
-    
+
     private static volatile String cachedIpAddress;
-    
+
     private static volatile String cachedHostName;
-    
+
     /**
      * Get IP address for localhost.
-     * 
+     *
      * @return IP address for localhost
      */
     public static String getIp() {
         if (null != cachedIpAddress) {
             return cachedIpAddress;
         }
+        InetAddress localAddress = null;
+        try {
+            localAddress = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        if (null != localAddress && isValidAddress(localAddress)) {
+            return localAddress.getHostAddress();
+        }
         NetworkInterface networkInterface = findNetworkInterface();
         if (null != networkInterface) {
             Enumeration<InetAddress> ipAddresses = networkInterface.getInetAddresses();
             while (ipAddresses.hasMoreElements()) {
                 InetAddress ipAddress = ipAddresses.nextElement();
-                if (isValidAddress(ipAddress)) {
-                    cachedIpAddress = ipAddress.getHostAddress();
-                    return cachedIpAddress;
+                try {
+                    if (isValidAddress(ipAddress) && ipAddress.isReachable(100)) {
+                        cachedIpAddress = ipAddress.getHostAddress();
+                        return cachedIpAddress;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
         throw new HostException("ip is null");
     }
-    
+
     private static NetworkInterface findNetworkInterface() {
         Enumeration<NetworkInterface> interfaces;
         try {
@@ -95,7 +105,7 @@ public final class IpUtils {
         }
         return result;
     }
-    
+
     private static NetworkInterface getFirstNetworkInterface(final List<NetworkInterface> validNetworkInterfaces) {
         NetworkInterface result = null;
         for (NetworkInterface each : validNetworkInterfaces) {
@@ -113,12 +123,12 @@ public final class IpUtils {
         }
         return result;
     }
-    
+
     private static boolean isPreferredNetworkInterface(final NetworkInterface networkInterface) {
         String preferredNetworkInterface = System.getProperty(PREFERRED_NETWORK_INTERFACE);
         return Objects.equals(networkInterface.getDisplayName(), preferredNetworkInterface);
     }
-    
+
     private static boolean ignoreNetworkInterface(final NetworkInterface networkInterface) {
         try {
             return null == networkInterface
@@ -129,23 +139,19 @@ public final class IpUtils {
             return true;
         }
     }
-    
+
     private static boolean isValidAddress(final InetAddress inetAddress) {
-        try {
-            return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
-                    && !isIp6Address(inetAddress) && inetAddress.isReachable(100);
-        } catch (final IOException ex) {
-            return false;
-        }
+        return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
+                && !isIp6Address(inetAddress);
     }
-    
+
     private static boolean isIp6Address(final InetAddress ipAddress) {
         return ipAddress instanceof Inet6Address;
     }
-    
+
     /**
      * Get host name for localhost.
-     * 
+     *
      * @return host name for localhost
      */
     public static String getHostName() {
