@@ -51,6 +51,7 @@ public final class IpUtils {
         if (null != cachedIpAddress) {
             return cachedIpAddress;
         }
+
         InetAddress localAddress = null;
         try {
             localAddress = InetAddress.getLocalHost();
