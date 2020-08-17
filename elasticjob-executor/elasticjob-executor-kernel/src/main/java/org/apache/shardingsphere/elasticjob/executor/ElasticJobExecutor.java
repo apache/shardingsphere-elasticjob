@@ -92,9 +92,9 @@ public final class ElasticJobExecutor {
                 jobFacade.dagStatesCheck();
                 jobFacade.dagJobDependenciesCheck();
                 //CHECKSTYLE:OFF
-            } catch (Exception e) {
+            } catch (final Exception ex) {
                 //CHECKSTYLE:ON
-                log.error("DAG job - {} exception! Check !", jobConfig.getJobName(), e);
+                log.error("DAG job - {} exception! Check !", jobConfig.getJobName(), ex);
                 return;
             }
         }

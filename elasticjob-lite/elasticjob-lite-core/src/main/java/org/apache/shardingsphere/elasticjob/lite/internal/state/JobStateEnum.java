@@ -63,5 +63,4 @@ public enum JobStateEnum {
     public String getValue() {
         return value;
     }
-
 }

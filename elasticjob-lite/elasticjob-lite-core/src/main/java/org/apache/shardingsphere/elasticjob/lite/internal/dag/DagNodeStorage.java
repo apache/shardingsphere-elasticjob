@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  *                             retry/ {jobName}
  */
 @Slf4j
-public class DagNodeStorage {
+public final class DagNodeStorage {
 
     private static final String DAG_ROOT = "/dag/%s";
 
@@ -406,7 +406,7 @@ public class DagNodeStorage {
             }
             rawClient.transaction().forOperations(opList);
             //CHECKSTYLE:OFF
-        } catch (Exception exp) {
+        } catch (final Exception exp) {
             //CHECKSTYLE:ON
             log.debug("Dag-{}[{}] trigger job in transaction Exception！", dagName, job, exp);
         }
@@ -472,11 +472,11 @@ public class DagNodeStorage {
      * Add dag retry job times.
      * Persist jobName to path '/dag/dagName/retry'
      *
-     * @param i retry times.
+     * @param retryTimes retry times.
      */
-    public void updateJobRetryTimes(final int i) {
+    public void updateJobRetryTimes(final int retryTimes) {
         regCenter.persist(pathOfDagRetryJob(jobName), "");
-        regCenter.persist(pathOfDagGraphJobRetryTimes(), "" + i);
+        regCenter.persist(pathOfDagGraphJobRetryTimes(), "" + retryTimes);
     }
 
     /**

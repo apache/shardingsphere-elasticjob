@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
  * Job state state node path.
  *
  **/
-public class JobStateNode {
+public final class JobStateNode {
     public static final String ROOT_STATE = "state/state";
 
     public static final String ROOT_STATE_FOR_CACHE = "state";

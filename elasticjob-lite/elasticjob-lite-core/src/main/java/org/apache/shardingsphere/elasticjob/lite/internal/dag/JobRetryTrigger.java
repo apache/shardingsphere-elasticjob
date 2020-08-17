@@ -47,13 +47,13 @@ public class JobRetryTrigger implements QueueConsumer<String> {
         // message format: dagName||jobName
         // trigger the job only when dag state is running
         if (StringUtils.isEmpty(message)) {
-            log.info("Dag-{} Retry job Receive message is empty, return!", dagName);
+            log.warn("Dag-{} Retry job Receive message is empty, return!", dagName);
             return;
         }
 
         List<String> strings = Splitter.on("||").splitToList(message);
         if (strings.size() != 2) {
-            log.info("Dag-{} Retry job message format not right! {}", dagName, message);
+            log.warn("Dag-{} Retry job message format not right! {}", dagName, message);
             return;
         }
 
@@ -63,7 +63,7 @@ public class JobRetryTrigger implements QueueConsumer<String> {
 
         DagStates dagState = DagStates.of(dagNodeStorage.currentDagStates());
         if (dagState != DagStates.RUNNING) {
-            log.info("Dag-{} retry job, dag state-{} not RUNNING, quit!", dagName, jobName, dagState);
+            log.warn("Dag-{} retry job, dag state-{} not RUNNING, quit!", dagName, jobName, dagState);
             return;
         }
 
@@ -74,5 +74,4 @@ public class JobRetryTrigger implements QueueConsumer<String> {
     public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
 
     }
-
 }

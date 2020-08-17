@@ -30,7 +30,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @ToString
-public class JobDagConfiguration {
+public final class JobDagConfiguration {
     /** DAG name. */
     private String dagName;
 
