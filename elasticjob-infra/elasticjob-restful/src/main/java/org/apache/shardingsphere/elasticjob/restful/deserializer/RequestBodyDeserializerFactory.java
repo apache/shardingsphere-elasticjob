@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Request body deserializer factory.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RequestBodyDeserializerFactory {
     

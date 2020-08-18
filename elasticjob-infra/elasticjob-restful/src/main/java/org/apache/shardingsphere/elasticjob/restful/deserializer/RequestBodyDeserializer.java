@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.restful.deserializer;
 
+/**
+ * Deserializer for deserializing request body with specific MIME type.
+ */
 public interface RequestBodyDeserializer {
     
     /**

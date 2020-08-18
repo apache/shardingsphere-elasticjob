@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.restful.serializer;
 
+/**
+ * Serializer for serializing response body with specific MIME type.
+ */
 public interface ResponseBodySerializer {
     
     /**

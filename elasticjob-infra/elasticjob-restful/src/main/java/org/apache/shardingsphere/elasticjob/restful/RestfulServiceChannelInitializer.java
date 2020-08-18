@@ -27,6 +27,9 @@ import org.apache.shardingsphere.elasticjob.restful.pipeline.HandleMethodExecuto
 import org.apache.shardingsphere.elasticjob.restful.pipeline.HandlerParameterDecoder;
 import org.apache.shardingsphere.elasticjob.restful.pipeline.HttpRequestDispatcher;
 
+/**
+ * Initialize channel pipeline.
+ */
 public class RestfulServiceChannelInitializer extends ChannelInitializer<Channel> {
     
     private final HttpRequestDispatcher httpRequestDispatcher;

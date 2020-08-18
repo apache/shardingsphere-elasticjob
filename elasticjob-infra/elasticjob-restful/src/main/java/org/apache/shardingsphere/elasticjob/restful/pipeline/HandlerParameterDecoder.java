@@ -42,6 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * This handler is used for preparing parameters before executing handle method.
+ * It prepares arguments declared by {@link org.apache.shardingsphere.elasticjob.restful.annotation.Param}
+ * and {@link org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody}, and deserializes arguments to declared type.
+ */
 @Slf4j
 @Sharable
 public class HandlerParameterDecoder extends ChannelInboundHandlerAdapter {

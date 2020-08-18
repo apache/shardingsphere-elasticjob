@@ -17,10 +17,34 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+/**
+ * Sources of parameter.
+ *
+ * @see org.apache.shardingsphere.elasticjob.restful.annotation.Param
+ */
 public enum ParamSource {
+    /**
+     * Request path.
+     */
     PATH,
+    
+    /**
+     * Query parameters.
+     */
     QUERY,
+    
+    /**
+     * HTTP headers.
+     */
     HEADER,
+    
+    /**
+     * HTTP request body.
+     */
     BODY,
+    
+    /**
+     * Unknown source.
+     */
     UNKNOWN,
 }

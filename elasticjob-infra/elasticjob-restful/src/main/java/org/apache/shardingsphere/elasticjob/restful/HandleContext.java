@@ -22,6 +22,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * HandleContext will hold a instance of HTTP request, {@link MappingContext} and arguments for handle method invoking.
+ *
+ * @param <T> Type of MappingContext
+ */
 @RequiredArgsConstructor
 @Getter
 @Setter

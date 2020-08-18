@@ -19,6 +19,11 @@ package org.apache.shardingsphere.elasticjob.restful;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Default mapping context.
+ *
+ * @param <T> Type of payload
+ */
 @RequiredArgsConstructor
 public class DefaultMappingContext<T> implements MappingContext<T> {
     

@@ -34,6 +34,10 @@ import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySeria
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * The handler which actually executes handle method and creates HTTP response for responding.
+ * If an exception occurred when executing handle method, this handler would pass it to Handler named {@link ExceptionHandling}.
+ */
 @Sharable
 public class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
     

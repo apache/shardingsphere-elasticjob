@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Response body serializer factory.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ResponseBodySerializerFactory {
     

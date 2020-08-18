@@ -26,6 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implemented {@link PathMatcher} by regular expression.
+ */
 public final class RegexPathMatcher implements PathMatcher {
     
     private static final String PATH_SEPARATOR = "/";

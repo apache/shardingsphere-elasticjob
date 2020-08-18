@@ -36,6 +36,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * If a HTTP request reached, HttpRequestDispatcher would lookup a proper Handler for the request.
+ * Assemble a {@link HandleContext} with HTTP request and {@link MappingContext}, then pass it to the next in-bound handler.
+ */
 @Sharable
 @Slf4j
 public class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {

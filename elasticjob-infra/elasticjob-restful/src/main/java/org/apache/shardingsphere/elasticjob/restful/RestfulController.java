@@ -17,5 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+/**
+ * Mark a class as RestfulController.
+ */
 public interface RestfulController {
 }

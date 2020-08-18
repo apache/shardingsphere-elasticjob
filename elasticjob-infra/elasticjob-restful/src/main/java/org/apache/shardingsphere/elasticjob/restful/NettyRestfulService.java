@@ -25,6 +25,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implemented {@link RestfulService} via Netty.
+ */
 @Slf4j
 public class NettyRestfulService implements RestfulService {
     

@@ -23,6 +23,9 @@ import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDese
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 
+/**
+ * Deserializer for <code>text/plain</code>.
+ */
 public class TextPlainRequestBodyDeserializer implements RequestBodyDeserializer {
     
     @Override

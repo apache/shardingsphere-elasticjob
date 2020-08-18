@@ -20,6 +20,9 @@ package org.apache.shardingsphere.elasticjob.restful;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Describe parameters of a handle method.
+ */
 @RequiredArgsConstructor
 @Getter
 public class HandlerParameter {

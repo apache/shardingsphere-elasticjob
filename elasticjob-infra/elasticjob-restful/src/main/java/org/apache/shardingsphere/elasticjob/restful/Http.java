@@ -20,6 +20,9 @@ package org.apache.shardingsphere.elasticjob.restful;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Constants for HTTP.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Http {
     

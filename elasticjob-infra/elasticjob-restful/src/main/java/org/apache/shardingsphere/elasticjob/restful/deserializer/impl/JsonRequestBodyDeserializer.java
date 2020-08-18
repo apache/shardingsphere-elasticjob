@@ -23,6 +23,9 @@ import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDese
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Deserializer for <code>application/json</code>.
+ */
 public class JsonRequestBodyDeserializer implements RequestBodyDeserializer {
     
     private final Gson gson = new Gson();

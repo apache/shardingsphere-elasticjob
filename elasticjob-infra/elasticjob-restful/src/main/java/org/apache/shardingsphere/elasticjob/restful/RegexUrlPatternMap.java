@@ -28,6 +28,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * Implemented {@link UrlPatternMap} by regular expression.
+ *
+ * @param <V> Type of payload
+ */
 public class RegexUrlPatternMap<V> implements UrlPatternMap<V> {
     
     private static final String PATH_SEPARATOR = "/";

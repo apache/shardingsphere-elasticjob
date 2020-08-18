@@ -30,6 +30,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Handle holds a handle method and an instance for method invoking.
+ * Describes parameters requirements of handle method.
+ */
 public class Handler {
     
     private final Object instance;
@@ -39,9 +43,15 @@ public class Handler {
     @Getter
     private final List<HandlerParameter> handlerParameters;
     
+    /**
+     * HTTP status code to return.
+     */
     @Getter
     private final int httpStatusCode;
     
+    /**
+     * Content type to producing.
+     */
     @Getter
     private final String producing;
     

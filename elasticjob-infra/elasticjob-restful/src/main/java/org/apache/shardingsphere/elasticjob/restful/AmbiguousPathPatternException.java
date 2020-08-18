@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+/**
+ * A path matched more than one path patterns and failed to determine which pattern is more proper.
+ */
 public class AmbiguousPathPatternException extends RuntimeException {
     
     public AmbiguousPathPatternException(final String message) {

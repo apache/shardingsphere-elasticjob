@@ -23,6 +23,9 @@ import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySeria
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Serializer for <code>application/json</code>.
+ */
 public class JsonResponseBodySerializer implements ResponseBodySerializer {
     
     private final Gson gson = new Gson();
