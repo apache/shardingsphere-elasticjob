@@ -53,6 +53,7 @@ public class NettyRestfulServiceTest {
     @BeforeClass
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
+        configuration.setHost(HOST);
         configuration.addControllerInstance(new JobController());
         configuration.addExceptionHandler(IllegalStateException.class, new CustomIllegalStateExceptionHandler());
         restfulService = new NettyRestfulService(configuration);
@@ -61,7 +62,7 @@ public class NettyRestfulServiceTest {
     
     @SneakyThrows
     @Test(timeout = 10000L)
-    public void testRequestNormal() {
+    public void assertRequestWithParameters() {
         String cron = "0 * * * * ?";
         String uri = String.format("/job/myGroup/myJob?cron=%s", URLEncoder.encode(cron, "UTF-8"));
         String description = "Descriptions about this job.";
@@ -83,7 +84,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = 10000L)
-    public void testCustomExceptionHandler() {
+    public void assertCustomExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalState");
         request.headers().set("Exception-Message", "An illegal state exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -93,20 +94,19 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = 10000L)
-    public void testUsingDefaultExceptionHandler() {
+    public void assertUsingDefaultExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalArgument");
         request.headers().set("Exception-Message", "An illegal argument exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
-            // Handle by CustomExceptionHandler
+            // Handle by DefaultExceptionHandler
             assertEquals(500, httpResponse.status().code());
         }, 10000L);
     }
     
     @Test(timeout = 10000L)
-    public void testReturnStatusCode() {
+    public void assertReturnStatusCode() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/code/204");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
-            // Handle by CustomExceptionHandler
             assertEquals(204, httpResponse.status().code());
         }, 10000L);
     }

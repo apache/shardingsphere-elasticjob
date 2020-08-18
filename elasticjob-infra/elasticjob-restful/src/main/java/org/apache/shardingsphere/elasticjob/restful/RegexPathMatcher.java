@@ -33,7 +33,7 @@ public final class RegexPathMatcher implements PathMatcher {
     
     private static final String PATH_SEPARATOR = "/";
     
-    private static final Pattern PATH_PATTERN = Pattern.compile("^(/[^/{}?]+|/\\{[^/{}?]+})+$");
+    private static final Pattern PATH_PATTERN = Pattern.compile("^(?:/|(/[^/{}?]+|/\\{[^/{}?]+})+)$");
     
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("\\{(?<template>[^/]+)}");
     

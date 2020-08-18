@@ -30,7 +30,7 @@ import org.junit.Test;
 public class HttpRequestDispatcherTest {
     
     @Test(expected = HandlerNotFoundException.class)
-    public void testDispatcher() {
+    public void assertDispatcherHandlerNotFound() {
         EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDispatcher(Lists.newArrayList(new JobController())));
         FullHttpRequest fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/hello/myJob/myCron");
         channel.writeInbound(fullHttpRequest);

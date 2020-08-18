@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 public class RegexPathMatcherTest {
     
     @Test
-    public void testCaptureTemplate() {
+    public void assertCaptureTemplate() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         Map<String, String> variables = pathMatcher.captureVariables("/app/{jobName}/disable/{until}/done", "/app/myJob/disable/20201231/done?name=some_name&value=some_value");
         assertFalse(variables.isEmpty());
@@ -40,20 +40,28 @@ public class RegexPathMatcherTest {
     }
     
     @Test
-    public void testCapturePatternWithoutTemplate() {
+    public void assertCapturePatternWithoutTemplate() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         Map<String, String> variables = pathMatcher.captureVariables("/app", "/app");
         assertTrue(variables.isEmpty());
     }
     
     @Test
-    public void testMatch() {
+    public void assertPathMatch() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         assertTrue(pathMatcher.matches("/app/{jobName}", "/app/myJob"));
     }
     
     @Test
-    public void testValidatePathPattern() {
-    
+    public void assertValidatePathPattern() {
+        PathMatcher pathMatcher = new RegexPathMatcher();
+        assertTrue(pathMatcher.isValidPathPattern("/"));
+        assertTrue(pathMatcher.isValidPathPattern("/app/job"));
+        assertTrue(pathMatcher.isValidPathPattern("/app/{jobName}"));
+        assertTrue(pathMatcher.isValidPathPattern("/{appName}/{jobName}/status"));
+        assertFalse(pathMatcher.isValidPathPattern("/app/jobName}"));
+        assertFalse(pathMatcher.isValidPathPattern("/app/{jobName"));
+        assertFalse(pathMatcher.isValidPathPattern("/app/{job}Name"));
+        assertFalse(pathMatcher.isValidPathPattern(""));
     }
 }

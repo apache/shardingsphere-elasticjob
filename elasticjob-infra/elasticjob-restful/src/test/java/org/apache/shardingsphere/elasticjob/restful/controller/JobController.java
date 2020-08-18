@@ -79,11 +79,12 @@ public class JobController implements RestfulController {
     /**
      * Return 204.
      *
+     * @param noop Useless
      * @return None
      */
     @Mapping(method = Http.GET, pattern = "/code/204")
     @Returning(code = 204)
-    public Object return204() {
+    public Object return204(final String noop) {
         return null;
     }
 }

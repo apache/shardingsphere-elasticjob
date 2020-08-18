@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNull;
 public class RegexUrlPatternMapTest {
     
     @Test
-    public void testRegexUrlPatternMap() {
+    public void assertRegexUrlPatternMap() {
         RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
         urlPatternMap.put("/app/{jobName}", 1);
         urlPatternMap.put("/app/list", 2);
@@ -45,7 +45,7 @@ public class RegexUrlPatternMapTest {
     }
     
     @Test
-    public void testAmbiguous() {
+    public void assertAmbiguous() {
         RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
         urlPatternMap.put("/foo/{bar}/{fooName}/status", 10);
         urlPatternMap.put("/foo/{bar}/operate/{metrics}", 11);
@@ -56,7 +56,7 @@ public class RegexUrlPatternMapTest {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testDuplicate() {
+    public void assertDuplicate() {
         RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
         urlPatternMap.put("/app/{jobName}/enable", 0);
         urlPatternMap.put("/app/{jobName}", 1);
