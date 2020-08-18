@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegexPathMatcher implements PathMatcher {
+public final class RegexPathMatcher implements PathMatcher {
     
     private static final String PATH_SEPARATOR = "/";
     

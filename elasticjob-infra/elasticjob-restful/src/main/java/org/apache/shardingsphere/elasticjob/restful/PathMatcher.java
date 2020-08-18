@@ -19,6 +19,15 @@ package org.apache.shardingsphere.elasticjob.restful;
 
 import java.util.Map;
 
+/**
+ * PathMatcher is a supporting tool for HTTP request dispatching.
+ * <p>
+ * Used by {@link UrlPatternMap}, {@link org.apache.shardingsphere.elasticjob.restful.pipeline.HandlerParameterDecoder}
+ * for template variables extracting, path pattern validating, pattern matching.
+ * </p>
+ *
+ * @see RegexPathMatcher
+ */
 public interface PathMatcher {
     
     /**

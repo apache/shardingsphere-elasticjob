@@ -17,6 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+/**
+ * If an exception was thrown, {@link org.apache.shardingsphere.elasticjob.restful.pipeline.ExceptionHandling}
+ * will search a proper handler to handle it.
+ *
+ * @param <E> Type of Exception
+ */
 public interface ExceptionHandler<E extends Throwable> {
     
     /**
