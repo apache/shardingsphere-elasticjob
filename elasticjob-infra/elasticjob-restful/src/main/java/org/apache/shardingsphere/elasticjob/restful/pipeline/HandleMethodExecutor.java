@@ -39,7 +39,7 @@ import java.lang.reflect.InvocationTargetException;
  * If an exception occurred when executing handle method, this handler would pass it to Handler named {@link ExceptionHandling}.
  */
 @Sharable
-public class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
+public final class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
     
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {

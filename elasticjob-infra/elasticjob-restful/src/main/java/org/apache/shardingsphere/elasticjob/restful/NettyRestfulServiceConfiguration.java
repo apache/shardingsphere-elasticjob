@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @Getter
 @RequiredArgsConstructor
-public class NettyRestfulServiceConfiguration {
+public final class NettyRestfulServiceConfiguration {
     
     private final int port;
     

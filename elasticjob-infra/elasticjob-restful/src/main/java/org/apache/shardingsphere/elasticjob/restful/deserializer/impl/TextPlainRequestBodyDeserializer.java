@@ -26,7 +26,7 @@ import java.text.MessageFormat;
 /**
  * Deserializer for <code>text/plain</code>.
  */
-public class TextPlainRequestBodyDeserializer implements RequestBodyDeserializer {
+public final class TextPlainRequestBodyDeserializer implements RequestBodyDeserializer {
     
     @Override
     public String mimeType() {

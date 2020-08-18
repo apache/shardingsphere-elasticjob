@@ -34,7 +34,7 @@ import java.util.Optional;
  * Handle holds a handle method and an instance for method invoking.
  * Describes parameters requirements of handle method.
  */
-public class Handler {
+public final class Handler {
     
     private final Object instance;
     

@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  * @param <T> Type of payload
  */
 @RequiredArgsConstructor
-public class DefaultMappingContext<T> implements MappingContext<T> {
+public final class DefaultMappingContext<T> implements MappingContext<T> {
     
     private final String pattern;
     

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
  * Constants for HTTP.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Http {
+public final class Http {
     
     public static final String GET = "GET";
     

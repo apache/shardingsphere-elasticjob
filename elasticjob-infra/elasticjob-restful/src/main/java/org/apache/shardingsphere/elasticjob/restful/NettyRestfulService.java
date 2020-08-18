@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * Implemented {@link RestfulService} via Netty.
  */
 @Slf4j
-public class NettyRestfulService implements RestfulService {
+public final class NettyRestfulService implements RestfulService {
     
     private final NettyRestfulServiceConfiguration configuration;
     

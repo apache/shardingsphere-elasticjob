@@ -22,7 +22,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ExceptionHandleResult {
+public final class ExceptionHandleResult {
 
     private final Object result;
     

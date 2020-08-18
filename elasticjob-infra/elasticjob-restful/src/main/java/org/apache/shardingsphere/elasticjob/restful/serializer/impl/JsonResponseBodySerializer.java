@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Serializer for <code>application/json</code>.
  */
-public class JsonResponseBodySerializer implements ResponseBodySerializer {
+public final class JsonResponseBodySerializer implements ResponseBodySerializer {
     
     private final Gson gson = new Gson();
     

@@ -49,7 +49,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Sharable
-public class HandlerParameterDecoder extends ChannelInboundHandlerAdapter {
+public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter {
     
     private final PathMatcher pathMatcher = new RegexPathMatcher();
     

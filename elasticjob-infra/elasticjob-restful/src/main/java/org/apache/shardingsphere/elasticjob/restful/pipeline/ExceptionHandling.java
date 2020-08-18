@@ -40,7 +40,7 @@ import java.util.Map;
  * Catch exceptions and look for a ExceptionHandler.
  */
 @Sharable
-public class ExceptionHandling extends ChannelInboundHandlerAdapter {
+public final class ExceptionHandling extends ChannelInboundHandlerAdapter {
     
     private static final DefaultExceptionHandler DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
     

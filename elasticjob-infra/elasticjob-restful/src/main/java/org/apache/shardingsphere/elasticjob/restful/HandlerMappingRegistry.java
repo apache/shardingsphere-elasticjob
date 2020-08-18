@@ -28,7 +28,7 @@ import java.util.Optional;
  * HandlerMappingRegistry stores mappings of handlers.
  * Search a proper {@link MappingContext} by HTTP method and request URI.
  */
-public class HandlerMappingRegistry {
+public final class HandlerMappingRegistry {
     
     private final Map<HttpMethod, UrlPatternMap<Handler>> mappings = new HashMap<>();
     

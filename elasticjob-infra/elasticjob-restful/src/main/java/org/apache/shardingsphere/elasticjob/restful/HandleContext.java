@@ -30,7 +30,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class HandleContext<T> {
+public final class HandleContext<T> {
     
     private final FullHttpRequest httpRequest;
     

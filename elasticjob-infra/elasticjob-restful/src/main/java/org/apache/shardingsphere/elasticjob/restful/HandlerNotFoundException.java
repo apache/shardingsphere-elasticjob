@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful;
 
 import java.text.MessageFormat;
 
-public class HandlerNotFoundException extends RuntimeException {
+public final class HandlerNotFoundException extends RuntimeException {
     
     private final String path;
     

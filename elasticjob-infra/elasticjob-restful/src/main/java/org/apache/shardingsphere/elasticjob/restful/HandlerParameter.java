@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public class HandlerParameter {
+public final class HandlerParameter {
     
     private final int index;
     

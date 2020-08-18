@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  *
  * @param <V> Type of payload
  */
-public class RegexUrlPatternMap<V> implements UrlPatternMap<V> {
+public final class RegexUrlPatternMap<V> implements UrlPatternMap<V> {
     
     private static final String PATH_SEPARATOR = "/";
     

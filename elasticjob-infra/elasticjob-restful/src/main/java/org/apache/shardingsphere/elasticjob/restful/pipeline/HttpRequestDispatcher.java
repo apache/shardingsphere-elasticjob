@@ -42,7 +42,7 @@ import java.util.Optional;
  */
 @Sharable
 @Slf4j
-public class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
+public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
     
     private final HandlerMappingRegistry mappingRegistry = new HandlerMappingRegistry();
     

@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.restful.pipeline.HttpRequestDispatch
 /**
  * Initialize channel pipeline.
  */
-public class RestfulServiceChannelInitializer extends ChannelInitializer<Channel> {
+public final class RestfulServiceChannelInitializer extends ChannelInitializer<Channel> {
     
     private final HttpRequestDispatcher httpRequestDispatcher;
     
