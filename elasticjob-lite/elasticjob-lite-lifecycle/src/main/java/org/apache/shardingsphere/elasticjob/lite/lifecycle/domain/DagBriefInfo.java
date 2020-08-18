@@ -26,7 +26,7 @@ import lombok.ToString;
  **/
 @Data
 @ToString
-public class DagBriefInfo {
+public final class DagBriefInfo {
     private String dagName;
 
     private String jobName;

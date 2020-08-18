@@ -127,7 +127,6 @@ public final class ExecutionService {
             jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getRooProcFail());
             jobNodeStorage.removeJobNodeIfExisted(JobStateNode.getRooProcSucc());
         }
-
     }
 
     /**

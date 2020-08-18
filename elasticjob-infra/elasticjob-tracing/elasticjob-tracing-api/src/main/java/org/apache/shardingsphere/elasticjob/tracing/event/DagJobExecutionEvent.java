@@ -31,7 +31,7 @@ import java.util.UUID;
  **/
 @Getter
 @ToString
-public class DagJobExecutionEvent implements JobEvent {
+public final class DagJobExecutionEvent implements JobEvent {
     private String id;
 
     private String dagName;

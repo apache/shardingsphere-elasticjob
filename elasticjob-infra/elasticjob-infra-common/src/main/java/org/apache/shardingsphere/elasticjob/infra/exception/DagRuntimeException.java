@@ -21,7 +21,7 @@ package org.apache.shardingsphere.elasticjob.infra.exception;
  * Dag runtime exception.
  *
  **/
-public class DagRuntimeException extends RuntimeException {
+public final class DagRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 3244908974343209468L;
 
     public DagRuntimeException(final String errorMessage, final Object... args) {

@@ -63,5 +63,4 @@ public enum DagStates {
     public String getValue() {
         return value;
     }
-
 }
