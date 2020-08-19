@@ -22,7 +22,9 @@ The downloads are distributed via mirror sites and should be checked for tamperi
 
 ##### ElasticJob-UI - Version: 3.0.0-alpha ( Release Date: Coming soon )
 
-Coming soon
+- Source Codes: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-ui-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-ui-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-ui-src.zip.sha512) ]
+- ElasticJob-Lite-UI Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-lite-ui-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-UI Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0-alpha/apache-shardingsphere-elasticjob-3.0.0-alpha-cloud-ui-bin.tar.gz.sha512) ]
 
 ## All Releases
 
