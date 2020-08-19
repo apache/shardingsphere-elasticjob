@@ -63,7 +63,7 @@ public final class NettyRestfulService implements RestfulService {
             if (future.isSuccess()) {
                 log.info("Restful Service started on port {}.", configuration.getPort());
             } else {
-                log.error("", future.cause());
+                log.error("Failed to start Restful Service.", future.cause());
             }
         });
     }

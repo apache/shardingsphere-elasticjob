@@ -27,8 +27,8 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.Returning;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +78,7 @@ public final class Handler {
     }
     
     private List<HandlerParameter> parseHandleMethodParameter() {
-        List<HandlerParameter> params = new ArrayList<>();
+        List<HandlerParameter> params = new LinkedList<>();
         Parameter[] parameters = handleMethod.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
