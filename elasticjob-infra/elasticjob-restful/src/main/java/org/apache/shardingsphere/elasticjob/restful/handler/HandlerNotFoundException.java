@@ -15,26 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
-/**
- * MappingContext will hold a path pattern and a payload.
- *
- * @param <T> Payload type
- */
-public interface MappingContext<T> {
+import java.text.MessageFormat;
+
+public final class HandlerNotFoundException extends RuntimeException {
     
-    /**
-     * The path pattern of this MappingContext.
-     *
-     * @return Path pattern
-     */
-    String pattern();
+    private final String path;
     
-    /**
-     * Payload of this MappingContext.
-     *
-     * @return Payload
-     */
-    T payload();
+    public HandlerNotFoundException(final String path) {
+        super(MessageFormat.format("No handler found for [{0}].", path));
+        this.path = path;
+    }
 }

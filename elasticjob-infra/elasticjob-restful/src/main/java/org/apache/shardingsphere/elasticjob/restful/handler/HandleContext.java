@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
 
 /**
  * HandleContext will hold a instance of HTTP request, {@link MappingContext} and arguments for handle method invoking.

@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.mapping;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Describe parameters of a handle method.
+ * Default mapping context.
+ *
+ * @param <T> Type of payload
  */
 @RequiredArgsConstructor
-@Getter
-public final class HandlerParameter {
+public final class DefaultMappingContext<T> implements MappingContext<T> {
     
-    private final int index;
+    private final String pattern;
     
-    private final Class<?> type;
+    private final T payload;
     
-    private final ParamSource paramSource;
+    @Override
+    public String pattern() {
+        return pattern;
+    }
     
-    private final String name;
+    @Override
+    public T payload() {
+        return payload;
+    }
 }

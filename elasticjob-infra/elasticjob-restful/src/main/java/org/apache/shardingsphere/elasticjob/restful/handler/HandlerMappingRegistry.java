@@ -15,10 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
+import org.apache.shardingsphere.elasticjob.restful.mapping.RegexUrlPatternMap;
+import org.apache.shardingsphere.elasticjob.restful.mapping.UrlPatternMap;
 
 import java.util.HashMap;
 import java.util.Map;

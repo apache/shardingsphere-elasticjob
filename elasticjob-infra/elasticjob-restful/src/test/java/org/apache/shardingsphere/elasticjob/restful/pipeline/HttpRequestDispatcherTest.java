@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
-import org.apache.shardingsphere.elasticjob.restful.HandlerNotFoundException;
+import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
 import org.apache.shardingsphere.elasticjob.restful.controller.JobController;
 import org.junit.Test;
 

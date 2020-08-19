@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.restful.handler;
 
-import org.apache.shardingsphere.elasticjob.restful.ExceptionHandleResult;
-import org.apache.shardingsphere.elasticjob.restful.ExceptionHandler;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.pojo.ResultDto;
 

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.Http;
-import org.apache.shardingsphere.elasticjob.restful.ParamSource;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;

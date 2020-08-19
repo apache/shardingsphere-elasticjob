@@ -15,17 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.pipeline;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import org.apache.shardingsphere.elasticjob.restful.pipeline.ExceptionHandling;
-import org.apache.shardingsphere.elasticjob.restful.pipeline.HandleMethodExecutor;
-import org.apache.shardingsphere.elasticjob.restful.pipeline.HandlerParameterDecoder;
-import org.apache.shardingsphere.elasticjob.restful.pipeline.HttpRequestDispatcher;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 
 /**
  * Initialize channel pipeline.

@@ -17,8 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.restful.annotation;
 
-import org.apache.shardingsphere.elasticjob.restful.ParamSource;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

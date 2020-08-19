@@ -15,21 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.mapping;
 
 /**
- * If an exception was thrown, {@link org.apache.shardingsphere.elasticjob.restful.pipeline.ExceptionHandling}
- * will search a proper handler to handle it.
+ * UrlPatternMap is used for path pattern storage and path matching.
+ * {@link MappingContext} is an object holding path pattern and payload.
  *
- * @param <E> Type of Exception
+ * @param <V> Type of payload
  */
-public interface ExceptionHandler<E extends Throwable> {
+public interface UrlPatternMap<V> {
     
     /**
-     * Handler for specific Exception.
+     * Add a path pattern and value to UrlPatternMap.
      *
-     * @param ex Exception
-     * @return Handle result
+     * @param pathPattern Path pattern
+     * @param value       Payload of the path pattern
      */
-    ExceptionHandleResult handleException(E ex);
+    void put(String pathPattern, V value);
+    
+    /**
+     * Find a proper MappingContext for current path.
+     *
+     * @param path A path to match.
+     * @return A MappingContext if the path matched a pattern. Return null if mismatched.
+     */
+    MappingContext<V> match(String path);
 }

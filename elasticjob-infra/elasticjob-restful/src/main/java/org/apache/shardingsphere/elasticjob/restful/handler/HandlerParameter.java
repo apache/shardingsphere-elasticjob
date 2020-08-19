@@ -15,18 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
 
-@Builder
+/**
+ * Describe parameters of a handle method.
+ */
+@RequiredArgsConstructor
 @Getter
-public final class ExceptionHandleResult {
-
-    private final Object result;
+public final class HandlerParameter {
     
-    private final int statusCode;
+    private final int index;
     
-    private final String contentType;
+    private final Class<?> type;
+    
+    private final ParamSource paramSource;
+    
+    private final String name;
 }

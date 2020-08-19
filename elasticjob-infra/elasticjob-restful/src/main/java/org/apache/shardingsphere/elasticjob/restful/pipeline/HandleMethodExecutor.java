@@ -27,8 +27,8 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import org.apache.shardingsphere.elasticjob.restful.HandleContext;
-import org.apache.shardingsphere.elasticjob.restful.Handler;
+import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
+import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializerFactory;
 

@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+import org.apache.shardingsphere.elasticjob.restful.mapping.PathMatcher;
+import org.apache.shardingsphere.elasticjob.restful.mapping.RegexPathMatcher;
 import org.junit.Test;
 
 import java.util.Map;

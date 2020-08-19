@@ -15,36 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.mapping;
 
 /**
- * Sources of parameter.
- *
- * @see org.apache.shardingsphere.elasticjob.restful.annotation.Param
+ * A path matched more than one path patterns and failed to determine which pattern is more proper.
  */
-public enum ParamSource {
-    /**
-     * Request path.
-     */
-    PATH,
+public final class AmbiguousPathPatternException extends RuntimeException {
     
-    /**
-     * Query parameters.
-     */
-    QUERY,
-    
-    /**
-     * HTTP headers.
-     */
-    HEADER,
-    
-    /**
-     * HTTP request body.
-     */
-    BODY,
-    
-    /**
-     * Unknown source.
-     */
-    UNKNOWN,
+    public AmbiguousPathPatternException(final String message) {
+        super(message);
+    }
 }

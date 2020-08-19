@@ -15,29 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
-
-import lombok.RequiredArgsConstructor;
+package org.apache.shardingsphere.elasticjob.restful.annotation;
 
 /**
- * Default mapping context.
+ * Sources of parameter.
  *
- * @param <T> Type of payload
+ * @see org.apache.shardingsphere.elasticjob.restful.annotation.Param
  */
-@RequiredArgsConstructor
-public final class DefaultMappingContext<T> implements MappingContext<T> {
+public enum ParamSource {
+    /**
+     * Request path.
+     */
+    PATH,
     
-    private final String pattern;
+    /**
+     * Query parameters.
+     */
+    QUERY,
     
-    private final T payload;
+    /**
+     * HTTP headers.
+     */
+    HEADER,
     
-    @Override
-    public String pattern() {
-        return pattern;
-    }
+    /**
+     * HTTP request body.
+     */
+    BODY,
     
-    @Override
-    public T payload() {
-        return payload;
-    }
+    /**
+     * Unknown source.
+     */
+    UNKNOWN,
 }

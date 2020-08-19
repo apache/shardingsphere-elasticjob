@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.restful;
 
+import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
+import org.apache.shardingsphere.elasticjob.restful.mapping.RegexUrlPatternMap;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

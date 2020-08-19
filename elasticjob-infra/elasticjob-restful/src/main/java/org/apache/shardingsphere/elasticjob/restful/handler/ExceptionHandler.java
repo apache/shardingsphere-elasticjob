@@ -15,16 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
-import java.text.MessageFormat;
-
-public final class HandlerNotFoundException extends RuntimeException {
+/**
+ * If an exception was thrown, {@link org.apache.shardingsphere.elasticjob.restful.pipeline.ExceptionHandling}
+ * will search a proper handler to handle it.
+ *
+ * @param <E> Type of Exception
+ */
+public interface ExceptionHandler<E extends Throwable> {
     
-    private final String path;
-    
-    public HandlerNotFoundException(final String path) {
-        super(MessageFormat.format("No handler found for [{0}].", path));
-        this.path = path;
-    }
+    /**
+     * Handler for specific Exception.
+     *
+     * @param ex Exception
+     * @return Handle result
+     */
+    ExceptionHandleResult handleException(E ex);
 }

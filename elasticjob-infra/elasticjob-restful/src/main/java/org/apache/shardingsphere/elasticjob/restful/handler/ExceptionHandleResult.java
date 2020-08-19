@@ -15,14 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful;
+package org.apache.shardingsphere.elasticjob.restful.handler;
 
-/**
- * A path matched more than one path patterns and failed to determine which pattern is more proper.
- */
-public final class AmbiguousPathPatternException extends RuntimeException {
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
+public final class ExceptionHandleResult {
+
+    private final Object result;
     
-    public AmbiguousPathPatternException(final String message) {
-        super(message);
-    }
+    private final int statusCode;
+    
+    private final String contentType;
 }
