@@ -15,28 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful.serializer.impl;
+package org.apache.shardingsphere.elasticjob.restful.serializer.factory;
 
-import com.google.gson.Gson;
-import io.netty.handler.codec.http.HttpHeaderValues;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
 
-import java.nio.charset.StandardCharsets;
-
 /**
- * Serializer for <code>application/json</code>.
+ * Serializer factory.
+ *
+ * @see ResponseBodySerializer
+ * @see org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializerFactory
  */
-public final class JsonResponseBodySerializer implements ResponseBodySerializer {
+public interface SerializerFactory {
     
-    private final Gson gson = new Gson();
+    /**
+     * Specify which type would be serialized by the serializer created by this factory.
+     *
+     * @return MIME type
+     */
+    String mimeType();
     
-    @Override
-    public String mimeType() {
-        return HttpHeaderValues.APPLICATION_JSON.toString();
-    }
-    
-    @Override
-    public byte[] serialize(final Object responseBody) {
-        return gson.toJson(responseBody).getBytes(StandardCharsets.UTF_8);
-    }
+    /**
+     * Serializer factory method.
+     *
+     * @return Instance of serializer
+     */
+    ResponseBodySerializer createSerializer();
 }

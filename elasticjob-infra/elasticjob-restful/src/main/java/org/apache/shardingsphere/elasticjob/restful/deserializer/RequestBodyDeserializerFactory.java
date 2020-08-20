@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful.deserializer;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.restful.deserializer.factory.DeserializerFactory;
 
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -32,19 +33,67 @@ public final class RequestBodyDeserializerFactory {
     
     private static final Map<String, RequestBodyDeserializer> REQUEST_BODY_DESERIALIZERS = new ConcurrentHashMap<>();
     
+    private static final Map<String, DeserializerFactory> DEFAULT_REQUEST_BODY_DESERIALIZER_FACTORIES = new ConcurrentHashMap<>();
+    
+    private static final RequestBodyDeserializer MISSING_DESERIALIZER = new RequestBodyDeserializer() {
+        @Override
+        public String mimeType() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public <T> T deserialize(final Class<T> targetType, final byte[] requestBodyBytes) {
+            throw new UnsupportedOperationException();
+        }
+    };
+    
     static {
         for (RequestBodyDeserializer deserializer : ServiceLoader.load(RequestBodyDeserializer.class)) {
             REQUEST_BODY_DESERIALIZERS.put(deserializer.mimeType(), deserializer);
+        }
+        for (DeserializerFactory factory : ServiceLoader.load(DeserializerFactory.class)) {
+            DEFAULT_REQUEST_BODY_DESERIALIZER_FACTORIES.put(factory.mimeType(), factory);
         }
     }
     
     /**
      * Get deserializer for specific HTTP content type.
      *
+     * <p>
+     * This method will look for a deserializer instance of specific MIME type.
+     * If deserializer not found, this method would look for deserializer factory by MIME type.
+     * If it is still not found, the MIME type would be marked as <code>MISSING_DESERIALIZER</code>.
+     * </p>
+     *
+     * <p>
+     * Some default deserializer will be provided by {@link DeserializerFactory},
+     * so developers can implement {@link RequestBodyDeserializer} and register it by SPI to override default deserializer.
+     * </p>
+     *
      * @param contentType HTTP content type
      * @return Deserializer
      */
     public static RequestBodyDeserializer getRequestBodyDeserializer(final String contentType) {
-        return REQUEST_BODY_DESERIALIZERS.get(contentType);
+        RequestBodyDeserializer deserializer = REQUEST_BODY_DESERIALIZERS.get(contentType);
+        if (null == deserializer) {
+            synchronized (RequestBodyDeserializerFactory.class) {
+                if (null == REQUEST_BODY_DESERIALIZERS.get(contentType)) {
+                    deserializer = getRequestBodyDeserializerFromFactories(contentType);
+                }
+            }
+        }
+        return deserializer != MISSING_DESERIALIZER ? deserializer : null;
+    }
+    
+    private static RequestBodyDeserializer getRequestBodyDeserializerFromFactories(final String contentType) {
+        RequestBodyDeserializer deserializer;
+        DeserializerFactory factory = DEFAULT_REQUEST_BODY_DESERIALIZER_FACTORIES.get(contentType);
+        if (null != factory) {
+            deserializer = factory.createDeserializer();
+        } else {
+            deserializer = MISSING_DESERIALIZER;
+        }
+        REQUEST_BODY_DESERIALIZERS.put(contentType, deserializer);
+        return deserializer;
     }
 }

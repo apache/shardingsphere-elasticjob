@@ -17,30 +17,30 @@
 
 package org.apache.shardingsphere.elasticjob.restful.deserializer.impl;
 
+import com.google.gson.Gson;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
 
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 
 /**
- * Deserializer for <code>text/plain</code>.
+ * Deserializer for <code>application/json</code>.
  */
-public final class TextPlainRequestBodyDeserializer implements RequestBodyDeserializer {
+public final class DefaultJsonRequestBodyDeserializer implements RequestBodyDeserializer {
+    
+    private final Gson gson = GsonFactory.getGson();
     
     @Override
     public String mimeType() {
-        return HttpHeaderValues.TEXT_PLAIN.toString();
+        return HttpHeaderValues.APPLICATION_JSON.toString();
     }
     
     @Override
     public <T> T deserialize(final Class<T> targetType, final byte[] requestBodyBytes) {
-        if (byte[].class.equals(targetType)) {
-            return (T) requestBodyBytes;
+        if (0 == requestBodyBytes.length) {
+            return null;
         }
-        if (String.class.isAssignableFrom(targetType)) {
-            return (T) new String(requestBodyBytes, StandardCharsets.UTF_8);
-        }
-        throw new UnsupportedOperationException(MessageFormat.format("Cannot deserialize [{0}] into [{1}]", mimeType(), targetType.getName()));
+        return gson.fromJson(new String(requestBodyBytes, StandardCharsets.UTF_8), targetType);
     }
 }
