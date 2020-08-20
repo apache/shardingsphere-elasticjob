@@ -40,7 +40,9 @@ import org.junit.Test;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class NettyRestfulServiceTest {
     
@@ -76,10 +78,10 @@ public class NettyRestfulServiceTest {
             String json = new String(bytes, StandardCharsets.UTF_8);
             Gson gson = new Gson();
             JobPojo jobPojo = gson.fromJson(json, JobPojo.class);
-            assertEquals(cron, jobPojo.getCron());
-            assertEquals("myGroup", jobPojo.getGroup());
-            assertEquals("myJob", jobPojo.getName());
-            assertEquals(description, jobPojo.getDescription());
+            assertThat(jobPojo.getCron(), is(cron));
+            assertThat(jobPojo.getGroup(), is("myGroup"));
+            assertThat(jobPojo.getName(), is("myJob"));
+            assertThat(jobPojo.getDescription(), is(description));
         }, 10000L);
     }
     
@@ -89,7 +91,7 @@ public class NettyRestfulServiceTest {
         request.headers().set("Exception-Message", "An illegal state exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
             // Handle by CustomExceptionHandler
-            assertEquals(403, httpResponse.status().code());
+            assertThat(httpResponse.status().code(), is(403));
         }, 10000L);
     }
     
@@ -99,7 +101,7 @@ public class NettyRestfulServiceTest {
         request.headers().set("Exception-Message", "An illegal argument exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
             // Handle by DefaultExceptionHandler
-            assertEquals(500, httpResponse.status().code());
+            assertThat(httpResponse.status().code(), is(500));
         }, 10000L);
     }
     
@@ -107,7 +109,7 @@ public class NettyRestfulServiceTest {
     public void assertReturnStatusCode() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/code/204");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
-            assertEquals(204, httpResponse.status().code());
+            assertThat(httpResponse.status().code(), is(204));
         }, 10000L);
     }
     

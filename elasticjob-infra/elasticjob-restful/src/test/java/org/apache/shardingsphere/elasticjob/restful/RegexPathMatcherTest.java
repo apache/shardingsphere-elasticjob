@@ -23,9 +23,10 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class RegexPathMatcherTest {
@@ -35,9 +36,9 @@ public class RegexPathMatcherTest {
         PathMatcher pathMatcher = new RegexPathMatcher();
         Map<String, String> variables = pathMatcher.captureVariables("/app/{jobName}/disable/{until}/done", "/app/myJob/disable/20201231/done?name=some_name&value=some_value");
         assertFalse(variables.isEmpty());
-        assertEquals(2, variables.size());
-        assertEquals("myJob", variables.get("jobName"));
-        assertEquals("20201231", variables.get("until"));
+        assertThat(variables.size(), is(2));
+        assertThat(variables.get("jobName"), is("myJob"));
+        assertThat(variables.get("until"), is("20201231"));
         assertNull(variables.get("app"));
     }
     

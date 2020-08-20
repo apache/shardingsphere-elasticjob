@@ -21,9 +21,10 @@ import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
 import org.apache.shardingsphere.elasticjob.restful.mapping.RegexUrlPatternMap;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class RegexUrlPatternMapTest {
     
@@ -36,12 +37,12 @@ public class RegexUrlPatternMapTest {
         urlPatternMap.put("/app/{jobName}/enable", 4);
         MappingContext<Integer> mappingContext = urlPatternMap.match("/app/myJob");
         assertNotNull(mappingContext);
-        assertEquals("/app/{jobName}", mappingContext.pattern());
-        assertEquals(Integer.valueOf(1), mappingContext.payload());
+        assertThat(mappingContext.pattern(), is("/app/{jobName}"));
+        assertThat(mappingContext.payload(), is(1));
         mappingContext = urlPatternMap.match("/app/list");
         assertNotNull(mappingContext);
-        assertEquals("/app/list", mappingContext.pattern());
-        assertEquals(Integer.valueOf(2), mappingContext.payload());
+        assertThat(mappingContext.pattern(), is("/app/list"));
+        assertThat(mappingContext.payload(), is(2));
         mappingContext = urlPatternMap.match("/job/list");
         assertNull(mappingContext);
     }
@@ -53,8 +54,8 @@ public class RegexUrlPatternMapTest {
         urlPatternMap.put("/foo/{bar}/operate/{metrics}", 11);
         MappingContext<Integer> mappingContext = urlPatternMap.match("/foo/barValue/operate/status");
         assertNotNull(mappingContext);
-        assertEquals("/foo/{bar}/operate/{metrics}", mappingContext.pattern());
-        assertEquals(Integer.valueOf(11), mappingContext.payload());
+        assertThat(mappingContext.pattern(), is("/foo/{bar}/operate/{metrics}"));
+        assertThat(mappingContext.payload(), is(11));
     }
     
     @Test(expected = IllegalArgumentException.class)
