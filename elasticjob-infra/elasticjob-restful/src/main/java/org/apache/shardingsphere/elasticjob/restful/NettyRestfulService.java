@@ -23,6 +23,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.NettyRuntime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChannelInitializer;
 
@@ -32,20 +33,26 @@ import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChann
 @Slf4j
 public final class NettyRestfulService implements RestfulService {
     
+    private static final int DEFAULT_WORKER_GROUP_THREADS = 1 + 2 * NettyRuntime.availableProcessors();
+    
     private final NettyRestfulServiceConfiguration configuration;
     
     private ServerBootstrap serverBootstrap;
     
-    private EventLoopGroup eventLoopGroup;
+    private EventLoopGroup bossEventLoopGroup;
+    
+    private EventLoopGroup workerEventLoopGroup;
     
     public NettyRestfulService(final NettyRestfulServiceConfiguration configuration) {
         this.configuration = configuration;
     }
     
     private void initServerBootstrap() {
-        eventLoopGroup = new NioEventLoopGroup();
+        bossEventLoopGroup = new NioEventLoopGroup();
+        workerEventLoopGroup = new NioEventLoopGroup(DEFAULT_WORKER_GROUP_THREADS);
+        
         serverBootstrap = new ServerBootstrap()
-                .group(eventLoopGroup)
+                .group(bossEventLoopGroup, workerEventLoopGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new RestfulServiceChannelInitializer(configuration));
     }
@@ -70,6 +77,7 @@ public final class NettyRestfulService implements RestfulService {
     
     @Override
     public void shutdown() {
-        eventLoopGroup.shutdownGracefully();
+        bossEventLoopGroup.shutdownGracefully();
+        workerEventLoopGroup.shutdownGracefully();
     }
 }

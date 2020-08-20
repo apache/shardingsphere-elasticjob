@@ -41,7 +41,7 @@ public class JobController implements RestfulController {
      * @param description Job description
      * @return Result
      */
-    @Mapping(method = Http.POST, pattern = "/{group}/{jobName}")
+    @Mapping(method = Http.POST, path = "/{group}/{jobName}")
     public JobPojo createJob(@Param(name = "group", source = ParamSource.PATH) final String group,
                              @Param(name = "jobName", source = ParamSource.PATH) final String jobName,
                              @Param(name = "cron", source = ParamSource.QUERY) final String cron,
@@ -60,7 +60,7 @@ public class JobController implements RestfulController {
      * @param message Exception message
      * @return None
      */
-    @Mapping(method = Http.GET, pattern = "/throw/IllegalState")
+    @Mapping(method = Http.GET, path = "/throw/IllegalState")
     public Object throwIllegalStateException(@Param(name = "Exception-Message", source = ParamSource.HEADER) final String message) {
         throw new IllegalStateException(message);
     }
@@ -71,7 +71,7 @@ public class JobController implements RestfulController {
      * @param message Exception message
      * @return None
      */
-    @Mapping(method = Http.GET, pattern = "/throw/IllegalArgument")
+    @Mapping(method = Http.GET, path = "/throw/IllegalArgument")
     public Object throwIllegalArgumentException(@Param(name = "Exception-Message", source = ParamSource.HEADER) final String message) {
         throw new IllegalArgumentException(message);
     }
@@ -82,7 +82,7 @@ public class JobController implements RestfulController {
      * @param noop Useless
      * @return None
      */
-    @Mapping(method = Http.GET, pattern = "/code/204")
+    @Mapping(method = Http.GET, path = "/code/204")
     @Returning(code = 204)
     public Object return204(final String noop) {
         return null;

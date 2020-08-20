@@ -72,7 +72,7 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
                     continue;
                 }
                 HttpMethod httpMethod = HttpMethod.valueOf(mapping.method());
-                String pattern = mapping.pattern();
+                String pattern = mapping.path();
                 String fullPathPattern = contextPath + pattern;
                 mappingRegistry.addMapping(httpMethod, fullPathPattern, new Handler(restfulController, method));
             }

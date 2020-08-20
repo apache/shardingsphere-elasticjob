@@ -42,5 +42,5 @@ public @interface Mapping {
      *
      * @return Path pattern
      */
-    String pattern();
+    String path() default "";
 }
