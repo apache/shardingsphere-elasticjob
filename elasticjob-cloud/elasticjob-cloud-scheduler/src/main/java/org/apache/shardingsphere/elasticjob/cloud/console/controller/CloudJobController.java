@@ -38,19 +38,17 @@ import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskRunni
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.wrapper.QueryParameterMap;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
+import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.text.ParseException;
@@ -71,9 +69,8 @@ import java.util.Set;
  * Cloud job restful api.
  */
 @Slf4j
-@RestController
-@RequestMapping("/job")
-public final class CloudJobController {
+@ContextPath("/api/job")
+public final class CloudJobController implements RestfulController {
     
     private static CoordinatorRegistryCenter regCenter;
     
@@ -108,86 +105,106 @@ public final class CloudJobController {
     
     /**
      * Register cloud job.
+     *
      * @param cloudJobConfig cloud job configuration
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/register")
-    public void register(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
+    @Mapping(method = Http.POST, path = "/register")
+    public boolean register(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
         producerManager.register(cloudJobConfig);
+        return true;
     }
     
     /**
      * Update cloud job.
+     *
      * @param cloudJobConfig cloud job configuration
+     * @return <tt>true</tt> for operation finished.
      */
-    @PutMapping("/update")
-    public void update(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
+    @Mapping(method = Http.PUT, path = "/update")
+    public boolean update(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
         producerManager.update(cloudJobConfig);
+        return true;
     }
     
     /**
      * Deregister cloud job.
+     *
      * @param jobName job name
+     * @return <tt>true</tt> for operation finished.
      */
-    @DeleteMapping("/{jobName}/deregister")
-    public void deregister(@PathVariable final String jobName) {
+    @Mapping(method = Http.DELETE, path = "/{jobName}/deregister")
+    public boolean deregister(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
         producerManager.deregister(jobName);
+        return true;
     }
     
     /**
      * Check whether the cloud job is disabled or not.
+     *
      * @param jobName job name
      * @return true is disabled, otherwise not
      */
-    @GetMapping("/{jobName}/disable")
-    public boolean isDisabled(@PathVariable("jobName") final String jobName) {
+    @Mapping(method = Http.GET, path = "/{jobName}/disable")
+    public boolean isDisabled(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
         return facadeService.isJobDisabled(jobName);
     }
     
     /**
      * Enable cloud job.
+     *
      * @param jobName job name
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/{jobName}/enable")
-    public void enable(@PathVariable("jobName") final String jobName) {
+    @Mapping(method = Http.POST, path = "/{jobName}/enable")
+    public boolean enable(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
         Optional<CloudJobConfigurationPOJO> configOptional = configService.load(jobName);
         if (configOptional.isPresent()) {
             facadeService.enableJob(jobName);
             producerManager.reschedule(jobName);
         }
+        return true;
     }
     
     /**
      * Disable cloud job.
+     *
      * @param jobName job name
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/{jobName}/disable")
-    public void disable(@PathVariable("jobName") final String jobName) {
+    @Mapping(method = Http.POST, path = "/{jobName}/disable")
+    public boolean disable(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
         if (configService.load(jobName).isPresent()) {
             facadeService.disableJob(jobName);
             producerManager.unschedule(jobName);
         }
+        return true;
     }
     
     /**
      * Trigger job once.
+     *
      * @param jobName job name
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/trigger")
-    public void trigger(@RequestBody final String jobName) {
+    @Mapping(method = Http.POST, path = "/trigger")
+    public boolean trigger(@RequestBody final String jobName) {
         Optional<CloudJobConfigurationPOJO> config = configService.load(jobName);
         if (config.isPresent() && CloudJobExecutionType.DAEMON == config.get().getJobExecutionType()) {
             throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
         }
         facadeService.addTransient(jobName);
+        return true;
     }
     
     /**
      * Query job detail.
+     *
      * @param jobName job name
      * @return the job detail
      */
-    @GetMapping("/jobs/{jobName}")
-    public CloudJobConfigurationPOJO detail(@PathVariable("jobName") final String jobName) {
+    @Mapping(method = Http.GET, path = "/jobs/{jobName}")
+    public CloudJobConfigurationPOJO detail(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
         Optional<CloudJobConfigurationPOJO> cloudJobConfig = configService.load(jobName);
         return cloudJobConfig.orElse(null);
     }
@@ -196,7 +213,7 @@ public final class CloudJobController {
      * Find all jobs.
      * @return all jobs
      */
-    @GetMapping("/jobs")
+    @Mapping(method = Http.GET, path = "/jobs")
     public Collection<CloudJobConfigurationPOJO> findAllJobs() {
         return configService.loadAll();
     }
@@ -205,7 +222,7 @@ public final class CloudJobController {
      * Find all running tasks.
      * @return all running tasks
      */
-    @GetMapping("tasks/running")
+    @Mapping(method = Http.GET, path = "/tasks/running")
     public Collection<TaskContext> findAllRunningTasks() {
         List<TaskContext> result = new LinkedList<>();
         for (Set<TaskContext> each : facadeService.getAllRunningTasks().values()) {
@@ -218,7 +235,7 @@ public final class CloudJobController {
      * Find all ready tasks.
      * @return collection of all ready tasks
      */
-    @GetMapping("tasks/ready")
+    @Mapping(method = Http.GET, path = "/tasks/ready")
     public Collection<Map<String, String>> findAllReadyTasks() {
         Map<String, Integer> readyTasks = facadeService.getAllReadyTasks();
         List<Map<String, String>> result = new ArrayList<>(readyTasks.size());
@@ -235,7 +252,7 @@ public final class CloudJobController {
      * Find all failover tasks.
      * @return collection of all the failover tasks
      */
-    @GetMapping("tasks/failover")
+    @Mapping(method = Http.GET, path = "/tasks/failover")
     public Collection<FailoverTaskInfo> findAllFailoverTasks() {
         List<FailoverTaskInfo> result = new LinkedList<>();
         for (Collection<FailoverTaskInfo> each : facadeService.getAllFailoverTasks().values()) {
@@ -250,12 +267,12 @@ public final class CloudJobController {
      * @return job execution event
      * @throws ParseException parse exception
      */
-    @GetMapping("events/executions")
-    public JobEventRdbSearch.Result<JobExecutionEvent> findJobExecutionEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
+    @Mapping(method = Http.GET, path = "/events/executions")
+    public JobEventRdbSearch.Result<JobExecutionEvent> findJobExecutionEvents(final QueryParameterMap requestParams) throws ParseException {
         if (!isRdbConfigured()) {
             return new JobEventRdbSearch.Result<>(0, Collections.emptyList());
         }
-        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(requestParams, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
+        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(requestParams.toSingleValueMap(), new String[]{"jobName", "taskId", "ip", "isSuccess"}));
     }
     
     /**
@@ -264,47 +281,47 @@ public final class CloudJobController {
      * @return job status trace event
      * @throws ParseException parse exception
      */
-    @GetMapping("events/statusTraces")
-    public JobEventRdbSearch.Result<JobStatusTraceEvent> findJobStatusTraceEvents(@RequestParam final MultiValueMap<String, String> requestParams) throws ParseException {
+    @Mapping(method = Http.GET, path = "/events/statusTraces")
+    public JobEventRdbSearch.Result<JobStatusTraceEvent> findJobStatusTraceEvents(final QueryParameterMap requestParams) throws ParseException {
         if (!isRdbConfigured()) {
             return new JobEventRdbSearch.Result<>(0, Collections.emptyList());
         }
-        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(requestParams, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
+        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(requestParams.toSingleValueMap(), new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
     }
     
     private boolean isRdbConfigured() {
         return null != jobEventRdbSearch;
     }
     
-    private JobEventRdbSearch.Condition buildCondition(final MultiValueMap<String, String> requestParams, final String[] params) throws ParseException {
+    private JobEventRdbSearch.Condition buildCondition(final Map<String, String> requestParams, final String[] params) throws ParseException {
         int perPage = 10;
         int page = 1;
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("per_page"))) {
-            perPage = Integer.parseInt(requestParams.getFirst("per_page"));
+        if (!Strings.isNullOrEmpty(requestParams.get("per_page"))) {
+            perPage = Integer.parseInt(requestParams.get("per_page"));
         }
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("page"))) {
-            page = Integer.parseInt(requestParams.getFirst("page"));
+        if (!Strings.isNullOrEmpty(requestParams.get("page"))) {
+            page = Integer.parseInt(requestParams.get("page"));
         }
-        String sort = requestParams.getFirst("sort");
-        String order = requestParams.getFirst("order");
+        String sort = requestParams.get("sort");
+        String order = requestParams.get("order");
         Date startTime = null;
         Date endTime = null;
         Map<String, Object> fields = getQueryParameters(requestParams, params);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("startTime"))) {
-            startTime = simpleDateFormat.parse(requestParams.getFirst("startTime"));
+        if (!Strings.isNullOrEmpty(requestParams.get("startTime"))) {
+            startTime = simpleDateFormat.parse(requestParams.get("startTime"));
         }
-        if (!Strings.isNullOrEmpty(requestParams.getFirst("endTime"))) {
-            endTime = simpleDateFormat.parse(requestParams.getFirst("endTime"));
+        if (!Strings.isNullOrEmpty(requestParams.get("endTime"))) {
+            endTime = simpleDateFormat.parse(requestParams.get("endTime"));
         }
         return new JobEventRdbSearch.Condition(perPage, page, sort, order, startTime, endTime, fields);
     }
     
-    private Map<String, Object> getQueryParameters(final MultiValueMap<String, String> requestParams, final String[] params) {
+    private Map<String, Object> getQueryParameters(final Map<String, String> requestParams, final String[] params) {
         final Map<String, Object> result = new HashMap<>();
         for (String each : params) {
-            if (!Strings.isNullOrEmpty(requestParams.getFirst(each))) {
-                result.put(each, requestParams.getFirst(each));
+            if (!Strings.isNullOrEmpty(requestParams.get(each))) {
+                result.put(each, requestParams.get(each));
             }
         }
         return result;
@@ -312,11 +329,12 @@ public final class CloudJobController {
     
     /**
      * Find task result statistics.
+     *
      * @param since time span
      * @return task result statistics
      */
-    @GetMapping("/statistics/tasks/results")
-    public List<TaskResultStatistics> findTaskResultStatistics(@RequestParam(value = "since", required = false) final String since) {
+    @Mapping(method = Http.GET, path = "/statistics/tasks/results")
+    public List<TaskResultStatistics> findTaskResultStatistics(@Param(name = "since", source = ParamSource.QUERY, required = false) final String since) {
         if ("last24hours".equals(since)) {
             return statisticManager.findTaskResultStatisticsDaily();
         } else {
@@ -326,11 +344,12 @@ public final class CloudJobController {
     
     /**
      * Get task result statistics.
+     *
      * @param period time period
      * @return task result statistics
      */
-    @GetMapping("/statistics/tasks/results/{period}")
-    public TaskResultStatistics getTaskResultStatistics(@PathVariable(value = "period", required = false) final String period) {
+    @Mapping(method = Http.GET, path = "/statistics/tasks/results/{period}")
+    public TaskResultStatistics getTaskResultStatistics(@Param(name = "period", source = ParamSource.PATH, required = false) final String period) {
         switch (period) {
             case "online":
                 return statisticManager.getTaskResultStatisticsSinceOnline();
@@ -347,11 +366,12 @@ public final class CloudJobController {
     
     /**
      * Find task running statistics.
+     *
      * @param since time span
      * @return task result statistics
      */
-    @GetMapping("/statistics/tasks/running")
-    public List<TaskRunningStatistics> findTaskRunningStatistics(@RequestParam(value = "since", required = false) final String since) {
+    @Mapping(method = Http.GET, path = "/statistics/tasks/running")
+    public List<TaskRunningStatistics> findTaskRunningStatistics(@Param(name = "since", source = ParamSource.QUERY, required = false) final String since) {
         if ("lastWeek".equals(since)) {
             return statisticManager.findTaskRunningStatisticsWeekly();
         } else {
@@ -363,18 +383,19 @@ public final class CloudJobController {
      * Get job execution type statistics.
      * @return job execution statistics
      */
-    @GetMapping("/statistics/jobs/executionType")
+    @Mapping(method = Http.GET, path = "/statistics/jobs/executionType")
     public JobExecutionTypeStatistics getJobExecutionTypeStatistics() {
         return statisticManager.getJobExecutionTypeStatistics();
     }
     
     /**
      * Find job running statistics in the recent week.
+     *
      * @param since time span
      * @return collection of job running statistics in the recent week
      */
-    @GetMapping("/statistics/jobs/running")
-    public List<JobRunningStatistics> findJobRunningStatistics(@RequestParam(value = "since", required = false) final String since) {
+    @Mapping(method = Http.GET, path = "/statistics/jobs/running")
+    public List<JobRunningStatistics> findJobRunningStatistics(@Param(name = "since", source = ParamSource.QUERY, required = false) final String since) {
         if ("lastWeek".equals(since)) {
             return statisticManager.findJobRunningStatisticsWeekly();
         } else {
@@ -386,7 +407,7 @@ public final class CloudJobController {
      * Find job register statistics.
      * @return collection of job register statistics since online
      */
-    @GetMapping("/statistics/jobs/register")
+    @Mapping(method = Http.GET, path = "/statistics/jobs/register")
     public List<JobRegisterStatistics> findJobRegisterStatistics() {
         return statisticManager.findJobRegisterStatisticsSinceOnline();
     }

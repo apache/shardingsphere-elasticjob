@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.cloud.console.config;
+package org.apache.shardingsphere.elasticjob.cloud.console.config.advice;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerTypePredicate;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.restful.handler.ExceptionHandleResult;
+import org.apache.shardingsphere.elasticjob.restful.handler.ExceptionHandler;
 
 /**
- * Web mvc config.
+ * A default exception handler for restful service.
  **/
-@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+@Slf4j
+public final class ConsoleExceptionHandler implements ExceptionHandler<Exception> {
     
     @Override
-    public void configurePathMatch(final PathMatchConfigurer configurer) {
-        HandlerTypePredicate handlerTypePredicate = HandlerTypePredicate.forAnnotation(RestController.class);
-        configurer.addPathPrefix("/api", handlerTypePredicate);
+    public ExceptionHandleResult handleException(final Exception ex) {
+        return ExceptionHandleResult.builder()
+                .statusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
+                .result(ex.getLocalizedMessage())
+                .build();
     }
 }

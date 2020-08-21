@@ -25,16 +25,18 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerCon
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.FacadeService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMockConfiguration;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMockConfiguration;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
+import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -50,12 +52,12 @@ public abstract class AbstractCloudControllerTest {
     
     private static ConsoleBootstrap consoleBootstrap;
     
-    private static ConfigurableApplicationContext masterServer;
+    private static RestfulService masterServer;
     
-    private static ConfigurableApplicationContext slaveServer;
+    private static RestfulService slaveServer;
     
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         initRestfulServer();
         initMesosServer();
     }
@@ -73,19 +75,21 @@ public abstract class AbstractCloudControllerTest {
     
     private static void initMesosServer() {
         MesosStateService.register("127.0.0.1", 9050);
-        ConsoleBootstrap.ConsoleApplication.setPort(9050);
-        ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosMasterServerMockConfiguration.class});
-        masterServer = ConsoleBootstrap.ConsoleApplication.start();
-        ConsoleBootstrap.ConsoleApplication.setPort(9051);
-        ConsoleBootstrap.ConsoleApplication.setExtraSources(new Class[]{MesosSlaveServerMockConfiguration.class});
-        slaveServer = ConsoleBootstrap.ConsoleApplication.start();
+        NettyRestfulServiceConfiguration masterServerConfiguration = new NettyRestfulServiceConfiguration(9050);
+        masterServerConfiguration.addControllerInstance(new MesosMasterServerMock());
+        masterServer = new NettyRestfulService(masterServerConfiguration);
+        masterServer.startup();
+        NettyRestfulServiceConfiguration slaveServerConfiguration = new NettyRestfulServiceConfiguration(9051);
+        slaveServerConfiguration.addControllerInstance(new MesosSlaveServerMock());
+        slaveServer = new NettyRestfulService(slaveServerConfiguration);
+        slaveServer.startup();
     }
     
     @AfterClass
     public static void tearDown() {
         consoleBootstrap.stop();
-        masterServer.stop();
-        slaveServer.stop();
+        masterServer.shutdown();
+        slaveServer.shutdown();
         MesosStateService.deregister();
     }
     

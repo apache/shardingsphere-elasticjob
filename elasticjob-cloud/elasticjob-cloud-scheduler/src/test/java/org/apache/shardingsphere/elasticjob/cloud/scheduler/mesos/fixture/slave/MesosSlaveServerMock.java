@@ -17,23 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.slave;
 
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 
-@Controller
-@RequestMapping("/")
-public class MesosSlaveServerMock {
+public class MesosSlaveServerMock implements RestfulController {
     
     /**
      * Check slave server state.
      *
      * @return json object
      */
-    @ResponseBody
-    @GetMapping(value = "/state", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Mapping(method = Http.GET, path = "/state")
     public String state() {
         return "{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohon"
                 + "gtao\",\"start_time\":1488179767.60204,\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"pid\":\"slave(1)@"
