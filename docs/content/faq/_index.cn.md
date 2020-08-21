@@ -9,7 +9,7 @@ chapter = true
 
 回答：
 
-ElasticJob 使用 lombok 实现极简代码。关于更多使用和安装细节，请参考 [lombok 官网](https://projectlombok.org/download.html)。
+ElasticJob 使用 lombok 实现极简代码。关于更多使用和安装细节，请参考 [lombok 官网](https://projectlombok.org/download)。
 
 ## 2. 是否支持动态添加作业?
 
@@ -61,7 +61,7 @@ ElasticJob-Lite 提出了 overwrite 概念，可通过 JobConfiguration 或 Spri
 
 分布式问题非常难于调试和重现，为此 ElasticJob-Lite 提供了 dump 命令。
 
-如果您怀疑某些场景出现问题，可参照[作业信息导出](/cn/user-manual/elasticjob-lite/usage/)将作业运行时信息提交至社区。
+如果您怀疑某些场景出现问题，可参照[作业信息导出](/cn/user-manual/elasticjob-lite/operation/dump/)将作业运行时信息提交至社区。
 ElasticJob 已将 IP 地址等敏感信息过滤，导出的信息可在公网安全传输。
 
 ## 7. ElasticJob-Cloud 有何使用限制?
