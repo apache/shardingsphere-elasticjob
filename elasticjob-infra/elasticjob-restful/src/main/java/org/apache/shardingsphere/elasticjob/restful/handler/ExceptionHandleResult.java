@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful.handler;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.restful.Http;
 
 @Builder
 @Getter
@@ -26,7 +27,9 @@ public final class ExceptionHandleResult {
 
     private final Object result;
     
-    private final int statusCode;
+    @Builder.Default
+    private final int statusCode = 500;
     
-    private final String contentType;
+    @Builder.Default
+    private final String contentType = Http.DEFAULT_CONTENT_TYPE;
 }

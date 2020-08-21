@@ -27,15 +27,16 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
+import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializerFactory;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandlerParameter;
-import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
 import org.apache.shardingsphere.elasticjob.restful.mapping.PathMatcher;
 import org.apache.shardingsphere.elasticjob.restful.mapping.RegexPathMatcher;
-import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
-import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializerFactory;
+import org.apache.shardingsphere.elasticjob.restful.wrapper.QueryParameterMap;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -73,17 +74,27 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
         for (int i = 0; i < handlerParameters.size(); i++) {
             HandlerParameter handlerParameter = handlerParameters.get(i);
             Object parsedValue = null;
+            String parameterName = handlerParameter.getName();
+            Class<?> targetType = handlerParameter.getType();
+            boolean nullable = !handlerParameter.isRequired();
             switch (handlerParameter.getParamSource()) {
                 case PATH:
-                    parsedValue = deserializeBuiltInType(handlerParameter.getType(), templateVariables.get(handlerParameter.getName()));
+                    String rawPathValue = templateVariables.get(parameterName);
+                    Object parsedPathValue = deserializeBuiltInType(targetType, rawPathValue);
+                    Preconditions.checkArgument(nullable || null != parsedPathValue, "Missing path variable [%s].", parameterName);
+                    parsedValue = parsedPathValue;
                     break;
                 case QUERY:
-                    List<String> queryValues = queryParameters.get(handlerParameter.getName());
-                    parsedValue = deserializeQueryParameter(handlerParameter.getType(), queryValues);
+                    List<String> rawQueryValues = queryParameters.get(parameterName);
+                    Object parsedQueryValue = deserializeQueryParameter(targetType, rawQueryValues);
+                    Preconditions.checkArgument(nullable || null != parsedQueryValue, "Missing query parameter [%s].", parameterName);
+                    parsedValue = parsedQueryValue;
                     break;
                 case HEADER:
-                    String headerValue = httpRequest.headers().get(handlerParameter.getName());
-                    parsedValue = deserializeBuiltInType(handlerParameter.getType(), headerValue);
+                    String rawHeaderValue = httpRequest.headers().get(parameterName);
+                    Object parsedHeaderValue = deserializeBuiltInType(targetType, rawHeaderValue);
+                    Preconditions.checkArgument(nullable || null != parsedHeaderValue, "Missing header value [%s].", parameterName);
+                    parsedValue = parsedHeaderValue;
                     break;
                 case BODY:
                     Preconditions.checkState(!requestBodyAlreadyParsed, "@RequestBody duplicated on handle method.");
@@ -94,11 +105,17 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
                     if (null == deserializer) {
                         throw new UnsupportedMessageTypeException(MessageFormat.format("Unsupported MIME type [{0}]", mimeType));
                     }
-                    parsedValue = deserializer.deserialize(handlerParameter.getType(), bytes);
+                    Object parsedBodyValue = deserializer.deserialize(targetType, bytes);
+                    parsedValue = parsedBodyValue;
+                    Preconditions.checkArgument(nullable || null != parsedBodyValue, "Missing request body");
                     requestBodyAlreadyParsed = true;
                     break;
                 case UNKNOWN:
-                    log.warn("Unknown source argument [{}] on index [{}].", handlerParameter.getName(), handlerParameter.getIndex());
+                    if (QueryParameterMap.class.isAssignableFrom(targetType)) {
+                        parsedValue = new QueryParameterMap(queryParameters);
+                    } else {
+                        log.warn("Unknown source argument [{}] on index [{}].", parameterName, handlerParameter.getIndex());
+                    }
                     break;
                 default:
             }

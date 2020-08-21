@@ -84,12 +84,13 @@ public final class Handler {
             Parameter parameter = parameters[i];
             Param annotation = parameter.getAnnotation(Param.class);
             HandlerParameter handlerParameter;
+            RequestBody requestBody;
             if (null != annotation) {
-                handlerParameter = new HandlerParameter(i, parameter.getType(), annotation.source(), annotation.name());
-            } else if (null != parameter.getAnnotation(RequestBody.class)) {
-                handlerParameter = new HandlerParameter(i, parameter.getType(), ParamSource.BODY, parameter.getName());
+                handlerParameter = new HandlerParameter(i, parameter.getType(), annotation.source(), annotation.name(), annotation.required());
+            } else if (null != (requestBody = parameter.getAnnotation(RequestBody.class))) {
+                handlerParameter = new HandlerParameter(i, parameter.getType(), ParamSource.BODY, parameter.getName(), requestBody.required());
             } else {
-                handlerParameter = new HandlerParameter(i, parameter.getType(), ParamSource.UNKNOWN, parameter.getName());
+                handlerParameter = new HandlerParameter(i, parameter.getType(), ParamSource.UNKNOWN, parameter.getName(), false);
             }
             params.add(handlerParameter);
         }
