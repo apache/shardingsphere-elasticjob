@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful.deserializer.impl;
+package org.apache.shardingsphere.elasticjob.restful.serializer.impl;
 
 import com.google.gson.Gson;
 import io.netty.handler.codec.http.HttpHeaderValues;
-import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
+import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
 
 import java.nio.charset.StandardCharsets;
 
 /**
- * Deserializer for <code>application/json</code>.
+ * Default serializer for <code>application/json</code>.
  */
-public final class JsonRequestBodyDeserializer implements RequestBodyDeserializer {
+public final class DefaultJsonResponseBodySerializer implements ResponseBodySerializer {
     
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonFactory.getGson();
     
     @Override
     public String mimeType() {
@@ -36,7 +37,10 @@ public final class JsonRequestBodyDeserializer implements RequestBodyDeserialize
     }
     
     @Override
-    public <T> T deserialize(final Class<T> targetType, final byte[] requestBodyBytes) {
-        return gson.fromJson(new String(requestBodyBytes, StandardCharsets.UTF_8), targetType);
+    public byte[] serialize(final Object responseBody) {
+        if (responseBody instanceof String) {
+            return ((String) responseBody).getBytes(StandardCharsets.UTF_8);
+        }
+        return gson.toJson(responseBody).getBytes(StandardCharsets.UTF_8);
     }
 }

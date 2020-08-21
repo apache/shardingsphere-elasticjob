@@ -15,5 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.restful.deserializer.impl.JsonRequestBodyDeserializer
-org.apache.shardingsphere.elasticjob.restful.deserializer.impl.TextPlainRequestBodyDeserializer
+org.apache.shardingsphere.elasticjob.restful.serializer.factory.impl.DefaultJsonResponseBodySerializerFactory
