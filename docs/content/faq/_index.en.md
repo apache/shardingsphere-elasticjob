@@ -9,7 +9,7 @@ chapter = true
 
 Answer:
 
-`ElasticJob` uses `lombok` to enable minimal coding. For more details about using and installment, please refer to the official website of [lombok](https://projectlombok.org/download.html).
+`ElasticJob` uses `lombok` to enable minimal coding. For more details about using and installment, please refer to the official website of [lombok](https://projectlombok.org/download).
 
 ## 2. Does ElasticJob support dynamically adding jobs?
 
@@ -61,7 +61,7 @@ Answer:
 
 Distributed problems are very difficult to debug and reproduce. For this reason, `ElasticJob-Lite` provides the `dump` command.
 
-If you suspect a problem in some scenarios, you can refer to the [dump](/en/user-manual/dump/) document to submit the job runtime information to the community.
+If you suspect a problem in some scenarios, you can refer to the [dump](/en/user-manual/elasticjob-lite/operation/dump/) document to submit the job runtime information to the community.
 `ElasticJob` has filtered sensitive information such as `IP`, and the dump file can be safely transmitted on the Internet.
 
 ## 7. What are the usage restrictions of `ElasticJob-Cloud`?
