@@ -35,4 +35,6 @@ public final class HandlerParameter {
     private final ParamSource paramSource;
     
     private final String name;
+    
+    private final boolean required;
 }

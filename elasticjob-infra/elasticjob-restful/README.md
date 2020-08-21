@@ -7,7 +7,7 @@
 @ContextPath("/job")
 public class JobController implements RestfulController {
     
-    @Mapping(method = Http.POST, pattern = "/{group}/{jobName}")
+    @Mapping(method = Http.POST, path = "/{group}/{jobName}")
     public JobPojo createJob(@Param(name = "group", source = ParamSource.PATH) final String group,
                              @Param(name = "jobName", source = ParamSource.PATH) final String jobName,
                              @Param(name = "cron", source = ParamSource.QUERY) final String cron,

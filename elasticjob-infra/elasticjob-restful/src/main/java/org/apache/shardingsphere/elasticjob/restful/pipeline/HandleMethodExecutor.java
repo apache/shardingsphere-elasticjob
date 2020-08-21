@@ -49,10 +49,15 @@ public final class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
         
         Object handleResult = handler.execute(args);
         
-        String mimeType = HttpUtil.getMimeType(handler.getProducing()).toString();
-        ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer(mimeType);
-        byte[] bodyBytes = serializer.serialize(handleResult);
-        FullHttpResponse response = createHttpResponse(handler.getProducing(), bodyBytes, handler.getHttpStatusCode());
+        FullHttpResponse response;
+        if (null != handleResult) {
+            String mimeType = HttpUtil.getMimeType(handler.getProducing()).toString();
+            ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer(mimeType);
+            byte[] bodyBytes = serializer.serialize(handleResult);
+            response = createHttpResponse(handler.getProducing(), bodyBytes, handler.getHttpStatusCode());
+        } else {
+            response = createHttpResponse(handler.getProducing(), new byte[0], handler.getHttpStatusCode());
+        }
         ctx.writeAndFlush(response);
     }
     

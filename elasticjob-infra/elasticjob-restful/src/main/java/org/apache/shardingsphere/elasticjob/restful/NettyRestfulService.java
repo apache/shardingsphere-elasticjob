@@ -50,7 +50,6 @@ public final class NettyRestfulService implements RestfulService {
     private void initServerBootstrap() {
         bossEventLoopGroup = new NioEventLoopGroup();
         workerEventLoopGroup = new NioEventLoopGroup(DEFAULT_WORKER_GROUP_THREADS);
-        
         serverBootstrap = new ServerBootstrap()
                 .group(bossEventLoopGroup, workerEventLoopGroup)
                 .channel(NioServerSocketChannel.class)
