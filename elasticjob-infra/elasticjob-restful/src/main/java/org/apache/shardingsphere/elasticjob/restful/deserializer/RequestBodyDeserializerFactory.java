@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.factory.DeserializerFactory;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,22 +79,18 @@ public final class RequestBodyDeserializerFactory {
         if (null == deserializer) {
             synchronized (RequestBodyDeserializerFactory.class) {
                 if (null == REQUEST_BODY_DESERIALIZERS.get(contentType)) {
-                    deserializer = getRequestBodyDeserializerFromFactories(contentType);
+                    instantiateRequestBodyDeserializerFromFactories(contentType);
                 }
+                deserializer = REQUEST_BODY_DESERIALIZERS.get(contentType);
             }
         }
         return deserializer != MISSING_DESERIALIZER ? deserializer : null;
     }
     
-    private static RequestBodyDeserializer getRequestBodyDeserializerFromFactories(final String contentType) {
+    private static void instantiateRequestBodyDeserializerFromFactories(final String contentType) {
         RequestBodyDeserializer deserializer;
         DeserializerFactory factory = DEFAULT_REQUEST_BODY_DESERIALIZER_FACTORIES.get(contentType);
-        if (null != factory) {
-            deserializer = factory.createDeserializer();
-        } else {
-            deserializer = MISSING_DESERIALIZER;
-        }
+        deserializer = Optional.ofNullable(factory).map(DeserializerFactory::createDeserializer).orElse(MISSING_DESERIALIZER);
         REQUEST_BODY_DESERIALIZERS.put(contentType, deserializer);
-        return deserializer;
     }
 }
