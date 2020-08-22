@@ -14,5 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Default web server port
-server.port=8899
+
+org.apache.shardingsphere.elasticjob.cloud.console.config.serializer.JsonResponseBodySerializer

@@ -189,7 +189,10 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     @Test
     public void assertFindJobExecutionEventsWhenNotConfigRDB() {
         ReflectionUtils.setStaticFieldValue(CloudJobController.class, "jobEventRdbSearch", null);
-        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/events/executions"), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
+        Map<String, String> query = new HashMap<>();
+        query.put("per_page", "10");
+        query.put("page", "1");
+        assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/job/events/executions", query), is(GsonFactory.getGson().toJson(new JobEventRdbSearch.Result<>(0,
                 Collections.<JobExecutionEvent>emptyList()))));
     }
     

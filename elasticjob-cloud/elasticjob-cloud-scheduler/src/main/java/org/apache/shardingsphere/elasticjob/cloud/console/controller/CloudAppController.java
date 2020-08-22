@@ -18,8 +18,6 @@
 package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
 import com.google.gson.JsonParseException;
-import java.util.Collection;
-import java.util.Optional;
 import org.apache.mesos.Protos.ExecutorID;
 import org.apache.mesos.Protos.SlaveID;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
@@ -33,21 +31,22 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerMan
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.DisableAppService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
+import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
+
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Cloud app controller.
  */
-@RestController
-@RequestMapping("/app")
-public final class CloudAppController {
+@ContextPath("/api/app")
+public final class CloudAppController implements RestfulController {
     
     private static CoordinatorRegistryCenter regCenter;
     
@@ -83,24 +82,28 @@ public final class CloudAppController {
      * Register app config.
      *
      * @param appConfig cloud app config
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping
-    public void register(@RequestBody final CloudAppConfigurationPOJO appConfig) {
+    @Mapping(method = Http.POST)
+    public boolean register(@RequestBody final CloudAppConfigurationPOJO appConfig) {
         Optional<CloudAppConfigurationPOJO> appConfigFromZk = appConfigService.load(appConfig.getAppName());
         if (appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("app '%s' already existed.", appConfig.getAppName());
         }
         appConfigService.add(appConfig);
+        return true;
     }
     
     /**
      * Update app config.
      *
      * @param appConfig cloud app config
+     * @return <tt>true</tt> for operation finished.
      */
-    @PutMapping
-    public void update(@RequestBody final CloudAppConfigurationPOJO appConfig) {
+    @Mapping(method = Http.PUT)
+    public boolean update(@RequestBody final CloudAppConfigurationPOJO appConfig) {
         appConfigService.update(appConfig);
+        return true;
     }
     
     /**
@@ -109,8 +112,8 @@ public final class CloudAppController {
      * @param appName app name
      * @return cloud app config
      */
-    @GetMapping("/{appName}")
-    public CloudAppConfigurationPOJO detail(@PathVariable("appName") final String appName) {
+    @Mapping(method = Http.GET, path = "/{appName}")
+    public CloudAppConfigurationPOJO detail(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
         Optional<CloudAppConfigurationPOJO> appConfig = appConfigService.load(appName);
         return appConfig.orElse(null);
     }
@@ -120,7 +123,7 @@ public final class CloudAppController {
      *
      * @return collection of registered app configs
      */
-    @GetMapping("/list")
+    @Mapping(method = Http.GET, path = "/list")
     public Collection<CloudAppConfigurationPOJO> findAllApps() {
         return appConfigService.loadAll();
     }
@@ -131,8 +134,8 @@ public final class CloudAppController {
      * @param appName app name
      * @return true is disabled, otherwise not
      */
-    @GetMapping("/{appName}/disable")
-    public boolean isDisabled(@PathVariable("appName") final String appName) {
+    @Mapping(method = Http.GET, path = "/{appName}/disable")
+    public boolean isDisabled(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
         return disableAppService.isDisabled(appName);
     }
     
@@ -140,9 +143,10 @@ public final class CloudAppController {
      * Disable app config.
      *
      * @param appName app name
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/{appName}/disable")
-    public void disable(@PathVariable("appName") final String appName) {
+    @Mapping(method = Http.POST, path = "/{appName}/disable")
+    public boolean disable(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.add(appName);
             for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
@@ -151,15 +155,17 @@ public final class CloudAppController {
                 }
             }
         }
+        return true;
     }
     
     /**
      * Enable app.
      *
      * @param appName app name
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/{appName}/enable")
-    public void enable(@PathVariable("appName") final String appName) {
+    @Mapping(method = Http.POST, path = "/{appName}/enable")
+    public boolean enable(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.remove(appName);
             for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
@@ -168,19 +174,22 @@ public final class CloudAppController {
                 }
             }
         }
+        return true;
     }
     
     /**
      * Deregister app.
      *
      * @param appName app name
+     * @return <tt>true</tt> for operation finished.
      */
-    @DeleteMapping("/{appName}")
-    public void deregister(@PathVariable("appName") final String appName) {
+    @Mapping(method = Http.DELETE, path = "/{appName}")
+    public boolean deregister(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             removeAppAndJobConfigurations(appName);
             stopExecutors(appName);
         }
+        return true;
     }
     
     private void removeAppAndJobConfigurations(final String appName) {

@@ -20,25 +20,26 @@ package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.JsonParseException;
-import java.util.Collection;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Cloud operation restful api.
  */
 @Slf4j
-@RestController
-@RequestMapping("/operate")
-public final class CloudOperationController {
+@ContextPath("/api/operate")
+public final class CloudOperationController implements RestfulController {
     
     private static ReconcileService reconcileService;
     
@@ -61,20 +62,26 @@ public final class CloudOperationController {
     
     /**
      * Explicit reconcile service.
+     *
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/reconcile/explicit")
-    public void explicitReconcile() {
+    @Mapping(method = Http.POST, path = "/reconcile/explicit")
+    public boolean explicitReconcile() {
         validReconcileInterval();
         reconcileService.explicitReconcile();
+        return true;
     }
     
     /**
      * Implicit reconcile service.
+     *
+     * @return <tt>true</tt> for operation finished.
      */
-    @PostMapping("/reconcile/implicit")
-    public void implicitReconcile() {
+    @Mapping(method = Http.POST, path = "/reconcile/implicit")
+    public boolean implicitReconcile() {
         validReconcileInterval();
         reconcileService.implicitReconcile();
+        return true;
     }
     
     private void validReconcileInterval() {
@@ -91,8 +98,8 @@ public final class CloudOperationController {
      * @return sandbox info
      * @throws JsonParseException parse json exception
      */
-    @GetMapping("/sandbox")
-    public Collection<Map<String, String>> sandbox(@RequestParam("appName") final String appName) throws JsonParseException {
+    @Mapping(method = Http.GET, path = "/sandbox")
+    public Collection<Map<String, String>> sandbox(@Param(name = "appName", source = ParamSource.QUERY) final String appName) throws JsonParseException {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(appName), "Lack param 'appName'");
         return mesosStateService.sandbox(appName);
     }
