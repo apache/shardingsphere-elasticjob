@@ -30,24 +30,43 @@ import io.netty.handler.codec.http.HttpVersion;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.handler.ExceptionHandleResult;
 import org.apache.shardingsphere.elasticjob.restful.handler.ExceptionHandler;
-import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
+import org.apache.shardingsphere.elasticjob.restful.handler.impl.DefaultExceptionHandler;
+import org.apache.shardingsphere.elasticjob.restful.handler.impl.DefaultHandlerNotFoundExceptionHandler;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializerFactory;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Catch exceptions and look for a ExceptionHandler.
  */
+@Slf4j
 @Sharable
 public final class ExceptionHandling extends ChannelInboundHandlerAdapter {
     
     private static final DefaultExceptionHandler DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
     
-    private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers;
+    private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers = new ConcurrentHashMap<>();
     
     public ExceptionHandling(final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers) {
-        this.exceptionHandlers = exceptionHandlers;
+        initDefaultExceptionHandlers();
+        addCustomExceptionHandlers(exceptionHandlers);
+    }
+    
+    private void initDefaultExceptionHandlers() {
+        exceptionHandlers.put(HandlerNotFoundException.class, new DefaultHandlerNotFoundExceptionHandler());
+    }
+    
+    private void addCustomExceptionHandlers(final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers) {
+        for (Map.Entry<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> entry : exceptionHandlers.entrySet()) {
+            Class<? extends Throwable> exceptionType = entry.getKey();
+            ExceptionHandler<? extends Throwable> oldHandler = this.exceptionHandlers.put(exceptionType, entry.getValue());
+            if (null != oldHandler) {
+                log.info("Overriding ExceptionHandler for [{}]", exceptionType.getName());
+            }
+        }
     }
     
     @Override
@@ -85,18 +104,5 @@ public final class ExceptionHandling extends ChannelInboundHandlerAdapter {
             exceptionHandler = DEFAULT_EXCEPTION_HANDLER;
         }
         return (ExceptionHandler<T>) exceptionHandler;
-    }
-    
-    @Slf4j
-    private static class DefaultExceptionHandler implements ExceptionHandler<Throwable> {
-        
-        @Override
-        public ExceptionHandleResult handleException(final Throwable ex) {
-            return ExceptionHandleResult.builder()
-                    .statusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
-                    .contentType(Http.DEFAULT_CONTENT_TYPE)
-                    .result(ex)
-                    .build();
-        }
     }
 }
