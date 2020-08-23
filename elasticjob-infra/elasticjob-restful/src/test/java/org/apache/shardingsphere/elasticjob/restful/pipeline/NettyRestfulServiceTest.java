@@ -113,6 +113,14 @@ public class NettyRestfulServiceTest {
         }, 10000L);
     }
     
+    @Test(timeout = 10000L)
+    public void assertHandlerNotFound() {
+        DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/not/found");
+        HttpClient.request(HOST, PORT, request, httpResponse -> {
+            assertThat(httpResponse.status().code(), is(404));
+        }, 10000L);
+    }
+    
     @AfterClass
     public static void tearDown() {
         if (null != restfulService) {
