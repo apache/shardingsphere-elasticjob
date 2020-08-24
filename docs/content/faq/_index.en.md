@@ -97,7 +97,7 @@ ElasticJob will obtain the local IP when performing task scheduling, and it may 
 
 ## 12. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
 
-Answer£º
+Answer:
 
 Some decompression tools may truncate the file name when decompressing the ShardingSphere-ElasticJob-UI binary package, resulting in some classes not being found
 
