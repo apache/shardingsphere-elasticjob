@@ -93,3 +93,14 @@ Shard to be adjusted indicates the state when the job has started but has not ye
 Answer:
 
 ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set -Djava.net.preferIPv4Stack=true.
+
+
+## 12. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
+
+Answer£º
+
+Some decompression tools may truncate the file name when decompressing the ShardingSphere-ElasticJob-UI binary package, resulting in some classes not being found
+
+Open cmd.exe and execute the following command:
+
+tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
