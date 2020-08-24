@@ -15,23 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful.deserializer;
+package org.apache.shardingsphere.elasticjob.restful.serializer;
 
-import io.netty.handler.codec.http.HttpHeaderValues;
-import org.junit.Test;
+import java.text.MessageFormat;
 
-import static org.junit.Assert.assertNotNull;
-
-public class RequestBodyDeserializerFactoryTest {
+/**
+ * {@link ResponseBodySerializer} not found for specific MIME type.
+ */
+public final class ResponseBodySerializerNotFoundException extends RuntimeException {
     
-    @Test
-    public void assertGetJsonDefaultDeserializer() {
-        RequestBodyDeserializer deserializer = RequestBodyDeserializerFactory.getRequestBodyDeserializer(HttpHeaderValues.APPLICATION_JSON.toString());
-        assertNotNull(deserializer);
-    }
-    
-    @Test(expected = RequestBodyDeserializerNotFoundException.class)
-    public void assertDeserializerNotFound() {
-        RequestBodyDeserializerFactory.getRequestBodyDeserializer("Unknown");
+    public ResponseBodySerializerNotFoundException(final String mimeType) {
+        super(MessageFormat.format("ResponseBodySerializer not found for [{0}]", mimeType));
     }
 }

@@ -75,16 +75,19 @@ public final class RequestBodyDeserializerFactory {
      * @return Deserializer
      */
     public static RequestBodyDeserializer getRequestBodyDeserializer(final String contentType) {
-        RequestBodyDeserializer deserializer = REQUEST_BODY_DESERIALIZERS.get(contentType);
-        if (null == deserializer) {
+        RequestBodyDeserializer result = REQUEST_BODY_DESERIALIZERS.get(contentType);
+        if (null == result) {
             synchronized (RequestBodyDeserializerFactory.class) {
                 if (null == REQUEST_BODY_DESERIALIZERS.get(contentType)) {
                     instantiateRequestBodyDeserializerFromFactories(contentType);
                 }
-                deserializer = REQUEST_BODY_DESERIALIZERS.get(contentType);
+                result = REQUEST_BODY_DESERIALIZERS.get(contentType);
             }
         }
-        return deserializer != MISSING_DESERIALIZER ? deserializer : null;
+        if (MISSING_DESERIALIZER == result) {
+            throw new RequestBodyDeserializerNotFoundException(contentType);
+        }
+        return result;
     }
     
     private static void instantiateRequestBodyDeserializerFromFactories(final String contentType) {
