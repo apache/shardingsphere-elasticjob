@@ -84,7 +84,10 @@ public final class RequestBodyDeserializerFactory {
                 deserializer = REQUEST_BODY_DESERIALIZERS.get(contentType);
             }
         }
-        return deserializer != MISSING_DESERIALIZER ? deserializer : null;
+        if (MISSING_DESERIALIZER == deserializer) {
+            throw new RequestBodyDeserializerNotFoundException(contentType);
+        }
+        return deserializer;
     }
     
     private static void instantiateRequestBodyDeserializerFromFactories(final String contentType) {

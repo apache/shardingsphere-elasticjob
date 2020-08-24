@@ -21,7 +21,6 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class ResponseBodySerializerFactoryTest {
     
@@ -31,9 +30,8 @@ public class ResponseBodySerializerFactoryTest {
         assertNotNull(serializer);
     }
     
-    @Test
+    @Test(expected = ResponseBodySerializerNotFoundException.class)
     public void assertSerializerNotFound() {
-        ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer("Unknown");
-        assertNull(serializer);
+        ResponseBodySerializerFactory.getResponseBodySerializer("Unknown");
     }
 }

@@ -84,7 +84,10 @@ public final class ResponseBodySerializerFactory {
                 serializer = RESPONSE_BODY_SERIALIZERS.get(contentType);
             }
         }
-        return serializer != MISSING_SERIALIZER ? serializer : null;
+        if (MISSING_SERIALIZER == serializer) {
+            throw new ResponseBodySerializerNotFoundException(contentType);
+        }
+        return serializer;
     }
     
     private static void instantiateResponseBodySerializerFromFactories(final String contentType) {
