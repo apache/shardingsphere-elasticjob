@@ -75,7 +75,7 @@ Using ElasticJob may meet some distributed problem which is not easy to observe.
 
 Because of developer can not debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
 
-Please refer to [Operation Manual](/cn/user-manual/elasticjob-lite/operation/dump) for more details.
+Please refer to [Operation Manual](/en/user-manual/elasticjob-lite/operation/dump) for more details.
 
 The example below is how to configure spring namespace for open listener port to dump.
 
