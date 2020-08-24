@@ -22,7 +22,7 @@ import java.text.MessageFormat;
 /**
  * {@link RequestBodyDeserializer} not found for specific MIME type.
  */
-public class RequestBodyDeserializerNotFoundException extends RuntimeException {
+public final class RequestBodyDeserializerNotFoundException extends RuntimeException {
     
     public RequestBodyDeserializerNotFoundException(final String mimeType) {
         super(MessageFormat.format("RequestBodySerializer not found for [{0}]", mimeType));

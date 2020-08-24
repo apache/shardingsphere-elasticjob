@@ -75,19 +75,19 @@ public final class ResponseBodySerializerFactory {
      * @return Serializer
      */
     public static ResponseBodySerializer getResponseBodySerializer(final String contentType) {
-        ResponseBodySerializer serializer = RESPONSE_BODY_SERIALIZERS.get(contentType);
-        if (null == serializer) {
+        ResponseBodySerializer result = RESPONSE_BODY_SERIALIZERS.get(contentType);
+        if (null == result) {
             synchronized (ResponseBodySerializerFactory.class) {
                 if (null == RESPONSE_BODY_SERIALIZERS.get(contentType)) {
                     instantiateResponseBodySerializerFromFactories(contentType);
                 }
-                serializer = RESPONSE_BODY_SERIALIZERS.get(contentType);
+                result = RESPONSE_BODY_SERIALIZERS.get(contentType);
             }
         }
-        if (MISSING_SERIALIZER == serializer) {
+        if (MISSING_SERIALIZER == result) {
             throw new ResponseBodySerializerNotFoundException(contentType);
         }
-        return serializer;
+        return result;
     }
     
     private static void instantiateResponseBodySerializerFromFactories(final String contentType) {
