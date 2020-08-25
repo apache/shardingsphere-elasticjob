@@ -25,6 +25,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -87,6 +88,20 @@ public final class JobScheduleController {
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
             if (!scheduler.isShutdown() && null != trigger && !cron.equals(trigger.getCronExpression())) {
                 scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createCronTrigger(cron));
+            }
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
+    }
+
+    /**
+     * Reschedule OneOff job.
+     */
+    public synchronized void rescheduleJob() {
+        try {
+            SimpleTrigger trigger = (SimpleTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
+            if (!scheduler.isShutdown() && null != trigger) {
+                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createOneOffTrigger());
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
