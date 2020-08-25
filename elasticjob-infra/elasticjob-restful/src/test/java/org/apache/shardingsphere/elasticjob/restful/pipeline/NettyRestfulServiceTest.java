@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
@@ -37,7 +38,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -65,8 +65,9 @@ public class NettyRestfulServiceTest {
         restfulService.startup();
     }
     
+    @SneakyThrows
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertRequestWithParameters() throws InterruptedException, UnsupportedEncodingException {
+    public void assertRequestWithParameters() {
         String cron = "0 * * * * ?";
         String uri = String.format("/job/myGroup/myJob?cron=%s", URLEncoder.encode(cron, "UTF-8"));
         String description = "Descriptions about this job.";
@@ -88,7 +89,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertCustomExceptionHandler() throws InterruptedException {
+    public void assertCustomExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalState");
         request.headers().set("Exception-Message", "An illegal state exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -98,7 +99,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertUsingDefaultExceptionHandler() throws InterruptedException {
+    public void assertUsingDefaultExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalArgument");
         request.headers().set("Exception-Message", "An illegal argument exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -108,7 +109,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertReturnStatusCode() throws InterruptedException {
+    public void assertReturnStatusCode() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/code/204");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
             assertThat(httpResponse.status().code(), is(204));
@@ -116,7 +117,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertHandlerNotFound() throws InterruptedException {
+    public void assertHandlerNotFound() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/not/found");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
             assertThat(httpResponse.status().code(), is(404));
@@ -124,7 +125,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertRequestIndexWithSlash() throws InterruptedException {
+    public void assertRequestIndexWithSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/");
         HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));
@@ -132,7 +133,7 @@ public class NettyRestfulServiceTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertRequestIndexWithoutSlash() throws InterruptedException {
+    public void assertRequestIndexWithoutSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "");
         HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));

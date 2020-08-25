@@ -21,6 +21,9 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Serializer for <code>text/plain</code>. Serialize String to bytes.
+ */
 public final class CustomTextPlainResponseBodySerializer implements ResponseBodySerializer {
     
     @Override

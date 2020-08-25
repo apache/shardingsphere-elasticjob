@@ -55,7 +55,7 @@ public class NettyRestfulServiceTrailingSlashSensitiveTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertWithoutTrailingSlash() throws InterruptedException {
+    public void assertWithoutTrailingSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash");
         HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));
@@ -66,7 +66,7 @@ public class NettyRestfulServiceTrailingSlashSensitiveTest {
     }
     
     @Test(timeout = TESTCASE_TIMEOUT)
-    public void assertWithTrailingSlash() throws InterruptedException {
+    public void assertWithTrailingSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash/");
         HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));
