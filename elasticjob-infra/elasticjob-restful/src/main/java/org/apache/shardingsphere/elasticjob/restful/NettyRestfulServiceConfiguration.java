@@ -41,6 +41,12 @@ public final class NettyRestfulServiceConfiguration {
     @Setter
     private String host;
     
+    /**
+     * If trailing slash sensitive, <code>/foo/bar</code> is not equals to <code>/foo/bar/</code>.
+     */
+    @Setter
+    private boolean trailingSlashSensitive;
+    
     private final List<RestfulController> controllerInstances = new ArrayList<>();
     
     private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers = new HashMap<>();

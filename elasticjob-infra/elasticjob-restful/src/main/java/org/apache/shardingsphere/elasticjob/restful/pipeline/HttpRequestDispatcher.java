@@ -44,9 +44,14 @@ import java.util.Optional;
 @Slf4j
 public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
     
+    private static final String TRAILING_SLASH = "/";
+    
     private final HandlerMappingRegistry mappingRegistry = new HandlerMappingRegistry();
     
-    public HttpRequestDispatcher(final List<RestfulController> restfulControllers) {
+    private final boolean trailingSlashSensitive;
+    
+    public HttpRequestDispatcher(final List<RestfulController> restfulControllers, final boolean trailingSlashSensitive) {
+        this.trailingSlashSensitive = trailingSlashSensitive;
         initMappingRegistry(restfulControllers);
     }
     
@@ -54,6 +59,9 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         log.debug("{}", msg);
         FullHttpRequest request = (FullHttpRequest) msg;
+        if (!trailingSlashSensitive) {
+            request.setUri(appendTrailingSlashIfAbsent(request.uri()));
+        }
         MappingContext<Handler> mappingContext = mappingRegistry.getMappingContext(request);
         if (null == mappingContext) {
             throw new HandlerNotFoundException(request.uri());
@@ -72,10 +80,26 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
                     continue;
                 }
                 HttpMethod httpMethod = HttpMethod.valueOf(mapping.method());
-                String pattern = mapping.path();
-                String fullPathPattern = contextPath + pattern;
+                String path = mapping.path();
+                String fullPathPattern = resolveFullPath(contextPath, path);
+                if (!trailingSlashSensitive) {
+                    fullPathPattern = appendTrailingSlashIfAbsent(fullPathPattern);
+                }
                 mappingRegistry.addMapping(httpMethod, fullPathPattern, new Handler(restfulController, method));
             }
         }
+    }
+    
+    private String resolveFullPath(final String contextPath, final String pattern) {
+        return Optional.ofNullable(contextPath).orElse("") + pattern;
+    }
+    
+    private String appendTrailingSlashIfAbsent(final String uri) {
+        String[] split = uri.split("\\?");
+        if (1 == split.length) {
+            return uri.endsWith(TRAILING_SLASH) ? uri : uri + TRAILING_SLASH;
+        }
+        String path = split[0];
+        return path.endsWith(TRAILING_SLASH) ? uri : path + TRAILING_SLASH + "?" + split[1];
     }
 }

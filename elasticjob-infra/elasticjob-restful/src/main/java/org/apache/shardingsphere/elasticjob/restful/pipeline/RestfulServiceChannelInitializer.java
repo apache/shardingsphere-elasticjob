@@ -38,7 +38,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     private final ExceptionHandling exceptionHandling;
     
     public RestfulServiceChannelInitializer(final NettyRestfulServiceConfiguration configuration) {
-        httpRequestDispatcher = new HttpRequestDispatcher(configuration.getControllerInstances());
+        httpRequestDispatcher = new HttpRequestDispatcher(configuration.getControllerInstances(), configuration.isTrailingSlashSensitive());
         handlerParameterDecoder = new HandlerParameterDecoder();
         handleMethodExecutor = new HandleMethodExecutor();
         exceptionHandling = new ExceptionHandling(configuration.getExceptionHandlers());
