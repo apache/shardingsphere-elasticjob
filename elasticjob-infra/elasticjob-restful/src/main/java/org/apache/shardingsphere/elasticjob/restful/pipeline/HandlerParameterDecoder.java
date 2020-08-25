@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.UnsupportedMessageTypeException;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -102,9 +101,6 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
                     String mimeType = Optional.ofNullable(HttpUtil.getMimeType(httpRequest))
                             .orElseGet(() -> HttpUtil.getMimeType(Http.DEFAULT_CONTENT_TYPE)).toString();
                     RequestBodyDeserializer deserializer = RequestBodyDeserializerFactory.getRequestBodyDeserializer(mimeType);
-                    if (null == deserializer) {
-                        throw new UnsupportedMessageTypeException(MessageFormat.format("Unsupported MIME type [{0}]", mimeType));
-                    }
                     Object parsedBodyValue = deserializer.deserialize(targetType, bytes);
                     parsedValue = parsedBodyValue;
                     Preconditions.checkArgument(nullable || null != parsedBodyValue, "Missing request body");

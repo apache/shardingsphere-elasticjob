@@ -31,7 +31,6 @@ import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -48,9 +47,9 @@ public class HttpClient {
      * @param request        HTTP request
      * @param consumer       HTTP response consumer
      * @param timeoutSeconds Wait for consume
+     * @throws InterruptedException interrupted
      */
-    @SneakyThrows
-    public static void request(final String host, final int port, final FullHttpRequest request, final Consumer<FullHttpResponse> consumer, final Long timeoutSeconds) {
+    public static void request(final String host, final int port, final FullHttpRequest request, final Consumer<FullHttpResponse> consumer, final Long timeoutSeconds) throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         Channel channel = new Bootstrap()
@@ -66,8 +65,11 @@ public class HttpClient {
                                 .addLast(new SimpleChannelInboundHandler<FullHttpResponse>() {
                                     @Override
                                     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpResponse httpResponse) throws Exception {
-                                        consumer.accept(httpResponse);
-                                        countDownLatch.countDown();
+                                        try {
+                                            consumer.accept(httpResponse);
+                                        } finally {
+                                            countDownLatch.countDown();
+                                        }
                                     }
                                 });
                     }

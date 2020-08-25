@@ -15,32 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful.annotation;
+package org.apache.shardingsphere.elasticjob.restful.controller;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 
-/**
- * Declare what HTTP method and path is used to invoke the handler.
- */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Mapping {
+@Slf4j
+public class IndexController implements RestfulController {
     
     /**
-     * Http method.
+     * A mapping declare path implicit, meaning it mapped index.
      *
-     * @return Http method
+     * @return a string
      */
-    String method();
-    
-    /**
-     * Path pattern of this handler. Starts with '/'.
-     * Such as <code>/app/{jobName}/enable</code>.
-     *
-     * @return Path pattern
-     */
-    String path() default "";
+    @Mapping(method = Http.GET)
+    public String index() {
+        return "hello, elastic-job";
+    }
 }

@@ -59,12 +59,17 @@ public class RegexPathMatcherTest {
     public void assertValidatePathPattern() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         assertTrue(pathMatcher.isValidPathPattern("/"));
+        assertTrue(pathMatcher.isValidPathPattern("/app"));
         assertTrue(pathMatcher.isValidPathPattern("/app/job"));
+        assertTrue(pathMatcher.isValidPathPattern("/app/job/"));
         assertTrue(pathMatcher.isValidPathPattern("/app/{jobName}"));
         assertTrue(pathMatcher.isValidPathPattern("/{appName}/{jobName}/status"));
         assertFalse(pathMatcher.isValidPathPattern("/app/jobName}"));
         assertFalse(pathMatcher.isValidPathPattern("/app/{jobName"));
         assertFalse(pathMatcher.isValidPathPattern("/app/{job}Name"));
+        assertFalse(pathMatcher.isValidPathPattern("/app//jobName"));
+        assertFalse(pathMatcher.isValidPathPattern("//app/jobName"));
+        assertFalse(pathMatcher.isValidPathPattern("app/jobName"));
         assertFalse(pathMatcher.isValidPathPattern(""));
     }
 }

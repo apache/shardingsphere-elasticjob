@@ -15,32 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.restful.annotation;
+package org.apache.shardingsphere.elasticjob.restful.serializer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.netty.handler.codec.http.HttpHeaderValues;
 
-/**
- * Declare what HTTP method and path is used to invoke the handler.
- */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Mapping {
+import java.nio.charset.StandardCharsets;
+
+public final class CustomTextPlainResponseBodySerializer implements ResponseBodySerializer {
     
-    /**
-     * Http method.
-     *
-     * @return Http method
-     */
-    String method();
+    @Override
+    public String mimeType() {
+        return HttpHeaderValues.TEXT_PLAIN.toString();
+    }
     
-    /**
-     * Path pattern of this handler. Starts with '/'.
-     * Such as <code>/app/{jobName}/enable</code>.
-     *
-     * @return Path pattern
-     */
-    String path() default "";
+    @Override
+    public byte[] serialize(final Object responseBody) {
+        if (responseBody instanceof String) {
+            return ((String) responseBody).getBytes(StandardCharsets.UTF_8);
+        }
+        if (responseBody instanceof byte[]) {
+            return (byte[]) responseBody;
+        }
+        throw new UnsupportedOperationException("Can not deserialize" + responseBody.getClass());
+    }
 }
