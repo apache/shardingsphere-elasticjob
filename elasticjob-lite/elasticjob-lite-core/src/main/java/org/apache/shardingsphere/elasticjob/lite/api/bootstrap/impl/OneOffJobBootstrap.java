@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
@@ -54,6 +56,7 @@ public final class OneOffJobBootstrap implements JobBootstrap {
      * Execute job.
      */
     public void execute() {
+        Preconditions.checkArgument(Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron should be empty.");
         jobScheduler.getJobScheduleController().executeJob();
     }
     
