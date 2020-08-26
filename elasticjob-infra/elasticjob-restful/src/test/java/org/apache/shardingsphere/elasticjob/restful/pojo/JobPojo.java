@@ -25,7 +25,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class JobPojo {
+public final class JobPojo {
     
     private String group;
     

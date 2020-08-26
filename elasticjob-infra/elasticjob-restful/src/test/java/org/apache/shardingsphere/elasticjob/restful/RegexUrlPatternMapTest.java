@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-public class RegexUrlPatternMapTest {
+public final class RegexUrlPatternMapTest {
     
     @Test
     public void assertRegexUrlPatternMap() {

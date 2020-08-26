@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.restful.handler;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.pojo.ResultDto;
 
-public class CustomIllegalStateExceptionHandler implements ExceptionHandler<IllegalStateException> {
+public final class CustomIllegalStateExceptionHandler implements ExceptionHandler<IllegalStateException> {
     
     @Override
     public ExceptionHandleResult handleException(final IllegalStateException ex) {

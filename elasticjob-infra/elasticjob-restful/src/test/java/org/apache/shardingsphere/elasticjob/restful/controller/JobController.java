@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.restful.pojo.JobPojo;
 
 @Slf4j
 @ContextPath("/job")
-public class JobController implements RestfulController {
+public final class JobController implements RestfulController {
     
     /**
      * Pretend to create a job.
