@@ -42,7 +42,6 @@ public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
     @Override
     public void updateJobConfiguration(final JobConfigurationPOJO jobConfig) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobConfig.getJobName()), "jobName can not be empty.");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobConfig.getCron()), "cron can not be empty.");
         Preconditions.checkArgument(jobConfig.getShardingTotalCount() > 0, "shardingTotalCount should larger than zero.");
         JobNodePath jobNodePath = new JobNodePath(jobConfig.getJobName());
         regCenter.update(jobNodePath.getConfigNodePath(), YamlEngine.marshal(jobConfig));
