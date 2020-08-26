@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Json response body serializer. Serialize object to json byte except String.
  */
-public class JsonResponseBodySerializer implements ResponseBodySerializer {
+public final class JsonResponseBodySerializer implements ResponseBodySerializer {
     
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     

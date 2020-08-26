@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class HttpClient {
+public final class HttpClient {
     
     /**
      * Send a HTTP request and invoke consumer when server response.

@@ -24,6 +24,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.NettyRuntime;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChannelInitializer;
 
@@ -56,6 +57,7 @@ public final class NettyRestfulService implements RestfulService {
                 .childHandler(new RestfulServiceChannelInitializer(configuration));
     }
     
+    @SneakyThrows
     @Override
     public void startup() {
         initServerBootstrap();
@@ -71,7 +73,7 @@ public final class NettyRestfulService implements RestfulService {
             } else {
                 log.error("Failed to start Restful Service.", future.cause());
             }
-        });
+        }).sync();
     }
     
     @Override

@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
-public class ResponseBodySerializerFactoryTest {
+public final class ResponseBodySerializerFactoryTest {
     
     @Test
     public void assertGetJsonDefaultSerializer() {

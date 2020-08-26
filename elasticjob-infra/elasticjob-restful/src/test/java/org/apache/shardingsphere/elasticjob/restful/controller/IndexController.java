@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 
 @Slf4j
-public class IndexController implements RestfulController {
+public final class IndexController implements RestfulController {
     
     /**
      * A mapping declare path implicit, meaning it mapped index.

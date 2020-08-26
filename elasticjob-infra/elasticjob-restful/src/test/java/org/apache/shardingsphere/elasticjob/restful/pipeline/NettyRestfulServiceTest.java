@@ -45,7 +45,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class NettyRestfulServiceTest {
+public final class NettyRestfulServiceTest {
     
     private static final long TESTCASE_TIMEOUT = 10000L;
     

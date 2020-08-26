@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundExcep
 import org.apache.shardingsphere.elasticjob.restful.controller.JobController;
 import org.junit.Test;
 
-public class HttpRequestDispatcherTest {
+public final class HttpRequestDispatcherTest {
     
     @Test(expected = HandlerNotFoundException.class)
     public void assertDispatcherHandlerNotFound() {

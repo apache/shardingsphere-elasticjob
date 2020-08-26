@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class NettyRestfulServiceTrailingSlashSensitiveTest {
+public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     private static final long TESTCASE_TIMEOUT = 10000L;
     

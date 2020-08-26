@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.restful.controller.TrailingSlashTestController;
 import org.junit.Test;
 
-public class NettyRestfulServiceTrailingSlashInsensitiveTest {
+public final class NettyRestfulServiceTrailingSlashInsensitiveTest {
     
     private static final String HOST = "localhost";
     

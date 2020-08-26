@@ -43,7 +43,7 @@ import java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class HandlerParameterDecoderTest {
+public final class HandlerParameterDecoderTest {
     
     private EmbeddedChannel channel;
     
