@@ -175,7 +175,7 @@ public class DagService implements CuratorCacheListener {
     }
 
     /**
-     * current dag status.
+     * Get dag status.
      *
      * @return DagStates
      */
@@ -340,7 +340,6 @@ public class DagService implements CuratorCacheListener {
             return;
         }
 
-        // 要求dep skip 或 success
         String[] deps = dagNodeStorage.getJobDenpendencies();
         for (String dep : deps) {
             if (StringUtils.equals(dep, "self")) {
@@ -375,9 +374,9 @@ public class DagService implements CuratorCacheListener {
             long interval = (jobDagConfig.getRetryInterval() <= 0 ? DEFAULT_RETRY_INTERVAL : jobDagConfig.getRetryInterval()) * 1000L;
             delayQueue.put(dagName + "||" + jobName, System.currentTimeMillis() + interval);
             //CHECKSTYLE:OFF
-        } catch (Exception exp) {
+        } catch (Exception ex) {
             //CHECKSTYLE:ON
-            log.error("Dag-{}[{}] retry job to Delay queue Exception!", dagName, jobName, exp);
+            log.error("Dag-{}[{}] retry job to Delay queue Exception!", dagName, jobName, ex);
             return false;
         }
 
