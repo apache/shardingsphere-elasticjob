@@ -140,12 +140,12 @@ public final class CloudJobFacadeTest {
     }
 
     @Test
-    public void assertDagStatesCheck() {
-        jobFacade.dagStatesCheck();
+    public void assertCheckDagStates() {
+        jobFacade.checkDagStates();
     }
 
     @Test
-    public void assertDagJobDependenciesCheck() {
-        jobFacade.dagJobDependenciesCheck();
+    public void assertCheckDagJobDependencies() {
+        jobFacade.checkDagJobDependencies();
     }
 }

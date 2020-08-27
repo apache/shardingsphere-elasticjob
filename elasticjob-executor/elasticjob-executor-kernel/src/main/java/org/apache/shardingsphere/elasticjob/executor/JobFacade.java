@@ -150,10 +150,10 @@ public interface JobFacade {
     /**
      * Check Dag Group States.
      */
-    void dagStatesCheck();
+    void checkDagStates();
 
     /**
-     * check current job's dependencies are all success.
+     * Check current job's dependencies are all success.
      */
-    void dagJobDependenciesCheck();
+    void checkDagJobDependencies();
 }

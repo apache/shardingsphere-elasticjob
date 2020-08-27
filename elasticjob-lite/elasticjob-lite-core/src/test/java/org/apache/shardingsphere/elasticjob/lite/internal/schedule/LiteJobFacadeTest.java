@@ -227,14 +227,14 @@ public final class LiteJobFacadeTest {
     }
 
     @Test(expected = DagRuntimeException.class)
-    public void assertDagStatesCheck() {
+    public void assertCheckDagStates() {
         when(dagService.getDagStates()).thenReturn(DagStates.PAUSE);
-        liteJobFacade.dagStatesCheck();
+        liteJobFacade.checkDagStates();
     }
 
     @Test
-    public void assertDagJobDependenciesCheck() {
-        liteJobFacade.dagJobDependenciesCheck();
+    public void assertCheckDagJobDependencies() {
+        liteJobFacade.checkDagJobDependencies();
         verify(dagService, times(1)).checkJobDependenciesState();
     }
 }

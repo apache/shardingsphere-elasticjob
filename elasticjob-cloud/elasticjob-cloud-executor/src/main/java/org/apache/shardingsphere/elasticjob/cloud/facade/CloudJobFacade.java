@@ -125,12 +125,12 @@ public final class CloudJobFacade implements JobFacade {
     }
 
     @Override
-    public void dagStatesCheck() {
+    public void checkDagStates() {
 
     }
 
     @Override
-    public void dagJobDependenciesCheck() {
+    public void checkDagJobDependencies() {
 
     }
 }

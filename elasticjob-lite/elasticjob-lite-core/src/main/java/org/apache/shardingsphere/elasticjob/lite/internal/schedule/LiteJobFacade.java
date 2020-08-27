@@ -206,7 +206,7 @@ public final class LiteJobFacade implements JobFacade {
     }
 
     @Override
-    public void dagStatesCheck() {
+    public void checkDagStates() {
         if (dagService.getDagStates() == DagStates.RUNNING) {
             return;
         }
@@ -225,7 +225,7 @@ public final class LiteJobFacade implements JobFacade {
     }
 
     @Override
-    public void dagJobDependenciesCheck() {
+    public void checkDagJobDependencies() {
         dagService.checkJobDependenciesState();
     }
 }

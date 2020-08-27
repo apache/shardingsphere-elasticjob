@@ -83,14 +83,14 @@ public final class ElasticJobExecutor {
     public void execute() {
         try {
             jobFacade.checkJobExecutionEnvironment();
-        } catch (final JobExecutionEnvironmentException cause) {
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+        } catch (final JobExecutionEnvironmentException ex) {
+            jobErrorHandler.handleException(jobConfig.getJobName(), ex);
         }
 
         if (jobFacade.isDagJob()) {
             try {
-                jobFacade.dagStatesCheck();
-                jobFacade.dagJobDependenciesCheck();
+                jobFacade.checkDagStates();
+                jobFacade.checkDagJobDependencies();
                 //CHECKSTYLE:OFF
             } catch (final Exception ex) {
                 //CHECKSTYLE:ON
@@ -110,9 +110,9 @@ public final class ElasticJobExecutor {
         try {
             jobFacade.beforeJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF
-        } catch (final Throwable cause) {
+        } catch (final Throwable ex) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), ex);
         }
         execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
@@ -123,9 +123,9 @@ public final class ElasticJobExecutor {
         try {
             jobFacade.afterJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF
-        } catch (final Throwable cause) {
+        } catch (final Throwable ex) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), ex);
         }
     }
     
@@ -189,12 +189,12 @@ public final class ElasticJobExecutor {
             log.trace("Job '{}' executed, item is: '{}'.", jobConfig.getJobName(), item);
             jobFacade.postJobExecutionEvent(completeEvent);
             // CHECKSTYLE:OFF
-        } catch (final Throwable cause) {
+        } catch (final Throwable ex) {
             // CHECKSTYLE:ON
-            completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
+            completeEvent = startEvent.executionFailure(ExceptionUtils.transform(ex));
             jobFacade.postJobExecutionEvent(completeEvent);
-            itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            itemErrorMessages.put(item, ExceptionUtils.transform(ex));
+            jobErrorHandler.handleException(jobConfig.getJobName(), ex);
         }
     }
     
