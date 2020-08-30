@@ -17,8 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console;
 
-import lombok.Setter;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.shardingsphere.elasticjob.cloud.console.config.advice.ConsoleExceptionHandler;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudAppController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudJobController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudOperationController;
@@ -26,67 +25,38 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerCon
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
+import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 
 /**
  * Console bootstrap for Cloud.
  */
 public class ConsoleBootstrap {
     
-    private ConfigurableApplicationContext context;
+    private final RestfulService restfulService;
     
     public ConsoleBootstrap(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager, final ReconcileService reconcileService) {
-        ConsoleApplication.port = config.getPort();
         CloudJobController.init(regCenter, producerManager);
         CloudAppController.init(regCenter, producerManager);
         CloudOperationController.init(regCenter, reconcileService);
+        NettyRestfulServiceConfiguration restfulServiceConfiguration = new NettyRestfulServiceConfiguration(config.getPort());
+        restfulServiceConfiguration.addControllerInstance(new CloudJobController(), new CloudAppController(), new CloudOperationController());
+        restfulServiceConfiguration.addExceptionHandler(Exception.class, new ConsoleExceptionHandler());
+        restfulService = new NettyRestfulService(restfulServiceConfiguration);
     }
     
     /**
      * Startup RESTful server.
      */
     public void start() {
-        context = ConsoleApplication.start();
+        restfulService.startup();
     }
     
     /**
      * Stop RESTful server.
      */
     public void stop() {
-        context.close();
-    }
-    
-    @SpringBootApplication
-    public static class ConsoleApplication implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
-        
-        @Setter
-        private static int port;
-        
-        @Setter
-        private static Class<?>[] extraSources;
-        
-        /**
-         * Startup RESTful server.
-         * @return ConfigurableApplicationContext
-         */
-        public static ConfigurableApplicationContext start() {
-            SpringApplicationBuilder applicationBuilder = new SpringApplicationBuilder(ConsoleApplication.class);
-            if (ArrayUtils.isNotEmpty(extraSources)) {
-                applicationBuilder.sources(extraSources);
-            }
-            return applicationBuilder.build().run();
-        }
-        
-        @Override
-        public void customize(final ConfigurableServletWebServerFactory factory) {
-            if (port <= 0) {
-                return;
-            }
-            factory.setPort(port);
-        }
+        restfulService.shutdown();
     }
 }
