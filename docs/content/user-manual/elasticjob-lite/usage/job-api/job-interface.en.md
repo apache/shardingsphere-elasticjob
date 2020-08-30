@@ -107,7 +107,7 @@ sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCo
 ## HTTP job
 
 The http information to be requested can be configured through the properties of `http.url`, `http.method`, `http.data`, etc.
-If `http.data` is set, sharding information will also be passed to the url interface with `shardingContext` as the key, and the value is in json format.
+Sharding information is transmitted in the form of Header, the key is `shardingContext`, and the value is in json format.
 
 ```java
 
@@ -129,7 +129,7 @@ public class HttpJobMain {
 public class HttpJobController {
     
     @RequestMapping(path = "/execute", method = RequestMethod.POST)
-    public void execute(String source, String shardingContext) {
+    public void execute(String source, @RequestHeader String shardingContext) {
         log.info("execute from source : {}, shardingContext : {}", source, shardingContext);
     }
 }
