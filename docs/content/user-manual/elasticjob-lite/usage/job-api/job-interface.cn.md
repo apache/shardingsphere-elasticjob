@@ -107,7 +107,7 @@ sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCo
 ## HTTP作业
 
 可通过属性配置`http.url`,`http.method`,`http.data`等配置待请求的http信息。
-如果设置了`http.data`, 分片信息也将以`shardingContext`为key传递到url接口，值为json格式。
+分片信息以Header形式传递，key为`shardingContext`，值为json格式。
 
 ```java
 
@@ -129,7 +129,7 @@ public class HttpJobMain {
 public class HttpJobController {
     
     @RequestMapping(path = "/execute", method = RequestMethod.POST)
-    public void execute(String source, String shardingContext) {
+    public void execute(String source, @RequestHeader String shardingContext) {
         log.info("execute from source : {}, shardingContext : {}", source, shardingContext);
     }
 }

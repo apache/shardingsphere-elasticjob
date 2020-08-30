@@ -37,6 +37,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -60,13 +61,10 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
             if (!Strings.isNullOrEmpty(httpParam.getContentType())) {
                 connection.setRequestProperty("Content-Type", httpParam.getContentType());
             }
+            connection.setRequestProperty(HttpJobProperties.SHARDING_CONTEXT_KEY, GsonFactory.getGson().toJson(shardingContext));
             connection.connect();
             String data = httpParam.getData();
-            if (!Strings.isNullOrEmpty(data)) {
-                StringBuilder builder = new StringBuilder(data);
-                builder.append("&").append(HttpJobProperties.SHARDING_CONTEXT_KEY);
-                builder.append("=").append(GsonFactory.getGson().toJson(shardingContext));
-                data = builder.toString();
+            if (isWriteMethod(httpParam.getMethod()) && !Strings.isNullOrEmpty(data)) {
                 DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
                 dataOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
                 dataOutputStream.flush();
@@ -112,6 +110,10 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
         int readTimeout = Integer.parseInt(props.getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000"));
         String contentType = props.getProperty(HttpJobProperties.CONTENT_TYPE_KEY);
         return new HttpParam(url, method, data, connectTimeout, readTimeout, contentType);
+    }
+    
+    private boolean isWriteMethod(final String method) {
+        return Arrays.asList("POST", "PUT", "DELETE").contains(method.toUpperCase());
     }
     
     @Override
