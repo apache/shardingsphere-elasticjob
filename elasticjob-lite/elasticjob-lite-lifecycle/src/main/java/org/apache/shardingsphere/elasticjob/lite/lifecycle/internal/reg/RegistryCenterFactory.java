@@ -28,18 +28,20 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry center factory.
  */
+@SuppressWarnings("UnstableApiUsage")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RegistryCenterFactory {
     
-    private static final ConcurrentHashMap<HashCode, CoordinatorRegistryCenter> REG_CENTER_REGISTRY = new ConcurrentHashMap<>(); 
+    private static final Map<HashCode, CoordinatorRegistryCenter> REG_CENTER_REGISTRY = new ConcurrentHashMap<>();
     
     /**
-     * Create registry center.
+     * Create a {@link CoordinatorRegistryCenter} or return the existing one if there is one set up with the same {@code connectionString}, {@code namespace} and {@code digest} already.
      *
      * @param connectString registry center connect string
      * @param namespace registry center namespace
@@ -52,17 +54,20 @@ public final class RegistryCenterFactory {
             hasher.putString(digest, StandardCharsets.UTF_8);
         }
         HashCode hashCode = hasher.hash();
-        CoordinatorRegistryCenter result = REG_CENTER_REGISTRY.get(hashCode);
-        if (null != result) {
-            return result;
-        }
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
+        return REG_CENTER_REGISTRY.computeIfAbsent(hashCode, unused -> {
+            final CoordinatorRegistryCenter coordinatorRegistryCenter = newCoordinatorRegistryCenter(connectString, namespace, digest);
+            coordinatorRegistryCenter.init();
+            return coordinatorRegistryCenter;
+        });
+    }
+    
+    private static CoordinatorRegistryCenter newCoordinatorRegistryCenter(final String connectString,
+                                                                          final String namespace,
+                                                                          final String digest) {
+        final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
         if (!Strings.isNullOrEmpty(digest)) {
             zkConfig.setDigest(digest);
         }
-        result = new ZookeeperRegistryCenter(zkConfig);
-        result.init();
-        REG_CENTER_REGISTRY.put(hashCode, result);
-        return result;
+        return new ZookeeperRegistryCenter(zkConfig);
     }
 }
