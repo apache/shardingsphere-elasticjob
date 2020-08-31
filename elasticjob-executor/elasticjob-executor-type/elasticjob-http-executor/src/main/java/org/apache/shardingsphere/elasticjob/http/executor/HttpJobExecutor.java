@@ -31,9 +31,10 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionExceptio
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -50,7 +51,6 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
     public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         HttpParam httpParam = getHttpParam(jobConfig.getProps());
         HttpURLConnection connection = null;
-        BufferedReader bufferedReader = null;
         try {
             URL url = new URL(httpParam.getUrl());
             connection = (HttpURLConnection) url.openConnection();
@@ -65,33 +65,35 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
             connection.connect();
             String data = httpParam.getData();
             if (isWriteMethod(httpParam.getMethod()) && !Strings.isNullOrEmpty(data)) {
-                DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                dataOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
-                dataOutputStream.flush();
-                dataOutputStream.close();
+                try (OutputStream outputStream = connection.getOutputStream()) {
+                    outputStream.write(data.getBytes(StandardCharsets.UTF_8));
+                }
             }
             int code = connection.getResponseCode();
-            if (code != 200) {
-                throw new JobExecutionException("Http job %s executed with response code %d", jobConfig.getJobName(), code);
+            InputStream resultInputStream;
+            if (isRequestSucceed(code)) {
+                resultInputStream = connection.getInputStream();
+            } else {
+                log.warn("Http job {} executed with response code {}", jobConfig.getJobName(), code);
+                resultInputStream = connection.getErrorStream();
             }
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                result.append(line);
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resultInputStream, StandardCharsets.UTF_8))) {
+                String line;
+                while (null != (line = bufferedReader.readLine())) {
+                    result.append(line);
+                }
             }
-            log.debug("http job execute result : {}", result.toString());
+            if (isRequestSucceed(code)) {
+                log.debug("http job execute result : {}", result.toString());
+            } else {
+                log.warn("Http job {} executed with response body {}", jobConfig.getJobName(), result.toString());
+            }
         } catch (final IOException ex) {
             throw new JobExecutionException(ex);
         } finally {
-            try {
-                if (null != bufferedReader) {
-                    bufferedReader.close();
-                }
-                if (null != connection) {
-                    connection.disconnect();
-                }
-            } catch (final IOException ignore) {
+            if (null != connection) {
+                connection.disconnect();
             }
         }
     }
@@ -114,6 +116,10 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
     
     private boolean isWriteMethod(final String method) {
         return Arrays.asList("POST", "PUT", "DELETE").contains(method.toUpperCase());
+    }
+    
+    private boolean isRequestSucceed(final int httpStatusCode) {
+        return HttpURLConnection.HTTP_BAD_REQUEST > httpStatusCode;
     }
     
     @Override

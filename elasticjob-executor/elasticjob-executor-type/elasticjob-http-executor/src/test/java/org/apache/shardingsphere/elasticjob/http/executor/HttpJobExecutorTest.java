@@ -103,7 +103,7 @@ public final class HttpJobExecutorTest {
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
     
-    @Test(expected = JobExecutionException.class)
+    @Test
     public void assertProcessWithoutSuccessCode() {
         when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/unknownMethod"));
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("GET");
