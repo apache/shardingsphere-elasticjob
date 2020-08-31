@@ -38,6 +38,7 @@ public abstract class BaseSnapshotServiceTest {
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
+    @Getter(value = AccessLevel.PROTECTED)
     private static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
     
     @Getter(value = AccessLevel.PROTECTED)
