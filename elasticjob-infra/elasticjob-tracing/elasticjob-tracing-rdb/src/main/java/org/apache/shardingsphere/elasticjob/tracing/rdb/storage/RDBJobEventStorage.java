@@ -95,37 +95,44 @@ public final class RDBJobEventStorage {
     }
     
     private void createJobExecutionTableAndIndexIfNeeded(final Connection connection) throws SQLException {
-        DatabaseMetaData dbMetaData = connection.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
-            if (!resultSet.next()) {
-                createJobExecutionTable(connection);
-            }
+        if (existsTable(connection, TABLE_JOB_EXECUTION_LOG) || existsTable(connection, TABLE_JOB_EXECUTION_LOG.toLowerCase())) {
+            return;
         }
+        createJobExecutionTable(connection);
     }
     
     private void createJobStatusTraceTableAndIndexIfNeeded(final Connection connection) throws SQLException {
-        DatabaseMetaData dbMetaData = connection.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
-            if (!resultSet.next()) {
-                createJobStatusTraceTable(connection);
-            }
+        if (existsTable(connection, TABLE_JOB_STATUS_TRACE_LOG) || existsTable(connection, TABLE_JOB_STATUS_TRACE_LOG.toLowerCase())) {
+            return;
         }
+        createJobStatusTraceTable(connection);
         createTaskIdIndexIfNeeded(connection);
     }
     
-    private void createTaskIdIndexIfNeeded(final Connection connection) throws SQLException {
+    private boolean existsTable(final Connection connection, final String tableName) throws SQLException {
         DatabaseMetaData dbMetaData = connection.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getIndexInfo(connection.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, false, false)) {
-            boolean hasTaskIdIndex = false;
+        try (ResultSet resultSet = dbMetaData.getTables(connection.getCatalog(), null, tableName, new String[]{"TABLE"})) {
+            return resultSet.next();
+        }
+    }
+    
+    private void createTaskIdIndexIfNeeded(final Connection connection) throws SQLException {
+        if (existsIndex(connection, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_STATE_INDEX) || existsIndex(connection, TABLE_JOB_STATUS_TRACE_LOG.toLowerCase(), TASK_ID_STATE_INDEX.toLowerCase())) {
+            return;
+        }
+        createTaskIdAndStateIndex(connection);
+    }
+    
+    private boolean existsIndex(final Connection connection, final String tableName, final String indexName) throws SQLException {
+        DatabaseMetaData dbMetaData = connection.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getIndexInfo(connection.getCatalog(), null, tableName, false, false)) {
             while (resultSet.next()) {
-                if (TASK_ID_STATE_INDEX.equals(resultSet.getString("INDEX_NAME"))) {
-                    hasTaskIdIndex = true;
+                if (indexName.equals(resultSet.getString("INDEX_NAME"))) {
+                    return true;
                 }
             }
-            if (!hasTaskIdIndex) {
-                createTaskIdAndStateIndex(connection);
-            }
         }
+        return false;
     }
     
     private void createJobExecutionTable(final Connection connection) throws SQLException {
