@@ -19,7 +19,7 @@ At present, ElasticJob has built-in simple jobs, data flow jobs, and script exec
 ElasticJob jobs can be divided into two types: `Class-based Jobs` and `Type-based Jobs`.
 
 `Class-based Jobs` are directly used by developers, who need to implement the job interface to realize business logic. Typical representatives: Simple type, Dataflow type.
-`Type-based Jobs` only need to provide the type name, developers do not need to implement the job interface, but use it through external configuration. Typical representatives: Script type, HTTP type.
+`Type-based Jobs` only need to provide the type name, developers do not need to implement the job interface, but use it through external configuration. Typical representatives: Script type, HTTP type (Since 3.0.0-beta).
 
 ## Actuator interface
 

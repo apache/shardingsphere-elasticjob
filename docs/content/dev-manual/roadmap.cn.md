@@ -15,7 +15,7 @@ chapter = true
     - [x] Simple
     - [x] Dataflow
     - [x] Script
-    - [ ] Http
+    - [x] Http（3.0.0-beta 提供）
 - [x] Event Trace
     - [x] Event Publisher
     - [x] Database Event Listener
@@ -48,7 +48,7 @@ chapter = true
 - [x] Spring Integrate
     - [x] Namespace
     - [x] Bean Injection
-    - [ ] Spring Boot Starter
+    - [x] Spring Boot Starter（3.0.0-alpha 提供）
 
 ## ElasticJob-Cloud
 - [x] Transient Job
