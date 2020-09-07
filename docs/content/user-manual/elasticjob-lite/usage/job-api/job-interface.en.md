@@ -104,7 +104,7 @@ When the job runs, it will output:
 sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","shardingItem":0,"shardingParameter":"A"}
 ```
 
-## HTTP job
+## HTTP job (Since 3.0.0-beta)
 
 The http information to be requested can be configured through the properties of `http.url`, `http.method`, `http.data`, etc.
 Sharding information is transmitted in the form of Header, the key is `shardingContext`, and the value is in json format.

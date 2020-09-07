@@ -104,7 +104,7 @@ echo sharding execution context is $*
 sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","shardingItem":0,"shardingParameter":"A"}
 ```
 
-## HTTP作业
+## HTTP作业（3.0.0-beta 提供）
 
 可通过属性配置`http.url`,`http.method`,`http.data`等配置待请求的http信息。
 分片信息以Header形式传递，key为`shardingContext`，值为json格式。
