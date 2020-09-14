@@ -156,13 +156,14 @@ public final class JobScheduleControllerTest {
     public void assertTriggerJobFailure() throws SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(jobKey)).thenReturn(true);
         doThrow(SchedulerException.class).when(scheduler).triggerJob(jobKey);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
         try {
             jobScheduleController.triggerJob();
         } finally {
-            verify(jobDetail).getKey();
+            verify(jobDetail, times(2)).getKey();
             verify(scheduler).triggerJob(jobKey);
         }
     }
@@ -171,11 +172,25 @@ public final class JobScheduleControllerTest {
     public void assertTriggerJobSuccess() throws SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(any(JobKey.class))).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
         jobScheduleController.triggerJob();
-        verify(jobDetail).getKey();
+        verify(jobDetail, times(2)).getKey();
         verify(scheduler).triggerJob(jobKey);
+    }
+    
+    @Test
+    public void assertTriggerOneOffJobSuccess() throws SchedulerException {
+        JobKey jobKey = new JobKey("test_job");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
+        jobScheduleController.triggerJob();
+        verify(jobDetail, times(2)).getKey();
+        verify(scheduler).scheduleJob(eq(jobDetail), any(Trigger.class));
+        verify(scheduler).start();
     }
     
     @Test

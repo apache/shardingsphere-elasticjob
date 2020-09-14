@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceOperation;
+import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
@@ -57,7 +59,15 @@ public final class OneOffJobBootstrap implements JobBootstrap {
      */
     public void execute() {
         Preconditions.checkArgument(Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron should be empty.");
-        jobScheduler.getJobScheduleController().executeJob();
+        triggerAllInstancesManually();
+    }
+    
+    private void triggerAllInstancesManually() {
+        CoordinatorRegistryCenter regCenter = jobScheduler.getRegCenter();
+        JobNodePath jobNodePath = new JobNodePath(jobScheduler.getJobConfig().getJobName());
+        for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
+            regCenter.persist(jobNodePath.getInstanceNodePath(each), InstanceOperation.TRIGGER.name());
+        }
     }
     
     @Override
