@@ -249,6 +249,16 @@ public final class JobNodeStorage {
     }
     
     /**
+     * Remove data listener.
+     *
+     * @param listener data listener
+     */
+    public void removeDataListener(final CuratorCacheListener listener) {
+        CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
+        cache.listenable().removeListener(listener);
+    }
+    
+    /**
      * Get registry center time.
      * 
      * @return registry center time

@@ -236,7 +236,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertAddDataListener() {
+    public void assertAddAndRemoveDataListener() {
         CuratorCache cache = mock(CuratorCache.class);
         @SuppressWarnings("unchecked")
         Listenable<CuratorCacheListener> listeners = mock(Listenable.class);
@@ -245,6 +245,8 @@ public final class JobNodeStorageTest {
         when(regCenter.getRawCache("/test_job")).thenReturn(cache);
         jobNodeStorage.addDataListener(listener);
         verify(listeners).addListener(listener);
+        jobNodeStorage.removeDataListener(listener);
+        verify(listeners).removeListener(listener);
     }
     
     @Test
