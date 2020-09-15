@@ -43,26 +43,6 @@ public final class JobScheduleController {
     private final String triggerIdentity;
     
     /**
-     * Execute job.
-     */
-    public void executeJob() {
-        try {
-            if (!scheduler.checkExists(jobDetail.getKey())) {
-                scheduler.scheduleJob(jobDetail, createOneOffTrigger());
-                scheduler.start();
-            } else {
-                scheduler.triggerJob(jobDetail.getKey());
-            }
-        } catch (final SchedulerException ex) {
-            throw new JobSystemException(ex);
-        }
-    }
-    
-    private Trigger createOneOffTrigger() {
-        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(SimpleScheduleBuilder.simpleSchedule()).build();
-    }
-    
-    /**
      * Schedule job.
      * 
      * @param cron CRON expression
@@ -156,12 +136,24 @@ public final class JobScheduleController {
      */
     public synchronized void triggerJob() {
         try {
-            if (!scheduler.isShutdown()) {
+            if (scheduler.isShutdown()) {
+                return;
+            }
+            if (!scheduler.checkExists(jobDetail.getKey())) {
+                scheduler.scheduleJob(jobDetail, createOneOffTrigger());
+            } else {
                 scheduler.triggerJob(jobDetail.getKey());
+            }
+            if (!scheduler.isStarted()) {
+                scheduler.start();
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
+    }
+    
+    private Trigger createOneOffTrigger() {
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(SimpleScheduleBuilder.simpleSchedule()).build();
     }
     
     /**

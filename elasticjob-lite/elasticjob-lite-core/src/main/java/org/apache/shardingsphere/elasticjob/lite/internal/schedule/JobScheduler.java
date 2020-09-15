@@ -48,6 +48,7 @@ public final class JobScheduler {
     
     private static final String JOB_EXECUTOR_DATA_MAP_KEY = "jobExecutor";
     
+    @Getter
     private final CoordinatorRegistryCenter regCenter;
     
     private final ElasticJob elasticJob;
