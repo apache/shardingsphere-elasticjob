@@ -59,10 +59,10 @@ public final class OneOffJobBootstrap implements JobBootstrap {
      */
     public void execute() {
         Preconditions.checkArgument(Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron should be empty.");
-        triggerAllInstancesManually();
+        triggerAllInstances();
     }
     
-    private void triggerAllInstancesManually() {
+    private void triggerAllInstances() {
         CoordinatorRegistryCenter regCenter = jobScheduler.getRegCenter();
         JobNodePath jobNodePath = new JobNodePath(jobScheduler.getJobConfig().getJobName());
         for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
