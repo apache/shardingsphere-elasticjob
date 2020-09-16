@@ -36,6 +36,7 @@
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
         <module>elasticjob-distribution</module>
+        <module>elasticjob-error-handler</module>
     </modules>
     
     <properties>

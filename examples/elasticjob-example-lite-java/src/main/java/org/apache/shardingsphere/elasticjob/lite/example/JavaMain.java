@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobB
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaErrorJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
@@ -69,6 +70,7 @@ public final class JavaMain {
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
         setUpOneOffJob(regCenter, tracingConfig);
+//        setUpSimpleJobWithDingtalk(regCenter, tracingConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {
@@ -114,6 +116,11 @@ public final class JavaMain {
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) throws IOException {
         new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", 3)
                 .cron("0/5 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
+    }
+    
+    private static void setUpSimpleJobWithDingtalk(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        new ScheduleJobBootstrap(regCenter, new JavaErrorJob(), JobConfiguration.newBuilder("javaErrorJob", 1)
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").build(), tracingConfig).schedule();
     }
     
     private static String buildScriptCommandLine() throws IOException {

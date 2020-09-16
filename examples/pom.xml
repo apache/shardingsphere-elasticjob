@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <artifactId>elasticjob-simple-executor</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${elastic-job.version}</version>
             </dependency>
             <dependency>
                 <artifactId>elasticjob-lite-spring-namespace</artifactId>
@@ -73,6 +73,13 @@
                 <artifactId>elasticjob-cloud-executor</artifactId>
                 <version>${elastic-job.version}</version>
             </dependency>
+
+            <dependency>
+                <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+                <groupId>org.apache.shardingsphere.elasticjob</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+
             
             <dependency>
                 <groupId>org.apache.curator</groupId>
