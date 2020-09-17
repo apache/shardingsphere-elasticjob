@@ -39,17 +39,14 @@
             <artifactId>elasticjob-example-embed-zk</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-lite-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-error-handler-dingtalk</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

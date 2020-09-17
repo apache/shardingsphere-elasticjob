@@ -24,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class DingtalkConfiguration {
+public final class DingtalkConfiguration {
     
     private final String webhook;
     

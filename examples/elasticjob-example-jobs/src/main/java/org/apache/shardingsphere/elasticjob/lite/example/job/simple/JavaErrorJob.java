@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.example.job.simple;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
-public class JavaErrorJob implements SimpleJob {
+public final class JavaErrorJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {

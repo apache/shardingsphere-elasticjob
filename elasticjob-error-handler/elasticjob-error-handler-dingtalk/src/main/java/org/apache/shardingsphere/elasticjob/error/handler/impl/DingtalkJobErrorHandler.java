@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -56,21 +57,30 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Setter
     private DingtalkConfiguration dingtalkConfiguration;
     
+    private CloseableHttpClient httpclient = HttpClients.createDefault();
+    
+    public DingtalkJobErrorHandler() {
+        registerShutdownHook();
+    }
+    
     @SneakyThrows
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         if (null == dingtalkConfiguration) {
             dingtalkConfiguration = DingtalkEnvironment.getInstance().getDingtalkConfiguration();
         }
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(getUrl());
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(dingtalkConfiguration.getConnectTimeout())
+                .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
+        httpPost.setConfig(requestConfig);
+        String paramJson = getParamJson(getMsg(jobName, cause));
+        StringEntity entity = new StringEntity(paramJson, "UTF-8");
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        CloseableHttpResponse response = httpclient.execute(httpPost);
         try {
-            HttpPost httpPost = new HttpPost(getUrl());
-            String paramJson = getParamJson(getMsg(jobName, cause));
-            StringEntity entity = new StringEntity(paramJson, "UTF-8");
-            entity.setContentEncoding("UTF-8");
-            entity.setContentType("application/json");
-            httpPost.setEntity(entity);
-            CloseableHttpResponse response = httpclient.execute(httpPost);
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
@@ -83,7 +93,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
         } finally {
-            httpclient.close();
+            response.close();
         }
     }
     
@@ -125,5 +135,17 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Override
     public String getType() {
         return "DINGTALK";
+    }
+    
+    private void registerShutdownHook() {
+        Thread t = new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
+            @SneakyThrows
+            @Override
+            public void run() {
+                log.info("Shutting down httpclient...");
+                httpclient.close();
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(t);
     }
 }
