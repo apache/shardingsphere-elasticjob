@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.impl;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.env.DingtalkEnvironment;
@@ -53,6 +54,7 @@ import java.util.Collections;
 @Slf4j
 public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
+    @Setter
     private DingtalkConfiguration dingtalkConfiguration;
     
     @Override
@@ -86,7 +88,9 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 }
                 JsonObject resp = GsonFactory.getGson().fromJson(result.toString(), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.error("An exception has occurred in Job '{}'. But failed to send alert by Dingtalk because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
+                    log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
+                } else {
+                    log.error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
                 }
             }
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException ex) {

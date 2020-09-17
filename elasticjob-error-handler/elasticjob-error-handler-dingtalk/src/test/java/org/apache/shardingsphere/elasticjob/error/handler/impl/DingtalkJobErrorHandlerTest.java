@@ -17,28 +17,80 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.impl;
 
-import org.apache.shardingsphere.elasticjob.error.handler.env.DingtalkEnvironment;
+import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.impl.fixture.DingtalkInternalController;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
+import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
+import org.apache.shardingsphere.elasticjob.restful.RestfulService;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
 public final class DingtalkJobErrorHandlerTest {
     
-    @Test
-    public void assertHandleException() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+    private static final int PORT = 9876;
+    
+    private static final String HOST = "localhost";
+    
+    private static RestfulService restfulService;
+    
+    @Mock
+    private Logger log;
+    
+    @BeforeClass
+    public static void init() {
+        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
+        configuration.setHost(HOST);
+        configuration.addControllerInstance(new DingtalkInternalController());
+        restfulService = new NettyRestfulService(configuration);
+        restfulService.startup();
     }
     
     @Test
-    public void assertHandleExceptionWithSystemProperties() {
-        System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.WEBHOOK.getKey(),
-                "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
-        System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.SECRET.getKey(),
-                "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
-        System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.KEYWORD.getKey(), "keyword1");
+    public void assertHandleExceptionWithNotifySuccessful() {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
+        verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
+    @Test
+    public void assertHandleExceptionWithWrongToken() {
+        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9876/send?access_token=wrongToken",
+                null, null, 3000, 500));
+        setStaticFieldValue(actual);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException("test_job", cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
+    }
+    
+    @SneakyThrows
+    private void setStaticFieldValue(final DingtalkJobErrorHandler dingtalkJobErrorHandler) {
+        Field field = dingtalkJobErrorHandler.getClass().getDeclaredField("log");
+        field.setAccessible(true);
+        Field modifiers = field.getClass().getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(dingtalkJobErrorHandler, log);
+    }
+    
+    @AfterClass
+    public static void close() {
+        if (null != restfulService) {
+            restfulService.shutdown();
+        }
+    }
 }
