@@ -34,6 +34,8 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -75,6 +77,23 @@ public final class DingtalkJobErrorHandlerTest {
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
+    }
+    
+    @Test
+    public void assertHandleExceptionWithWrongUrl() {
+        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9876/404?access_token=wrongToken",
+                null, null, 3000, 500));
+        setStaticFieldValue(actual);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException("test_job", cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
+    }
+    
+    @Test
+    public void assertGetType() {
+        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        assertThat(actual.getType(), is("DINGTALK"));
     }
     
     @SneakyThrows

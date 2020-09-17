@@ -17,7 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.impl.fixture;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Http;
@@ -25,27 +28,64 @@ import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
+import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Map;
 
 @Slf4j
 public final class DingtalkInternalController implements RestfulController {
     
     private static final String ACCESS_TOKEN = "42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f";
     
+    private static final String KEYWORD = "keyword";
+    
+    private static final String SECRET = "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4";
+    
+    
     /**
-     * Send message.
+     * Send Dingtalk message.
      *
      * @param accessToken access token
      * @param timestamp timestamp
      * @param sign sign
-     * @return send result
+     * @param body body
+     * @return Send Result.
      */
+    @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")
     public String send(@Param(name = "access_token", source = ParamSource.QUERY) final String accessToken,
-                       @Param(name = "timestamp", source = ParamSource.QUERY, required = false) final String timestamp,
-                       @Param(name = "sign", source = ParamSource.QUERY, required = false) final String sign) {
+                       @Param(name = "timestamp", source = ParamSource.QUERY, required = false) final Long timestamp,
+                       @Param(name = "sign", source = ParamSource.QUERY, required = false) final String sign,
+                       @RequestBody final Map<String, Object> body) {
         if (!ACCESS_TOKEN.equals(accessToken)) {
             return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 300001, "errmsg", "token is not exist"));
         }
+        String content = Map.class.cast(body.get("text")).get("content").toString();
+        if (!content.startsWith(KEYWORD)) {
+            return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 310000, "errmsg", "keywords not in content, more: [https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq]"));
+        }
+        if (!Strings.isNullOrEmpty(sign)) {
+            Preconditions.checkNotNull(timestamp);
+            String checkSign = sign(timestamp);
+            if (!sign.equals(checkSign)) {
+                return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 310000, "errmsg", "sign not match, more: [https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq]"));
+            }
+        }
         return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 0, "errmsg", "ok"));
+    }
+    
+    private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+        String stringToSign = timestamp + "\n" + SECRET;
+        System.out.println(stringToSign);
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(new SecretKeySpec(SECRET.getBytes("UTF-8"), "HmacSHA256"));
+        byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
+        return new String(Base64.getEncoder().encode(signData), "UTF-8");
     }
 }

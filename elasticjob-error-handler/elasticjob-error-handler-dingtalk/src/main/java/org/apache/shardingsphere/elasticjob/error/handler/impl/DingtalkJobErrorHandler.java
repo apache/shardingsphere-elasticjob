@@ -21,28 +21,27 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.env.DingtalkEnvironment;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionException;
 import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -57,48 +56,34 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Setter
     private DingtalkConfiguration dingtalkConfiguration;
     
+    @SneakyThrows
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         if (null == dingtalkConfiguration) {
             dingtalkConfiguration = DingtalkEnvironment.getInstance().getDingtalkConfiguration();
         }
-        HttpURLConnection connection = null;
+        CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            URL url = getUrl();
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(dingtalkConfiguration.getConnectTimeout());
-            connection.setReadTimeout(dingtalkConfiguration.getReadTimeout());
-            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            connection.connect();
-            OutputStream outputStream = connection.getOutputStream();
-            String msg = getMsg(jobName, cause);
-            String paramJson = getParamJson(msg);
-            outputStream.write(paramJson.getBytes(StandardCharsets.UTF_8));
-            int code = connection.getResponseCode();
-            if (HttpURLConnection.HTTP_OK == code) {
-                InputStream resultInputStream = connection.getInputStream();
-                StringBuilder result = new StringBuilder();
-                try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resultInputStream, StandardCharsets.UTF_8))) {
-                    String line;
-                    while (null != (line = bufferedReader.readLine())) {
-                        result.append(line);
-                    }
-                }
-                JsonObject resp = GsonFactory.getGson().fromJson(result.toString(), JsonObject.class);
+            HttpPost httpPost = new HttpPost(getUrl());
+            String paramJson = getParamJson(getMsg(jobName, cause));
+            StringEntity entity = new StringEntity(paramJson, "UTF-8");
+            entity.setContentEncoding("UTF-8");
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+            CloseableHttpResponse response = httpclient.execute(httpPost);
+            int status = response.getStatusLine().getStatusCode();
+            if (HttpURLConnection.HTTP_OK == status) {
+                JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
                     log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
                 } else {
                     log.error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
                 }
+            } else {
+                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
-            throw new JobExecutionException(ex);
         } finally {
-            if (null != connection) {
-                connection.disconnect();
-            }
+            httpclient.close();
         }
     }
     
@@ -116,11 +101,11 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return msg;
     }
     
-    private URL getUrl() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, MalformedURLException {
+    private String getUrl() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, MalformedURLException {
         if (Strings.isNullOrEmpty(dingtalkConfiguration.getSecret())) {
-            return new URL(dingtalkConfiguration.getWebhook());
+            return dingtalkConfiguration.getWebhook();
         } else {
-            return new URL(getSignUrl());
+            return getSignUrl();
         }
     }
     
