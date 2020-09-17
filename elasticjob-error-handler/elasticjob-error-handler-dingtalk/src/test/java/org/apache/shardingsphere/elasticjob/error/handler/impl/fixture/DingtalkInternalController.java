@@ -33,6 +33,7 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -84,8 +85,8 @@ public final class DingtalkInternalController implements RestfulController {
         String stringToSign = timestamp + "\n" + SECRET;
         System.out.println(stringToSign);
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(SECRET.getBytes("UTF-8"), "HmacSHA256"));
-        byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-        return new String(Base64.getEncoder().encode(signData), "UTF-8");
+        mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8.name()), "HmacSHA256"));
+        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8.name()));
+        return new String(Base64.getEncoder().encode(signData), StandardCharsets.UTF_8.name());
     }
 }

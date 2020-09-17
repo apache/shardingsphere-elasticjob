@@ -43,6 +43,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -75,8 +76,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
         httpPost.setConfig(requestConfig);
         String paramJson = getParamJson(getMsg(jobName, cause));
-        StringEntity entity = new StringEntity(paramJson, "UTF-8");
-        entity.setContentEncoding("UTF-8");
+        StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8.name());
+        entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
         CloseableHttpResponse response = httpclient.execute(httpPost);
@@ -127,9 +128,9 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String stringToSign = timestamp + "\n" + dingtalkConfiguration.getSecret();
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes("UTF-8"), "HmacSHA256"));
-        byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-        return URLEncoder.encode(new String(Base64.getEncoder().encode(signData)), "UTF-8");
+        mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes(StandardCharsets.UTF_8.name()), "HmacSHA256"));
+        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8.name()));
+        return URLEncoder.encode(new String(Base64.getEncoder().encode(signData)), StandardCharsets.UTF_8.name());
     }
     
     @Override
