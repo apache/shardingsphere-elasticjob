@@ -34,15 +34,23 @@ import java.util.Properties;
 @Slf4j
 public final class DingtalkEnvironment {
     
-    @Getter
     private static final DingtalkEnvironment INSTANCE = new DingtalkEnvironment();
     
-    private static final String PROPERTIES_PATH = "conf/dingtalk.properties";
+    private static final String PROPERTIES_PATH = "conf/elasticjob-dingtalk.properties";
     
     private final Properties properties;
     
     private DingtalkEnvironment() {
         properties = getProperties();
+    }
+    
+    /**
+     * Get instance of Dingtalk env.
+     *
+     * @return instance of Dingtalk env.
+     */
+    public static DingtalkEnvironment getInstance() {
+        return INSTANCE;
     }
     
     private Properties getProperties() {
@@ -98,15 +106,15 @@ public final class DingtalkEnvironment {
     @Getter
     public enum EnvironmentArgument {
         
-        WEBHOOK("webhook", "", true),
+        WEBHOOK("elasticjob.dingtalk.webhook", "", true),
         
-        KEYWORD("keyword", "", false),
+        KEYWORD("elasticjob.dingtalk.keyword", "", false),
         
-        SECRET("secret", "", false),
+        SECRET("elasticjob.dingtalk.secret", "", false),
         
-        CONNECT_TIMEOUT("connectTimeout", "3000", false),
+        CONNECT_TIMEOUT("elasticjob.dingtalk.connectTimeout", "3000", false),
         
-        READ_TIMEOUT("readTimeout", "5000", false);
+        READ_TIMEOUT("elasticjob.dingtalk.readTimeout", "5000", false);
         
         private final String key;
         

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.impl;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
@@ -46,7 +46,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Job error handler for dingtalk error message.
@@ -58,8 +57,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        if (dingtalkConfiguration == null) {
-            dingtalkConfiguration = DingtalkEnvironment.getINSTANCE().getDingtalkConfiguration();
+        if (null == dingtalkConfiguration) {
+            dingtalkConfiguration = DingtalkEnvironment.getInstance().getDingtalkConfiguration();
         }
         HttpURLConnection connection = null;
         try {
@@ -87,7 +86,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 }
                 JsonObject resp = GsonFactory.getGson().fromJson(result.toString(), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.error("Job '{}' exception occur in job processing, But the notification Dingtalk failure, error is : {}", jobName, resp.get("errmsg").getAsString(), cause);
+                    log.error("An exception has occurred in Job '{}'. But failed to send alert by Dingtalk because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
                 }
             }
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
@@ -100,10 +99,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     private String getParamJson(final String msg) {
-        Map<String, Object> param = Maps.newLinkedHashMap();
-        param.put("msgtype", "text");
-        param.put("text", Collections.singletonMap("content", msg));
-        return GsonFactory.getGson().toJson(param);
+        return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", msg)));
     }
     
     private String getMsg(final String jobName, final Throwable cause) {

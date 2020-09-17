@@ -35,7 +35,7 @@ public final class DingtalkJobErrorHandlerTest {
                 "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
         System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.SECRET.getKey(),
                 "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
-        System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.KEYWORD.getKey(), "关键字1111");
+        System.getProperties().setProperty(DingtalkEnvironment.EnvironmentArgument.KEYWORD.getKey(), "keyword1");
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
