@@ -15,20 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.error;
+package org.apache.shardingsphere.elasticjob.error.handler.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.junit.Test;
 
-/**
- * Job error handler.
- */
-public interface JobErrorHandler extends TypedSPI {
+public final class IgnoreJobErrorHandlerTest {
     
-    /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause cause
-     */
-    void handleException(String jobName, Throwable cause);
+    @Test
+    public void assertHandleException() {
+        new IgnoreJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+    }
 }
