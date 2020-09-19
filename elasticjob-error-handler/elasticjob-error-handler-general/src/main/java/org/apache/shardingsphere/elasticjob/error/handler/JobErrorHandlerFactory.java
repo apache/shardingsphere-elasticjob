@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.error;
+package org.apache.shardingsphere.elasticjob.error.handler;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;

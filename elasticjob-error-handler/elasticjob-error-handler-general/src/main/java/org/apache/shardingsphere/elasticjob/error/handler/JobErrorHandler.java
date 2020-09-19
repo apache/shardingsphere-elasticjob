@@ -15,24 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
 
 /**
- * Job error handler for log error message.
+ * Job error handler.
  */
-@Slf4j
-public final class LogJobErrorHandler implements JobErrorHandler {
+public interface JobErrorHandler extends TypedSPI {
     
-    @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
-    }
-    
-    @Override
-    public String getType() {
-        return "LOG";
-    }
+    /**
+     * Handle exception.
+     * 
+     * @param jobName job name
+     * @param cause cause
+     */
+    void handleException(String jobName, Throwable cause);
 }

@@ -15,21 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.error.JobErrorHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
 /**
- * Job error handler for ignore exception.
+ * Job error handler for log error message.
  */
-public final class IgnoreJobErrorHandler implements JobErrorHandler {
+@Slf4j
+public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
     @Override
     public String getType() {
-        return "IGNORE";
+        return "LOG";
     }
 }

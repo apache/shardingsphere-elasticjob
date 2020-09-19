@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.error.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.impl;
 
 import lombok.SneakyThrows;
 import org.junit.Test;
