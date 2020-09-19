@@ -23,7 +23,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -58,6 +62,8 @@ public final class JobConfiguration {
     private final String jobExecutorServiceHandlerType;
     
     private final String jobErrorHandlerType;
+    
+    private final Collection<ElasticJobListener> elasticJobListeners;
     
     private final String description;
     
@@ -114,6 +120,8 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
+    
+        private Collection<ElasticJobListener> elasticJobListeners = new ArrayList<>();
     
         /**
          * Cron expression.
@@ -276,6 +284,17 @@ public final class JobConfiguration {
             this.jobErrorHandlerType = jobErrorHandlerType;
             return this;
         }
+    
+        /**
+         * Set job listener.
+         *
+         * @param elasticJobListeners job listeners
+         * @return ElasticJob configuration builder
+         */
+        public Builder jobListener(final ElasticJobListener... elasticJobListeners) {
+            this.elasticJobListeners.addAll(Arrays.asList(elasticJobListeners));
+            return this;
+        }
         
         /**
          * Set job description.
@@ -342,7 +361,7 @@ public final class JobConfiguration {
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, elasticJobListeners, description, props, disabled, overwrite);
         }
     }
 }

@@ -68,9 +68,9 @@ public abstract class BaseIntegrateTest {
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             case ONE_OFF:
-                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
@@ -103,7 +103,7 @@ public abstract class BaseIntegrateTest {
         SCHEDULE, ONE_OFF
     }
     
-    private final class TestElasticJobListener implements ElasticJobListener {
+    public final class TestElasticJobListener implements ElasticJobListener {
         
         @Override
         public void beforeJobExecuted(final ShardingContexts shardingContexts) {
@@ -115,9 +115,9 @@ public abstract class BaseIntegrateTest {
         }
     }
     
-    private final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+    public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
-        private TestDistributeOnceElasticJobListener() {
+        public TestDistributeOnceElasticJobListener() {
             super(100L, 100L);
         }
         

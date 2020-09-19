@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingListe
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Listener manager facade.
@@ -56,7 +56,7 @@ public final class ListenerManager {
     
     private final RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
-    public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);

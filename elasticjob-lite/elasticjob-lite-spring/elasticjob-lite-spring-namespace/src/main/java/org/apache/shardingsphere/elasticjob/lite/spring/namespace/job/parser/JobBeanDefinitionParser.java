@@ -61,7 +61,6 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         if (!Strings.isNullOrEmpty(tracingRef)) {
             factory.addConstructorArgReference(tracingRef);
         }
-        factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
     }
     
@@ -80,6 +79,7 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_ERROR_HANDLER_TYPE_ATTRIBUTE));
+        result.addConstructorArgValue(createJobListeners(element));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         result.addConstructorArgValue(parsePropsElement(element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));

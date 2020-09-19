@@ -34,7 +34,8 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C")
+                .jobListener(new TestElasticJobListener(), new TestDistributeOnceElasticJobListener()).disabled(true).overwrite(true).build();
     }
     
     @Test
