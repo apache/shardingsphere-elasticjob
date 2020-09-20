@@ -1,0 +1,10 @@
+ejob-error-handle:
+  email:
+    host: test.mail.com
+    port: 123
+    username: username
+    password: password
+    protocol: smtp
+    from: testmail@qiyi.com
+    to: xxx1@ejob.com
+    cc: xxx2@ejob.com
