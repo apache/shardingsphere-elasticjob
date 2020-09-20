@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.reconcile;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
-import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -38,13 +37,10 @@ public final class ReconcileService extends AbstractScheduledService {
     
     private final ShardingService shardingService;
     
-    private final LeaderService leaderService;
-    
     public ReconcileService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         lastReconcileTime = System.currentTimeMillis();
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
-        leaderService = new LeaderService(regCenter, jobName);
     }
     
     @Override
@@ -52,7 +48,7 @@ public final class ReconcileService extends AbstractScheduledService {
         int reconcileIntervalMinutes = configService.load(true).getReconcileIntervalMinutes();
         if (reconcileIntervalMinutes > 0 && (System.currentTimeMillis() - lastReconcileTime >= reconcileIntervalMinutes * 60 * 1000)) {
             lastReconcileTime = System.currentTimeMillis();
-            if (leaderService.isLeaderUntilBlock() && !shardingService.isNeedSharding() && shardingService.hasShardingInfoInOfflineServers()) {
+            if (!shardingService.isNeedSharding() && shardingService.hasShardingInfoInOfflineServers()) {
                 log.warn("Elastic Job: job status node has inconsistent value,start reconciling...");
                 shardingService.setReshardingFlag();
             }
