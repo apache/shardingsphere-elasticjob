@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
@@ -25,7 +26,7 @@ import java.io.InputStream;
 /**
  * Job error configuration loader.
  */
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigurationLoader {
     
     private static final String ERROR_HANDLER_CONFIG = "error-handler-email.yaml";
