@@ -38,6 +38,8 @@ public final class DingtalkEnvironment {
     
     private static final String PROPERTIES_PATH = "conf/elasticjob-dingtalk.properties";
     
+    private static final String CONFIG_PREFIX = "elasticjob.dingtalk";
+    
     private final Properties properties;
     
     private DingtalkEnvironment() {
@@ -69,7 +71,7 @@ public final class DingtalkEnvironment {
     private void setPropertiesByEnv(final Properties prop) {
         for (EnvironmentArgument each : EnvironmentArgument.values()) {
             String key = each.getKey();
-            String value = System.getProperties().getProperty(key);
+            String value = System.getProperties().getProperty(String.join(".", CONFIG_PREFIX, key));
             if (!Strings.isNullOrEmpty(value)) {
                 log.info("Load property {} with value {} from ENV.", key, value);
                 prop.setProperty(each.getKey(), value);
@@ -106,15 +108,15 @@ public final class DingtalkEnvironment {
     @Getter
     public enum EnvironmentArgument {
         
-        WEBHOOK("elasticjob.dingtalk.webhook", "", true),
+        WEBHOOK("webhook", "", true),
         
-        KEYWORD("elasticjob.dingtalk.keyword", "", false),
+        KEYWORD("keyword", "", false),
         
-        SECRET("elasticjob.dingtalk.secret", "", false),
+        SECRET("secret", "", false),
         
-        CONNECT_TIMEOUT("elasticjob.dingtalk.connectTimeout", "3000", false),
+        CONNECT_TIMEOUT("connectTimeout", "3000", false),
         
-        READ_TIMEOUT("elasticjob.dingtalk.readTimeout", "5000", false);
+        READ_TIMEOUT("readTimeout", "5000", false);
         
         private final String key;
         

@@ -92,8 +92,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
             } else {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
-        } catch (IOException e) {
-            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
+        } catch (IOException ex) {
+            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, ex);
         }
     }
     
