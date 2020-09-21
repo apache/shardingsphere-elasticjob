@@ -40,8 +40,7 @@
     
     <elasticjob:job id="simpleElasticJob_namespace_listener_jdk_proxy" job-ref="fooJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" 
              sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}"
-             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
-        <elasticjob:listener class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener.SimpleJdkDynamicProxyListener" />
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-listener-types="simpleJdkDynamicProxyListener">
     </elasticjob:job>
     <elasticjob:job id="dataflowElasticJob_namespace_listener_jdk_proxy" job-ref="dataflowJob" registry-center-ref="regCenter" 
              sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述"

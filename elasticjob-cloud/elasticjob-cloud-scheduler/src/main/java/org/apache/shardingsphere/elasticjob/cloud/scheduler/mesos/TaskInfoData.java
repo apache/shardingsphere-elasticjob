@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 

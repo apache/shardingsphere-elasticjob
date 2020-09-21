@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener;
 
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service.FooService;
 
 import javax.annotation.Resource;
@@ -35,6 +35,10 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     
     private final long completedTimeoutMilliseconds;
     
+    public SimpleOnceListener() {
+        this(10000, 20000);
+    }
+    
     public SimpleOnceListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
         super(startedTimeoutMilliseconds, completedTimeoutMilliseconds);
         this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
@@ -50,5 +54,10 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     @Override
     public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
         assertThat(completedTimeoutMilliseconds, is(20000L));
+    }
+    
+    @Override
+    public String getType() {
+        return "simpleOnceListener";
     }
 }

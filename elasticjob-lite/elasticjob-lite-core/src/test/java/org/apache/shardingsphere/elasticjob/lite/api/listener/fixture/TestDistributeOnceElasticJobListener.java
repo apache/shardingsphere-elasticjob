@@ -17,12 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.listener.fixture;
 
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 
 public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
     private final ElasticJobListenerCaller caller;
+    
+    public TestDistributeOnceElasticJobListener() {
+        this(null);
+    }
     
     public TestDistributeOnceElasticJobListener(final ElasticJobListenerCaller caller) {
         super(1L, 1L);
@@ -37,5 +41,10 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
     @Override
     public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
         caller.after();
+    }
+    
+    @Override
+    public String getType() {
+        return "DISTRIBUTE";
     }
 }

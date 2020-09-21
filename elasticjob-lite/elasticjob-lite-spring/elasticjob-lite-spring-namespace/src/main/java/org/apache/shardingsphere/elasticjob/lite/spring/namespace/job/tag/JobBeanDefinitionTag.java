@@ -58,6 +58,8 @@ public final class JobBeanDefinitionTag {
     
     public static final String JOB_ERROR_HANDLER_TYPE_ATTRIBUTE = "job-error-handler-type";
     
+    public static final String JOB_LISTENER_TYPES_ATTRIBUTE = "job-listener-types";
+    
     public static final String DESCRIPTION_ATTRIBUTE = "description";
     
     public static final String PROPS_TAG = "props";

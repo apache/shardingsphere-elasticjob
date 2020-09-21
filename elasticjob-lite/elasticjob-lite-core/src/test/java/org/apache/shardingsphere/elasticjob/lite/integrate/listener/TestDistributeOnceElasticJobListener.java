@@ -15,33 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.listener.fixture;
+package org.apache.shardingsphere.elasticjob.lite.integrate.listener;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 
-@RequiredArgsConstructor
-public final class TestElasticJobListener implements ElasticJobListener {
+public class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    private final ElasticJobListenerCaller caller;
-    
-    public TestElasticJobListener() {
-        this(null);
+    public TestDistributeOnceElasticJobListener() {
+        super(100L, 100L);
     }
     
     @Override
-    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-        caller.before();
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContexts shardingContexts) {
-        caller.after();
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
     }
     
     @Override
     public String getType() {
-        return "TEST";
+        return "INTEGRATE-DISTRIBUTE";
     }
 }

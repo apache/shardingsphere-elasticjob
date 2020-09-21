@@ -32,7 +32,8 @@ public final class OneOffEnabledJobIntegrateTest extends EnabledJobIntegrateTest
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C").overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C")
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").overwrite(true).build();
     }
     
     @Test

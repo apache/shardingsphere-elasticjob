@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -33,5 +33,10 @@ public class SimpleListener implements ElasticJobListener {
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
         assertThat(shardingContexts.getJobName(), is("simpleElasticJob_namespace_listener"));
+    }
+    
+    @Override
+    public String getType() {
+        return "simpleListener";
     }
 }

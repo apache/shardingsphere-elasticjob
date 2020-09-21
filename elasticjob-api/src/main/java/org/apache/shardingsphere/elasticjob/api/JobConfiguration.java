@@ -24,6 +24,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -58,6 +61,8 @@ public final class JobConfiguration {
     private final String jobExecutorServiceHandlerType;
     
     private final String jobErrorHandlerType;
+    
+    private final Collection<String> jobListenerTypes;
     
     private final String description;
     
@@ -106,6 +111,8 @@ public final class JobConfiguration {
         private String jobExecutorServiceHandlerType;
         
         private String jobErrorHandlerType;
+    
+        private final Collection<String> jobListenerTypes = new ArrayList<>();
         
         private String description = "";
         
@@ -276,6 +283,17 @@ public final class JobConfiguration {
             this.jobErrorHandlerType = jobErrorHandlerType;
             return this;
         }
+    
+        /**
+         * Set job listener types.
+         *
+         * @param jobListenerTypes job listener types
+         * @return ElasticJob configuration builder
+         */
+        public Builder jobListenerTypes(final String... jobListenerTypes) {
+            this.jobListenerTypes.addAll(Arrays.asList(jobListenerTypes));
+            return this;
+        }
         
         /**
          * Set job description.
@@ -342,7 +360,7 @@ public final class JobConfiguration {
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes, description, props, disabled, overwrite);
         }
     }
 }
