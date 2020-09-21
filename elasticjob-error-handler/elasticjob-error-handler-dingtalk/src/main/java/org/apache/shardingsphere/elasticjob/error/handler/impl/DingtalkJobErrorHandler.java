@@ -76,7 +76,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
         httpPost.setConfig(requestConfig);
         String paramJson = getParamJson(getMsg(jobName, cause));
-        StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8.name());
+        StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
