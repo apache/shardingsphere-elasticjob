@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
+import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -32,6 +33,8 @@ import java.util.ServiceLoader;
 public final class JobErrorHandlerFactory {
     
     private static final Map<String, JobErrorHandler> HANDLERS = new LinkedHashMap<>();
+    
+    private static final String DEFAULT_HANDLER = "LOG";
 
     static {
         for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
@@ -46,6 +49,9 @@ public final class JobErrorHandlerFactory {
      * @return job error handler
      */
     public static JobErrorHandler getHandler(final String type) {
+        if (Strings.isNullOrEmpty(type)) {
+            return HANDLERS.get(DEFAULT_HANDLER);
+        }
         if (!HANDLERS.containsKey(type)) {
             throw new JobConfigurationException("Can not find job error handler type '%s'.", type);
         }

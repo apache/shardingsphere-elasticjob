@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.error.handler.fixture.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.impl.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.impl.ThrowJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 
@@ -25,19 +26,19 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class JobErrorHandlerFactoryTest {
-
+    
     @Test
     public void assertGetDefaultHandler() {
         assertThat(JobErrorHandlerFactory.getHandler(""), instanceOf(LogJobErrorHandler.class));
     }
-
+    
     @Test(expected = JobConfigurationException.class)
     public void assertGetInvalidHandler() {
         JobErrorHandlerFactory.getHandler("INVALID");
     }
-
+    
     @Test
     public void assertGetHandler() {
-        assertThat(JobErrorHandlerFactory.getHandler("LOG"), instanceOf(LogJobErrorHandler.class));
+        assertThat(JobErrorHandlerFactory.getHandler("THROW"), instanceOf(ThrowJobErrorHandler.class));
     }
 }

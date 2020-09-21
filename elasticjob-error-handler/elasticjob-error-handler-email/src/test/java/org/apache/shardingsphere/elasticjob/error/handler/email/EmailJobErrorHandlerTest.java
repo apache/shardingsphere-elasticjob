@@ -34,16 +34,16 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
-
+    
     @Mock
     private Logger log;
-
+    
     @Test
     public void assertHandleExceptionFor() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
     }
-
+    
     @Test
     @SneakyThrows
     public void assertHandleExceptionForNullConfiguration() {
@@ -51,14 +51,14 @@ public final class EmailJobErrorHandlerTest {
         Field emailConfigurationField = EmailJobErrorHandler.class.getDeclaredField("emailConfiguration");
         emailConfigurationField.setAccessible(true);
         emailConfigurationField.set(emailJobErrorHandler, null);
-
+        
         setStaticFieldValue(emailJobErrorHandler);
-
+        
         Throwable cause = new RuntimeException("test exception");
         emailJobErrorHandler.handleException("test job name", cause);
         verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
     }
-
+    
     @SneakyThrows
     private void setStaticFieldValue(final EmailJobErrorHandler emailJobErrorHandler) {
         Field field = emailJobErrorHandler.getClass().getDeclaredField("log");
@@ -68,11 +68,10 @@ public final class EmailJobErrorHandlerTest {
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(emailJobErrorHandler, log);
     }
-
+    
     @Test
     public void assertType() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         assertThat(emailJobErrorHandler.getType(), equalTo("EMAIL"));
     }
-
 }

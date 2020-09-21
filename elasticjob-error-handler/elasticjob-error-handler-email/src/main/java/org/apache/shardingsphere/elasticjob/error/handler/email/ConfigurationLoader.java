@@ -17,33 +17,29 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+
+import java.io.InputStream;
 
 /**
- * Email configuration POJO.
+ * Job error configuration loader.
  */
-@Getter
-@Setter
-public final class EmailConfiguration {
+@NoArgsConstructor
+public class ConfigurationLoader {
     
-    private String host;
+    private static final String ERROR_HANDLER_CONFIG = "error-handler-email.yaml";
     
-    private Integer port;
-    
-    private String username;
-    
-    private String password;
-    
-    private String protocol = "smtp";
-    
-    private String subject = "ElasticJob error message";
-    
-    private String from;
-    
-    private String to;
-    
-    private String cc;
-    
-    private String bcc;
+    /**
+     * Unmarshal YAML.
+     *
+     * @param prefix    config prefix
+     * @param classType class type
+     * @param <T>       type of class
+     * @return object from YAML
+     */
+    public static <T> T buildConfigByYaml(final String prefix, final Class<T> classType) {
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
+        return YamlEngine.unmarshal(prefix, inputStream, classType);
+    }
 }

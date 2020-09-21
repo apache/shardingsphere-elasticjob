@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.config.ConfigurationBuilder;
 
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
@@ -45,17 +44,17 @@ import java.util.Properties;
  */
 @Slf4j
 public final class EmailJobErrorHandler implements JobErrorHandler {
-
-    public static final String CONFIG_PREFIX = "ejob-error-handle.email";
-
+    
+    public static final String CONFIG_PREFIX = "email";
+    
     private EmailConfiguration emailConfiguration;
-
+    
     private Session session;
-
+    
     public EmailJobErrorHandler() {
         loadConfiguration();
     }
-
+    
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         try {
@@ -67,16 +66,16 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
             log.error("Elastic job: email job handler error", ex);
         }
     }
-
+    
     private void loadConfiguration() {
-        emailConfiguration = ConfigurationBuilder.buildConfigByYaml(CONFIG_PREFIX, EmailConfiguration.class);
+        emailConfiguration = ConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX, EmailConfiguration.class);
     }
-
+    
     @Override
     public String getType() {
         return "EMAIL";
     }
-
+    
     private Session buildSession() {
         if (null == session) {
             Properties props = new Properties();
@@ -93,7 +92,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         }
         return session;
     }
-
+    
     private Message buildMessage(final String content) throws MessagingException {
         MimeMessage message = new MimeMessage(buildSession());
         message.setFrom(new InternetAddress(emailConfiguration.getFrom()));
@@ -113,14 +112,14 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         message.saveChanges();
         return message;
     }
-
+    
     private String buildContent(final String jobName, final Throwable cause) {
         StringWriter sw = new StringWriter();
         cause.printStackTrace(new PrintWriter(sw, true));
         String causeString = sw.toString();
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, causeString);
     }
-
+    
     private void sendMessage(final Message message) throws MessagingException {
         Transport.send(message);
     }

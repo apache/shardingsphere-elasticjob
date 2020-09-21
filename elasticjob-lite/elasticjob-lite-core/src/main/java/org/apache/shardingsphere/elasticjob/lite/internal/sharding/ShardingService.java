@@ -80,6 +80,9 @@ public final class ShardingService {
      * Set resharding flag.
      */
     public void setReshardingFlag() {
+        if (!leaderService.isLeaderUntilBlock()) {
+            return;
+        }
         jobNodeStorage.createJobNodeIfNeeded(ShardingNode.NECESSARY);
     }
     

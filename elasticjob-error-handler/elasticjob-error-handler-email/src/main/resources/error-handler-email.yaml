@@ -15,4 +15,13 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.error.handler.fixture.LogJobErrorHandler
+email:
+  host: xxx
+  port: xxx
+  username: username
+  password: password
+  protocol: smtp
+  from: xxx
+  to: xxx
+  cc: xxx
+

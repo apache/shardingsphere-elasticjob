@@ -97,9 +97,17 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertSetReshardingFlag() {
+    public void assertSetReshardingFlagOnLeader() {
+        when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         shardingService.setReshardingFlag();
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/sharding/necessary");
+    }
+    
+    @Test
+    public void assertSetReshardingFlagOnNonLeader() {
+        when(leaderService.isLeaderUntilBlock()).thenReturn(false);
+        shardingService.setReshardingFlag();
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("leader/sharding/necessary");
     }
     
     @Test

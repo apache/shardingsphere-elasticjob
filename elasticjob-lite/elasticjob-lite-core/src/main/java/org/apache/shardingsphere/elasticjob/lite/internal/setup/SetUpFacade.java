@@ -25,7 +25,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceServi
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -43,8 +42,6 @@ public final class SetUpFacade {
     
     private final InstanceService instanceService;
     
-    private final ShardingService shardingService;
-    
     private final ReconcileService reconcileService;
     
     private final ListenerManager listenerManager;
@@ -54,7 +51,6 @@ public final class SetUpFacade {
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
     }
@@ -80,7 +76,6 @@ public final class SetUpFacade {
         leaderService.electLeader();
         serverService.persistOnline(enabled);
         instanceService.persistOnline();
-        shardingService.setReshardingFlag();
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
         }
