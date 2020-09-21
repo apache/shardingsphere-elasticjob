@@ -19,10 +19,8 @@ package org.apache.shardingsphere.elasticjob.error.handler.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @RequiredArgsConstructor
 public final class DingtalkConfiguration {
     
