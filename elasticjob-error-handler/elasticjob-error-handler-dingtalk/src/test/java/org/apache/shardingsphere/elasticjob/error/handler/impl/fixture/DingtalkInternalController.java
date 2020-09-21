@@ -48,7 +48,6 @@ public final class DingtalkInternalController implements RestfulController {
     
     private static final String SECRET = "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4";
     
-    
     /**
      * Send Dingtalk message.
      *
@@ -85,8 +84,8 @@ public final class DingtalkInternalController implements RestfulController {
         String stringToSign = timestamp + "\n" + SECRET;
         System.out.println(stringToSign);
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8.name()), "HmacSHA256"));
-        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8.name()));
+        mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
         return new String(Base64.getEncoder().encode(signData), StandardCharsets.UTF_8.name());
     }
 }

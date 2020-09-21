@@ -33,15 +33,16 @@ import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.env.DingtalkEnvironment;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -58,13 +59,12 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Setter
     private DingtalkConfiguration dingtalkConfiguration;
     
-    private CloseableHttpClient httpclient = HttpClients.createDefault();
+    private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
     public DingtalkJobErrorHandler() {
         registerShutdownHook();
     }
     
-    @SneakyThrows
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         if (null == dingtalkConfiguration) {
@@ -80,8 +80,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
-        CloseableHttpResponse response = httpclient.execute(httpPost);
-        try {
+        try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
@@ -93,8 +92,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
             } else {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
-        } finally {
-            response.close();
+        } catch (IOException e) {
+            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
         }
     }
     
@@ -112,7 +111,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return msg;
     }
     
-    private String getUrl() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, MalformedURLException {
+    private String getUrl() {
         if (Strings.isNullOrEmpty(dingtalkConfiguration.getSecret())) {
             return dingtalkConfiguration.getWebhook();
         } else {
@@ -120,16 +119,20 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         }
     }
     
-    private String getSignUrl() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-        Long timestamp = System.currentTimeMillis();
-        return String.format("%s&timestamp=%s&sign=%s", dingtalkConfiguration.getWebhook(), timestamp, sign(timestamp));
+    private String getSignUrl() {
+        try {
+            Long timestamp = System.currentTimeMillis();
+            return String.format("%s&timestamp=%s&sign=%s", dingtalkConfiguration.getWebhook(), timestamp, sign(timestamp));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException ex) {
+            throw new JobConfigurationException(ex);
+        }
     }
     
     private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String stringToSign = timestamp + "\n" + dingtalkConfiguration.getSecret();
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes(StandardCharsets.UTF_8.name()), "HmacSHA256"));
-        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8.name()));
+        mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
         return URLEncoder.encode(new String(Base64.getEncoder().encode(signData)), StandardCharsets.UTF_8.name());
     }
     
