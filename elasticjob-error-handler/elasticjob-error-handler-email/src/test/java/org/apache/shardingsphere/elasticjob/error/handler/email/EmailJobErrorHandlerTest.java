@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,26 +24,24 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
-    
+        
     @Mock
     private Logger log;
-    
+       
     @Test
     public void assertHandleExceptionFor() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
     }
-    
+        
     @Test
     @SneakyThrows
     public void assertHandleExceptionForNullConfiguration() {
@@ -58,7 +56,7 @@ public final class EmailJobErrorHandlerTest {
         emailJobErrorHandler.handleException("test job name", cause);
         verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
     }
-    
+        
     @SneakyThrows
     private void setStaticFieldValue(final EmailJobErrorHandler emailJobErrorHandler) {
         Field field = emailJobErrorHandler.getClass().getDeclaredField("log");
@@ -68,7 +66,7 @@ public final class EmailJobErrorHandlerTest {
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(emailJobErrorHandler, log);
     }
-    
+        
     @Test
     public void assertType() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();

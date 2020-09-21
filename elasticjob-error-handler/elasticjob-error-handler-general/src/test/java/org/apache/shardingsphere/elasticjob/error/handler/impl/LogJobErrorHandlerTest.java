@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,10 +31,10 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class LogJobErrorHandlerTest {
-
+    
     @Mock
     private Logger log;
-
+    
     @Test
     public void assertHandleException() {
         LogJobErrorHandler actual = new LogJobErrorHandler();
@@ -43,7 +43,7 @@ public final class LogJobErrorHandlerTest {
         actual.handleException("test_job", cause);
         verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
-
+    
     @SneakyThrows
     private void setStaticFieldValue(final LogJobErrorHandler logJobErrorHandler) {
         Field field = logJobErrorHandler.getClass().getDeclaredField("log");

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import java.util.Map;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class YamlEngine {
-
+    
     /**
      * Marshal YAML.
      *
@@ -43,7 +42,7 @@ public final class YamlEngine {
     public static String marshal(final Object value) {
         return new Yaml(new ElasticJobYamlRepresenter()).dumpAsMap(value);
     }
-
+    
     /**
      * Unmarshal YAML.
      *
