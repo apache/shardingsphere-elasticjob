@@ -21,6 +21,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -56,6 +58,8 @@ public final class JobConfigurationPOJO {
     
     private String jobErrorHandlerType;
     
+    private Collection<String> jobListenerTypes = new ArrayList<>();
+    
     private String description;
     
     private Properties props = new Properties();
@@ -75,7 +79,7 @@ public final class JobConfigurationPOJO {
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
-                .description(description).disabled(disabled).overwrite(overwrite).build();
+                .jobListenerTypes(jobListenerTypes.toArray(new String[]{})).description(description).disabled(disabled).overwrite(overwrite).build();
         for (Object each : props.keySet()) {
             result.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
         }
@@ -103,6 +107,7 @@ public final class JobConfigurationPOJO {
         result.setJobShardingStrategyType(jobConfiguration.getJobShardingStrategyType());
         result.setJobExecutorServiceHandlerType(jobConfiguration.getJobExecutorServiceHandlerType());
         result.setJobErrorHandlerType(jobConfiguration.getJobErrorHandlerType());
+        result.setJobListenerTypes(jobConfiguration.getJobListenerTypes());
         result.setDescription(jobConfiguration.getDescription());
         result.setProps(jobConfiguration.getProps());
         result.setDisabled(jobConfiguration.isDisabled());
