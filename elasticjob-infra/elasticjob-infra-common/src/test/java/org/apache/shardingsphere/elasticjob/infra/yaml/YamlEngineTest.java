@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.infra.yaml;
 
 import org.apache.shardingsphere.elasticjob.infra.yaml.fixture.FooYamlConfiguration;
 import org.junit.Test;
+import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
@@ -33,6 +34,10 @@ public final class YamlEngineTest {
             + "  foo: nest_foo\n";
     
     private static final String YAML_WITH_NULL = "foo: foo\n";
+    
+    private static final String PREFIX = "nest";
+    
+    private static final String PREFIX2 = "nest.bar";
     
     @Test
     public void assertMarshal() {
@@ -68,5 +73,22 @@ public final class YamlEngineTest {
         assertThat(actual.getFoo(), is("foo"));
         assertNull(actual.getBar());
         assertNull(actual.getNest());
+    }
+    
+    @Test
+    public void assertUnmarshalWithPrefix() {
+        InputStream configFileInput = Thread.currentThread().getContextClassLoader().getResourceAsStream("yaml-test.yaml");         
+        FooYamlConfiguration actual = YamlEngine.unmarshal(PREFIX, configFileInput, FooYamlConfiguration.class);
+        assertThat(actual.getFoo(), is("nest_foo"));
+        assertThat(actual.getBar(), is("nest_bar"));
+        assertThat(actual.getNest().getFoo(), is("nest_foo2"));
+        assertThat(actual.getNest().getBar(), is("nest_bar2"));
+    }
+    
+    @Test
+    public void assertUnmarshalWithPrefixAndNullValue() {
+        InputStream configFileInput = Thread.currentThread().getContextClassLoader().getResourceAsStream("yaml-test.yaml");
+        FooYamlConfiguration actual = YamlEngine.unmarshal(PREFIX2, configFileInput, FooYamlConfiguration.class);
+        assertNull(actual);
     }
 }
