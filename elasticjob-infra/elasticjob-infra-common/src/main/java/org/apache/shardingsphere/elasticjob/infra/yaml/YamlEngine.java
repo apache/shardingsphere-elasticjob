@@ -17,9 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.infra.yaml;
 
+import com.google.common.base.Splitter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.yaml.snakeyaml.Yaml;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * YAML engine.
@@ -47,5 +53,34 @@ public final class YamlEngine {
      */
     public static <T> T unmarshal(final String yamlContent, final Class<T> classType) {
         return new Yaml().loadAs(yamlContent, classType);
+    }
+    
+    /**
+     * Unmarshal YAML.
+     *
+     * @param prefix config prefix name
+     * @param configFileInput YAML file input stream
+     * @param classType class type
+     * @param <T> type of class
+     * @return object from YAML
+     */
+    public static <T> T unmarshal(final String prefix, final InputStream configFileInput, final Class<T> classType) {
+        Map<String, Object> configDataMap = new Yaml().loadAs(configFileInput, Map.class);
+        if (null != configDataMap && StringUtils.isNotBlank(prefix)) {
+            List<String> prefixStrList = Splitter.on(".").trimResults().omitEmptyStrings().splitToList(prefix);
+            for (String prefixStr : prefixStrList) {
+                Object configData = configDataMap.get(prefixStr);
+                if (configData instanceof Map) {
+                    configDataMap = (Map) configData;
+                } else {
+                    configDataMap = null;
+                    break;
+                }
+            }
+        }
+        if (null != configDataMap) {
+            return GsonFactory.getGson().fromJson(GsonFactory.getGson().toJson(configDataMap), classType);
+        }
+        return null;
     }
 }
