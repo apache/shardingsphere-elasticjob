@@ -65,6 +65,7 @@
         <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
+        <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>2.7.21</mockito.version>
         
         <apache-rat-plugin.version>0.12</apache-rat-plugin.version>
@@ -231,6 +232,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
