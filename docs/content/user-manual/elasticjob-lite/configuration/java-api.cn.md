@@ -44,24 +44,8 @@ chapter = true
 | jobShardingStrategyType       | 否        |
 | jobExecutorServiceHandlerType | 否        |
 | jobErrorHandlerType           | 否        |
+| jobListenerTypes              | 否        |
 | description                   | 否        |
 | props                         | 否        |
 | disabled                      | 否        |
 | overwrite                     | 否        |
-
-## 作业监听器配置
-
-### 常规监听器配置
-
-接口名称：org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener
-
-可配置属性：无
-
-### 分布式监听器配置
-
-类名称：org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener
-
-| 属性名                          | 构造器注入 |
-| ------------------------------ |:--------- |
-| started-timeout-milliseconds   | 是        |
-| completed-timeout-milliseconds | 是        |

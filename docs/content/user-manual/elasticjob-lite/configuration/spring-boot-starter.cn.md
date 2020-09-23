@@ -59,6 +59,7 @@ elasticjob.reg-center.server-lists=localhost:6181
 | job-sharding-strategy-type        | 否       |
 | job-executor-service-handler-type | 否       |
 | job-error-handler-type            | 否       |
+| job-listener-types                | 否       |
 | description                       | 否       |
 | props                             | 否       |
 | disabled                          | 否       |

@@ -59,34 +59,11 @@ chapter = true
 | job-sharding-strategy-type        | 否       |
 | job-executor-service-handler-type | 否       |
 | job-error-handler-type            | 否       |
+| job-listener-types                | 否       |
 | description                       | 否       |
 | props                             | 否       |
 | disabled                          | 否       |
 | overwrite                         | 否       |
-
-## 作业监听配置
-
-\<elasticjob:listener />
-
-elasticjob:listener 必须配置为 elasticjob:job 的子元素，并且在子元素中只允许出现一次
-
-可配置属性：
-
-| 属性名  | 类型   | 是否必填 | 缺省值 | 描述                                               |
-| ------ |:------ |:------- |:----- |:-------------------------------------------------- |
-| class  | String | 是      |       | 前置后置任务监听实现类，需实现 ElasticJobListener 接口 |
-
-\<elasticjob:distributed-listener />
-
-elasticjob:distributed-listener 必须配置为 elasticjob:job 的子元素，并且在子元素中只允许出现一次
-
-可配置属性：
-
-| 属性名                          | 类型   | 是否必填 | 缺省值          | 描述                                                                        |
-| ------------------------------ |:------ |:------- |:-------------- |:--------------------------------------------------------------------------- |
-| class                          | String | 是      |                | 前置后置任务分布式监听实现类，需继承 AbstractDistributeOnceElasticJobListener 类 |
-| started-timeout-milliseconds   | long   | 否      | Long.MAX_VALUE | 最后一个作业执行前的执行方法的超时毫秒数                                         |
-| completed-timeout-milliseconds | long   | 否      | Long.MAX_VALUE | 最后一个作业执行后的执行方法的超时毫秒数                                         |
 
 ## 事件追踪配置
 
