@@ -16,7 +16,7 @@
 #
 
 dingtalk:
-  webhook: http://localhost:9876/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f
+  webhook: http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f
   keyword: keyword
   secret: SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4
   connectTimeout: 5000

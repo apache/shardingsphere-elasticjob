@@ -70,7 +70,7 @@ public final class DingtalkJobErrorHandlerTest {
     @Test
     public void assertHandleExceptionWithWrongToken() {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9876/send?access_token=wrongToken",
+        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/send?access_token=wrongToken",
                 null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
@@ -81,7 +81,7 @@ public final class DingtalkJobErrorHandlerTest {
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9876/404?access_token=wrongToken",
+        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/404?access_token=wrongToken",
                 null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
