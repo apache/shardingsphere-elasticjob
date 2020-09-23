@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.impl.fixture.DingtalkInternalController;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
@@ -41,7 +40,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public final class DingtalkJobErrorHandlerTest {
     
-    private static final int PORT = 9876;
+    private static final int PORT = 9875;
     
     private static final String HOST = "localhost";
     
