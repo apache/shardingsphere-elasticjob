@@ -24,27 +24,12 @@
 
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
     
-    <xsd:element name="listener">
-        <xsd:complexType>
-            <xsd:attribute name="class" type="xsd:string" use="required" />
-        </xsd:complexType>
-    </xsd:element>
-    <xsd:element name="distributed-listener">
-        <xsd:complexType>
-            <xsd:attribute name="class" type="xsd:string" use="required" />
-            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" use="required" />
-            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" use="required" />
-        </xsd:complexType>
-    </xsd:element>
-    
     <xsd:element name="job">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:all>
                         <xsd:element ref="beans:props" minOccurs="0" />
-                        <xsd:element ref="listener" minOccurs="0" />
-                        <xsd:element ref="distributed-listener" minOccurs="0" />
                     </xsd:all>
                     <xsd:attribute name="job-ref" type="xsd:string" />
                     <xsd:attribute name="job-type" type="xsd:string" />
@@ -62,6 +47,7 @@
                     <xsd:attribute name="job-sharding-strategy-type" type="xsd:string" />
                     <xsd:attribute name="job-executor-service-handler-type" type="xsd:string" />
                     <xsd:attribute name="job-error-handler-type" type="xsd:string" />
+                    <xsd:attribute name="job-listener-types" type="xsd:string" />
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />

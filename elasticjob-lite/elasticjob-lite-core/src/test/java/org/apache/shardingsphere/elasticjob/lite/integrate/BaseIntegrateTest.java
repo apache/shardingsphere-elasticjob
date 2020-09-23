@@ -24,9 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBoo
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -56,6 +53,10 @@ public abstract class BaseIntegrateTest {
     
     private final String jobName = System.nanoTime() + "_test_job";
     
+    protected BaseIntegrateTest() {
+        this(null, null);
+    }
+    
     protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
         this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);
@@ -68,9 +69,9 @@ public abstract class BaseIntegrateTest {
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             case ONE_OFF:
-                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
@@ -101,33 +102,5 @@ public abstract class BaseIntegrateTest {
     public enum TestType {
         
         SCHEDULE, ONE_OFF
-    }
-    
-    private final class TestElasticJobListener implements ElasticJobListener {
-        
-        @Override
-        public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-            REGISTRY_CENTER.persist("/" + jobName + "/listener/every", "test");
-        }
-        
-        @Override
-        public void afterJobExecuted(final ShardingContexts shardingContexts) {
-        }
-    }
-    
-    private final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
-    
-        private TestDistributeOnceElasticJobListener() {
-            super(100L, 100L);
-        }
-        
-        @Override
-        public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-            REGISTRY_CENTER.persist("/" + jobName + "/listener/once", "test");
-        }
-    
-        @Override
-        public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-        }
     }
 }

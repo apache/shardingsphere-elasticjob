@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileSer
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Set up facade.
@@ -46,7 +46,7 @@ public final class SetUpFacade {
     
     private final ListenerManager listenerManager;
     
-    public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);

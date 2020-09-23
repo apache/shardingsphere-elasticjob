@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.api.listener;
+package org.apache.shardingsphere.elasticjob.infra.listener;
 
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.junit.Test;

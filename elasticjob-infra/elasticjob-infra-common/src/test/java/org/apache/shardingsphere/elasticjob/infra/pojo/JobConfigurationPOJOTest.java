@@ -21,6 +21,9 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Test;
 
+import java.util.Arrays;
+
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -73,6 +76,7 @@ public final class JobConfigurationPOJOTest {
         pojo.setJobShardingStrategyType("AVG_ALLOCATION");
         pojo.setJobExecutorServiceHandlerType("CPU");
         pojo.setJobErrorHandlerType("IGNORE");
+        pojo.setJobListenerTypes(Arrays.asList("LOG"));
         pojo.setDescription("Job description");
         pojo.getProps().setProperty("key", "value");
         pojo.setDisabled(true);
@@ -89,6 +93,7 @@ public final class JobConfigurationPOJOTest {
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
+        assertThat(actual.getJobListenerTypes(), hasItem("LOG"));
         assertThat(actual.getDescription(), is("Job description"));
         assertThat(actual.getProps().getProperty("key"), is("value"));
         assertTrue(actual.isDisabled());
@@ -102,7 +107,7 @@ public final class JobConfigurationPOJOTest {
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                 .monitorExecution(true).failover(true).misfire(true)
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("CPU").jobErrorHandlerType("IGNORE")
-                .description("Job description").setProperty("key", "value")
+                .jobListenerTypes("LOG").description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
         JobConfigurationPOJO actual = JobConfigurationPOJO.fromJobConfiguration(jobConfiguration);
         assertThat(actual.getJobName(), is("test_job"));
@@ -116,6 +121,7 @@ public final class JobConfigurationPOJOTest {
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
+        assertThat(actual.getJobListenerTypes(), hasItem("LOG"));
         assertThat(actual.getDescription(), is("Job description"));
         assertThat(actual.getProps().getProperty("key"), is("value"));
         assertTrue(actual.isDisabled());
