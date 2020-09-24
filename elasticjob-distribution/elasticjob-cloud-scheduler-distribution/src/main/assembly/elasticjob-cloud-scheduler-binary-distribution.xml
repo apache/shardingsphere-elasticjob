@@ -33,7 +33,6 @@
         <fileSet>
             <directory>src/main/resources</directory>
             <includes>
-                <include>application.properties</include>
                 <include>logback.xml</include>
             </includes>
             <outputDirectory>conf</outputDirectory>
