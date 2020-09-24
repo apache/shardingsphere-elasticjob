@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.impl.fixture;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

@@ -13,5 +13,6 @@ Error handler strategy, used to handle error when exception occur during job exe
 | *Implementation Class* | *Description*                             |
 | ---------------------- | ----------------------------------------- |
 | LogJobErrorHandler     | Log error and do not interrupt job        |
+| DingtalkJobErrorHandler  | Log error and do not interrupt job and send dingtalk message notification |
 | ThrowJobErrorHandler   | Throw system exception and interrupt job  |
 | IgnoreJobErrorHandler  | Ignore exception and do not interrupt job |

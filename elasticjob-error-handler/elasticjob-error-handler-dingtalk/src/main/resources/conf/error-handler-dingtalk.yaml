@@ -15,14 +15,9 @@
 # limitations under the License.
 #
 
-# It can also be configured through startup parameters, E.g: -Delasticjob.dingtalk.webhook=param1  -Delasticjob.dingtalk.keyword=param2  -Delasticjob.dingtalk.secret=param3
-# Then webhook used to interface validation , required
-webhook=http://localhost:9876/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f
-# Then keyword used to interface validation
-keyword=keyword
-# Then secret used to interface validation
-secret=SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4
-# The connection time used to invoke the interface
-connectTimeout=5000
-# The timeout used to read the results
-readTimeout=6000
+dingtalk:
+  webhook:
+  keyword:
+  secret:
+  connectTimeout:
+  readTimeout:

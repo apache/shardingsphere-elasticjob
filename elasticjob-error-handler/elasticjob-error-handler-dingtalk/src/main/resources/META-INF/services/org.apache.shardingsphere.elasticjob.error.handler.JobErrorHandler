@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.error.handler.impl.DingtalkJobErrorHandler
+org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkJobErrorHandler

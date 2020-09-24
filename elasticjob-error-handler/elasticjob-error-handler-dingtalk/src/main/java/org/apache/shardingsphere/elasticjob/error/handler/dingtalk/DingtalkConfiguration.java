@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.config;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

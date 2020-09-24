@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -31,14 +31,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.config.DingtalkConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.env.DingtalkEnvironment;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -56,6 +56,10 @@ import java.util.Collections;
 @Slf4j
 public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
+    private static final String CONFIG_PREFIX = "dingtalk";
+    
+    private static final String ERROR_HANDLER_CONFIG = "conf/error-handler-dingtalk.yaml";
+    
     @Setter
     private DingtalkConfiguration dingtalkConfiguration;
     
@@ -68,7 +72,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         if (null == dingtalkConfiguration) {
-            dingtalkConfiguration = DingtalkEnvironment.getInstance().getDingtalkConfiguration();
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
+            dingtalkConfiguration = YamlEngine.unmarshal(CONFIG_PREFIX, inputStream, DingtalkConfiguration.class);
         }
         HttpPost httpPost = new HttpPost(getUrl());
         RequestConfig requestConfig = RequestConfig.custom()
