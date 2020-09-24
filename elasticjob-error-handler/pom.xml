@@ -34,5 +34,6 @@
         <module>elasticjob-error-handler-email</module>
         <module>elasticjob-error-handler-sms</module>
         <module>elasticjob-error-handler-dingtalk</module>
+        <module>elasticjob-error-handler-wechat</module>
     </modules>
 </project>
