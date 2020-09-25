@@ -41,6 +41,7 @@ import org.quartz.simpl.SimpleThreadPool;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import com.google.common.base.Preconditions;
 
 /**
  * Job scheduler.
@@ -73,6 +74,7 @@ public final class JobScheduler {
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration<?> tracingConfig) {
+        Preconditions.checkNotNull(elasticJob, "The param 'elasticJob' cannot be null");
         this.regCenter = regCenter;
         elasticJobType = null;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
@@ -80,7 +82,7 @@ public final class JobScheduler {
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
-        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
+        jobExecutor = new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
