@@ -29,18 +29,42 @@ import java.io.InputStream;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigurationLoader {
     
-    private static final String ERROR_HANDLER_CONFIG = "error-handler-email.yaml";
+    private static final String ERROR_HANDLER_CONFIG = "conf/error-handler-email.yaml";
     
     /**
      * Unmarshal YAML.
      *
      * @param prefix    config prefix
-     * @param classType class type
-     * @param <T>       type of class
      * @return object from YAML
      */
-    public static <T> T buildConfigByYaml(final String prefix, final Class<T> classType) {
+    public static EmailConfiguration buildConfigByYaml(final String prefix) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
-        return YamlEngine.unmarshal(prefix, inputStream, classType);
+        return YamlEngine.unmarshal(prefix, inputStream, EmailConfiguration.class);
+    }
+    
+    /**
+     * read system properties.
+     *
+     * @return object from system properties
+     */
+    public static EmailConfiguration buildConfigBySystemProperties() {
+        String isBySystemProperties = System.getProperty("error-handler-email.use-system-properties");
+        if (!Boolean.valueOf(isBySystemProperties)) {
+            return null;
+        }
+        EmailConfiguration emailConfiguration = new EmailConfiguration();
+        emailConfiguration.setHost(System.getProperty("error-handler-email.host"));
+        emailConfiguration.setUsername(System.getProperty("error-handler-email.username"));
+        emailConfiguration.setPassword(System.getProperty("error-handler-email.password"));
+        emailConfiguration.setProtocol(System.getProperty("error-handler-email.protocol"));
+        emailConfiguration.setFrom(System.getProperty("error-handler-email.from"));
+        emailConfiguration.setTo(System.getProperty("error-handler-email.to"));
+        emailConfiguration.setCc(System.getProperty("error-handler-email.cc"));
+        emailConfiguration.setBcc(System.getProperty("error-handler-email.bcc"));
+        String port = System.getProperty("error-handler-email.port");
+        if (null != port) {
+            emailConfiguration.setPort(Integer.valueOf(port));
+        }
+        return emailConfiguration;
     }
 }

@@ -16,11 +16,12 @@
 #
 
 email:
-  host: test.mail.com
-  port: 123
+  host: xxx
+  port: xxx
   username: username
   password: password
   protocol: smtp
-  from: testmail@qiyi.com
-  to: xxx1@ejob.com
-  cc: xxx2@ejob.com
+  from: xxx
+  to: xxx
+  cc: xxx
+  bcc: xxx
