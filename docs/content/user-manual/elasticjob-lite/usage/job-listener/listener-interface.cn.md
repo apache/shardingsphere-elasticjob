@@ -22,6 +22,11 @@ public class MyJobListener implements ElasticJobListener {
     public void afterJobExecuted(ShardingContexts shardingContexts) {
         // do something ...
     }
+    
+    @Override
+    public String getType() {
+        return "simpleJobListener";
+    }
 }
 ```
 
@@ -47,5 +52,14 @@ public class MyDistributeOnceJobListener extends AbstractDistributeOnceElasticJo
     public void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts) {
         // do something ...
     }
+    
+    @Override
+    public String getType() {
+        return "distributeOnceJobListener";
+    }
 }
 ```
+
+## 添加SPI实现
+
+将JobListener实现添加至infra-common下resources/META-INF/services/org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener

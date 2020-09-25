@@ -59,6 +59,7 @@ Configuration:
 | job-sharding-strategy-type        | No       |
 | job-executor-service-handler-type | No       |
 | job-error-handler-type            | No       |
+| job-listener-types                | No       |
 | description                       | No       |
 | props                             | No       |
 | disabled                          | No       |

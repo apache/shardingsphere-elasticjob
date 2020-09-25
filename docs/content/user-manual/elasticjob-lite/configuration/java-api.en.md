@@ -44,24 +44,8 @@ Configuration：
 | jobShardingStrategyType       | No                    |
 | jobExecutorServiceHandlerType | No                    |
 | jobErrorHandlerType           | No                    |
+| jobListenerTypes              | No                    |
 | description                   | No                    |
 | props                         | No                    |
 | disabled                      | No                    |
 | overwrite                     | No                    |
-
-## Job Listener Configuration
-
-### Common Listener Configuration
-
-Interface name: `org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener`
-
-Configuration: no
-
-### Distributed Listener Configuration
-
-Class name: `org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener`
-
-| Name                           | Constructor injection |
-| ------------------------------ |:--------------------- |
-| started-timeout-milliseconds   | Yes                   |
-| completed-timeout-milliseconds | Yes                   |

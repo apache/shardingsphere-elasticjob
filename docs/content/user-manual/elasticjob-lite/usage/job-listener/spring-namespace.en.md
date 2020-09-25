@@ -22,10 +22,7 @@ chapter = true
     <!-- Configuration Job Bean -->
     <bean id="myJob" class="xxx.MyJob" />
     
-    <elasticjob:job id="${myJob.id}" job-ref="myJob" registry-center-ref="regCenter" sharding-total-count="3" cron="0/1 * * * * ?">
-        <!-- Configure job listener -->
-        <elasticjob:listener class="xxx.MyJobListener" />
-        <elasticjob:distributed-listener class="xxx.MyDistributeOnceJobListener" started-timeout-milliseconds="10000" completed-timeout-milliseconds="20000" />
+    <elasticjob:job id="${myJob.id}" job-ref="myJob" registry-center-ref="regCenter" sharding-total-count="3" cron="0/1 * * * * ?" job-listener-types="simpleJobListener,distributeOnceJobListener">
     </elasticjob:job>
 </beans>
 ```
