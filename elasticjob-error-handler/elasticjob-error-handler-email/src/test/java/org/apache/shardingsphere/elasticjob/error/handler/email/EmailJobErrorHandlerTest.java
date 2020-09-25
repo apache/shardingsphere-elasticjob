@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -37,9 +38,37 @@ public final class EmailJobErrorHandlerTest {
     private Logger log;
        
     @Test
-    public void assertHandleExceptionFor() {
+    @SneakyThrows
+    public void assertHandleExceptionWithYAMLConfiguration() {
+        resetSystemProperties();
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
+        field.setAccessible(true);
+        EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
+        assertNotNull(emailConfiguration);
+        assertThat(emailConfiguration.getHost(), equalTo("yaml.email.com"));
+        assertThat(emailConfiguration.getPort(), equalTo(123));
+        assertThat(emailConfiguration.getUsername(), equalTo("yaml.username"));
+        assertThat(emailConfiguration.getFrom(), equalTo("yaml.from@ejob.com"));
+        assertThat(emailConfiguration.getTo(), equalTo("yaml.to@ejob.com"));
+    }
+    
+    @Test
+    @SneakyThrows
+    public void assertHandleExceptionWithSystemPropertiesConfiguration() {
+        initSystemProperties();
+        EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
+        emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
+        field.setAccessible(true);
+        EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
+        assertNotNull(emailConfiguration);
+        assertThat(emailConfiguration.getHost(), equalTo("system.email.com"));
+        assertThat(emailConfiguration.getPort(), equalTo(345));
+        assertThat(emailConfiguration.getUsername(), equalTo("system.username"));
+        assertThat(emailConfiguration.getFrom(), equalTo("system.from@ejob.com"));
+        assertThat(emailConfiguration.getTo(), equalTo("system.to@ejob.com"));
     }
         
     @Test
@@ -49,9 +78,7 @@ public final class EmailJobErrorHandlerTest {
         Field emailConfigurationField = EmailJobErrorHandler.class.getDeclaredField("emailConfiguration");
         emailConfigurationField.setAccessible(true);
         emailConfigurationField.set(emailJobErrorHandler, null);
-        
         setStaticFieldValue(emailJobErrorHandler);
-        
         Throwable cause = new RuntimeException("test exception");
         emailJobErrorHandler.handleException("test job name", cause);
         verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
@@ -71,5 +98,22 @@ public final class EmailJobErrorHandlerTest {
     public void assertType() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         assertThat(emailJobErrorHandler.getType(), equalTo("EMAIL"));
+    }
+    
+    private void initSystemProperties() {
+        System.setProperty("error-handler-email.use-system-properties", "true");
+        System.setProperty("error-handler-email.host", "system.email.com");
+        System.setProperty("error-handler-email.port", "345");
+        System.setProperty("error-handler-email.username", "system.username");
+        System.setProperty("error-handler-email.password", "system.password");
+        System.setProperty("error-handler-email.protocol", "system.smtp");
+        System.setProperty("error-handler-email.from", "system.from@ejob.com");
+        System.setProperty("error-handler-email.to", "system.to@ejob.com");
+        System.setProperty("error-handler-email.cc", "system.cc@ejob.com");
+        System.setProperty("error-handler-email.bcc", "system.bcc@ejob.com");
+    }
+    
+    private void resetSystemProperties() {
+        System.setProperty("error-handler-email.use-system-properties", "false");
     }
 }

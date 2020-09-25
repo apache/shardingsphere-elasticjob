@@ -16,11 +16,11 @@
 #
 
 email:
-  host: test.mail.com
+  host: yaml.email.com
   port: 123
-  username: username
-  password: password
-  protocol: smtp
-  from: testmail@qiyi.com
-  to: xxx1@ejob.com
-  cc: xxx2@ejob.com
+  username: yaml.username
+  password: yaml.password
+  protocol: yaml.smtp
+  from: yaml.from@ejob.com
+  to: yaml.to@ejob.com
+  cc: yaml.cc@ejob.com
