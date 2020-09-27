@@ -22,16 +22,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
+
+import javax.mail.Message;
+import javax.mail.Transport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@PrepareForTest(Transport.class)
+@RunWith(PowerMockRunner.class)
 public final class EmailJobErrorHandlerTest {
         
     @Mock
@@ -41,8 +49,11 @@ public final class EmailJobErrorHandlerTest {
     @SneakyThrows
     public void assertHandleExceptionWithYAMLConfiguration() {
         resetSystemProperties();
+        PowerMockito.mockStatic(Transport.class);
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
+        PowerMockito.verifyStatic();
+        Transport.send(Mockito.any(Message.class));
         Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
         field.setAccessible(true);
         EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
@@ -61,8 +72,11 @@ public final class EmailJobErrorHandlerTest {
     @SneakyThrows
     public void assertHandleExceptionWithSystemPropertiesConfiguration() {
         initSystemProperties();
+        PowerMockito.mockStatic(Transport.class);
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
+        PowerMockito.verifyStatic();
+        Transport.send(Mockito.any(Message.class));
         Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
         field.setAccessible(true);
         EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
