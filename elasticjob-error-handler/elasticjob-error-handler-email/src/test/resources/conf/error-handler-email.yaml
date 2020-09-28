@@ -26,3 +26,5 @@ email:
   to: yaml.to@ejob.com
   cc: yaml.cc@ejob.com
   bcc: yaml.bcc@ejob.com
+  useSsl: true
+  debug: true

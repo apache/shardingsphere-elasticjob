@@ -21,7 +21,9 @@ email:
   username: username
   password: password
   protocol: smtp
+  useSsl: true
   from: xxx
   to: xxx
   cc: xxx
   bcc: xxx
+  debug: true

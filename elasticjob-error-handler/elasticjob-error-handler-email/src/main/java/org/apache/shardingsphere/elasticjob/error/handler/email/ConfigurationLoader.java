@@ -62,16 +62,24 @@ public class ConfigurationLoader {
         emailConfiguration.setCc(System.getProperty("error-handler-email.cc"));
         emailConfiguration.setBcc(System.getProperty("error-handler-email.bcc"));
         String protocol = System.getProperty("error-handler-email.protocol");
-        String subject = System.getProperty("error-handler-email.subject");
-        String port = System.getProperty("error-handler-email.port");
         if (StringUtils.isNotBlank(protocol)) {
             emailConfiguration.setProtocol(System.getProperty("error-handler-email.protocol"));
         }
+        String useSsl = System.getProperty("error-handler-email.use-ssl");
+        if (StringUtils.isNotBlank(useSsl)) {
+            emailConfiguration.setUseSsl(Boolean.parseBoolean(useSsl));
+        }
+        String subject = System.getProperty("error-handler-email.subject");
         if (StringUtils.isNotBlank(subject)) {
             emailConfiguration.setSubject(subject);
         }
+        String port = System.getProperty("error-handler-email.port");
         if (StringUtils.isNotBlank(port)) {
             emailConfiguration.setPort(Integer.valueOf(port));
+        }
+        String debug = System.getProperty("error-handler-email.debug");
+        if (StringUtils.isNotBlank(debug)) {
+            emailConfiguration.setDebug(Boolean.parseBoolean(debug));
         }
         return emailConfiguration;
     }
