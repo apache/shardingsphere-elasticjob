@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMultipart;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -79,13 +80,18 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return "EMAIL";
     }
     
-    private Session buildSession() {
+    private synchronized Session buildSession() {
         if (null == session) {
             Properties props = new Properties();
             props.put("mail.smtp.host", emailConfiguration.getHost());
             props.put("mail.smtp.port", emailConfiguration.getPort());
             props.put("mail.smtp.auth", "true");
             props.put("mail.transport.protocol", emailConfiguration.getProtocol());
+            props.setProperty("mail.debug", Boolean.toString(emailConfiguration.isDebug()));
+            if (emailConfiguration.isUseSsl()) {
+                props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.setProperty("mail.smtp.socketFactory.fallback", "false");
+            }
             session = Session.getDefaultInstance(props, new Authenticator() {
                 @Override
                 public PasswordAuthentication getPasswordAuthentication() {
@@ -97,7 +103,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private Message buildMessage(final String content) throws MessagingException {
-        MimeMessage message = new MimeMessage(buildSession());
+        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::buildSession));
         message.setFrom(new InternetAddress(emailConfiguration.getFrom()));
         message.setSubject(emailConfiguration.getSubject());
         message.setSentDate(new Date());

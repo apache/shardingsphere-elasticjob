@@ -29,6 +29,7 @@ import java.lang.reflect.Modifier;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -55,6 +56,8 @@ public final class EmailJobErrorHandlerTest {
         assertThat(emailConfiguration.getBcc(), equalTo("yaml.bcc@ejob.com"));
         assertThat(emailConfiguration.getProtocol(), equalTo("yaml.smtp"));
         assertThat(emailConfiguration.getSubject(), equalTo("yaml.subject"));
+        assertTrue(emailConfiguration.isUseSsl());
+        assertTrue(emailConfiguration.isDebug());
     }
     
     @Test
@@ -74,6 +77,8 @@ public final class EmailJobErrorHandlerTest {
         assertThat(emailConfiguration.getTo(), equalTo("system.to@ejob.com"));
         assertThat(emailConfiguration.getCc(), equalTo("system.cc@ejob.com"));
         assertThat(emailConfiguration.getProtocol(), equalTo("smtp"));
+        assertTrue(emailConfiguration.isUseSsl());
+        assertTrue(emailConfiguration.isDebug());
     }
         
     @Test
@@ -109,6 +114,8 @@ public final class EmailJobErrorHandlerTest {
         System.setProperty("error-handler-email.use-system-properties", "true");
         System.setProperty("error-handler-email.host", "system.email.com");
         System.setProperty("error-handler-email.port", "345");
+        System.setProperty("error-handler-email.protocol", "smtp");
+        System.setProperty("error-handler-email.use-ssl", "true");
         System.setProperty("error-handler-email.username", "system.username");
         System.setProperty("error-handler-email.password", "system.password");
         System.setProperty("error-handler-email.subject", "system.subject");
@@ -116,6 +123,7 @@ public final class EmailJobErrorHandlerTest {
         System.setProperty("error-handler-email.to", "system.to@ejob.com");
         System.setProperty("error-handler-email.cc", "system.cc@ejob.com");
         System.setProperty("error-handler-email.bcc", "system.bcc@ejob.com");
+        System.setProperty("error-handler-email.debug", "true");
     }
     
     private void resetSystemProperties() {

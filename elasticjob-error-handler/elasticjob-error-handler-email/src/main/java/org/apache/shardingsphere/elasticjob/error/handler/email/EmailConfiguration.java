@@ -37,6 +37,8 @@ public final class EmailConfiguration {
     
     private String protocol = "smtp";
     
+    private boolean useSsl;
+    
     private String subject = "ElasticJob error message";
     
     private String from;
@@ -46,4 +48,6 @@ public final class EmailConfiguration {
     private String cc;
     
     private String bcc;
+    
+    private boolean debug;
 }
