@@ -57,8 +57,9 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Before
     public void setUp() {
-        distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
-        distributeOnceElasticJobListener.setGuaranteeService(guaranteeService);
+        distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener();
+        distributeOnceElasticJobListener.setCaller(elasticJobListenerCaller);
+        distributeOnceElasticJobListener.addGuaranteeService(guaranteeService, "test_job", 1L, 1L);
         ReflectionUtils.setSuperclassFieldValue(distributeOnceElasticJobListener, "timeService", timeService);
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "");
