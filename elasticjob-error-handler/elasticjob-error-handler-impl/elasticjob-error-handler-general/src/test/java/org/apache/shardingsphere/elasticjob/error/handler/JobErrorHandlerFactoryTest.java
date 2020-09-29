@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.error.handler.impl.LogJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.impl.ThrowJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.general.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.general.ThrowJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
