@@ -25,10 +25,15 @@
         <artifactId>elasticjob-error-handler</artifactId>
         <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
-    
     <artifactId>elasticjob-error-handler-general</artifactId>
     
     <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-spi</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-infra-common</artifactId>
