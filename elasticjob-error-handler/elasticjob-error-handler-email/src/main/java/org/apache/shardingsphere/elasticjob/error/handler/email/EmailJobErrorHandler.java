@@ -28,7 +28,6 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -36,7 +35,6 @@ import javax.mail.internet.MimeMultipart;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -47,9 +45,38 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     public static final String CONFIG_PREFIX = "email";
     
-    private final EmailConfiguration config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
+    private final EmailConfiguration config;
     
-    private Session session;
+    private final Session session;
+    
+    public EmailJobErrorHandler() {
+        config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
+        session = Session.getDefaultInstance(createSessionProperties(), getSessionAuthenticator());
+    }
+    
+    private Properties createSessionProperties() {
+        Properties result = new Properties();
+        result.put("mail.smtp.host", config.getHost());
+        result.put("mail.smtp.port", config.getPort());
+        result.put("mail.smtp.auth", "true");
+        result.put("mail.transport.protocol", config.getProtocol());
+        result.setProperty("mail.debug", Boolean.toString(config.isDebug()));
+        if (config.isUseSsl()) {
+            result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            result.setProperty("mail.smtp.socketFactory.fallback", "false");
+        }
+        return result;
+    }
+    
+    private Authenticator getSessionAuthenticator() {
+        return new Authenticator() {
+            
+            @Override
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(config.getUsername(), config.getPassword());
+            }
+        };
+    }
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
@@ -68,7 +95,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private Message createMessage(final String content) throws MessagingException {
-        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(this::createSession));
+        MimeMessage result = new MimeMessage(session);
         result.setFrom(new InternetAddress(config.getFrom()));
         result.setSubject(config.getSubject());
         result.setSentDate(new Date());
@@ -87,31 +114,8 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return result;
     }
     
-    private synchronized Session createSession() {
-        if (null == session) {
-            Properties props = new Properties();
-            props.put("mail.smtp.host", config.getHost());
-            props.put("mail.smtp.port", config.getPort());
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.transport.protocol", config.getProtocol());
-            props.setProperty("mail.debug", Boolean.toString(config.isDebug()));
-            if (config.isUseSsl()) {
-                props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-                props.setProperty("mail.smtp.socketFactory.fallback", "false");
-            }
-            session = Session.getDefaultInstance(props, new Authenticator() {
-                
-                @Override
-                public PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(config.getUsername(), config.getPassword());
-                }
-            });
-        }
-        return session;
-    }
-    
     private void sendMessage(final Message message) throws MessagingException {
-        Transport.send(message);
+        session.getTransport().send(message);
     }
     
     @Override

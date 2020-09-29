@@ -17,28 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
-import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
-    
-    @Mock
-    private Logger log;
     
     @Test
     public void assertHandleExceptionWithYAMLConfiguration() throws ReflectiveOperationException {
@@ -58,27 +49,5 @@ public final class EmailJobErrorHandlerTest {
         assertThat(config.getSubject(), equalTo("yaml.subject"));
         assertTrue(config.isUseSsl());
         assertTrue(config.isDebug());
-    }
-    
-    @Test
-    public void assertHandleExceptionForNullConfiguration() throws ReflectiveOperationException {
-        EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
-        Field emailConfigurationField = EmailJobErrorHandler.class.getDeclaredField("config");
-        emailConfigurationField.setAccessible(true);
-        emailConfigurationField.set(emailJobErrorHandler, null);
-        setStaticFieldValue(emailJobErrorHandler);
-        Throwable cause = new RuntimeException("test exception");
-        emailJobErrorHandler.handleException("test job name", cause);
-        verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
-    }
-    
-    @SneakyThrows
-    private void setStaticFieldValue(final EmailJobErrorHandler emailJobErrorHandler) {
-        Field field = emailJobErrorHandler.getClass().getDeclaredField("log");
-        field.setAccessible(true);
-        Field modifiers = field.getClass().getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(emailJobErrorHandler, log);
     }
 }
