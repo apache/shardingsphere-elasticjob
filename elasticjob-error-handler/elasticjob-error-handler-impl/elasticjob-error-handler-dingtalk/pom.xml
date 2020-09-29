@@ -22,17 +22,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-error-handler</artifactId>
+        <artifactId>elasticjob-error-handler-impl</artifactId>
         <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
-
     <artifactId>elasticjob-error-handler-dingtalk</artifactId>
-
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-error-handler-general</artifactId>
-            <version>${project.version}</version>
+            <artifactId>elasticjob-error-handler-spi</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
@@ -40,6 +39,7 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

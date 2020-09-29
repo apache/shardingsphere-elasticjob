@@ -51,7 +51,7 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
     public static void init() {
         EmbedTestingServer.start();
     }
-
+    
     @Test
     public void assertZookeeperProperties() {
         assertNotNull(applicationContext);
@@ -59,7 +59,7 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         assertThat(actual.getServerLists(), is(EmbedTestingServer.getConnectionString()));
         assertThat(actual.getNamespace(), is("elasticjob-lite-spring-boot-starter"));
     }
-
+    
     @Test
     public void assertRegistryCenterCreation() {
         assertNotNull(applicationContext);
@@ -68,18 +68,18 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         zookeeperRegistryCenter.persist("/foo", "bar");
         assertThat(zookeeperRegistryCenter.get("/foo"), is("bar"));
     }
-
+    
     @Test
     public void assertTracingConfigurationCreation() throws SQLException {
         assertNotNull(applicationContext);
-        TracingConfiguration tracingConfiguration = applicationContext.getBean(TracingConfiguration.class);
+        TracingConfiguration<?> tracingConfiguration = applicationContext.getBean(TracingConfiguration.class);
         assertNotNull(tracingConfiguration);
         assertThat(tracingConfiguration.getType(), is("RDB"));
         assertTrue(tracingConfiguration.getStorage() instanceof DataSource);
         DataSource dataSource = (DataSource) tracingConfiguration.getStorage();
         assertNotNull(dataSource.getConnection());
     }
-
+    
     @Test
     public void assertJobScheduleCreation() {
         assertNotNull(applicationContext);
