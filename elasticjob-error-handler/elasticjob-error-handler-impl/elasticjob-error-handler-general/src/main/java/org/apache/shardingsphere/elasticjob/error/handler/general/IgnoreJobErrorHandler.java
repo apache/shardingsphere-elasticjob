@@ -15,15 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.general.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.junit.Test;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
-public final class ThrowJobErrorHandlerTest {
+/**
+ * Job error handler for ignore exception.
+ */
+public final class IgnoreJobErrorHandler implements JobErrorHandler {
     
-    @Test(expected = JobSystemException.class)
-    public void assertHandleException() {
-        new ThrowJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+    @Override
+    public void handleException(final String jobName, final Throwable cause) {
+    }
+    
+    @Override
+    public String getType() {
+        return "IGNORE";
     }
 }

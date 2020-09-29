@@ -17,28 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.error.handler.general.impl.LogJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.general.impl.ThrowJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-
-public final class JobErrorHandlerFactoryTest {
+public final class ThrowJobErrorHandlerTest {
     
-    @Test
-    public void assertGetDefaultHandler() {
-        assertThat(JobErrorHandlerFactory.getHandler(""), instanceOf(LogJobErrorHandler.class));
-    }
-    
-    @Test(expected = JobConfigurationException.class)
-    public void assertGetInvalidHandler() {
-        JobErrorHandlerFactory.getHandler("INVALID");
-    }
-    
-    @Test
-    public void assertGetHandler() {
-        assertThat(JobErrorHandlerFactory.getHandler("THROW"), instanceOf(ThrowJobErrorHandler.class));
+    @Test(expected = JobSystemException.class)
+    public void assertHandleException() {
+        new ThrowJobErrorHandler().handleException("test_job", new RuntimeException("test"));
     }
 }

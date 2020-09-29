@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.general;
+package org.apache.shardingsphere.elasticjob.error.handler;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 import java.util.LinkedHashMap;

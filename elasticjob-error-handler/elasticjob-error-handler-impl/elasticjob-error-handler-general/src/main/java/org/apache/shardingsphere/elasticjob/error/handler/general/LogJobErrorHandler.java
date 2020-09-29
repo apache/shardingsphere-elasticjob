@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.general.impl;
+package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
