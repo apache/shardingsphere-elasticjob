@@ -28,7 +28,7 @@ import java.io.InputStream;
  * Job error configuration loader.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ConfigurationLoader {
+public final class EmailConfigurationLoader {
     
     private static final String CONFIG_FILE = "conf/error-handler-email.yaml";
     
