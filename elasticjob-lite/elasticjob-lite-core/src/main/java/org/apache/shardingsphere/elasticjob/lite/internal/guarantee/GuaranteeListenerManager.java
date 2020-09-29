@@ -34,9 +34,12 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
     
     private final Collection<ElasticJobListener> elasticJobListeners;
     
+    private final String jobName;
+    
     public GuaranteeListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         super(regCenter, jobName);
         this.guaranteeNode = new GuaranteeNode(jobName);
+        this.jobName = jobName;
         this.elasticJobListeners = elasticJobListeners;
     }
     
@@ -53,7 +56,7 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
             if (Type.NODE_DELETED == eventType && guaranteeNode.isStartedRootNode(path)) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
-                        ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskStart();
+                        ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskStart(jobName);
                     }
                 }
             }
@@ -67,7 +70,7 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
             if (Type.NODE_DELETED == eventType && guaranteeNode.isCompletedRootNode(path)) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
-                        ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskComplete();
+                        ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskComplete(jobName);
                     }
                 }
             }

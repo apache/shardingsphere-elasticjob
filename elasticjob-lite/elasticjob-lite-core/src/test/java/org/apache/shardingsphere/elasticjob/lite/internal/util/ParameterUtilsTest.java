@@ -15,29 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.api.listener.fixture;
+package org.apache.shardingsphere.elasticjob.lite.internal.util;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.junit.Test;
 
-public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+public final class ParameterUtilsTest {
     
-    @Setter
-    private ElasticJobListenerCaller caller;
-    
-    @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-        caller.before();
+    @Test
+    public void assertParseQueryString() {
+        String queryString = "key1=foo&key2&key3=bar";
+        Map<String, String> result = ParameterUtils.parseQuery(queryString);
+        assertThat(result.get("key1"), is("foo"));
+        assertThat(result.get("key2"), is(""));
+        assertThat(result.get("key3"), is("bar"));
     }
     
-    @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-        caller.after();
-    }
-    
-    @Override
-    public String getType() {
-        return "DISTRIBUTE";
+    @Test
+    public void assertParseEmptyString() {
+        Map<String, String> result = ParameterUtils.parseQuery("");
+        assertTrue(result.isEmpty());
     }
 }
