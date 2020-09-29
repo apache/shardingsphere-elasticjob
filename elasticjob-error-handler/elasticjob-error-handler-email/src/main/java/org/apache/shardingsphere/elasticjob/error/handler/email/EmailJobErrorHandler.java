@@ -55,8 +55,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     public void handleException(final String jobName, final Throwable cause) {
         String errorContext = createErrorContext(jobName, cause);
         try {
-            Message message = createMessage(errorContext);
-            sendMessage(message);
+            sendMessage(createMessage(errorContext));
         } catch (final MessagingException ex) {
             log.error("Elastic job: email job handler error", ex);
         }
@@ -69,23 +68,23 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private Message createMessage(final String content) throws MessagingException {
-        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::createSession));
-        message.setFrom(new InternetAddress(config.getFrom()));
-        message.setSubject(config.getSubject());
-        message.setSentDate(new Date());
+        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(this::createSession));
+        result.setFrom(new InternetAddress(config.getFrom()));
+        result.setSubject(config.getSubject());
+        result.setSentDate(new Date());
         Multipart multipart = new MimeMultipart();
         BodyPart mailBody = new MimeBodyPart();
         mailBody.setContent(content, "text/html; charset=utf-8");
         multipart.addBodyPart(mailBody);
-        message.setContent(multipart);
+        result.setContent(multipart);
         if (StringUtils.isNotBlank(config.getTo())) {
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getTo()));
+            result.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getTo()));
         }
         if (StringUtils.isNotBlank(config.getCc())) {
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
+            result.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
         }
-        message.saveChanges();
-        return message;
+        result.saveChanges();
+        return result;
     }
     
     private synchronized Session createSession() {
