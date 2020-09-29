@@ -25,16 +25,11 @@
         <artifactId>elasticjob</artifactId>
         <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
-    
     <artifactId>elasticjob-error-handler</artifactId>
     <packaging>pom</packaging>
     
     <modules>
         <module>elasticjob-error-handler-spi</module>
-        <module>elasticjob-error-handler-general</module>
-        <module>elasticjob-error-handler-email</module>
-        <module>elasticjob-error-handler-sms</module>
-        <module>elasticjob-error-handler-dingtalk</module>
-        <module>elasticjob-error-handler-wechat</module>
+        <module>elasticjob-error-handler-impl</module>
     </modules>
 </project>
