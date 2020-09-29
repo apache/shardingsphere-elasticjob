@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
-import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
@@ -55,7 +54,6 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         try {
-            Preconditions.checkNotNull(config);
             String content = buildContent(jobName, cause);
             Message message = buildMessage(content);
             sendMessage(message);
