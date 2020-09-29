@@ -53,24 +53,23 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
+        String errorContext = createErrorContext(jobName, cause);
         try {
-            String content = buildContent(jobName, cause);
-            Message message = buildMessage(content);
+            Message message = createMessage(errorContext);
             sendMessage(message);
-        } catch (final NullPointerException | MessagingException ex) {
+        } catch (final MessagingException ex) {
             log.error("Elastic job: email job handler error", ex);
         }
     }
     
-    private String buildContent(final String jobName, final Throwable cause) {
-        StringWriter sw = new StringWriter();
-        cause.printStackTrace(new PrintWriter(sw, true));
-        String causeString = sw.toString();
-        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, causeString);
+    private String createErrorContext(final String jobName, final Throwable cause) {
+        StringWriter writer = new StringWriter();
+        cause.printStackTrace(new PrintWriter(writer, true));
+        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
     }
     
-    private Message buildMessage(final String content) throws MessagingException {
-        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::buildSession));
+    private Message createMessage(final String content) throws MessagingException {
+        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::createSession));
         message.setFrom(new InternetAddress(config.getFrom()));
         message.setSubject(config.getSubject());
         message.setSentDate(new Date());
@@ -89,7 +88,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return message;
     }
     
-    private synchronized Session buildSession() {
+    private synchronized Session createSession() {
         if (null == session) {
             Properties props = new Properties();
             props.put("mail.smtp.host", config.getHost());
@@ -102,6 +101,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
                 props.setProperty("mail.smtp.socketFactory.fallback", "false");
             }
             session = Session.getDefaultInstance(props, new Authenticator() {
+                
                 @Override
                 public PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(config.getUsername(), config.getPassword());
