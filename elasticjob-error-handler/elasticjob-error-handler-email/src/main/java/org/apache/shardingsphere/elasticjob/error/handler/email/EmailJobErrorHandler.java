@@ -48,13 +48,9 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     public static final String CONFIG_PREFIX = "email";
     
-    private final EmailConfiguration config;
+    private final EmailConfiguration config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
     
     private Session session;
-    
-    public EmailJobErrorHandler() {
-        config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
-    }
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
