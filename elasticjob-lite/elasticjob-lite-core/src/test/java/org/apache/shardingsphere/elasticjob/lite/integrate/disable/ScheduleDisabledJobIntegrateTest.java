@@ -35,7 +35,7 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C")
-                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").disabled(true).overwrite(true).build();
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE?startedTimeoutMilliseconds=1000&completedTimeoutMilliseconds=1000").disabled(true).overwrite(true).build();
     }
     
     @Test

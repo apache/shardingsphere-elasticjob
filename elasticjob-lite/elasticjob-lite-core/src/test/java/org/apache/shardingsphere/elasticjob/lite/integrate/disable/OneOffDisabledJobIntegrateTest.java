@@ -30,7 +30,7 @@ public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTe
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C")
-                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").disabled(true).overwrite(true).build();
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE?startedTimeoutMilliseconds=100&completedTimeoutMilliseconds=100").disabled(true).overwrite(true).build();
     }
     
     @Test
