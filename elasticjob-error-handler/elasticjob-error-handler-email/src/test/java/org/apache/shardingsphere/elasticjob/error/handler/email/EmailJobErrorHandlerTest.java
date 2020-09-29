@@ -24,8 +24,10 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -34,17 +36,16 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
-        
+    
     @Mock
     private Logger log;
-       
+    
     @Test
-    @SneakyThrows
-    public void assertHandleExceptionWithYAMLConfiguration() {
+    public void assertHandleExceptionWithYAMLConfiguration() throws ReflectiveOperationException {
         resetSystemProperties();
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
-        Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("config");
         field.setAccessible(true);
         EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
         assertNotNull(emailConfiguration);
@@ -61,12 +62,11 @@ public final class EmailJobErrorHandlerTest {
     }
     
     @Test
-    @SneakyThrows
-    public void assertHandleExceptionWithSystemPropertiesConfiguration() {
+    public void assertHandleExceptionWithSystemPropertiesConfiguration() throws ReflectiveOperationException {
         initSystemProperties();
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
-        Field field = emailJobErrorHandler.getClass().getDeclaredField("emailConfiguration");
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("config");
         field.setAccessible(true);
         EmailConfiguration emailConfiguration = (EmailConfiguration) field.get(emailJobErrorHandler);
         assertNotNull(emailConfiguration);
@@ -80,12 +80,11 @@ public final class EmailJobErrorHandlerTest {
         assertTrue(emailConfiguration.isUseSsl());
         assertTrue(emailConfiguration.isDebug());
     }
-        
+    
     @Test
-    @SneakyThrows
-    public void assertHandleExceptionForNullConfiguration() {
+    public void assertHandleExceptionForNullConfiguration() throws ReflectiveOperationException {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
-        Field emailConfigurationField = EmailJobErrorHandler.class.getDeclaredField("emailConfiguration");
+        Field emailConfigurationField = EmailJobErrorHandler.class.getDeclaredField("config");
         emailConfigurationField.setAccessible(true);
         emailConfigurationField.set(emailJobErrorHandler, null);
         setStaticFieldValue(emailJobErrorHandler);
@@ -93,7 +92,7 @@ public final class EmailJobErrorHandlerTest {
         emailJobErrorHandler.handleException("test job name", cause);
         verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
     }
-        
+    
     @SneakyThrows
     private void setStaticFieldValue(final EmailJobErrorHandler emailJobErrorHandler) {
         Field field = emailJobErrorHandler.getClass().getDeclaredField("log");
@@ -103,7 +102,7 @@ public final class EmailJobErrorHandlerTest {
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(emailJobErrorHandler, log);
     }
-        
+    
     @Test
     public void assertType() {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();

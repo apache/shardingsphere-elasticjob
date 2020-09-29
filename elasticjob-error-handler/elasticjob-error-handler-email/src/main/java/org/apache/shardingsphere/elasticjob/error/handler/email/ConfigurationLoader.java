@@ -28,9 +28,9 @@ import java.io.InputStream;
  * Job error configuration loader.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConfigurationLoader {
+public final class ConfigurationLoader {
     
-    private static final String ERROR_HANDLER_CONFIG = "conf/error-handler-email.yaml";
+    private static final String CONFIG_FILE = "conf/error-handler-email.yaml";
     
     /**
      * Unmarshal YAML.
@@ -39,48 +39,48 @@ public class ConfigurationLoader {
      * @return object from YAML
      */
     public static EmailConfiguration buildConfigByYaml(final String prefix) {
-        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
         return YamlEngine.unmarshal(prefix, inputStream, EmailConfiguration.class);
     }
     
     /**
-     * read system properties.
+     * Read system properties.
      *
      * @return object from system properties
      */
     public static EmailConfiguration buildConfigBySystemProperties() {
         String isBySystemProperties = System.getProperty("error-handler-email.use-system-properties");
-        if (!Boolean.valueOf(isBySystemProperties)) {
+        if (!Boolean.parseBoolean(isBySystemProperties)) {
             return null;
         }
-        EmailConfiguration emailConfiguration = new EmailConfiguration();
-        emailConfiguration.setHost(System.getProperty("error-handler-email.host"));
-        emailConfiguration.setUsername(System.getProperty("error-handler-email.username"));
-        emailConfiguration.setPassword(System.getProperty("error-handler-email.password"));
-        emailConfiguration.setFrom(System.getProperty("error-handler-email.from"));
-        emailConfiguration.setTo(System.getProperty("error-handler-email.to"));
-        emailConfiguration.setCc(System.getProperty("error-handler-email.cc"));
-        emailConfiguration.setBcc(System.getProperty("error-handler-email.bcc"));
+        EmailConfiguration result = new EmailConfiguration();
+        result.setHost(System.getProperty("error-handler-email.host"));
+        result.setUsername(System.getProperty("error-handler-email.username"));
+        result.setPassword(System.getProperty("error-handler-email.password"));
+        result.setFrom(System.getProperty("error-handler-email.from"));
+        result.setTo(System.getProperty("error-handler-email.to"));
+        result.setCc(System.getProperty("error-handler-email.cc"));
+        result.setBcc(System.getProperty("error-handler-email.bcc"));
         String protocol = System.getProperty("error-handler-email.protocol");
         if (StringUtils.isNotBlank(protocol)) {
-            emailConfiguration.setProtocol(System.getProperty("error-handler-email.protocol"));
+            result.setProtocol(System.getProperty("error-handler-email.protocol"));
         }
-        String useSsl = System.getProperty("error-handler-email.use-ssl");
-        if (StringUtils.isNotBlank(useSsl)) {
-            emailConfiguration.setUseSsl(Boolean.parseBoolean(useSsl));
+        String useSSL = System.getProperty("error-handler-email.use-ssl");
+        if (StringUtils.isNotBlank(useSSL)) {
+            result.setUseSsl(Boolean.parseBoolean(useSSL));
         }
         String subject = System.getProperty("error-handler-email.subject");
         if (StringUtils.isNotBlank(subject)) {
-            emailConfiguration.setSubject(subject);
+            result.setSubject(subject);
         }
         String port = System.getProperty("error-handler-email.port");
         if (StringUtils.isNotBlank(port)) {
-            emailConfiguration.setPort(Integer.valueOf(port));
+            result.setPort(Integer.valueOf(port));
         }
         String debug = System.getProperty("error-handler-email.debug");
         if (StringUtils.isNotBlank(debug)) {
-            emailConfiguration.setDebug(Boolean.parseBoolean(debug));
+            result.setDebug(Boolean.parseBoolean(debug));
         }
-        return emailConfiguration;
+        return result;
     }
 }

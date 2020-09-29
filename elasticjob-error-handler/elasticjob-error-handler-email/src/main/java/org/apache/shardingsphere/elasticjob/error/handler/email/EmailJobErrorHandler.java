@@ -48,7 +48,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     public static final String CONFIG_PREFIX = "email";
     
-    private EmailConfiguration emailConfiguration;
+    private EmailConfiguration config;
     
     private Session session;
     
@@ -56,70 +56,23 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         loadConfiguration();
     }
     
+    private void loadConfiguration() {
+        config = ConfigurationLoader.buildConfigBySystemProperties();
+        if (null == config) {
+            config = ConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX);
+        }
+    }
+    
     @Override
     public void handleException(final String jobName, final Throwable cause) {
         try {
-            Preconditions.checkNotNull(emailConfiguration);
+            Preconditions.checkNotNull(config);
             String content = buildContent(jobName, cause);
             Message message = buildMessage(content);
             sendMessage(message);
         } catch (final NullPointerException | MessagingException ex) {
             log.error("Elastic job: email job handler error", ex);
         }
-    }
-    
-    private void loadConfiguration() {
-        emailConfiguration = ConfigurationLoader.buildConfigBySystemProperties();
-        if (null == emailConfiguration) {
-            emailConfiguration = ConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX);
-        }
-    }
-    
-    @Override
-    public String getType() {
-        return "EMAIL";
-    }
-    
-    private synchronized Session buildSession() {
-        if (null == session) {
-            Properties props = new Properties();
-            props.put("mail.smtp.host", emailConfiguration.getHost());
-            props.put("mail.smtp.port", emailConfiguration.getPort());
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.transport.protocol", emailConfiguration.getProtocol());
-            props.setProperty("mail.debug", Boolean.toString(emailConfiguration.isDebug()));
-            if (emailConfiguration.isUseSsl()) {
-                props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-                props.setProperty("mail.smtp.socketFactory.fallback", "false");
-            }
-            session = Session.getDefaultInstance(props, new Authenticator() {
-                @Override
-                public PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(emailConfiguration.getUsername(), emailConfiguration.getPassword());
-                }
-            });
-        }
-        return session;
-    }
-    
-    private Message buildMessage(final String content) throws MessagingException {
-        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::buildSession));
-        message.setFrom(new InternetAddress(emailConfiguration.getFrom()));
-        message.setSubject(emailConfiguration.getSubject());
-        message.setSentDate(new Date());
-        Multipart multipart = new MimeMultipart();
-        BodyPart mailBody = new MimeBodyPart();
-        mailBody.setContent(content, "text/html; charset=utf-8");
-        multipart.addBodyPart(mailBody);
-        message.setContent(multipart);
-        if (StringUtils.isNotBlank(emailConfiguration.getTo())) {
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailConfiguration.getTo()));
-        }
-        if (StringUtils.isNotBlank(emailConfiguration.getCc())) {
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(emailConfiguration.getCc()));
-        }
-        message.saveChanges();
-        return message;
     }
     
     private String buildContent(final String jobName, final Throwable cause) {
@@ -129,7 +82,54 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, causeString);
     }
     
+    private Message buildMessage(final String content) throws MessagingException {
+        MimeMessage message = new MimeMessage(Optional.ofNullable(session).orElseGet(this::buildSession));
+        message.setFrom(new InternetAddress(config.getFrom()));
+        message.setSubject(config.getSubject());
+        message.setSentDate(new Date());
+        Multipart multipart = new MimeMultipart();
+        BodyPart mailBody = new MimeBodyPart();
+        mailBody.setContent(content, "text/html; charset=utf-8");
+        multipart.addBodyPart(mailBody);
+        message.setContent(multipart);
+        if (StringUtils.isNotBlank(config.getTo())) {
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getTo()));
+        }
+        if (StringUtils.isNotBlank(config.getCc())) {
+            message.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
+        }
+        message.saveChanges();
+        return message;
+    }
+    
+    private synchronized Session buildSession() {
+        if (null == session) {
+            Properties props = new Properties();
+            props.put("mail.smtp.host", config.getHost());
+            props.put("mail.smtp.port", config.getPort());
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.transport.protocol", config.getProtocol());
+            props.setProperty("mail.debug", Boolean.toString(config.isDebug()));
+            if (config.isUseSsl()) {
+                props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.setProperty("mail.smtp.socketFactory.fallback", "false");
+            }
+            session = Session.getDefaultInstance(props, new Authenticator() {
+                @Override
+                public PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(config.getUsername(), config.getPassword());
+                }
+            });
+        }
+        return session;
+    }
+    
     private void sendMessage(final Message message) throws MessagingException {
         Transport.send(message);
+    }
+    
+    @Override
+    public String getType() {
+        return "EMAIL";
     }
 }
