@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -115,7 +116,10 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private void sendMessage(final Message message) throws MessagingException {
-        session.getTransport().send(message);
+        try (Transport transport = session.getTransport()) {
+            transport.connect();
+            transport.sendMessage(message, message.getAllRecipients());
+        }
     }
     
     @Override
