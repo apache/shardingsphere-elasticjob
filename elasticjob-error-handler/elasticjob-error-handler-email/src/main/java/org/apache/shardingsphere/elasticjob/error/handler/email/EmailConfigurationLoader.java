@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import java.io.IOException;
@@ -46,46 +45,5 @@ public final class EmailConfigurationLoader {
             // TODO throw config file load failure exception
             throw new RuntimeException(ex);
         }
-    }
-    
-    /**
-     * Unmarshal configuration from system properties.
-     *
-     * @return object from system properties
-     */
-    public static EmailConfiguration unmarshalFromSystemProperties() {
-        String isBySystemProperties = System.getProperty("error-handler-email.use-system-properties");
-        if (!Boolean.parseBoolean(isBySystemProperties)) {
-            return null;
-        }
-        EmailConfiguration result = new EmailConfiguration();
-        result.setHost(System.getProperty("error-handler-email.host"));
-        result.setUsername(System.getProperty("error-handler-email.username"));
-        result.setPassword(System.getProperty("error-handler-email.password"));
-        result.setFrom(System.getProperty("error-handler-email.from"));
-        result.setTo(System.getProperty("error-handler-email.to"));
-        result.setCc(System.getProperty("error-handler-email.cc"));
-        result.setBcc(System.getProperty("error-handler-email.bcc"));
-        String protocol = System.getProperty("error-handler-email.protocol");
-        if (StringUtils.isNotBlank(protocol)) {
-            result.setProtocol(System.getProperty("error-handler-email.protocol"));
-        }
-        String useSSL = System.getProperty("error-handler-email.use-ssl");
-        if (StringUtils.isNotBlank(useSSL)) {
-            result.setUseSsl(Boolean.parseBoolean(useSSL));
-        }
-        String subject = System.getProperty("error-handler-email.subject");
-        if (StringUtils.isNotBlank(subject)) {
-            result.setSubject(subject);
-        }
-        String port = System.getProperty("error-handler-email.port");
-        if (StringUtils.isNotBlank(port)) {
-            result.setPort(Integer.valueOf(port));
-        }
-        String debug = System.getProperty("error-handler-email.debug");
-        if (StringUtils.isNotBlank(debug)) {
-            result.setDebug(Boolean.parseBoolean(debug));
-        }
-        return result;
     }
 }
