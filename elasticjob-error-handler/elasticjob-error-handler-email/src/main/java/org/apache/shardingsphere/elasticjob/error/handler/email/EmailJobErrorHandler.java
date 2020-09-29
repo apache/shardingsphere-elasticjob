@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
-import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
@@ -58,20 +57,27 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
+        if (null == emailConfiguration) {
+            String errorMessage = String.format("An exception occurred in '%s' processing but failed to send email because no configuration found for email job error handler. "
+                    + "Please configure email job error handler.", jobName);
+            log.error(errorMessage, cause);
+            return;
+        }
         try {
-            Preconditions.checkNotNull(emailConfiguration);
             String content = buildContent(jobName, cause);
             Message message = buildMessage(content);
             sendMessage(message);
-        } catch (final NullPointerException | MessagingException ex) {
-            log.error("Elastic job: email job handler error", ex);
+        } catch (final MessagingException ex) {
+            log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
+            log.error("An exception occurred but failed to send email because", ex);
         }
     }
     
     private void loadConfiguration() {
-        emailConfiguration = ConfigurationLoader.buildConfigBySystemProperties();
+        emailConfiguration = Optional.ofNullable(ConfigurationLoader.buildConfigBySystemProperties())
+                .orElseGet(() -> ConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX));
         if (null == emailConfiguration) {
-            emailConfiguration = ConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX);
+            log.warn("No configuration found for email job error handler. Please configure email job error handler if you are going to use it.");
         }
     }
     

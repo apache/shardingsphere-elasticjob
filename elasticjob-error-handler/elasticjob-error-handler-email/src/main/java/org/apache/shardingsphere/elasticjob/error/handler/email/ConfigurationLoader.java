@@ -40,6 +40,9 @@ public class ConfigurationLoader {
      */
     public static EmailConfiguration buildConfigByYaml(final String prefix) {
         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
+        if (null == inputStream) {
+            return null;
+        }
         return YamlEngine.unmarshal(prefix, inputStream, EmailConfiguration.class);
     }
     

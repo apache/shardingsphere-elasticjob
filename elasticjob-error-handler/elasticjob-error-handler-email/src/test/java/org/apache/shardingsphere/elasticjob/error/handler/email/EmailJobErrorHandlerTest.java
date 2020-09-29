@@ -20,16 +20,19 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -91,7 +94,7 @@ public final class EmailJobErrorHandlerTest {
         setStaticFieldValue(emailJobErrorHandler);
         Throwable cause = new RuntimeException("test exception");
         emailJobErrorHandler.handleException("test job name", cause);
-        verify(log).error(ArgumentMatchers.any(String.class), ArgumentMatchers.any(NullPointerException.class));
+        verify(log).error(any(String.class), eq(cause));
     }
         
     @SneakyThrows
