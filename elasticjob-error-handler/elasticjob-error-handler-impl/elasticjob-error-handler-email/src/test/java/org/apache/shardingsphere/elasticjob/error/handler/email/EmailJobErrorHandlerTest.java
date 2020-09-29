@@ -55,6 +55,7 @@ public final class EmailJobErrorHandlerTest {
     @Test
     public void assertHandleExceptionWithSession() throws ReflectiveOperationException {
         EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
+        emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
         Field field = emailJobErrorHandler.getClass().getDeclaredField("session");
         field.setAccessible(true);
         Session session = (Session) field.get(emailJobErrorHandler);
