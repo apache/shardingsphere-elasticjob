@@ -81,10 +81,4 @@ public final class EmailJobErrorHandlerTest {
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(emailJobErrorHandler, log);
     }
-    
-    @Test
-    public void assertType() {
-        EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
-        assertThat(emailJobErrorHandler.getType(), equalTo("EMAIL"));
-    }
 }
