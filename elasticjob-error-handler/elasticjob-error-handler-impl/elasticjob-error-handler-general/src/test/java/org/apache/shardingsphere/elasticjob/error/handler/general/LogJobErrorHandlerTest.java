@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,7 +38,7 @@ public final class LogJobErrorHandlerTest {
     
     @Test
     public void assertHandleException() {
-        LogJobErrorHandler actual = new LogJobErrorHandler();
+        LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.getHandler("LOG");
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);

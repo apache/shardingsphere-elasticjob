@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
 
@@ -24,6 +25,6 @@ public final class ThrowJobErrorHandlerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertHandleException() {
-        new ThrowJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+        JobErrorHandlerFactory.getHandler("THROW").handleException("test_job", new RuntimeException("test"));
     }
 }
