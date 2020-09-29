@@ -15,6 +15,6 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.error.handler.impl.LogJobErrorHandler
-org.apache.shardingsphere.elasticjob.error.handler.impl.IgnoreJobErrorHandler
-org.apache.shardingsphere.elasticjob.error.handler.impl.ThrowJobErrorHandler
+org.apache.shardingsphere.elasticjob.error.handler.general.impl.LogJobErrorHandler
+org.apache.shardingsphere.elasticjob.error.handler.general.impl.IgnoreJobErrorHandler
+org.apache.shardingsphere.elasticjob.error.handler.general.impl.ThrowJobErrorHandler

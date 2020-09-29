@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler;
+package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.error.handler.impl.LogJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.impl.ThrowJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.general.impl.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.general.impl.ThrowJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 
