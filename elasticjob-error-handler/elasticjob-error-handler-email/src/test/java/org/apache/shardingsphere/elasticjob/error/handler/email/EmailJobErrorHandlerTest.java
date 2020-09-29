@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.mail.Session;
 import java.lang.reflect.Field;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -49,5 +50,19 @@ public final class EmailJobErrorHandlerTest {
         assertThat(config.getSubject(), equalTo("yaml.subject"));
         assertTrue(config.isUseSsl());
         assertTrue(config.isDebug());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithSession() throws ReflectiveOperationException {
+        EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("session");
+        field.setAccessible(true);
+        Session session = (Session) field.get(emailJobErrorHandler);
+        assertNotNull(session);
+        assertThat(session.getProperties().get("mail.smtp.host"), equalTo("yaml.email.com"));
+        assertThat(session.getProperties().get("mail.debug"), equalTo("true"));
+        assertThat(session.getProperties().get("mail.smtp.port"), equalTo(123));
+        assertThat(session.getProperties().get("mail.transport.protocol"), equalTo("yaml.smtp"));
+        assertThat(session.getProperties().get("mail.smtp.auth"), equalTo("true"));
     }
 }
