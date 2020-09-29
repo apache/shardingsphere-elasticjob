@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.junit.Test;
 
 public final class IgnoreJobErrorHandlerTest {
     
     @Test
     public void assertHandleException() {
-        new IgnoreJobErrorHandler().handleException("test_job", new RuntimeException("test"));
+        new IgnoreJobErrorHandler().handleException(JobConfiguration.newBuilder("test_job", 3).build(), new RuntimeException("test"));
     }
 }

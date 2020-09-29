@@ -119,8 +119,18 @@ public final class JavaMain {
     }
     
     private static void setUpOneOffJobWithDingtalk(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
-        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), JobConfiguration.newBuilder("javaOccurErrorJob", 3)
-                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").build(), tracingConfig).execute();
+        JobConfiguration jobConfiguration= JobConfiguration.newBuilder("javaOccurErrorJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").build();
+        setDingtalkConfig(jobConfiguration);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
+    }
+    
+    private static void setDingtalkConfig(JobConfiguration jobConfiguration) {
+        jobConfiguration.getProps().setProperty("dingtalk.webhook", "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
+        jobConfiguration.getProps().setProperty("dingtalk.keyword", "keyword");
+        jobConfiguration.getProps().setProperty("dingtalk.secret", "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
+        jobConfiguration.getProps().setProperty("dingtalk.connectTimeout", "7000");
+        jobConfiguration.getProps().setProperty("dingtalk.readTimeout", "8000");
     }
     
     private static String buildScriptCommandLine() throws IOException {

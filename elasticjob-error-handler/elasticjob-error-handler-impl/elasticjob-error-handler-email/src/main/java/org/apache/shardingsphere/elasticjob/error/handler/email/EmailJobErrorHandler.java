@@ -17,8 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
 import javax.mail.Authenticator;
@@ -44,46 +46,39 @@ import java.util.Properties;
 @Slf4j
 public final class EmailJobErrorHandler implements JobErrorHandler {
     
-    public static final String CONFIG_PREFIX = "email";
+    private Session session;
     
-    private final EmailConfiguration config;
-    
-    private final Session session;
-    
-    public EmailJobErrorHandler() {
-        config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
-        session = Session.getDefaultInstance(createSessionProperties(), getSessionAuthenticator());
-    }
-    
-    private Properties createSessionProperties() {
+    private Properties createSessionProperties(final EmailConfiguration emailConfiguration) {
         Properties result = new Properties();
-        result.put("mail.smtp.host", config.getHost());
-        result.put("mail.smtp.port", config.getPort());
+        result.put("mail.smtp.host", emailConfiguration.getHost());
+        result.put("mail.smtp.port", emailConfiguration.getPort());
         result.put("mail.smtp.auth", "true");
-        result.put("mail.transport.protocol", config.getProtocol());
-        result.setProperty("mail.debug", Boolean.toString(config.isDebug()));
-        if (config.isUseSsl()) {
+        result.put("mail.transport.protocol", emailConfiguration.getProtocol());
+        result.setProperty("mail.debug", emailConfiguration.getDebug());
+        if (Strings.isNullOrEmpty(emailConfiguration.getUseSsl()) && Boolean.valueOf(emailConfiguration.getUseSsl())) {
             result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             result.setProperty("mail.smtp.socketFactory.fallback", "false");
         }
         return result;
     }
     
-    private Authenticator getSessionAuthenticator() {
+    private Authenticator getSessionAuthenticator(final EmailConfiguration emailConfiguration) {
         return new Authenticator() {
-            
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.getUsername(), config.getPassword());
+                return new PasswordAuthentication(emailConfiguration.getUsername(), emailConfiguration.getPassword());
             }
         };
     }
     
     @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        String errorContext = createErrorContext(jobName, cause);
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
         try {
-            sendMessage(createMessage(errorContext));
+            if (session == null) {
+                EmailConfiguration emailConfiguration = EmailConfiguration.getByProps(jobConfig.getProps());
+                session = Session.getDefaultInstance(createSessionProperties(emailConfiguration), getSessionAuthenticator(emailConfiguration));
+            }
+            sendMessage(createMessage(jobConfig, cause));
         } catch (final MessagingException ex) {
             log.error("Elastic job: email job handler error", ex);
         }
@@ -95,21 +90,22 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
     }
     
-    private Message createMessage(final String content) throws MessagingException {
+    private Message createMessage(final JobConfiguration jobConfig, final Throwable cause) throws MessagingException {
+        EmailConfiguration emailConfiguration = EmailConfiguration.getByProps(jobConfig.getProps());
         MimeMessage result = new MimeMessage(session);
-        result.setFrom(new InternetAddress(config.getFrom()));
-        result.setSubject(config.getSubject());
+        result.setFrom(new InternetAddress(emailConfiguration.getFrom()));
+        result.setSubject(emailConfiguration.getSubject());
         result.setSentDate(new Date());
         Multipart multipart = new MimeMultipart();
         BodyPart mailBody = new MimeBodyPart();
-        mailBody.setContent(content, "text/html; charset=utf-8");
+        mailBody.setContent(createErrorContext(jobConfig.getJobName(), cause), "text/html; charset=utf-8");
         multipart.addBodyPart(mailBody);
         result.setContent(multipart);
-        if (StringUtils.isNotBlank(config.getTo())) {
-            result.addRecipient(Message.RecipientType.TO, new InternetAddress(config.getTo()));
+        if (StringUtils.isNotBlank(emailConfiguration.getTo())) {
+            result.addRecipient(Message.RecipientType.TO, new InternetAddress(emailConfiguration.getTo()));
         }
-        if (StringUtils.isNotBlank(config.getCc())) {
-            result.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
+        if (StringUtils.isNotBlank(emailConfiguration.getCc())) {
+            result.addRecipient(Message.RecipientType.CC, new InternetAddress(emailConfiguration.getCc()));
         }
         result.saveChanges();
         return result;

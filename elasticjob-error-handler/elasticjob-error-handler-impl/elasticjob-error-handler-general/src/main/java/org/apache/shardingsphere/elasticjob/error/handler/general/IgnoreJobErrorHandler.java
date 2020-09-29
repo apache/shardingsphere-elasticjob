@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
 /**
@@ -25,7 +26,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 public final class IgnoreJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final String jobName, final Throwable cause) {
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
     }
     
     @Override

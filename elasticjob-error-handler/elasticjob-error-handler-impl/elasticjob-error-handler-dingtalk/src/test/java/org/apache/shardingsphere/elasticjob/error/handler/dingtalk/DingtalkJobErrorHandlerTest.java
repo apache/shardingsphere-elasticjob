@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
@@ -63,36 +64,36 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
         verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/send?access_token=wrongToken",
-                null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=wrongToken"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/404?access_token=wrongToken",
-                null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9875/404"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
-    @Test
-    public void assertGetType() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        assertThat(actual.getType(), is("DINGTALK"));
+    private JobConfiguration getJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty("dingtalk.webhook", webhook)
+                .setProperty("dingtalk.keyword", "keyword")
+                .setProperty("dingtalk.secret", "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
+                .setProperty("dingtalk.connectTimeout", "4000")
+                .setProperty("dingtalk.readTimeout", "6000")
+                .build();
     }
     
     @SneakyThrows
@@ -103,6 +104,12 @@ public final class DingtalkJobErrorHandlerTest {
         modifiers.setAccessible(true);
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(dingtalkJobErrorHandler, log);
+    }
+    
+    @Test
+    public void assertGetType() {
+        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        assertThat(actual.getType(), is("DINGTALK"));
     }
     
     @AfterClass

@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,27 +65,25 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = new WechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9876/send?key=TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3"), cause);
         verify(log).error("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         WechatJobErrorHandler actual = new WechatJobErrorHandler();
-        actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/send?key=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9876/send?key=wrongToken"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         WechatJobErrorHandler actual = new WechatJobErrorHandler();
-        actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/404?access_token=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9876/404"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
@@ -104,8 +103,12 @@ public final class WechatJobErrorHandlerTest {
         field.set(wechatJobErrorHandler, log);
     }
     
-    private String getHost() {
-        return String.format("http://%s:%s", HOST, PORT);
+    private JobConfiguration getJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty("wechat.webhook", webhook)
+                .setProperty("wechat.connectTimeout", "4000")
+                .setProperty("wechat.readTimeout", "6000")
+                .build();
     }
     
     @AfterClass

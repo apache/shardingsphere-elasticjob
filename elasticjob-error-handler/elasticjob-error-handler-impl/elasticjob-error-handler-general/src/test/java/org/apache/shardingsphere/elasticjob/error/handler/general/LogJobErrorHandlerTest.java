@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,7 +41,7 @@ public final class LogJobErrorHandlerTest {
         LogJobErrorHandler actual = new LogJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(JobConfiguration.newBuilder("test_job", 3).build(), cause);
         verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
     

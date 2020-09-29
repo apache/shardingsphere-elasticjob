@@ -84,7 +84,7 @@ public final class ElasticJobExecutor {
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig, cause);
         }
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
         jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()));
@@ -99,7 +99,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig, cause);
         }
         execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
@@ -112,7 +112,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig, cause);
         }
     }
     
@@ -182,7 +182,7 @@ public final class ElasticJobExecutor {
             completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
+            jobErrorHandler.handleException(jobConfig, cause);
         }
     }
     
