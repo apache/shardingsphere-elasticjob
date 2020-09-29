@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -33,22 +34,26 @@ public final class EmailConfigurationLoader {
     private static final String CONFIG_FILE = "conf/error-handler-email.yaml";
     
     /**
-     * Unmarshal YAML.
+     * Unmarshal configuration from YAML.
      *
-     * @param prefix    config prefix
+     * @param configPrefix configuration prefix
      * @return object from YAML
      */
-    public static EmailConfiguration buildConfigByYaml(final String prefix) {
-        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
-        return YamlEngine.unmarshal(prefix, inputStream, EmailConfiguration.class);
+    public static EmailConfiguration unmarshal(final String configPrefix) {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE)) {
+            return YamlEngine.unmarshal(configPrefix, inputStream, EmailConfiguration.class);
+        } catch (final IOException ex) {
+            // TODO throw config file load failure exception
+            throw new RuntimeException(ex);
+        }
     }
     
     /**
-     * Read system properties.
+     * Unmarshal configuration from system properties.
      *
      * @return object from system properties
      */
-    public static EmailConfiguration buildConfigBySystemProperties() {
+    public static EmailConfiguration unmarshalFromSystemProperties() {
         String isBySystemProperties = System.getProperty("error-handler-email.use-system-properties");
         if (!Boolean.parseBoolean(isBySystemProperties)) {
             return null;

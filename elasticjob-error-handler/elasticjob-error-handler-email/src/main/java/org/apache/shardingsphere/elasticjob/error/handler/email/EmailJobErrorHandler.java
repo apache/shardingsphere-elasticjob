@@ -57,9 +57,9 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private void loadConfiguration() {
-        config = EmailConfigurationLoader.buildConfigBySystemProperties();
+        config = EmailConfigurationLoader.unmarshalFromSystemProperties();
         if (null == config) {
-            config = EmailConfigurationLoader.buildConfigByYaml(CONFIG_PREFIX);
+            config = EmailConfigurationLoader.unmarshal(CONFIG_PREFIX);
         }
     }
     
