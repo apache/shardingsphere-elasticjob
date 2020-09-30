@@ -19,10 +19,9 @@ package org.apache.shardingsphere.elasticjob.infra.listener;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.Optional;
 
 /**
  * Job listener factory.
@@ -30,24 +29,18 @@ import java.util.ServiceLoader;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticJobListenerFactory {
     
-    private static final Map<String, ElasticJobListener> HANDLERS = new LinkedHashMap<>();
-    
     static {
-        for (ElasticJobListener each : ServiceLoader.load(ElasticJobListener.class)) {
-            HANDLERS.put(each.getType(), each);
-        }
+        ElasticJobServiceLoader.register(ElasticJobListener.class);
     }
     
     /**
-     * Get job listener.
+     * Create a job listener instance.
      *
      * @param type job listener type
-     * @return job listener
+     * @return optional job listener instance
      */
-    public static ElasticJobListener getListener(final String type) {
-        if (!HANDLERS.containsKey(type)) {
-            throw new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type));
-        }
-        return HANDLERS.get(type);
-    } 
+    public static Optional<ElasticJobListener> createListener(final String type) {
+        return ElasticJobServiceLoader.newServiceInstances(ElasticJobListener.class)
+                .stream().filter(listener -> listener.getType().equalsIgnoreCase(type)).findFirst();
+    }
 }

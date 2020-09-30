@@ -76,7 +76,9 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         elasticJobType = null;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(ElasticJobListenerFactory::getListener).collect(Collectors.toList());
+                .map(type -> ElasticJobListenerFactory.createListener(type)
+                        .orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
+                .collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
@@ -95,7 +97,8 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         this.elasticJobType = elasticJobType;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(ElasticJobListenerFactory::getListener).collect(Collectors.toList());
+                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
+                .collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);

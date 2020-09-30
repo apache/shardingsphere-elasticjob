@@ -29,16 +29,16 @@ public final class JobErrorHandlerFactoryTest {
     
     @Test
     public void assertGetDefaultHandler() {
-        assertThat(JobErrorHandlerFactory.getHandler(""), instanceOf(LogJobErrorHandler.class));
+        assertThat(JobErrorHandlerFactory.createHandler("").orElse(null), instanceOf(LogJobErrorHandler.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetInvalidHandler() {
-        JobErrorHandlerFactory.getHandler("INVALID");
+        JobErrorHandlerFactory.createHandler("INVALID").orElseThrow(() -> new JobConfigurationException(""));
     }
     
     @Test
     public void assertGetHandler() {
-        assertThat(JobErrorHandlerFactory.getHandler("THROW"), instanceOf(ThrowJobErrorHandler.class));
+        assertThat(JobErrorHandlerFactory.createHandler("THROW").orElse(null), instanceOf(ThrowJobErrorHandler.class));
     }
 }
