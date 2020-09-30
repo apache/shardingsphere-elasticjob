@@ -64,36 +64,36 @@ public final class GuaranteeListenerManagerTest {
     @Test
     public void assertStartedNodeRemovedJobListenerWhenIsNotRemoved() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().dataChanged("/test_job/guarantee/started", Type.NODE_CHANGED, "");
-        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart("test_job");
+        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
     public void assertStartedNodeRemovedJobListenerWhenIsNotStartedNode() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().dataChanged("/other_job/guarantee/started", Type.NODE_DELETED, "");
-        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart("test_job");
+        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
     public void assertStartedNodeRemovedJobListenerWhenIsRemovedAndStartedNode() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().dataChanged("/test_job/guarantee/started", Type.NODE_DELETED, "");
-        verify(distributeOnceElasticJobListener).notifyWaitingTaskStart("test_job");
+        verify(distributeOnceElasticJobListener).notifyWaitingTaskStart();
     }
     
     @Test
     public void assertCompletedNodeRemovedJobListenerWhenIsNotRemoved() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().dataChanged("/test_job/guarantee/completed", Type.NODE_CHANGED, "");
-        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart("test_job");
+        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
     public void assertCompletedNodeRemovedJobListenerWhenIsNotCompletedNode() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().dataChanged("/other_job/guarantee/completed", Type.NODE_DELETED, "");
-        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart("test_job");
+        verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
     public void assertCompletedNodeRemovedJobListenerWhenIsRemovedAndCompletedNode() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().dataChanged("/test_job/guarantee/completed", Type.NODE_DELETED, "");
-        verify(distributeOnceElasticJobListener).notifyWaitingTaskComplete("test_job");
+        verify(distributeOnceElasticJobListener).notifyWaitingTaskComplete();
     }
 }

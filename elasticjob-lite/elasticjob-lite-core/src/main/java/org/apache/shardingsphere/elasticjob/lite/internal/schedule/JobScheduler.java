@@ -29,7 +29,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistribute
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.SetUpFacade;
-import org.apache.shardingsphere.elasticjob.lite.internal.util.ParameterUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.quartz.JobBuilder;
@@ -40,8 +39,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -79,13 +76,14 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         elasticJobType = null;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(elasticJobTypeWithParameter -> lookupElasticJobListener(jobConfig.getJobName(), elasticJobTypeWithParameter)).collect(Collectors.toList());
+                .map(ElasticJobListenerFactory::getListener).collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
         jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
+        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }
     
@@ -97,32 +95,23 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         this.elasticJobType = elasticJobType;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(elasticJobTypeWithParameter -> lookupElasticJobListener(jobConfig.getJobName(), elasticJobTypeWithParameter)).collect(Collectors.toList());
+                .map(ElasticJobListenerFactory::getListener).collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
         jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
+        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }
     
-    private ElasticJobListener lookupElasticJobListener(final String jobName, final String jobListenerTypeWithParameter) {
-        String[] split = jobListenerTypeWithParameter.split("\\?");
-        String jobListenerType = split[0];
-        ElasticJobListener listener = ElasticJobListenerFactory.getListener(jobListenerType);
-        if (!(listener instanceof AbstractDistributeOnceElasticJobListener)) {
-            return listener;
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final Collection<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig.getJobName());
+        for (ElasticJobListener each : elasticJobListeners) {
+            if (each instanceof AbstractDistributeOnceElasticJobListener) {
+                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
+            }
         }
-        Map<String, String> parameters = 1 < split.length ? ParameterUtils.parseQuery(split[1]) : Collections.emptyMap();
-        return configureGuaranteeService(jobName, parameters, listener);
-    }
-    
-    private ElasticJobListener configureGuaranteeService(final String jobName, final Map<String, String> parameters, final ElasticJobListener listener) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobName);
-        long startedTimeoutMilliseconds = Long.parseLong(parameters.getOrDefault("startedTimeoutMilliseconds", "0"));
-        long completedTimeoutMilliseconds = Long.parseLong(parameters.getOrDefault("completedTimeoutMilliseconds", "0"));
-        ((AbstractDistributeOnceElasticJobListener) listener).addGuaranteeService(guaranteeService, jobName, startedTimeoutMilliseconds, completedTimeoutMilliseconds);
-        return listener;
     }
     
     private JobScheduleController createJobScheduleController() {
