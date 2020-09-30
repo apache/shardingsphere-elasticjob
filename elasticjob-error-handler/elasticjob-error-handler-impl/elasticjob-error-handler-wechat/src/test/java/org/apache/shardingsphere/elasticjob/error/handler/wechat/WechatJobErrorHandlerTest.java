@@ -111,9 +111,9 @@ public final class WechatJobErrorHandlerTest {
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler() {
-        for (JobErrorHandler jobErrorHandler : ServiceLoader.load(JobErrorHandler.class)) {
-            if (null != jobErrorHandler && jobErrorHandler instanceof WechatJobErrorHandler) {
-                return (WechatJobErrorHandler) jobErrorHandler;
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof WechatJobErrorHandler) {
+                return (WechatJobErrorHandler) each;
             }
         }
         return new WechatJobErrorHandler();

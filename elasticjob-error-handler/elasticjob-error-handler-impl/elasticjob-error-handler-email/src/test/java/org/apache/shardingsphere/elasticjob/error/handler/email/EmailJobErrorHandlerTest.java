@@ -70,9 +70,9 @@ public final class EmailJobErrorHandlerTest {
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler() {
-        for (JobErrorHandler jobErrorHandler : ServiceLoader.load(JobErrorHandler.class)) {
-            if (null != jobErrorHandler && jobErrorHandler instanceof EmailJobErrorHandler) {
-                return (EmailJobErrorHandler) jobErrorHandler;
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof EmailJobErrorHandler) {
+                return (EmailJobErrorHandler) each;
             }
         }
         return new EmailJobErrorHandler();

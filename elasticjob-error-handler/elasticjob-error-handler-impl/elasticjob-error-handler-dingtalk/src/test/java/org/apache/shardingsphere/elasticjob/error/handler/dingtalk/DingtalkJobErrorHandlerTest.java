@@ -115,9 +115,9 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     private DingtalkJobErrorHandler getDingtalkJobErrorHandler() {
-        for (JobErrorHandler jobErrorHandler : ServiceLoader.load(JobErrorHandler.class)) {
-            if (null != jobErrorHandler && jobErrorHandler instanceof DingtalkJobErrorHandler) {
-                return (DingtalkJobErrorHandler) jobErrorHandler;
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof DingtalkJobErrorHandler) {
+                return (DingtalkJobErrorHandler) each;
             }
         }
         return new DingtalkJobErrorHandler();
