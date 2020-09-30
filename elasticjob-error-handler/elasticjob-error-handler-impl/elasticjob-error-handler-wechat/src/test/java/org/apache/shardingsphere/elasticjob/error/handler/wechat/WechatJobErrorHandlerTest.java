@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ServiceLoader;
 
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
@@ -61,7 +63,7 @@ public final class WechatJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
-        WechatJobErrorHandler actual = new WechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -70,7 +72,7 @@ public final class WechatJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
-        WechatJobErrorHandler actual = new WechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler();
         actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/send?key=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
@@ -80,7 +82,7 @@ public final class WechatJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
-        WechatJobErrorHandler actual = new WechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler();
         actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/404?access_token=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
@@ -90,7 +92,7 @@ public final class WechatJobErrorHandlerTest {
     
     @Test
     public void assertGetType() {
-        WechatJobErrorHandler actual = new WechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler();
         assertThat(actual.getType(), is("WECHAT"));
     }
     
@@ -106,6 +108,15 @@ public final class WechatJobErrorHandlerTest {
     
     private String getHost() {
         return String.format("http://%s:%s", HOST, PORT);
+    }
+    
+    private WechatJobErrorHandler getWechatJobErrorHandler() {
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof WechatJobErrorHandler) {
+                return (WechatJobErrorHandler) each;
+            }
+        }
+        return new WechatJobErrorHandler();
     }
     
     @AfterClass

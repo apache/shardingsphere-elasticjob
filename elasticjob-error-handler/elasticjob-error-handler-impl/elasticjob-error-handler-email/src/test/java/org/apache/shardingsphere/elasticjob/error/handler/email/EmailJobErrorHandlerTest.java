@@ -17,11 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.mail.Session;
 import java.lang.reflect.Field;
+import java.util.ServiceLoader;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +36,7 @@ public final class EmailJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithYAMLConfiguration() throws ReflectiveOperationException {
-        EmailJobErrorHandler emailJobErrorHandler = new EmailJobErrorHandler();
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
         emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
         Field field = emailJobErrorHandler.getClass().getDeclaredField("config");
         field.setAccessible(true);
@@ -49,5 +52,29 @@ public final class EmailJobErrorHandlerTest {
         assertThat(config.getSubject(), equalTo("yaml.subject"));
         assertTrue(config.isUseSsl());
         assertTrue(config.isDebug());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithSession() throws ReflectiveOperationException {
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
+        emailJobErrorHandler.handleException("test job name", new RuntimeException("test exception"));
+        Field field = emailJobErrorHandler.getClass().getDeclaredField("session");
+        field.setAccessible(true);
+        Session session = (Session) field.get(emailJobErrorHandler);
+        assertNotNull(session);
+        assertThat(session.getProperties().get("mail.smtp.host"), equalTo("yaml.email.com"));
+        assertThat(session.getProperties().get("mail.debug"), equalTo("true"));
+        assertThat(session.getProperties().get("mail.smtp.port"), equalTo(123));
+        assertThat(session.getProperties().get("mail.transport.protocol"), equalTo("yaml.smtp"));
+        assertThat(session.getProperties().get("mail.smtp.auth"), equalTo("true"));
+    }
+    
+    private EmailJobErrorHandler getEmailJobErrorHandler() {
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof EmailJobErrorHandler) {
+                return (EmailJobErrorHandler) each;
+            }
+        }
+        return new EmailJobErrorHandler();
     }
 }

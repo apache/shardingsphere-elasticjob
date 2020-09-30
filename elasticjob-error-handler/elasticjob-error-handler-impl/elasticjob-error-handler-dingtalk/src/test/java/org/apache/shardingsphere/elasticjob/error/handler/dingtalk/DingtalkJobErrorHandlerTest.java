@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ServiceLoader;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -60,7 +62,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -69,7 +71,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/send?access_token=wrongToken",
                 null, null, 3000, 500));
         setStaticFieldValue(actual);
@@ -80,7 +82,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/404?access_token=wrongToken",
                 null, null, 3000, 500));
         setStaticFieldValue(actual);
@@ -91,7 +93,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertGetType() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         assertThat(actual.getType(), is("DINGTALK"));
     }
     
@@ -110,5 +112,14 @@ public final class DingtalkJobErrorHandlerTest {
         if (null != restfulService) {
             restfulService.shutdown();
         }
+    }
+    
+    private DingtalkJobErrorHandler getDingtalkJobErrorHandler() {
+        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
+            if (null != each && each instanceof DingtalkJobErrorHandler) {
+                return (DingtalkJobErrorHandler) each;
+            }
+        }
+        return new DingtalkJobErrorHandler();
     }
 }
