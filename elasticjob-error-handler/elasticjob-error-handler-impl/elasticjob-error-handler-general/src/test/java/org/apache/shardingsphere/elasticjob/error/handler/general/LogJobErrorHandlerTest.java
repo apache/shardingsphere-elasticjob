@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -38,7 +39,7 @@ public final class LogJobErrorHandlerTest {
     
     @Test
     public void assertHandleException() {
-        LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.getHandler("LOG");
+        LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG").orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
