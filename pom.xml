@@ -28,6 +28,7 @@
     <version>3.0.0-beta-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
+
     <modules>
         <module>elasticjob-api</module>
         <module>elasticjob-infra</module>
@@ -92,8 +93,10 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -217,6 +220,7 @@
                 <artifactId>javax.mail</artifactId>
                 <version>${mail.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -268,6 +272,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <finalName>apache-shardingsphere-elasticjob-${project.version}</finalName>
         <pluginManagement>
@@ -564,6 +569,7 @@
             </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
@@ -631,8 +637,10 @@
             </plugin>
         </plugins>
     </reporting>
+
     <url>http://shardingsphere.apache.org/elasticjob/</url>
     <description>Distributed scheduled job solution</description>
+
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -640,12 +648,14 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <scm>
         <connection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</connection>
         <developerConnection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</developerConnection>
         <url>https://github.com/apache/shardingsphere-elasticjob.git</url>
         <tag>HEAD</tag>
     </scm>
+
     <mailingLists>
         <mailingList>
             <name>ShardingSphere Developer List</name>
