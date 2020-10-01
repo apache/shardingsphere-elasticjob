@@ -17,14 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.listener.fixture;
 
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 
 public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    @Setter
-    private ElasticJobListenerCaller caller;
+    private final ElasticJobListenerCaller caller;
+    
+    public TestDistributeOnceElasticJobListener() {
+        this(null);
+    }
+    
+    public TestDistributeOnceElasticJobListener(final ElasticJobListenerCaller caller) {
+        super(1L, 1L);
+        this.caller = caller;
+    }
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {

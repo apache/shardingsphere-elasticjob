@@ -22,6 +22,10 @@ import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistribute
 
 public class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
+    public TestDistributeOnceElasticJobListener() {
+        super(100L, 100L);
+    }
+    
     @Override
     public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
     }
