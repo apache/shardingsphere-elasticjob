@@ -22,8 +22,7 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
-[![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
-
+[![codecov](https://codecov.io/gh/apache/shardingsphere-elasticjob/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/shardingsphere-elasticjob)
 ## Introduction
 
 Using ElasticJob can make developers no longer worry about the non functional requirements such as jobs scale out, so that they can focus more on business coding;
