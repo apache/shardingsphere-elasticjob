@@ -10,7 +10,6 @@ cache:
 
 before_script:
   - echo "MAVEN_OPTS='-Xmx1024m -XX:MaxMetaspaceSize=256m'" > ~/.mavenrc
-  - rm -rf $HOME/.m2/repository/org/apache/shardingsphere/elasticjob
 
 script:
   - travis_wait 30 mvn --batch-mode --no-transfer-progress clean install cobertura:cobertura  -Dmaven.javadoc.skip=true
