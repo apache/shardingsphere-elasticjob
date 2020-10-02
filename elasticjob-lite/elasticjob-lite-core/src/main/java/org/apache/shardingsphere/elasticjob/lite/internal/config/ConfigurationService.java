@@ -94,7 +94,7 @@ public final class ConfigurationService {
      */
     public void checkMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         int maxTimeDiffSeconds = load(true).getMaxTimeDiffSeconds();
-        if (-1 == maxTimeDiffSeconds) {
+        if (0 > maxTimeDiffSeconds) {
             return;
         }
         long timeDiff = Math.abs(timeService.getCurrentMillis() - jobNodeStorage.getRegistryCenterTime());
