@@ -74,7 +74,7 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
             if (isRequestSucceed(code)) {
                 resultInputStream = connection.getInputStream();
             } else {
-                log.warn("Http job {} executed with response code {}", jobConfig.getJobName(), code);
+                log.warn("HTTP job {} executed with response code {}", jobConfig.getJobName(), code);
                 resultInputStream = connection.getErrorStream();
             }
             StringBuilder result = new StringBuilder();
@@ -85,9 +85,9 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
                 }
             }
             if (isRequestSucceed(code)) {
-                log.debug("http job execute result : {}", result.toString());
+                log.debug("HTTP job execute result : {}", result.toString());
             } else {
-                log.warn("Http job {} executed with response body {}", jobConfig.getJobName(), result.toString());
+                log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result.toString());
             }
         } catch (final IOException ex) {
             throw new JobExecutionException(ex);
@@ -101,11 +101,11 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
     private HttpParam getHttpParam(final Properties props) {
         String url = props.getProperty(HttpJobProperties.URI_KEY);
         if (Strings.isNullOrEmpty(url)) {
-            throw new JobConfigurationException("Cannot find http url, job is not executed.");
+            throw new JobConfigurationException("Cannot find HTTP URL, job is not executed.");
         }
         String method = props.getProperty(HttpJobProperties.METHOD_KEY);
         if (Strings.isNullOrEmpty(method)) {
-            throw new JobConfigurationException("Cannot find http method, job is not executed.");
+            throw new JobConfigurationException("Cannot find HTTP method, job is not executed.");
         }
         String data = props.getProperty(HttpJobProperties.DATA_KEY);
         int connectTimeout = Integer.parseInt(props.getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000"));

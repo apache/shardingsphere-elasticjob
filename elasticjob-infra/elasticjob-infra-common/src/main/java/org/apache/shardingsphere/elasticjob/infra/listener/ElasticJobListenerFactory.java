@@ -40,7 +40,6 @@ public final class ElasticJobListenerFactory {
      * @return optional job listener instance
      */
     public static Optional<ElasticJobListener> createListener(final String type) {
-        return ElasticJobServiceLoader.newServiceInstances(ElasticJobListener.class)
-                .stream().filter(listener -> listener.getType().equalsIgnoreCase(type)).findFirst();
+        return ElasticJobServiceLoader.newServiceInstances(ElasticJobListener.class).stream().filter(listener -> listener.getType().equalsIgnoreCase(type)).findFirst();
     }
 }
