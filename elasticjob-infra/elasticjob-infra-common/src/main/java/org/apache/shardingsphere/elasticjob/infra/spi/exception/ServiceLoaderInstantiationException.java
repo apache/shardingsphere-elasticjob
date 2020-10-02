@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.general;
+package org.apache.shardingsphere.elasticjob.infra.spi.exception;
 
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Test;
-
-public final class IgnoreJobErrorHandlerTest {
+/**
+ * Service loader instantiation exception.
+ */
+public final class ServiceLoaderInstantiationException extends RuntimeException {
     
-    @Test
-    public void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("IGNORE").orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
+    private static final long serialVersionUID = -2949903598320994076L;
+    
+    public ServiceLoaderInstantiationException(final Class<?> clazz, final Throwable cause) {
+        super(String.format("Can not find public no args constructor for SPI class `%s`", clazz.getName()), cause);
     }
 }

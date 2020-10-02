@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
@@ -73,7 +74,8 @@ public final class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobConfig.getJobName());
-        jobErrorHandler = JobErrorHandlerFactory.getHandler(jobConfig.getJobErrorHandlerType());
+        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobConfig.getJobErrorHandlerType())
+                .orElseThrow(() -> new JobConfigurationException("Can not find job error handler type '%s'.", jobConfig.getJobErrorHandlerType()));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
     
