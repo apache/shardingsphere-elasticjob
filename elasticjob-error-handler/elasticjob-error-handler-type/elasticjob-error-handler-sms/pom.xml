@@ -22,14 +22,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob</artifactId>
+        <artifactId>elasticjob-error-handler-type</artifactId>
         <version>3.0.0-beta-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-error-handler</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>elasticjob-error-handler-sms</artifactId>
     
-    <modules>
-        <module>elasticjob-error-handler-spi</module>
-        <module>elasticjob-error-handler-type</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-spi</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 </project>
