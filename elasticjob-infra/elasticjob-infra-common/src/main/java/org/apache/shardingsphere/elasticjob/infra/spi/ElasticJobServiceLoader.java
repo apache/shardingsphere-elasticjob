@@ -36,35 +36,35 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticJobServiceLoader {
     
-    private static final ConcurrentMap<Class<?>, Collection<Class<?>>> SERVICE_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, Collection<Class<?>>> SERVICES = new ConcurrentHashMap<>();
     
     /**
-     * Register SPI service into map for new instance.
+     * Register SPI service.
      *
      * @param service service type
-     * @param <T>     type of service
+     * @param <T> type of service
      */
     public static <T> void register(final Class<T> service) {
-        if (SERVICE_MAP.containsKey(service)) {
+        if (SERVICES.containsKey(service)) {
             return;
         }
         ServiceLoader.load(service).forEach(each -> registerServiceClass(service, each));
     }
     
     private static <T> void registerServiceClass(final Class<T> service, final T instance) {
-        SERVICE_MAP.computeIfAbsent(service, unused -> new LinkedHashSet<>()).add(instance.getClass());
+        SERVICES.computeIfAbsent(service, unused -> new LinkedHashSet<>()).add(instance.getClass());
     }
     
     /**
      * New service instances.
      *
      * @param service service class
-     * @param <T>     type of service
+     * @param <T> type of service
      * @return service instances
      */
     @SuppressWarnings("unchecked")
     public static <T> Collection<T> newServiceInstances(final Class<T> service) {
-        return SERVICE_MAP.containsKey(service) ? SERVICE_MAP.get(service).stream().map(each -> (T) newServiceInstance(each)).collect(Collectors.toList()) : Collections.emptyList();
+        return SERVICES.containsKey(service) ? SERVICES.get(service).stream().map(each -> (T) newServiceInstance(each)).collect(Collectors.toList()) : Collections.emptyList();
     }
     
     private static Object newServiceInstance(final Class<?> clazz) {
