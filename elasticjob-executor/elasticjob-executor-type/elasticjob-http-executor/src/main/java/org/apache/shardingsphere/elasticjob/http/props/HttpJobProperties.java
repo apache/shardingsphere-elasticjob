@@ -18,12 +18,12 @@
 package org.apache.shardingsphere.elasticjob.http.props;
 
 /**
- * Http job properties.
+ * HTTP job properties.
  */
 public final class HttpJobProperties {
     
     /**
-     * Http request uri.
+     * HTTP request URI.
      */
     public static final String URI_KEY = "http.uri";
     
@@ -33,27 +33,27 @@ public final class HttpJobProperties {
     public static final String METHOD_KEY = "http.method";
     
     /**
-     * Http request data.
+     * HTTP request data.
      */
     public static final String DATA_KEY = "http.data";
     
     /**
-     * Http connect timeout in milliseconds.
+     * HTTP connect timeout in milliseconds.
      */
     public static final String CONNECT_TIMEOUT_KEY = "http.connect.timeout.milliseconds";
     
     /**
-     * Http read timeout in milliseconds.
+     * HTTP read timeout in milliseconds.
      */
     public static final String READ_TIMEOUT_KEY = "http.read.timeout.milliseconds";
     
     /**
-     * Http content type.
+     * HTTP content type.
      */
     public static final String CONTENT_TYPE_KEY = "http.content.type";
     
     /**
-     * Http sharding context.
+     * HTTP sharding context.
      */
     public static final String SHARDING_CONTEXT_KEY = "shardingContext";
 }
