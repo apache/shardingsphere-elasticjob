@@ -72,6 +72,7 @@ public final class JavaMain {
         setUpOneOffJob(regCenter, tracingConfig);
         setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
         setUpOneOffJobWithWechat(regCenter, tracingConfig);
+//        setUpOneOffJobWithEmail(regCenter, tracingConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {
@@ -133,6 +134,13 @@ public final class JavaMain {
         new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
     }
     
+    private static void setUpOneOffJobWithEmail(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        JobConfiguration jobConfiguration= JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("EMAIL").build();
+        setEmailConfig(jobConfiguration);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
+    }
+    
     private static void setDingtalkConfig(JobConfiguration jobConfiguration) {
         jobConfiguration.getProps().setProperty("dingtalk.webhook", "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
         jobConfiguration.getProps().setProperty("dingtalk.keyword", "keyword");
@@ -145,6 +153,17 @@ public final class JavaMain {
         jobConfiguration.getProps().setProperty("wechat.webhook", "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
         jobConfiguration.getProps().setProperty("wechat.connectTimeout", "9000");
         jobConfiguration.getProps().setProperty("wechat.readTimeout", "5000");
+    }
+    
+    private static void setEmailConfig(JobConfiguration jobConfiguration) {
+        jobConfiguration.getProps().setProperty("email.host", "smtp.163.com");
+        jobConfiguration.getProps().setProperty("email.port", "465");
+        jobConfiguration.getProps().setProperty("email.username", "xxxx@163.com");
+        jobConfiguration.getProps().setProperty("email.password", "password");
+        jobConfiguration.getProps().setProperty("email.protocol", "smtp");
+        jobConfiguration.getProps().setProperty("email.useSsl", "true");
+        jobConfiguration.getProps().setProperty("email.form", "xxxx@163.com");
+        jobConfiguration.getProps().setProperty("email.to", "xxx1@qq.com,xxx2@qq.com");
     }
     
     private static String buildScriptCommandLine() throws IOException {

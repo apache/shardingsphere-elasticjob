@@ -57,5 +57,22 @@ elasticjob:
           webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04
           connectTimeout: 3000
           readTimeout: 5000
+#    occurErrorNoticeEmailJob:
+#      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootOccurErrorNoticeEmailJob
+#      overwrite: true
+#      cron: 0/5 * * * * ?
+#      shardingTotalCount: 3
+#      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+#      jobErrorHandlerType: EMAIL
+#      props:
+#        email:
+#          host: smtp.163.com
+#          username: xxx@163.com
+#          password: xxxx
+#          port: 465
+#          useSsl: true
+#          protocol: smtp
+#          form: xxx@163.com
+#          to: xxx1@qq.com,xxx2@qq.com
   dump:
     port: 9888
