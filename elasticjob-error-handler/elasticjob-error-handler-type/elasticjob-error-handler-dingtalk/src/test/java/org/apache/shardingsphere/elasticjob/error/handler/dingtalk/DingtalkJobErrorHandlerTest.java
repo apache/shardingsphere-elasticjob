@@ -94,7 +94,7 @@ public final class DingtalkJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getNoSignJobConfiguration("http://wrongUrl"), cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "wrongUrl: nodename nor servname provided, or not known", cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", "test_job", cause);
     }
     
     @Test

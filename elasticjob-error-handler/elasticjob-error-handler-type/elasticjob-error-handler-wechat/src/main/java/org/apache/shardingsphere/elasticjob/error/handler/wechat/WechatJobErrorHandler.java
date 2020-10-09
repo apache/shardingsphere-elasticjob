@@ -77,7 +77,8 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
             }
         } catch (IOException ex) {
-            log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobConfig.getJobName(), ex.getMessage(), cause);
+            cause.addSuppressed(ex);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobConfig.getJobName(), cause);
         }
     }
     

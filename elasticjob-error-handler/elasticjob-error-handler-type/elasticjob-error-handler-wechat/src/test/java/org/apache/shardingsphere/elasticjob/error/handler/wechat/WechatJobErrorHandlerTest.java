@@ -85,7 +85,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getJobConfiguration("http://wrongUrl"), cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "wrongUrl: nodename nor servname provided, or not known", cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", "test_job", cause);
     }
     
     @Test
@@ -116,8 +116,8 @@ public final class WechatJobErrorHandlerTest {
     private JobConfiguration getJobConfiguration(final String webhook) {
         return JobConfiguration.newBuilder("test_job", 3)
                 .setProperty("wechat.webhook", webhook)
-                .setProperty("wechat.connectTimeout", "4000")
-                .setProperty("wechat.readTimeout", "6000")
+                .setProperty("wechat.connectTimeout", "1000")
+                .setProperty("wechat.readTimeout", "2000")
                 .build();
     }
     
