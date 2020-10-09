@@ -18,8 +18,10 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
@@ -33,7 +35,6 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ServiceLoader;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public final class WechatJobErrorHandlerTest {
     
-    private static final int PORT = 9876;
+    private static final int PORT = 9872;
     
     private static final String HOST = "localhost";
     
@@ -65,27 +66,34 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9872/send?key=TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3"), cause);
         verify(log).error("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
-        actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/send?key=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9872/send?key=wrongToken"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
-        actual.setWechatConfiguration(new WechatConfiguration(getHost() + "/404?access_token=wrongToken", 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://wrongUrl"), cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "wrongUrl: nodename nor servname provided, or not known", cause);
+    }
+    
+    @Test
+    public void assertHandleExceptionWithUrlIsNotFound() {
+        WechatJobErrorHandler actual = getWechatJobErrorHandler();
+        setStaticFieldValue(actual);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException(getJobConfiguration("http://localhost:9872/404"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
@@ -105,17 +113,16 @@ public final class WechatJobErrorHandlerTest {
         field.set(wechatJobErrorHandler, log);
     }
     
-    private String getHost() {
-        return String.format("http://%s:%s", HOST, PORT);
+    private JobConfiguration getJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty("wechat.webhook", webhook)
+                .setProperty("wechat.connectTimeout", "4000")
+                .setProperty("wechat.readTimeout", "6000")
+                .build();
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler() {
-        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
-            if (each instanceof WechatJobErrorHandler) {
-                return (WechatJobErrorHandler) each;
-            }
-        }
-        return new WechatJobErrorHandler();
+        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT").orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
     }
     
     @AfterClass

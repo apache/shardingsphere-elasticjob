@@ -36,6 +36,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-wechat</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-example-jobs</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

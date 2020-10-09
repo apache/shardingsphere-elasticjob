@@ -10,12 +10,12 @@ elasticjob:
     namespace: elasticjob-lite-springboot
   jobs:
     simpleJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.simple.job.SimpleJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
     dataflowJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootDataflowJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
@@ -31,5 +31,31 @@ elasticjob:
       shardingTotalCount: 9
       props:
         script.command.line: "echo Manual SCRIPT Job: "
+    occurErrorNoticeDingtlakJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootOccurErrorNoticeDingtlakJob
+      overwrite: true
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      jobErrorHandlerType: DINGTALK
+      props:
+        dingtalk:
+          webhook: https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f
+          keyword: keyword
+          secret: SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4
+          connectTimeout: 3000
+          readTimeout: 5000
+    occurErrorNoticeWechatJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootOccurErrorNoticeWechatJob
+      overwrite: true
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      jobErrorHandlerType: WECHAT
+      props:
+        wechat:
+          webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04
+          connectTimeout: 3000
+          readTimeout: 5000
   dump:
     port: 9888

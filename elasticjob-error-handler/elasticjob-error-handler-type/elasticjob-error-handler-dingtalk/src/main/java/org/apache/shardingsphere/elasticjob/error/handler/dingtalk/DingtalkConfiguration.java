@@ -20,6 +20,8 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Properties;
+
 @Getter
 @RequiredArgsConstructor
 public final class DingtalkConfiguration {
@@ -33,4 +35,17 @@ public final class DingtalkConfiguration {
     private final Integer connectTimeout;
     
     private final Integer readTimeout;
+    
+    /**
+     * Get dingtalk config.
+     *
+     * @param props props
+     * @return dingtalk config.
+     */
+    public static DingtalkConfiguration getByProps(final Properties props) {
+        return new DingtalkConfiguration(props.getProperty("dingtalk.webhook"),
+                props.getProperty("dingtalk.keyword"), props.getProperty("dingtalk.secret"),
+                Integer.valueOf(props.getOrDefault("dingtalk.connectTimeout", 3000).toString()),
+                Integer.valueOf(props.getOrDefault("dingtalk.readTimeout", 5000).toString()));
+    }
 }

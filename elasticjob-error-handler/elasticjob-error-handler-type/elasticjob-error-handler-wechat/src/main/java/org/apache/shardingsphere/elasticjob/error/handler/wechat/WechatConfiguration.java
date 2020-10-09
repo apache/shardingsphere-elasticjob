@@ -20,13 +20,11 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Properties;
+
 @Getter
 @RequiredArgsConstructor
 public final class WechatConfiguration {
-    
-    private final Integer defaultConnectTimeout = 1000 * 5;
-    
-    private final Integer defaultReadTimeout = 1000 * 3;
     
     private final String webhook;
     
@@ -35,26 +33,14 @@ public final class WechatConfiguration {
     private final Integer readTimeout;
     
     /**
-     * Get connect timeout config or default value.
+     * Get wechat config.
      *
-     * @return connect timeout value
+     * @param props props
+     * @return wechat config.
      */
-    public Integer getConnectTimeoutOrDefault() {
-        if (null == connectTimeout) {
-            return defaultConnectTimeout;
-        }
-        return connectTimeout;
-    }
-    
-    /**
-     * Get read timeout config or default value.
-     *
-     * @return read timeout value
-     */
-    public Integer getReadTimeoutOrDefault() {
-        if (null == readTimeout) {
-            return defaultReadTimeout;
-        }
-        return readTimeout;
+    public static WechatConfiguration getByProps(final Properties props) {
+        return new WechatConfiguration(props.getProperty("wechat.webhook"),
+                Integer.valueOf(props.getOrDefault("wechat.connectTimeout", 3000).toString()),
+                Integer.valueOf(props.getOrDefault("wechat.readTimeout", 5000).toString()));
     }
 }

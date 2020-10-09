@@ -51,6 +51,16 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-wechat</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-example-embed-zk</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

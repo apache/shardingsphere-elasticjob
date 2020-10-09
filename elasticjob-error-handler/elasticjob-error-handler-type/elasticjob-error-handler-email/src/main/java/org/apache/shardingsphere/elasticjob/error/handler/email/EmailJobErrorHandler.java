@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
 import javax.mail.Authenticator;
@@ -80,8 +81,8 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        String errorContext = createErrorContext(jobName, cause);
+    public void handleException(final JobConfiguration jobConfiguration, final Throwable cause) {
+        String errorContext = createErrorContext(jobConfiguration.getJobName(), cause);
         try {
             sendMessage(createMessage(errorContext));
         } catch (final MessagingException ex) {
