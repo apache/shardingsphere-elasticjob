@@ -113,7 +113,7 @@ public final class ElasticJobServiceLoader {
      */
     public static <T extends TypedSPI> T getCachedInstance(final Class<T> typedService, final String type) {
         T instance = TYPED_SERVICES.containsKey(typedService) ? (T) TYPED_SERVICES.get(typedService).get(type) : null;
-        if (instance == null) {
+        if (null == instance) {
             throw new JobConfigurationException("Cannot find a cached typed service instance by the interface: @" + typedService.getName() + "and type: " + type);
         }
         return instance;
@@ -129,7 +129,7 @@ public final class ElasticJobServiceLoader {
      */
     public static <T extends TypedSPI> T newTypedServiceInstance(final Class<T> typedService, final String type) {
         Class<?> instanceClass = TYPED_SERVICE_CLASSES.containsKey(typedService) ? TYPED_SERVICE_CLASSES.get(typedService).get(type) : null;
-        if (instanceClass == null) {
+        if (null == instanceClass) {
             throw new JobConfigurationException("Cannot find a typed service class by the interface: @" + typedService.getName() + "and type: " + type);
         }
         return (T) newServiceInstance(instanceClass);
