@@ -20,26 +20,18 @@ package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 /**
  * Job sharding sharding factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobShardingStrategyFactory {
-    
-    private static final Map<String, JobShardingStrategy> STRATEGIES = new LinkedHashMap<>();
-    
+
     private static final String DEFAULT_STRATEGY = "AVG_ALLOCATION";
     
     static {
-        for (JobShardingStrategy each : ServiceLoader.load(JobShardingStrategy.class)) {
-            STRATEGIES.put(each.getType(), each);
-        }
+        ElasticJobServiceLoader.registerTypedService(JobShardingStrategy.class);
     }
     
     /**
@@ -50,11 +42,8 @@ public final class JobShardingStrategyFactory {
      */
     public static JobShardingStrategy getStrategy(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return STRATEGIES.get(DEFAULT_STRATEGY);
+            return ElasticJobServiceLoader.getCachedInstance(JobShardingStrategy.class, DEFAULT_STRATEGY);
         }
-        if (!STRATEGIES.containsKey(type)) {
-            throw new JobConfigurationException("Can not find sharding sharding type '%s'.", type);
-        }
-        return STRATEGIES.get(type);
+        return ElasticJobServiceLoader.getCachedInstance(JobShardingStrategy.class, type);
     }
 }

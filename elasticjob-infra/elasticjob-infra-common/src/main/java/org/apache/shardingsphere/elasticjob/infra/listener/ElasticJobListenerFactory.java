@@ -30,7 +30,7 @@ import java.util.Optional;
 public final class ElasticJobListenerFactory {
     
     static {
-        ElasticJobServiceLoader.register(ElasticJobListener.class);
+        ElasticJobServiceLoader.registerTypedService(ElasticJobListener.class);
     }
     
     /**
@@ -40,6 +40,6 @@ public final class ElasticJobListenerFactory {
      * @return optional job listener instance
      */
     public static Optional<ElasticJobListener> createListener(final String type) {
-        return ElasticJobServiceLoader.newServiceInstances(ElasticJobListener.class).stream().filter(listener -> listener.getType().equalsIgnoreCase(type)).findFirst();
+        return Optional.of(ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type));
     }
 }
