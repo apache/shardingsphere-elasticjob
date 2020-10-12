@@ -26,6 +26,6 @@ public final class JobClassNameProviderFactoryTest {
     
     @Test
     public void assertGetDefaultStrategy() {
-        assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(SimpleJobClassNameProvider.class));
+        assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(DefaultJobClassNameProvider.class));
     }
 }
