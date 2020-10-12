@@ -22,10 +22,20 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 /**
  * Simple job class name provider.
  */
-public final class SimpleJobClassNameProvider implements JobClassNameProvider {
+public final class DefaultJobClassNameProvider implements JobClassNameProvider {
     
     @Override
     public String getJobClassName(final ElasticJob elasticJob) {
-        return elasticJob.getClass().getName();
+        Class<? extends ElasticJob> elasticJobClass = elasticJob.getClass();
+        String elasticJobClassName = elasticJobClass.getName();
+        return isLambdaClass(elasticJobClass) ? trimLambdaClassSuffix(elasticJobClassName) : elasticJobClassName;
+    }
+    
+    private boolean isLambdaClass(final Class<? extends ElasticJob> elasticJobClass) {
+        return elasticJobClass.isSynthetic() && elasticJobClass.getSimpleName().contains("$$Lambda$");
+    }
+    
+    private String trimLambdaClassSuffix(final String className) {
+        return className.split("/")[0];
     }
 }
