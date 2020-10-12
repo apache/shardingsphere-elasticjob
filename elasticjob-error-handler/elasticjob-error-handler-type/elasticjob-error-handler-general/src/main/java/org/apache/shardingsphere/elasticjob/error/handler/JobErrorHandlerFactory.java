@@ -33,7 +33,7 @@ public final class JobErrorHandlerFactory {
     private static final String DEFAULT_HANDLER = "LOG";
     
     static {
-        ElasticJobServiceLoader.register(JobErrorHandler.class);
+        ElasticJobServiceLoader.registerTypedService(JobErrorHandler.class);
     }
     
     /**
@@ -50,6 +50,6 @@ public final class JobErrorHandlerFactory {
     }
     
     private static Optional<JobErrorHandler> newHandlerInstance(final String type) {
-        return ElasticJobServiceLoader.newServiceInstances(JobErrorHandler.class).stream().filter(handler -> handler.getType().equalsIgnoreCase(type)).findFirst();
+        return Optional.ofNullable(ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type));
     }
 }
