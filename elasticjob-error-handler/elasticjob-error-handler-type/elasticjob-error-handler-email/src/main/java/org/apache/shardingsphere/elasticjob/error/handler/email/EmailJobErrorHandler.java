@@ -98,7 +98,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private Message createMessage(final String content, final EmailConfiguration emailConfiguration) throws MessagingException {
-        MimeMessage result = new MimeMessage(createSession(emailConfiguration));
+        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(emailConfiguration)));
         result.setFrom(new InternetAddress(emailConfiguration.getFrom()));
         result.setSubject(emailConfiguration.getSubject());
         result.setSentDate(new Date());
