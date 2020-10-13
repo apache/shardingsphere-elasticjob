@@ -103,11 +103,11 @@
 <!--        <props>-->
 <!--            <prop key="email.host">host</prop>-->
 <!--            <prop key="email.username">username</prop>-->
-<!--            <prop key="email.password">passowrd</prop>-->
+<!--            <prop key="email.password">password</prop>-->
 <!--            <prop key="email.port">465</prop>-->
 <!--            <prop key="email.useSsl">true</prop>-->
 <!--            <prop key="email.protocol">smtp</prop>-->
-<!--            <prop key="email.form">from@xxx.com</prop>-->
+<!--            <prop key="email.form">form@xxx.com</prop>-->
 <!--            <prop key="email.to">email1@xxx.com,email2@xxx.com</prop>-->
 <!--        </props>-->
 <!--    </elasticjob:job>-->

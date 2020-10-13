@@ -72,7 +72,7 @@ elasticjob:
 #          port: 465
 #          useSsl: true
 #          protocol: smtp
-#          form: from@xxx.com
-#          to: eail1@xxx.com,email2@xxx.com
+#          form: form@xxx.com
+#          to: email1@xxx.com,email2@xxx.com
   dump:
     port: 9888

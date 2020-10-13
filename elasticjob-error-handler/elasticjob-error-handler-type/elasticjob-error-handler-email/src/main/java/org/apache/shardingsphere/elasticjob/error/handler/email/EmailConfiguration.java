@@ -29,6 +29,8 @@ import java.util.Properties;
 @Setter
 public final class EmailConfiguration {
     
+    private static final String PREFIX = "email.";
+    
     private String host;
     
     private Integer port;
@@ -61,18 +63,18 @@ public final class EmailConfiguration {
      */
     public static EmailConfiguration getByProps(final Properties props) {
         EmailConfiguration configuration = new EmailConfiguration();
-        configuration.setHost(props.getProperty("email.host"));
-        configuration.setPort(Integer.parseInt(props.getProperty("email.port")));
-        configuration.setProtocol(props.getOrDefault("email.protocol", "smtp").toString());
-        configuration.setUsername(props.getProperty("email.username"));
-        configuration.setPassword(props.getProperty("email.password"));
-        configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault("email.useSsl", "false").toString()));
-        configuration.setSubject(props.getOrDefault("email.subject", "ElasticJob error message").toString());
-        configuration.setFrom(props.getProperty("email.form"));
-        configuration.setTo(props.getProperty("email.to"));
-        configuration.setCc(props.getProperty("email.cc"));
-        configuration.setBcc(props.getProperty("email.bcc"));
-        configuration.setDebug(Boolean.parseBoolean(props.getOrDefault("email.debug", "false").toString()));
+        configuration.setHost(props.getProperty(PREFIX.concat("host")));
+        configuration.setPort(Integer.parseInt(props.getProperty(PREFIX.concat("port"))));
+        configuration.setProtocol(props.getOrDefault(PREFIX.concat("protocol"), "smtp").toString());
+        configuration.setUsername(props.getProperty(PREFIX.concat("username")));
+        configuration.setPassword(props.getProperty(PREFIX.concat("password")));
+        configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault(PREFIX.concat("useSsl"), "false").toString()));
+        configuration.setSubject(props.getOrDefault(PREFIX.concat("subject"), "ElasticJob error message").toString());
+        configuration.setFrom(props.getProperty(PREFIX.concat("form")));
+        configuration.setTo(props.getProperty(PREFIX.concat("to")));
+        configuration.setCc(props.getProperty(PREFIX.concat("cc")));
+        configuration.setBcc(props.getProperty(PREFIX.concat("bcc")));
+        configuration.setDebug(Boolean.parseBoolean(props.getOrDefault(PREFIX.concat("debug"), "false").toString()));
         return configuration;
     }
 }
