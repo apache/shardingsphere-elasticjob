@@ -62,7 +62,7 @@ public final class EmailConfiguration {
     public static EmailConfiguration getByProps(final Properties props) {
         EmailConfiguration configuration = new EmailConfiguration();
         configuration.setHost(props.getProperty("email.host"));
-        configuration.setPort(Integer.parseInt(props.getOrDefault("email.port", "25").toString()));
+        configuration.setPort(Integer.parseInt(props.getProperty("email.port")));
         configuration.setProtocol(props.getOrDefault("email.protocol", "smtp").toString());
         configuration.setUsername(props.getProperty("email.username"));
         configuration.setPassword(props.getProperty("email.password"));

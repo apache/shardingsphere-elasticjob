@@ -62,11 +62,13 @@ public final class EmailJobErrorHandlerTest {
                 .setProperty("email.host", "xxx")
                 .setProperty("email.port", "465")
                 .setProperty("email.username", "xxx")
-                .setProperty("email.password", "xxxx")
+                .setProperty("email.password", "xxx")
                 .setProperty("email.protocol", "smtp")
                 .setProperty("email.useSsl", "true")
-                .setProperty("email.form", "xxxx@163.com")
-                .setProperty("email.to", "xxxx@qq.com")
+                .setProperty("email.form", "from@xxx.com")
+                .setProperty("email.to", "to@xxx.com")
+                .setProperty("email.cc", "cc@xxx.com")
+                .setProperty("email.bcc", "bcc@xxx.com")
                 .setProperty("email.debug", "true")
                 .build();
     }

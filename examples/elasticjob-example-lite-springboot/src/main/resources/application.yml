@@ -66,13 +66,13 @@ elasticjob:
 #      jobErrorHandlerType: EMAIL
 #      props:
 #        email:
-#          host: smtp.163.com
-#          username: xxx@163.com
-#          password: xxxx
+#          host: host
+#          username: username
+#          password: password
 #          port: 465
 #          useSsl: true
 #          protocol: smtp
-#          form: xxx@163.com
-#          to: xxx1@qq.com,xxx2@qq.com
+#          form: from@xxx.com
+#          to: eail1@xxx.com,email2@xxx.com
   dump:
     port: 9888

@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMultipart;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -48,7 +49,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     private Session session;
     
     private synchronized Session createSession(final EmailConfiguration emailConfiguration) {
-        if (session == null) {
+        if (null == session) {
             session = Session.getDefaultInstance(createSessionProperties(emailConfiguration), getSessionAuthenticator(emailConfiguration));
         }
         return session;
@@ -124,7 +125,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     private void sendMessage(final Message message, final EmailConfiguration emailConfiguration) throws MessagingException {
-        try (Transport transport = createSession(emailConfiguration).getTransport()) {
+        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(emailConfiguration)).getTransport()) {
             transport.connect();
             transport.sendMessage(message, message.getAllRecipients());
         }

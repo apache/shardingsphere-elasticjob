@@ -156,14 +156,14 @@ public final class JavaMain {
     }
     
     private static void setEmailConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty("email.host", "smtp.163.com");
+        jobConfiguration.getProps().setProperty("email.host", "host");
         jobConfiguration.getProps().setProperty("email.port", "465");
-        jobConfiguration.getProps().setProperty("email.username", "xxxx@163.com");
+        jobConfiguration.getProps().setProperty("email.username", "username");
         jobConfiguration.getProps().setProperty("email.password", "password");
         jobConfiguration.getProps().setProperty("email.protocol", "smtp");
         jobConfiguration.getProps().setProperty("email.useSsl", "true");
-        jobConfiguration.getProps().setProperty("email.form", "xxxx@163.com");
-        jobConfiguration.getProps().setProperty("email.to", "xxx1@qq.com,xxx2@qq.com");
+        jobConfiguration.getProps().setProperty("email.form", "form@xxx.com");
+        jobConfiguration.getProps().setProperty("email.to", "email1@xxx.com,email2@xxx.com");
     }
     
     private static String buildScriptCommandLine() throws IOException {
