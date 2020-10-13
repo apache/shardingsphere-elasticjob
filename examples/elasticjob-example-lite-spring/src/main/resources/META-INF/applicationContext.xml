@@ -65,4 +65,50 @@
             <!--<prop key="script.command.line">${script.scriptCommandLine}</prop>-->
         <!--</props>-->
     <!--</elasticjob:job>-->
+
+    <bean id="occurErrorNoticeDingtlakJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
+
+    <elasticjob:job id="${occurErrorNoticeDingtlakJob.id}" job-ref="occurErrorNoticeDingtlakJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
+                    sharding-total-count="${occurErrorNoticeDingtlakJob.shardingTotalCount}" cron="${occurErrorNoticeDingtlakJob.cron}" sharding-item-parameters="${occurErrorNoticeDingtlakJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeDingtlakJob.monitorExecution}" failover="${occurErrorNoticeDingtlakJob.failover}" description="${occurErrorNoticeDingtlakJob.description}"
+                    job-error-handler-type="${occurErrorNoticeDingtlakJob.jobErrorHandlerType}"
+                    disabled="${occurErrorNoticeDingtlakJob.disabled}" overwrite="${occurErrorNoticeDingtlakJob.overwrite}" >
+        <props>
+            <prop key="dingtalk.webhook">https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f</prop>
+            <prop key="dingtalk.keyword">keyword</prop>
+            <prop key="dingtalk.secret">SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4</prop>
+            <prop key="dingtalk.connectTimeout">3000</prop>
+            <prop key="dingtalk.readTimeout">5000</prop>
+        </props>
+    </elasticjob:job>
+
+    <bean id="occurErrorNoticeWechatJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
+
+    <elasticjob:job id="${occurErrorNoticeWechatJob.id}" job-ref="occurErrorNoticeWechatJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
+                    sharding-total-count="${occurErrorNoticeWechatJob.shardingTotalCount}" cron="${occurErrorNoticeWechatJob.cron}" sharding-item-parameters="${occurErrorNoticeWechatJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeWechatJob.monitorExecution}" failover="${occurErrorNoticeWechatJob.failover}" description="${occurErrorNoticeWechatJob.description}"
+                    job-error-handler-type="${occurErrorNoticeWechatJob.jobErrorHandlerType}"
+                    disabled="${occurErrorNoticeWechatJob.disabled}" overwrite="${occurErrorNoticeWechatJob.overwrite}" >
+        <props>
+            <prop key="wechat.webhook">https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04</prop>
+            <prop key="wechat.connectTimeout">3000</prop>
+            <prop key="wechat.readTimeout">5000</prop>
+        </props>
+    </elasticjob:job>
+
+<!--    <bean id="occurErrorNoticeEmailJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
+
+<!--    <elasticjob:job id="${occurErrorNoticeEmailJob.id}" job-ref="occurErrorNoticeEmailJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
+<!--                    sharding-total-count="${occurErrorNoticeEmailJob.shardingTotalCount}" cron="${occurErrorNoticeEmailJob.cron}" sharding-item-parameters="${occurErrorNoticeEmailJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeEmailJob.monitorExecution}" failover="${occurErrorNoticeEmailJob.failover}" description="${occurErrorNoticeEmailJob.description}"-->
+<!--                    job-error-handler-type="${occurErrorNoticeEmailJob.jobErrorHandlerType}"-->
+<!--                    disabled="${occurErrorNoticeEmailJob.disabled}" overwrite="${occurErrorNoticeEmailJob.overwrite}" >-->
+<!--        <props>-->
+<!--            <prop key="email.host">host</prop>-->
+<!--            <prop key="email.username">username</prop>-->
+<!--            <prop key="email.password">passowrd</prop>-->
+<!--            <prop key="email.port">465</prop>-->
+<!--            <prop key="email.useSsl">true</prop>-->
+<!--            <prop key="email.protocol">smtp</prop>-->
+<!--            <prop key="email.form">from@xxx.com</prop>-->
+<!--            <prop key="email.to">email1@xxx.com,email2@xxx.com</prop>-->
+<!--        </props>-->
+<!--    </elasticjob:job>-->
 </beans>
