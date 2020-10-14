@@ -23,11 +23,12 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Job item executor factory.
@@ -35,20 +36,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobItemExecutorFactory {
     
-    private static final Map<Class, ClassedJobItemExecutor> CLASSED_EXECUTORS = new ConcurrentHashMap<>();
-    
-    private static final Map<String, TypedJobItemExecutor> TYPED_EXECUTORS = new ConcurrentHashMap<>();
+    private static final Map<Class, ClassedJobItemExecutor> CLASSED_EXECUTORS = new HashMap<>();
     
     static {
-        for (JobItemExecutor each : ServiceLoader.load(JobItemExecutor.class)) {
-            if (each instanceof ClassedJobItemExecutor) {
-                ClassedJobItemExecutor typedJobItemExecutor = (ClassedJobItemExecutor) each;
-                CLASSED_EXECUTORS.put(typedJobItemExecutor.getElasticJobClass(), typedJobItemExecutor);
-            }
-            if (each instanceof TypedJobItemExecutor) {
-                TypedJobItemExecutor typedJobItemExecutor = (TypedJobItemExecutor) each;
-                TYPED_EXECUTORS.put(typedJobItemExecutor.getType(), typedJobItemExecutor);
-            }
+        ElasticJobServiceLoader.registerTypedService(TypedJobItemExecutor.class);
+        for (JobItemExecutor each : ServiceLoader.load(ClassedJobItemExecutor.class)) {
+            ClassedJobItemExecutor typedJobItemExecutor = (ClassedJobItemExecutor) each;
+            CLASSED_EXECUTORS.put(typedJobItemExecutor.getElasticJobClass(), typedJobItemExecutor);
         }
     }
     
@@ -75,11 +69,6 @@ public final class JobItemExecutorFactory {
      * @return job item executor
      */
     public static JobItemExecutor getExecutor(final String elasticJobType) {
-        for (Entry<String, TypedJobItemExecutor> entry : TYPED_EXECUTORS.entrySet()) {
-            if (entry.getKey().equals(elasticJobType)) {
-                return entry.getValue();
-            }
-        }
-        throw new JobConfigurationException("Can not find executor for elastic job type `%s`", elasticJobType);
+        return ElasticJobServiceLoader.getCachedInstance(TypedJobItemExecutor.class, elasticJobType);
     }
 }
