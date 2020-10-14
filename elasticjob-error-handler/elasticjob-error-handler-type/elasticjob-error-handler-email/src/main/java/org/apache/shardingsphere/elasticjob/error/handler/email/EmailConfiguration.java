@@ -29,8 +29,6 @@ import java.util.Properties;
 @Setter
 public final class EmailConfiguration {
     
-    private static final String PREFIX = "email.";
-    
     private String host;
     
     private Integer port;
@@ -63,18 +61,18 @@ public final class EmailConfiguration {
      */
     public static EmailConfiguration getByProps(final Properties props) {
         EmailConfiguration configuration = new EmailConfiguration();
-        configuration.setHost(props.getProperty(PREFIX.concat("host")));
-        configuration.setPort(Integer.parseInt(props.getProperty(PREFIX.concat("port"))));
-        configuration.setProtocol(props.getOrDefault(PREFIX.concat("protocol"), "smtp").toString());
-        configuration.setUsername(props.getProperty(PREFIX.concat("username")));
-        configuration.setPassword(props.getProperty(PREFIX.concat("password")));
-        configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault(PREFIX.concat("useSsl"), "false").toString()));
-        configuration.setSubject(props.getOrDefault(PREFIX.concat("subject"), "ElasticJob error message").toString());
-        configuration.setFrom(props.getProperty(PREFIX.concat("form")));
-        configuration.setTo(props.getProperty(PREFIX.concat("to")));
-        configuration.setCc(props.getProperty(PREFIX.concat("cc")));
-        configuration.setBcc(props.getProperty(PREFIX.concat("bcc")));
-        configuration.setDebug(Boolean.parseBoolean(props.getOrDefault(PREFIX.concat("debug"), "false").toString()));
+        configuration.setHost(props.getProperty(EmailConstants.EMAIL_HOST));
+        configuration.setPort(Integer.parseInt(props.getProperty(EmailConstants.EMAIL_PORT)));
+        configuration.setProtocol(props.getProperty(EmailConstants.EMAIL_PROTOCOL));
+        configuration.setUsername(props.getProperty(EmailConstants.EMAIL_USERNAME));
+        configuration.setPassword(props.getProperty(EmailConstants.EMAIL_PASSWORD));
+        configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_USE_SSL, Boolean.FALSE.toString()).toString()));
+        configuration.setSubject(props.getOrDefault(EmailConstants.EMAIL_SUBJECT, EmailConstants.DEFAULT_EMAIL_SUBJECT).toString());
+        configuration.setFrom(props.getProperty(EmailConstants.EMAIL_FROM));
+        configuration.setTo(props.getProperty(EmailConstants.EMAIL_TO));
+        configuration.setCc(props.getProperty(EmailConstants.EMAIL_CC));
+        configuration.setBcc(props.getProperty(EmailConstants.EMAIL_BCC));
+        configuration.setDebug(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_DEBUG, Boolean.FALSE.toString()).toString()));
         return configuration;
     }
 }

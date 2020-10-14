@@ -115,9 +115,9 @@ public final class WechatJobErrorHandlerTest {
     
     private JobConfiguration getJobConfiguration(final String webhook) {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty("wechat.webhook", webhook)
-                .setProperty("wechat.connectTimeout", "1000")
-                .setProperty("wechat.readTimeout", "2000")
+                .setProperty(WechatConstants.WECHAT_WEBHOOK, webhook)
+                .setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "1000")
+                .setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "2000")
                 .build();
     }
     

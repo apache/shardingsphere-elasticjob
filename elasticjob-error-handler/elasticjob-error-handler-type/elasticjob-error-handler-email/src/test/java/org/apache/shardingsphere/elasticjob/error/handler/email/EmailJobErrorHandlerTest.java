@@ -59,17 +59,18 @@ public final class EmailJobErrorHandlerTest {
     
     private JobConfiguration getJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty("email.host", "xxx")
-                .setProperty("email.port", "465")
-                .setProperty("email.username", "xxx")
-                .setProperty("email.password", "xxx")
-                .setProperty("email.protocol", "smtp")
-                .setProperty("email.useSsl", "true")
-                .setProperty("email.form", "from@xxx.com")
-                .setProperty("email.to", "to@xxx.com")
-                .setProperty("email.cc", "cc@xxx.com")
-                .setProperty("email.bcc", "bcc@xxx.com")
-                .setProperty("email.debug", "true")
+                .setProperty(EmailConstants.EMAIL_HOST, "xxx")
+                .setProperty(EmailConstants.EMAIL_PORT, "465")
+                .setProperty(EmailConstants.EMAIL_USERNAME, "xxx")
+                .setProperty(EmailConstants.EMAIL_PASSWORD, "xxx")
+                .setProperty(EmailConstants.EMAIL_PROTOCOL, "smtp")
+                .setProperty(EmailConstants.EMAIL_USE_SSL, "true")
+                .setProperty(EmailConstants.EMAIL_SUBJECT, "Unit test notification")
+                .setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com")
+                .setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2@xxx.com")
+                .setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com")
+                .setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com")
+                .setProperty(EmailConstants.EMAIL_DEBUG, "false")
                 .build();
     }
     

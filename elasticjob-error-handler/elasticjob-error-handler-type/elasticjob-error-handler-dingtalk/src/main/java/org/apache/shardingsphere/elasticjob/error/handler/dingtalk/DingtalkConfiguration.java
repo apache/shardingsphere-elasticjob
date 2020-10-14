@@ -26,8 +26,6 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public final class DingtalkConfiguration {
     
-    private static final String PREFIX = "dingtalk.";
-    
     private final String webhook;
     
     private final String keyword;
@@ -45,9 +43,9 @@ public final class DingtalkConfiguration {
      * @return dingtalk config.
      */
     public static DingtalkConfiguration getByProps(final Properties props) {
-        return new DingtalkConfiguration(props.getProperty(PREFIX.concat("webhook")),
-                props.getProperty(PREFIX.concat("keyword")), props.getProperty(PREFIX.concat("secret")),
-                Integer.valueOf(props.getOrDefault(PREFIX.concat("connectTimeout"), 3000).toString()),
-                Integer.valueOf(props.getOrDefault(PREFIX.concat("readTimeout"), 5000).toString()));
+        return new DingtalkConfiguration(props.getProperty(DingtalkConstants.DINGTALK_WEBHOOK),
+                props.getProperty(DingtalkConstants.DINGTALK_KEYWORD), props.getProperty(DingtalkConstants.DINGTALK_SECRET),
+                Integer.valueOf(props.getOrDefault(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, DingtalkConstants.DEFAULT_DINGTALK_CONNECT_TIMEOUT).toString()),
+                Integer.valueOf(props.getOrDefault(DingtalkConstants.DINGTALK_READ_TIMEOUT, DingtalkConstants.DEFAULT_DINGTALK_READ_TIMEOUT).toString()));
     }
 }

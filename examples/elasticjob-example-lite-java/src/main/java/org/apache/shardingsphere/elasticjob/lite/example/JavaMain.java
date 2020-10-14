@@ -18,6 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.email.EmailConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
@@ -142,28 +145,32 @@ public final class JavaMain {
     }
     
     private static void setDingtalkConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty("dingtalk.webhook", "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
-        jobConfiguration.getProps().setProperty("dingtalk.keyword", "keyword");
-        jobConfiguration.getProps().setProperty("dingtalk.secret", "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
-        jobConfiguration.getProps().setProperty("dingtalk.connectTimeout", "7000");
-        jobConfiguration.getProps().setProperty("dingtalk.readTimeout", "8000");
+        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_WEBHOOK, "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
+        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword");
+        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
+        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "7000");
+        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "8000");
     }
     
     private static void setWechatConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty("wechat.webhook", "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
-        jobConfiguration.getProps().setProperty("wechat.connectTimeout", "9000");
-        jobConfiguration.getProps().setProperty("wechat.readTimeout", "5000");
+        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
+        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "9000");
+        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "5000");
     }
     
     private static void setEmailConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty("email.host", "host");
-        jobConfiguration.getProps().setProperty("email.port", "465");
-        jobConfiguration.getProps().setProperty("email.username", "username");
-        jobConfiguration.getProps().setProperty("email.password", "password");
-        jobConfiguration.getProps().setProperty("email.protocol", "smtp");
-        jobConfiguration.getProps().setProperty("email.useSsl", "true");
-        jobConfiguration.getProps().setProperty("email.form", "form@xxx.com");
-        jobConfiguration.getProps().setProperty("email.to", "email1@xxx.com,email2@xxx.com");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_HOST, "host");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PORT, "465");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USERNAME, "username");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PASSWORD, "password");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PROTOCOL, "smtp");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USE_SSL, "true");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_SUBJECT, "Test elasticJob error message");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2xxx.com");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com");
+        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_DEBUG, "false");
     }
     
     private static String buildScriptCommandLine() throws IOException {

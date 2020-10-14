@@ -102,13 +102,17 @@
 <!--                    disabled="${occurErrorNoticeEmailJob.disabled}" overwrite="${occurErrorNoticeEmailJob.overwrite}" >-->
 <!--        <props>-->
 <!--            <prop key="email.host">host</prop>-->
+<!--            <prop key="email.port">465</prop>-->
 <!--            <prop key="email.username">username</prop>-->
 <!--            <prop key="email.password">password</prop>-->
-<!--            <prop key="email.port">465</prop>-->
-<!--            <prop key="email.useSsl">true</prop>-->
 <!--            <prop key="email.protocol">smtp</prop>-->
+<!--            <prop key="email.useSsl">true</prop>-->
+<!--            <prop key="email.subject">ElasticJob error message</prop>-->
 <!--            <prop key="email.form">form@xxx.com</prop>-->
-<!--            <prop key="email.to">email1@xxx.com,email2@xxx.com</prop>-->
+<!--            <prop key="email.to">to1@xxx.com,to2@xxx.com</prop>-->
+<!--            <prop key="email.cc">cc@xxx.com</prop>-->
+<!--            <prop key="email.bcc">bcc@xxx.com</prop>-->
+<!--            <prop key="email.debug">false</prop>-->
 <!--        </props>-->
 <!--    </elasticjob:job>-->
 </beans>

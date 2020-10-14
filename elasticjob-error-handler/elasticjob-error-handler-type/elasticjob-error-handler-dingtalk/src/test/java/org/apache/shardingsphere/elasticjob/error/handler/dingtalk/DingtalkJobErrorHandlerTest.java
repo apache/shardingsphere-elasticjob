@@ -108,20 +108,20 @@ public final class DingtalkJobErrorHandlerTest {
     
     private JobConfiguration getJobConfiguration(final String webhook) {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty("dingtalk.webhook", webhook)
-                .setProperty("dingtalk.keyword", "keyword")
-                .setProperty("dingtalk.secret", "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
-                .setProperty("dingtalk.connectTimeout", "4000")
-                .setProperty("dingtalk.readTimeout", "6000")
+                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
+                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
+                .setProperty(DingtalkConstants.DINGTALK_SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
+                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
+                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
                 .build();
     }
     
     private JobConfiguration getNoSignJobConfiguration(final String webhook) {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty("dingtalk.webhook", webhook)
-                .setProperty("dingtalk.keyword", "keyword")
-                .setProperty("dingtalk.connectTimeout", "4000")
-                .setProperty("dingtalk.readTimeout", "6000")
+                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
+                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
+                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
+                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
                 .build();
     }
     

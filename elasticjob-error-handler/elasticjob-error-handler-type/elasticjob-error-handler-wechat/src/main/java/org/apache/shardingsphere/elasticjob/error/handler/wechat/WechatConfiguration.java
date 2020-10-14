@@ -26,8 +26,6 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public final class WechatConfiguration {
     
-    private static final String PREFIX = "wechat.";
-    
     private final String webhook;
     
     private final Integer connectTimeout;
@@ -41,8 +39,8 @@ public final class WechatConfiguration {
      * @return wechat config.
      */
     public static WechatConfiguration getByProps(final Properties props) {
-        return new WechatConfiguration(props.getProperty(PREFIX.concat("webhook")),
-                Integer.valueOf(props.getOrDefault(PREFIX.concat("connectTimeout"), 3000).toString()),
-                Integer.valueOf(props.getOrDefault(PREFIX.concat("readTimeout"), 5000).toString()));
+        return new WechatConfiguration(props.getProperty(WechatConstants.WECHAT_WEBHOOK),
+                Integer.valueOf(props.getOrDefault(WechatConstants.WECHAT_CONNECT_TIMEOUT, WechatConstants.DEFAULT_WECHAT_CONNECT_TIMEOUT).toString()),
+                Integer.valueOf(props.getOrDefault(WechatConstants.WECHAT_READ_TIMEOUT, WechatConstants.DEFAULT_WECHAT_READ_TIMEOUT).toString()));
     }
 }
