@@ -40,10 +40,7 @@ public final class JobItemExecutorFactory {
     
     static {
         ElasticJobServiceLoader.registerTypedService(TypedJobItemExecutor.class);
-        for (JobItemExecutor each : ServiceLoader.load(ClassedJobItemExecutor.class)) {
-            ClassedJobItemExecutor typedJobItemExecutor = (ClassedJobItemExecutor) each;
-            CLASSED_EXECUTORS.put(typedJobItemExecutor.getElasticJobClass(), typedJobItemExecutor);
-        }
+        ServiceLoader.load(ClassedJobItemExecutor.class).forEach(each -> CLASSED_EXECUTORS.put(each.getElasticJobClass(), each));
     }
     
     /**
