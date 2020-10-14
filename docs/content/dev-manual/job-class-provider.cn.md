@@ -12,5 +12,5 @@ weight = 4
 
 | *已知实现类*                     | *详细说明*                         |
 | ------------------------------- | --------------------------------- |
-| SimpleJobClassNameProvider      | 标准环境下的作业类名称提供策略        |
+| DefaultJobClassNameProvider     | 标准环境下的作业类名称提供策略        |
 | SpringProxyJobClassNameProvider | Spring 容器环境下的作业类名称提供策略 |

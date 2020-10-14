@@ -12,5 +12,5 @@ Job class name provider, used to provide job class name in different contain env
 
 | *Implementation Class*          | *Description*                                           |
 | ------------------------------- | ------------------------------------------------------- |
-| SimpleJobClassNameProvider      | Job class name provider in standard environment         |
+| DefaultJobClassNameProvider     | Job class name provider in standard environment         |
 | SpringProxyJobClassNameProvider | Job class name provider in Spring container environment |
