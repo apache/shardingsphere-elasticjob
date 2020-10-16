@@ -60,7 +60,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         result.put("mail.smtp.host", emailConfiguration.getHost());
         result.put("mail.smtp.port", emailConfiguration.getPort());
         result.put("mail.smtp.auth", "true");
-        result.put("mail.transport.protocol", emailConfiguration.getProtocol());
+        result.put("mail.transport.protocol", "smtp");
         result.setProperty("mail.debug", Boolean.toString(emailConfiguration.isDebug()));
         if (emailConfiguration.isUseSsl()) {
             result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");

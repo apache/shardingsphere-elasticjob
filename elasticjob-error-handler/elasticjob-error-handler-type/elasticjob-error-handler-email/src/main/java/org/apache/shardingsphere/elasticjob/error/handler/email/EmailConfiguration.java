@@ -37,8 +37,6 @@ public final class EmailConfiguration {
     
     private String password;
     
-    private String protocol;
-    
     private boolean useSsl;
     
     private String subject;
@@ -63,7 +61,6 @@ public final class EmailConfiguration {
         EmailConfiguration configuration = new EmailConfiguration();
         configuration.setHost(props.getProperty(EmailConstants.EMAIL_HOST));
         configuration.setPort(Integer.parseInt(props.getProperty(EmailConstants.EMAIL_PORT)));
-        configuration.setProtocol(props.getProperty(EmailConstants.EMAIL_PROTOCOL));
         configuration.setUsername(props.getProperty(EmailConstants.EMAIL_USERNAME));
         configuration.setPassword(props.getProperty(EmailConstants.EMAIL_PASSWORD));
         configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_USE_SSL, Boolean.FALSE.toString()).toString()));

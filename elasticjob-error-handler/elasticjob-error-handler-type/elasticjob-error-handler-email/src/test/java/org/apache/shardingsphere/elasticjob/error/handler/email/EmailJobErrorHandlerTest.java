@@ -63,7 +63,6 @@ public final class EmailJobErrorHandlerTest {
                 .setProperty(EmailConstants.EMAIL_PORT, "465")
                 .setProperty(EmailConstants.EMAIL_USERNAME, "xxx")
                 .setProperty(EmailConstants.EMAIL_PASSWORD, "xxx")
-                .setProperty(EmailConstants.EMAIL_PROTOCOL, "smtp")
                 .setProperty(EmailConstants.EMAIL_USE_SSL, "true")
                 .setProperty(EmailConstants.EMAIL_SUBJECT, "Unit test notification")
                 .setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com")
