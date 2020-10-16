@@ -18,8 +18,10 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
@@ -33,7 +35,6 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ServiceLoader;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -65,36 +66,63 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
         verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/send?access_token=wrongToken",
-                null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
+        actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=wrongToken"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
+    }
+    
+    @Test
+    public void assertHandleExceptionWithUrlIsNotFound() {
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
+        setStaticFieldValue(actual);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException(getJobConfiguration("http://localhost:9875/404"), cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
-        actual.setDingtalkConfiguration(new DingtalkConfiguration("http://localhost:9875/404?access_token=wrongToken",
-                null, null, 3000, 500));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
+        actual.handleException(getNoSignJobConfiguration("http://wrongUrl"), cause);
+        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", "test_job", cause);
     }
     
     @Test
-    public void assertGetType() {
+    public void assertHandleExceptionWithNoSign() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
-        assertThat(actual.getType(), is("DINGTALK"));
+        setStaticFieldValue(actual);
+        Throwable cause = new RuntimeException("test");
+        actual.handleException(getNoSignJobConfiguration("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
+        verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
+    }
+    
+    private JobConfiguration getJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
+                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
+                .setProperty(DingtalkConstants.DINGTALK_SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
+                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
+                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
+                .build();
+    }
+    
+    private JobConfiguration getNoSignJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
+                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
+                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
+                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
+                .build();
     }
     
     @SneakyThrows
@@ -107,6 +135,12 @@ public final class DingtalkJobErrorHandlerTest {
         field.set(dingtalkJobErrorHandler, log);
     }
     
+    @Test
+    public void assertGetType() {
+        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
+        assertThat(actual.getType(), is("DINGTALK"));
+    }
+    
     @AfterClass
     public static void close() {
         if (null != restfulService) {
@@ -115,11 +149,6 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     private DingtalkJobErrorHandler getDingtalkJobErrorHandler() {
-        for (JobErrorHandler each : ServiceLoader.load(JobErrorHandler.class)) {
-            if (each instanceof DingtalkJobErrorHandler) {
-                return (DingtalkJobErrorHandler) each;
-            }
-        }
-        return new DingtalkJobErrorHandler();
+        return (DingtalkJobErrorHandler) JobErrorHandlerFactory.createHandler("DINGTALK").orElseThrow(() -> new JobConfigurationException("DINGTALK error handler not found."));
     }
 }

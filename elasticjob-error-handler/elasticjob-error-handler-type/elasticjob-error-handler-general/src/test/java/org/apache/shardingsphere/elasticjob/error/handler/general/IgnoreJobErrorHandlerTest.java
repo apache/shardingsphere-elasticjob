@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
@@ -25,6 +26,7 @@ public final class IgnoreJobErrorHandlerTest {
     
     @Test
     public void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("IGNORE").orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
+        JobErrorHandlerFactory.createHandler("IGNORE").orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found."))
+                .handleException(JobConfiguration.newBuilder("test_job", 3).build(), new RuntimeException("test"));
     }
 }

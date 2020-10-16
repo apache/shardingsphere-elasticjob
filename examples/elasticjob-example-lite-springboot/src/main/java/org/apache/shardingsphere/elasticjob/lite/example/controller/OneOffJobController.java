@@ -28,12 +28,42 @@ import javax.annotation.Resource;
 @DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
     
+    private static final String RES_TEXT = "{\"msg\":\"OK\"}";
+    
     @Resource(name = "manualScriptJobBean")
     private OneOffJobBootstrap manualScriptJob;
     
-    @GetMapping("/execute")
-    public String executeOneOffJob() {
+    @Resource(name = "occurErrorNoticeDingtlakBean")
+    private OneOffJobBootstrap occurErrorNoticeDingtlakJob;
+    
+    @Resource(name = "occurErrorNoticeWechatBean")
+    private OneOffJobBootstrap occurErrorNoticeWechatJob;
+    
+    @Resource(name = "occurErrorNoticeEmailBean")
+    private OneOffJobBootstrap occurErrorNoticeEmailJob;
+    
+    
+    @GetMapping("/execute/manualScriptJob")
+    public String executeManualScriptJob() {
         manualScriptJob.execute();
-        return "{\"msg\":\"OK\"}";
+        return RES_TEXT;
+    }
+    
+    @GetMapping("/execute/occurErrorNoticeDingtlakJob")
+    public String executeOneOffJob() {
+        occurErrorNoticeDingtlakJob.execute();
+        return RES_TEXT;
+    }
+    
+    @GetMapping("/execute/occurErrorNoticeWechatJob")
+    public String executeOccurErrorNoticeWechatJob() {
+        occurErrorNoticeWechatJob.execute();
+        return RES_TEXT;
+    }
+    
+    @GetMapping("/execute/occurErrorNoticeEmailJob")
+    public String executeOccurErrorNoticeEmailJob() {
+        occurErrorNoticeEmailJob.execute();
+        return RES_TEXT;
     }
 }

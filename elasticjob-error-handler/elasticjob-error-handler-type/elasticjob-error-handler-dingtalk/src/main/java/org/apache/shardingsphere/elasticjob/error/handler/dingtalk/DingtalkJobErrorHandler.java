@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
@@ -30,15 +29,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -56,13 +54,6 @@ import java.util.Collections;
 @Slf4j
 public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
-    private static final String CONFIG_PREFIX = "dingtalk";
-    
-    private static final String ERROR_HANDLER_CONFIG = "conf/error-handler-dingtalk.yaml";
-    
-    @Setter
-    private DingtalkConfiguration dingtalkConfiguration;
-    
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
     public DingtalkJobErrorHandler() {
@@ -70,17 +61,14 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        if (null == dingtalkConfiguration) {
-            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ERROR_HANDLER_CONFIG);
-            dingtalkConfiguration = YamlEngine.unmarshal(CONFIG_PREFIX, inputStream, DingtalkConfiguration.class);
-        }
-        HttpPost httpPost = new HttpPost(getUrl());
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
+        DingtalkConfiguration dingtalkConfiguration = DingtalkConfiguration.getByProps(jobConfig.getProps());
+        HttpPost httpPost = new HttpPost(getUrl(dingtalkConfiguration));
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(dingtalkConfiguration.getConnectTimeout())
                 .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
         httpPost.setConfig(requestConfig);
-        String paramJson = getParamJson(getMsg(jobName, cause));
+        String paramJson = getParamJson(getMsg(jobConfig.getJobName(), dingtalkConfiguration, cause));
         StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
@@ -90,15 +78,16 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
+                    log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobConfig.getJobName(), resp.get("errmsg").getAsString(), cause);
                 } else {
-                    log.error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
+                    log.error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobConfig.getJobName(), cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
+                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
             }
         } catch (IOException ex) {
-            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, ex);
+            cause.addSuppressed(ex);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobConfig.getJobName(), cause);
         }
     }
     
@@ -106,7 +95,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", msg)));
     }
     
-    private String getMsg(final String jobName, final Throwable cause) {
+    private String getMsg(final String jobName, final DingtalkConfiguration dingtalkConfiguration, final Throwable cause) {
         StringWriter sw = new StringWriter();
         cause.printStackTrace(new PrintWriter(sw, true));
         String msg = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, sw.toString());
@@ -116,24 +105,24 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return msg;
     }
     
-    private String getUrl() {
+    private String getUrl(final DingtalkConfiguration dingtalkConfiguration) {
         if (Strings.isNullOrEmpty(dingtalkConfiguration.getSecret())) {
             return dingtalkConfiguration.getWebhook();
         } else {
-            return getSignUrl();
+            return getSignUrl(dingtalkConfiguration);
         }
     }
     
-    private String getSignUrl() {
+    private String getSignUrl(final DingtalkConfiguration dingtalkConfiguration) {
         try {
             Long timestamp = System.currentTimeMillis();
-            return String.format("%s&timestamp=%s&sign=%s", dingtalkConfiguration.getWebhook(), timestamp, sign(timestamp));
+            return String.format("%s&timestamp=%s&sign=%s", dingtalkConfiguration.getWebhook(), timestamp, sign(timestamp, dingtalkConfiguration));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException ex) {
             throw new JobConfigurationException(ex);
         }
     }
     
-    private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+    private String sign(final Long timestamp, final DingtalkConfiguration dingtalkConfiguration) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String stringToSign = timestamp + "\n" + dingtalkConfiguration.getSecret();
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256"));

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,22 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.general;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-
-/**
- * Job error handler for ignore exception.
- */
-public final class IgnoreJobErrorHandler implements JobErrorHandler {
+public final class DingtalkConstants {
     
-    @Override
-    public void handleException(final JobConfiguration jobConfiguration, final Throwable cause) {
-    }
+    public static final String PREFIX = "dingtalk.";
     
-    @Override
-    public String getType() {
-        return "IGNORE";
-    }
+    public static final String DINGTALK_WEBHOOK = PREFIX + "webhook";
+    
+    public static final String DINGTALK_KEYWORD = PREFIX + "keyword";
+    
+    public static final String DINGTALK_SECRET = PREFIX + "secret";
+    
+    public static final String DINGTALK_CONNECT_TIMEOUT = PREFIX + "connectTimeout";
+    
+    public static final String DINGTALK_READ_TIMEOUT = PREFIX + "readTimeout";
+    
+    public static final Integer DEFAULT_DINGTALK_CONNECT_TIMEOUT = 3000;
+    
+    public static final Integer DEFAULT_DINGTALK_READ_TIMEOUT = 5000;
 }
