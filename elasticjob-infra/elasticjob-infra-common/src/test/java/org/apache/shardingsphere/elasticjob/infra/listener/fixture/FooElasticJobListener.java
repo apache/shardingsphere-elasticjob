@@ -20,7 +20,8 @@ package org.apache.shardingsphere.elasticjob.infra.listener.fixture;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 
-public class FooElasticJobListener implements ElasticJobListener {
+public final class FooElasticJobListener implements ElasticJobListener {
+    
     @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }

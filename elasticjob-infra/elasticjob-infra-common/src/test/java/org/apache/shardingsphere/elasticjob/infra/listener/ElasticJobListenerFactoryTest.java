@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public class ElasticJobListenerFactoryTest {
+public final class ElasticJobListenerFactoryTest {
 
     @Test(expected = JobConfigurationException.class)
     public void assertCreateInvalidJobListener() {
@@ -35,5 +35,4 @@ public class ElasticJobListenerFactoryTest {
     public void assertCreatJobListener() {
         assertThat(ElasticJobListenerFactory.createListener("fooElasticJobListener").orElse(null), instanceOf(FooElasticJobListener.class));
     }
-
 }
