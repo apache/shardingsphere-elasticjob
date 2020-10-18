@@ -85,7 +85,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
             log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobName, cause);
         }
     }
-
+    
     private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
         HttpPost result = new HttpPost(config.getWebhook());
         RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
@@ -96,7 +96,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         result.setEntity(entity);
         return result;
     }
-
+    
     private String getJsonParameter(final String message) {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }

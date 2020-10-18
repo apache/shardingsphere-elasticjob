@@ -124,7 +124,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Authenticator getSessionAuthenticator(final EmailConfiguration config) {
         return new Authenticator() {
-
+            
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(config.getUsername(), config.getPassword());
