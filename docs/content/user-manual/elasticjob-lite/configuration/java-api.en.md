@@ -27,7 +27,7 @@ Configuration:
 
 Class name: `org.apache.shardingsphere.elasticjob.api.JobConfiguration`
 
-Configuration：
+Configuration: 
 
 | Name                          | Constructor injection |
 | ----------------------------- |:--------------------- |

@@ -38,7 +38,7 @@ Configuration:
 
 \<elasticjob:job />
 
-Configuration：
+Configuration: 
 
 | Name                              | Required |
 | --------------------------------- |:-------- |
