@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config;
 
 /**
  * Dingtalk properties constants.
