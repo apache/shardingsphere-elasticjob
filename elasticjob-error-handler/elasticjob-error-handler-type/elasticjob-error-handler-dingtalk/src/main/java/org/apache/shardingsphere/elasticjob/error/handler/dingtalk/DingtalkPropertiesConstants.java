@@ -18,23 +18,23 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 /**
- * Dingtalk constants.
+ * Dingtalk properties constants.
  */
-public final class DingtalkConstants {
+public final class DingtalkPropertiesConstants {
     
     public static final String PREFIX = "dingtalk.";
     
-    public static final String DINGTALK_WEBHOOK = PREFIX + "webhook";
+    public static final String WEBHOOK = PREFIX + "webhook";
     
-    public static final String DINGTALK_KEYWORD = PREFIX + "keyword";
+    public static final String KEYWORD = PREFIX + "keyword";
     
-    public static final String DINGTALK_SECRET = PREFIX + "secret";
+    public static final String SECRET = PREFIX + "secret";
     
-    public static final String DINGTALK_CONNECT_TIMEOUT = PREFIX + "connectTimeout";
+    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
     
-    public static final String DINGTALK_READ_TIMEOUT = PREFIX + "readTimeout";
+    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
     
-    public static final Integer DEFAULT_DINGTALK_CONNECT_TIMEOUT = 3000;
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
     
-    public static final Integer DEFAULT_DINGTALK_READ_TIMEOUT = 5000;
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
 }

@@ -31,9 +31,9 @@
     <context:property-placeholder location="classpath:conf/*.properties" />
     
     <elasticjob:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
-
+    
     <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999"/>
-
+    
     <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${event.rdb.driver}" />
         <property name="url" value="${event.rdb.url}" />
@@ -65,26 +65,28 @@
             <!--<prop key="script.command.line">${script.scriptCommandLine}</prop>-->
         <!--</props>-->
     <!--</elasticjob:job>-->
-
+    
     <bean id="occurErrorNoticeDingtlakJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
-
+    
     <elasticjob:job id="${occurErrorNoticeDingtlakJob.id}" job-ref="occurErrorNoticeDingtlakJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
-                    sharding-total-count="${occurErrorNoticeDingtlakJob.shardingTotalCount}" cron="${occurErrorNoticeDingtlakJob.cron}" sharding-item-parameters="${occurErrorNoticeDingtlakJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeDingtlakJob.monitorExecution}" failover="${occurErrorNoticeDingtlakJob.failover}" description="${occurErrorNoticeDingtlakJob.description}"
+                    sharding-total-count="${occurErrorNoticeDingtlakJob.shardingTotalCount}" cron="${occurErrorNoticeDingtlakJob.cron}" sharding-item-parameters="${occurErrorNoticeDingtlakJob.shardingItemParameters}" 
+                    monitor-execution="${occurErrorNoticeDingtlakJob.monitorExecution}" failover="${occurErrorNoticeDingtlakJob.failover}" description="${occurErrorNoticeDingtlakJob.description}"
                     job-error-handler-type="${occurErrorNoticeDingtlakJob.jobErrorHandlerType}"
                     disabled="${occurErrorNoticeDingtlakJob.disabled}" overwrite="${occurErrorNoticeDingtlakJob.overwrite}" >
         <props>
             <prop key="dingtalk.webhook">https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f</prop>
             <prop key="dingtalk.keyword">keyword</prop>
             <prop key="dingtalk.secret">SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4</prop>
-            <prop key="dingtalk.connectTimeout">3000</prop>
-            <prop key="dingtalk.readTimeout">5000</prop>
+            <prop key="dingtalk.connectTimeoutMillisecond">3000</prop>
+            <prop key="dingtalk.readTimeoutMillisecond">5000</prop>
         </props>
     </elasticjob:job>
-
+    
     <bean id="occurErrorNoticeWechatJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
-
+    
     <elasticjob:job id="${occurErrorNoticeWechatJob.id}" job-ref="occurErrorNoticeWechatJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
-                    sharding-total-count="${occurErrorNoticeWechatJob.shardingTotalCount}" cron="${occurErrorNoticeWechatJob.cron}" sharding-item-parameters="${occurErrorNoticeWechatJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeWechatJob.monitorExecution}" failover="${occurErrorNoticeWechatJob.failover}" description="${occurErrorNoticeWechatJob.description}"
+                    sharding-total-count="${occurErrorNoticeWechatJob.shardingTotalCount}" cron="${occurErrorNoticeWechatJob.cron}" sharding-item-parameters="${occurErrorNoticeWechatJob.shardingItemParameters}" 
+                    monitor-execution="${occurErrorNoticeWechatJob.monitorExecution}" failover="${occurErrorNoticeWechatJob.failover}" description="${occurErrorNoticeWechatJob.description}"
                     job-error-handler-type="${occurErrorNoticeWechatJob.jobErrorHandlerType}"
                     disabled="${occurErrorNoticeWechatJob.disabled}" overwrite="${occurErrorNoticeWechatJob.overwrite}" >
         <props>
@@ -93,11 +95,12 @@
             <prop key="wechat.readTimeout">5000</prop>
         </props>
     </elasticjob:job>
-
-<!--    <bean id="occurErrorNoticeEmailJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
-
+    
+    <bean id="occurErrorNoticeEmailJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
+    
 <!--    <elasticjob:job id="${occurErrorNoticeEmailJob.id}" job-ref="occurErrorNoticeEmailJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
-<!--                    sharding-total-count="${occurErrorNoticeEmailJob.shardingTotalCount}" cron="${occurErrorNoticeEmailJob.cron}" sharding-item-parameters="${occurErrorNoticeEmailJob.shardingItemParameters}" monitor-execution="${occurErrorNoticeEmailJob.monitorExecution}" failover="${occurErrorNoticeEmailJob.failover}" description="${occurErrorNoticeEmailJob.description}"-->
+<!--                    sharding-total-count="${occurErrorNoticeEmailJob.shardingTotalCount}" cron="${occurErrorNoticeEmailJob.cron}" sharding-item-parameters="${occurErrorNoticeEmailJob.shardingItemParameters}" -->
+<!--                    monitor-execution="${occurErrorNoticeEmailJob.monitorExecution}" failover="${occurErrorNoticeEmailJob.failover}" description="${occurErrorNoticeEmailJob.description}"-->
 <!--                    job-error-handler-type="${occurErrorNoticeEmailJob.jobErrorHandlerType}"-->
 <!--                    disabled="${occurErrorNoticeEmailJob.disabled}" overwrite="${occurErrorNoticeEmailJob.overwrite}" >-->
 <!--        <props>-->
