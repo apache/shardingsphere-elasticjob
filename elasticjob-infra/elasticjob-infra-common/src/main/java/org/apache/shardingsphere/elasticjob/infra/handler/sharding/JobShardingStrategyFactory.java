@@ -43,9 +43,7 @@ public final class JobShardingStrategyFactory {
      */
     public static JobShardingStrategy getStrategy(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobShardingStrategy.class, DEFAULT_STRATEGY)
-                    .orElseThrow(() -> new JobConfigurationException("The parameter named 'type' is null or empty," 
-                            + " and cannot find default sharding strategy using default type '%s'.", DEFAULT_STRATEGY));
+            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobShardingStrategy.class, DEFAULT_STRATEGY).get();
         }
         return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobShardingStrategy.class, type)
                 .orElseThrow(() -> new JobConfigurationException("Cannot find sharding strategy using type '%s'.", type));

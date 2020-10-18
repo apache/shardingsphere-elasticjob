@@ -43,9 +43,7 @@ public final class JobExecutorServiceHandlerFactory {
      */
     public static JobExecutorServiceHandler getHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, DEFAULT_HANDLER)
-                    .orElseThrow(() -> new JobConfigurationException("The parameter named 'type' is null or empty," 
-                            + " and cannot find default executor service handler using default type '%s'.", DEFAULT_HANDLER));
+            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, DEFAULT_HANDLER).get();
         }
         return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, type)
                 .orElseThrow(() -> new JobConfigurationException("Cannot find executor service handler using type '%s'.", type));
