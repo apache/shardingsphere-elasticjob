@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat.config;
 
 /**
- * Wechat properties constants.
+ * Job error handler properties constants for send error message via wechat.
  */
 public final class WechatPropertiesConstants {
     
