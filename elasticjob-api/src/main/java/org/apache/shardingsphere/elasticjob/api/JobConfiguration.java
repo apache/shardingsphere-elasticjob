@@ -283,7 +283,7 @@ public final class JobConfiguration {
             this.jobErrorHandlerType = jobErrorHandlerType;
             return this;
         }
-    
+        
         /**
          * Set job listener types.
          *
