@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 /**
@@ -42,8 +43,11 @@ public final class JobExecutorServiceHandlerFactory {
      */
     public static JobExecutorServiceHandler getHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return ElasticJobServiceLoader.getCachedInstance(JobExecutorServiceHandler.class, DEFAULT_HANDLER);
+            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, DEFAULT_HANDLER)
+                    .orElseThrow(() -> new JobConfigurationException("The parameter named 'type' is null or empty," 
+                            + " and cannot find default executor service handler using default type '%s'.", DEFAULT_HANDLER));
         }
-        return ElasticJobServiceLoader.getCachedInstance(JobExecutorServiceHandler.class, type);
+        return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, type)
+                .orElseThrow(() -> new JobConfigurationException("Cannot find executor service handler using type '%s'.", type));
     }
 }

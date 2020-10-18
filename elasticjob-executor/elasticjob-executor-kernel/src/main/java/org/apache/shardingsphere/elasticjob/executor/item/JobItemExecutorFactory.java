@@ -67,6 +67,7 @@ public final class JobItemExecutorFactory {
      * @return job item executor
      */
     public static JobItemExecutor getExecutor(final String elasticJobType) {
-        return ElasticJobServiceLoader.getCachedInstance(TypedJobItemExecutor.class, elasticJobType);
+        return ElasticJobServiceLoader.getCachedTypedServiceInstance(TypedJobItemExecutor.class, elasticJobType)
+                .orElseThrow(() -> new JobConfigurationException("Cannot find executor for elastic job type `%s`", elasticJobType));
     }
 }
