@@ -29,7 +29,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
@@ -47,6 +46,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Job error handler for send error message via dingtalk.
@@ -73,24 +73,24 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        DingtalkConfiguration dingtalkConfig = new DingtalkConfiguration(jobConfig.getProps());
-        HttpPost httpPost = createHTTPPostMethod(jobConfig.getJobName(), cause, dingtalkConfig);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        DingtalkConfiguration dingtalkConfig = new DingtalkConfiguration(props);
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, dingtalkConfig);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject responseMessage = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(responseMessage.get("errcode").getAsString())) {
-                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobConfig.getJobName(), responseMessage.get("errmsg").getAsString(), cause);
+                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, responseMessage.get("errmsg").getAsString(), cause);
                 } else {
-                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobConfig.getJobName(), cause);
+                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
+                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
         } catch (final IOException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
         }
     }
     

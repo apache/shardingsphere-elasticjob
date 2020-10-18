@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConfiguration;
 
@@ -50,15 +49,15 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     private Session session;
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        EmailConfiguration emailConfig = new EmailConfiguration(jobConfig.getProps());
-        String errorMessage = getErrorMessage(jobConfig.getJobName(), cause);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        EmailConfiguration emailConfig = new EmailConfiguration(props);
+        String errorMessage = getErrorMessage(jobName, cause);
         try {
             sendMessage(createMessage(errorMessage, emailConfig), emailConfig);
-            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobName, cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
         }
     }
     
