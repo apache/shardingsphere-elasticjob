@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.email.EmailConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;

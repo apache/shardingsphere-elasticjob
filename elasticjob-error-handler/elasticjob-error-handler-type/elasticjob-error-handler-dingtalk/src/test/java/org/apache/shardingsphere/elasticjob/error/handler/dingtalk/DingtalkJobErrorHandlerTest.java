@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
