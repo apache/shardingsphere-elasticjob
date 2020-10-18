@@ -87,7 +87,7 @@ Configuration:
 | wechat.connectTimeoutMillisecond | TODO        | 3000 milliseconds |
 | wechat.readTimeoutMillisecond    | TODO        | 5000 milliseconds |
 
-## Dingtalk Enterprise Notification Strategy
+## Dingtalk Notification Strategy
 
 Type: DINGTALK
 
