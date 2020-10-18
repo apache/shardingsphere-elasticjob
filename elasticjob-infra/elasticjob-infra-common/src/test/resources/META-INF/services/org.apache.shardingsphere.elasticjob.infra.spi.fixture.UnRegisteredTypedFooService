@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.infra.listener.fixture.FooElasticJobListener
+org.apache.shardingsphere.elasticjob.infra.spi.fixture.impl.UnRegisteredTypedFooServiceImpl
