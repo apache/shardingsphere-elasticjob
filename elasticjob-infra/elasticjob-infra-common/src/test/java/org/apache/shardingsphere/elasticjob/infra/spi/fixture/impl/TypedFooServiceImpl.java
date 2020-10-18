@@ -5,7 +5,7 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ *  
  *     http://www.apache.org/licenses/LICENSE-2.0
  *  
  * Unless required by applicable law or agreed to in writing, software
@@ -15,31 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.listener;
+package org.apache.shardingsphere.elasticjob.infra.spi.fixture.impl;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
+import org.apache.shardingsphere.elasticjob.infra.spi.fixture.TypedFooService;
 
-import java.util.Optional;
-
-/**
- * Job listener factory.
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ElasticJobListenerFactory {
+public final class TypedFooServiceImpl implements TypedFooService {
     
-    static {
-        ElasticJobServiceLoader.registerTypedService(ElasticJobListener.class);
-    }
-    
-    /**
-     * Create a job listener instance.
-     *
-     * @param type job listener type
-     * @return optional job listener instance
-     */
-    public static Optional<ElasticJobListener> createListener(final String type) {
-        return ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type);
+    @Override
+    public String getType() {
+        return "typedFooServiceImpl";
     }
 }

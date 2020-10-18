@@ -44,12 +44,8 @@ public final class JobErrorHandlerFactory {
      */
     public static Optional<JobErrorHandler> createHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return newHandlerInstance(DEFAULT_HANDLER);
+            return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, DEFAULT_HANDLER);
         }
-        return newHandlerInstance(type);
-    }
-    
-    private static Optional<JobErrorHandler> newHandlerInstance(final String type) {
-        return Optional.ofNullable(ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type));
+        return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type);
     }
 }
