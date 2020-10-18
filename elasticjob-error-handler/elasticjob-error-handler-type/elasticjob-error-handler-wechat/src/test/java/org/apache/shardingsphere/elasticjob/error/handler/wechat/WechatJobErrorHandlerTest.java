@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
@@ -61,13 +62,20 @@ public final class WechatJobErrorHandlerTest {
         restfulService.startup();
     }
     
+    @AfterClass
+    public static void close() {
+        if (null != restfulService) {
+            restfulService.shutdown();
+        }
+    }
+    
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getJobConfiguration("http://localhost:9872/send?key=TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3"), cause);
-        verify(log).error("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
+        verify(log).info("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
     @Test
@@ -76,7 +84,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getJobConfiguration("http://localhost:9872/send?key=wrongToken"), cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
+        verify(log).info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
     @Test
@@ -115,20 +123,13 @@ public final class WechatJobErrorHandlerTest {
     
     private JobConfiguration getJobConfiguration(final String webhook) {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty(WechatConstants.WECHAT_WEBHOOK, webhook)
-                .setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "1000")
-                .setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "2000")
+                .setProperty(WechatPropertiesConstants.WEBHOOK, webhook)
+                .setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "1000")
+                .setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, "2000")
                 .build();
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler() {
         return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT").orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
-    }
-    
-    @AfterClass
-    public static void close() {
-        if (null != restfulService) {
-            restfulService.shutdown();
-        }
     }
 }

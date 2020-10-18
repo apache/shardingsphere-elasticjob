@@ -30,6 +30,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration.WechatConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import java.io.IOException;
@@ -51,63 +52,63 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         registerShutdownHook();
     }
     
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread("WechatJobErrorHandler Shutdown-Hook") {
+
+            @SneakyThrows
+            @Override
+            public void run() {
+                log.info("Shutting down HTTP client...");
+                httpclient.close();
+            }
+        });
+    }
+    
     @Override
     public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        WechatConfiguration wechatConfiguration = WechatConfiguration.getByProps(jobConfig.getProps());
-        HttpPost httpPost = new HttpPost(wechatConfiguration.getWebhook());
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(wechatConfiguration.getConnectTimeout())
-                .setSocketTimeout(wechatConfiguration.getReadTimeout())
-                .build();
-        httpPost.setConfig(requestConfig);
-        StringEntity entity = new StringEntity(getParamJson(getMsg(jobConfig.getJobName(), cause)), StandardCharsets.UTF_8);
-        entity.setContentEncoding(StandardCharsets.UTF_8.name());
-        entity.setContentType("application/json");
-        httpPost.setEntity(entity);
+        WechatConfiguration wechatConfig = new WechatConfiguration(jobConfig.getProps());
+        HttpPost httpPost = createHTTPPostMethod(jobConfig.getJobName(), cause, wechatConfig);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobConfig.getJobName(), resp.get("errmsg").getAsString(), cause);
+                    log.info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobConfig.getJobName(), resp.get("errmsg").getAsString(), cause);
                 } else {
-                    log.error("An exception has occurred in Job '{}', Notification to wechat was successful.", jobConfig.getJobName(), cause);
+                    log.info("An exception has occurred in Job '{}', Notification to wechat was successful.", jobConfig.getJobName(), cause);
                 }
             } else {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobConfig.getJobName(), cause);
         }
     }
-    
-    private String getParamJson(final String msg) {
-        return GsonFactory.getGson().toJson(ImmutableMap.of(
-                "msgtype", "text", "text", Collections.singletonMap("content", msg)
-        ));
+
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration wechatConfig) {
+        HttpPost result = new HttpPost(wechatConfig.getWebhook());
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(wechatConfig.getConnectTimeoutMillisecond()).setSocketTimeout(wechatConfig.getReadTimeoutMillisecond()).build();
+        result.setConfig(requestConfig);
+        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
+        entity.setContentEncoding(StandardCharsets.UTF_8.name());
+        entity.setContentType("application/json");
+        result.setEntity(entity);
+        return result;
+    }
+
+    private String getJsonParameter(final String message) {
+        return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }
     
-    private String getMsg(final String jobName, final Throwable cause) {
-        StringWriter sw = new StringWriter();
-        cause.printStackTrace(new PrintWriter(sw, true));
-        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, sw.toString());
+    private String getErrorMessage(final String jobName, final Throwable cause) {
+        StringWriter stringWriter = new StringWriter();
+        cause.printStackTrace(new PrintWriter(stringWriter, true));
+        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, stringWriter.toString());
     }
     
     @Override
     public String getType() {
         return "WECHAT";
-    }
-    
-    private void registerShutdownHook() {
-        Thread t = new Thread("WechatJobErrorHandler Shutdown-Hook") {
-            @SneakyThrows
-            @Override
-            public void run() {
-                log.info("Shutting down httpclient...");
-                httpclient.close();
-            }
-        };
-        Runtime.getRuntime().addShutdownHook(t);
     }
 }

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.wechat;
+package org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Properties;
 
@@ -26,24 +25,17 @@ import java.util.Properties;
  * Wechat configuration.
  */
 @Getter
-@RequiredArgsConstructor
 public final class WechatConfiguration {
     
     private final String webhook;
     
-    private final Integer connectTimeout;
+    private final Integer connectTimeoutMillisecond;
     
-    private final Integer readTimeout;
+    private final Integer readTimeoutMillisecond;
     
-    /**
-     * Get wechat configuration.
-     *
-     * @param props properties
-     * @return wechat configuration
-     */
-    public static WechatConfiguration getByProps(final Properties props) {
-        return new WechatConfiguration(props.getProperty(WechatConstants.WECHAT_WEBHOOK),
-                Integer.valueOf(props.getOrDefault(WechatConstants.WECHAT_CONNECT_TIMEOUT, WechatConstants.DEFAULT_WECHAT_CONNECT_TIMEOUT).toString()),
-                Integer.valueOf(props.getOrDefault(WechatConstants.WECHAT_READ_TIMEOUT, WechatConstants.DEFAULT_WECHAT_READ_TIMEOUT).toString()));
+    public WechatConfiguration(final Properties props) {
+        webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
+        connectTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
+        readTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
     }
 }
