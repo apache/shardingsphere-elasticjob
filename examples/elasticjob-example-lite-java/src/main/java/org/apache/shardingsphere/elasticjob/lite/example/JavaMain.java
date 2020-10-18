@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkPropertiesConstants;
-import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.config.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
@@ -159,17 +159,17 @@ public final class JavaMain {
     }
     
     private static void setEmailConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_HOST, "host");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_PORT, "465");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_USERNAME, "username");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_PASSWORD, "password");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_USE_SSL, "true");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_SUBJECT, "Test elasticJob error message");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2xxx.com");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com");
-        jobConfig.getProps().setProperty(EmailConstants.EMAIL_DEBUG, "false");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "host");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "password");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.IS_USE_SSL, "true");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.SUBJECT, "Test elasticJob error message");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.com");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.com,to2xxx.com");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.CC, "cc@xxx.com");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.com");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.IS_DEBUG, "false");
     }
     
     private static String buildScriptCommandLine() throws IOException {

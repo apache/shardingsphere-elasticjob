@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,17 +60,17 @@ public final class EmailJobErrorHandlerTest {
     
     private JobConfiguration getJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty(EmailConstants.EMAIL_HOST, "xxx")
-                .setProperty(EmailConstants.EMAIL_PORT, "465")
-                .setProperty(EmailConstants.EMAIL_USERNAME, "xxx")
-                .setProperty(EmailConstants.EMAIL_PASSWORD, "xxx")
-                .setProperty(EmailConstants.EMAIL_USE_SSL, "true")
-                .setProperty(EmailConstants.EMAIL_SUBJECT, "Unit test notification")
-                .setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com")
-                .setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2@xxx.com")
-                .setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com")
-                .setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com")
-                .setProperty(EmailConstants.EMAIL_DEBUG, "false")
+                .setProperty(EmailPropertiesConstants.HOST, "xxx")
+                .setProperty(EmailPropertiesConstants.PORT, "465")
+                .setProperty(EmailPropertiesConstants.USERNAME, "xxx")
+                .setProperty(EmailPropertiesConstants.PASSWORD, "xxx")
+                .setProperty(EmailPropertiesConstants.IS_USE_SSL, "true")
+                .setProperty(EmailPropertiesConstants.SUBJECT, "Unit test notification")
+                .setProperty(EmailPropertiesConstants.FROM, "from@xxx.com")
+                .setProperty(EmailPropertiesConstants.TO, "to1@xxx.com,to2@xxx.com")
+                .setProperty(EmailPropertiesConstants.CC, "cc@xxx.com")
+                .setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.com")
+                .setProperty(EmailPropertiesConstants.IS_DEBUG, "false")
                 .build();
     }
     

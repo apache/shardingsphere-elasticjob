@@ -49,43 +49,12 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Session session;
     
-    private synchronized Session createSession(final EmailConfiguration emailConfiguration) {
-        if (null == session) {
-            session = Session.getDefaultInstance(createSessionProperties(emailConfiguration), getSessionAuthenticator(emailConfiguration));
-        }
-        return session;
-    }
-    
-    private Properties createSessionProperties(final EmailConfiguration emailConfiguration) {
-        Properties result = new Properties();
-        result.put("mail.smtp.host", emailConfiguration.getHost());
-        result.put("mail.smtp.port", emailConfiguration.getPort());
-        result.put("mail.smtp.auth", "true");
-        result.put("mail.transport.protocol", "smtp");
-        result.setProperty("mail.debug", Boolean.toString(emailConfiguration.isDebug()));
-        if (emailConfiguration.isUseSsl()) {
-            result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            result.setProperty("mail.smtp.socketFactory.fallback", "false");
-        }
-        return result;
-    }
-    
-    private Authenticator getSessionAuthenticator(final EmailConfiguration emailConfiguration) {
-        return new Authenticator() {
-            
-            @Override
-            public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfiguration.getUsername(), emailConfiguration.getPassword());
-            }
-        };
-    }
-    
     @Override
     public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        EmailConfiguration emailConfiguration = EmailConfiguration.getByProps(jobConfig.getProps());
-        String errorContext = createErrorContext(jobConfig.getJobName(), cause);
+        EmailConfiguration emailConfig = new EmailConfiguration(jobConfig.getProps());
+        String errorMessage = getErrorMessage(jobConfig.getJobName(), cause);
         try {
-            sendMessage(createMessage(errorContext, emailConfiguration), emailConfiguration);
+            sendMessage(createMessage(errorMessage, emailConfig), emailConfig);
             log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobConfig.getJobName(), cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
@@ -93,44 +62,75 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         }
     }
     
-    private String createErrorContext(final String jobName, final Throwable cause) {
+    private String getErrorMessage(final String jobName, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
     }
     
-    private Message createMessage(final String content, final EmailConfiguration emailConfiguration) throws MessagingException {
-        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(emailConfiguration)));
-        result.setFrom(new InternetAddress(emailConfiguration.getFrom()));
-        result.setSubject(emailConfiguration.getSubject());
+    private Message createMessage(final String content, final EmailConfiguration emailConfig) throws MessagingException {
+        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(emailConfig)));
+        result.setFrom(new InternetAddress(emailConfig.getFrom()));
+        result.setSubject(emailConfig.getSubject());
         result.setSentDate(new Date());
         Multipart multipart = new MimeMultipart();
         BodyPart mailBody = new MimeBodyPart();
         mailBody.setContent(content, "text/html; charset=utf-8");
         multipart.addBodyPart(mailBody);
         result.setContent(multipart);
-        String to = emailConfiguration.getTo();
+        String to = emailConfig.getTo();
         if (StringUtils.isNotBlank(to)) {
             String[] tos = to.split(",");
-            for (String t : tos) {
-                result.addRecipient(Message.RecipientType.TO, new InternetAddress(t));
+            for (String each : tos) {
+                result.addRecipient(Message.RecipientType.TO, new InternetAddress(each));
             }
         }
-        if (StringUtils.isNotBlank(emailConfiguration.getCc())) {
-            result.addRecipient(Message.RecipientType.CC, new InternetAddress(emailConfiguration.getCc()));
+        if (StringUtils.isNotBlank(emailConfig.getCc())) {
+            result.addRecipient(Message.RecipientType.CC, new InternetAddress(emailConfig.getCc()));
         }
-        if (StringUtils.isNotBlank(emailConfiguration.getBcc())) {
-            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(emailConfiguration.getBcc()));
+        if (StringUtils.isNotBlank(emailConfig.getBcc())) {
+            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(emailConfig.getBcc()));
         }
         result.saveChanges();
         return result;
     }
     
-    private void sendMessage(final Message message, final EmailConfiguration emailConfiguration) throws MessagingException {
-        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(emailConfiguration)).getTransport()) {
+    private void sendMessage(final Message message, final EmailConfiguration emailConfig) throws MessagingException {
+        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(emailConfig)).getTransport()) {
             transport.connect();
             transport.sendMessage(message, message.getAllRecipients());
         }
+    }
+    
+    private synchronized Session createSession(final EmailConfiguration emailConfig) {
+        if (null == session) {
+            session = Session.getDefaultInstance(createSessionProperties(emailConfig), getSessionAuthenticator(emailConfig));
+        }
+        return session;
+    }
+    
+    private Properties createSessionProperties(final EmailConfiguration emailConfig) {
+        Properties result = new Properties();
+        result.put("mail.smtp.host", emailConfig.getHost());
+        result.put("mail.smtp.port", emailConfig.getPort());
+        result.put("mail.smtp.auth", "true");
+        result.put("mail.transport.protocol", "smtp");
+        result.setProperty("mail.debug", Boolean.toString(emailConfig.isDebug()));
+        if (emailConfig.isUseSsl()) {
+            result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            result.setProperty("mail.smtp.socketFactory.fallback", "false");
+        }
+        return result;
+    }
+    
+    private Authenticator getSessionAuthenticator(final EmailConfiguration emailConfig) {
+        return new Authenticator() {
+
+            @Override
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
+            }
+        };
     }
     
     @Override
