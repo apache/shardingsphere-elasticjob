@@ -22,6 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Properties;
 
+/**
+ * Dingtalk configuration.
+ */
 @Getter
 @RequiredArgsConstructor
 public final class DingtalkConfiguration {
@@ -37,10 +40,10 @@ public final class DingtalkConfiguration {
     private final Integer readTimeout;
     
     /**
-     * Get dingtalk config.
+     * Get dingtalk configuration.
      *
-     * @param props props
-     * @return dingtalk config.
+     * @param props properties
+     * @return dingtalk configuration.
      */
     public static DingtalkConfiguration getByProps(final Properties props) {
         return new DingtalkConfiguration(props.getProperty(DingtalkConstants.DINGTALK_WEBHOOK),

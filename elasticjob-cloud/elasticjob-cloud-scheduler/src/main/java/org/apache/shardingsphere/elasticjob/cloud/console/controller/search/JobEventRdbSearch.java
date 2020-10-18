@@ -136,16 +136,16 @@ public final class JobEventRdbSearch {
     
     private PreparedStatement createDataPreparedStatement(final Connection conn, final String tableName, final Collection<String> tableFields, final Condition condition) throws SQLException {
         String sql = buildDataSql(tableName, tableFields, condition);
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        setBindValue(preparedStatement, tableFields, condition);
-        return preparedStatement;
+        PreparedStatement result = conn.prepareStatement(sql);
+        setBindValue(result, tableFields, condition);
+        return result;
     }
     
     private PreparedStatement createCountPreparedStatement(final Connection conn, final String tableName, final Collection<String> tableFields, final Condition condition) throws SQLException {
         String sql = buildCountSql(tableName, tableFields, condition);
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        setBindValue(preparedStatement, tableFields, condition);
-        return preparedStatement;
+        PreparedStatement result = conn.prepareStatement(sql);
+        setBindValue(result, tableFields, condition);
+        return result;
     }
     
     private String buildDataSql(final String tableName, final Collection<String> tableFields, final Condition condition) {

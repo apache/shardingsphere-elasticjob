@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
+/**
+ * Wechat constants.
+ */
 public final class WechatConstants {
     
     public static final String PREFIX = "wechat.";

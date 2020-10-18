@@ -25,14 +25,14 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BlockUtils {
-
+    
     /**
      * Wait short time.
      */
     public static void waitingShortTime() {
         sleep(100L);
     }
-
+    
     /**
      * Sleep for the specified number of milliseconds.
      *

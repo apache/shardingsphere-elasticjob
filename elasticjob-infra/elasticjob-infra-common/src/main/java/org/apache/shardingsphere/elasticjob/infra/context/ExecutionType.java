@@ -21,12 +21,12 @@ package org.apache.shardingsphere.elasticjob.infra.context;
  * Execution type.
  */
 public enum ExecutionType {
-
+    
     /**
      * Ready of execute.
      */
     READY,
-
+    
     /**
      * Failover execution.
      */

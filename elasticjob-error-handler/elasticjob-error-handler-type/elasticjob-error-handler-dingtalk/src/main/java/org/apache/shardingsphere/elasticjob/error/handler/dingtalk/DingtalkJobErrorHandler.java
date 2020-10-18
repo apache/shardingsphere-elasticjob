@@ -68,7 +68,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
                 .setConnectTimeout(dingtalkConfiguration.getConnectTimeout())
                 .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
         httpPost.setConfig(requestConfig);
-        String paramJson = getParamJson(getMsg(jobConfig.getJobName(), dingtalkConfiguration, cause));
+        String paramJson = getParamJson(getMessage(jobConfig.getJobName(), dingtalkConfiguration, cause));
         StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
@@ -95,14 +95,14 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", msg)));
     }
     
-    private String getMsg(final String jobName, final DingtalkConfiguration dingtalkConfiguration, final Throwable cause) {
+    private String getMessage(final String jobName, final DingtalkConfiguration dingtalkConfiguration, final Throwable cause) {
         StringWriter sw = new StringWriter();
         cause.printStackTrace(new PrintWriter(sw, true));
-        String msg = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, sw.toString());
+        String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, sw.toString());
         if (!Strings.isNullOrEmpty(dingtalkConfiguration.getKeyword())) {
-            msg = dingtalkConfiguration.getKeyword().concat(msg);
+            result = dingtalkConfiguration.getKeyword().concat(result);
         }
-        return msg;
+        return result;
     }
     
     private String getUrl(final DingtalkConfiguration dingtalkConfiguration) {

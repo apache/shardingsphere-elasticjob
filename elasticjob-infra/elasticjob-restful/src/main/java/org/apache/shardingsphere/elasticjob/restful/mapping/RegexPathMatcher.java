@@ -78,15 +78,15 @@ public final class RegexPathMatcher implements PathMatcher {
     
     private List<String> extractTemplateNames(final String pathPattern) {
         String[] pathFragments = pathPattern.split(PATH_SEPARATOR);
-        List<String> names = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (String fragment : pathFragments) {
             int start = fragment.indexOf('{');
             int end = fragment.lastIndexOf('}');
             if (-1 != start && -1 != end) {
-                names.add(fragment.substring(start + 1, end));
+                result.add(fragment.substring(start + 1, end));
             }
         }
-        return names;
+        return result;
     }
     
     private String trimUriQuery(final String uri) {

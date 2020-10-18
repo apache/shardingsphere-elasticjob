@@ -38,8 +38,8 @@ public final class HandlerMappingRegistry {
     /**
      * Get a MappingContext with Handler for the request.
      *
-     * @param httpRequest Http request
-     * @return A MappingContext if matched. Return null if mismatched.
+     * @param httpRequest HTTP request
+     * @return A MappingContext if matched, return null if mismatched.
      */
     public MappingContext<Handler> getMappingContext(final HttpRequest httpRequest) {
         UrlPatternMap<Handler> urlPatternMap = mappings.get(httpRequest.method());
@@ -52,9 +52,9 @@ public final class HandlerMappingRegistry {
     /**
      * Add a Handler for a path pattern.
      *
-     * @param method      HTTP method
-     * @param pathPattern Path pattern
-     * @param handler     Handler
+     * @param method HTTP method
+     * @param pathPattern path pattern
+     * @param handler handler
      */
     public void addMapping(final HttpMethod method, final String pathPattern, final Handler handler) {
         mappings.computeIfAbsent(method, httpMethod -> new RegexUrlPatternMap<>());

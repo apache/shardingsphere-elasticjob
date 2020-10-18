@@ -28,8 +28,8 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final JobConfiguration jobConfiguration, final Throwable cause) {
-        log.error(String.format("Job '%s' exception occur in job processing", jobConfiguration.getJobName()), cause);
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
+        log.error(String.format("Job '%s' exception occur in job processing", jobConfig.getJobName()), cause);
     }
     
     @Override

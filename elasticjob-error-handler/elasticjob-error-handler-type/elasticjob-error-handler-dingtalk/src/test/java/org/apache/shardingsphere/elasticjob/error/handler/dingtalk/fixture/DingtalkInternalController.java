@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
@@ -39,7 +38,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Map;
 
-@Slf4j
 public final class DingtalkInternalController implements RestfulController {
     
     private static final String ACCESS_TOKEN = "42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f";
@@ -55,7 +53,7 @@ public final class DingtalkInternalController implements RestfulController {
      * @param timestamp timestamp
      * @param sign sign
      * @param body body
-     * @return Send Result.
+     * @return send Result
      */
     @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")
@@ -82,7 +80,6 @@ public final class DingtalkInternalController implements RestfulController {
     
     private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String stringToSign = timestamp + "\n" + SECRET;
-        System.out.println(stringToSign);
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
         byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));

@@ -45,11 +45,10 @@ public final class ShardingOperateAPIImplTest {
         shardingOperateAPI.disable("test_job", "0");
         verify(regCenter).persist("/test_job/sharding/0/disabled", "");
     }
-
+    
     @Test
     public void assertEnableSharding() {
         shardingOperateAPI.enable("test_job", "0");
         verify(regCenter).remove("/test_job/sharding/0/disabled");
     }
-
 }

@@ -57,7 +57,7 @@ import java.util.Map.Entry;
 public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware {
     
     private ApplicationContext applicationContext;
-
+    
     /**
      * Create job bootstrap instances and register them into container.
      */
@@ -69,7 +69,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
         TracingConfiguration tracingConfiguration = getTracingConfiguration();
         constructJobBootstraps(elasticJobProperties, singletonBeanRegistry, registryCenter, tracingConfiguration);
     }
-
+    
     private TracingConfiguration getTracingConfiguration() {
         Map<String, TracingConfiguration> tracingConfigurationBeans = applicationContext.getBeansOfType(TracingConfiguration.class);
         if (tracingConfigurationBeans.isEmpty()) {
@@ -82,7 +82,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                 "More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
                         + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticJobTracingAutoConfiguration].");
     }
-
+    
     private void constructJobBootstraps(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry singletonBeanRegistry,
                                         final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) {
         for (Entry<String, ElasticJobConfigurationProperties> entry : elasticJobProperties.getJobs().entrySet()) {
@@ -100,7 +100,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
             }
         }
     }
-
+    
     private void registerClassedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                     final TracingConfiguration tracingConfiguration, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfiguration = jobConfigurationProperties.toJobConfiguration(jobName);
@@ -115,7 +115,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                     new ScheduleJobBootstrap(registryCenter, elasticJob, jobConfiguration, tracingConfiguration));
         }
     }
-
+    
     private void registerTypedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                   final TracingConfiguration tracingConfiguration, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfiguration = jobConfigurationProperties.toJobConfiguration(jobName);

@@ -140,7 +140,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
         result.setStatus(getJobStatusByJobNameAndIp(jobName, ip));
-        result.setInstanceCount(getJobInstanceCountByJobNameAndIp(jobName, ip));
+        result.setInstanceCount(getJobInstanceCountByJobNameAndIP(jobName, ip));
         return result;
     }
     
@@ -154,15 +154,15 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         }
     }
     
-    private int getJobInstanceCountByJobNameAndIp(final String jobName, final String ip) {
-        int instanceCount = 0;
+    private int getJobInstanceCountByJobNameAndIP(final String jobName, final String ip) {
+        int result = 0;
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
         for (String each : instances) {
             if (ip.equals(each.split("@-@")[0])) {
-                instanceCount++;
+                result++;
             }
         }
-        return instanceCount;
+        return result;
     }
 }

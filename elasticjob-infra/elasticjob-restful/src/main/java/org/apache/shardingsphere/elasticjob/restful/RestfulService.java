@@ -23,12 +23,12 @@ package org.apache.shardingsphere.elasticjob.restful;
 public interface RestfulService {
     
     /**
-     * Start Restful Service.
+     * Start RESTFul service.
      */
     void startup();
     
     /**
-     * Shutdown Restful Service.
+     * Shutdown RESTFul service.
      */
     void shutdown();
 }

@@ -33,6 +33,7 @@ import java.util.ServiceLoader;
 /**
  * Job item executor factory.
  */
+@SuppressWarnings("rawtypes")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobItemExecutorFactory {
     

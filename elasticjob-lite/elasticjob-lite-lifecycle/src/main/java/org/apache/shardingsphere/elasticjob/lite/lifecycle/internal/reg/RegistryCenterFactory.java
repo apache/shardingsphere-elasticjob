@@ -55,9 +55,9 @@ public final class RegistryCenterFactory {
         }
         HashCode hashCode = hasher.hash();
         return REG_CENTER_REGISTRY.computeIfAbsent(hashCode, unused -> {
-            final CoordinatorRegistryCenter coordinatorRegistryCenter = newCoordinatorRegistryCenter(connectString, namespace, digest);
-            coordinatorRegistryCenter.init();
-            return coordinatorRegistryCenter;
+            CoordinatorRegistryCenter result = newCoordinatorRegistryCenter(connectString, namespace, digest);
+            result.init();
+            return result;
         });
     }
     

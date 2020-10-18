@@ -43,11 +43,11 @@ public final class HttpClient {
     /**
      * Send a HTTP request and invoke consumer when server response.
      *
-     * @param host           Server host
-     * @param port           Server port
-     * @param request        HTTP request
-     * @param consumer       HTTP response consumer
-     * @param timeoutSeconds Wait for consume
+     * @param host server host
+     * @param port server port
+     * @param request HTTP request
+     * @param consumer HTTP response consumer
+     * @param timeoutSeconds wait for consume
      * @throws InterruptedException interrupted
      */
     @SneakyThrows

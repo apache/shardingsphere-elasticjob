@@ -30,10 +30,10 @@ import java.util.List;
 @Component
 @Slf4j
 public class CustomTestJob implements CustomJob {
-
+    
     @Autowired
     private BarRepository barRepository;
-
+    
     @Override
     public void execute(final ShardingContext shardingContext) {
         int i = shardingContext.getShardingItem();

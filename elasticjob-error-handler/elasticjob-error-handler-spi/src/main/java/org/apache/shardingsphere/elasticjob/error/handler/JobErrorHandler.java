@@ -28,8 +28,8 @@ public interface JobErrorHandler extends TypedSPI {
     /**
      * Handle exception.
      * 
-     * @param jobConfiguration job config
-     * @param cause cause
+     * @param jobConfig job configuration
+     * @param cause failure cause
      */
-    void handleException(JobConfiguration jobConfiguration, Throwable cause);
+    void handleException(JobConfiguration jobConfig, Throwable cause);
 }

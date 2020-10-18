@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.restful.mapping;
 
 /**
- * UrlPatternMap is used for path pattern storage and path matching.
+ * URL pattern map is used for path pattern storage and path matching.
  * {@link MappingContext} is an object holding path pattern and payload.
  *
  * @param <V> Type of payload
@@ -26,18 +26,18 @@ package org.apache.shardingsphere.elasticjob.restful.mapping;
 public interface UrlPatternMap<V> {
     
     /**
-     * Add a path pattern and value to UrlPatternMap.
+     * Add a path pattern and value to URL pattern map.
      *
-     * @param pathPattern Path pattern
-     * @param value       Payload of the path pattern
+     * @param pathPattern path pattern
+     * @param value payload of the path pattern
      */
     void put(String pathPattern, V value);
     
     /**
-     * Find a proper MappingContext for current path.
+     * Find a proper mapping context for current path.
      *
-     * @param path A path to match.
-     * @return A MappingContext if the path matched a pattern. Return null if mismatched.
+     * @param path a path to match.
+     * @return a mapping context if the path matched a pattern, return null if mismatched.
      */
     MappingContext<V> match(String path);
 }

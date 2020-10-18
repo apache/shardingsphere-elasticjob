@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Catch exceptions and look for a ExceptionHandler.
+ * Catch exceptions and look for exception handler.
  */
 @Slf4j
 @Sharable

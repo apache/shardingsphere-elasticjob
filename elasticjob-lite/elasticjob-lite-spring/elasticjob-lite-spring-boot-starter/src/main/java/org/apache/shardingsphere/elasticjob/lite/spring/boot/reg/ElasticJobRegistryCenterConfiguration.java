@@ -21,13 +21,17 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCente
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * ElasticJob registry center configuration.
+ */
 @EnableConfigurationProperties(ZookeeperProperties.class)
 public class ElasticJobRegistryCenterConfiguration {
+    
     /**
-     * Create a ZookeeperRegistryCenter bean via factory.
+     * Create a zookeeper registry center bean via factory.
      *
      * @param zookeeperProperties factory
-     * @return ZookeeperRegistryCenter
+     * @return zookeeper registry center
      */
     @Bean(initMethod = "init")
     public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {

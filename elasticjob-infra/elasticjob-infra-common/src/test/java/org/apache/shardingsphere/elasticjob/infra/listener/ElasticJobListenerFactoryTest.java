@@ -25,12 +25,12 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class ElasticJobListenerFactoryTest {
-
+    
     @Test(expected = JobConfigurationException.class)
     public void assertCreateInvalidJobListener() {
         ElasticJobListenerFactory.createListener("INVALID").orElseThrow(() -> new JobConfigurationException("Invalid elastic job listener!"));
     }
-
+    
     @Test
     public void assertCreatJobListener() {
         assertThat(ElasticJobListenerFactory.createListener("fooElasticJobListener").orElse(null), instanceOf(FooElasticJobListener.class));

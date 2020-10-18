@@ -23,7 +23,7 @@ import lombok.Setter;
 import java.util.Properties;
 
 /**
- * Email configuration POJO.
+ * Email configuration.
  */
 @Getter
 @Setter
@@ -52,24 +52,24 @@ public final class EmailConfiguration {
     private boolean debug;
     
     /**
-     * Get email config.
+     * Get email configuration.
      *
-     * @param props props
-     * @return email config.
+     * @param props properties
+     * @return email configuration
      */
     public static EmailConfiguration getByProps(final Properties props) {
-        EmailConfiguration configuration = new EmailConfiguration();
-        configuration.setHost(props.getProperty(EmailConstants.EMAIL_HOST));
-        configuration.setPort(Integer.parseInt(props.getProperty(EmailConstants.EMAIL_PORT)));
-        configuration.setUsername(props.getProperty(EmailConstants.EMAIL_USERNAME));
-        configuration.setPassword(props.getProperty(EmailConstants.EMAIL_PASSWORD));
-        configuration.setUseSsl(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_USE_SSL, Boolean.FALSE.toString()).toString()));
-        configuration.setSubject(props.getOrDefault(EmailConstants.EMAIL_SUBJECT, EmailConstants.DEFAULT_EMAIL_SUBJECT).toString());
-        configuration.setFrom(props.getProperty(EmailConstants.EMAIL_FROM));
-        configuration.setTo(props.getProperty(EmailConstants.EMAIL_TO));
-        configuration.setCc(props.getProperty(EmailConstants.EMAIL_CC));
-        configuration.setBcc(props.getProperty(EmailConstants.EMAIL_BCC));
-        configuration.setDebug(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_DEBUG, Boolean.FALSE.toString()).toString()));
-        return configuration;
+        EmailConfiguration result = new EmailConfiguration();
+        result.setHost(props.getProperty(EmailConstants.EMAIL_HOST));
+        result.setPort(Integer.parseInt(props.getProperty(EmailConstants.EMAIL_PORT)));
+        result.setUsername(props.getProperty(EmailConstants.EMAIL_USERNAME));
+        result.setPassword(props.getProperty(EmailConstants.EMAIL_PASSWORD));
+        result.setUseSsl(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_USE_SSL, Boolean.FALSE.toString()).toString()));
+        result.setSubject(props.getOrDefault(EmailConstants.EMAIL_SUBJECT, EmailConstants.DEFAULT_EMAIL_SUBJECT).toString());
+        result.setFrom(props.getProperty(EmailConstants.EMAIL_FROM));
+        result.setTo(props.getProperty(EmailConstants.EMAIL_TO));
+        result.setCc(props.getProperty(EmailConstants.EMAIL_CC));
+        result.setBcc(props.getProperty(EmailConstants.EMAIL_BCC));
+        result.setDebug(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_DEBUG, Boolean.FALSE.toString()).toString()));
+        return result;
     }
 }

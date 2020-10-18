@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * If a HTTP request reached, HttpRequestDispatcher would lookup a proper Handler for the request.
+ * If a HTTP request reached, HTTP request dispatcher would lookup a proper Handler for the request.
  * Assemble a {@link HandleContext} with HTTP request and {@link MappingContext}, then pass it to the next in-bound handler.
  */
 @Sharable

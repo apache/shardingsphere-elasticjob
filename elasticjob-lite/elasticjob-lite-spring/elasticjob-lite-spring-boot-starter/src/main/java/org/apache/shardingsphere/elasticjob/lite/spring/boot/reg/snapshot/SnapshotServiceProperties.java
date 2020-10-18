@@ -21,10 +21,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Snapshot service properties.
+ */
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "elasticjob.dump")
 public class SnapshotServiceProperties {
-
+    
     private int port;
 }

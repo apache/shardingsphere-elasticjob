@@ -32,7 +32,7 @@ public final class InternalController implements RestfulController {
     /**
      * Get name.
      *
-     * @return "ejob"
+     * @return control name
      */
     @Mapping(method = Http.GET, path = "/getName")
     public String getName() {
@@ -42,8 +42,8 @@ public final class InternalController implements RestfulController {
     /**
      * Get sharding context.
      *
-     * @param shardingContext the shardingContext
-     * @return shardingContext
+     * @param shardingContext sharding context
+     * @return sharding context
      */
     @Mapping(method = Http.GET, path = "/getShardingContext")
     public String getShardingContext(@Param(name = "shardingContext", source = ParamSource.HEADER) final String shardingContext) {
@@ -55,7 +55,7 @@ public final class InternalController implements RestfulController {
      * Update name.
      *
      * @param updateName the name
-     * @return the updated name
+     * @return updated name
      */
     @Mapping(method = Http.POST, path = "/{updateName}")
     public String postName(@Param(name = "updateName", source = ParamSource.PATH) final String updateName) {

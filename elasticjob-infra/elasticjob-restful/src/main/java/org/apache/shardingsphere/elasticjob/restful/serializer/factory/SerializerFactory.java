@@ -37,7 +37,7 @@ public interface SerializerFactory {
     /**
      * Serializer factory method.
      *
-     * @return Instance of serializer
+     * @return instance of serializer
      */
     ResponseBodySerializer createSerializer();
 }

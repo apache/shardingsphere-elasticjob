@@ -25,7 +25,7 @@
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
     <import resource="base.xml"/>
-
+    
     <elasticjob:job id="oneOffScriptElasticJob_job_type" job-type="SCRIPT" registry-center-ref="regCenter"
              sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}"
              disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-executor-service-handler-type="SINGLE_THREAD" >
