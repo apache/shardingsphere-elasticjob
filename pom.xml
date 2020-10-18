@@ -32,10 +32,14 @@
     <modules>
         <module>elasticjob-api</module>
         <module>elasticjob-infra</module>
-        <module>elasticjob-executor</module>
-        <module>elasticjob-error-handler</module>
+        
         <module>elasticjob-lite</module>
         <module>elasticjob-cloud</module>
+        
+        <module>elasticjob-executor</module>
+        <module>elasticjob-error-handler</module>
+        <module>elasticjob-tracing</module>
+        
         <module>elasticjob-distribution</module>
     </modules>
     
