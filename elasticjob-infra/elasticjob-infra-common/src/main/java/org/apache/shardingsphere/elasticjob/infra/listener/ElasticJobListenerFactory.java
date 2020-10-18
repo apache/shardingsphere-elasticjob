@@ -40,6 +40,6 @@ public final class ElasticJobListenerFactory {
      * @return optional job listener instance
      */
     public static Optional<ElasticJobListener> createListener(final String type) {
-        return Optional.ofNullable(ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type));
+        return ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type);
     }
 }
