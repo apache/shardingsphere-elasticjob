@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 
 import static org.mockito.Mockito.verify;
 
@@ -44,8 +44,12 @@ public final class EmailJobErrorHandlerTest {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
-        emailJobErrorHandler.handleException(getJobConfiguration(), cause);
+        emailJobErrorHandler.handleException("test_job", createJobProperties(), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by email because of", "test_job", cause);
+    }
+    
+    private EmailJobErrorHandler getEmailJobErrorHandler() {
+        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL").orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
     }
     
     @SneakyThrows
@@ -58,23 +62,19 @@ public final class EmailJobErrorHandlerTest {
         fieldLog.set(wechatJobErrorHandler, value);
     }
     
-    private JobConfiguration getJobConfiguration() {
-        return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty(EmailPropertiesConstants.HOST, "xxx")
-                .setProperty(EmailPropertiesConstants.PORT, "465")
-                .setProperty(EmailPropertiesConstants.USERNAME, "xxx")
-                .setProperty(EmailPropertiesConstants.PASSWORD, "xxx")
-                .setProperty(EmailPropertiesConstants.IS_USE_SSL, "true")
-                .setProperty(EmailPropertiesConstants.SUBJECT, "Unit test notification")
-                .setProperty(EmailPropertiesConstants.FROM, "from@xxx.com")
-                .setProperty(EmailPropertiesConstants.TO, "to1@xxx.com,to2@xxx.com")
-                .setProperty(EmailPropertiesConstants.CC, "cc@xxx.com")
-                .setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.com")
-                .setProperty(EmailPropertiesConstants.IS_DEBUG, "false")
-                .build();
-    }
-    
-    private EmailJobErrorHandler getEmailJobErrorHandler() {
-        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL").orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
+    private Properties createJobProperties() {
+        Properties result = new Properties();
+        result.setProperty(EmailPropertiesConstants.HOST, "xxx");
+        result.setProperty(EmailPropertiesConstants.PORT, "465");
+        result.setProperty(EmailPropertiesConstants.USERNAME, "xxx");
+        result.setProperty(EmailPropertiesConstants.PASSWORD, "xxx");
+        result.setProperty(EmailPropertiesConstants.IS_USE_SSL, "true");
+        result.setProperty(EmailPropertiesConstants.SUBJECT, "Unit test notification");
+        result.setProperty(EmailPropertiesConstants.FROM, "from@xxx.com");
+        result.setProperty(EmailPropertiesConstants.TO, "to1@xxx.com,to2@xxx.com");
+        result.setProperty(EmailPropertiesConstants.CC, "cc@xxx.com");
+        result.setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.com");
+        result.setProperty(EmailPropertiesConstants.IS_DEBUG, Boolean.FALSE.toString());
+        return result;
     }
 }

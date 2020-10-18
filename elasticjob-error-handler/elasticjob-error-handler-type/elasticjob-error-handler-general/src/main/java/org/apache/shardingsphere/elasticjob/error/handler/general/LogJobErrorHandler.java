@@ -18,8 +18,9 @@
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+
+import java.util.Properties;
 
 /**
  * Job error handler for log error message.
@@ -28,8 +29,8 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        log.error(String.format("Job '%s' exception occur in job processing", jobConfig.getJobName()), cause);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
     @Override

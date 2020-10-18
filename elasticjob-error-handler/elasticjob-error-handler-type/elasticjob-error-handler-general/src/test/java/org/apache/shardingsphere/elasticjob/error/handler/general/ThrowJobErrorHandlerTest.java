@@ -17,17 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
+
+import java.util.Properties;
 
 public final class ThrowJobErrorHandlerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertHandleException() {
         JobErrorHandlerFactory.createHandler("THROW").orElseThrow(() -> new JobConfigurationException("THROW error handler not found."))
-                .handleException(JobConfiguration.newBuilder("test_job", 3).build(), new RuntimeException("test"));
+                .handleException("test_job", new Properties(), new RuntimeException("test"));
     }
 }

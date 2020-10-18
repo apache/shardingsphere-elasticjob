@@ -29,7 +29,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
@@ -47,6 +46,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Job error handler for send error message via dingtalk.
@@ -73,45 +73,45 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        DingtalkConfiguration dingtalkConfig = new DingtalkConfiguration(jobConfig.getProps());
-        HttpPost httpPost = createHTTPPostMethod(jobConfig.getJobName(), cause, dingtalkConfig);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        DingtalkConfiguration config = new DingtalkConfiguration(props);
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject responseMessage = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(responseMessage.get("errcode").getAsString())) {
-                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobConfig.getJobName(), responseMessage.get("errmsg").getAsString(), cause);
+                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, responseMessage.get("errmsg").getAsString(), cause);
                 } else {
-                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobConfig.getJobName(), cause);
+                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
+                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
             }
         } catch (final IOException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
         }
     }
     
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration dingtalkConfig) {
-        HttpPost result = new HttpPost(getURL(dingtalkConfig));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(dingtalkConfig.getConnectTimeoutMillisecond()).setSocketTimeout(dingtalkConfig.getReadTimeoutMillisecond()).build();
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration config) {
+        HttpPost result = new HttpPost(getURL(config));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
         result.setConfig(requestConfig);
-        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, dingtalkConfig, cause)), StandardCharsets.UTF_8);
+        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, config, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         result.setEntity(entity);
         return result;
     }
     
-    private String getURL(final DingtalkConfiguration dingtalkConfig) {
-        return Strings.isNullOrEmpty(dingtalkConfig.getSecret()) ? dingtalkConfig.getWebhook() : getSignedURL(dingtalkConfig);
+    private String getURL(final DingtalkConfiguration config) {
+        return Strings.isNullOrEmpty(config.getSecret()) ? config.getWebhook() : getSignedURL(config);
     }
     
-    private String getSignedURL(final DingtalkConfiguration dingtalkConfig) {
+    private String getSignedURL(final DingtalkConfiguration config) {
         long timestamp = System.currentTimeMillis();
-        return String.format("%s&timestamp=%s&sign=%s", dingtalkConfig.getWebhook(), timestamp, generateSignature(timestamp, dingtalkConfig.getSecret()));
+        return String.format("%s&timestamp=%s&sign=%s", config.getWebhook(), timestamp, generateSignature(timestamp, config.getSecret()));
     }
     
     @SneakyThrows({NoSuchAlgorithmException.class, UnsupportedEncodingException.class, InvalidKeyException.class})
@@ -127,12 +127,12 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }
     
-    private String getErrorMessage(final String jobName, final DingtalkConfiguration dingtalkConfig, final Throwable cause) {
+    private String getErrorMessage(final String jobName, final DingtalkConfiguration config, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
         String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
-        if (!Strings.isNullOrEmpty(dingtalkConfig.getKeyword())) {
-            result = dingtalkConfig.getKeyword().concat(result);
+        if (!Strings.isNullOrEmpty(config.getKeyword())) {
+            result = config.getKeyword().concat(result);
         }
         return result;
     }

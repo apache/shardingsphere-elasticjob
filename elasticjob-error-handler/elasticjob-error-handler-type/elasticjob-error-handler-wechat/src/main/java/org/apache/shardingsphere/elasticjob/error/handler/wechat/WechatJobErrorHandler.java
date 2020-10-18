@@ -28,7 +28,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.config.WechatConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
@@ -39,6 +38,7 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Job error handler for send error message via wechat.
@@ -65,30 +65,30 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        WechatConfiguration wechatConfig = new WechatConfiguration(jobConfig.getProps());
-        HttpPost httpPost = createHTTPPostMethod(jobConfig.getJobName(), cause, wechatConfig);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        WechatConfiguration config = new WechatConfiguration(props);
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobConfig.getJobName(), resp.get("errmsg").getAsString(), cause);
+                    log.info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
                 } else {
-                    log.info("An exception has occurred in Job '{}', Notification to wechat was successful.", jobConfig.getJobName(), cause);
+                    log.info("An exception has occurred in Job '{}', Notification to wechat was successful.", jobName, cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
+                log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", jobName, status, cause);
             }
         } catch (final IOException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobName, cause);
         }
     }
-
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration wechatConfig) {
-        HttpPost result = new HttpPost(wechatConfig.getWebhook());
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(wechatConfig.getConnectTimeoutMillisecond()).setSocketTimeout(wechatConfig.getReadTimeoutMillisecond()).build();
+    
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
+        HttpPost result = new HttpPost(config.getWebhook());
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
         result.setConfig(requestConfig);
         StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
@@ -96,7 +96,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         result.setEntity(entity);
         return result;
     }
-
+    
     private String getJsonParameter(final String message) {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }

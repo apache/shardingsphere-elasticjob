@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
@@ -29,6 +28,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 
 import static org.mockito.Mockito.verify;
 
@@ -43,7 +43,7 @@ public final class LogJobErrorHandlerTest {
         LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG").orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException(JobConfiguration.newBuilder("test_job", 3).build(), cause);
+        actual.handleException("test_job", new Properties(), cause);
         verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
     

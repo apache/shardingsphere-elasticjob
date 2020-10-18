@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConfiguration;
 
@@ -50,15 +49,15 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     private Session session;
     
     @Override
-    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        EmailConfiguration emailConfig = new EmailConfiguration(jobConfig.getProps());
-        String errorMessage = getErrorMessage(jobConfig.getJobName(), cause);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        EmailConfiguration config = new EmailConfiguration(props);
+        String errorMessage = getErrorMessage(jobName, cause);
         try {
-            sendMessage(createMessage(errorMessage, emailConfig), emailConfig);
-            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobConfig.getJobName(), cause);
+            sendMessage(createMessage(errorMessage, config), config);
+            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobName, cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobConfig.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
         }
     }
     
@@ -68,67 +67,67 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
     }
     
-    private Message createMessage(final String content, final EmailConfiguration emailConfig) throws MessagingException {
-        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(emailConfig)));
-        result.setFrom(new InternetAddress(emailConfig.getFrom()));
-        result.setSubject(emailConfig.getSubject());
+    private Message createMessage(final String content, final EmailConfiguration config) throws MessagingException {
+        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(config)));
+        result.setFrom(new InternetAddress(config.getFrom()));
+        result.setSubject(config.getSubject());
         result.setSentDate(new Date());
         Multipart multipart = new MimeMultipart();
         BodyPart mailBody = new MimeBodyPart();
         mailBody.setContent(content, "text/html; charset=utf-8");
         multipart.addBodyPart(mailBody);
         result.setContent(multipart);
-        String to = emailConfig.getTo();
+        String to = config.getTo();
         if (StringUtils.isNotBlank(to)) {
             String[] tos = to.split(",");
             for (String each : tos) {
                 result.addRecipient(Message.RecipientType.TO, new InternetAddress(each));
             }
         }
-        if (StringUtils.isNotBlank(emailConfig.getCc())) {
-            result.addRecipient(Message.RecipientType.CC, new InternetAddress(emailConfig.getCc()));
+        if (StringUtils.isNotBlank(config.getCc())) {
+            result.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
         }
-        if (StringUtils.isNotBlank(emailConfig.getBcc())) {
-            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(emailConfig.getBcc()));
+        if (StringUtils.isNotBlank(config.getBcc())) {
+            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(config.getBcc()));
         }
         result.saveChanges();
         return result;
     }
     
-    private void sendMessage(final Message message, final EmailConfiguration emailConfig) throws MessagingException {
-        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(emailConfig)).getTransport()) {
+    private void sendMessage(final Message message, final EmailConfiguration config) throws MessagingException {
+        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(config)).getTransport()) {
             transport.connect();
             transport.sendMessage(message, message.getAllRecipients());
         }
     }
     
-    private synchronized Session createSession(final EmailConfiguration emailConfig) {
+    private synchronized Session createSession(final EmailConfiguration config) {
         if (null == session) {
-            session = Session.getDefaultInstance(createSessionProperties(emailConfig), getSessionAuthenticator(emailConfig));
+            session = Session.getDefaultInstance(createSessionProperties(config), getSessionAuthenticator(config));
         }
         return session;
     }
     
-    private Properties createSessionProperties(final EmailConfiguration emailConfig) {
+    private Properties createSessionProperties(final EmailConfiguration config) {
         Properties result = new Properties();
-        result.put("mail.smtp.host", emailConfig.getHost());
-        result.put("mail.smtp.port", emailConfig.getPort());
+        result.put("mail.smtp.host", config.getHost());
+        result.put("mail.smtp.port", config.getPort());
         result.put("mail.smtp.auth", "true");
         result.put("mail.transport.protocol", "smtp");
-        result.setProperty("mail.debug", Boolean.toString(emailConfig.isDebug()));
-        if (emailConfig.isUseSsl()) {
+        result.setProperty("mail.debug", Boolean.toString(config.isDebug()));
+        if (config.isUseSsl()) {
             result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             result.setProperty("mail.smtp.socketFactory.fallback", "false");
         }
         return result;
     }
     
-    private Authenticator getSessionAuthenticator(final EmailConfiguration emailConfig) {
+    private Authenticator getSessionAuthenticator(final EmailConfiguration config) {
         return new Authenticator() {
-
+            
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
+                return new PasswordAuthentication(config.getUsername(), config.getPassword());
             }
         };
     }

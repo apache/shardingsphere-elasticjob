@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+
+import java.util.Properties;
 
 /**
  * Job error handler.
@@ -28,8 +29,9 @@ public interface JobErrorHandler extends TypedSPI {
     /**
      * Handle exception.
      * 
-     * @param jobConfig job configuration
+     * @param jobName job name
+     * @param props job properties
      * @param cause failure cause
      */
-    void handleException(JobConfiguration jobConfig, Throwable cause);
+    void handleException(String jobName, Properties props, Throwable cause);
 }
