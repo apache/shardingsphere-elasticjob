@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 /**
@@ -42,8 +43,9 @@ public final class JobShardingStrategyFactory {
      */
     public static JobShardingStrategy getStrategy(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return ElasticJobServiceLoader.getCachedInstance(JobShardingStrategy.class, DEFAULT_STRATEGY);
+            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobShardingStrategy.class, DEFAULT_STRATEGY).get();
         }
-        return ElasticJobServiceLoader.getCachedInstance(JobShardingStrategy.class, type);
+        return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobShardingStrategy.class, type)
+                .orElseThrow(() -> new JobConfigurationException("Cannot find sharding strategy using type '%s'.", type));
     }
 }

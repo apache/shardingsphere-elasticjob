@@ -19,17 +19,13 @@ package org.apache.shardingsphere.elasticjob.infra.spi;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.spi.exception.ServiceLoaderInstantiationException;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 /**
  * ElasticJob service loader.
@@ -37,41 +33,54 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticJobServiceLoader {
     
-    private static final ConcurrentMap<Class<?>, Collection<Class<?>>> SERVICES = new ConcurrentHashMap<>();
-    
-    private static final ConcurrentMap<Class<?>, ConcurrentMap<String, TypedSPI>> TYPED_SERVICES = new ConcurrentHashMap<>();
-    
-    private static final ConcurrentMap<Class<?>, ConcurrentMap<String, Class<?>>> TYPED_SERVICE_CLASSES = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<? extends TypedSPI>, ConcurrentMap<String, TypedSPI>> TYPED_SERVICES = new ConcurrentHashMap<>();
+
+    private static final ConcurrentMap<Class<? extends TypedSPI>, ConcurrentMap<String, Class<? extends TypedSPI>>> TYPED_SERVICE_CLASSES = new ConcurrentHashMap<>();
     
     /**
-     * Register SPI service.
+     * Register typeSPI service.
      *
-     * @param service service type
-     * @param <T> type of service
+     * @param typedService typed service
+     * @param <T> class of service
      */
-    public static <T> void register(final Class<T> service) {
-        if (SERVICES.containsKey(service)) {
+    public static <T extends TypedSPI> void registerTypedService(final Class<T> typedService) {
+        if (TYPED_SERVICES.containsKey(typedService)) {
             return;
         }
-        ServiceLoader.load(service).forEach(each -> registerServiceClass(service, each));
+        ServiceLoader.load(typedService).forEach(each -> registerTypedServiceClass(typedService, each));
     }
-    
-    private static <T> void registerServiceClass(final Class<T> service, final T instance) {
-        SERVICES.computeIfAbsent(service, unused -> new LinkedHashSet<>()).add(instance.getClass());
+
+    private static <T extends TypedSPI> void registerTypedServiceClass(final Class<T> typedService, final TypedSPI instance) {
+        TYPED_SERVICES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance);
+        TYPED_SERVICE_CLASSES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance.getClass());
     }
-    
+
     /**
-     * New service instances.
+     * Get cached typed instance.
      *
-     * @param service service class
-     * @param <T> type of service
-     * @return service instances
+     * @param typedServiceInterface typed service interface
+     * @param type type
+     * @param <T> class of service
+     * @return cached typed service instance
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Collection<T> newServiceInstances(final Class<T> service) {
-        return SERVICES.containsKey(service) ? SERVICES.get(service).stream().map(each -> (T) newServiceInstance(each)).collect(Collectors.toList()) : Collections.emptyList();
+    public static <T extends TypedSPI> Optional<T> getCachedTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
+        return Optional.ofNullable(TYPED_SERVICES.get(typedServiceInterface)).map(services -> (T) services.get(type));
     }
-    
+
+    /**
+     * New typed instance.
+     *
+     * @param typedServiceInterface typed service interface
+     * @param type type
+     * @param <T> class of service
+     * @return new typed service instance
+     */
+    public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
+        return Optional.ofNullable(TYPED_SERVICE_CLASSES.get(typedServiceInterface))
+                .map(serviceClasses -> serviceClasses.get(type))
+                .map(clazz -> (T) newServiceInstance(clazz));
+    }
+
     private static Object newServiceInstance(final Class<?> clazz) {
         try {
             return clazz.getConstructor().newInstance();
@@ -80,60 +89,5 @@ public final class ElasticJobServiceLoader {
         } catch (final InvocationTargetException ex) {
             throw new ServiceLoaderInstantiationException(clazz, ex.getCause());
         }
-    }
-    
-    /**
-     * Register typeSPI service.
-     *
-     * @param typedService specific service type
-     * @param <T> type of service
-     */
-    public static <T> void registerTypedService(final Class<T> typedService) {
-        if (!TypedSPI.class.isAssignableFrom(typedService)) {
-            throw new IllegalArgumentException("Cannot register @" + typedService.getName() + "as a typed service, because its not a subClass of @" + typedService);
-        }
-        if (TYPED_SERVICES.containsKey(typedService)) {
-            return;
-        }
-        ServiceLoader.load(typedService).forEach(each -> registerTypedServiceClass(typedService, (TypedSPI) each));
-    }
-    
-    private static <T> void registerTypedServiceClass(final Class<T> typedService, final TypedSPI instance) {
-        TYPED_SERVICES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance);
-        TYPED_SERVICE_CLASSES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance.getClass());
-    }
-    
-    /**
-     * Get cached instance.
-     *
-     * @param typedService typed service
-     * @param type type
-     * @param <T> class of service
-     * @return cached service instance
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends TypedSPI> T getCachedInstance(final Class<T> typedService, final String type) {
-        T result = TYPED_SERVICES.containsKey(typedService) ? (T) TYPED_SERVICES.get(typedService).get(type) : null;
-        if (null == result) {
-            throw new JobConfigurationException("Cannot find a cached typed service instance by the interface: @" + typedService.getName() + "and type: " + type);
-        }
-        return result;
-    }
-    
-    /**
-     * New typed instance.
-     *
-     * @param typedService typed service
-     * @param type type
-     * @param <T> class of service
-     * @return new service instance
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends TypedSPI> T newTypedServiceInstance(final Class<T> typedService, final String type) {
-        Class<?> instanceClass = TYPED_SERVICE_CLASSES.containsKey(typedService) ? TYPED_SERVICE_CLASSES.get(typedService).get(type) : null;
-        if (null == instanceClass) {
-            throw new JobConfigurationException("Cannot find a typed service class by the interface: @" + typedService.getName() + "and type: " + type);
-        }
-        return (T) newServiceInstance(instanceClass);
     }
 }
