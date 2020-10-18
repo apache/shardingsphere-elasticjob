@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticJobServiceLoader {
     
-    private static final ConcurrentMap<Class<?>, ConcurrentMap<String, TypedSPI>> TYPED_SERVICES = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<? extends TypedSPI>, ConcurrentMap<String, TypedSPI>> TYPED_SERVICES = new ConcurrentHashMap<>();
 
-    private static final ConcurrentMap<Class<?>, ConcurrentMap<String, Class<?>>> TYPED_SERVICE_CLASSES = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<? extends TypedSPI>, ConcurrentMap<String, Class<? extends TypedSPI>>> TYPED_SERVICE_CLASSES = new ConcurrentHashMap<>();
     
     /**
      * Register typeSPI service.
@@ -43,17 +43,14 @@ public final class ElasticJobServiceLoader {
      * @param typedService specific service type
      * @param <T> type of service
      */
-    public static <T> void registerTypedService(final Class<T> typedService) {
-        if (!TypedSPI.class.isAssignableFrom(typedService)) {
-            throw new IllegalArgumentException("Cannot register @" + typedService.getName() + "as a typed service, because its not a subClass of @" + TypedSPI.class.getName());
-        }
+    public static <T extends TypedSPI> void registerTypedService(final Class<T> typedService) {
         if (TYPED_SERVICES.containsKey(typedService)) {
             return;
         }
-        ServiceLoader.load(typedService).forEach(each -> registerTypedServiceClass(typedService, (TypedSPI) each));
+        ServiceLoader.load(typedService).forEach(each -> registerTypedServiceClass(typedService, each));
     }
 
-    private static <T> void registerTypedServiceClass(final Class<T> typedService, final TypedSPI instance) {
+    private static <T extends TypedSPI> void registerTypedServiceClass(final Class<T> typedService, final TypedSPI instance) {
         TYPED_SERVICES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance);
         TYPED_SERVICE_CLASSES.computeIfAbsent(typedService, unused -> new ConcurrentHashMap<>()).putIfAbsent(instance.getType(), instance.getClass());
     }
@@ -67,11 +64,7 @@ public final class ElasticJobServiceLoader {
      * @return cached service instance
      */
     public static <T extends TypedSPI> Optional<T> getCachedTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
-        T instance = TYPED_SERVICES.containsKey(typedServiceInterface) ? (T) TYPED_SERVICES.get(typedServiceInterface).get(type) : null;
-        if (null == instance) {
-            return Optional.empty();
-        }
-        return Optional.of(instance);
+        return Optional.ofNullable(TYPED_SERVICES.get(typedServiceInterface)).map(services -> (T) services.get(type));
     }
 
     /**
@@ -83,11 +76,9 @@ public final class ElasticJobServiceLoader {
      * @return specific typed service instance
      */
     public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
-        Class<?> instanceClass = TYPED_SERVICE_CLASSES.containsKey(typedServiceInterface) ? TYPED_SERVICE_CLASSES.get(typedServiceInterface).get(type) : null;
-        if (null == instanceClass) {
-            return Optional.empty();
-        }
-        return Optional.of((T) newServiceInstance(instanceClass));
+        return Optional.ofNullable(TYPED_SERVICE_CLASSES.get(typedServiceInterface))
+                .map(serviceClasses -> serviceClasses.get(type))
+                .map(clazz -> (T) newServiceInstance(clazz));
     }
 
     private static Object newServiceInstance(final Class<?> clazz) {
