@@ -20,31 +20,31 @@ package org.apache.shardingsphere.elasticjob.error.handler.email.config;
 /**
  * Job error handler properties constants for send error message via email.
  */
-public final class EmailConstants {
+public final class EmailPropertiesConstants {
     
-    public static final String PREFIX = "email.";
+    public static final String DEFAULT_SUBJECT = "ElasticJob error message";
     
-    public static final String EMAIL_HOST = PREFIX + "host";
+    private static final String PREFIX = "email.";
     
-    public static final String EMAIL_PORT = PREFIX + "port";
+    public static final String HOST = PREFIX + "host";
     
-    public static final String EMAIL_USERNAME = PREFIX + "username";
+    public static final String PORT = PREFIX + "port";
     
-    public static final String EMAIL_PASSWORD = PREFIX + "password";
+    public static final String USERNAME = PREFIX + "username";
     
-    public static final String EMAIL_USE_SSL = PREFIX + "useSsl";
+    public static final String PASSWORD = PREFIX + "password";
     
-    public static final String EMAIL_SUBJECT = PREFIX + "subject";
+    public static final String IS_USE_SSL = PREFIX + "useSsl";
     
-    public static final String EMAIL_FROM = PREFIX + "from";
+    public static final String SUBJECT = PREFIX + "subject";
     
-    public static final String EMAIL_TO = PREFIX + "to";
+    public static final String FROM = PREFIX + "from";
     
-    public static final String EMAIL_CC = PREFIX + "cc";
+    public static final String TO = PREFIX + "to";
     
-    public static final String EMAIL_BCC = PREFIX + "bcc";
+    public static final String CC = PREFIX + "cc";
     
-    public static final String EMAIL_DEBUG = PREFIX + "debug";
+    public static final String BCC = PREFIX + "bcc";
     
-    public static final String DEFAULT_EMAIL_SUBJECT = "ElasticJob error message";
+    public static final String IS_DEBUG = PREFIX + "debug";
 }

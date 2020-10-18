@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.error.handler.email.config;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Properties;
 
@@ -26,50 +25,41 @@ import java.util.Properties;
  * Job error handler configuration for send error message via email.
  */
 @Getter
-@Setter
 public final class EmailConfiguration {
     
-    private String host;
+    private final String host;
     
-    private Integer port;
+    private final int port;
     
-    private String username;
+    private final String username;
     
-    private String password;
+    private final String password;
     
-    private boolean useSsl;
+    private final boolean useSsl;
     
-    private String subject;
+    private final String subject;
     
-    private String from;
+    private final String from;
     
-    private String to;
+    private final String to;
     
-    private String cc;
+    private final String cc;
     
-    private String bcc;
+    private final String bcc;
     
-    private boolean debug;
+    private final boolean debug;
     
-    /**
-     * Get email configuration.
-     *
-     * @param props properties
-     * @return email configuration
-     */
-    public static EmailConfiguration getByProps(final Properties props) {
-        EmailConfiguration result = new EmailConfiguration();
-        result.setHost(props.getProperty(EmailConstants.EMAIL_HOST));
-        result.setPort(Integer.parseInt(props.getProperty(EmailConstants.EMAIL_PORT)));
-        result.setUsername(props.getProperty(EmailConstants.EMAIL_USERNAME));
-        result.setPassword(props.getProperty(EmailConstants.EMAIL_PASSWORD));
-        result.setUseSsl(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_USE_SSL, Boolean.FALSE.toString()).toString()));
-        result.setSubject(props.getOrDefault(EmailConstants.EMAIL_SUBJECT, EmailConstants.DEFAULT_EMAIL_SUBJECT).toString());
-        result.setFrom(props.getProperty(EmailConstants.EMAIL_FROM));
-        result.setTo(props.getProperty(EmailConstants.EMAIL_TO));
-        result.setCc(props.getProperty(EmailConstants.EMAIL_CC));
-        result.setBcc(props.getProperty(EmailConstants.EMAIL_BCC));
-        result.setDebug(Boolean.parseBoolean(props.getOrDefault(EmailConstants.EMAIL_DEBUG, Boolean.FALSE.toString()).toString()));
-        return result;
+    public EmailConfiguration(final Properties props) {
+        host = props.getProperty(EmailPropertiesConstants.HOST);
+        port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
+        username = props.getProperty(EmailPropertiesConstants.USERNAME);
+        password = props.getProperty(EmailPropertiesConstants.PASSWORD);
+        useSsl = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, Boolean.FALSE.toString()));
+        subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
+        from = props.getProperty(EmailPropertiesConstants.FROM);
+        to = props.getProperty(EmailPropertiesConstants.TO);
+        cc = props.getProperty(EmailPropertiesConstants.CC);
+        bcc = props.getProperty(EmailPropertiesConstants.BCC);
+        debug = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, Boolean.FALSE.toString()));
     }
 }

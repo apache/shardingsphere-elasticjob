@@ -37,8 +37,6 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -104,11 +102,9 @@ public final class WechatJobErrorHandlerTest {
         actual.handleException(getJobConfiguration("http://localhost:9872/404"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
     }
-    
-    @Test
-    public void assertGetType() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler();
-        assertThat(actual.getType(), is("WECHAT"));
+
+    private WechatJobErrorHandler getWechatJobErrorHandler() {
+        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT").orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
     }
     
     @SneakyThrows
@@ -127,9 +123,5 @@ public final class WechatJobErrorHandlerTest {
                 .setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "1000")
                 .setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, "2000")
                 .build();
-    }
-    
-    private WechatJobErrorHandler getWechatJobErrorHandler() {
-        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT").orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
     }
 }
