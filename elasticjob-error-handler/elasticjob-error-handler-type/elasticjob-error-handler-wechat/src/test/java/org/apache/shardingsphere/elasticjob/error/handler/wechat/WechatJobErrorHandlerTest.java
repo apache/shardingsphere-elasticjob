@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration.WechatPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.config.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;

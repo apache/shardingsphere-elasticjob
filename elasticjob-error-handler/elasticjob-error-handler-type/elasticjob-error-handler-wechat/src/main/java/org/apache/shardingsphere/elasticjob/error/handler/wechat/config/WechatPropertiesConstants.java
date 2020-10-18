@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration;
+package org.apache.shardingsphere.elasticjob.error.handler.wechat.config;
 
 /**
  * Wechat properties constants.

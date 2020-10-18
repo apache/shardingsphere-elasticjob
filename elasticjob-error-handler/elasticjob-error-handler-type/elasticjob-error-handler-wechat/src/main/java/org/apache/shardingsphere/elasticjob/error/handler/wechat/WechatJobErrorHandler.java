@@ -30,7 +30,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration.WechatConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.config.WechatConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import java.io.IOException;

@@ -31,7 +31,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration.DingtalkConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.crypto.Mac;
