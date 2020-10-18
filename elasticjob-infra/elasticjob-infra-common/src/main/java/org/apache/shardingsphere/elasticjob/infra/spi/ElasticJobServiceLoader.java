@@ -41,7 +41,7 @@ public final class ElasticJobServiceLoader {
      * Register typeSPI service.
      *
      * @param typedService typed service
-     * @param <T>          class of service
+     * @param <T> class of service
      */
     public static <T extends TypedSPI> void registerTypedService(final Class<T> typedService) {
         if (TYPED_SERVICES.containsKey(typedService)) {
@@ -59,8 +59,8 @@ public final class ElasticJobServiceLoader {
      * Get cached typed service instance.
      *
      * @param typedServiceInterface typed service interface
-     * @param type                  type
-     * @param <T>                   class of service
+     * @param type type
+     * @param <T> class of service
      * @return cached typed service instance
      */
     public static <T extends TypedSPI> Optional<T> getCachedTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
@@ -71,8 +71,8 @@ public final class ElasticJobServiceLoader {
      * New typed service instance.
      *
      * @param typedServiceInterface typed service interface
-     * @param type                  type
-     * @param <T>                   class of service
+     * @param type type
+     * @param <T> class of service
      * @return new typed service instance
      */
     public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
