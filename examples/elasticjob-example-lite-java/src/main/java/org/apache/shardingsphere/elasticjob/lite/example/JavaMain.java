@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.email.EmailConstants;
-import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.configuration.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
@@ -153,9 +153,9 @@ public final class JavaMain {
     }
     
     private static void setWechatConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getProps().setProperty(WechatConstants.WECHAT_WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
-        jobConfig.getProps().setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "9000");
-        jobConfig.getProps().setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "5000");
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "9000");
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, "5000");
     }
     
     private static void setEmailConfiguration(final JobConfiguration jobConfig) {
