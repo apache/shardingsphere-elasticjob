@@ -20,7 +20,7 @@ Configuration: no
 
 Interface name: `org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob`
 
-Configuration：
+Configuration: 
 
 | *Name*             | *Data Type*   | *Description*               | *Default Value*  |
 | -----------------  | -----------   | --------------------------- | ---------------- |
@@ -40,7 +40,7 @@ Configuration:
 
 Type：`HTTP`
 
-Configuration：
+Configuration: 
 
 | *Name*                             | *Data Type*    | *Description*          |  *Default Value*  |
 | ---------------------------------- | -----------    | ----------------       | --------          |
