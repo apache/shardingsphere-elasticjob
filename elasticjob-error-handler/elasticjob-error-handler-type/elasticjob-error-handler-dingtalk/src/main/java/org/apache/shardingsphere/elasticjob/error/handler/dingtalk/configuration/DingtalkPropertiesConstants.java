@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuration;
 
 /**
  * Dingtalk properties constants.
  */
 public final class DingtalkPropertiesConstants {
+
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
+
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
     
-    public static final String PREFIX = "dingtalk.";
+    private static final String PREFIX = "dingtalk.";
     
     public static final String WEBHOOK = PREFIX + "webhook";
     
@@ -33,8 +37,4 @@ public final class DingtalkPropertiesConstants {
     public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
     
     public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
-    
-    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
-    
-    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
 }
