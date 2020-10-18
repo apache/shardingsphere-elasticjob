@@ -29,8 +29,6 @@ public final class EmailConstants {
     
     public static final String EMAIL_PASSWORD = PREFIX + "password";
     
-    public static final String EMAIL_PROTOCOL = PREFIX + "protocol";
-    
     public static final String EMAIL_USE_SSL = PREFIX + "useSsl";
     
     public static final String EMAIL_SUBJECT = PREFIX + "subject";

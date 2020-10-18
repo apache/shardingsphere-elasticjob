@@ -163,7 +163,6 @@ public final class JavaMain {
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PORT, "465");
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USERNAME, "username");
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PASSWORD, "password");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PROTOCOL, "smtp");
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USE_SSL, "true");
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_SUBJECT, "Test elasticJob error message");
         jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com");
