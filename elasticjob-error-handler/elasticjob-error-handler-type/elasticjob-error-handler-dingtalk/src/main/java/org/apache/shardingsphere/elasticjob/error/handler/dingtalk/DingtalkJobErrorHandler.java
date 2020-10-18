@@ -31,7 +31,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.crypto.Mac;
@@ -49,7 +48,7 @@ import java.util.Base64;
 import java.util.Collections;
 
 /**
- * Job error handler for dingtalk error message.
+ * Job error handler for send error message via dingtalk.
  */
 @Slf4j
 public final class DingtalkJobErrorHandler implements JobErrorHandler {
@@ -60,90 +59,85 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         registerShutdownHook();
     }
     
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
+            
+            @SneakyThrows
+            @Override
+            public void run() {
+                log.info("Shutting down HTTP client...");
+                httpclient.close();
+            }
+        });
+    }
+    
     @Override
     public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
-        DingtalkConfiguration dingtalkConfiguration = DingtalkConfiguration.getByProps(jobConfig.getProps());
-        HttpPost httpPost = new HttpPost(getUrl(dingtalkConfiguration));
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(dingtalkConfiguration.getConnectTimeout())
-                .setSocketTimeout(dingtalkConfiguration.getReadTimeout()).build();
-        httpPost.setConfig(requestConfig);
-        String paramJson = getParamJson(getMessage(jobConfig.getJobName(), dingtalkConfiguration, cause));
-        StringEntity entity = new StringEntity(paramJson, StandardCharsets.UTF_8);
-        entity.setContentEncoding(StandardCharsets.UTF_8.name());
-        entity.setContentType("application/json");
-        httpPost.setEntity(entity);
+        DingtalkConfiguration dingtalkConfig = new DingtalkConfiguration(jobConfig.getProps());
+        HttpPost httpPost = createHTTPPostMethod(jobConfig.getJobName(), cause, dingtalkConfig);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
-                JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
-                if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobConfig.getJobName(), resp.get("errmsg").getAsString(), cause);
+                JsonObject responseMessage = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
+                if (!"0".equals(responseMessage.get("errcode").getAsString())) {
+                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobConfig.getJobName(), responseMessage.get("errmsg").getAsString(), cause);
                 } else {
-                    log.error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobConfig.getJobName(), cause);
+                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobConfig.getJobName(), cause);
                 }
             } else {
                 log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobConfig.getJobName(), status, cause);
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobConfig.getJobName(), cause);
         }
     }
     
-    private String getParamJson(final String msg) {
-        return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", msg)));
-    }
-    
-    private String getMessage(final String jobName, final DingtalkConfiguration dingtalkConfiguration, final Throwable cause) {
-        StringWriter sw = new StringWriter();
-        cause.printStackTrace(new PrintWriter(sw, true));
-        String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, sw.toString());
-        if (!Strings.isNullOrEmpty(dingtalkConfiguration.getKeyword())) {
-            result = dingtalkConfiguration.getKeyword().concat(result);
-        }
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration dingtalkConfig) {
+        HttpPost result = new HttpPost(getURL(dingtalkConfig));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(dingtalkConfig.getConnectTimeoutMillisecond()).setSocketTimeout(dingtalkConfig.getReadTimeoutMillisecond()).build();
+        result.setConfig(requestConfig);
+        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, dingtalkConfig, cause)), StandardCharsets.UTF_8);
+        entity.setContentEncoding(StandardCharsets.UTF_8.name());
+        entity.setContentType("application/json");
+        result.setEntity(entity);
         return result;
     }
     
-    private String getUrl(final DingtalkConfiguration dingtalkConfiguration) {
-        if (Strings.isNullOrEmpty(dingtalkConfiguration.getSecret())) {
-            return dingtalkConfiguration.getWebhook();
-        } else {
-            return getSignUrl(dingtalkConfiguration);
-        }
+    private String getURL(final DingtalkConfiguration dingtalkConfig) {
+        return Strings.isNullOrEmpty(dingtalkConfig.getSecret()) ? dingtalkConfig.getWebhook() : getSignedURL(dingtalkConfig);
     }
     
-    private String getSignUrl(final DingtalkConfiguration dingtalkConfiguration) {
-        try {
-            Long timestamp = System.currentTimeMillis();
-            return String.format("%s&timestamp=%s&sign=%s", dingtalkConfiguration.getWebhook(), timestamp, sign(timestamp, dingtalkConfiguration));
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException ex) {
-            throw new JobConfigurationException(ex);
-        }
+    private String getSignedURL(final DingtalkConfiguration dingtalkConfig) {
+        long timestamp = System.currentTimeMillis();
+        return String.format("%s&timestamp=%s&sign=%s", dingtalkConfig.getWebhook(), timestamp, generateSignature(timestamp, dingtalkConfig.getSecret()));
     }
     
-    private String sign(final Long timestamp, final DingtalkConfiguration dingtalkConfiguration) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
-        String stringToSign = timestamp + "\n" + dingtalkConfiguration.getSecret();
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(dingtalkConfiguration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-        byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+    @SneakyThrows({NoSuchAlgorithmException.class, UnsupportedEncodingException.class, InvalidKeyException.class})
+    private String generateSignature(final long timestamp, final String secret) {
+        String algorithmName = "HmacSHA256";
+        Mac mac = Mac.getInstance(algorithmName);
+        mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), algorithmName));
+        byte[] signData = mac.doFinal((timestamp + "\n" + secret).getBytes(StandardCharsets.UTF_8));
         return URLEncoder.encode(new String(Base64.getEncoder().encode(signData)), StandardCharsets.UTF_8.name());
+    }
+    
+    private String getJsonParameter(final String message) {
+        return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
+    }
+    
+    private String getErrorMessage(final String jobName, final DingtalkConfiguration dingtalkConfig, final Throwable cause) {
+        StringWriter writer = new StringWriter();
+        cause.printStackTrace(new PrintWriter(writer, true));
+        String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
+        if (!Strings.isNullOrEmpty(dingtalkConfig.getKeyword())) {
+            result = dingtalkConfig.getKeyword().concat(result);
+        }
+        return result;
     }
     
     @Override
     public String getType() {
         return "DINGTALK";
-    }
-    
-    private void registerShutdownHook() {
-        Thread t = new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
-            @SneakyThrows
-            @Override
-            public void run() {
-                log.info("Shutting down httpclient...");
-                httpclient.close();
-            }
-        };
-        Runtime.getRuntime().addShutdownHook(t);
     }
 }

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.example;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.email.EmailConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
@@ -124,52 +124,52 @@ public final class JavaMain {
     }
     
     private static void setUpOneOffJobWithDingtalk(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
-        JobConfiguration jobConfiguration= JobConfiguration.newBuilder("javaOccurErrorOfDingtalkJob", 3)
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfDingtalkJob", 3)
                 .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").build();
-        setDingtalkConfig(jobConfiguration);
-        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
+        setDingtalkConfiguration(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig, tracingConfig).execute();
     }
     
     private static void setUpOneOffJobWithWechat(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
-        JobConfiguration jobConfiguration= JobConfiguration.newBuilder("javaOccurErrorOfWechatJob", 3)
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfWechatJob", 3)
                 .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("WECHAT").build();
-        setWechatConfig(jobConfiguration);
-        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
+        setWechatConfiguration(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig, tracingConfig).execute();
     }
     
     private static void setUpOneOffJobWithEmail(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
-        JobConfiguration jobConfiguration= JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
                 .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("EMAIL").build();
-        setEmailConfig(jobConfiguration);
-        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfiguration, tracingConfig).execute();
+        setEmailConfiguration(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig, tracingConfig).execute();
     }
     
-    private static void setDingtalkConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_WEBHOOK, "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
-        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword");
-        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
-        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "7000");
-        jobConfiguration.getProps().setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "8000");
+    private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.WEBHOOK, "https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "7000");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "8000");
     }
     
-    private static void setWechatConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
-        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "9000");
-        jobConfiguration.getProps().setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "5000");
+    private static void setWechatConfiguration(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(WechatConstants.WECHAT_WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04");
+        jobConfig.getProps().setProperty(WechatConstants.WECHAT_CONNECT_TIMEOUT, "9000");
+        jobConfig.getProps().setProperty(WechatConstants.WECHAT_READ_TIMEOUT, "5000");
     }
     
-    private static void setEmailConfig(JobConfiguration jobConfiguration) {
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_HOST, "host");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PORT, "465");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USERNAME, "username");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_PASSWORD, "password");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_USE_SSL, "true");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_SUBJECT, "Test elasticJob error message");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2xxx.com");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com");
-        jobConfiguration.getProps().setProperty(EmailConstants.EMAIL_DEBUG, "false");
+    private static void setEmailConfiguration(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_HOST, "host");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_PORT, "465");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_PASSWORD, "password");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_USE_SSL, "true");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_SUBJECT, "Test elasticJob error message");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_FROM, "from@xxx.com");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_TO, "to1@xxx.com,to2xxx.com");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_CC, "cc@xxx.com");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_BCC, "bcc@xxx.com");
+        jobConfig.getProps().setProperty(EmailConstants.EMAIL_DEBUG, "false");
     }
     
     private static String buildScriptCommandLine() throws IOException {

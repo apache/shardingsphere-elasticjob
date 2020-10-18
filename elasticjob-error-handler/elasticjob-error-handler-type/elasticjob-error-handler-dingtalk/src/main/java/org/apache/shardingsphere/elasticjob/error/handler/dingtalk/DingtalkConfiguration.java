@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Properties;
 
@@ -26,7 +25,6 @@ import java.util.Properties;
  * Dingtalk configuration.
  */
 @Getter
-@RequiredArgsConstructor
 public final class DingtalkConfiguration {
     
     private final String webhook;
@@ -35,20 +33,15 @@ public final class DingtalkConfiguration {
     
     private final String secret;
     
-    private final Integer connectTimeout;
+    private final int connectTimeoutMillisecond;
     
-    private final Integer readTimeout;
+    private final int readTimeoutMillisecond;
     
-    /**
-     * Get dingtalk configuration.
-     *
-     * @param props properties
-     * @return dingtalk configuration.
-     */
-    public static DingtalkConfiguration getByProps(final Properties props) {
-        return new DingtalkConfiguration(props.getProperty(DingtalkConstants.DINGTALK_WEBHOOK),
-                props.getProperty(DingtalkConstants.DINGTALK_KEYWORD), props.getProperty(DingtalkConstants.DINGTALK_SECRET),
-                Integer.valueOf(props.getOrDefault(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, DingtalkConstants.DEFAULT_DINGTALK_CONNECT_TIMEOUT).toString()),
-                Integer.valueOf(props.getOrDefault(DingtalkConstants.DINGTALK_READ_TIMEOUT, DingtalkConstants.DEFAULT_DINGTALK_READ_TIMEOUT).toString()));
+    public DingtalkConfiguration(final Properties props) {
+        webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
+        keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
+        secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
+        connectTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
+        readTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
     }
 }

@@ -50,6 +50,6 @@ public final class JobErrorHandlerFactory {
     }
     
     private static Optional<JobErrorHandler> newHandlerInstance(final String type) {
-        return Optional.ofNullable(ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type));
+        return Optional.of(ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type));
     }
 }

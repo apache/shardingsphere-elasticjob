@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,11 +52,18 @@ public final class DingtalkJobErrorHandlerTest {
     
     @BeforeClass
     public static void init() {
-        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-        configuration.setHost(HOST);
-        configuration.addControllerInstance(new DingtalkInternalController());
-        restfulService = new NettyRestfulService(configuration);
+        NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
+        config.setHost(HOST);
+        config.addControllerInstance(new DingtalkInternalController());
+        restfulService = new NettyRestfulService(config);
         restfulService.startup();
+    }
+    
+    @AfterClass
+    public static void close() {
+        if (null != restfulService) {
+            restfulService.shutdown();
+        }
     }
     
     @Test
@@ -67,7 +72,7 @@ public final class DingtalkJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
-        verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
+        verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
     @Test
@@ -76,7 +81,7 @@ public final class DingtalkJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getJobConfiguration("http://localhost:9875/send?access_token=wrongToken"), cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
+        verify(log).info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
     }
     
     @Test
@@ -103,26 +108,11 @@ public final class DingtalkJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException(getNoSignJobConfiguration("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
-        verify(log).error("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
+        verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
-    private JobConfiguration getJobConfiguration(final String webhook) {
-        return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
-                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
-                .setProperty(DingtalkConstants.DINGTALK_SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
-                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
-                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
-                .build();
-    }
-    
-    private JobConfiguration getNoSignJobConfiguration(final String webhook) {
-        return JobConfiguration.newBuilder("test_job", 3)
-                .setProperty(DingtalkConstants.DINGTALK_WEBHOOK, webhook)
-                .setProperty(DingtalkConstants.DINGTALK_KEYWORD, "keyword")
-                .setProperty(DingtalkConstants.DINGTALK_CONNECT_TIMEOUT, "4000")
-                .setProperty(DingtalkConstants.DINGTALK_READ_TIMEOUT, "6000")
-                .build();
+    private DingtalkJobErrorHandler getDingtalkJobErrorHandler() {
+        return (DingtalkJobErrorHandler) JobErrorHandlerFactory.createHandler("DINGTALK").orElseThrow(() -> new JobConfigurationException("DINGTALK error handler not found."));
     }
     
     @SneakyThrows
@@ -135,20 +125,22 @@ public final class DingtalkJobErrorHandlerTest {
         field.set(dingtalkJobErrorHandler, log);
     }
     
-    @Test
-    public void assertGetType() {
-        DingtalkJobErrorHandler actual = new DingtalkJobErrorHandler();
-        assertThat(actual.getType(), is("DINGTALK"));
+    private JobConfiguration getJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook)
+                .setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword")
+                .setProperty(DingtalkPropertiesConstants.SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4")
+                .setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000")
+                .setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000")
+                .build();
     }
     
-    @AfterClass
-    public static void close() {
-        if (null != restfulService) {
-            restfulService.shutdown();
-        }
-    }
-    
-    private DingtalkJobErrorHandler getDingtalkJobErrorHandler() {
-        return (DingtalkJobErrorHandler) JobErrorHandlerFactory.createHandler("DINGTALK").orElseThrow(() -> new JobConfigurationException("DINGTALK error handler not found."));
+    private JobConfiguration getNoSignJobConfiguration(final String webhook) {
+        return JobConfiguration.newBuilder("test_job", 3)
+                .setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook)
+                .setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword")
+                .setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000")
+                .setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000")
+                .build();
     }
 }
