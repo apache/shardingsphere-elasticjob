@@ -21,9 +21,9 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.configuratio
  * Dingtalk properties constants.
  */
 public final class DingtalkPropertiesConstants {
-
+    
     public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
-
+    
     public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
     
     private static final String PREFIX = "dingtalk.";
