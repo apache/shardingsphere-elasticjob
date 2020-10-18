@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConstants;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

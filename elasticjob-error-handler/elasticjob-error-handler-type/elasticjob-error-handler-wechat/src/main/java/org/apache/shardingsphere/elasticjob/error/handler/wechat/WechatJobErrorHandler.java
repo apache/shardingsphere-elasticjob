@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 /**
- * Job error handler for wechat error message.
+ * Job error handler for send error message via wechat.
  */
 @Slf4j
 public final class WechatJobErrorHandler implements JobErrorHandler {

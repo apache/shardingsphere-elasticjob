@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConfiguration;
 
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
@@ -41,7 +42,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
- * Job error handler for sending error message by email.
+ * Job error handler for send error message via email.
  */
 @Slf4j
 public final class EmailJobErrorHandler implements JobErrorHandler {

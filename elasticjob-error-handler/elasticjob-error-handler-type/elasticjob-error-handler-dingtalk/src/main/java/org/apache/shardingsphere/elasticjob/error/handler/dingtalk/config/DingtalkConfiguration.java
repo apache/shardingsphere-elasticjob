@@ -22,7 +22,7 @@ import lombok.Getter;
 import java.util.Properties;
 
 /**
- * Dingtalk configuration.
+ * Job error handler configuration for send error message via dingtalk.
  */
 @Getter
 public final class DingtalkConfiguration {

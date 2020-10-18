@@ -22,7 +22,7 @@ import lombok.Getter;
 import java.util.Properties;
 
 /**
- * Wechat configuration.
+ * Job error handler configuration for send error message via wechat.
  */
 @Getter
 public final class WechatConfiguration {
