@@ -74,8 +74,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        DingtalkConfiguration dingtalkConfig = new DingtalkConfiguration(props);
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, dingtalkConfig);
+        DingtalkConfiguration config = new DingtalkConfiguration(props);
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -94,24 +94,24 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         }
     }
     
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration dingtalkConfig) {
-        HttpPost result = new HttpPost(getURL(dingtalkConfig));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(dingtalkConfig.getConnectTimeoutMillisecond()).setSocketTimeout(dingtalkConfig.getReadTimeoutMillisecond()).build();
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration config) {
+        HttpPost result = new HttpPost(getURL(config));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
         result.setConfig(requestConfig);
-        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, dingtalkConfig, cause)), StandardCharsets.UTF_8);
+        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, config, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         result.setEntity(entity);
         return result;
     }
     
-    private String getURL(final DingtalkConfiguration dingtalkConfig) {
-        return Strings.isNullOrEmpty(dingtalkConfig.getSecret()) ? dingtalkConfig.getWebhook() : getSignedURL(dingtalkConfig);
+    private String getURL(final DingtalkConfiguration config) {
+        return Strings.isNullOrEmpty(config.getSecret()) ? config.getWebhook() : getSignedURL(config);
     }
     
-    private String getSignedURL(final DingtalkConfiguration dingtalkConfig) {
+    private String getSignedURL(final DingtalkConfiguration config) {
         long timestamp = System.currentTimeMillis();
-        return String.format("%s&timestamp=%s&sign=%s", dingtalkConfig.getWebhook(), timestamp, generateSignature(timestamp, dingtalkConfig.getSecret()));
+        return String.format("%s&timestamp=%s&sign=%s", config.getWebhook(), timestamp, generateSignature(timestamp, config.getSecret()));
     }
     
     @SneakyThrows({NoSuchAlgorithmException.class, UnsupportedEncodingException.class, InvalidKeyException.class})
@@ -127,12 +127,12 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }
     
-    private String getErrorMessage(final String jobName, final DingtalkConfiguration dingtalkConfig, final Throwable cause) {
+    private String getErrorMessage(final String jobName, final DingtalkConfiguration config, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
         String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
-        if (!Strings.isNullOrEmpty(dingtalkConfig.getKeyword())) {
-            result = dingtalkConfig.getKeyword().concat(result);
+        if (!Strings.isNullOrEmpty(config.getKeyword())) {
+            result = config.getKeyword().concat(result);
         }
         return result;
     }

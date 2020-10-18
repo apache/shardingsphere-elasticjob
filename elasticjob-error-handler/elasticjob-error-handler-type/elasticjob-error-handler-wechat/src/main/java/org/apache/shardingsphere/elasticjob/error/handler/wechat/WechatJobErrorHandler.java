@@ -66,8 +66,8 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        WechatConfiguration wechatConfig = new WechatConfiguration(props);
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, wechatConfig);
+        WechatConfiguration config = new WechatConfiguration(props);
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -86,9 +86,9 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         }
     }
 
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration wechatConfig) {
-        HttpPost result = new HttpPost(wechatConfig.getWebhook());
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(wechatConfig.getConnectTimeoutMillisecond()).setSocketTimeout(wechatConfig.getReadTimeoutMillisecond()).build();
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
+        HttpPost result = new HttpPost(config.getWebhook());
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
         result.setConfig(requestConfig);
         StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
