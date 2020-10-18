@@ -68,7 +68,7 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
         List<HandlerParameter> handlerParameters = handler.getHandlerParameters();
         Map<String, List<String>> queryParameters = parseQuery(httpRequest.uri());
         Map<String, String> templateVariables = pathMatcher.captureVariables(mappingContext.pattern(), httpRequest.uri());
-        Object[] args = new Object[handlerParameters.size()];
+        Object[] result = new Object[handlerParameters.size()];
         boolean requestBodyAlreadyParsed = false;
         for (int i = 0; i < handlerParameters.size(); i++) {
             HandlerParameter handlerParameter = handlerParameters.get(i);
@@ -115,9 +115,9 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
                     break;
                 default:
             }
-            args[i] = parsedValue;
+            result[i] = parsedValue;
         }
-        return args;
+        return result;
     }
     
     private Map<String, List<String>> parseQuery(final String uri) {

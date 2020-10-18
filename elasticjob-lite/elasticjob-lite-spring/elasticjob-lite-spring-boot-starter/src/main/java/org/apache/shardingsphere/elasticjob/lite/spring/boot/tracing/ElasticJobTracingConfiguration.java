@@ -28,7 +28,7 @@ import javax.sql.DataSource;
  * ElasticJob tracing auto configuration.
  */
 public class ElasticJobTracingConfiguration {
-
+    
     /**
      * Create a bean of tracing configuration.
      *

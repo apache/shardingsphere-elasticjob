@@ -39,7 +39,7 @@ public interface JobFacade {
     JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
-     * check job execution environment.
+     * Check job execution environment.
      * 
      * @throws JobExecutionEnvironmentException job execution environment exception
      */

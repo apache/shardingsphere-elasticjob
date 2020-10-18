@@ -24,48 +24,51 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
 import java.util.Properties;
 
+/**
+ * ElasticJob configuration properties.
+ */
 @Getter
 @Setter
-public class ElasticJobConfigurationProperties {
-
+public final class ElasticJobConfigurationProperties {
+    
     private Class<? extends ElasticJob> elasticJobClass;
-
+    
     private String elasticJobType;
-
+    
     private String cron;
     
     private String jobBootstrapBeanName;
-
+    
     private int shardingTotalCount;
-
+    
     private String shardingItemParameters;
-
+    
     private String jobParameter;
-
+    
     private boolean monitorExecution;
-
+    
     private boolean failover;
-
+    
     private boolean misfire;
-
+    
     private int maxTimeDiffSeconds = -1;
-
+    
     private int reconcileIntervalMinutes;
-
+    
     private String jobShardingStrategyType;
-
+    
     private String jobExecutorServiceHandlerType;
-
+    
     private String jobErrorHandlerType;
-
+    
     private String description;
-
+    
     private Properties props = new Properties();
-
+    
     private boolean disabled;
-
+    
     private boolean overwrite;
-
+    
     /**
      * Convert to job configuration.
      *

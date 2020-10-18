@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.restful.Http;
 @Builder
 @Getter
 public final class ExceptionHandleResult {
-
+    
     private final Object result;
     
     @Builder.Default

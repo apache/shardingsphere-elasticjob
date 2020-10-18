@@ -29,7 +29,7 @@ public final class FooElasticJobListener implements ElasticJobListener {
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
     }
-
+    
     @Override
     public String getType() {
         return "fooElasticJobListener";

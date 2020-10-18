@@ -71,6 +71,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Authenticator getSessionAuthenticator(final EmailConfiguration emailConfiguration) {
         return new Authenticator() {
+            
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(emailConfiguration.getUsername(), emailConfiguration.getPassword());
@@ -79,15 +80,15 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final JobConfiguration jobConfiguration, final Throwable cause) {
-        EmailConfiguration emailConfiguration = EmailConfiguration.getByProps(jobConfiguration.getProps());
-        String errorContext = createErrorContext(jobConfiguration.getJobName(), cause);
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
+        EmailConfiguration emailConfiguration = EmailConfiguration.getByProps(jobConfig.getProps());
+        String errorContext = createErrorContext(jobConfig.getJobName(), cause);
         try {
             sendMessage(createMessage(errorContext, emailConfiguration), emailConfiguration);
-            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobConfiguration.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobConfig.getJobName(), cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobConfiguration.getJobName(), cause);
+            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobConfig.getJobName(), cause);
         }
     }
     

@@ -34,17 +34,17 @@ public interface PathMatcher {
      * Capture actual values of placeholder.
      * The format of Path pattern likes <code>/app/{jobName}/{status}</code>.
      *
-     * @param pathPattern Path pattern contains templates
-     * @param path        Actual path
-     * @return Map from template name to actual value
+     * @param pathPattern path pattern contains templates
+     * @param path actual path
+     * @return map from template name to actual value
      */
     Map<String, String> captureVariables(String pathPattern, String path);
     
     /**
      * Check if the path pattern matches the given path.
      *
-     * @param pathPattern Path pattern
-     * @param path        The path to check
+     * @param pathPattern path pattern
+     * @param path the path to check
      * @return true if matched, or else false
      */
     boolean matches(String pathPattern, String path);
@@ -52,7 +52,7 @@ public interface PathMatcher {
     /**
      * Check if the given string is a valid path pattern.
      *
-     * @param pathPattern Path pattern to check
+     * @param pathPattern path pattern to check
      * @return true if valid, or else false
      */
     boolean isValidPathPattern(String pathPattern);

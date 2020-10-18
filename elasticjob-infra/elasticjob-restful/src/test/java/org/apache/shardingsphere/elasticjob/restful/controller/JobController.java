@@ -35,27 +35,27 @@ public final class JobController implements RestfulController {
     /**
      * Pretend to create a job.
      *
-     * @param group       Group
-     * @param jobName     Job name
-     * @param cron        Job cron
-     * @param description Job description
-     * @return Result
+     * @param group group
+     * @param jobName job name
+     * @param cron job cron
+     * @param description job description
+     * @return result
      */
     @Mapping(method = Http.POST, path = "/{group}/{jobName}")
     public JobPojo createJob(@Param(name = "group", source = ParamSource.PATH) final String group,
                              @Param(name = "jobName", source = ParamSource.PATH) final String jobName,
                              @Param(name = "cron", source = ParamSource.QUERY) final String cron,
                              @RequestBody final String description) {
-        JobPojo jobPojo = new JobPojo();
-        jobPojo.setName(jobName);
-        jobPojo.setCron(cron);
-        jobPojo.setGroup(group);
-        jobPojo.setDescription(description);
-        return jobPojo;
+        JobPojo result = new JobPojo();
+        result.setName(jobName);
+        result.setCron(cron);
+        result.setGroup(group);
+        result.setDescription(description);
+        return result;
     }
     
     /**
-     * Throw an IllegalStateException.
+     * Throw an illegal state exception.
      *
      * @param message Exception message
      * @return None
@@ -66,10 +66,10 @@ public final class JobController implements RestfulController {
     }
     
     /**
-     * Throw an IllegalArgumentException.
+     * Throw an illegal argument exception.
      *
-     * @param message Exception message
-     * @return None
+     * @param message exception message
+     * @return none
      */
     @Mapping(method = Http.GET, path = "/throw/IllegalArgument")
     public Object throwIllegalArgumentException(@Param(name = "Exception-Message", source = ParamSource.HEADER) final String message) {
@@ -79,8 +79,8 @@ public final class JobController implements RestfulController {
     /**
      * Return 204.
      *
-     * @param noop Useless
-     * @return None
+     * @param noop useless
+     * @return none
      */
     @Mapping(method = Http.GET, path = "/code/204")
     @Returning(code = 204)

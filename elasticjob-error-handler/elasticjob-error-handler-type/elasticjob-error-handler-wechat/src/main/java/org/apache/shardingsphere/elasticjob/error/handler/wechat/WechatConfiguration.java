@@ -22,6 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Properties;
 
+/**
+ * Wechat configuration.
+ */
 @Getter
 @RequiredArgsConstructor
 public final class WechatConfiguration {
@@ -33,10 +36,10 @@ public final class WechatConfiguration {
     private final Integer readTimeout;
     
     /**
-     * Get wechat config.
+     * Get wechat configuration.
      *
-     * @param props props
-     * @return wechat config.
+     * @param props properties
+     * @return wechat configuration
      */
     public static WechatConfiguration getByProps(final Properties props) {
         return new WechatConfiguration(props.getProperty(WechatConstants.WECHAT_WEBHOOK),

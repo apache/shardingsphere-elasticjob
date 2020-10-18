@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+/**
+ * Email constants.
+ */
 public final class EmailConstants {
     
     public static final String PREFIX = "email.";

@@ -19,5 +19,3 @@ wechat:
   webhook: http://localhost:9876/send?key=TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3
   connectTimeout: 5000
   readTimeout: 3000
-
-

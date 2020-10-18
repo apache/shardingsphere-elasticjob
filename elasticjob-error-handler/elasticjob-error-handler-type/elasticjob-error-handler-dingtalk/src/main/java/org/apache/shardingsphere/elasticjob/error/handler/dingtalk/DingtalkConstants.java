@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
+/**
+ * Dingtalk constants.
+ */
 public final class DingtalkConstants {
     
     public static final String PREFIX = "dingtalk.";

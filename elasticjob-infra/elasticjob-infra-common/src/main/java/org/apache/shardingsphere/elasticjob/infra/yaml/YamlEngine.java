@@ -64,6 +64,7 @@ public final class YamlEngine {
      * @param <T> type of class
      * @return object from YAML
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T unmarshal(final String prefix, final InputStream configFileInput, final Class<T> classType) {
         Map<String, Object> configDataMap = new Yaml().loadAs(configFileInput, Map.class);
         if (null != configDataMap && StringUtils.isNotBlank(prefix)) {

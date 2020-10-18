@@ -32,7 +32,7 @@ public interface ResponseBodySerializer {
     /**
      * Serialize object to bytes.
      *
-     * @param responseBody Object to be serialized
+     * @param responseBody object to be serialized
      * @return bytes
      */
     byte[] serialize(Object responseBody);

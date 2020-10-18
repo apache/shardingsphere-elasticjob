@@ -72,7 +72,7 @@ public final class ResponseBodySerializerFactory {
      * </p>
      *
      * @param contentType HTTP content type
-     * @return Serializer
+     * @return serializer
      */
     public static ResponseBodySerializer getResponseBodySerializer(final String contentType) {
         ResponseBodySerializer result = RESPONSE_BODY_SERIALIZERS.get(contentType);

@@ -21,11 +21,11 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository;
  * Bar Repository.
  */
 public interface BarRepository {
-
+    
     /**
-     * Get data by id.
+     * Get data by ID.
      *
-     * @param id id
+     * @param id ID
      * @return data
      */
     String getById(int id);

@@ -44,7 +44,7 @@
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-
+        
         <guava.version>29.0-jre</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.2</quartz.version>

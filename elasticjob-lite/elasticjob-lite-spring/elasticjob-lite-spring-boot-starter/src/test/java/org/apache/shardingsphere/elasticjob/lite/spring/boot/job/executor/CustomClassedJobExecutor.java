@@ -23,16 +23,13 @@ import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.CustomJob;
 
-/**
- * Custom Classed Executor.
- */
-public class CustomClassedJobExecutor implements ClassedJobItemExecutor<CustomJob> {
-
+public final class CustomClassedJobExecutor implements ClassedJobItemExecutor<CustomJob> {
+    
     @Override
     public void process(final CustomJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         elasticJob.execute(shardingContext);
     }
-
+    
     @Override
     public Class<CustomJob> getElasticJobClass() {
         return CustomJob.class;

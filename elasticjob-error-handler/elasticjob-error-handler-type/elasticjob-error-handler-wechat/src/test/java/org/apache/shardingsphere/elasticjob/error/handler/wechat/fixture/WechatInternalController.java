@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
@@ -27,7 +26,6 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
 
-@Slf4j
 public final class WechatInternalController implements RestfulController {
     
     private static final String KEY = "TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3";
@@ -36,7 +34,7 @@ public final class WechatInternalController implements RestfulController {
      * Send wechat message.
      *
      * @param key access token
-     * @return Send Result.
+     * @return send Result
      */
     @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")

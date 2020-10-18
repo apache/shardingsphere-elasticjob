@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 public final class ThrowJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final JobConfiguration jobConfiguration, final Throwable cause) {
+    public void handleException(final JobConfiguration jobConfig, final Throwable cause) {
         throw new JobSystemException(cause);
     }
     

@@ -43,8 +43,8 @@ public final class QueryParameterMap extends AbstractMap<String, List<String>> {
     /**
      * Get values by parameter name.
      *
-     * @param parameterName Parameter name
-     * @return Values
+     * @param parameterName parameter name
+     * @return values
      */
     public List<String> get(final String parameterName) {
         return queryMap.get(parameterName);
@@ -53,8 +53,8 @@ public final class QueryParameterMap extends AbstractMap<String, List<String>> {
     /**
      * Get the first from values.
      *
-     * @param parameterName Parameter name
-     * @return The first value
+     * @param parameterName parameter name
+     * @return first value
      */
     public String getFirst(final String parameterName) {
         String firstValue = null;
@@ -76,10 +76,10 @@ public final class QueryParameterMap extends AbstractMap<String, List<String>> {
     }
     
     /**
-     * Add a value.
+     * Add value.
      *
-     * @param parameterName Parameter name
-     * @param value         Value
+     * @param parameterName parameter name
+     * @param value value
      */
     public void add(final String parameterName, final String value) {
         List<String> values = queryMap.get(parameterName);
@@ -98,7 +98,7 @@ public final class QueryParameterMap extends AbstractMap<String, List<String>> {
     /**
      * Convert to a single value map, abandon values except the first of each parameter.
      *
-     * @return Single value map
+     * @return single value map
      */
     public Map<String, String> toSingleValueMap() {
         return queryMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0)));
