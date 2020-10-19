@@ -64,7 +64,7 @@ public final class JobConfiguration {
     private final String jobErrorHandlerType;
     
     private final Collection<String> jobListenerTypes;
-
+    
     private final Collection<JobExtraConfiguration> extraConfigurations;
     
     private final String description;
