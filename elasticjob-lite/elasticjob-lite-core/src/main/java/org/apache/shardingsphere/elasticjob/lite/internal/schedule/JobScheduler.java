@@ -72,34 +72,36 @@ public final class JobScheduler {
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
         this.regCenter = regCenter;
         elasticJobType = null;
-        Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
-                .collect(Collectors.toList());
-        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
+        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
+        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, findTracingConfiguration(jobConfig).orElse(null));
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
         jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
-        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
         this.regCenter = regCenter;
         this.elasticJobType = elasticJobType;
-        Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
-                .collect(Collectors.toList());
-        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
+        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
+        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, findTracingConfiguration(jobConfig).orElse(null));
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
         jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
-        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
-    
+
+    private Collection<ElasticJobListener> getElasticJobListeners(final JobConfiguration jobConfig) {
+        return jobConfig.getJobListenerTypes().stream()
+                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
+                .collect(Collectors.toList());
+    }
+
     private Optional<TracingConfiguration<?>> findTracingConfiguration(final JobConfiguration jobConfig) {
         return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
     }
