@@ -16,5 +16,6 @@ ElasticJob-Lite 在配置中提供了 TracingConfiguration，目前支持数据�
     CoordinatorRegistryCenter regCenter = ...;
     // 初始化作业配置
     JobConfiguration jobConfig = ...;
-    new ScheduleJobBootstrap(regCenter, jobConfig, tracingConfig).schedule();
+    jobConfig.getExtraConfigurations().add(tracingConfig);
+    new ScheduleJobBootstrap(regCenter, jobConfig).schedule();
 ```

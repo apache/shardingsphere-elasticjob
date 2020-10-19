@@ -16,5 +16,6 @@ Developers can also extend it through SPI.
     CoordinatorRegistryCenter regCenter = ...;
     // init job configuration
     JobConfiguration jobConfig = ...;
-    new ScheduleJobBootstrap(regCenter, jobConfig, tracingConfig).schedule();
+jobConfig.getExtraConfigurations().add(tracingConfig);
+    new ScheduleJobBootstrap(regCenter, jobConfig).schedule();
 ```
