@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.tracing.parser;
+package org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.parser;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.tracing.tag.TracingBeanDefinitionTag;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.tag.WechatErrorHandlerBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
@@ -26,15 +26,16 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Tracing bean definition parser.
+ * Wechat error handler bean definition parser.
  */
-public final class TracingBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public final class WechatErrorHandlerBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(TracingConfiguration.class);
-        factory.addConstructorArgValue("RDB");
-        factory.addConstructorArgReference(element.getAttribute(TracingBeanDefinitionTag.DATA_SOURCE_REF_ATTRIBUTE));
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(WechatConfiguration.class);
+        factory.addConstructorArgValue(element.getAttribute(WechatErrorHandlerBeanDefinitionTag.WEBHOOK));
+        factory.addConstructorArgValue(element.getAttribute(WechatErrorHandlerBeanDefinitionTag.CONNECT_TIMEOUT_MILLISECOND));
+        factory.addConstructorArgValue(element.getAttribute(WechatErrorHandlerBeanDefinitionTag.READ_TIMEOUT_MILLISECOND));
         return factory.getBeanDefinition();
     }
 }

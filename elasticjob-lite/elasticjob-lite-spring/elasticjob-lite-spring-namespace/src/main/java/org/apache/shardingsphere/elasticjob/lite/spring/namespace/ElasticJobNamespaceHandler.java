@@ -17,9 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace;
 
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.parser.DingtalkErrorHandlerBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.parser.EmailErrorHandlerBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.parser.WechatErrorHandlerBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.parser.JobBeanDefinitionParser;
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.snapshot.parser.SnapshotBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.reg.parser.ZookeeperBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.snapshot.parser.SnapshotBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.tracing.parser.TracingBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
@@ -34,5 +37,8 @@ public final class ElasticJobNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("zookeeper", new ZookeeperBeanDefinitionParser());
         registerBeanDefinitionParser("snapshot", new SnapshotBeanDefinitionParser());
         registerBeanDefinitionParser("rdb-tracing", new TracingBeanDefinitionParser());
+        registerBeanDefinitionParser("email-error-handler", new EmailErrorHandlerBeanDefinitionParser());
+        registerBeanDefinitionParser("wechat-error-handler", new WechatErrorHandlerBeanDefinitionParser());
+        registerBeanDefinitionParser("dingtalk-error-handler", new DingtalkErrorHandlerBeanDefinitionParser());
     }
 }
