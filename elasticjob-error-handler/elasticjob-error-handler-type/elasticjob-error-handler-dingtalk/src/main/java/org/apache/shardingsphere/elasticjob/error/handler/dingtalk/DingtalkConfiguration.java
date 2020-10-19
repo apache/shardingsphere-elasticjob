@@ -36,7 +36,7 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     
     // TODO default value is 3000
     private final int connectTimeoutMillisecond;
-
+    
     // TODO default value is 5000
     private final int readTimeoutMillisecond;
     

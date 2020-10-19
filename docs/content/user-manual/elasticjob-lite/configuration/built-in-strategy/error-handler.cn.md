@@ -47,19 +47,19 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名    | 说明        |
-| -------- |:----------- |
-| host     | TODO        |
-| port     | TODO        |
-| username | TODO        |
-| password | TODO        |
-| useSsl   | TODO        |
-| subject  | TODO        |
-| from     | TODO        |
-| to       | TODO        |
-| cc       | TODO        |
-| bcc      | TODO        |
-| debug    | TODO        |
+| 属性名          | 说明        | 默认值                    |
+| -------------- |:----------- |:------------------------ |
+| email.host     | TODO        | 无                       |
+| email.port     | TODO        | 无                       |
+| email.username | TODO        | 无                       |
+| email.password | TODO        | 无                       |
+| email.useSsl   | TODO        | true                     |
+| email.subject  | TODO        | ElasticJob error message |
+| email.from     | TODO        | 无                       |
+| email.to       | TODO        | 无                       |
+| email.cc       | TODO        | 无                       |
+| email.bcc      | TODO        | 无                       |
+| email.debug    | TODO        | false                    |
 
 ## 企业微信通知策略
 
@@ -81,11 +81,11 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明        |
-| ------------------------- |:----------- |
-| webhook                   | TODO        |
-| connectTimeoutMillisecond | TODO        |
-| readTimeoutMillisecond    | TODO        |
+| 属性名                            | 说明        | 默认值    |
+| -------------------------------- |:----------- |:-------- |
+| wechat.webhook                   | TODO        | 无        |
+| wechat.connectTimeoutMillisecond | TODO        | 3000 毫秒 |
+| wechat.readTimeoutMillisecond    | TODO        | 5000 毫秒 |
 
 ## 钉钉通知策略
 
@@ -107,10 +107,10 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明        |
-| ------------------------- |:----------- |
-| webhook                   | TODO        |
-| keyword                   | TODO        |
-| secret                    | TODO        |
-| connectTimeoutMillisecond | TODO        |
-| readTimeoutMillisecond    | TODO        |
+| 属性名                              | 说明        | 默认值    |
+| ---------------------------------- |:----------- |:-------- |
+| dingtalk.webhook                   | TODO        | 无        |
+| dingtalk.keyword                   | TODO        | 无        |
+| dingtalk.secret                    | TODO        | 无        |
+| dingtalk.connectTimeoutMillisecond | TODO        | 3000 毫秒 |
+| dingtalk.readTimeoutMillisecond    | TODO        | 5000 毫秒 |

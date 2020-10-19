@@ -49,7 +49,7 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
     private final String cc;
     
     private final String bcc;
-
+    
     // TODO default value is false
     private final boolean debug;
     
