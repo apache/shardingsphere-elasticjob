@@ -66,8 +66,8 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
         SingletonBeanRegistry singletonBeanRegistry = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
         CoordinatorRegistryCenter registryCenter = applicationContext.getBean(CoordinatorRegistryCenter.class);
-        TracingConfiguration tracingConfiguration = getTracingConfiguration();
-        constructJobBootstraps(elasticJobProperties, singletonBeanRegistry, registryCenter, tracingConfiguration);
+        TracingConfiguration tracingConfig = getTracingConfiguration();
+        constructJobBootstraps(elasticJobProperties, singletonBeanRegistry, registryCenter, tracingConfig);
     }
     
     private TracingConfiguration getTracingConfiguration() {
@@ -84,7 +84,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
     
     private void constructJobBootstraps(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry singletonBeanRegistry,
-                                        final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfiguration) {
+                                        final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfig) {
         for (Entry<String, ElasticJobConfigurationProperties> entry : elasticJobProperties.getJobs().entrySet()) {
             ElasticJobConfigurationProperties jobConfigurationProperties = entry.getValue();
             Preconditions.checkArgument(null != jobConfigurationProperties.getElasticJobClass()
@@ -94,9 +94,9 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
                             || Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType()),
                     "[elasticJobClass] and [elasticJobType] are mutually exclusive.");
             if (null != jobConfigurationProperties.getElasticJobClass()) {
-                registerClassedJob(entry.getKey(), entry.getValue().getJobBootstrapBeanName(), singletonBeanRegistry, registryCenter, tracingConfiguration, jobConfigurationProperties);
+                registerClassedJob(entry.getKey(), entry.getValue().getJobBootstrapBeanName(), singletonBeanRegistry, registryCenter, tracingConfig, jobConfigurationProperties);
             } else if (!Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType())) {
-                registerTypedJob(entry.getKey(), entry.getValue().getJobBootstrapBeanName(), singletonBeanRegistry, registryCenter, tracingConfiguration, jobConfigurationProperties);
+                registerTypedJob(entry.getKey(), entry.getValue().getJobBootstrapBeanName(), singletonBeanRegistry, registryCenter, tracingConfig, jobConfigurationProperties);
             }
         }
     }
