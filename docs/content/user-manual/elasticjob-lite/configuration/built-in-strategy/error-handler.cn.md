@@ -47,19 +47,18 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名          | 说明        | 默认值                    |
-| -------------- |:----------- |:------------------------ |
-| email.host     | TODO        | 无                       |
-| email.port     | TODO        | 无                       |
-| email.username | TODO        | 无                       |
-| email.password | TODO        | 无                       |
-| email.useSsl   | TODO        | 无                       |
-| email.subject  | TODO        | ElasticJob error message |
-| email.from     | TODO        | 无                       |
-| email.to       | TODO        | 无                       |
-| email.cc       | TODO        | 无                       |
-| email.bcc      | TODO        | 无                       |
-| email.debug    | TODO        | 无                       |
+| 属性名          | 说明                 | 默认值                   |
+| -------------- |:-------------------- |:------------------------ |
+| email.host     | 邮件服务主机地址      | 无                       |
+| email.port     | 邮件服务主机端口      | 无                       |
+| email.username | 用户名               | 无                       |
+| email.password | 密码                 | 无                       |
+| email.useSsl   | 是否启用ssl加密传输   | 无                       |
+| email.subject  | 邮件主题             | ElasticJob error message |
+| email.from     | 发送方邮箱地址       | 无                        |
+| email.cc       | 抄送邮箱地址         | 无                        |
+| email.bcc      | 密送邮箱地址         | 无                        |
+| email.debug    | 是否开启debug        | 无                        |
 
 ## 企业微信通知策略
 
@@ -81,11 +80,11 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                            | 说明        | 默认值    |
-| -------------------------------- |:----------- |:-------- |
-| wechat.webhook                   | TODO        | 无        |
-| wechat.connectTimeoutMillisecond | TODO        | 3000 毫秒 |
-| wechat.readTimeoutMillisecond    | TODO        | 5000 毫秒 |
+| 属性名                            | 说明                                | 默认值    |
+| -------------------------------- |:----------------------------------- |:-------- |
+| wechat.webhook                   | 企业微信机器人的webhook地址           | 无        |
+| wechat.connectTimeoutMillisecond | 与企业微信服务器建立连接的超时时间       | 3000 毫秒 |
+| wechat.readTimeoutMillisecond    | 从企业微信服务器读取到可用资源的超时时间  | 5000 毫秒 |
 
 ## 钉钉通知策略
 
@@ -107,10 +106,10 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                              | 说明        | 默认值    |
-| ---------------------------------- |:----------- |:-------- |
-| dingtalk.webhook                   | TODO        | 无        |
-| dingtalk.keyword                   | TODO        | 无        |
-| dingtalk.secret                    | TODO        | 无        |
-| dingtalk.connectTimeoutMillisecond | TODO        | 3000 毫秒 |
-| dingtalk.readTimeoutMillisecond    | TODO        | 5000 毫秒 |
+| 属性名                              | 说明                              | 默认值    |
+| ---------------------------------- |:----------------------------------|:-------- |
+| dingtalk.webhook                   | 钉钉机器人的webhook地址            | 无        |
+| dingtalk.keyword                   | 自定义关键词                       | 无        |
+| dingtalk.secret                    | 签名的密钥                         | 无        |
+| dingtalk.connectTimeoutMillisecond | 与钉钉服务器建立连接的超时时间      | 3000 毫秒 |
+| dingtalk.readTimeoutMillisecond    | 从钉钉服务器读取到可用资源的超时时间 | 5000 毫秒 |
