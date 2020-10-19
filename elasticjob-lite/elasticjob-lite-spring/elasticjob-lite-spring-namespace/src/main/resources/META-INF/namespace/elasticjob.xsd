@@ -72,7 +72,7 @@
         </xsd:complexType>
     </xsd:element>
     
-    <xsd:element name="rdb-event-trace">
+    <xsd:element name="rdb-tracing">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">

@@ -40,7 +40,7 @@
         <property name="username" value="${event.rdb.username}" />
         <property name="password" value="${event.rdb.password}" />
     </bean>
-    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
     <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />

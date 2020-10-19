@@ -67,7 +67,7 @@ chapter = true
 
 ## 事件追踪配置
 
-\<elasticjob:rdb-event-trace />
+\<elasticjob:rdb-tracing />
 
 可配置属性：
 

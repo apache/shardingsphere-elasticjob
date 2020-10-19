@@ -33,6 +33,6 @@ public final class ElasticJobNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("job", new JobBeanDefinitionParser());
         registerBeanDefinitionParser("zookeeper", new ZookeeperBeanDefinitionParser());
         registerBeanDefinitionParser("snapshot", new SnapshotBeanDefinitionParser());
-        registerBeanDefinitionParser("rdb-event-trace", new TracingBeanDefinitionParser());
+        registerBeanDefinitionParser("rdb-tracing", new TracingBeanDefinitionParser());
     }
 }
