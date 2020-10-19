@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -76,7 +76,7 @@ public final class JobConfigurationPOJOTest {
         pojo.setJobShardingStrategyType("AVG_ALLOCATION");
         pojo.setJobExecutorServiceHandlerType("CPU");
         pojo.setJobErrorHandlerType("IGNORE");
-        pojo.setJobListenerTypes(Arrays.asList("LOG"));
+        pojo.setJobListenerTypes(Collections.singletonList("LOG"));
         pojo.setDescription("Job description");
         pojo.getProps().setProperty("key", "value");
         pojo.setDisabled(true);

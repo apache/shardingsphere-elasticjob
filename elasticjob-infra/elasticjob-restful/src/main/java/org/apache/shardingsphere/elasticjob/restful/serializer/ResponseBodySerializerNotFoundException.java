@@ -24,6 +24,8 @@ import java.text.MessageFormat;
  */
 public final class ResponseBodySerializerNotFoundException extends RuntimeException {
     
+    private static final long serialVersionUID = 3201288074956273247L;
+    
     public ResponseBodySerializerNotFoundException(final String mimeType) {
         super(MessageFormat.format("ResponseBodySerializer not found for [{0}]", mimeType));
     }
