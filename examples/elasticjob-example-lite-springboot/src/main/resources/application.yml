@@ -31,13 +31,13 @@ elasticjob:
       shardingTotalCount: 9
       props:
         script.command.line: "echo Manual SCRIPT Job: "
-    occurErrorNoticeDingtlakJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootOccurErrorNoticeDingtlakJob
+    occurErrorNoticeDingtalkJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootOccurErrorNoticeDingtalkJob
       overwrite: true
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
       jobErrorHandlerType: DINGTALK
-      jobBootstrapBeanName: occurErrorNoticeDingtlakBean
+      jobBootstrapBeanName: occurErrorNoticeDingtalkBean
       props:
         dingtalk:
           webhook: https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f

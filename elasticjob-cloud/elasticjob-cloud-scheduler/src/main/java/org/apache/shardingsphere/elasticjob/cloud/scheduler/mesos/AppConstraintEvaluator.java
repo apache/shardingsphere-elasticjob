@@ -155,6 +155,8 @@ public final class AppConstraintEvaluator implements ConstraintEvaluator {
     
     private static class LackConfigException extends Exception {
         
+        private static final long serialVersionUID = -3340824363577154813L;
+        
         LackConfigException(final String scope, final String configName) {
             super(String.format("Lack %s's config %s", scope, configName));
         }

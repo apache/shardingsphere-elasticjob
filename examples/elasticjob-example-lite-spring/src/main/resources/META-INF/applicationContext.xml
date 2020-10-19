@@ -66,13 +66,13 @@
         <!--</props>-->
     <!--</elasticjob:job>-->
     
-    <bean id="occurErrorNoticeDingtlakJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
+    <bean id="occurErrorNoticeDingtalkJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
     
-    <elasticjob:job id="${occurErrorNoticeDingtlakJob.id}" job-ref="occurErrorNoticeDingtlakJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
-                    sharding-total-count="${occurErrorNoticeDingtlakJob.shardingTotalCount}" cron="${occurErrorNoticeDingtlakJob.cron}" sharding-item-parameters="${occurErrorNoticeDingtlakJob.shardingItemParameters}" 
-                    monitor-execution="${occurErrorNoticeDingtlakJob.monitorExecution}" failover="${occurErrorNoticeDingtlakJob.failover}" description="${occurErrorNoticeDingtlakJob.description}"
-                    job-error-handler-type="${occurErrorNoticeDingtlakJob.jobErrorHandlerType}"
-                    disabled="${occurErrorNoticeDingtlakJob.disabled}" overwrite="${occurErrorNoticeDingtlakJob.overwrite}" >
+    <elasticjob:job id="${occurErrorNoticeDingtalkJob.id}" job-ref="occurErrorNoticeDingtalkJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
+                    sharding-total-count="${occurErrorNoticeDingtalkJob.shardingTotalCount}" cron="${occurErrorNoticeDingtalkJob.cron}" sharding-item-parameters="${occurErrorNoticeDingtalkJob.shardingItemParameters}" 
+                    monitor-execution="${occurErrorNoticeDingtalkJob.monitorExecution}" failover="${occurErrorNoticeDingtalkJob.failover}" description="${occurErrorNoticeDingtalkJob.description}"
+                    job-error-handler-type="${occurErrorNoticeDingtalkJob.jobErrorHandlerType}"
+                    disabled="${occurErrorNoticeDingtalkJob.disabled}" overwrite="${occurErrorNoticeDingtalkJob.overwrite}" >
         <props>
             <prop key="dingtalk.webhook">https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f</prop>
             <prop key="dingtalk.keyword">keyword</prop>

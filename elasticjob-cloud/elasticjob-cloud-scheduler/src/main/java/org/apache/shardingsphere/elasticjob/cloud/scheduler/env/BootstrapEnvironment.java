@@ -90,11 +90,11 @@ public final class BootstrapEnvironment {
     }
     
     /**
-     * Get zookeeper config.
+     * Get zookeeper configuration.
      *
-     * @return zookeeper config
+     * @return zookeeper configuration
      */
-    // TODO Other zkConfig values ​​are configurable
+    // TODO Other zkConfig values are configurable
     public ZookeeperConfiguration getZookeeperConfiguration() {
         ZookeeperConfiguration result = new ZookeeperConfiguration(getValue(EnvironmentArgument.ZOOKEEPER_SERVERS), getValue(EnvironmentArgument.ZOOKEEPER_NAMESPACE));
         String digest = getValue(EnvironmentArgument.ZOOKEEPER_DIGEST);

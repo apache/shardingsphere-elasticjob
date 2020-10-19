@@ -48,7 +48,6 @@ public final class HttpClient {
      * @param request HTTP request
      * @param consumer HTTP response consumer
      * @param timeoutSeconds wait for consume
-     * @throws InterruptedException interrupted
      */
     @SneakyThrows
     public static void request(final String host, final int port, final FullHttpRequest request, final Consumer<FullHttpResponse> consumer, final Long timeoutSeconds) {

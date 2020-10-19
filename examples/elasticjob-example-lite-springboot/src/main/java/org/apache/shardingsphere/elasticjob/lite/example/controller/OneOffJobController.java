@@ -33,8 +33,8 @@ public class OneOffJobController {
     @Resource(name = "manualScriptJobBean")
     private OneOffJobBootstrap manualScriptJob;
     
-    @Resource(name = "occurErrorNoticeDingtlakBean")
-    private OneOffJobBootstrap occurErrorNoticeDingtlakJob;
+    @Resource(name = "occurErrorNoticeDingtalkBean")
+    private OneOffJobBootstrap occurErrorNoticeDingtalkJob;
     
     @Resource(name = "occurErrorNoticeWechatBean")
     private OneOffJobBootstrap occurErrorNoticeWechatJob;
@@ -42,16 +42,15 @@ public class OneOffJobController {
     @Resource(name = "occurErrorNoticeEmailBean")
     private OneOffJobBootstrap occurErrorNoticeEmailJob;
     
-    
     @GetMapping("/execute/manualScriptJob")
     public String executeManualScriptJob() {
         manualScriptJob.execute();
         return RES_TEXT;
     }
     
-    @GetMapping("/execute/occurErrorNoticeDingtlakJob")
+    @GetMapping("/execute/occurErrorNoticeDingtalkJob")
     public String executeOneOffJob() {
-        occurErrorNoticeDingtlakJob.execute();
+        occurErrorNoticeDingtalkJob.execute();
         return RES_TEXT;
     }
     
