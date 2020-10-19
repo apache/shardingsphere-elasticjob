@@ -30,8 +30,10 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
     
     private final String webhook;
     
+    // TODO default value is 3000
     private final int connectTimeoutMillisecond;
     
+    // TODO default value is 3000
     private final int readTimeoutMillisecond;
     
     @Override
