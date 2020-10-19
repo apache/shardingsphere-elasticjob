@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,27 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.wechat;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 /**
- * Job error handler configuration for send error message via wechat.
+ * Dingtalk type.
  */
-@RequiredArgsConstructor
-@Getter
-public final class WechatConfiguration implements ErrorHandlerConfiguration {
+public final class DingtalkType {
     
-    private final String webhook;
-    
-    private final int connectTimeoutMillisecond;
-    
-    private final int readTimeoutMillisecond;
-    
-    @Override
-    public String getType() {
-        return WechatType.TYPE;
-    }
+    /**
+     * Dingtalk type.
+     */
+    public static final String TYPE = "DINGTALK";
 }

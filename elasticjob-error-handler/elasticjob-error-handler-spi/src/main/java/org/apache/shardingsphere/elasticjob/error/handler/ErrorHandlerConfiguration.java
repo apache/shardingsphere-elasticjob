@@ -23,4 +23,11 @@ import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
  * Error handler configuration.
  */
 public interface ErrorHandlerConfiguration extends JobExtraConfiguration {
+    
+    /**
+     * Get type.
+     * 
+     * @return type
+     */
+    String getType();
 }

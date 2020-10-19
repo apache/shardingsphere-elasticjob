@@ -136,6 +136,6 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkCo
     
     @Override
     public String getType() {
-        return "DINGTALK";
+        return DingtalkType.TYPE;
     }
 }
