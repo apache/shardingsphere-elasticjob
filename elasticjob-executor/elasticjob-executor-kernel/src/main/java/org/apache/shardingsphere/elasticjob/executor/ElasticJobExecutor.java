@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
@@ -84,6 +85,7 @@ public final class ElasticJobExecutor {
     /**
      * Execute job.
      */
+    @SuppressWarnings("unchecked")
     public void execute() {
         try {
             jobFacade.checkJobExecutionEnvironment();
@@ -191,7 +193,11 @@ public final class ElasticJobExecutor {
     }
     
     private Optional<ErrorHandlerConfiguration> findErrorHandlerConfiguration() {
-        return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof ErrorHandlerConfiguration).map(extraConfig -> (ErrorHandlerConfiguration) extraConfig).findFirst();
+        return jobConfig.getExtraConfigurations().stream().filter(this::isMatchErrorHandlerType).map(extraConfig -> (ErrorHandlerConfiguration) extraConfig).findFirst();
+    }
+    
+    private boolean isMatchErrorHandlerType(final JobExtraConfiguration extraConfig) {
+        return extraConfig instanceof ErrorHandlerConfiguration && ((ErrorHandlerConfiguration) extraConfig).getType().equals(jobConfig.getJobErrorHandlerType());
     }
     
     /**

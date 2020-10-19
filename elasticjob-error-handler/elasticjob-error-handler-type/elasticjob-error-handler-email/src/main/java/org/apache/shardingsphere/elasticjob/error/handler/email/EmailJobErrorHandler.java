@@ -132,6 +132,6 @@ public final class EmailJobErrorHandler implements JobErrorHandler<EmailConfigur
     
     @Override
     public String getType() {
-        return "EMAIL";
+        return EmailType.TYPE;
     }
 }
