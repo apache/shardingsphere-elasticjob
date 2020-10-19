@@ -91,13 +91,13 @@
                     <xsd:attribute name="port" type="xsd:string" use="required" />
                     <xsd:attribute name="username" type="xsd:string" use="required" />
                     <xsd:attribute name="password" type="xsd:string" use="required" />
-                    <xsd:attribute name="use-ssl" type="xsd:string" default="true" />
+                    <xsd:attribute name="use-ssl" type="xsd:string" use="required" />
                     <xsd:attribute name="subject" type="xsd:string" use="required" />
                     <xsd:attribute name="from" type="xsd:string" use="required" />
                     <xsd:attribute name="to" type="xsd:string" use="required" />
                     <xsd:attribute name="cc" type="xsd:string" use="required" />
                     <xsd:attribute name="bcc" type="xsd:string" use="required" />
-                    <xsd:attribute name="debug" type="xsd:string" default="false" />
+                    <xsd:attribute name="debug" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -108,8 +108,8 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="webhook" type="xsd:string" use="required" />
-                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" default="3000" />
-                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" default="5000" />
+                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" use="required" />
+                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -122,8 +122,8 @@
                     <xsd:attribute name="webhook" type="xsd:string" use="required" />
                     <xsd:attribute name="keyword" type="xsd:string" use="required" />
                     <xsd:attribute name="secret" type="xsd:string" use="required" />
-                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" default="3000" />
-                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" default="5000" />
+                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" use="required" />
+                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" use="required" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

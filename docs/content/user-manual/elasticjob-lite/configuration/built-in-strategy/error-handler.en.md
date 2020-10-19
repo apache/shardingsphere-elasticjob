@@ -47,19 +47,19 @@ Maven POM:
 
 Configuration: 
 
-| Name     | Description | Default Value            |
-| -------- |:----------- |:------------------------ |
-| host     | TODO        | None                     |
-| port     | TODO        | None                     |
-| username | TODO        | None                     |
-| password | TODO        | None                     |
-| useSsl   | TODO        | None                     |
-| subject  | TODO        | ElasticJob error message |
-| from     | TODO        | None                     |
-| to       | TODO        | None                     |
-| cc       | TODO        | None                     |
-| bcc      | TODO        | None                     |
-| debug    | TODO        | None                     |
+| Name     | Description |
+| -------- |:----------- |
+| host     | TODO        |
+| port     | TODO        |
+| username | TODO        |
+| password | TODO        |
+| useSsl   | TODO        |
+| subject  | TODO        |
+| from     | TODO        |
+| to       | TODO        |
+| cc       | TODO        |
+| bcc      | TODO        |
+| debug    | TODO        |
 
 ## Wechat Enterprise Notification Strategy
 
@@ -81,11 +81,11 @@ Maven POM:
 
 Configuration: 
 
-| Name                      | Description | Default Value     |
-| ------------------------- |:----------- |:----------------- |
-| webhook                   | TODO        | None              |
-| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                      | Description |
+| ------------------------- |:----------- |
+| webhook                   | TODO        |
+| connectTimeoutMillisecond | TODO        |
+| readTimeoutMillisecond    | TODO        |
 
 ## Dingtalk Notification Strategy
 
@@ -107,10 +107,10 @@ Maven POM:
 
 Configuration: 
 
-| Name                      | Description | Default Value     |
-| ------------------------- |:----------- |:----------------- |
-| webhook                   | TODO        | None              |
-| keyword                   | TODO        | None              |
-| secret                    | TODO        | None              |
-| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                      | Description |
+| ------------------------- |:----------- |
+| webhook                   | TODO        |
+| keyword                   | TODO        |
+| secret                    | TODO        |
+| connectTimeoutMillisecond | TODO        |
+| readTimeoutMillisecond    | TODO        |

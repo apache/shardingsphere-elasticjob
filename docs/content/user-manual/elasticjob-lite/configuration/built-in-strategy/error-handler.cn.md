@@ -47,19 +47,19 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名    | 说明        | 默认值                    |
-| -------- |:----------- |:------------------------ |
-| host     | TODO        | 无                       |
-| port     | TODO        | 无                       |
-| username | TODO        | 无                       |
-| password | TODO        | 无                       |
-| useSsl   | TODO        | 无                       |
-| subject  | TODO        | ElasticJob error message |
-| from     | TODO        | 无                       |
-| to       | TODO        | 无                       |
-| cc       | TODO        | 无                       |
-| bcc      | TODO        | 无                       |
-| debug    | TODO        | 无                       |
+| 属性名    | 说明        |
+| -------- |:----------- |
+| host     | TODO        |
+| port     | TODO        |
+| username | TODO        |
+| password | TODO        |
+| useSsl   | TODO        |
+| subject  | TODO        |
+| from     | TODO        |
+| to       | TODO        |
+| cc       | TODO        |
+| bcc      | TODO        |
+| debug    | TODO        |
 
 ## 企业微信通知策略
 
@@ -81,11 +81,11 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明        | 默认值    |
-| ------------------------- |:----------- |:-------- |
-| webhook                   | TODO        | 无        |
-| connectTimeoutMillisecond | TODO        | 3000 毫秒 |
-| readTimeoutMillisecond    | TODO        | 5000 毫秒 |
+| 属性名                     | 说明        |
+| ------------------------- |:----------- |
+| webhook                   | TODO        |
+| connectTimeoutMillisecond | TODO        |
+| readTimeoutMillisecond    | TODO        |
 
 ## 钉钉通知策略
 
@@ -107,10 +107,10 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明        | 默认值    |
-| ------------------------- |:----------- |:-------- |
-| webhook                   | TODO        | 无        |
-| keyword                   | TODO        | 无        |
-| secret                    | TODO        | 无        |
-| connectTimeoutMillisecond | TODO        | 3000 毫秒 |
-| readTimeoutMillisecond    | TODO        | 5000 毫秒 |
+| 属性名                     | 说明        |
+| ------------------------- |:----------- |
+| webhook                   | TODO        |
+| keyword                   | TODO        |
+| secret                    | TODO        |
+| connectTimeoutMillisecond | TODO        |
+| readTimeoutMillisecond    | TODO        |
