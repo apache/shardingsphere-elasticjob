@@ -47,19 +47,19 @@ Maven POM:
 
 Configuration: 
 
-| Name     | Description | Default Value            |
-| -------- |:----------- |:------------------------ |
-| host     | TODO        | None                     |
-| port     | TODO        | None                     |
-| username | TODO        | None                     |
-| password | TODO        | None                     |
-| useSsl   | TODO        | true                     |
-| subject  | TODO        | ElasticJob error message |
-| from     | TODO        | None                     |
-| to       | TODO        | None                     |
-| cc       | TODO        | None                     |
-| bcc      | TODO        | None                     |
-| debug    | TODO        | false                    |
+| Name           | Description                                      | Default Value            |
+| -------------- |:------------------------------------------------ |:------------------------ |
+| email.host     | Email service host address                       | None                     |
+| email.port     | Email service port                               | None                     |
+| email.username | Username                                         | None                     |
+| email.password | Password                                         | None                     |
+| email.useSsl   | Whether to enable ssl encrypted transmission     | None                     |
+| email.subject  | Email Subject                                    | ElasticJob error message |
+| email.from     | Sender email address                             | None                     |
+| email.to       | Recipient's email address                        | None                     |
+| email.cc       | Carbon copy email address                        | None                     |
+| email.bcc      | Blind carbon copy email address                  | None                     |
+| email.debug    | Whether to enable debug                          | None                     |
 
 ## Wechat Enterprise Notification Strategy
 
@@ -81,11 +81,11 @@ Maven POM:
 
 Configuration: 
 
-| Name                      | Description | Default Value     |
-| ------------------------- |:----------- |:----------------- |
-| webhook                   | TODO        | None              |
-| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                             | Description                                                                | Default Value     |
+| -------------------------------- |:---------------------------------------------------------------------------|:----------------- |
+| wechat.webhook                   | The webhook address of the wechat robot                                    | None              |
+| wechat.connectTimeoutMillisecond | The timeout period for establishing a connection with the wechat server    | 3000 milliseconds |
+| wechat.readTimeoutMillisecond    | The timeout period for reading available resources from the wechat server  | 5000 milliseconds |
 
 ## Dingtalk Notification Strategy
 
@@ -107,10 +107,10 @@ Maven POM:
 
 Configuration: 
 
-| Name                      | Description | Default Value     |
-| ------------------------- |:----------- |:----------------- |
-| webhook                   | TODO        | None              |
-| keyword                   | TODO        | None              |
-| secret                    | TODO        | None              |
-| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                               | Description                                                                 | Default Value     |
+| ---------------------------------- |:--------------------------------------------------------------------------- |:------------------|
+| dingtalk.webhook                   | The webhook address of the dingtalk robot                                   | None              |
+| dingtalk.keyword                   | Custom keywords                                                             | None              |
+| dingtalk.secret                    | Secret for dingtalk robot                                                   | None              |
+| dingtalk.connectTimeoutMillisecond | The timeout period for establishing a connection with the dingtalk server   | 3000 milliseconds |
+| dingtalk.readTimeoutMillisecond    | The timeout period for reading available resources from the dingtalk server | 5000 milliseconds |
