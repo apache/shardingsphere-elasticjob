@@ -66,11 +66,12 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
         SingletonBeanRegistry singletonBeanRegistry = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
         CoordinatorRegistryCenter registryCenter = applicationContext.getBean(CoordinatorRegistryCenter.class);
-        TracingConfiguration tracingConfig = getTracingConfiguration();
+        TracingConfiguration<?> tracingConfig = getTracingConfiguration();
         constructJobBootstraps(elasticJobProperties, singletonBeanRegistry, registryCenter, tracingConfig);
     }
     
-    private TracingConfiguration getTracingConfiguration() {
+    @SuppressWarnings("rawtypes")
+    private TracingConfiguration<?> getTracingConfiguration() {
         Map<String, TracingConfiguration> tracingConfigurationBeans = applicationContext.getBeansOfType(TracingConfiguration.class);
         if (tracingConfigurationBeans.isEmpty()) {
             return null;
@@ -84,7 +85,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
     
     private void constructJobBootstraps(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry singletonBeanRegistry,
-                                        final CoordinatorRegistryCenter registryCenter, final TracingConfiguration tracingConfig) {
+                                        final CoordinatorRegistryCenter registryCenter, final TracingConfiguration<?> tracingConfig) {
         for (Entry<String, ElasticJobConfigurationProperties> entry : elasticJobProperties.getJobs().entrySet()) {
             ElasticJobConfigurationProperties jobConfigurationProperties = entry.getValue();
             Preconditions.checkArgument(null != jobConfigurationProperties.getElasticJobClass()
@@ -102,7 +103,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
     
     private void registerClassedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
-                                    final TracingConfiguration tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
+                                    final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
         ElasticJob elasticJob = applicationContext.getBean(jobConfigurationProperties.getElasticJobClass());
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
@@ -123,7 +124,7 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
     
     private void registerTypedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
-                                  final TracingConfiguration tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
+                                  final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for one off job.");
