@@ -47,19 +47,19 @@ Maven POM:
 
 Configuration: 
 
-| Name           | Description | Default Value            |
-| -------------- |:----------- |:------------------------ |
-| email.host     | TODO        | None                     |
-| email.port     | TODO        | None                     |
-| email.username | TODO        | None                     |
-| email.password | TODO        | None                     |
-| email.useSsl   | TODO        | None                     |
-| email.subject  | TODO        | ElasticJob error message |
-| email.from     | TODO        | None                     |
-| email.to       | TODO        | None                     |
-| email.cc       | TODO        | None                     |
-| email.bcc      | TODO        | None                     |
-| email.debug    | TODO        | None                     |
+| Name     | Description | Default Value            |
+| -------- |:----------- |:------------------------ |
+| host     | TODO        | None                     |
+| port     | TODO        | None                     |
+| username | TODO        | None                     |
+| password | TODO        | None                     |
+| useSsl   | TODO        | None                     |
+| subject  | TODO        | ElasticJob error message |
+| from     | TODO        | None                     |
+| to       | TODO        | None                     |
+| cc       | TODO        | None                     |
+| bcc      | TODO        | None                     |
+| debug    | TODO        | None                     |
 
 ## Wechat Enterprise Notification Strategy
 
@@ -81,11 +81,11 @@ Maven POM:
 
 Configuration: 
 
-| Name                             | Description | Default Value     |
-| -------------------------------- |:----------- |:----------------- |
-| wechat.webhook                   | TODO        | None              |
-| wechat.connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| wechat.readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                      | Description | Default Value     |
+| ------------------------- |:----------- |:----------------- |
+| webhook                   | TODO        | None              |
+| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
+| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
 
 ## Dingtalk Notification Strategy
 
@@ -107,10 +107,10 @@ Maven POM:
 
 Configuration: 
 
-| Name                               | Description | Default Value     |
-| ---------------------------------- |:----------- |:----------------- |
-| dingtalk.webhook                   | TODO        | None              |
-| dingtalk.keyword                   | TODO        | None              |
-| dingtalk.secret                    | TODO        | None              |
-| dingtalk.connectTimeoutMillisecond | TODO        | 3000 milliseconds |
-| dingtalk.readTimeoutMillisecond    | TODO        | 5000 milliseconds |
+| Name                      | Description | Default Value     |
+| ------------------------- |:----------- |:----------------- |
+| webhook                   | TODO        | None              |
+| keyword                   | TODO        | None              |
+| secret                    | TODO        | None              |
+| connectTimeoutMillisecond | TODO        | 3000 milliseconds |
+| readTimeoutMillisecond    | TODO        | 5000 milliseconds |
