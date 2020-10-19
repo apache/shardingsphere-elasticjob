@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
 
 public final class WechatInternalController implements RestfulController {
     
-    private static final String KEY = "TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3";
+    private static final String KEY = "mocked_key";
     
     /**
      * Send wechat message.

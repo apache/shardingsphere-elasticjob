@@ -40,11 +40,11 @@ import java.util.Map;
 
 public final class DingtalkInternalController implements RestfulController {
     
-    private static final String ACCESS_TOKEN = "42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f";
+    private static final String ACCESS_TOKEN = "mocked_token";
     
-    private static final String KEYWORD = "keyword";
+    private static final String KEYWORD = "mocked_keyword";
     
-    private static final String SECRET = "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4";
+    private static final String SECRET = "mocked_secret";
     
     /**
      * Send Dingtalk message.
