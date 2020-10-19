@@ -72,7 +72,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", getJobProperties("http://localhost:9872/send?key=TLQEC0cPivqV1MkT0IPMtzunTBBVyIV3"), cause);
+        actual.handleException("test_job", getJobProperties("http://localhost:9872/send?key=mocked_key"), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
@@ -81,7 +81,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", getJobProperties("http://localhost:9872/send?key=wrongToken"), cause);
+        actual.handleException("test_job", getJobProperties("http://localhost:9872/send?key=wrong_key"), cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     

@@ -72,7 +72,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
+        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=mocked_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
@@ -81,7 +81,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=wrongToken"), cause);
+        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=wrong_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
     }
     
@@ -108,7 +108,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createNoSignJobProperties("http://localhost:9875/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f"), cause);
+        actual.handleException("test_job", createNoSignJobProperties("http://localhost:9875/send?access_token=mocked_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
@@ -129,8 +129,8 @@ public final class DingtalkJobErrorHandlerTest {
     private Properties createJobProperties(final String webhook) {
         Properties result = new Properties();
         result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
-        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword");
-        result.setProperty(DingtalkPropertiesConstants.SECRET, "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4");
+        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
+        result.setProperty(DingtalkPropertiesConstants.SECRET, "mocked_secret");
         result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
         result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
         return result;
@@ -139,7 +139,7 @@ public final class DingtalkJobErrorHandlerTest {
     private Properties createNoSignJobProperties(final String webhook) {
         Properties result = new Properties();
         result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
-        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword");
+        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
         result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
         result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
         return result;
