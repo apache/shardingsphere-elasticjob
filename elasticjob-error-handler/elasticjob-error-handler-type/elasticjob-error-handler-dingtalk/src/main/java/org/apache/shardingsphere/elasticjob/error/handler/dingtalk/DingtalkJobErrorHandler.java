@@ -30,7 +30,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import javax.crypto.Mac;
@@ -46,13 +45,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Properties;
 
 /**
  * Job error handler for send error message via dingtalk.
  */
 @Slf4j
-public final class DingtalkJobErrorHandler implements JobErrorHandler {
+public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkConfiguration> {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
@@ -73,8 +71,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        DingtalkConfiguration config = new DingtalkConfiguration(props);
+    public void handleException(final String jobName, final DingtalkConfiguration config, final Throwable cause) {
         HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();

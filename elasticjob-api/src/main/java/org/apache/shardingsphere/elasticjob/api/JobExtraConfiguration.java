@@ -15,22 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.wechat.config;
+package org.apache.shardingsphere.elasticjob.api;
 
 /**
- * Job error handler properties constants for send error message via wechat.
+ * Job extra configuration.
  */
-public final class WechatPropertiesConstants {
-    
-    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
-    
-    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
-    
-    private static final String PREFIX = "wechat.";
-    
-    public static final String WEBHOOK = PREFIX + "webhook";
-    
-    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
-    
-    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
+public interface JobExtraConfiguration {
 }

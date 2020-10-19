@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.email.config.EmailConfiguration;
 
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
@@ -44,13 +43,12 @@ import java.util.Properties;
  * Job error handler for send error message via email.
  */
 @Slf4j
-public final class EmailJobErrorHandler implements JobErrorHandler {
+public final class EmailJobErrorHandler implements JobErrorHandler<EmailConfiguration> {
     
     private Session session;
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        EmailConfiguration config = new EmailConfiguration(props);
+    public void handleException(final String jobName, final EmailConfiguration config, final Throwable cause) {
         String errorMessage = getErrorMessage(jobName, cause);
         try {
             sendMessage(createMessage(errorMessage, config), config);

@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.api;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 
 /**
  * Tracing configuration.
@@ -27,7 +28,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public final class TracingConfiguration<T> {
+public final class TracingConfiguration<T> implements JobExtraConfiguration {
     
     private final String type;
     

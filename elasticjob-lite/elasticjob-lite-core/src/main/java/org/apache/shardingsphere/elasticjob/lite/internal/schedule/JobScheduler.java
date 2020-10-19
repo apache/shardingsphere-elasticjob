@@ -39,6 +39,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -69,10 +70,6 @@ public final class JobScheduler {
     private final JobScheduleController jobScheduleController;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
-        this(regCenter, elasticJob, jobConfig, null);
-    }
-    
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration<?> tracingConfig) {
         this.regCenter = regCenter;
         elasticJobType = null;
         final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
@@ -81,7 +78,7 @@ public final class JobScheduler {
                 .collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, findTracingConfiguration(jobConfig).orElse(null));
         jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
@@ -106,6 +103,10 @@ public final class JobScheduler {
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
         jobScheduleController = createJobScheduleController();
+    }
+    
+    private Optional<TracingConfiguration> findTracingConfiguration(final JobConfiguration jobConfig) {
+        return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration) extraConfig);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final Collection<ElasticJobListener> elasticJobListeners) {

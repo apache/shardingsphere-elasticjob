@@ -18,11 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.parser;
 
 import com.google.common.base.Strings;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.tag.JobBeanDefinitionTag;
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.tag.JobListenerBeanDefinitionTag;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -34,8 +33,8 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -60,10 +59,6 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
             factory.addConstructorArgReference(element.getAttribute(JobBeanDefinitionTag.JOB_REF_ATTRIBUTE));
         }
         factory.addConstructorArgValue(createJobConfigurationBeanDefinition(element, parserContext));
-        String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
-        if (!Strings.isNullOrEmpty(tracingRef)) {
-            factory.addConstructorArgReference(tracingRef);
-        }
         return factory.getBeanDefinition();
     }
     
@@ -87,6 +82,14 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         } else {
             result.addConstructorArgValue(Arrays.asList(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).split(",")));
         }
+        String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
+        if (Strings.isNullOrEmpty(tracingRef)) {
+            result.addConstructorArgValue(Collections.emptyList());
+        } else {
+            Collection<BeanDefinition> extraConfigs = new ManagedList<>(1);
+            extraConfigs.add(parserContext.getRegistry().getBeanDefinition(tracingRef));
+            result.addConstructorArgValue(extraConfigs);
+        }
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         result.addConstructorArgValue(parsePropsElement(element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));
@@ -97,24 +100,5 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     private Properties parsePropsElement(final Element element, final ParserContext parserContext) {
         Element propsElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionTag.PROPS_TAG);
         return null == propsElement ? new Properties() : parserContext.getDelegate().parsePropsElement(propsElement);
-    }
-    
-    private List<BeanDefinition> createJobListeners(final Element element) {
-        Element listenerElement = DomUtils.getChildElementByTagName(element, JobListenerBeanDefinitionTag.LISTENER_TAG);
-        Element distributedListenerElement = DomUtils.getChildElementByTagName(element, JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_TAG);
-        List<BeanDefinition> result = new ManagedList<>(2);
-        if (null != listenerElement) {
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(listenerElement.getAttribute(JobListenerBeanDefinitionTag.CLASS_ATTRIBUTE));
-            factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-            result.add(factory.getBeanDefinition());
-        }
-        if (null != distributedListenerElement) {
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.CLASS_ATTRIBUTE));
-            factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
-            factory.addConstructorArgValue(distributedListenerElement.getAttribute(JobListenerBeanDefinitionTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
-            result.add(factory.getBeanDefinition());
-        }
-        return result;
     }
 }

@@ -29,7 +29,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.wechat.config.WechatConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 import java.io.IOException;
@@ -38,13 +37,12 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.Properties;
 
 /**
  * Job error handler for send error message via wechat.
  */
 @Slf4j
-public final class WechatJobErrorHandler implements JobErrorHandler {
+public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfiguration> {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
@@ -65,8 +63,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        WechatConfiguration config = new WechatConfiguration(props);
+    public void handleException(final String jobName, final WechatConfiguration config, final Throwable cause) {
         HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();

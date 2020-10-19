@@ -102,31 +102,43 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     }
     
     private void registerClassedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
-                                    final TracingConfiguration tracingConfiguration, final ElasticJobConfigurationProperties jobConfigurationProperties) {
-        JobConfiguration jobConfiguration = jobConfigurationProperties.toJobConfiguration(jobName);
+                                    final TracingConfiguration tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
+        JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
         ElasticJob elasticJob = applicationContext.getBean(jobConfigurationProperties.getElasticJobClass());
-        if (Strings.isNullOrEmpty(jobConfiguration.getCron())) {
+        if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for one off job.");
+            if (null != tracingConfig) {
+                jobConfig.getExtraConfigurations().add(tracingConfig);
+            }
             singletonBeanRegistry.registerSingleton(jobBootstrapBeanName,
-                    new OneOffJobBootstrap(registryCenter, elasticJob, jobConfiguration, tracingConfiguration));
+                    new OneOffJobBootstrap(registryCenter, elasticJob, jobConfig));
         } else {
-            String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfiguration.getJobName() + "ScheduleJobBootstrap";
+            String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfig.getJobName() + "ScheduleJobBootstrap";
+            if (null != tracingConfig) {
+                jobConfig.getExtraConfigurations().add(tracingConfig);
+            }
             singletonBeanRegistry.registerSingleton(beanName,
-                    new ScheduleJobBootstrap(registryCenter, elasticJob, jobConfiguration, tracingConfiguration));
+                    new ScheduleJobBootstrap(registryCenter, elasticJob, jobConfig));
         }
     }
     
     private void registerTypedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
-                                  final TracingConfiguration tracingConfiguration, final ElasticJobConfigurationProperties jobConfigurationProperties) {
-        JobConfiguration jobConfiguration = jobConfigurationProperties.toJobConfiguration(jobName);
-        if (Strings.isNullOrEmpty(jobConfiguration.getCron())) {
+                                  final TracingConfiguration tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
+        JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
+        if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for one off job.");
+            if (null != tracingConfig) {
+                jobConfig.getExtraConfigurations().add(tracingConfig);
+            }
             singletonBeanRegistry.registerSingleton(jobBootstrapBeanName,
-                    new OneOffJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfiguration, tracingConfiguration));
+                    new OneOffJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfig));
         } else {
-            String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfiguration.getJobName() + "ScheduleJobBootstrap";
+            String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfig.getJobName() + "ScheduleJobBootstrap";
+            if (null != tracingConfig) {
+                jobConfig.getExtraConfigurations().add(tracingConfig);
+            }
             singletonBeanRegistry.registerSingleton(beanName,
-                    new ScheduleJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfiguration, tracingConfiguration));
+                    new ScheduleJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfig));
         }
     }
 }

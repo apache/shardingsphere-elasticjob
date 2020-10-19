@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Properties;
 
 import static org.mockito.Mockito.verify;
 
@@ -43,7 +42,7 @@ public final class LogJobErrorHandlerTest {
         LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG").orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", new Properties(), cause);
+        actual.handleException("test_job", null, cause);
         verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
     
