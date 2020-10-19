@@ -36,8 +36,10 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
     
     private final String password;
     
+    // TODO default value is true
     private final boolean useSsl;
     
+    // TODO default value is ElasticJob error message
     private final String subject;
     
     private final String from;
@@ -47,7 +49,8 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
     private final String cc;
     
     private final String bcc;
-    
+
+    // TODO default value is false
     private final boolean debug;
     
     @Override
