@@ -37,7 +37,7 @@ import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
 import javax.sql.DataSource;
@@ -59,7 +59,7 @@ public final class TaskExecutor implements Executor {
     
     private volatile ElasticJobExecutor jobExecutor;
     
-    private volatile JobEventBus jobEventBus = new JobEventBus();
+    private volatile JobTracingEventBus jobTracingEventBus = new JobTracingEventBus();
     
     public TaskExecutor(final ElasticJob elasticJob) {
         this(elasticJob, null);
@@ -78,7 +78,7 @@ public final class TaskExecutor implements Executor {
             dataSource.setUrl(data.get("event_trace_rdb_url"));
             dataSource.setPassword(data.get("event_trace_rdb_password"));
             dataSource.setUsername(data.get("event_trace_rdb_username"));
-            jobEventBus = new JobEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
+            jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
         }
     }
     
@@ -133,7 +133,7 @@ public final class TaskExecutor implements Executor {
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
             JobConfiguration jobConfig = YamlEngine.unmarshal(data.get("jobConfigContext").toString(), JobConfigurationPOJO.class).toJobConfiguration();
             try {
-                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
+                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobTracingEventBus);
                 if (isTransient(jobConfig)) {
                     getJobExecutor(jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());

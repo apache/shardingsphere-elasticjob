@@ -44,7 +44,7 @@ import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
@@ -71,7 +71,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private final FacadeService facadeService;
     
-    private final JobEventBus jobEventBus;
+    private final JobTracingEventBus jobTracingEventBus;
     
     private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
     
@@ -118,7 +118,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             }
             for (TaskContext each : taskContextsList) {
                 facadeService.addRunning(each);
-                jobEventBus.post(createJobStatusTraceEvent(each));
+                jobTracingEventBus.post(createJobStatusTraceEvent(each));
             }
             facadeService.removeLaunchTasksFromQueue(taskContextsList);
             for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {

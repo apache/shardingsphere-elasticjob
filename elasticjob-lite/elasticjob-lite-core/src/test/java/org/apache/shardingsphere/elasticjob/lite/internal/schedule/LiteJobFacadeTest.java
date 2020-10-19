@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionCont
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +64,7 @@ public final class LiteJobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
-    private JobEventBus jobEventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     @Mock
     private ElasticJobListenerCaller caller;
@@ -79,7 +79,7 @@ public final class LiteJobFacadeTest {
         ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "jobEventBus", jobEventBus);
+        ReflectionUtils.setFieldValue(liteJobFacade, "jobTracingEventBus", jobTracingEventBus);
     }
     
     @Test
@@ -210,6 +210,6 @@ public final class LiteJobFacadeTest {
     @Test
     public void assertPostJobExecutionEvent() {
         liteJobFacade.postJobExecutionEvent(null);
-        verify(jobEventBus).post(null);
+        verify(jobTracingEventBus).post(null);
     }
 }

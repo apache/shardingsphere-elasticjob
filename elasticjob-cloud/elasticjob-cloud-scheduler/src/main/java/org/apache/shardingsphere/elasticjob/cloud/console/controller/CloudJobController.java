@@ -99,7 +99,7 @@ public final class CloudJobController implements RestfulController {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobController.regCenter = regCenter;
         CloudJobController.producerManager = producerManager;
-        Optional<TracingConfiguration> tracingConfiguration = BootstrapEnvironment.getINSTANCE().getTracingConfiguration();
+        Optional<TracingConfiguration<?>> tracingConfiguration = BootstrapEnvironment.getINSTANCE().getTracingConfiguration();
         jobEventRdbSearch = tracingConfiguration.map(tracingConfiguration1 -> new JobEventRdbSearch((DataSource) tracingConfiguration1.getStorage())).orElse(null);
     }
     

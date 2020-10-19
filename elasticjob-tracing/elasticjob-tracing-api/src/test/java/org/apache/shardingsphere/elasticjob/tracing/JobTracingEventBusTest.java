@@ -38,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class JobEventBusTest {
+public final class JobTracingEventBusTest {
     
     @Mock
     private JobEventCaller jobEventCaller;
@@ -46,19 +46,19 @@ public final class JobEventBusTest {
     @Mock
     private EventBus eventBus;
     
-    private JobEventBus jobEventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     @Test
     public void assertRegisterFailure() {
-        jobEventBus = new JobEventBus(new TracingConfiguration<>("FAIL", null));
+        jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("FAIL", null));
         assertIsRegistered(false);
     }
     
     @Test
     public void assertPost() throws InterruptedException {
-        jobEventBus = new JobEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
+        jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
         assertIsRegistered(true);
-        jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestTracingListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
@@ -67,19 +67,19 @@ public final class JobEventBusTest {
     
     @Test
     public void assertPostWithoutListener() throws ReflectiveOperationException {
-        jobEventBus = new JobEventBus();
+        jobTracingEventBus = new JobTracingEventBus();
         assertIsRegistered(false);
-        Field field = JobEventBus.class.getDeclaredField("eventBus");
+        Field field = JobTracingEventBus.class.getDeclaredField("eventBus");
         field.setAccessible(true);
-        field.set(jobEventBus, eventBus);
-        jobEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        field.set(jobTracingEventBus, eventBus);
+        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     
     @SneakyThrows
     private void assertIsRegistered(final boolean actual) {
-        Field field = JobEventBus.class.getDeclaredField("isRegistered");
+        Field field = JobTracingEventBus.class.getDeclaredField("isRegistered");
         field.setAccessible(true);
-        assertThat(field.get(jobEventBus), is(actual));
+        assertThat(field.get(jobTracingEventBus), is(actual));
     }
 }

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
 import lombok.SneakyThrows;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
@@ -47,7 +47,7 @@ public final class RDBTracingListenerTest {
     @Mock
     private RDBJobEventStorage repository;
     
-    private JobEventBus jobEventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     @Before
     public void setUp() throws SQLException {
@@ -58,7 +58,7 @@ public final class RDBTracingListenerTest {
         dataSource.setPassword("");
         RDBTracingListener tracingListener = new RDBTracingListener(dataSource);
         setRepository(tracingListener);
-        jobEventBus = new JobEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
+        jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
     }
     
     @SneakyThrows
@@ -71,14 +71,14 @@ public final class RDBTracingListenerTest {
     @Test
     public void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        jobEventBus.post(jobExecutionEvent);
+        jobTracingEventBus.post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobStatusTraceEvent() {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.");
-        jobEventBus.post(jobStatusTraceEvent);
+        jobTracingEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
     }
 }

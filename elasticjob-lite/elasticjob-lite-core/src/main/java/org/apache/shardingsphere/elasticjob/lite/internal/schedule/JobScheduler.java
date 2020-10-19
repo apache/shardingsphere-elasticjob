@@ -95,13 +95,13 @@ public final class JobScheduler {
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
-
+    
     private Collection<ElasticJobListener> getElasticJobListeners(final JobConfiguration jobConfig) {
         return jobConfig.getJobListenerTypes().stream()
                 .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
                 .collect(Collectors.toList());
     }
-
+    
     private Optional<TracingConfiguration<?>> findTracingConfiguration(final JobConfiguration jobConfig) {
         return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
     }

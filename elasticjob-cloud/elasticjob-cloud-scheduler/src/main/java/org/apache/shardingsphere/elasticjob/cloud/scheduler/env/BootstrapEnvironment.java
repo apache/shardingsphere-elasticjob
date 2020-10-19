@@ -127,7 +127,7 @@ public final class BootstrapEnvironment {
      *
      * @return tracing configuration
      */
-    public Optional<TracingConfiguration> getTracingConfiguration() {
+    public Optional<TracingConfiguration<?>> getTracingConfiguration() {
         String driver = getValue(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER);
         String url = getValue(EnvironmentArgument.EVENT_TRACE_RDB_URL);
         String username = getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME);

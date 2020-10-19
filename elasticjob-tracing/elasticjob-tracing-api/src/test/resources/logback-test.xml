@@ -37,5 +37,5 @@
     </root>
     
     <logger name="RDBTracingListenerConfiguration" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.tracing.JobEventBus" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus" level="OFF" />
 </configuration>

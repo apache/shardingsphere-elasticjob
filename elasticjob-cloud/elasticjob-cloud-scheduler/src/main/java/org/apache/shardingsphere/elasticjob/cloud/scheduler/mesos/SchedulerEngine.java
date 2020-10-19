@@ -26,7 +26,7 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.ha.FrameworkIDService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public final class SchedulerEngine implements Scheduler {
     
     private final FacadeService facadeService;
     
-    private final JobEventBus jobEventBus;
+    private final JobTracingEventBus jobTracingEventBus;
     
     private final FrameworkIDService frameworkIDService;
     
@@ -83,7 +83,7 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         String jobName = taskContext.getMetaInfo().getJobName();
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        jobEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType().toString(), 
+        jobTracingEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType().toString(), 
                 String.valueOf(taskContext.getMetaInfo().getShardingItems()), JobStatusTraceEvent.State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:

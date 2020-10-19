@@ -33,10 +33,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Job event bus.
+ * Job tracing event bus.
  */
 @Slf4j
-public final class JobEventBus {
+public final class JobTracingEventBus {
     
     private final ExecutorService executorService;
     
@@ -44,12 +44,12 @@ public final class JobEventBus {
     
     private volatile boolean isRegistered;
     
-    public JobEventBus() {
+    public JobTracingEventBus() {
         executorService = null;
         eventBus = null;
     }
     
-    public JobEventBus(final TracingConfiguration tracingConfig) {
+    public JobTracingEventBus(final TracingConfiguration<?> tracingConfig) {
         executorService = createExecutorService(Runtime.getRuntime().availableProcessors() * 2);
         eventBus = new AsyncEventBus(executorService);
         register(tracingConfig);
@@ -62,7 +62,7 @@ public final class JobEventBus {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
     
-    private void register(final TracingConfiguration tracingConfig) {
+    private void register(final TracingConfiguration<?> tracingConfig) {
         try {
             eventBus.register(TracingListenerFactory.getListener(tracingConfig));
             isRegistered = true;
