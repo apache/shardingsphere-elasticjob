@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 
 /**
- * Job error handler properties constants for send error message via dingtalk.
+ * Job error handler configuration for send error message via dingtalk.
  */
-public final class DingtalkPropertiesConstants {
+@RequiredArgsConstructor
+@Getter
+public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     
-    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
+    private final String webhook;
     
-    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
+    private final String keyword;
     
-    private static final String PREFIX = "dingtalk.";
+    private final String secret;
     
-    public static final String WEBHOOK = PREFIX + "webhook";
+    private final int connectTimeoutMillisecond;
     
-    public static final String KEYWORD = PREFIX + "keyword";
-    
-    public static final String SECRET = PREFIX + "secret";
-    
-    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
-    
-    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
+    private final int readTimeoutMillisecond;
 }

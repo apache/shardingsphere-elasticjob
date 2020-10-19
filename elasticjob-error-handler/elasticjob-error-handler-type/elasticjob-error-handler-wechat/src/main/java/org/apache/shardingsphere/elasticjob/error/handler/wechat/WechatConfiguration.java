@@ -15,33 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config;
+package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import lombok.Getter;
-
-import java.util.Properties;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 
 /**
- * Job error handler configuration for send error message via dingtalk.
+ * Job error handler configuration for send error message via wechat.
  */
+@RequiredArgsConstructor
 @Getter
-public final class DingtalkConfiguration {
+public final class WechatConfiguration implements ErrorHandlerConfiguration {
     
     private final String webhook;
-    
-    private final String keyword;
-    
-    private final String secret;
     
     private final int connectTimeoutMillisecond;
     
     private final int readTimeoutMillisecond;
-    
-    public DingtalkConfiguration(final Properties props) {
-        webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
-        keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
-        secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
-        connectTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
-        readTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
-    }
 }

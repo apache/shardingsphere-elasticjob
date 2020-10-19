@@ -20,15 +20,16 @@ package org.apache.shardingsphere.elasticjob.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
-import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
@@ -36,6 +37,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.St
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -86,7 +88,7 @@ public final class ElasticJobExecutor {
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), findErrorHandlerConfiguration().orElse(null), cause);
         }
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
         jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()));
@@ -101,7 +103,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), findErrorHandlerConfiguration().orElse(null), cause);
         }
         execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
@@ -114,7 +116,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), findErrorHandlerConfiguration().orElse(null), cause);
         }
     }
     
@@ -184,8 +186,12 @@ public final class ElasticJobExecutor {
             completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), findErrorHandlerConfiguration().orElse(null), cause);
         }
+    }
+    
+    private Optional<ErrorHandlerConfiguration> findErrorHandlerConfiguration() {
+        return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof ErrorHandlerConfiguration).map(extraConfig -> (ErrorHandlerConfiguration) extraConfig).findFirst();
     }
     
     /**

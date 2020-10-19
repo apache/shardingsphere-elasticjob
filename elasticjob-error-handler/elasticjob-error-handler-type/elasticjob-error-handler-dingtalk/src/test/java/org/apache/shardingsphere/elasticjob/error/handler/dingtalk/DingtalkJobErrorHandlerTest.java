@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.config.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
@@ -35,7 +34,6 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Properties;
 
 import static org.mockito.Mockito.verify;
 
@@ -72,7 +70,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=mocked_token"), cause);
+        actual.handleException("test_job", createDingtalkConfiguration("http://localhost:9875/send?access_token=mocked_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
@@ -81,7 +79,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createJobProperties("http://localhost:9875/send?access_token=wrong_token"), cause);
+        actual.handleException("test_job", createDingtalkConfiguration("http://localhost:9875/send?access_token=wrong_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
     }
     
@@ -90,7 +88,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createJobProperties("http://localhost:9875/404"), cause);
+        actual.handleException("test_job", createDingtalkConfiguration("http://localhost:9875/404"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
@@ -99,7 +97,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createNoSignJobProperties("http://wrongUrl"), cause);
+        actual.handleException("test_job", createNoSignJobDingtalkConfiguration("http://wrongUrl"), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", "test_job", cause);
     }
     
@@ -108,7 +106,7 @@ public final class DingtalkJobErrorHandlerTest {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createNoSignJobProperties("http://localhost:9875/send?access_token=mocked_token"), cause);
+        actual.handleException("test_job", createNoSignJobDingtalkConfiguration("http://localhost:9875/send?access_token=mocked_token"), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
@@ -126,22 +124,11 @@ public final class DingtalkJobErrorHandlerTest {
         field.set(dingtalkJobErrorHandler, log);
     }
     
-    private Properties createJobProperties(final String webhook) {
-        Properties result = new Properties();
-        result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
-        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
-        result.setProperty(DingtalkPropertiesConstants.SECRET, "mocked_secret");
-        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
-        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
-        return result;
+    private DingtalkConfiguration createDingtalkConfiguration(final String webhook) {
+        return new DingtalkConfiguration(webhook, "mocked_keyword", "mocked_secret", 4000, 6000);
     }
     
-    private Properties createNoSignJobProperties(final String webhook) {
-        Properties result = new Properties();
-        result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
-        result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
-        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
-        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
-        return result;
+    private DingtalkConfiguration createNoSignJobDingtalkConfiguration(final String webhook) {
+        return new DingtalkConfiguration(webhook, "mocked_keyword", null, 4000, 6000);
     }
 }

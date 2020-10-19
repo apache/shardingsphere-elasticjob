@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.email.config;
+package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import lombok.Getter;
-
-import java.util.Properties;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 
 /**
  * Job error handler configuration for send error message via email.
  */
+@RequiredArgsConstructor
 @Getter
-public final class EmailConfiguration {
+public final class EmailConfiguration implements ErrorHandlerConfiguration {
     
     private final String host;
     
@@ -48,18 +49,4 @@ public final class EmailConfiguration {
     private final String bcc;
     
     private final boolean debug;
-    
-    public EmailConfiguration(final Properties props) {
-        host = props.getProperty(EmailPropertiesConstants.HOST);
-        port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
-        username = props.getProperty(EmailPropertiesConstants.USERNAME);
-        password = props.getProperty(EmailPropertiesConstants.PASSWORD);
-        useSsl = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, Boolean.FALSE.toString()));
-        subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
-        from = props.getProperty(EmailPropertiesConstants.FROM);
-        to = props.getProperty(EmailPropertiesConstants.TO);
-        cc = props.getProperty(EmailPropertiesConstants.CC);
-        bcc = props.getProperty(EmailPropertiesConstants.BCC);
-        debug = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, Boolean.FALSE.toString()));
-    }
 }
