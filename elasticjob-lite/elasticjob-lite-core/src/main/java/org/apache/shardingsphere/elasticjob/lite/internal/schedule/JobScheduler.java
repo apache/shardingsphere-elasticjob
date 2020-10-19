@@ -72,9 +72,8 @@ public final class JobScheduler {
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
         this.regCenter = regCenter;
         elasticJobType = null;
-        final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
-                .map(type -> ElasticJobListenerFactory.createListener(type)
-                        .orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
+        Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
+                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
                 .collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
@@ -87,26 +86,22 @@ public final class JobScheduler {
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
-        this(regCenter, elasticJobType, jobConfig, null);
-    }
-    
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration<?> tracingConfig) {
         this.regCenter = regCenter;
         this.elasticJobType = elasticJobType;
-        final Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
+        Collection<ElasticJobListener> elasticJobListeners = jobConfig.getJobListenerTypes().stream()
                 .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
                 .collect(Collectors.toList());
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), elasticJobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, tracingConfig);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), elasticJobListeners, findTracingConfiguration(jobConfig).orElse(null));
         jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListeners);
         jobScheduleController = createJobScheduleController();
     }
     
-    private Optional<TracingConfiguration> findTracingConfiguration(final JobConfiguration jobConfig) {
-        return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration) extraConfig);
+    private Optional<TracingConfiguration<?>> findTracingConfiguration(final JobConfiguration jobConfig) {
+        return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final Collection<ElasticJobListener> elasticJobListeners) {
