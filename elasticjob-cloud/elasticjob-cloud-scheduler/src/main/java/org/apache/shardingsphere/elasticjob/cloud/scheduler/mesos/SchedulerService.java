@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.MesosSchedulerDriver;
@@ -36,8 +35,10 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.Cl
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.CloudJobDisableListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+
+import java.util.Optional;
 
 /**
  * Scheduler service.
@@ -77,19 +78,19 @@ public final class SchedulerService {
         facadeService = new FacadeService(regCenter);
         statisticManager = StatisticManager.getInstance(regCenter, env.getTracingConfiguration().orElse(null));
         TaskScheduler taskScheduler = getTaskScheduler();
-        JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
+        JobTracingEventBus jobTracingEventBus = getJobTracingEventBus();
+        schedulerDriver = getSchedulerDriver(taskScheduler, jobTracingEventBus, new FrameworkIDService(regCenter));
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener = new CloudJobConfigurationListener(regCenter, producerManager);
         cloudJobDisableListener = new CloudJobDisableListener(regCenter, producerManager);
         cloudAppConfigurationListener = new CloudAppConfigurationListener(regCenter, producerManager);
         cloudAppDisableListener = new CloudAppDisableListener(regCenter, producerManager);
-        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
+        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobTracingEventBus);
         reconcileService = new ReconcileService(schedulerDriver, facadeService);
         consoleBootstrap = new ConsoleBootstrap(regCenter, env.getRestfulServerConfiguration(), producerManager, reconcileService);
     }
     
-    private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
+    private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobTracingEventBus jobTracingEventBus, final FrameworkIDService frameworkIDService) {
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
         frameworkIDService.fetch().ifPresent(frameworkID -> builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkID).build()));
         Optional<String> role = env.getMesosRole();
@@ -103,7 +104,7 @@ public final class SchedulerService {
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(frameworkName)
                 .setHostname(mesosConfig.getHostname()).setFailoverTimeout(MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT_SECONDS)
                 .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).setCheckpoint(true).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService, jobTracingEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -115,9 +116,9 @@ public final class SchedulerService {
                 }).build();
     }
     
-    private JobEventBus getJobEventBus() {
-        Optional<TracingConfiguration> tracingConfiguration = env.getTracingConfiguration();
-        return tracingConfiguration.map(JobEventBus::new).orElseGet(JobEventBus::new);
+    private JobTracingEventBus getJobTracingEventBus() {
+        Optional<TracingConfiguration<?>> tracingConfiguration = env.getTracingConfiguration();
+        return tracingConfiguration.map(JobTracingEventBus::new).orElseGet(JobTracingEventBus::new);
     }
     
     /**

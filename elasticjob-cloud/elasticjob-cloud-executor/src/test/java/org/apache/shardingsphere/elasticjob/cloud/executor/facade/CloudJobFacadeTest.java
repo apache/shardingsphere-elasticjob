@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
@@ -47,14 +47,14 @@ public final class CloudJobFacadeTest {
     private ShardingContexts shardingContexts;
     
     @Mock
-    private JobEventBus eventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     private JobFacade jobFacade;
     
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), jobTracingEventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -126,7 +126,7 @@ public final class CloudJobFacadeTest {
     public void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
-        verify(eventBus).post(jobExecutionEvent);
+        verify(jobTracingEventBus).post(jobExecutionEvent);
     }
     
     @Test

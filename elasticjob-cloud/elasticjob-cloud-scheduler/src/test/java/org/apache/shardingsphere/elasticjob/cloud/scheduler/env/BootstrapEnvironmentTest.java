@@ -75,7 +75,7 @@ public final class BootstrapEnvironmentTest {
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), "sa");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
-        Optional<TracingConfiguration> tracingConfiguration = bootstrapEnvironment.getTracingConfiguration();
+        Optional<TracingConfiguration<?>> tracingConfiguration = bootstrapEnvironment.getTracingConfiguration();
         tracingConfiguration.ifPresent(tracingConfiguration1 -> assertThat(tracingConfiguration1.getStorage(), instanceOf(BasicDataSource.class)));
     }
     

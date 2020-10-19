@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.Runnin
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public final class SchedulerEngineTest {
     
     @Before
     public void setUp() {
-        schedulerEngine = new SchedulerEngine(taskScheduler, facadeService, new JobEventBus(), frameworkIDService, statisticManager);
+        schedulerEngine = new SchedulerEngine(taskScheduler, facadeService, new JobTracingEventBus(), frameworkIDService, statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         new RunningService(mock(CoordinatorRegistryCenter.class)).clear();
