@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Properties;
 
 /**
@@ -63,6 +64,8 @@ public final class JobConfiguration {
     private final String jobErrorHandlerType;
     
     private final Collection<String> jobListenerTypes;
+
+    private final Collection<JobExtraConfiguration> extraConfigurations;
     
     private final String description;
     
@@ -113,6 +116,8 @@ public final class JobConfiguration {
         private String jobErrorHandlerType;
     
         private final Collection<String> jobListenerTypes = new ArrayList<>();
+
+        private final Collection<JobExtraConfiguration> extraConfigurations = new LinkedList<>();
         
         private String description = "";
         
@@ -296,6 +301,17 @@ public final class JobConfiguration {
         }
         
         /**
+         * Add extra configurations.
+         *
+         * @param extraConfig job extra configuration
+         * @return job configuration builder
+         */
+        public Builder addExtraConfigurations(final JobExtraConfiguration extraConfig) {
+            extraConfigurations.add(extraConfig);
+            return this;
+        }
+        
+        /**
          * Set job description.
          *
          * @param description job description
@@ -360,7 +376,7 @@ public final class JobConfiguration {
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes, extraConfigurations, description, props, disabled, overwrite);
         }
     }
 }
