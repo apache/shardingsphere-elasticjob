@@ -53,13 +53,13 @@ Configuration:
 | port     | Email service port                               | None                     |
 | username | Username                                         | None                     |
 | password | Password                                         | None                     |
-| useSsl   | Whether to enable ssl encrypted transmission     | None                     |
+| useSsl   | Whether to enable ssl encrypted transmission     | true                     |
 | subject  | Email Subject                                    | ElasticJob error message |
 | from     | Sender email address                             | None                     |
 | to       | Recipient's email address                        | None                     |
 | cc       | Carbon copy email address                        | None                     |
 | bcc      | Blind carbon copy email address                  | None                     |
-| debug    | Whether to enable debug                          | None                     |
+| debug    | Whether to enable debug                          | false                     |
 
 ## Wechat Enterprise Notification Strategy
 

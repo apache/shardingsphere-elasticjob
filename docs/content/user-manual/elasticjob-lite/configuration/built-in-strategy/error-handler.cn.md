@@ -53,12 +53,13 @@ Maven 坐标：
 | port     | 邮件服务主机端口      | 无                       |
 | username | 用户名               | 无                       |
 | password | 密码                 | 无                       |
-| useSsl   | 是否启用ssl加密传输   | 无                       |
+| useSsl   | 是否启用ssl加密传输   | true                     |
 | subject  | 邮件主题             | ElasticJob error message |
 | from     | 发送方邮箱地址       | 无                        |
+| to       | 接收方邮箱地址       | 无                        |
 | cc       | 抄送邮箱地址         | 无                        |
 | bcc      | 密送邮箱地址         | 无                        |
-| debug    | 是否开启debug        | 无                        |
+| debug    | 是否开启debug        | false                    |
 
 ## 企业微信通知策略
 
