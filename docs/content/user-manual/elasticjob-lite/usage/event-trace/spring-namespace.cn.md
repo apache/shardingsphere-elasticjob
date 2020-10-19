@@ -42,7 +42,7 @@ chapter = true
         <property name="password" value="${password}" />
     </bean>
     <!-- 配置事件追踪 -->
-    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
     <!-- 配置作业 -->
     <elasticjob:job id="${myJob.id}" job-ref="myJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace" sharding-total-count="3" cron="0/1 * * * * ?" />

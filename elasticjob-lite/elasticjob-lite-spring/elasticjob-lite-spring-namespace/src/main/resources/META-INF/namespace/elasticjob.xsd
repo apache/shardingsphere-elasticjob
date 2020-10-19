@@ -33,7 +33,6 @@
                     <xsd:attribute name="job-ref" type="xsd:string" />
                     <xsd:attribute name="job-type" type="xsd:string" />
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-                    <xsd:attribute name="tracing-ref" type="xsd:string" />
                     <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
                     <xsd:attribute name="cron" type="xsd:string" />
                     <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
@@ -47,6 +46,8 @@
                     <xsd:attribute name="job-executor-service-handler-type" type="xsd:string" />
                     <xsd:attribute name="job-error-handler-type" type="xsd:string" />
                     <xsd:attribute name="job-listener-types" type="xsd:string" />
+                    <xsd:attribute name="tracing-ref" type="xsd:string" />
+                    <xsd:attribute name="error-handler-config-ref" type="xsd:string" />
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
@@ -72,11 +73,57 @@
         </xsd:complexType>
     </xsd:element>
     
-    <xsd:element name="rdb-event-trace">
+    <xsd:element name="rdb-tracing">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="data-source-ref" type="xsd:string" use="required" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="email-error-handler">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="host" type="xsd:string" use="required" />
+                    <xsd:attribute name="port" type="xsd:string" use="required" />
+                    <xsd:attribute name="username" type="xsd:string" use="required" />
+                    <xsd:attribute name="password" type="xsd:string" use="required" />
+                    <xsd:attribute name="use-ssl" type="xsd:string" default="true" />
+                    <xsd:attribute name="subject" type="xsd:string" use="required" />
+                    <xsd:attribute name="from" type="xsd:string" use="required" />
+                    <xsd:attribute name="to" type="xsd:string" use="required" />
+                    <xsd:attribute name="cc" type="xsd:string" use="required" />
+                    <xsd:attribute name="bcc" type="xsd:string" use="required" />
+                    <xsd:attribute name="debug" type="xsd:string" default="false" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="wechat-error-handler">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="webhook" type="xsd:string" use="required" />
+                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" default="3000" />
+                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" default="5000" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="dingtalk-error-handler">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="webhook" type="xsd:string" use="required" />
+                    <xsd:attribute name="keyword" type="xsd:string" use="required" />
+                    <xsd:attribute name="secret" type="xsd:string" use="required" />
+                    <xsd:attribute name="connect-timeout-millisecond" type="xsd:string" default="3000" />
+                    <xsd:attribute name="read-timeout-millisecond" type="xsd:string" default="5000" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

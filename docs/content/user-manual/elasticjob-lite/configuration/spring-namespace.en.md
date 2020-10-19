@@ -66,7 +66,7 @@ Configuration:
 
 ## Event Tracing Configuration
 
-\<elasticjob:rdb-event-trace />
+\<elasticjob:rdb-tracing />
 
 Configuration:
 

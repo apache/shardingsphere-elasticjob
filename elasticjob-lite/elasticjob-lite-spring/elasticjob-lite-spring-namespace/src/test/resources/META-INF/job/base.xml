@@ -38,7 +38,7 @@
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
-    <elasticjob:rdb-event-trace id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+    <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
     <bean id="foo" class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service.FooServiceImpl" />
 </beans>

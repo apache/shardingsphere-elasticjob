@@ -24,7 +24,7 @@
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
-    <import resource="base.xml"/>
+    <import resource="base.xml" />
     
     <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.FooSimpleElasticJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.DataflowElasticJob" />
