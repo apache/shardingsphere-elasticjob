@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -82,19 +82,24 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         } else {
             result.addConstructorArgValue(Arrays.asList(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).split(",")));
         }
-        String tracingRef = element.getAttribute(JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE);
-        if (Strings.isNullOrEmpty(tracingRef)) {
-            result.addConstructorArgValue(Collections.emptyList());
-        } else {
-            Collection<BeanDefinition> extraConfigs = new ManagedList<>(1);
-            extraConfigs.add(parserContext.getRegistry().getBeanDefinition(tracingRef));
-            result.addConstructorArgValue(extraConfigs);
-        }
+        result.addConstructorArgValue(parseExtraConfigs(new String[]{JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE, JobBeanDefinitionTag.ERROR_HANDLER_CONFIG_REF_ATTRIBUTE},
+                element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         result.addConstructorArgValue(parsePropsElement(element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.OVERWRITE_ATTRIBUTE));
         return result.getBeanDefinition();
+    }
+    
+    private Collection<BeanDefinition> parseExtraConfigs(final String[] extraConfigRefs, final Element element, final ParserContext parserContext) {
+        Collection<BeanDefinition> result = new ManagedList<>(extraConfigRefs.length);
+        for (String each : extraConfigRefs) {
+            String attribute = element.getAttribute(each);
+            if (!Strings.isNullOrEmpty(attribute)) {
+                result.add(parserContext.getRegistry().getBeanDefinition(attribute));
+            }
+        }
+        return result;
     }
     
     private Properties parsePropsElement(final Element element, final ParserContext parserContext) {
