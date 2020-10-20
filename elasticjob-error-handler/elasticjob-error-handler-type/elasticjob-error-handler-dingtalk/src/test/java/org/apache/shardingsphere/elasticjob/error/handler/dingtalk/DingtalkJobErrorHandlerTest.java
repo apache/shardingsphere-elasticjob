@@ -125,10 +125,10 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     private DingtalkConfiguration createDingtalkConfiguration(final String webhook) {
-        return new DingtalkConfiguration(webhook, "mocked_keyword", "mocked_secret", 4000, 6000);
+        return DingtalkConfiguration.newBuilder(webhook).keyword("mocked_keyword").secret("mocked_secret").connectTimeoutMillisecond(4000).readTimeoutMillisecond(6000).build();
     }
     
     private DingtalkConfiguration createNoSignJobDingtalkConfiguration(final String webhook) {
-        return new DingtalkConfiguration(webhook, "mocked_keyword", null, 4000, 6000);
+        return DingtalkConfiguration.newBuilder(webhook).keyword("mocked_keyword").connectTimeoutMillisecond(4000).readTimeoutMillisecond(6000).build();
     }
 }

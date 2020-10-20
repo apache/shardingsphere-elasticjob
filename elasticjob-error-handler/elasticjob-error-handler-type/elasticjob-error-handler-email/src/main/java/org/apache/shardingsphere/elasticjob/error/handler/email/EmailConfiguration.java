@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfigurat
 /**
  * Job error handler configuration for send error message via email.
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public final class EmailConfiguration implements ErrorHandlerConfiguration {
     
@@ -59,23 +59,22 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
     }
     
     /**
-     * Create Email configuration builder.
+     * Create email configuration builder.
      *
-     * @param host     host
-     * @param port     port
+     * @param host host
+     * @param port port
      * @param username username
      * @param password password
-     * @param from     from
-     * @param to       to
-     * @return Email configuration builder
+     * @param from from
+     * @param to to
+     * @return email configuration builder
      */
-    public static Builder newBuilder(final String host, final int port, final String username,
-                                     final String password, final String from, final String to) {
+    public static Builder newBuilder(final String host, final int port, final String username, final String password, final String from, final String to) {
         return new Builder(host, port, username, password, from, to);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder {
+    public static final class Builder {
         
         private final String host;
         
@@ -100,10 +99,10 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
         private boolean debug;
         
         /**
-         * Set useSsl.
+         * Set whether use SSL.
          *
-         * @param useSsl useSsl
-         * @return Email configuration builder
+         * @param useSsl use SSL or not
+         * @return email configuration builder
          */
         public Builder useSsl(final boolean useSsl) {
             this.useSsl = useSsl;
@@ -114,7 +113,7 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
          * Set subject.
          *
          * @param subject subject
-         * @return Email configuration builder
+         * @return email configuration builder
          */
         public Builder subject(final String subject) {
             if (!Strings.isNullOrEmpty(subject)) {
@@ -127,7 +126,7 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
          * Set cc.
          *
          * @param cc cc
-         * @return Email configuration builder
+         * @return email configuration builder
          */
         public Builder cc(final String cc) {
             this.cc = cc;
@@ -138,7 +137,7 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
          * Set bcc.
          *
          * @param bcc bcc
-         * @return Email configuration builder
+         * @return email configuration builder
          */
         public Builder bcc(final String bcc) {
             this.bcc = bcc;
@@ -146,10 +145,10 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
         }
         
         /**
-         * Set debug.
+         * Set whether use debug mode.
          *
-         * @param debug debug
-         * @return Email configuration builder
+         * @param debug use debug mode or not
+         * @return email configuration builder
          */
         public Builder debug(final boolean debug) {
             this.debug = debug;
@@ -157,19 +156,18 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
         }
         
         /**
-         * Build Email configuration.
+         * Build email configuration.
          *
-         * @return Email configuration
+         * @return email configuration
          */
-        public final EmailConfiguration build() {
+        public EmailConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(host), "host can not be empty.");
-            Preconditions.checkArgument(0 < port && 65535 > port, "port should larger than 0 and small than 65535.");
+            Preconditions.checkArgument(port > 0 && port < 65535, "port should larger than 0 and small than 65535.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(username), "username can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(password), "password can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(from), "from can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(to), "to can not be empty.");
-            return new EmailConfiguration(host, port, username, password, useSsl, subject,
-                    from, to, cc, bcc, debug);
+            return new EmailConfiguration(host, port, username, password, useSsl, subject, from, to, cc, bcc, debug);
         }
     }
 }

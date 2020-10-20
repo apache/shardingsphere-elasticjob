@@ -145,17 +145,15 @@ public final class JavaMain {
     }
     
     private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(new DingtalkConfiguration("https://oapi.dingtalk.com/robot/send?access_token=token",
-                "keyword", "secret", 7000, 8000));
+        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("https://oapi.dingtalk.com/robot/send?access_token=token").keyword("keyword").secret("secret").build());
     }
     
     private static void setWechatConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(new WechatConfiguration("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key", 9000, 5000));
+        jobConfig.getExtraConfigurations().add(WechatConfiguration.newBuilder("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key").build());
     }
     
     private static void setEmailConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(new EmailConfiguration(
-                "host", 465, "username", "password", true, "Test elasticJob error message", "from@xxx.com", "to1@xxx.com,to2xxx.com", "cc@xxx.com", "bcc@xxx.com", false));
+        jobConfig.getExtraConfigurations().add(EmailConfiguration.newBuilder("host", 465, "username", "password", "from@xxx.xx", "to1@xxx.xx,to2xxx.xx").build());
     }
     
     private static String buildScriptCommandLine() throws IOException {

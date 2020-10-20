@@ -70,7 +70,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", new WechatConfiguration("http://localhost:9872/send?key=mocked_key", 1000, 2000), cause);
+        actual.handleException("test_job", WechatConfiguration.newBuilder("http://localhost:9872/send?key=mocked_key").connectTimeoutMillisecond(1000).readTimeoutMillisecond(2000).build(), cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
@@ -79,7 +79,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", new WechatConfiguration("http://localhost:9872/send?key=wrong_key", 1000, 2000), cause);
+        actual.handleException("test_job", WechatConfiguration.newBuilder("http://localhost:9872/send?key=wrong_key").connectTimeoutMillisecond(1000).readTimeoutMillisecond(2000).build(), cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
@@ -88,7 +88,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", new WechatConfiguration("http://wrongUrl", 1000, 2000), cause);
+        actual.handleException("test_job", WechatConfiguration.newBuilder("http://wrongUrl").connectTimeoutMillisecond(1000).readTimeoutMillisecond(2000).build(), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", "test_job", cause);
     }
     
@@ -97,7 +97,7 @@ public final class WechatJobErrorHandlerTest {
         WechatJobErrorHandler actual = getWechatJobErrorHandler();
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", new WechatConfiguration("http://localhost:9872/404", 1000, 2000), cause);
+        actual.handleException("test_job", WechatConfiguration.newBuilder("http://localhost:9872/404").connectTimeoutMillisecond(1000).readTimeoutMillisecond(2000).build(), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
     }
 
