@@ -25,41 +25,26 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WechatConfigurationTest {
-    
-    private static final String WEBHOOK = "webhook";
-    
-    private static final int CONNECT_TIMEOUT = 5000;
-    
-    private static final int CONNECT_TIMEOUT_DEFAULT_VALUE = 3000;
-    
-    private static final int READ_TIMEOUT = 5000;
-    
-    private static final int READ_TIMEOUT_DEFAULT_VALUE = 3000;
-    
-    private static final String EMPTY_STRING = "";
+public final class WechatConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        WechatConfiguration actual = WechatConfiguration.newBuilder(WEBHOOK)
-                .connectTimeoutMillisecond(CONNECT_TIMEOUT)
-                .readTimeoutMillisecond(READ_TIMEOUT)
-                .build();
-        assertThat(actual.getWebhook(), is(WEBHOOK));
-        assertThat(actual.getConnectTimeoutMillisecond(), is(CONNECT_TIMEOUT));
-        assertThat(actual.getReadTimeoutMillisecond(), is(READ_TIMEOUT));
+        WechatConfiguration actual = WechatConfiguration.newBuilder("webhook").connectTimeoutMillisecond(4000).readTimeoutMillisecond(2000).build();
+        assertThat(actual.getWebhook(), is("webhook"));
+        assertThat(actual.getConnectTimeoutMillisecond(), is(4000));
+        assertThat(actual.getReadTimeoutMillisecond(), is(2000));
     }
     
     @Test
     public void assertBuildRequiredProperties() {
-        WechatConfiguration actual = WechatConfiguration.newBuilder(WEBHOOK).build();
-        assertThat(actual.getWebhook(), is(WEBHOOK));
-        assertThat(actual.getConnectTimeoutMillisecond(), is(CONNECT_TIMEOUT_DEFAULT_VALUE));
-        assertThat(actual.getReadTimeoutMillisecond(), is(READ_TIMEOUT_DEFAULT_VALUE));
+        WechatConfiguration actual = WechatConfiguration.newBuilder("webhook").build();
+        assertThat(actual.getWebhook(), is("webhook"));
+        assertThat(actual.getConnectTimeoutMillisecond(), is(3000));
+        assertThat(actual.getReadTimeoutMillisecond(), is(5000));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyWebhook() {
-        WechatConfiguration.newBuilder(EMPTY_STRING).build();
+        WechatConfiguration.newBuilder("").build();
     }
 }

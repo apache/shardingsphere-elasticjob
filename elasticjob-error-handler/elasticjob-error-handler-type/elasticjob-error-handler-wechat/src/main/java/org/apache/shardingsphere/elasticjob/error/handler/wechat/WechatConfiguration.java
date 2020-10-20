@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfigurat
 /**
  * Job error handler configuration for send error message via wechat.
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public final class WechatConfiguration implements ErrorHandlerConfiguration {
     
@@ -59,13 +59,13 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
         
         private int connectTimeoutMillisecond = 3000;
         
-        private int readTimeoutMillisecond = 3000;
+        private int readTimeoutMillisecond = 5000;
         
         /**
-         * Set connect timeout.
+         * Set connect timeout millisecond.
          *
-         * @param connectTimeoutMillisecond connect timeout
-         * @return WeChat configuration builder
+         * @param connectTimeoutMillisecond connect timeout millisecond
+         * @return weChat configuration builder
          */
         public Builder connectTimeoutMillisecond(final int connectTimeoutMillisecond) {
             this.connectTimeoutMillisecond = connectTimeoutMillisecond;
@@ -73,10 +73,10 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
         }
         
         /**
-         * Set read timeout.
+         * Set read timeout millisecond.
          *
-         * @param readTimeoutMillisecond read timeout
-         * @return WeChat configuration builder
+         * @param readTimeoutMillisecond read timeout millisecond
+         * @return weChat configuration builder
          */
         public Builder readTimeoutMillisecond(final int readTimeoutMillisecond) {
             this.readTimeoutMillisecond = readTimeoutMillisecond;
@@ -84,9 +84,9 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
         }
         
         /**
-         * Build WeChat configuration.
+         * Build weChat configuration.
          *
-         * @return WeChat configuration
+         * @return weChat configuration
          */
         public final WechatConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(webhook), "webhook can not be empty.");
