@@ -119,7 +119,7 @@ public class EmailConfigurationTest {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void assertBuildWithEmptyFROM() {
+    public void assertBuildWithEmptyFrom() {
         EmailConfiguration.newBuilder(HOST, PORT, USERNAME, PASSWORD, EMPTY_STRING, TO)
                 .build();
     }
