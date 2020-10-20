@@ -51,7 +51,7 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
      *
      * @param webhook webhook
      * @param keyword keyword
-     * @param secret  secret
+     * @param secret secret
      * @return dingtalk configuration builder
      */
     public static Builder newBuilder(final String webhook, final String keyword, final String secret) {
@@ -59,7 +59,7 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder {
+    public static final class Builder {
         
         private final String webhook;
         
@@ -98,7 +98,7 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
          *
          * @return dingTalk configuration
          */
-        public final DingtalkConfiguration build() {
+        public DingtalkConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(webhook), "webhook can not be empty.");
             return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMillisecond, readTimeoutMillisecond);
         }

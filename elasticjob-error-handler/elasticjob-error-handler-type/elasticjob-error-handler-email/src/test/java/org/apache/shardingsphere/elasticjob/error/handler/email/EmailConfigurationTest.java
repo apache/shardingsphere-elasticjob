@@ -22,111 +22,71 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EmailConfigurationTest {
-    
-    private static final String HOST = "smtp.xxx.com";
-    
-    private static final int PORT = 25;
-    
-    private static final String USERNAME = "username";
-    
-    private static final String PASSWORD = "password";
-    
-    private static final String FROM = "from";
-    
-    private static final String TO = "to";
-    
-    private static final String SUBJECT = "subject";
-    
-    private static final String SUBJECT_DEFAULT_VALUE = "ElasticJob error message";
-    
-    private static final String CC = "cc";
-    
-    private static final String BCC = "bcc";
-    
-    private static final boolean USE_SSL = false;
-    
-    private static final boolean USE_SSL_DEFAULT_VALUE = true;
-    
-    private static final boolean DEBUG = true;
-    
-    private static final boolean DEBUG_DEFAULT_VALUE = false;
-    
-    private static final String EMPTY_STRING = "";
+public final class EmailConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        EmailConfiguration actual = EmailConfiguration.newBuilder(HOST, PORT, USERNAME, PASSWORD, FROM, TO)
-                .useSsl(USE_SSL)
-                .subject(SUBJECT)
-                .cc(CC)
-                .bcc(BCC)
-                .debug(DEBUG)
-                .build();
-        assertThat(actual.getHost(), is(HOST));
-        assertThat(actual.getPort(), is(PORT));
-        assertThat(actual.getUsername(), is(USERNAME));
-        assertThat(actual.getPassword(), is(PASSWORD));
-        assertThat(actual.isUseSsl(), is(USE_SSL));
-        assertThat(actual.getSubject(), is(SUBJECT));
-        assertThat(actual.getFrom(), is(FROM));
-        assertThat(actual.getTo(), is(TO));
-        assertThat(actual.getCc(), is(CC));
-        assertThat(actual.getBcc(), is(BCC));
-        assertThat(actual.isDebug(), is(DEBUG));
+        EmailConfiguration actual = EmailConfiguration.newBuilder("smtp.xxx.com", 25, "username", "password", "from@xx.xx", "to@xx.xx")
+                .useSsl(false).subject("subject").cc("cc@xx.xx").bcc("bcc@xx.xx").debug(true).build();
+        assertThat(actual.getHost(), is("smtp.xxx.com"));
+        assertThat(actual.getPort(), is(25));
+        assertThat(actual.getUsername(), is("username"));
+        assertThat(actual.getPassword(), is("password"));
+        assertFalse(actual.isUseSsl());
+        assertThat(actual.getSubject(), is("subject"));
+        assertThat(actual.getFrom(), is("from@xx.xx"));
+        assertThat(actual.getTo(), is("to@xx.xx"));
+        assertThat(actual.getCc(), is("cc@xx.xx"));
+        assertThat(actual.getBcc(), is("bcc@xx.xx"));
+        assertTrue(actual.isDebug());
     }
     
     @Test
     public void assertBuildRequiredProperties() {
-        EmailConfiguration actual = EmailConfiguration.newBuilder(HOST, PORT, USERNAME, PASSWORD, FROM, TO)
-                .build();
-        assertThat(actual.getHost(), is(HOST));
-        assertThat(actual.getPort(), is(PORT));
-        assertThat(actual.getUsername(), is(USERNAME));
-        assertThat(actual.getPassword(), is(PASSWORD));
-        assertThat(actual.isUseSsl(), is(USE_SSL_DEFAULT_VALUE));
-        assertThat(actual.getSubject(), is(SUBJECT_DEFAULT_VALUE));
-        assertThat(actual.getFrom(), is(FROM));
-        assertThat(actual.getTo(), is(TO));
-        assertThat(actual.isDebug(), is(DEBUG_DEFAULT_VALUE));
+        EmailConfiguration actual = EmailConfiguration.newBuilder("smtp.xxx.com", 25, "username", "password", "from@xx.xx", "to@xx.xx").build();
+        assertThat(actual.getHost(), is("smtp.xxx.com"));
+        assertThat(actual.getPort(), is(25));
+        assertThat(actual.getUsername(), is("username"));
+        assertThat(actual.getPassword(), is("password"));
+        assertTrue(actual.isUseSsl());
+        assertThat(actual.getSubject(), is("ElasticJob error message"));
+        assertThat(actual.getFrom(), is("from@xx.xx"));
+        assertThat(actual.getTo(), is("to@xx.xx"));
+        assertFalse(actual.isDebug());
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyHost() {
-        EmailConfiguration.newBuilder(EMPTY_STRING, PORT, USERNAME, PASSWORD, FROM, TO)
-                .build();
+        EmailConfiguration.newBuilder("", 25, "username", "password", "from@xx.xx", "to@xx.xx").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithInvalidPort() {
-        EmailConfiguration.newBuilder(HOST, -1, USERNAME, PASSWORD, FROM, TO)
-                .build();
+        EmailConfiguration.newBuilder("smtp.xxx.com", -1, "username", "password", "from@xx.xx", "to@xx.xx").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyUsername() {
-        EmailConfiguration.newBuilder(HOST, PORT, EMPTY_STRING, PASSWORD, FROM, TO)
-                .build();
+        EmailConfiguration.newBuilder("smtp.xxx.com", 25, "", "password", "from@xx.xx", "to@xx.xx").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyPassword() {
-        EmailConfiguration.newBuilder(HOST, PORT, USERNAME, EMPTY_STRING, FROM, TO)
-                .build();
+        EmailConfiguration.newBuilder("smtp.xxx.com", 25, "username", "", "from@xx.xx", "to@xx.xx").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyFrom() {
-        EmailConfiguration.newBuilder(HOST, PORT, USERNAME, PASSWORD, EMPTY_STRING, TO)
-                .build();
+        EmailConfiguration.newBuilder("smtp.xxx.com", 25, "username", "password", "", "to@xx.xx").build();
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyTo() {
-        EmailConfiguration.newBuilder(HOST, PORT, USERNAME, PASSWORD, FROM, EMPTY_STRING)
-                .build();
+        EmailConfiguration.newBuilder("smtp.xxx.com", 25, "username", "password", "from@xx.xx", "").build();
     }
 }

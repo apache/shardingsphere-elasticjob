@@ -43,17 +43,17 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
     }
     
     /**
-     * Create WeChat configuration builder.
+     * Create wechat configuration builder.
      *
      * @param webhook webhook
-     * @return WeChat configuration builder
+     * @return wechat configuration builder
      */
     public static Builder newBuilder(final String webhook) {
         return new Builder(webhook);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Builder {
+    public static final class Builder {
         
         private final String webhook;
         
@@ -65,7 +65,7 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
          * Set connect timeout millisecond.
          *
          * @param connectTimeoutMillisecond connect timeout millisecond
-         * @return weChat configuration builder
+         * @return wechat configuration builder
          */
         public Builder connectTimeoutMillisecond(final int connectTimeoutMillisecond) {
             this.connectTimeoutMillisecond = connectTimeoutMillisecond;
@@ -84,11 +84,11 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
         }
         
         /**
-         * Build weChat configuration.
+         * Build wechat configuration.
          *
-         * @return weChat configuration
+         * @return wechat configuration
          */
-        public final WechatConfiguration build() {
+        public WechatConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(webhook), "webhook can not be empty.");
             return new WechatConfiguration(webhook, connectTimeoutMillisecond, readTimeoutMillisecond);
         }

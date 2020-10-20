@@ -61,6 +61,6 @@ public final class EmailJobErrorHandlerTest {
     }
     
     private EmailConfiguration createEmailConfiguration() {
-        return new EmailConfiguration("xxx", 465, "xxx", "xxx", true, "Unit test notification", "from@xxx.com", "to1@xxx.com,to2@xxx.com", "cc@xxx.com", "bcc@xxx.com", false);
+        return EmailConfiguration.newBuilder("xxx", 465, "xxx", "xxx", "from@xxx.xx", "to1@xxx.xx,to2@xxx.xx").subject("Unit test notification").cc("cc@xxx.xx").bcc("bcc@xxx.xx").build();
     }
 }
