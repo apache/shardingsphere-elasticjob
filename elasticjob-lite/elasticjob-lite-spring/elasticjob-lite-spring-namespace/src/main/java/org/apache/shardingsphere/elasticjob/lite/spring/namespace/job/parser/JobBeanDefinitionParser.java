@@ -92,14 +92,14 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
     }
     
     private Collection<BeanDefinition> parseExtraConfigs(final String[] extraConfigRefs, final Element element, final ParserContext parserContext) {
-        Collection<BeanDefinition> extraConfigs = new ManagedList<>(extraConfigRefs.length);
+        Collection<BeanDefinition> result = new ManagedList<>(extraConfigRefs.length);
         for (String each : extraConfigRefs) {
             String attribute = element.getAttribute(each);
             if (!Strings.isNullOrEmpty(attribute)) {
-                extraConfigs.add(parserContext.getRegistry().getBeanDefinition(attribute));
+                result.add(parserContext.getRegistry().getBeanDefinition(attribute));
             }
         }
-        return extraConfigs;
+        return result;
     }
     
     private Properties parsePropsElement(final Element element, final ParserContext parserContext) {
