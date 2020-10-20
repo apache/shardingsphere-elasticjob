@@ -62,6 +62,8 @@ public final class JobBeanDefinitionTag {
 
     public static final String EXTRA_CONFIGURATION_REF_ATTRIBUTE = "extra-configurations-ref";
     
+    public static final String ERROR_HANDLER_CONFIG_REF_ATTRIBUTE = "error-handler-config-ref";
+    
     public static final String DESCRIPTION_ATTRIBUTE = "description";
     
     public static final String PROPS_TAG = "props";
