@@ -79,20 +79,262 @@ Please refer to [Operation Manual](/en/user-manual/elasticjob-lite/operation/dum
 
 The example below is how to configure spring namespace for open listener port to dump.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://shardingsphere.apache.org/schema/elasticjob
-                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
-                         ">
-    <!--Configure register center -->
-    <elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+```java
+public class JobMain {
     
-    <!--Configure snapshot for dump service -->
-    <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999" />    
-</beans>
+    public static void main(final String[] args) {
+        SnapshotService snapshotService = new SnapshotService(regCenter, 9888).listen();
+    }
+    
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center
+    }
+}
+```
+
+## Configuration error handler strategy
+
+In the process of using ElasticJob-Lite, when the job is abnormal, the following error handling strategies can be used.
+
+| *Error handler strategy name*            | *Description*                                                 |  *Built-in*  | *Default*| *Extra config*   |
+| ---------------------------------------- | ------------------------------------------------------------- |  -------     |  --------|  --------------  |
+| Log Strategy                             | Log error and do not interrupt job                            |   Yes        |     Yes  |                  |
+| Throw Strategy                           | Throw system exception and interrupt job                      |   Yes        |          |                  |
+| Ignore Strategy                          | Ignore exception and do not interrupt job                     |   Yes        |          |                  |
+| Email Notification Strategy              | Send email message notification and do not interrupt job      |              |          |    Yes           |
+| Wechat Enterprise Notification Strategy  | Send wechat message notification and do not interrupt job     |              |          |    Yes           |
+| Dingtalk Notification Strategy           | Send dingtalk message notification and do not interrupt job   |              |          |    Yes           |
+
+### Log Strategy
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of log strategy
+        return JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("LOG").build();
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of log strategy
+        return JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("LOG").build();
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center
+        ...
+    }
+}
+```
+
+### Throw Strategy
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of throw strategy.
+        return JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("THROW").build();
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of throw strategy
+        return JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("THROW").build();
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center
+        ...
+    }
+}
+```
+
+
+### Ignore Strategy
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of ignore strategy.
+        return JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("IGNORE").build();
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of ignore strategy.
+        return JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("IGNORE").build();
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center.
+        ...
+    }
+}
+```
+
+### Email Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#email-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of email notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("EMAIL").build();
+        setEmailConfiguration(jobConfig);
+        return jobConfig;
+
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of email notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("EMAIL").build();
+        setEmailConfiguration(jobConfig);
+        return jobConfig;
+    }
+
+    private static void setEmailConfiguration(final JobConfiguration jobConfig) {
+        // Set the mail configuration.
+        jobConfig.getExtraConfigurations().add(new EmailConfiguration(
+                "host", 465, "username", "password", true, "Test elasticJob error message", "from@xxx.com", "to1@xxx.com,to2xxx.com", "cc@xxx.com", "bcc@xxx.com", false));
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center.
+        ...
+    }
+}
+```
+
+### Wechat Enterprise Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#wechat-enterprise-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-wechat</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs.
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs.
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of wechat enterprise notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("WECHAT").build();
+        setWechatConfiguration(jobConfig);
+        return jobConfig;
+
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of wechat enterprise notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("WECHAT").build();
+        setWechatConfiguration(jobConfig);
+        return jobConfig;
+    }
+
+    private static void setWechatConfiguration(final JobConfiguration jobConfig) {
+        // Set the configuration for the enterprise wechat.
+        jobConfig.getExtraConfigurations().add(new WechatConfiguration("webhook", 3000, 5000));
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center.
+        ...
+    }
+}
+```
+
+### Dingtalk Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#dingtalk-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```java
+public class JobDemo {
+    
+    public static void main(String[] args) {
+        //  Scheduling Jobs.
+        new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), createScheduleJobConfiguration()).schedule();
+        // One-time Scheduling Jobs.
+        new OneOffJobBootstrap(createRegistryCenter(), new MyJob(), createOneOffJobConfiguration()).execute();
+    }
+    
+    private static JobConfiguration createScheduleJobConfiguration() {
+        // Create scheduling job configuration, and the use of wechat enterprise notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("DINGTALK").build();
+        setWechatConfiguration(jobConfig);
+        return jobConfig;
+
+    }
+
+    private static JobConfiguration createOneOffJobConfiguration() {
+        // Create one-time job configuration, and the use of wechat enterprise notification strategy.
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("DINGTALK").build();
+        setWechatConfiguration(jobConfig);
+        return jobConfig;
+    }
+
+    private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
+        // Set the configuration of the dingtalk.
+        jobConfig.getExtraConfigurations().add(new DingtalkConfiguration("webhook", 
+                "keyword", "secret", 3000, 5000));
+    }
+
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        // create registry center.
+        ...
+    }
+}
 ```
