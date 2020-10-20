@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,7 +30,7 @@ public final class DingtalkConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        DingtalkConfiguration actual = DingtalkConfiguration.newBuilder("webhook", "keyword", "secret").connectTimeoutMillisecond(4000).readTimeoutMillisecond(2000).build();
+        DingtalkConfiguration actual = DingtalkConfiguration.newBuilder("webhook").keyword("keyword").secret("secret").connectTimeoutMillisecond(4000).readTimeoutMillisecond(2000).build();
         assertThat(actual.getWebhook(), is("webhook"));
         assertThat(actual.getKeyword(), is("keyword"));
         assertThat(actual.getSecret(), is("secret"));
@@ -39,16 +40,16 @@ public final class DingtalkConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        DingtalkConfiguration actual = DingtalkConfiguration.newBuilder("webhook", "keyword", "secret").build();
+        DingtalkConfiguration actual = DingtalkConfiguration.newBuilder("webhook").build();
         assertThat(actual.getWebhook(), is("webhook"));
-        assertThat(actual.getKeyword(), is("keyword"));
-        assertThat(actual.getSecret(), is("secret"));
+        assertNull(actual.getKeyword());
+        assertNull(actual.getSecret());
         assertThat(actual.getConnectTimeoutMillisecond(), is(3000));
         assertThat(actual.getReadTimeoutMillisecond(), is(5000));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildWithEmptyWebhook() {
-        DingtalkConfiguration.newBuilder("", "keyword", "secret").build();
+        DingtalkConfiguration.newBuilder("").build();
     }
 }

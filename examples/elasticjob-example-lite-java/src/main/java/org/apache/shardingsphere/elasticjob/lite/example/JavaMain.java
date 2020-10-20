@@ -145,7 +145,7 @@ public final class JavaMain {
     }
     
     private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("https://oapi.dingtalk.com/robot/send?access_token=token", "keyword", "secret").build());
+        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("https://oapi.dingtalk.com/robot/send?access_token=token").keyword("keyword").secret("secret").build());
     }
     
     private static void setWechatConfiguration(final JobConfiguration jobConfig) {

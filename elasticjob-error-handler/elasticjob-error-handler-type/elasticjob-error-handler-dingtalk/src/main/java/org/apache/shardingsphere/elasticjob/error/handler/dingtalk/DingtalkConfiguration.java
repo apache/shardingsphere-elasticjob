@@ -50,12 +50,10 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
      * Create dingtalk configuration builder.
      *
      * @param webhook webhook
-     * @param keyword keyword
-     * @param secret secret
      * @return dingtalk configuration builder
      */
-    public static Builder newBuilder(final String webhook, final String keyword, final String secret) {
-        return new Builder(webhook, keyword, secret);
+    public static Builder newBuilder(final String webhook) {
+        return new Builder(webhook);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -63,13 +61,35 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
         
         private final String webhook;
         
-        private final String keyword;
+        private String keyword;
         
-        private final String secret;
+        private String secret;
         
         private int connectTimeoutMillisecond = 3000;
         
         private int readTimeoutMillisecond = 5000;
+        
+        /**
+         * Set keyword.
+         *
+         * @param keyword keyword
+         * @return dingTalk configuration builder
+         */
+        public Builder keyword(final String keyword) {
+            this.keyword = keyword;
+            return this;
+        }
+        
+        /**
+         * Set secret.
+         *
+         * @param secret secret
+         * @return dingTalk configuration builder
+         */
+        public Builder secret(final String secret) {
+            this.secret = secret;
+            return this;
+        }
         
         /**
          * Set connect timeout millisecond.
