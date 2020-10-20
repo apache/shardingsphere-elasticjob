@@ -192,6 +192,9 @@ public class JobDemo {
 ```
 
 ### 邮件通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#邮件通知策略) 了解更多。
+
 Maven POM:
 ```xml
 <dependency>
@@ -239,6 +242,9 @@ public class JobDemo {
 ```
 
 ### 企业微信通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#企业微信通知策略) 了解更多。
+
 Maven POM:
 ```xml
 <dependency>
@@ -286,6 +292,9 @@ public class JobDemo {
 
 
 ### 钉钉通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#钉钉通知策略) 了解更多。
+
 Maven POM:
 ```xml
 <dependency>

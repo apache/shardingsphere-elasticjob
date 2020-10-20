@@ -191,6 +191,9 @@ public class JobDemo {
 ```
 
 ### Email Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#email-notification-strategy) for more details.
+
 Maven POM:
 ```xml
 <dependency>
@@ -238,6 +241,9 @@ public class JobDemo {
 ```
 
 ### Wechat Enterprise Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#wechat-enterprise-notification-strategy) for more details.
+
 Maven POM:
 ```xml
 <dependency>
@@ -284,6 +290,9 @@ public class JobDemo {
 ```
 
 ### Dingtalk Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#dingtalk-notification-strategy) for more details.
+
 Maven POM:
 ```xml
 <dependency>
