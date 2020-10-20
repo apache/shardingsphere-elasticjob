@@ -17,6 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
@@ -34,14 +37,73 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     
     private final String secret;
     
-    // TODO default value is 3000
     private final int connectTimeoutMillisecond;
     
-    // TODO default value is 5000
     private final int readTimeoutMillisecond;
     
     @Override
     public String getType() {
         return DingtalkType.TYPE;
+    }
+    
+    /**
+     * Create DingTalk configuration builder.
+     *
+     * @param webhook webhook
+     * @param keyword keyword
+     * @param secret  secret
+     * @return DingTalk configuration builder
+     */
+    public static Builder newBuilder(final String webhook, final String keyword,
+                                     final String secret) {
+        return new Builder(webhook, keyword, secret);
+    }
+    
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Builder {
+        
+        private final String webhook;
+        
+        private final String keyword;
+        
+        private final String secret;
+        
+        private int connectTimeoutMillisecond = 3000;
+        
+        private int readTimeoutMillisecond = 5000;
+        
+        /**
+         * Set connect timeout.
+         *
+         * @param connectTimeoutMillisecond connect timeout
+         * @return DingTalk configuration builder
+         */
+        public Builder connectTimeoutMillisecond(final int connectTimeoutMillisecond) {
+            this.connectTimeoutMillisecond = connectTimeoutMillisecond;
+            return this;
+        }
+        
+        /**
+         * Set read timeout.
+         *
+         * @param readTimeoutMillisecond read timeout
+         * @return DingTalk configuration builder
+         */
+        public Builder readTimeoutMillisecond(final int readTimeoutMillisecond) {
+            this.readTimeoutMillisecond = readTimeoutMillisecond;
+            return this;
+        }
+        
+        /**
+         * Build DingTalk configuration.
+         *
+         * @return DingTalk configuration
+         */
+        public final DingtalkConfiguration build() {
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(webhook), "webhook can not be empty.");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(keyword), "keyword can not be empty.");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(secret), "secret can not be empty.");
+            return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMillisecond, readTimeoutMillisecond);
+        }
     }
 }
