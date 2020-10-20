@@ -27,9 +27,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class EmailConfigurationTest {
     
-    private static final String HOST = "192.168.0.8";
+    private static final String HOST = "smtp.xxx.com";
     
-    private static final int PORT = 8080;
+    private static final int PORT = 25;
     
     private static final String USERNAME = "username";
     

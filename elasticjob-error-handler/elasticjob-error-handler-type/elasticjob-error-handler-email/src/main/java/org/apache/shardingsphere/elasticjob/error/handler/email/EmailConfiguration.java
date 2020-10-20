@@ -163,7 +163,7 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
          */
         public final EmailConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(host), "host can not be empty.");
-            Preconditions.checkArgument(port > 0 && port < 65535, "port should larger than 0 and small than 65535.");
+            Preconditions.checkArgument(0 < port && 65535 < port, "port should larger than 0 and small than 65535.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(username), "username can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(password), "password can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(from), "from can not be empty.");
