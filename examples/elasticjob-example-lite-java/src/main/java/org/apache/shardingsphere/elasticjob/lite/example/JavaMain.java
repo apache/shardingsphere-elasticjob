@@ -73,8 +73,8 @@ public final class JavaMain {
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
         setUpOneOffJob(regCenter, tracingConfig);
-        setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
-        setUpOneOffJobWithWechat(regCenter, tracingConfig);
+//        setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
+//        setUpOneOffJobWithWechat(regCenter, tracingConfig);
 //        setUpOneOffJobWithEmail(regCenter, tracingConfig);
     }
     
@@ -145,12 +145,12 @@ public final class JavaMain {
     }
     
     private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(new DingtalkConfiguration("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04", 
-                "keyword", "SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4", 7000, 8000));
+        jobConfig.getExtraConfigurations().add(new DingtalkConfiguration("https://oapi.dingtalk.com/robot/send?access_token=token",
+                "keyword", "secret", 7000, 8000));
     }
     
     private static void setWechatConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(new WechatConfiguration("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04", 9000, 5000));
+        jobConfig.getExtraConfigurations().add(new WechatConfiguration("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key", 9000, 5000));
     }
     
     private static void setEmailConfiguration(final JobConfiguration jobConfig) {
