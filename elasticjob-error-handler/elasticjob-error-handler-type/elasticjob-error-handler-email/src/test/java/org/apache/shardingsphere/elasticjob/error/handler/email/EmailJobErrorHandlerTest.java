@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 
 import static org.mockito.Mockito.verify;
 
@@ -42,7 +43,7 @@ public final class EmailJobErrorHandlerTest {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
-        emailJobErrorHandler.handleException("test_job", createEmailConfiguration(), cause);
+        emailJobErrorHandler.handleException("test_job", createConfigurationProperties(), cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by email because of", "test_job", cause);
     }
     
@@ -60,7 +61,17 @@ public final class EmailJobErrorHandlerTest {
         fieldLog.set(wechatJobErrorHandler, value);
     }
     
-    private EmailConfiguration createEmailConfiguration() {
-        return EmailConfiguration.newBuilder("xxx", 465, "xxx", "xxx", "from@xxx.xx", "to1@xxx.xx,to2@xxx.xx").subject("Unit test notification").cc("cc@xxx.xx").bcc("bcc@xxx.xx").build();
+    private Properties createConfigurationProperties() {
+        Properties result = new Properties();
+        result.setProperty(EmailPropertiesConstants.HOST, "localhost");
+        result.setProperty(EmailPropertiesConstants.PORT, "465");
+        result.setProperty(EmailPropertiesConstants.USERNAME, "user");
+        result.setProperty(EmailPropertiesConstants.PASSWORD, "xxx");
+        result.setProperty(EmailPropertiesConstants.SUBJECT, "Unit test notification");
+        result.setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
+        result.setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to2@xxx.xx");
+        result.setProperty(EmailPropertiesConstants.CC, "cc@xxx.xx");
+        result.setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.xx");
+        return result;
     }
 }

@@ -37,12 +37,13 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Job error handler for send error message via wechat.
  */
 @Slf4j
-public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfiguration> {
+public final class WechatJobErrorHandler implements JobErrorHandler {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
@@ -52,7 +53,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfig
     
     private void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread("WechatJobErrorHandler Shutdown-Hook") {
-
+            
             @SneakyThrows
             @Override
             public void run() {
@@ -63,8 +64,8 @@ public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfig
     }
     
     @Override
-    public void handleException(final String jobName, final WechatConfiguration config, final Throwable cause) {
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, createConfiguration(props));
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -81,6 +82,13 @@ public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfig
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobName, cause);
         }
+    }
+    
+    private WechatConfiguration createConfiguration(final Properties props) {
+        String webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
+        int connectTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
+        int readTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
+        return new WechatConfiguration(webhook, connectTimeoutMillisecond, readTimeoutMillisecond);
     }
     
     private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
@@ -106,6 +114,6 @@ public final class WechatJobErrorHandler implements JobErrorHandler<WechatConfig
     
     @Override
     public String getType() {
-        return WechatType.TYPE;
+        return "WECHAT";
     }
 }

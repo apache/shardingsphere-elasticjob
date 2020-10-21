@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,24 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.error.tag;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 /**
- * Dingtalk error handler bean definition tag.
+ * Job error handler properties constants for send error message via dingtalk.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DingtalkErrorHandlerBeanDefinitionTag {
+public final class DingtalkPropertiesConstants {
     
-    public static final String WEBHOOK = "webhook";
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
     
-    public static final String KEYWORD = "keyword";
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
     
-    public static final String SECRET = "secret";
+    private static final String PREFIX = "dingtalk.";
     
-    public static final String CONNECT_TIMEOUT_MILLISECOND = "connect-timeout-millisecond";
+    public static final String WEBHOOK = PREFIX + "webhook";
     
-    public static final String READ_TIMEOUT_MILLISECOND = "read-timeout-millisecond";
+    public static final String KEYWORD = PREFIX + "keyword";
+    
+    public static final String SECRET = PREFIX + "secret";
+    
+    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
+    
+    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
 }

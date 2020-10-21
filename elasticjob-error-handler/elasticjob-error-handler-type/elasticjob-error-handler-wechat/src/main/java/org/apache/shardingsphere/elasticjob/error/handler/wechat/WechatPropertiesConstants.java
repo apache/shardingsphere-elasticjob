@@ -15,15 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
+package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 /**
- * Dingtalk type.
+ * Job error handler properties constants for send error message via wechat.
  */
-public final class DingtalkType {
+public final class WechatPropertiesConstants {
     
-    /**
-     * Dingtalk type.
-     */
-    public static final String TYPE = "DINGTALK";
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
+    
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
+    
+    private static final String PREFIX = "wechat.";
+    
+    public static final String WEBHOOK = PREFIX + "webhook";
+    
+    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
+    
+    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
 }

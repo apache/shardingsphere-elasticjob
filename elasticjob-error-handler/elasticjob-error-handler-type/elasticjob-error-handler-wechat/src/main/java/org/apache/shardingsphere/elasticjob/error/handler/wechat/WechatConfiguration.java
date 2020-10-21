@@ -17,9 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
@@ -27,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfigurat
 /**
  * Job error handler configuration for send error message via wechat.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Getter
 public final class WechatConfiguration implements ErrorHandlerConfiguration {
     
@@ -36,61 +33,4 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
     private final int connectTimeoutMillisecond;
     
     private final int readTimeoutMillisecond;
-    
-    @Override
-    public String getType() {
-        return WechatType.TYPE;
-    }
-    
-    /**
-     * Create wechat configuration builder.
-     *
-     * @param webhook webhook
-     * @return wechat configuration builder
-     */
-    public static Builder newBuilder(final String webhook) {
-        return new Builder(webhook);
-    }
-    
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static final class Builder {
-        
-        private final String webhook;
-        
-        private int connectTimeoutMillisecond = 3000;
-        
-        private int readTimeoutMillisecond = 5000;
-        
-        /**
-         * Set connect timeout millisecond.
-         *
-         * @param connectTimeoutMillisecond connect timeout millisecond
-         * @return wechat configuration builder
-         */
-        public Builder connectTimeoutMillisecond(final int connectTimeoutMillisecond) {
-            this.connectTimeoutMillisecond = connectTimeoutMillisecond;
-            return this;
-        }
-        
-        /**
-         * Set read timeout millisecond.
-         *
-         * @param readTimeoutMillisecond read timeout millisecond
-         * @return weChat configuration builder
-         */
-        public Builder readTimeoutMillisecond(final int readTimeoutMillisecond) {
-            this.readTimeoutMillisecond = readTimeoutMillisecond;
-            return this;
-        }
-        
-        /**
-         * Build wechat configuration.
-         *
-         * @return wechat configuration
-         */
-        public WechatConfiguration build() {
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(webhook), "webhook can not be empty.");
-            return new WechatConfiguration(webhook, connectTimeoutMillisecond, readTimeoutMillisecond);
-        }
-    }
 }

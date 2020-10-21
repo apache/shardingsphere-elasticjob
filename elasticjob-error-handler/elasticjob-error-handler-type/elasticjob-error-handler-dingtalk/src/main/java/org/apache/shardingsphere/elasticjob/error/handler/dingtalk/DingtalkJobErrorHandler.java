@@ -45,12 +45,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Job error handler for send error message via dingtalk.
  */
 @Slf4j
-public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkConfiguration> {
+public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
@@ -71,8 +72,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkCo
     }
     
     @Override
-    public void handleException(final String jobName, final DingtalkConfiguration config, final Throwable cause) {
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, config);
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause, createConfiguration(props));
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -89,6 +90,15 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkCo
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
         }
+    }
+    
+    private DingtalkConfiguration createConfiguration(final Properties props) {
+        String webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
+        String keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
+        String secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
+        int connectTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
+        int readTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
+        return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMillisecond, readTimeoutMillisecond);
     }
     
     private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration config) {
@@ -136,6 +146,6 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler<DingtalkCo
     
     @Override
     public String getType() {
-        return DingtalkType.TYPE;
+        return "DINGTALK";
     }
 }
