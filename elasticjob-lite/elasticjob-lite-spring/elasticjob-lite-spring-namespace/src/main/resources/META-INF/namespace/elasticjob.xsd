@@ -47,7 +47,6 @@
                     <xsd:attribute name="job-error-handler-type" type="xsd:string" />
                     <xsd:attribute name="job-listener-types" type="xsd:string" />
                     <xsd:attribute name="tracing-ref" type="xsd:string" />
-                    <xsd:attribute name="error-handler-config-ref" type="xsd:string" />
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
