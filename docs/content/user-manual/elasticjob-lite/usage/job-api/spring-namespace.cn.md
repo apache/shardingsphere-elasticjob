@@ -70,3 +70,69 @@ ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器
     <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999" />    
 </beans>
 ```
+
+
+## 配置错误处理策略
+
+使用 ElasticJob-Lite 过程中当作业发生异常后，可采用以下错误处理策略。
+
+| *错误处理策略名称*         | *说明*                            |  *是否内置* | *是否默认*| *是否需要额外配置* |
+| ----------------------- | --------------------------------- |  -------  |  --------|  -------------  |
+| 记录日志策略              | 记录作业异常日志，但不中断作业执行     |   是       |     是   |                 |
+| 抛出异常策略              | 抛出系统异常并中断作业执行            |   是       |         |                 |
+| 忽略异常策略              | 忽略系统异常且不中断作业执行          |   是       |          |                 |
+| 邮件通知策略              | 发送邮件消息通知，但不中断作业执行     |            |          |      是         |
+| 企业微信通知策略           | 发送企业微信消息通知，但不中断作业执行 |            |          |      是          |
+| 钉钉通知策略              | 发送钉钉消息通知，但不中断作业执行     |            |          |      是          |
+
+以下示例用于展示如何通过 Spring 命名空间配置错误处理策略。
+
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://shardingsphere.apache.org/schema/elasticjob
+                           http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
+                         ">
+    
+    <!-- 记录日志策略 -->
+    <elasticjob:job  ... job-error-handler-type="LOG"   />
+
+    <!-- 抛出异常策略 -->
+    <elasticjob:job  ... job-error-handler-type="THROW"   />
+
+    <!-- 忽略异常策略 -->
+    <elasticjob:job  ... job-error-handler-type="IGNORE"   />
+
+    <!-- 邮件通知策略 -->
+    <elasticjob:email-error-handler id="emailErrorHandlerConfig" host="host" port="465" username="username"
+                                    password="password" use-ssl="true" subject="ElasticJob error message"
+                                    from="from@xxx.com" to="to1@xxx.com,to2@xxx.com"
+                                    cc="cc@xxx.com" bcc="bcc@xxx.com"
+                                    debug="false"/>
+
+    <elasticjob:job  ... job-error-handler-type="EMAIL"  error-handler-config-ref="emailErrorHandlerConfig" />
+
+
+    <!-- 企业微信通知策略 -->
+    <elasticjob:wechat-error-handler id="wechatErrorHandlerConfig"
+                                        webhook="you_webhook"
+                                        connect-timeout-millisecond="3000"
+                                        read-timeout-millisecond="5000"/>
+
+    <elasticjob:job  ... job-error-handler-type="WECHAT"  error-handler-config-ref="wechatErrorHandlerConfig" />
+
+    <!-- 钉钉通知策略 -->
+    <elasticjob:dingtalk-error-handler id="dingtalkErrorHandlerConfig"
+                                       webhook="you_webhook"
+                                       keyword="keyword" secret="secret"
+                                       connect-timeout-millisecond="3000"
+                                       read-timeout-millisecond="5000"/>
+
+    <elasticjob:job  ... job-error-handler-type="DINGTALK"  error-handler-config-ref="dingtalkErrorHandlerConfig" />
+</beans>
+```
