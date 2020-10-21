@@ -230,8 +230,7 @@ public class JobDemo {
 
     private static void setEmailConfiguration(final JobConfiguration jobConfig) {
         // 设置邮件的配置
-        jobConfig.getExtraConfigurations().add(new EmailConfiguration(
-                "host", 465, "username", "password", true, "Test elasticJob error message", "from@xxx.com", "to1@xxx.com,to2xxx.com", "cc@xxx.com", "bcc@xxx.com", false));
+        jobConfig.getExtraConfigurations().add(EmailConfiguration.newBuilder("host", 465, "username", "password", "from@xxx.xx", "to1@xxx.xx,to2xxx.xx").build());
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -280,7 +279,7 @@ public class JobDemo {
 
     private static void setWechatConfiguration(final JobConfiguration jobConfig) {
         // 设置企业微信的配置
-        jobConfig.getExtraConfigurations().add(new WechatConfiguration("webhook", 3000, 5000));
+        jobConfig.getExtraConfigurations().add(WechatConfiguration.newBuilder("you_webhook").build());
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -330,8 +329,7 @@ public class JobDemo {
 
     private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
         // 设置钉钉的配置
-        jobConfig.getExtraConfigurations().add(new DingtalkConfiguration("webhook", 
-                "keyword", "secret", 3000, 5000));
+        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("you_webhook").keyword("keyword").secret("secret").build());
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
