@@ -27,6 +27,6 @@ public final class SpringMain {
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
-        new ClassPathXmlApplicationContext("classpath:META-INF/applicationContext.xml");
+        new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
     }
 }
