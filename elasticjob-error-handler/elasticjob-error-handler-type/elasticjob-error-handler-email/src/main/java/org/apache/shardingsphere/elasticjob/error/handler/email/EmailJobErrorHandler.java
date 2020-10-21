@@ -43,13 +43,14 @@ import java.util.Properties;
  * Job error handler for send error message via email.
  */
 @Slf4j
-public final class EmailJobErrorHandler implements JobErrorHandler<EmailConfiguration> {
+public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Session session;
     
     @Override
-    public void handleException(final String jobName, final EmailConfiguration config, final Throwable cause) {
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
         String errorMessage = getErrorMessage(jobName, cause);
+        EmailConfiguration config = createConfiguration(props);
         try {
             sendMessage(createMessage(errorMessage, config), config);
             log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobName, cause);
@@ -57,6 +58,21 @@ public final class EmailJobErrorHandler implements JobErrorHandler<EmailConfigur
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
         }
+    }
+
+    private EmailConfiguration createConfiguration(final Properties props) {
+        String host = props.getProperty(EmailPropertiesConstants.HOST);
+        int port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
+        String username = props.getProperty(EmailPropertiesConstants.USERNAME);
+        String password = props.getProperty(EmailPropertiesConstants.PASSWORD);
+        boolean isUseSSL = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, EmailPropertiesConstants.DEFAULT_IS_USE_SSL));
+        String subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
+        String from = props.getProperty(EmailPropertiesConstants.FROM);
+        String to = props.getProperty(EmailPropertiesConstants.TO);
+        String cc = props.getProperty(EmailPropertiesConstants.CC);
+        String bcc = props.getProperty(EmailPropertiesConstants.BCC);
+        boolean isDebug = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
+        return new EmailConfiguration(host, port, username, password, isUseSSL, subject, from, to, cc, bcc, isDebug);
     }
     
     private String getErrorMessage(final String jobName, final Throwable cause) {

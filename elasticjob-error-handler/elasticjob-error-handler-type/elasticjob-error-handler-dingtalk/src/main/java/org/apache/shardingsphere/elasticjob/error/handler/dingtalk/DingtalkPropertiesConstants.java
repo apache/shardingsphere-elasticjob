@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,43 +15,26 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.email;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
+package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 /**
- * Job error handler configuration for send error message via email.
+ * Job error handler properties constants for send error message via dingtalk.
  */
-@RequiredArgsConstructor
-@Getter
-public final class EmailConfiguration implements ErrorHandlerConfiguration {
+public final class DingtalkPropertiesConstants {
     
-    private final String host;
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
     
-    private final int port;
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
     
-    private final String username;
+    private static final String PREFIX = "dingtalk.";
     
-    private final String password;
+    public static final String WEBHOOK = PREFIX + "webhook";
     
-    private final boolean useSsl;
+    public static final String KEYWORD = PREFIX + "keyword";
     
-    private final String subject;
+    public static final String SECRET = PREFIX + "secret";
     
-    private final String from;
+    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
     
-    private final String to;
-    
-    private final String cc;
-    
-    private final String bcc;
-    
-    private final boolean debug;
-    
-    @Override
-    public String getType() {
-        return EmailType.TYPE;
-    }
+    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
 }

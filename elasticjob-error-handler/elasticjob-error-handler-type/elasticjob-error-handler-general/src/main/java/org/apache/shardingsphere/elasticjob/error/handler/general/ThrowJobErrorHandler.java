@@ -17,17 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+
+import java.util.Properties;
 
 /**
  * Job error handler for throw exception.
  */
-public final class ThrowJobErrorHandler implements JobErrorHandler<ErrorHandlerConfiguration> {
+public final class ThrowJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final String jobName, final ErrorHandlerConfiguration config, final Throwable cause) {
+    public void handleException(final String jobName, final Properties props, final Throwable cause) {
         throw new JobSystemException(cause);
     }
     
