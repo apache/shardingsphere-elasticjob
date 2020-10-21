@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.example;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.email.EmailConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatConfiguration;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.email.EmailPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
@@ -73,9 +73,9 @@ public final class JavaMain {
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
         setUpOneOffJob(regCenter, tracingConfig);
+//        setUpOneOffJobWithEmail(regCenter, tracingConfig);
 //        setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
 //        setUpOneOffJobWithWechat(regCenter, tracingConfig);
-//        setUpOneOffJobWithEmail(regCenter, tracingConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {
@@ -123,37 +123,44 @@ public final class JavaMain {
                 .cron("0/5 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).addExtraConfigurations(tracingConfig).build()).schedule();
     }
     
+    private static void setUpOneOffJobWithEmail(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("EMAIL").addExtraConfigurations(tracingConfig).build();
+        setEmailProperties(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
+    }
+    
     private static void setUpOneOffJobWithDingtalk(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfDingtalkJob", 3)
                 .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").addExtraConfigurations(tracingConfig).build();
-        setDingtalkConfiguration(jobConfig);
+        setDingtalkProperties(jobConfig);
         new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
     }
     
     private static void setUpOneOffJobWithWechat(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfWechatJob", 3)
                 .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("WECHAT").addExtraConfigurations(tracingConfig).build();
-        setWechatConfiguration(jobConfig);
+        setWechatProperties(jobConfig);
         new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
     }
     
-    private static void setUpOneOffJobWithEmail(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
-                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("EMAIL").addExtraConfigurations(tracingConfig).build();
-        setEmailConfiguration(jobConfig);
-        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
+    private static void setEmailProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "localhost");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "user");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "xxx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to2xxx.xx");
     }
     
-    private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("https://oapi.dingtalk.com/robot/send?access_token=token").keyword("keyword").secret("secret").build());
+    private static void setDingtalkProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.WEBHOOK, "https://oapi.dingtalk.com/robot/send?access_token=token");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.SECRET, "secret");
     }
     
-    private static void setWechatConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(WechatConfiguration.newBuilder("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key").build());
-    }
-    
-    private static void setEmailConfiguration(final JobConfiguration jobConfig) {
-        jobConfig.getExtraConfigurations().add(EmailConfiguration.newBuilder("host", 465, "username", "password", "from@xxx.xx", "to1@xxx.xx,to2xxx.xx").build());
+    private static void setWechatProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key");
     }
     
     private static String buildScriptCommandLine() throws IOException {
