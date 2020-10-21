@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
@@ -34,11 +35,14 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -78,6 +82,32 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         assertTrue(tracingConfig.getStorage() instanceof DataSource);
         DataSource dataSource = (DataSource) tracingConfig.getStorage();
         assertNotNull(dataSource.getConnection());
+    }
+    
+    @Test
+    public void assertElasticJobProperties() {
+        assertNotNull(applicationContext);
+        ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
+        assertNotNull(elasticJobProperties);
+        assertNotNull(elasticJobProperties.getJobs());
+        assertThat(elasticJobProperties.getJobs().size(), is(2));
+        ElasticJobConfigurationProperties customTestJobProperties = elasticJobProperties.getJobs().get("customTestJob");
+        assertNotNull(customTestJobProperties);
+        assertThat(customTestJobProperties.getElasticJobClass(), is(CustomTestJob.class));
+        assertThat(customTestJobProperties.getJobBootstrapBeanName(), is("customTestJobBean"));
+        assertThat(customTestJobProperties.getShardingTotalCount(), is(3));
+        assertNull(customTestJobProperties.getElasticJobType());
+        assertThat(customTestJobProperties.getJobListenerTypes().size(), is(2));
+        assertThat(customTestJobProperties.getJobListenerTypes(), equalTo(Arrays.asList("NOOP", "LOG")));
+        ElasticJobConfigurationProperties printTestJobProperties = elasticJobProperties.getJobs().get("printTestJob");
+        assertNotNull(printTestJobProperties);
+        assertNull(printTestJobProperties.getElasticJobClass());
+        assertThat(printTestJobProperties.getElasticJobType(), is("PRINT"));
+        assertThat(printTestJobProperties.getJobBootstrapBeanName(), is("printTestJobBean"));
+        assertThat(printTestJobProperties.getShardingTotalCount(), is(3));
+        assertTrue(printTestJobProperties.getJobListenerTypes().isEmpty());
+        assertThat(printTestJobProperties.getProps().size(), is(1));
+        assertThat(printTestJobProperties.getProps().getProperty("print.content"), is("test print job"));
     }
     
     @Test
