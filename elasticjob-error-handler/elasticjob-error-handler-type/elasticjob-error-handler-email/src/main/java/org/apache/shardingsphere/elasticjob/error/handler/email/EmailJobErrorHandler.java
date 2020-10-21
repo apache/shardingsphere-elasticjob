@@ -148,6 +148,6 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     @Override
     public String getType() {
-        return EmailType.TYPE;
+        return "EMAIL";
     }
 }

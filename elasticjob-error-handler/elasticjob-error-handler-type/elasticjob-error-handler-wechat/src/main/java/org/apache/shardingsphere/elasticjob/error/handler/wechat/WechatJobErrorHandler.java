@@ -114,6 +114,6 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     
     @Override
     public String getType() {
-        return WechatType.TYPE;
+        return "WECHAT";
     }
 }
