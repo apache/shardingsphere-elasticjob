@@ -70,7 +70,7 @@ public final class ExceptionHandling extends ChannelInboundHandlerAdapter {
     }
     
     @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         ExceptionHandler<Throwable> exceptionHandler = searchExceptionHandler(cause);
         ExceptionHandleResult handleResult = exceptionHandler.handleException(cause);
         String mimeType = HttpUtil.getMimeType(handleResult.getContentType()).toString();

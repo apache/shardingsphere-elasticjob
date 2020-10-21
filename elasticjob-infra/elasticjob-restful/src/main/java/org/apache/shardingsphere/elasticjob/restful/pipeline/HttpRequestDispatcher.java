@@ -56,7 +56,7 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
     }
     
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         log.debug("{}", msg);
         FullHttpRequest request = (FullHttpRequest) msg;
         if (!trailingSlashSensitive) {

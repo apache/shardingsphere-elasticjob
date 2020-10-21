@@ -53,10 +53,6 @@ public abstract class BaseIntegrateTest {
     
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected BaseIntegrateTest() {
-        this(null, null);
-    }
-    
     protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
         this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);

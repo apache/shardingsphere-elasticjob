@@ -45,7 +45,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     }
     
     @Override
-    protected void initChannel(final Channel channel) throws Exception {
+    protected void initChannel(final Channel channel) {
         ChannelPipeline pipeline = channel.pipeline();
         pipeline.addLast("codec", new HttpServerCodec());
         pipeline.addLast("aggregator", new HttpObjectAggregator(1024 * 1024));

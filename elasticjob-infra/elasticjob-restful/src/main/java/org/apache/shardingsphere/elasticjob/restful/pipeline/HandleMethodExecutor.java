@@ -71,7 +71,7 @@ public final class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
     }
     
     @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         if (cause instanceof InvocationTargetException) {
             ctx.fireExceptionCaught(cause.getCause());
         } else {
