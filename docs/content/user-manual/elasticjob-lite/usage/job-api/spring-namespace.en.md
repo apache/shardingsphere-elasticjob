@@ -97,41 +97,50 @@ The following example shows how to configure the error-handling policy through t
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                          ">
-    
     <!-- Log Strategy -->
-    <elasticjob:job  ... job-error-handler-type="LOG"   />
-
+    <elasticjob:job  ... job-error-handler-type="LOG" />
+    
     <!-- Throw Strategy -->
-    <elasticjob:job  ... job-error-handler-type="THROW"   />
-
+    <elasticjob:job  ... job-error-handler-type="THROW" />
+    
     <!-- Ignore Strategy -->
-    <elasticjob:job  ... job-error-handler-type="IGNORE"   />
-
+    <elasticjob:job  ... job-error-handler-type="IGNORE" />
+    
     <!-- Email Notification Strategy  -->
-    <elasticjob:email-error-handler id="emailErrorHandlerConfig" host="host" port="465" username="username"
-                                    password="password" use-ssl="true" subject="ElasticJob error message"
-                                    from="from@xxx.com" to="to1@xxx.com,to2@xxx.com"
-                                    cc="cc@xxx.com" bcc="bcc@xxx.com"
-                                    debug="false"/>
-
-    <elasticjob:job  ... job-error-handler-type="EMAIL"  error-handler-config-ref="emailErrorHandlerConfig" />
-
-
+    <elasticjob:job ... job-error-handler-type="EMAIL">
+        <props>
+            <prop key="email.host">${host}</prop>
+            <prop key="email.port">${port}</prop>
+            <prop key="email.username">${username}</prop>
+            <prop key="email.password">${password}</prop>
+            <prop key="email.useSsl">${useSsl}</prop>
+            <prop key="email.subject">${subject}</prop>
+            <prop key="email.from">${from}</prop>
+            <prop key="email.to">${to}</prop>
+            <prop key="email.cc">${cc}</prop>
+            <prop key="email.bcc">${bcc}</prop>
+            <prop key="email.debug">${debug}</prop>
+        </props>
+    </elasticjob:job>
+    
     <!-- Wechat Enterprise Notification Strategy -->
-    <elasticjob:wechat-error-handler id="wechatErrorHandlerConfig"
-                                        webhook="you_webhook"
-                                        connect-timeout-millisecond="3000"
-                                        read-timeout-millisecond="5000"/>
-
-    <elasticjob:job  ... job-error-handler-type="WECHAT"  error-handler-config-ref="wechatErrorHandlerConfig" />
-
+    <elasticjob:job  ... job-error-handler-type="WECHAT">
+        <props>
+            <prop key="wechat.webhook">${webhook}</prop>
+            <prop key="wechat.connectTimeoutMilliseconds">${connectTimeoutMilliseconds}</prop>
+            <prop key="wechat.readTimeoutMilliseconds">${readTimeoutMilliseconds}</prop>
+        </props>
+    </elasticjob:job>
+    
     <!-- Dingtalk Notification Strategy  -->
-    <elasticjob:dingtalk-error-handler id="dingtalkErrorHandlerConfig"
-                                       webhook="you_webhook"
-                                       keyword="keyword" secret="secret"
-                                       connect-timeout-millisecond="3000"
-                                       read-timeout-millisecond="5000"/>
-
-    <elasticjob:job  ... job-error-handler-type="DINGTALK"  error-handler-config-ref="dingtalkErrorHandlerConfig" />
+    <elasticjob:job  ... job-error-handler-type="DINGTALK">
+        <props>
+            <prop key="dingtalk.webhook">${webhook}</prop>
+            <prop key="dingtalk.keyword">${keyword}</prop>
+            <prop key="dingtalk.secret">${secret}</prop>
+            <prop key="dingtalk.connectTimeoutMilliseconds">${connectTimeoutMilliseconds}</prop>
+            <prop key="dingtalk.readTimeoutMilliseconds">${readTimeoutMilliseconds}</prop>
+        </props>
+    </elasticjob:job>
 </beans>
 ```

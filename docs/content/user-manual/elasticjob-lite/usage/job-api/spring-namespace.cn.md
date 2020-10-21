@@ -90,7 +90,7 @@ ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<elasticjob:job xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:elasticjob="http://shardingsphere.apache.org/schema/elasticjob"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -98,41 +98,50 @@ ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                          ">
-    
     <!-- 记录日志策略 -->
-    <elasticjob:job  ... job-error-handler-type="LOG"   />
-
+    <elasticjob:job  ... job-error-handler-type="LOG" />
+    
     <!-- 抛出异常策略 -->
-    <elasticjob:job  ... job-error-handler-type="THROW"   />
-
+    <elasticjob:job  ... job-error-handler-type="THROW" />
+    
     <!-- 忽略异常策略 -->
-    <elasticjob:job  ... job-error-handler-type="IGNORE"   />
-
-    <!-- 邮件通知策略 -->
-    <elasticjob:email-error-handler id="emailErrorHandlerConfig" host="host" port="465" username="username"
-                                    password="password" use-ssl="true" subject="ElasticJob error message"
-                                    from="from@xxx.com" to="to1@xxx.com,to2@xxx.com"
-                                    cc="cc@xxx.com" bcc="bcc@xxx.com"
-                                    debug="false"/>
-
-    <elasticjob:job  ... job-error-handler-type="EMAIL"  error-handler-config-ref="emailErrorHandlerConfig" />
-
-
+    <elasticjob:job  ... job-error-handler-type="IGNORE" />
+    
+    <!-- 邮件通知策略 -->    
+    <elasticjob:job ... job-error-handler-type="EMAIL">
+        <props>
+            <prop key="email.host">${host}</prop>
+            <prop key="email.port">${port}</prop>
+            <prop key="email.username">${username}</prop>
+            <prop key="email.password">${password}</prop>
+            <prop key="email.useSsl">${useSsl}</prop>
+            <prop key="email.subject">${subject}</prop>
+            <prop key="email.from">${from}</prop>
+            <prop key="email.to">${to}</prop>
+            <prop key="email.cc">${cc}</prop>
+            <prop key="email.bcc">${bcc}</prop>
+            <prop key="email.debug">${debug}</prop>
+        </props>
+    </elasticjob:job>
+    
     <!-- 企业微信通知策略 -->
-    <elasticjob:wechat-error-handler id="wechatErrorHandlerConfig"
-                                        webhook="you_webhook"
-                                        connect-timeout-millisecond="3000"
-                                        read-timeout-millisecond="5000"/>
-
-    <elasticjob:job  ... job-error-handler-type="WECHAT"  error-handler-config-ref="wechatErrorHandlerConfig" />
-
+    <elasticjob:job  ... job-error-handler-type="WECHAT">
+        <props>
+            <prop key="wechat.webhook">${webhook}</prop>
+            <prop key="wechat.connectTimeoutMilliseconds">${connectTimeoutMilliseconds}</prop>
+            <prop key="wechat.readTimeoutMilliseconds">${readTimeoutMilliseconds}</prop>
+        </props>
+    </elasticjob:job>
+    
     <!-- 钉钉通知策略 -->
-    <elasticjob:dingtalk-error-handler id="dingtalkErrorHandlerConfig"
-                                       webhook="you_webhook"
-                                       keyword="keyword" secret="secret"
-                                       connect-timeout-millisecond="3000"
-                                       read-timeout-millisecond="5000"/>
-
-    <elasticjob:job  ... job-error-handler-type="DINGTALK"  error-handler-config-ref="dingtalkErrorHandlerConfig" />
+    <elasticjob:job  ... job-error-handler-type="DINGTALK">
+        <props>
+            <prop key="dingtalk.webhook">${webhook}</prop>
+            <prop key="dingtalk.keyword">${keyword}</prop>
+            <prop key="dingtalk.secret">${secret}</prop>
+            <prop key="dingtalk.connectTimeoutMilliseconds">${connectTimeoutMilliseconds}</prop>
+            <prop key="dingtalk.readTimeoutMilliseconds">${readTimeoutMilliseconds}</prop>
+        </props>
+    </elasticjob:job>
 </beans>
 ```
