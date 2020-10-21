@@ -59,7 +59,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
             log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
         }
     }
-
+    
     private EmailConfiguration createConfiguration(final Properties props) {
         String host = props.getProperty(EmailPropertiesConstants.HOST);
         int port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));

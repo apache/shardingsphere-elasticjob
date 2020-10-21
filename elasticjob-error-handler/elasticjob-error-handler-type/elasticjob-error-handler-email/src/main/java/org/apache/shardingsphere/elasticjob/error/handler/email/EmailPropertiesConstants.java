@@ -25,7 +25,7 @@ public final class EmailPropertiesConstants {
     public static final String DEFAULT_IS_USE_SSL = Boolean.TRUE.toString();
     
     public static final String DEFAULT_SUBJECT = "ElasticJob error message";
-
+    
     public static final String DEFAULT_IS_DEBUG = Boolean.FALSE.toString();
     
     private static final String PREFIX = "email.";
