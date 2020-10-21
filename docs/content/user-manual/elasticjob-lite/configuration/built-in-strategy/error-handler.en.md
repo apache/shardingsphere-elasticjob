@@ -47,19 +47,19 @@ Maven POM:
 
 Configuration: 
 
-| Name      | Description                                      | Default Value            |
-| -------- |:------------------------------------------------ |:------------------------ |
-| host     | Email service host address                       | None                     |
-| port     | Email service port                               | None                     |
-| username | Username                                         | None                     |
-| password | Password                                         | None                     |
-| useSsl   | Whether to enable ssl encrypted transmission     | true                     |
-| subject  | Email Subject                                    | ElasticJob error message |
-| from     | Sender email address                             | None                     |
-| to       | Recipient's email address                        | None                     |
-| cc       | Carbon copy email address                        | None                     |
-| bcc      | Blind carbon copy email address                  | None                     |
-| debug    | Whether to enable debug                          | false                     |
+| Name           | Description                                  | Required | Default Value            |
+| -------------- |:-------------------------------------------- |:-------- |:------------------------ |
+| email.host     | Email server host address                    | Yes      | -                        |
+| email.port     | Email server port                            | Yes      | -                        |
+| email.username | Email server username                        | Yes      | -                        |
+| email.password | Email server password                        | Yes      | -                        |
+| email.useSsl   | Whether to enable SSL encrypted transmission | No       | true                     |
+| email.subject  | Email Subject                                | No       | ElasticJob error message |
+| email.from     | Sender email address                         | Yes      | -                        |
+| email.to       | Recipient's email address                    | Yes      | -                        |
+| email.cc       | Carbon copy email address                    | No       | null                     |
+| email.bcc      | Blind carbon copy email address              | No       | null                     |
+| email.debug    | Whether to enable debug mode                 | No       | false                    |
 
 ## Wechat Enterprise Notification Strategy
 
@@ -81,11 +81,11 @@ Maven POM:
 
 Configuration: 
 
-| Name                       | Description                                                                | Default Value     |
-| ------------------------- |:---------------------------------------------------------------------------|:----------------- |
-| webhook                   | The webhook address of the wechat robot                                    | None              |
-| connectTimeoutMillisecond | The timeout period for establishing a connection with the wechat server    | 3000 milliseconds |
-| readTimeoutMillisecond    | The timeout period for reading available resources from the wechat server  | 5000 milliseconds |
+| Name                             | Description                                                               | Required | Default Value     |
+| -------------------------------- |:------------------------------------------------------------------------- |:-------- |:----------------- |
+| wechat.webhook                   | The webhook address of the wechat robot                                   | Yes      | -                 |
+| wechat.connectTimeoutMillisecond | The timeout period for establishing a connection with the wechat server   | No       | 3000 milliseconds |
+| wechat.readTimeoutMillisecond    | The timeout period for reading available resources from the wechat server | No       | 5000 milliseconds |
 
 ## Dingtalk Notification Strategy
 
@@ -107,10 +107,10 @@ Maven POM:
 
 Configuration: 
 
-| Name                      | Description                                                                 | Default Value     |
-| ------------------------- |:--------------------------------------------------------------------------- |:------------------|
-| webhook                   | The webhook address of the dingtalk robot                                   | None              |
-| keyword                   | Custom keywords                                                             | None              |
-| secret                    | Secret for dingtalk robot                                                   | None              |
-| connectTimeoutMillisecond | The timeout period for establishing a connection with the dingtalk server   | 3000 milliseconds |
-| readTimeoutMillisecond    | The timeout period for reading available resources from the dingtalk server | 5000 milliseconds |
+| Name                               | Description                                                                 | Required | Default Value     |
+| ---------------------------------- |:--------------------------------------------------------------------------- |:-------- |:----------------- |
+| dingtalk.webhook                   | The webhook address of the dingtalk robot                                   | Yes      | -                 |
+| dingtalk.keyword                   | Custom keywords                                                             | No       | null              |
+| dingtalk.secret                    | Secret for dingtalk robot                                                   | No       | null              |
+| dingtalk.connectTimeoutMillisecond | The timeout period for establishing a connection with the dingtalk server   | No       | 3000 milliseconds |
+| dingtalk.readTimeoutMillisecond    | The timeout period for reading available resources from the dingtalk server | No       | 5000 milliseconds |

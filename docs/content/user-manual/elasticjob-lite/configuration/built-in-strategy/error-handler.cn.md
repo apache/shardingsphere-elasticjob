@@ -47,19 +47,19 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名    | 说明                 | 默认值                   |
-| -------- |:-------------------- |:------------------------ |
-| host     | 邮件服务主机地址      | 无                       |
-| port     | 邮件服务主机端口      | 无                       |
-| username | 用户名               | 无                       |
-| password | 密码                 | 无                       |
-| useSsl   | 是否启用ssl加密传输   | true                     |
-| subject  | 邮件主题             | ElasticJob error message |
-| from     | 发送方邮箱地址       | 无                        |
-| to       | 接收方邮箱地址       | 无                        |
-| cc       | 抄送邮箱地址         | 无                        |
-| bcc      | 密送邮箱地址         | 无                        |
-| debug    | 是否开启debug        | false                    |
+| 属性名          | 说明                | 是否必填  | 默认值                    |
+| -------------- |:------------------- |:-------- |:------------------------ |
+| email.host     | 邮件服务器地址        | 是       | -                        |
+| email.port     | 邮件服务器端口        | 是       | -                        |
+| email.username | 邮件服务器用户名      | 是       | -                        |
+| email.password | 邮件服务器密码        | 是       | -                        |
+| email.useSsl   | 是否启用 SSL 加密传输 | 否       | true                     |
+| email.subject  | 邮件主题             | 否       | ElasticJob error message |
+| email.from     | 发送方邮箱地址        | 是       | -                        |
+| email.to       | 接收方邮箱地址        | 是       | -                        |
+| email.cc       | 抄送邮箱地址          | 否       | null                     |
+| email.bcc      | 密送邮箱地址          | 否       | null                     |
+| email.debug    | 是否开启调试模式      | 否       | false                    |
 
 ## 企业微信通知策略
 
@@ -81,11 +81,11 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明                                | 默认值    |
-| ------------------------- |:----------------------------------- |:-------- |
-| webhook                   | 企业微信机器人的webhook地址           | 无        |
-| connectTimeoutMillisecond | 与企业微信服务器建立连接的超时时间       | 3000 毫秒 |
-| readTimeoutMillisecond    | 从企业微信服务器读取到可用资源的超时时间  | 5000 毫秒 |
+| 属性名                            | 说明                                | 是否必填    | 默认值    |
+| -------------------------------- |:----------------------------------- |:--------- |:--------- |
+| wechat.webhook                   | 企业微信机器人的 webhook 地址         | 是         | -         |
+| wechat.connectTimeoutMillisecond | 与企业微信服务器建立连接的超时时间      | 否         | 3000 毫秒 |
+| wechat.readTimeoutMillisecond    | 从企业微信服务器读取到可用资源的超时时间 | 否         | 5000 毫秒 |
 
 ## 钉钉通知策略
 
@@ -107,10 +107,10 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                     | 说明                              | 默认值    |
-| ------------------------- |:----------------------------------|:-------- |
-| webhook                   | 钉钉机器人的webhook地址            | 无        |
-| keyword                   | 自定义关键词                       | 无        |
-| secret                    | 签名的密钥                         | 无        |
-| connectTimeoutMillisecond | 与钉钉服务器建立连接的超时时间      | 3000 毫秒 |
-| readTimeoutMillisecond    | 从钉钉服务器读取到可用资源的超时时间 | 5000 毫秒 |
+| 属性名                              | 说明                              | 是否必填 | 默认值    |
+| ---------------------------------- |:----------------------------------|:------- |:-------- |
+| dingtalk.webhook                   | 钉钉机器人的 webhook 地址           | 是       | -       |
+| dingtalk.keyword                   | 自定义关键词                       | 否       | null     |
+| dingtalk.secret                    | 签名的密钥                         | 否       | null     |
+| dingtalk.connectTimeoutMillisecond | 与钉钉服务器建立连接的超时时间       | 否       | 3000 毫秒 |
+| dingtalk.readTimeoutMillisecond    | 从钉钉服务器读取到可用资源的超时时间  | 否       | 5000 毫秒 |
