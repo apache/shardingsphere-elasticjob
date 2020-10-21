@@ -49,9 +49,4 @@ public final class EmailConfiguration implements ErrorHandlerConfiguration {
     private final String bcc;
     
     private final boolean debug;
-    
-    @Override
-    public String getType() {
-        return EmailType.TYPE;
-    }
 }

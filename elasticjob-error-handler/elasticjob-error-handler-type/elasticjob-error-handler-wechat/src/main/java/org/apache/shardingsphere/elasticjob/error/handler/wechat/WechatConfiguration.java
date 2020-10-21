@@ -33,9 +33,4 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
     private final int connectTimeoutMillisecond;
     
     private final int readTimeoutMillisecond;
-    
-    @Override
-    public String getType() {
-        return WechatType.TYPE;
-    }
 }

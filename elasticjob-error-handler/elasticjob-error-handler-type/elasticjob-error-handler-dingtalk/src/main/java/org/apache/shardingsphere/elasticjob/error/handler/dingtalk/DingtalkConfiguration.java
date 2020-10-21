@@ -37,9 +37,4 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     private final int connectTimeoutMillisecond;
     
     private final int readTimeoutMillisecond;
-    
-    @Override
-    public String getType() {
-        return DingtalkType.TYPE;
-    }
 }
