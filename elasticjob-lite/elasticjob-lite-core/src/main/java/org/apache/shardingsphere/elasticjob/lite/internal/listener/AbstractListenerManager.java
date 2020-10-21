@@ -31,7 +31,7 @@ public abstract class AbstractListenerManager {
     protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
     }
-
+    
     /**
      * Start listener.
      */

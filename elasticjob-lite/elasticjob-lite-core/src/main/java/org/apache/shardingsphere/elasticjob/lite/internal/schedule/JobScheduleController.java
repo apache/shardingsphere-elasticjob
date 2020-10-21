@@ -73,7 +73,7 @@ public final class JobScheduleController {
             throw new JobSystemException(ex);
         }
     }
-
+    
     /**
      * Reschedule OneOff job.
      */
@@ -162,7 +162,7 @@ public final class JobScheduleController {
     public synchronized void shutdown() {
         shutdown(false);
     }
-
+    
     /**
      * Shutdown scheduler graceful.
      * @param isCleanShutdown if wait jobs complete

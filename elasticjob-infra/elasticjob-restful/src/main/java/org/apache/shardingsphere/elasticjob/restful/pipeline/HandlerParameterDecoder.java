@@ -54,7 +54,7 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
     private final PathMatcher pathMatcher = new RegexPathMatcher();
     
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         HandleContext<Handler> handleContext = (HandleContext<Handler>) msg;
         FullHttpRequest httpRequest = handleContext.getHttpRequest();
         MappingContext<Handler> mappingContext = handleContext.getMappingContext();

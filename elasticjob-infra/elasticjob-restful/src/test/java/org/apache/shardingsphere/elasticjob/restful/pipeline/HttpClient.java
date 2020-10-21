@@ -59,7 +59,7 @@ public final class HttpClient {
                 .remoteAddress(host, port)
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
-                    protected void initChannel(final Channel ch) throws Exception {
+                    protected void initChannel(final Channel ch) {
                         ch.pipeline()
                                 .addLast(new HttpClientCodec())
                                 .addLast(new HttpObjectAggregator(1024 * 1024))
