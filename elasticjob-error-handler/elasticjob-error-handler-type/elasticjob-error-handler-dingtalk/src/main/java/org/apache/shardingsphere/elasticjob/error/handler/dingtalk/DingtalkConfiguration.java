@@ -34,7 +34,7 @@ public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
     
     private final String secret;
     
-    private final int connectTimeoutMillisecond;
+    private final int connectTimeoutMilliseconds;
     
-    private final int readTimeoutMillisecond;
+    private final int readTimeoutMilliseconds;
 }

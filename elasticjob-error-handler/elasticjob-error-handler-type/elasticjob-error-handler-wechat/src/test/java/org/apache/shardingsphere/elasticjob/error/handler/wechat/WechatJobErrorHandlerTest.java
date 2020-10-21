@@ -119,8 +119,8 @@ public final class WechatJobErrorHandlerTest {
     private Properties createConfigurationProperties(final String webhook) {
         Properties result = new Properties();
         result.setProperty(WechatPropertiesConstants.WEBHOOK, webhook);
-        result.setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "1000");
-        result.setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, "2000");
+        result.setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "1000");
+        result.setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "2000");
         return result;
     }
 }

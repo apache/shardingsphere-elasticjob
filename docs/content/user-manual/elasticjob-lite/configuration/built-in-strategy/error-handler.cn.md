@@ -81,11 +81,11 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                            | 说明                                | 是否必填    | 默认值    |
-| -------------------------------- |:----------------------------------- |:--------- |:--------- |
-| wechat.webhook                   | 企业微信机器人的 webhook 地址         | 是         | -         |
-| wechat.connectTimeoutMillisecond | 与企业微信服务器建立连接的超时时间      | 否         | 3000 毫秒 |
-| wechat.readTimeoutMillisecond    | 从企业微信服务器读取到可用资源的超时时间 | 否         | 5000 毫秒 |
+| 属性名                             | 说明                                | 是否必填    | 默认值    |
+| --------------------------------- |:----------------------------------- |:--------- |:--------- |
+| wechat.webhook                    | 企业微信机器人的 webhook 地址         | 是         | -         |
+| wechat.connectTimeoutMilliseconds | 与企业微信服务器建立连接的超时时间      | 否         | 3000 毫秒 |
+| wechat.readTimeoutMilliseconds    | 从企业微信服务器读取到可用资源的超时时间 | 否         | 5000 毫秒 |
 
 ## 钉钉通知策略
 
@@ -107,10 +107,10 @@ Maven 坐标：
 
 可配置属性：
 
-| 属性名                              | 说明                              | 是否必填 | 默认值    |
-| ---------------------------------- |:----------------------------------|:------- |:-------- |
-| dingtalk.webhook                   | 钉钉机器人的 webhook 地址           | 是       | -       |
-| dingtalk.keyword                   | 自定义关键词                       | 否       | null     |
-| dingtalk.secret                    | 签名的密钥                         | 否       | null     |
-| dingtalk.connectTimeoutMillisecond | 与钉钉服务器建立连接的超时时间       | 否       | 3000 毫秒 |
-| dingtalk.readTimeoutMillisecond    | 从钉钉服务器读取到可用资源的超时时间  | 否       | 5000 毫秒 |
+| 属性名                               | 说明                              | 是否必填 | 默认值    |
+| ----------------------------------- |:----------------------------------|:------- |:-------- |
+| dingtalk.webhook                    | 钉钉机器人的 webhook 地址           | 是       | -       |
+| dingtalk.keyword                    | 自定义关键词                       | 否       | null     |
+| dingtalk.secret                     | 签名的密钥                         | 否       | null     |
+| dingtalk.connectTimeoutMilliseconds | 与钉钉服务器建立连接的超时时间       | 否       | 3000 毫秒 |
+| dingtalk.readTimeoutMilliseconds    | 从钉钉服务器读取到可用资源的超时时间  | 否       | 5000 毫秒 |

@@ -82,7 +82,7 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         } else {
             result.addConstructorArgValue(Arrays.asList(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).split(",")));
         }
-        result.addConstructorArgValue(parseExtraConfigs(new String[]{JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE, JobBeanDefinitionTag.ERROR_HANDLER_CONFIG_REF_ATTRIBUTE},
+        result.addConstructorArgValue(parseExtraConfigs(new String[]{JobBeanDefinitionTag.TRACING_REF_ATTRIBUTE},
                 element, parserContext));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         result.addConstructorArgValue(parsePropsElement(element, parserContext));

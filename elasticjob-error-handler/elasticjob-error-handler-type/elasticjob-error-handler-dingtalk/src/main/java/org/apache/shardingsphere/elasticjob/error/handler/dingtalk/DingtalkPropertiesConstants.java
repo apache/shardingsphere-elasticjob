@@ -22,9 +22,9 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
  */
 public final class DingtalkPropertiesConstants {
     
-    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECOND = "3000";
+    public static final String DEFAULT_CONNECT_TIMEOUT_MILLISECONDS = "3000";
     
-    public static final String DEFAULT_READ_TIMEOUT_MILLISECOND = "5000";
+    public static final String DEFAULT_READ_TIMEOUT_MILLISECONDS = "5000";
     
     private static final String PREFIX = "dingtalk.";
     
@@ -34,7 +34,7 @@ public final class DingtalkPropertiesConstants {
     
     public static final String SECRET = PREFIX + "secret";
     
-    public static final String CONNECT_TIMEOUT_MILLISECOND = PREFIX + "connectTimeoutMillisecond";
+    public static final String CONNECT_TIMEOUT_MILLISECONDS = PREFIX + "connectTimeoutMilliseconds";
     
-    public static final String READ_TIMEOUT_MILLISECOND = PREFIX + "readTimeoutMillisecond";
+    public static final String READ_TIMEOUT_MILLISECONDS = PREFIX + "readTimeoutMilliseconds";
 }

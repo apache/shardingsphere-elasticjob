@@ -96,14 +96,15 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         String webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
         String keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
         String secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
-        int connectTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
-        int readTimeoutMillisecond = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
-        return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMillisecond, readTimeoutMillisecond);
+        int connectTimeoutMilliseconds = Integer.parseInt(
+                props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
+        int readTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
+        return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMilliseconds, readTimeoutMilliseconds);
     }
     
     private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration config) {
         HttpPost result = new HttpPost(getURL(config));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMilliseconds()).setSocketTimeout(config.getReadTimeoutMilliseconds()).build();
         result.setConfig(requestConfig);
         StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, config, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
