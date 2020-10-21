@@ -96,7 +96,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         String webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
         String keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
         String secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
-        int connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
+        int connectTimeoutMilliseconds = Integer.parseInt(
+                props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
         int readTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
         return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMilliseconds, readTimeoutMilliseconds);
     }
