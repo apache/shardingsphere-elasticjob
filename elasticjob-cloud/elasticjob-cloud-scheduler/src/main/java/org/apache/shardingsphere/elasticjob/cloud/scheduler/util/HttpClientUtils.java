@@ -17,6 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.util;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClientException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -25,11 +31,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.HttpClientException;
 
 /**
  * Http client utils.
@@ -53,18 +54,18 @@ public final class HttpClientUtils {
      * @param url url
      * @param paramValues param values
      * @param encoding encoding
-     * @param readTimeoutMillisecond read timeout millisecond
+     * @param readTimeoutMilliseconds read timeout milliseconds
      * @return http result
      */
-    public static HttpResult httpGet(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMillisecond) {
+    public static HttpResult httpGet(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMilliseconds) {
         HttpURLConnection connection = null;
         try {
             String encodedContent = encodingParams(paramValues, encoding);
             String urlWithParam = url + (null == encodedContent ? "" : ("?" + encodedContent));
             connection = (HttpURLConnection) new URL(urlWithParam).openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout((int) readTimeoutMillisecond);
-            connection.setReadTimeout((int) readTimeoutMillisecond);
+            connection.setConnectTimeout((int) readTimeoutMilliseconds);
+            connection.setReadTimeout((int) readTimeoutMilliseconds);
             connection.connect();
             String response;
             if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
@@ -113,16 +114,16 @@ public final class HttpClientUtils {
      * @param url url
      * @param paramValues param values
      * @param encoding encoding
-     * @param readTimeoutMillisecond read timeout millisecond
+     * @param readTimeoutMilliseconds read timeout milliseconds
      * @return http result
      */
-    public static HttpResult httpPost(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMillisecond) {
+    public static HttpResult httpPost(final String url, final List<String> paramValues, final String encoding, final long readTimeoutMilliseconds) {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("POST");
-            connection.setConnectTimeout((int) readTimeoutMillisecond);
-            connection.setReadTimeout((int) readTimeoutMillisecond);
+            connection.setConnectTimeout((int) readTimeoutMilliseconds);
+            connection.setReadTimeout((int) readTimeoutMilliseconds);
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.getOutputStream().write(encodingParams(paramValues, encoding).getBytes(StandardCharsets.UTF_8));

@@ -114,8 +114,8 @@
 <!--            <prop key="dingtalk.webhook">https://oapi.dingtalk.com/robot/send?access_token=token</prop>-->
 <!--            <prop key="dingtalk.keyword">keyword</prop>-->
 <!--            <prop key="dingtalk.secret">secret</prop>-->
-<!--            <prop key="dingtalk.connectTimeoutMillisecond">3000</prop>-->
-<!--            <prop key="dingtalk.readTimeoutMillisecond">5000</prop>-->
+<!--            <prop key="dingtalk.connectTimeoutMilliseconds">3000</prop>-->
+<!--            <prop key="dingtalk.readTimeoutMilliseconds">5000</prop>-->
 <!--        </props>-->
 <!--    </elasticjob:job>-->
     
@@ -133,8 +133,8 @@
 <!--                    disabled="${occurErrorNoticeWechatJob.disabled}" overwrite="${occurErrorNoticeWechatJob.overwrite}">-->
 <!--        <props>-->
 <!--            <prop key="wechat.webhook">https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key</prop>-->
-<!--            <prop key="wechat.connectTimeoutMillisecond">3000</prop>-->
-<!--            <prop key="wechat.readTimeoutMillisecond">5000</prop>-->
+<!--            <prop key="wechat.connectTimeoutMilliseconds">3000</prop>-->
+<!--            <prop key="wechat.readTimeoutMilliseconds">5000</prop>-->
 <!--        </props>-->
 <!--    </elasticjob:job>-->
 </beans>

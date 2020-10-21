@@ -86,14 +86,14 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     
     private WechatConfiguration createConfiguration(final Properties props) {
         String webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
-        int connectTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECOND));
-        int readTimeoutMillisecond = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECOND, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECOND));
-        return new WechatConfiguration(webhook, connectTimeoutMillisecond, readTimeoutMillisecond);
+        int connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
+        int readTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
+        return new WechatConfiguration(webhook, connectTimeoutMilliseconds, readTimeoutMilliseconds);
     }
     
     private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
         HttpPost result = new HttpPost(config.getWebhook());
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMillisecond()).setSocketTimeout(config.getReadTimeoutMillisecond()).build();
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMilliseconds()).setSocketTimeout(config.getReadTimeoutMilliseconds()).build();
         result.setConfig(requestConfig);
         StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());

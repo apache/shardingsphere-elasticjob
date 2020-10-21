@@ -130,8 +130,8 @@ public final class DingtalkJobErrorHandlerTest {
         result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
         result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
         result.setProperty(DingtalkPropertiesConstants.SECRET, "mocked_secret");
-        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
-        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
+        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "4000");
+        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "6000");
         return result;
     }
     
@@ -139,8 +139,8 @@ public final class DingtalkJobErrorHandlerTest {
         Properties result = new Properties();
         result.setProperty(DingtalkPropertiesConstants.WEBHOOK, webhook);
         result.setProperty(DingtalkPropertiesConstants.KEYWORD, "mocked_keyword");
-        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECOND, "4000");
-        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECOND, "6000");
+        result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "4000");
+        result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "6000");
         return result;
     }
 }

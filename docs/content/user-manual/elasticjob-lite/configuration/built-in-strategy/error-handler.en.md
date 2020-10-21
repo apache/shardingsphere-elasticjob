@@ -81,11 +81,11 @@ Maven POM:
 
 Configuration: 
 
-| Name                             | Description                                                               | Required | Default Value     |
-| -------------------------------- |:------------------------------------------------------------------------- |:-------- |:----------------- |
-| wechat.webhook                   | The webhook address of the wechat robot                                   | Yes      | -                 |
-| wechat.connectTimeoutMillisecond | The timeout period for establishing a connection with the wechat server   | No       | 3000 milliseconds |
-| wechat.readTimeoutMillisecond    | The timeout period for reading available resources from the wechat server | No       | 5000 milliseconds |
+| Name                              | Description                                                               | Required | Default Value     |
+| --------------------------------- |:------------------------------------------------------------------------- |:-------- |:----------------- |
+| wechat.webhook                    | The webhook address of the wechat robot                                   | Yes      | -                 |
+| wechat.connectTimeoutMilliseconds | The timeout period for establishing a connection with the wechat server   | No       | 3000 milliseconds |
+| wechat.readTimeoutMilliseconds    | The timeout period for reading available resources from the wechat server | No       | 5000 milliseconds |
 
 ## Dingtalk Notification Strategy
 
@@ -107,10 +107,10 @@ Maven POM:
 
 Configuration: 
 
-| Name                               | Description                                                                 | Required | Default Value     |
-| ---------------------------------- |:--------------------------------------------------------------------------- |:-------- |:----------------- |
-| dingtalk.webhook                   | The webhook address of the dingtalk robot                                   | Yes      | -                 |
-| dingtalk.keyword                   | Custom keywords                                                             | No       | null              |
-| dingtalk.secret                    | Secret for dingtalk robot                                                   | No       | null              |
-| dingtalk.connectTimeoutMillisecond | The timeout period for establishing a connection with the dingtalk server   | No       | 3000 milliseconds |
-| dingtalk.readTimeoutMillisecond    | The timeout period for reading available resources from the dingtalk server | No       | 5000 milliseconds |
+| Name                                | Description                                                                 | Required | Default Value     |
+| ----------------------------------- |:--------------------------------------------------------------------------- |:-------- |:----------------- |
+| dingtalk.webhook                    | The webhook address of the dingtalk robot                                   | Yes      | -                 |
+| dingtalk.keyword                    | Custom keywords                                                             | No       | null              |
+| dingtalk.secret                     | Secret for dingtalk robot                                                   | No       | null              |
+| dingtalk.connectTimeoutMilliseconds | The timeout period for establishing a connection with the dingtalk server   | No       | 3000 milliseconds |
+| dingtalk.readTimeoutMilliseconds    | The timeout period for reading available resources from the dingtalk server | No       | 5000 milliseconds |

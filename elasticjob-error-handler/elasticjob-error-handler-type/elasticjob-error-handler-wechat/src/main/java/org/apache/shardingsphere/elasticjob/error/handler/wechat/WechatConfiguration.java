@@ -30,7 +30,7 @@ public final class WechatConfiguration implements ErrorHandlerConfiguration {
     
     private final String webhook;
     
-    private final int connectTimeoutMillisecond;
+    private final int connectTimeoutMilliseconds;
     
-    private final int readTimeoutMillisecond;
+    private final int readTimeoutMilliseconds;
 }
