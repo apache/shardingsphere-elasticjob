@@ -29,6 +29,6 @@ public final class ThrowJobErrorHandlerTest {
     @Test(expected = JobSystemException.class)
     public void assertHandleException() {
         JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElseThrow(
-            () -> new JobConfigurationException("THROW error handler not found.")).handleException("test_job", null, new RuntimeException("test"));
+            () -> new JobConfigurationException("THROW error handler not found.")).handleException("test_job", new RuntimeException("test"));
     }
 }

@@ -43,7 +43,7 @@ public final class LogJobErrorHandlerTest {
         LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG", new Properties()).orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", null, cause);
+        actual.handleException("test_job", cause);
         verify(log).error("Job 'test_job' exception occur in job processing", cause);
     }
     
