@@ -38,7 +38,7 @@ public class ElasticJobTracingConfiguration {
     @Bean
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = "RDB")
-    public TracingConfiguration<?> tracingConfiguration(final DataSource dataSource) {
+    public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource) {
         return new TracingConfiguration<>("RDB", dataSource);
     }
 }

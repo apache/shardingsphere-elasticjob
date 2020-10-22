@@ -15,30 +15,5 @@
 # limitations under the License.
 #
 
-spring:
-  datasource:
-    url: jdbc:h2:mem:job_event_storage
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
-elasticjob:
-  tracing:
-    type: RDB
-  regCenter:
-    serverLists: localhost:18181
-    namespace: elasticjob-lite-spring-boot-starter
-  jobs:
-    customTestJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
-      jobBootstrapBeanName: customTestJobBean
-      shardingTotalCount: 3
-      jobListenerTypes:
-        - NOOP
-        - LOG
-    printTestJob:
-      elasticJobType: PRINT
-      jobBootstrapBeanName: printTestJobBean
-      shardingTotalCount: 3
-      props:
-        print.content: "test print job"
+org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.listener.NoopElasticJobListener
+org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.listener.LogElasticJobListener

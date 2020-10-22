@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Import;
 import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * ElasticJob-Lite auto configuration.
@@ -105,19 +106,14 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     private void registerClassedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                     final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
+        Optional.ofNullable(tracingConfig).ifPresent(jobConfig.getExtraConfigurations()::add);
         ElasticJob elasticJob = applicationContext.getBean(jobConfigurationProperties.getElasticJobClass());
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for one off job.");
-            if (null != tracingConfig) {
-                jobConfig.getExtraConfigurations().add(tracingConfig);
-            }
             singletonBeanRegistry.registerSingleton(jobBootstrapBeanName,
                     new OneOffJobBootstrap(registryCenter, elasticJob, jobConfig));
         } else {
             String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfig.getJobName() + "ScheduleJobBootstrap";
-            if (null != tracingConfig) {
-                jobConfig.getExtraConfigurations().add(tracingConfig);
-            }
             singletonBeanRegistry.registerSingleton(beanName,
                     new ScheduleJobBootstrap(registryCenter, elasticJob, jobConfig));
         }
@@ -126,18 +122,13 @@ public class ElasticJobLiteAutoConfiguration implements ApplicationContextAware 
     private void registerTypedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                   final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
+        Optional.ofNullable(tracingConfig).ifPresent(jobConfig.getExtraConfigurations()::add);
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for one off job.");
-            if (null != tracingConfig) {
-                jobConfig.getExtraConfigurations().add(tracingConfig);
-            }
             singletonBeanRegistry.registerSingleton(jobBootstrapBeanName,
                     new OneOffJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfig));
         } else {
             String beanName = !Strings.isNullOrEmpty(jobBootstrapBeanName) ? jobBootstrapBeanName : jobConfig.getJobName() + "ScheduleJobBootstrap";
-            if (null != tracingConfig) {
-                jobConfig.getExtraConfigurations().add(tracingConfig);
-            }
             singletonBeanRegistry.registerSingleton(beanName,
                     new ScheduleJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfig));
         }

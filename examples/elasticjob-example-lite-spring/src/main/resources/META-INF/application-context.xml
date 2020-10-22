@@ -88,17 +88,17 @@
 <!--                    description="${occurErrorNoticeEmailJob.description}"-->
 <!--                    disabled="${occurErrorNoticeEmailJob.disabled}" overwrite="${occurErrorNoticeEmailJob.overwrite}">-->
 <!--        <props>-->
-<!--            <prop key="email.host">localhost</prop>-->
+<!--            <prop key="email.host">host</prop>-->
 <!--            <prop key="email.port">465</prop>-->
-<!--            <prop key="email.username">user</prop>-->
-<!--            <prop key="email.password">xxx</prop>-->
-<!--            <prop key="email.from">from@xxx.com</prop>-->
-<!--            <prop key="email.to">to1@xxx.com,to2@xxx.com</prop>-->
+<!--            <prop key="email.username">username</prop>-->
+<!--            <prop key="email.password">password</prop>-->
+<!--            <prop key="email.from">from@xxx.xx</prop>-->
+<!--            <prop key="email.to">to1@xxx.xx,to2@xxx.xx</prop>-->
 <!--        </props>-->
 <!--    </elasticjob:job>-->
     
     <!-- use dingtalk error handler -->
-    <bean id="occurErrorNoticeDingtalkJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />
+<!--    <bean id="occurErrorNoticeDingtalkJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
 <!--    <elasticjob:job id="${occurErrorNoticeDingtalkJob.id}" job-ref="occurErrorNoticeDingtalkJob"-->
 <!--                    registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
 <!--                    sharding-total-count="${occurErrorNoticeDingtalkJob.shardingTotalCount}"-->

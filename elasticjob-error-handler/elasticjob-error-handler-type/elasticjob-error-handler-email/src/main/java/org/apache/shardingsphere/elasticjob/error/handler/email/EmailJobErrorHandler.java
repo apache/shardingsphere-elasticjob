@@ -102,10 +102,10 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         String errorMessage = getErrorMessage(jobName, cause);
         try {
             sendMessage(createMessage(errorMessage));
-            log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobName, cause);
+            log.error("An exception has occurred in Job '{}'. An email has been sent successfully.", jobName, cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
+            log.error("An exception has occurred in Job '{}' but failed to send email because of", jobName, cause);
         }
     }
     

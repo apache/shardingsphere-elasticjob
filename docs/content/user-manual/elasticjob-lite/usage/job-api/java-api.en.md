@@ -215,7 +215,7 @@ public class JobDemo {
     private static JobConfiguration createScheduleJobConfiguration() {
         // Create scheduling job configuration, and the use of email notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("EMAIL").build();
-        setEmailConfiguration(jobConfig);
+        setEmailProperties(jobConfig);
         return jobConfig;
 
     }
@@ -223,13 +223,18 @@ public class JobDemo {
     private static JobConfiguration createOneOffJobConfiguration() {
         // Create one-time job configuration, and the use of email notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("EMAIL").build();
-        setEmailConfiguration(jobConfig);
+        setEmailProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setEmailConfiguration(final JobConfiguration jobConfig) {
+    private static void setEmailProperties(final JobConfiguration jobConfig) {
         // Set the mail configuration.
-        jobConfig.getExtraConfigurations().add(EmailConfiguration.newBuilder("host", 465, "username", "password", "from@xxx.xx", "to1@xxx.xx,to2xxx.xx").build());
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "host");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "password");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to1@xxx.xx");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -264,7 +269,7 @@ public class JobDemo {
     private static JobConfiguration createScheduleJobConfiguration() {
         // Create scheduling job configuration, and the use of wechat enterprise notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("WECHAT").build();
-        setWechatConfiguration(jobConfig);
+        setWechatProperties(jobConfig);
         return jobConfig;
 
     }
@@ -272,13 +277,13 @@ public class JobDemo {
     private static JobConfiguration createOneOffJobConfiguration() {
         // Create one-time job configuration, and the use of wechat enterprise notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("WECHAT").build();
-        setWechatConfiguration(jobConfig);
+        setWechatProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setWechatConfiguration(final JobConfiguration jobConfig) {
+    private static void setWechatProperties(final JobConfiguration jobConfig) {
         // Set the configuration for the enterprise wechat.
-        jobConfig.getExtraConfigurations().add(WechatConfiguration.newBuilder("you_webhook").build());
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.WEBHOOK, "you_webhook");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -311,23 +316,25 @@ public class JobDemo {
     }
     
     private static JobConfiguration createScheduleJobConfiguration() {
-        // Create scheduling job configuration, and the use of wechat enterprise notification strategy.
+        // Create scheduling job configuration, and the use of dingtalk  notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("DINGTALK").build();
-        setWechatConfiguration(jobConfig);
+        setDingtalkProperties(jobConfig);
         return jobConfig;
 
     }
 
     private static JobConfiguration createOneOffJobConfiguration() {
-        // Create one-time job configuration, and the use of wechat enterprise notification strategy.
+        // Create one-time job configuration, and the use of dingtalk notification strategy.
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("DINGTALK").build();
-        setWechatConfiguration(jobConfig);
+        setDingtalkProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
+    private static void setDingtalkProperties(final JobConfiguration jobConfig) {
         // Set the configuration of the dingtalk.
-        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("you_webhook").keyword("keyword").secret("secret").build());
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.WEBHOOK, "you_webhook");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.KEYWORD, "you_keyword");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.SECRET, "you_secret");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
