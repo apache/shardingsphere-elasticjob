@@ -77,7 +77,7 @@ public final class OneOffJobBootstrapTest {
         }, JobConfiguration.newBuilder("test_one_off_job_execute", SHARDING_TOTAL_COUNT).build());
         oneOffJobBootstrap.execute();
         blockUtilFinish(oneOffJobBootstrap);
-        assertThat(SHARDING_TOTAL_COUNT, is(counter.get()));
+        assertThat(counter.get(), is(SHARDING_TOTAL_COUNT));
         getJobScheduler(oneOffJobBootstrap).shutdown();
     }
 
