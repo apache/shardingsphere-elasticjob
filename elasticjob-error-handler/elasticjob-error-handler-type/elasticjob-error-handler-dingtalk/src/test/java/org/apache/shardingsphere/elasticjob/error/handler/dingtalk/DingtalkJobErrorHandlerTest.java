@@ -98,7 +98,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
-        Properties props = createConfigurationProperties("http://wrongUrl");
+        Properties props = createNoSignJobConfigurationProperties("http://wrongUrl");
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
@@ -108,7 +108,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithNoSign() {
-        Properties props = createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token");
+        Properties props = createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token");
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");

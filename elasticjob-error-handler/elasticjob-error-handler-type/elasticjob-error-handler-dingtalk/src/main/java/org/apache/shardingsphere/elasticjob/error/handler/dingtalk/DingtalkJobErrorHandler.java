@@ -55,13 +55,29 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
-    public DingtalkJobErrorHandler() {
+    private String webhook;
+    
+    private String keyword;
+    
+    private String secret;
+    
+    private int connectTimeoutMilliseconds;
+    
+    private int readTimeoutMilliseconds;
+    
+    @Override
+    public void init(final Properties props) {
+        webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
+        keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
+        secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
+        connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
+        readTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
         registerShutdownHook();
     }
     
     private void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
-            
+
             @SneakyThrows
             @Override
             public void run() {
@@ -72,12 +88,8 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void init(final Properties props) {
-    }
-    
-    @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, createConfiguration(props));
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -96,38 +108,28 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         }
     }
     
-    private DingtalkConfiguration createConfiguration(final Properties props) {
-        String webhook = props.getProperty(DingtalkPropertiesConstants.WEBHOOK);
-        String keyword = props.getProperty(DingtalkPropertiesConstants.KEYWORD);
-        String secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
-        int connectTimeoutMilliseconds = Integer.parseInt(
-                props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
-        int readTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
-        return new DingtalkConfiguration(webhook, keyword, secret, connectTimeoutMilliseconds, readTimeoutMilliseconds);
-    }
-    
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final DingtalkConfiguration config) {
-        HttpPost result = new HttpPost(getURL(config));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMilliseconds()).setSocketTimeout(config.getReadTimeoutMilliseconds()).build();
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause) {
+        HttpPost result = new HttpPost(getURL());
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectTimeoutMilliseconds).setSocketTimeout(readTimeoutMilliseconds).build();
         result.setConfig(requestConfig);
-        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, config, cause)), StandardCharsets.UTF_8);
+        StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());
         entity.setContentType("application/json");
         result.setEntity(entity);
         return result;
     }
     
-    private String getURL(final DingtalkConfiguration config) {
-        return Strings.isNullOrEmpty(config.getSecret()) ? config.getWebhook() : getSignedURL(config);
+    private String getURL() {
+        return Strings.isNullOrEmpty(secret) ? webhook : getSignedURL();
     }
     
-    private String getSignedURL(final DingtalkConfiguration config) {
+    private String getSignedURL() {
         long timestamp = System.currentTimeMillis();
-        return String.format("%s&timestamp=%s&sign=%s", config.getWebhook(), timestamp, generateSignature(timestamp, config.getSecret()));
+        return String.format("%s&timestamp=%s&sign=%s", webhook, timestamp, generateSignature(timestamp));
     }
     
     @SneakyThrows({NoSuchAlgorithmException.class, UnsupportedEncodingException.class, InvalidKeyException.class})
-    private String generateSignature(final long timestamp, final String secret) {
+    private String generateSignature(final long timestamp) {
         String algorithmName = "HmacSHA256";
         Mac mac = Mac.getInstance(algorithmName);
         mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), algorithmName));
@@ -139,12 +141,12 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return GsonFactory.getGson().toJson(ImmutableMap.of("msgtype", "text", "text", Collections.singletonMap("content", message)));
     }
     
-    private String getErrorMessage(final String jobName, final DingtalkConfiguration config, final Throwable cause) {
+    private String getErrorMessage(final String jobName, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
         String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
-        if (!Strings.isNullOrEmpty(config.getKeyword())) {
-            result = config.getKeyword().concat(result);
+        if (!Strings.isNullOrEmpty(keyword)) {
+            result = keyword.concat(result);
         }
         return result;
     }
