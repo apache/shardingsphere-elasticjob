@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
@@ -36,7 +37,6 @@ import javax.mail.internet.MimeMultipart;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -47,36 +47,66 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Session session;
     
+    private String subject;
+    
+    private String from;
+    
+    private String to;
+    
+    private String cc;
+    
+    private String bcc;
+    
     @Override
     public void init(final Properties props) {
+        String host = props.getProperty(EmailPropertiesConstants.HOST);
+        int port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
+        boolean isUseSSL = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, EmailPropertiesConstants.DEFAULT_IS_USE_SSL));
+        boolean isDebug = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
+        String username = props.getProperty(EmailPropertiesConstants.USERNAME);
+        String password = props.getProperty(EmailPropertiesConstants.PASSWORD);
+        session = Session.getDefaultInstance(createSessionProperties(host, port, isUseSSL, isDebug), getSessionAuthenticator(username, password));
+        subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
+        from = props.getProperty(EmailPropertiesConstants.FROM);
+        to = props.getProperty(EmailPropertiesConstants.TO);
+        cc = props.getProperty(EmailPropertiesConstants.CC);
+        bcc = props.getProperty(EmailPropertiesConstants.BCC);
+    }
+    
+    private Properties createSessionProperties(final String host, final int port, final boolean isUseSSL, final boolean isDebug) {
+        Properties result = new Properties();
+        result.put("mail.smtp.host", host);
+        result.put("mail.smtp.port", port);
+        result.put("mail.smtp.auth", Boolean.TRUE.toString());
+        result.put("mail.transport.protocol", "smtp");
+        result.setProperty("mail.debug", Boolean.toString(isDebug));
+        if (isUseSSL) {
+            result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            result.setProperty("mail.smtp.socketFactory.fallback", Boolean.FALSE.toString());
+        }
+        return result;
+    }
+    
+    private Authenticator getSessionAuthenticator(final String username, final String password) {
+        return new Authenticator() {
+
+            @Override
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        };
     }
     
     @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
         String errorMessage = getErrorMessage(jobName, cause);
-        EmailConfiguration config = createConfiguration(props);
         try {
-            sendMessage(createMessage(errorMessage, config), config);
+            sendMessage(createMessage(errorMessage));
             log.error("An exception has occurred in Job '{}', Notification to email was successful..", jobName, cause);
         } catch (final MessagingException ex) {
             cause.addSuppressed(ex);
             log.error("An exception has occurred in Job '{}', But failed to send alert by email because of", jobName, cause);
         }
-    }
-    
-    private EmailConfiguration createConfiguration(final Properties props) {
-        String host = props.getProperty(EmailPropertiesConstants.HOST);
-        int port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
-        String username = props.getProperty(EmailPropertiesConstants.USERNAME);
-        String password = props.getProperty(EmailPropertiesConstants.PASSWORD);
-        boolean isUseSSL = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, EmailPropertiesConstants.DEFAULT_IS_USE_SSL));
-        String subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
-        String from = props.getProperty(EmailPropertiesConstants.FROM);
-        String to = props.getProperty(EmailPropertiesConstants.TO);
-        String cc = props.getProperty(EmailPropertiesConstants.CC);
-        String bcc = props.getProperty(EmailPropertiesConstants.BCC);
-        boolean isDebug = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
-        return new EmailConfiguration(host, port, username, password, isUseSSL, subject, from, to, cc, bcc, isDebug);
     }
     
     private String getErrorMessage(final String jobName, final Throwable cause) {
@@ -85,69 +115,37 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
     }
     
-    private Message createMessage(final String content, final EmailConfiguration config) throws MessagingException {
-        MimeMessage result = new MimeMessage(Optional.ofNullable(session).orElseGet(() -> createSession(config)));
-        result.setFrom(new InternetAddress(config.getFrom()));
-        result.setSubject(config.getSubject());
+    private Message createMessage(final String content) throws MessagingException {
+        MimeMessage result = new MimeMessage(session);
+        result.setFrom(new InternetAddress(from));
+        result.setSubject(subject);
         result.setSentDate(new Date());
         Multipart multipart = new MimeMultipart();
         BodyPart mailBody = new MimeBodyPart();
         mailBody.setContent(content, "text/html; charset=utf-8");
         multipart.addBodyPart(mailBody);
         result.setContent(multipart);
-        String to = config.getTo();
         if (StringUtils.isNotBlank(to)) {
             String[] tos = to.split(",");
             for (String each : tos) {
                 result.addRecipient(Message.RecipientType.TO, new InternetAddress(each));
             }
         }
-        if (StringUtils.isNotBlank(config.getCc())) {
-            result.addRecipient(Message.RecipientType.CC, new InternetAddress(config.getCc()));
+        if (!Strings.isNullOrEmpty(cc)) {
+            result.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
         }
-        if (StringUtils.isNotBlank(config.getBcc())) {
-            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(config.getBcc()));
+        if (!Strings.isNullOrEmpty(bcc)) {
+            result.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
         }
         result.saveChanges();
         return result;
     }
     
-    private void sendMessage(final Message message, final EmailConfiguration config) throws MessagingException {
-        try (Transport transport = Optional.ofNullable(session).orElseGet(() -> createSession(config)).getTransport()) {
+    private void sendMessage(final Message message) throws MessagingException {
+        try (Transport transport = session.getTransport()) {
             transport.connect();
             transport.sendMessage(message, message.getAllRecipients());
         }
-    }
-    
-    private synchronized Session createSession(final EmailConfiguration config) {
-        if (null == session) {
-            session = Session.getDefaultInstance(createSessionProperties(config), getSessionAuthenticator(config));
-        }
-        return session;
-    }
-    
-    private Properties createSessionProperties(final EmailConfiguration config) {
-        Properties result = new Properties();
-        result.put("mail.smtp.host", config.getHost());
-        result.put("mail.smtp.port", config.getPort());
-        result.put("mail.smtp.auth", "true");
-        result.put("mail.transport.protocol", "smtp");
-        result.setProperty("mail.debug", Boolean.toString(config.isDebug()));
-        if (config.isUseSsl()) {
-            result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            result.setProperty("mail.smtp.socketFactory.fallback", "false");
-        }
-        return result;
-    }
-    
-    private Authenticator getSessionAuthenticator(final EmailConfiguration config) {
-        return new Authenticator() {
-            
-            @Override
-            public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(config.getUsername(), config.getPassword());
-            }
-        };
     }
     
     @Override
