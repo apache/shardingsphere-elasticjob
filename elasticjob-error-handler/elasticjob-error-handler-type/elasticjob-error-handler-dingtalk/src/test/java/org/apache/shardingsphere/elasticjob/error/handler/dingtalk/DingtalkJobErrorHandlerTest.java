@@ -68,51 +68,46 @@ public final class DingtalkJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
-        Properties props = createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token");
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", props, cause);
+        actual.handleException("test_job", cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
-        Properties props = createConfigurationProperties("http://localhost:9875/send?access_token=wrong_token");
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=wrong_token"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", props, cause);
+        actual.handleException("test_job", cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", "test_job", "token is not exist", cause);
     }
     
     @Test
     public void assertHandleExceptionWithUrlIsNotFound() {
-        Properties props = createConfigurationProperties("http://localhost:9875/404");
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/404"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", props, cause);
+        actual.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
-        Properties props = createNoSignJobConfigurationProperties("http://wrongUrl");
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://wrongUrl"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", props, cause);
+        actual.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithNoSign() {
-        Properties props = createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token");
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(props);
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", props, cause);
+        actual.handleException("test_job", cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", "test_job", cause);
     }
     

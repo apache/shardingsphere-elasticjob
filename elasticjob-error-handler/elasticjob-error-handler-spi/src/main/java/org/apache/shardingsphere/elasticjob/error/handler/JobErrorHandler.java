@@ -20,8 +20,6 @@ package org.apache.shardingsphere.elasticjob.error.handler;
 import org.apache.shardingsphere.elasticjob.infra.spi.SPIPostProcessor;
 import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
 
-import java.util.Properties;
-
 /**
  * Job error handler.
  */
@@ -31,8 +29,7 @@ public interface JobErrorHandler extends TypedSPI, SPIPostProcessor {
      * Handle exception.
      * 
      * @param jobName job name
-     * @param props job properties
      * @param cause failure cause
      */
-    void handleException(String jobName, Properties props, Throwable cause);
+    void handleException(String jobName, Throwable cause);
 }

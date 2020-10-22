@@ -88,7 +88,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+    public void handleException(final String jobName, final Throwable cause) {
         HttpPost httpPost = createHTTPPostMethod(jobName, cause);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();

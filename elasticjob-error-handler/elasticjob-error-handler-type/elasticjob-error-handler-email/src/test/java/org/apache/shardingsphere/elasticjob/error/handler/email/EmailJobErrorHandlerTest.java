@@ -40,11 +40,10 @@ public final class EmailJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithMessagingException() {
-        Properties props = createConfigurationProperties();
-        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(props);
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
-        emailJobErrorHandler.handleException("test_job", props, cause);
+        emailJobErrorHandler.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by email because of", "test_job", cause);
     }
     
