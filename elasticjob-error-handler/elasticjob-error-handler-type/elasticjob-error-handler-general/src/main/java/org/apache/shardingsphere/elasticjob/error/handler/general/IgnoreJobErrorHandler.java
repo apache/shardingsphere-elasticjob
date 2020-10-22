@@ -27,7 +27,11 @@ import java.util.Properties;
 public final class IgnoreJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
+    public void init(final Properties props) {
+    }
+    
+    @Override
+    public void handleException(final String jobName, final Throwable cause) {
     }
     
     @Override

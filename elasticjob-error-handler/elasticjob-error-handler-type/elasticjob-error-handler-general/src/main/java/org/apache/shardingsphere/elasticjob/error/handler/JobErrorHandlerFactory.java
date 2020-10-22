@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Job error handler factory.
@@ -40,12 +41,13 @@ public final class JobErrorHandlerFactory {
      * Get job error handler.
      *
      * @param type job error handler type
+     * @param props job properties
      * @return job error handler
      */
-    public static Optional<JobErrorHandler> createHandler(final String type) {
+    public static Optional<JobErrorHandler> createHandler(final String type, final Properties props) {
         if (Strings.isNullOrEmpty(type)) {
-            return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, DEFAULT_HANDLER);
+            return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, DEFAULT_HANDLER, props);
         }
-        return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type);
+        return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type, props);
     }
 }

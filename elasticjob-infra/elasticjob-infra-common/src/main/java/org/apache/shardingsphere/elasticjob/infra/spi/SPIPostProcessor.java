@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,26 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
+package org.apache.shardingsphere.elasticjob.infra.spi;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.error.handler.ErrorHandlerConfiguration;
+import java.util.Properties;
 
 /**
- * Job error handler configuration for send error message via dingtalk.
+ * SPI post processor.
  */
-@RequiredArgsConstructor
-@Getter
-public final class DingtalkConfiguration implements ErrorHandlerConfiguration {
+public interface SPIPostProcessor {
     
-    private final String webhook;
-    
-    private final String keyword;
-    
-    private final String secret;
-    
-    private final int connectTimeoutMilliseconds;
-    
-    private final int readTimeoutMilliseconds;
+    /**
+     * Initialize SPI instance.
+     * 
+     * @param props properties
+     */
+    void init(Properties props);
 }

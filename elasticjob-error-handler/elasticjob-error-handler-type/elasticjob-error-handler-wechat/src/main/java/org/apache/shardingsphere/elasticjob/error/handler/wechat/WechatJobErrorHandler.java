@@ -47,7 +47,17 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     
     private final CloseableHttpClient httpclient = HttpClients.createDefault();
     
-    public WechatJobErrorHandler() {
+    private String webhook;
+    
+    private int connectTimeoutMilliseconds;
+    
+    private int readTimeoutMilliseconds;
+    
+    @Override
+    public void init(final Properties props) {
+        webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
+        connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
+        readTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
         registerShutdownHook();
     }
     
@@ -64,8 +74,8 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
-    public void handleException(final String jobName, final Properties props, final Throwable cause) {
-        HttpPost httpPost = createHTTPPostMethod(jobName, cause, createConfiguration(props));
+    public void handleException(final String jobName, final Throwable cause) {
+        HttpPost httpPost = createHTTPPostMethod(jobName, cause);
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             int status = response.getStatusLine().getStatusCode();
             if (HttpURLConnection.HTTP_OK == status) {
@@ -84,16 +94,9 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         }
     }
     
-    private WechatConfiguration createConfiguration(final Properties props) {
-        String webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
-        int connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
-        int readTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
-        return new WechatConfiguration(webhook, connectTimeoutMilliseconds, readTimeoutMilliseconds);
-    }
-    
-    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause, final WechatConfiguration config) {
-        HttpPost result = new HttpPost(config.getWebhook());
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(config.getConnectTimeoutMilliseconds()).setSocketTimeout(config.getReadTimeoutMilliseconds()).build();
+    private HttpPost createHTTPPostMethod(final String jobName, final Throwable cause) {
+        HttpPost result = new HttpPost(webhook);
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectTimeoutMilliseconds).setSocketTimeout(readTimeoutMilliseconds).build();
         result.setConfig(requestConfig);
         StringEntity entity = new StringEntity(getJsonParameter(getErrorMessage(jobName, cause)), StandardCharsets.UTF_8);
         entity.setContentEncoding(StandardCharsets.UTF_8.name());

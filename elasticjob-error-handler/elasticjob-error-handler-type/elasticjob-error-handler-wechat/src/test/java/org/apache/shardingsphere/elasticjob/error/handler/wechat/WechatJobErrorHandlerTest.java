@@ -68,42 +68,42 @@ public final class WechatJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=mocked_key"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createConfigurationProperties("http://localhost:9872/send?key=mocked_key"), cause);
+        actual.handleException("test_job", cause);
         verify(log).info("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=wrong_key"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createConfigurationProperties("http://localhost:9872/send?key=wrong_key"), cause);
+        actual.handleException("test_job", cause);
         verify(log).info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://wrongUrl"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createConfigurationProperties("http://wrongUrl"), cause);
+        actual.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", "test_job", cause);
     }
     
     @Test
     public void assertHandleExceptionWithUrlIsNotFound() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler();
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/404"));
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
-        actual.handleException("test_job", createConfigurationProperties("http://localhost:9872/404"), cause);
+        actual.handleException("test_job", cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
     }
     
-    private WechatJobErrorHandler getWechatJobErrorHandler() {
-        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT").orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
+    private WechatJobErrorHandler getWechatJobErrorHandler(final Properties props) {
+        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT", props).orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
     }
     
     @SneakyThrows

@@ -52,31 +52,31 @@ public final class EmailJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithMessagingException() {
-        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
         String jobName = "test_job";
-        emailJobErrorHandler.handleException(jobName, createConfigurationProperties(), cause);
+        emailJobErrorHandler.handleException(jobName, cause);
         verify(log).error("An exception has occurred in Job '{}' but failed to send email because of", jobName, cause);
     }
     
     @Test
     @SneakyThrows
     public void assertHandleExceptionSucceedInSendingEmail() {
-        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         setUpMockSession(session);
         setFieldValue(emailJobErrorHandler, "session", session);
         Throwable cause = new RuntimeException("test");
         String jobName = "test_job";
         when(session.getTransport()).thenReturn(transport);
-        emailJobErrorHandler.handleException(jobName, createConfigurationProperties(), cause);
+        emailJobErrorHandler.handleException(jobName, cause);
         verify(transport).sendMessage(any(Message.class), any(Address[].class));
         verify(log).error("An exception has occurred in Job '{}'. An email has been sent successfully.", jobName, cause);
     }
     
-    private EmailJobErrorHandler getEmailJobErrorHandler() {
-        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL").orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
+    private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {
+        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL", props).orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
     }
     
     private void setUpMockSession(final Session session) {

@@ -74,7 +74,7 @@ public final class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobConfig.getJobName());
-        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobConfig.getJobErrorHandlerType())
+        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
                 .orElseThrow(() -> new JobConfigurationException("Can not find job error handler type '%s'.", jobConfig.getJobErrorHandlerType()));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
@@ -86,7 +86,7 @@ public final class ElasticJobExecutor {
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
         jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()));
@@ -101,7 +101,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
         execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
@@ -114,7 +114,7 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }
     
@@ -184,7 +184,7 @@ public final class ElasticJobExecutor {
             completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            jobErrorHandler.handleException(jobConfig.getJobName(), jobConfig.getProps(), cause);
+            jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }
     
