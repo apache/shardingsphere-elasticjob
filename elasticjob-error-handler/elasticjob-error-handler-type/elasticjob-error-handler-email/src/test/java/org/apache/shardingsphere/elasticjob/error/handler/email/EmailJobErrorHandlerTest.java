@@ -26,11 +26,17 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
@@ -38,17 +44,45 @@ public final class EmailJobErrorHandlerTest {
     @Mock
     private Logger log;
     
+    @Mock
+    private Session session;
+    
+    @Mock
+    private Transport transport;
+    
     @Test
     public void assertHandleExceptionWithMessagingException() {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
-        emailJobErrorHandler.handleException("test_job", createConfigurationProperties(), cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by email because of", "test_job", cause);
+        String jobName = "test_job";
+        emailJobErrorHandler.handleException(jobName, createConfigurationProperties(), cause);
+        verify(log).error("An exception has occurred in Job '{}' but failed to send email because of", jobName, cause);
+    }
+    
+    @Test
+    @SneakyThrows
+    public void assertHandleExceptionSucceedInSendingEmail() {
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
+        setStaticFieldValue(emailJobErrorHandler, "log", log);
+        setUpMockSession(session);
+        setFieldValue(emailJobErrorHandler, "session", session);
+        Throwable cause = new RuntimeException("test");
+        String jobName = "test_job";
+        when(session.getTransport()).thenReturn(transport);
+        emailJobErrorHandler.handleException(jobName, createConfigurationProperties(), cause);
+        verify(transport).sendMessage(any(Message.class), any(Address[].class));
+        verify(log).error("An exception has occurred in Job '{}'. An email has been sent successfully.", jobName, cause);
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler() {
         return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL").orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
+    }
+    
+    private void setUpMockSession(final Session session) {
+        Properties props = new Properties();
+        setFieldValue(session, "props", props);
+        when(session.getProperties()).thenReturn(props);
     }
     
     @SneakyThrows
@@ -59,6 +93,13 @@ public final class EmailJobErrorHandlerTest {
         modifiers.setAccessible(true);
         modifiers.setInt(fieldLog, fieldLog.getModifiers() & ~Modifier.FINAL);
         fieldLog.set(wechatJobErrorHandler, value);
+    }
+    
+    @SneakyThrows
+    private void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, fieldValue);
     }
     
     private Properties createConfigurationProperties() {
