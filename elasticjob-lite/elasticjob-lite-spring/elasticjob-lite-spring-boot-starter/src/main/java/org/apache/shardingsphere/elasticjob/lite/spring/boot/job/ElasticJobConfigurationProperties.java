@@ -22,6 +22,8 @@ import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Properties;
 
 /**
@@ -61,6 +63,8 @@ public final class ElasticJobConfigurationProperties {
     
     private String jobErrorHandlerType;
     
+    private Collection<String> jobListenerTypes = new LinkedList<>();
+    
     private String description;
     
     private Properties props = new Properties();
@@ -81,7 +85,7 @@ public final class ElasticJobConfigurationProperties {
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
-                .description(description).disabled(disabled).overwrite(overwrite).build();
+                .jobListenerTypes(jobListenerTypes.toArray(new String[0])).description(description).disabled(disabled).overwrite(overwrite).build();
         props.stringPropertyNames().forEach(each -> result.getProps().setProperty(each, props.getProperty(each)));
         return result;
     }
