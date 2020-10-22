@@ -216,7 +216,7 @@ public class JobDemo {
     private static JobConfiguration createScheduleJobConfiguration() {
         // 创建定时作业配置， 并且使用邮件通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("EMAIL").build();
-        setEmailConfiguration(jobConfig);
+        setEmailProperties(jobConfig);
         return jobConfig;
 
     }
@@ -224,13 +224,18 @@ public class JobDemo {
     private static JobConfiguration createOneOffJobConfiguration() {
         // 创建一次性作业配置， 并且使用邮件通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("EMAIL").build();
-        setEmailConfiguration(jobConfig);
+        setEmailProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setEmailConfiguration(final JobConfiguration jobConfig) {
+    private static void setEmailProperties(final JobConfiguration jobConfig) {
         // 设置邮件的配置
-        jobConfig.getExtraConfigurations().add(EmailConfiguration.newBuilder("host", 465, "username", "password", "from@xxx.xx", "to1@xxx.xx,to2xxx.xx").build());
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "host");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "password");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to1@xxx.xx");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -265,7 +270,7 @@ public class JobDemo {
     private static JobConfiguration createScheduleJobConfiguration() {
         // 创建定时作业配置， 并且使用企业微信通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("WECHAT").build();
-        setWechatConfiguration(jobConfig);
+        setWechatProperties(jobConfig);
         return jobConfig;
 
     }
@@ -273,13 +278,13 @@ public class JobDemo {
     private static JobConfiguration createOneOffJobConfiguration() {
         // 创建一次性作业配置， 并且使用企业微信通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("WECHAT").build();
-        setWechatConfiguration(jobConfig);
+        setWechatProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setWechatConfiguration(final JobConfiguration jobConfig) {
+    private static void setWechatProperties(final JobConfiguration jobConfig) {
         // 设置企业微信的配置
-        jobConfig.getExtraConfigurations().add(WechatConfiguration.newBuilder("you_webhook").build());
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.WEBHOOK, "you_webhook");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -315,21 +320,23 @@ public class JobDemo {
     private static JobConfiguration createScheduleJobConfiguration() {
         // 创建定时作业配置， 并且使用企业微信通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myScheduleJob", 3).cron("0/5 * * * * ?").jobErrorHandlerType("DINGTALK").build();
-        setWechatConfiguration(jobConfig);
+        setDingtalkProperties(jobConfig);
         return jobConfig;
 
     }
 
     private static JobConfiguration createOneOffJobConfiguration() {
-        // 创建一次性作业配置， 并且使用企业微信通知策略
+        // 创建一次性作业配置， 并且使用钉钉通知策略
         JobConfiguration jobConfig = JobConfiguration.newBuilder("myOneOffJob", 3).jobErrorHandlerType("DINGTALK").build();
-        setWechatConfiguration(jobConfig);
+        setDingtalkProperties(jobConfig);
         return jobConfig;
     }
 
-    private static void setDingtalkConfiguration(final JobConfiguration jobConfig) {
+    private static void setDingtalkProperties(final JobConfiguration jobConfig) {
         // 设置钉钉的配置
-        jobConfig.getExtraConfigurations().add(DingtalkConfiguration.newBuilder("you_webhook").keyword("keyword").secret("secret").build());
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.WEBHOOK, "you_webhook");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.KEYWORD, "you_keyword");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.SECRET, "you_secret");
     }
 
     private static CoordinatorRegistryCenter createRegistryCenter() {

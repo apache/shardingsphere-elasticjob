@@ -100,3 +100,134 @@ public class OneOffJobController {
     }
 }
 ```
+
+## Configuration error handler strategy
+
+In the process of using ElasticJob-Lite, when the job is abnormal, the following error handling strategies can be used.
+
+| *Error handler strategy name*            | *Description*                                                 |  *Built-in*  | *Default*| *Extra config*   |
+| ---------------------------------------- | ------------------------------------------------------------- |  -------     |  --------|  --------------  |
+| Log Strategy                             | Log error and do not interrupt job                            |   Yes        |     Yes  |                  |
+| Throw Strategy                           | Throw system exception and interrupt job                      |   Yes        |          |                  |
+| Ignore Strategy                          | Ignore exception and do not interrupt job                     |   Yes        |          |                  |
+| Email Notification Strategy              | Send email message notification and do not interrupt job      |              |          |    Yes           |
+| Wechat Enterprise Notification Strategy  | Send wechat message notification and do not interrupt job     |              |          |    Yes           |
+| Dingtalk Notification Strategy           | Send dingtalk message notification and do not interrupt job   |              |          |    Yes           |
+
+### Log Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: LOG 
+```
+
+### Throw Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: THROW 
+```
+
+### Ignore Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: IGNORE 
+```
+
+### Email Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#email-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: EMAIL 
+  props:
+    email:
+      host: host
+      port: 465
+      username: username
+      password: password
+      useSsl: true
+      subject: ElasticJob error message
+      from: from@xxx.xx
+      to: to1@xxx.xx,to2@xxx.xx
+      cc: cc@xxx.xx
+      bcc: bcc@xxx.xx
+      debug: false
+```
+
+### Wechat Enterprise Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#wechat-enterprise-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-wechat</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: WECHAT 
+  props:
+    wechat:
+      webhook: you_webhook
+      connectTimeout: 3000
+      readTimeout: 5000
+```
+
+### Dingtalk Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#dingtalk-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: DINGTALK 
+  props:
+    dingtalk:
+       webhook: you_webhook
+       keyword: you_keyword
+       secret: you_secret
+       connectTimeout: 3000
+       readTimeout: 5000
+```
