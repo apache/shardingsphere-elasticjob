@@ -22,9 +22,8 @@ import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceOperation;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
@@ -34,28 +33,25 @@ public final class OneOffJobBootstrap implements JobBootstrap {
     
     private final JobScheduler jobScheduler;
     
+    private final InstanceService instanceService;
+
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(Strings.isNullOrEmpty(jobConfig.getCron()), "Cron should be empty.");
         jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig);
+        instanceService = new InstanceService(regCenter, jobConfig.getJobName());
     }
     
     public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(Strings.isNullOrEmpty(jobConfig.getCron()), "Cron should be empty.");
         jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig);
+        instanceService = new InstanceService(regCenter, jobConfig.getJobName());
     }
     
     /**
      * Execute job.
      */
     public void execute() {
-        Preconditions.checkArgument(Strings.isNullOrEmpty(jobScheduler.getJobConfig().getCron()), "Cron should be empty.");
-        triggerAllInstances();
-    }
-    
-    private void triggerAllInstances() {
-        CoordinatorRegistryCenter regCenter = jobScheduler.getRegCenter();
-        JobNodePath jobNodePath = new JobNodePath(jobScheduler.getJobConfig().getJobName());
-        for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-            regCenter.persist(jobNodePath.getInstanceNodePath(each), InstanceOperation.TRIGGER.name());
-        }
+        instanceService.triggerAllInstances();
     }
     
     @Override

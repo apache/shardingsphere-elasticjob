@@ -46,21 +46,18 @@ public final class InstanceService {
      * Persist job online status.
      */
     public void persistOnline() {
-        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), "");
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstancePath(), "");
     }
     
     /**
      * Persist job instance.
      */
     public void removeInstance() {
-        jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstanceNode());
+        jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstancePath());
     }
     
-    /**
-     * Clear trigger flag.
-     */
-    public void clearTriggerFlag() {
-        jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), "");
+    void clearTriggerFlag() {
+        jobNodeStorage.updateJobNode(instanceNode.getLocalInstancePath(), "");
     }
     
     /**
@@ -79,12 +76,16 @@ public final class InstanceService {
         return result;
     }
     
+    boolean isLocalJobInstanceExisted() {
+        return jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstancePath());
+    }
+
     /**
-     * Judge is job instance existed or not in localhost.
-     * 
-     * @return is job instance existed or not in localhost
+     * Trigger all instances.
      */
-    public boolean isLocalJobInstanceExisted() {
-        return jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode());
+    public void triggerAllInstances() {
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
+            jobNodeStorage.replaceJobNode(instanceNode.getInstancePath(each), InstanceOperation.TRIGGER.name());
+        }
     }
 }
