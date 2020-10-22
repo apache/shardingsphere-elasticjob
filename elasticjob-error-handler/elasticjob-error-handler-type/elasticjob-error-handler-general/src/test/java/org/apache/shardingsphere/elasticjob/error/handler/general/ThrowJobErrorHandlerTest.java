@@ -22,12 +22,13 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationExce
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.junit.Test;
 
+import java.util.Properties;
+
 public final class ThrowJobErrorHandlerTest {
     
-    @SuppressWarnings("unchecked")
     @Test(expected = JobSystemException.class)
     public void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("THROW").orElseThrow(
+        JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElseThrow(
             () -> new JobConfigurationException("THROW error handler not found.")).handleException("test_job", null, new RuntimeException("test"));
     }
 }

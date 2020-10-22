@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Job listener factory.
@@ -40,6 +41,6 @@ public final class ElasticJobListenerFactory {
      * @return optional job listener instance
      */
     public static Optional<ElasticJobListener> createListener(final String type) {
-        return ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type);
+        return ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type, new Properties());
     }
 }

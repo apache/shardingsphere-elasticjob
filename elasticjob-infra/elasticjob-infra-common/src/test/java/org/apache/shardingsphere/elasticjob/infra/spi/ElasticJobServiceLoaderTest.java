@@ -22,6 +22,8 @@ import org.apache.shardingsphere.elasticjob.infra.spi.fixture.UnRegisteredTypedF
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Properties;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -54,11 +56,11 @@ public final class ElasticJobServiceLoaderTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void assertNewTypedServiceInstanceFailureWithUnRegisteredServiceInterface() {
-        ElasticJobServiceLoader.newTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl").orElseThrow(IllegalArgumentException::new);
+        ElasticJobServiceLoader.newTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl", new Properties()).orElseThrow(IllegalArgumentException::new);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void assertNewTypedServiceInstanceFailureWithInvalidType() {
-        ElasticJobServiceLoader.newTypedServiceInstance(TypedFooService.class, "INVALID").orElseThrow(IllegalArgumentException::new);
+        ElasticJobServiceLoader.newTypedServiceInstance(TypedFooService.class, "INVALID", new Properties()).orElseThrow(IllegalArgumentException::new);
     }
 }

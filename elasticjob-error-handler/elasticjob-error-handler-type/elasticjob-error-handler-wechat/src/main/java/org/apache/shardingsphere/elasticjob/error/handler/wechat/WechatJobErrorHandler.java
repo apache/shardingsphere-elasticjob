@@ -64,6 +64,10 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     }
     
     @Override
+    public void init(final Properties props) {
+    }
+    
+    @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
         HttpPost httpPost = createHTTPPostMethod(jobName, cause, createConfiguration(props));
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {

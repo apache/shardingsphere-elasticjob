@@ -40,15 +40,16 @@ public final class EmailJobErrorHandlerTest {
     
     @Test
     public void assertHandleExceptionWithMessagingException() {
-        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler();
+        Properties props = createConfigurationProperties();
+        EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(props);
         setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
-        emailJobErrorHandler.handleException("test_job", createConfigurationProperties(), cause);
+        emailJobErrorHandler.handleException("test_job", props, cause);
         verify(log).error("An exception has occurred in Job '{}', But failed to send alert by email because of", "test_job", cause);
     }
     
-    private EmailJobErrorHandler getEmailJobErrorHandler() {
-        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL").orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
+    private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {
+        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL", props).orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
     }
     
     @SneakyThrows

@@ -48,6 +48,10 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     private Session session;
     
     @Override
+    public void init(final Properties props) {
+    }
+    
+    @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
         String errorMessage = getErrorMessage(jobName, cause);
         EmailConfiguration config = createConfiguration(props);

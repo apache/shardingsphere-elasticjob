@@ -22,6 +22,8 @@ import org.apache.shardingsphere.elasticjob.error.handler.general.ThrowJobErrorH
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.junit.Test;
 
+import java.util.Properties;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -29,16 +31,16 @@ public final class JobErrorHandlerFactoryTest {
     
     @Test
     public void assertGetDefaultHandler() {
-        assertThat(JobErrorHandlerFactory.createHandler("").orElse(null), instanceOf(LogJobErrorHandler.class));
+        assertThat(JobErrorHandlerFactory.createHandler("", new Properties()).orElse(null), instanceOf(LogJobErrorHandler.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetInvalidHandler() {
-        JobErrorHandlerFactory.createHandler("INVALID").orElseThrow(() -> new JobConfigurationException(""));
+        JobErrorHandlerFactory.createHandler("INVALID", new Properties()).orElseThrow(() -> new JobConfigurationException(""));
     }
     
     @Test
     public void assertGetHandler() {
-        assertThat(JobErrorHandlerFactory.createHandler("THROW").orElse(null), instanceOf(ThrowJobErrorHandler.class));
+        assertThat(JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElse(null), instanceOf(ThrowJobErrorHandler.class));
     }
 }

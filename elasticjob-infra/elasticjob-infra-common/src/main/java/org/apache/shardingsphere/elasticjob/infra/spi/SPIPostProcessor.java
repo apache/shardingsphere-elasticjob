@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,24 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler;
-
-import org.apache.shardingsphere.elasticjob.infra.spi.SPIPostProcessor;
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+package org.apache.shardingsphere.elasticjob.infra.spi;
 
 import java.util.Properties;
 
 /**
- * Job error handler.
+ * SPI post processor.
  */
-public interface JobErrorHandler extends TypedSPI, SPIPostProcessor {
+public interface SPIPostProcessor {
     
     /**
-     * Handle exception.
+     * Initialize SPI instance.
      * 
-     * @param jobName job name
-     * @param props job properties
-     * @param cause failure cause
+     * @param props properties
      */
-    void handleException(String jobName, Properties props, Throwable cause);
+    void init(Properties props);
 }

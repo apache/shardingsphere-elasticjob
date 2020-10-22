@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.infra.spi.exception.ServiceLoaderIns
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -72,13 +73,16 @@ public final class ElasticJobServiceLoader {
      *
      * @param typedServiceInterface typed service interface
      * @param type type
+     * @param props properties
      * @param <T> class of service
      * @return new typed service instance
      */
-    public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type) {
-        return Optional.ofNullable(TYPED_SERVICE_CLASSES.get(typedServiceInterface))
-                .map(serviceClasses -> serviceClasses.get(type))
-                .map(clazz -> (T) newServiceInstance(clazz));
+    public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type, final Properties props) {
+        Optional<T> result = Optional.ofNullable(TYPED_SERVICE_CLASSES.get(typedServiceInterface)).map(serviceClasses -> serviceClasses.get(type)).map(clazz -> (T) newServiceInstance(clazz));
+        if (result.isPresent() && result.get() instanceof SPIPostProcessor) {
+            ((SPIPostProcessor) result.get()).init(props);
+        }
+        return result;
     }
     
     private static Object newServiceInstance(final Class<?> clazz) {

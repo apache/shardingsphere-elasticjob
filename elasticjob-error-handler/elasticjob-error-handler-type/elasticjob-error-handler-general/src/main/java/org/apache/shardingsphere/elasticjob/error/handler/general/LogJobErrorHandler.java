@@ -29,6 +29,10 @@ import java.util.Properties;
 public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
+    public void init(final Properties props) {
+    }
+    
+    @Override
     public void handleException(final String jobName, final Properties props, final Throwable cause) {
         log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
