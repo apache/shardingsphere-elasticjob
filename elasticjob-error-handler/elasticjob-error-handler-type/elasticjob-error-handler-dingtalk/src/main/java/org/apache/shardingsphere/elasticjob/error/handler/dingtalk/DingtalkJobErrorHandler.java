@@ -77,7 +77,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     
     private void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
-
+            
             @SneakyThrows
             @Override
             public void run() {
