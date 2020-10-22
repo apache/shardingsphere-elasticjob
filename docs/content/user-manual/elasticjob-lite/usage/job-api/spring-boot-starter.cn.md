@@ -99,3 +99,136 @@ public class OneOffJobController {
 }
 ```
 
+
+## 配置错误处理策略
+
+使用 ElasticJob-Lite 过程中当作业发生异常后，可采用以下错误处理策略。
+
+| *错误处理策略名称*         | *说明*                            |  *是否内置* | *是否默认*| *是否需要额外配置* |
+| ----------------------- | --------------------------------- |  -------  |  --------|  -------------  |
+| 记录日志策略              | 记录作业异常日志，但不中断作业执行     |   是       |     是   |                 |
+| 抛出异常策略              | 抛出系统异常并中断作业执行            |   是       |         |                 |
+| 忽略异常策略              | 忽略系统异常且不中断作业执行          |   是       |          |                 |
+| 邮件通知策略              | 发送邮件消息通知，但不中断作业执行     |            |          |      是         |
+| 企业微信通知策略           | 发送企业微信消息通知，但不中断作业执行 |            |          |      是          |
+| 钉钉通知策略              | 发送钉钉消息通知，但不中断作业执行     |            |          |      是          |
+
+### 记录日志策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: LOG 
+```
+
+### 抛出异常策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: THROW 
+```
+
+
+### 忽略异常策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: IGNORE 
+```
+
+### 邮件通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#邮件通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: EMAIL 
+  props:
+    email:
+      host: host
+      port: 465
+      username: username
+      password: password
+      useSsl: true
+      subject: ElasticJob error message
+      from: from@xxx.xx
+      to: to1@xxx.xx,to2@xxx.xx
+      cc: cc@xxx.xx
+      bcc: bcc@xxx.xx
+      debug: false
+```
+
+### 企业微信通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#企业微信通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-wechat</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: WECHAT 
+  props:
+    wechat:
+      webhook: you_webhook
+      connectTimeout: 3000
+      readTimeout: 5000
+```
+
+
+### 钉钉通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#钉钉通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: DINGTALK 
+  props:
+    dingtalk:
+       webhook: you_webhook
+       keyword: you_keyword
+       secret: you_secret
+       connectTimeout: 3000
+       readTimeout: 5000
+```
