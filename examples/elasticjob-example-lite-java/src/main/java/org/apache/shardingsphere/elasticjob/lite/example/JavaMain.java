@@ -145,12 +145,12 @@ public final class JavaMain {
     }
     
     private static void setEmailProperties(final JobConfiguration jobConfig) {
-        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "localhost");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "host");
         jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
-        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "user");
-        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "xxx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "password");
         jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
-        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to2xxx.xx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to1@xxx.xx");
     }
     
     private static void setDingtalkProperties(final JobConfiguration jobConfig) {

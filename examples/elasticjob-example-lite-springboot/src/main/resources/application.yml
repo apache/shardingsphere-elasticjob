@@ -40,9 +40,9 @@ elasticjob:
       jobBootstrapBeanName: occurErrorNoticeDingtalkBean
       props:
         dingtalk:
-          webhook: https://oapi.dingtalk.com/robot/send?access_token=42eead064e81ce81fc6af2c107fbe10a4339a3d40a7db8abf5b34d8261527a3f
-          keyword: keyword
-          secret: SEC0b0a6b13b6823b95737dd83491c23adee5d8a7a649899a12217e038eddc84ff4
+          webhook: you_webhook
+          keyword: you_keyword
+          secret: you_secret
           connectTimeout: 3000
           readTimeout: 5000
     occurErrorNoticeWechatJob:
@@ -54,7 +54,7 @@ elasticjob:
       jobBootstrapBeanName: occurErrorNoticeWechatBean
       props:
         wechat:
-          webhook: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=5308e20a-2900-484b-a332-b5bb701ade04
+          webhook: you_webhook
           connectTimeout: 3000
           readTimeout: 5000
     occurErrorNoticeEmailJob:
@@ -70,13 +70,12 @@ elasticjob:
           port: 465
           username: username
           password: password
-          protocol: smtp
           useSsl: true
           subject: ElasticJob error message
-          from: from@xxx.com
-          to: to1@xxx.com,to2@xxx.com
-          cc: cc@xxx.com
-          bcc: bcc@xxx.com
+          from: from@xxx.xx
+          to: to1@xxx.xx,to2@xxx.xx
+          cc: cc@xxx.xx
+          bcc: bcc@xxx.xx
           debug: false
   dump:
     port: 9888

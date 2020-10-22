@@ -86,9 +86,7 @@ public final class ElasticJobConfigurationProperties {
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
                 .jobListenerTypes(jobListenerTypes.toArray(new String[0])).description(description).disabled(disabled).overwrite(overwrite).build();
-        for (Object each : props.keySet()) {
-            result.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
-        }
+        props.stringPropertyNames().forEach(each -> result.getProps().setProperty(each, props.getProperty(each)));
         return result;
     }
 }
