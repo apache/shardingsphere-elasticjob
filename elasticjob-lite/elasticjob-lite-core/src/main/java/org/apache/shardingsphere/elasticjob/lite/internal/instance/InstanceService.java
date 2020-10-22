@@ -84,8 +84,6 @@ public final class InstanceService {
      * Trigger all instances.
      */
     public void triggerAllInstances() {
-        for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            jobNodeStorage.replaceJobNode(instanceNode.getInstancePath(each), InstanceOperation.TRIGGER.name());
-        }
+        jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT).forEach(each -> jobNodeStorage.replaceJobNode(instanceNode.getInstancePath(each), InstanceOperation.TRIGGER.name()));
     }
 }
