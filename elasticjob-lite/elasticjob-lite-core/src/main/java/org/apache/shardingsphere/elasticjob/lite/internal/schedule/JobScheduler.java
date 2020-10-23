@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -53,8 +55,6 @@ public final class JobScheduler {
     @Getter
     private final CoordinatorRegistryCenter regCenter;
     
-    private final String elasticJobType;
-    
     @Getter
     private final JobConfiguration jobConfig;
     
@@ -70,13 +70,13 @@ public final class JobScheduler {
     private final JobScheduleController jobScheduleController;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(null != elasticJob, "Elastic job cannot be null.");
         this.regCenter = regCenter;
-        elasticJobType = null;
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
-        jobExecutor = null == elasticJob ? new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade) : new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
+        jobExecutor = new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
@@ -84,8 +84,8 @@ public final class JobScheduler {
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(elasticJobType), "Elastic job type cannot be null or empty.");
         this.regCenter = regCenter;
-        this.elasticJobType = elasticJobType;
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
