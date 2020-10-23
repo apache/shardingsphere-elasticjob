@@ -73,7 +73,7 @@ ElasticJob-Lite 并无作业调度中心节点，而是基于部署作业框架�
 ### 注册中心数据结构
 
 注册中心在定义的命名空间下，创建作业名称节点，用于区分不同作业，所以作业一旦创建则不能修改作业名称，如果修改名称将视为新的作业。
-作业名称节点下又包含4个数据子节点，分别是 config, instances, sharding, servers 和 leader。
+作业名称节点下又包含5个数据子节点，分别是 config, instances, sharding, servers 和 leader。
 
 ### config 节点
 
