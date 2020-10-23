@@ -73,12 +73,12 @@ public final class InstanceServiceTest {
     @Test
     public void assertClearTriggerFlag() {
         instanceService.clearTriggerFlag();
-        jobNodeStorage.updateJobNode("instances/127.0.0.1@-@0", "");
+        verify(jobNodeStorage).updateJobNode("instances/127.0.0.1@-@0", "");
     }
     
     @Test
     public void assertGetAvailableJobInstances() {
-        when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
+        when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         assertThat(instanceService.getAvailableJobInstances(), is(Collections.singletonList(new JobInstance("127.0.0.1@-@0"))));
     }
@@ -87,5 +87,13 @@ public final class InstanceServiceTest {
     public void assertIsLocalJobInstanceExisted() {
         when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
         assertTrue(instanceService.isLocalJobInstanceExisted());
+    }
+
+    @Test
+    public void assertTriggerAllInstances() {
+        when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
+        instanceService.triggerAllInstances();
+        verify(jobNodeStorage).replaceJobNode("instances/127.0.0.1@-@0", InstanceOperation.TRIGGER.name());
+        verify(jobNodeStorage).replaceJobNode("instances/127.0.0.2@-@0", InstanceOperation.TRIGGER.name());
     }
 }
