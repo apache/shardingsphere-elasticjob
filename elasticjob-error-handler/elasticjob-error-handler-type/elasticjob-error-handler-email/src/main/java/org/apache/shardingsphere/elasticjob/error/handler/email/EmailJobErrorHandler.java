@@ -61,8 +61,8 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     public void init(final Properties props) {
         String host = props.getProperty(EmailPropertiesConstants.HOST);
         int port = Integer.parseInt(props.getProperty(EmailPropertiesConstants.PORT));
-        boolean isUseSSL = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, EmailPropertiesConstants.DEFAULT_IS_USE_SSL));
-        boolean isDebug = Boolean.getBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
+        boolean isUseSSL = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_USE_SSL, EmailPropertiesConstants.DEFAULT_IS_USE_SSL));
+        boolean isDebug = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
         String username = props.getProperty(EmailPropertiesConstants.USERNAME);
         String password = props.getProperty(EmailPropertiesConstants.PASSWORD);
         session = Session.getDefaultInstance(createSessionProperties(host, port, isUseSSL, isDebug), getSessionAuthenticator(username, password));
