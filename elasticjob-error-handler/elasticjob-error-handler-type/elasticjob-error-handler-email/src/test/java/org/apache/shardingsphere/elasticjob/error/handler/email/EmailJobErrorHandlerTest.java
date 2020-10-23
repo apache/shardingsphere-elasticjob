@@ -72,7 +72,7 @@ public final class EmailJobErrorHandlerTest {
         when(session.getTransport()).thenReturn(transport);
         emailJobErrorHandler.handleException(jobName, cause);
         verify(transport).sendMessage(any(Message.class), any(Address[].class));
-        verify(log).error("An exception has occurred in Job '{}'. An email has been sent successfully.", jobName, cause);
+        verify(log).info("An exception has occurred in Job '{}', an email has been sent successfully.", jobName, cause);
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {

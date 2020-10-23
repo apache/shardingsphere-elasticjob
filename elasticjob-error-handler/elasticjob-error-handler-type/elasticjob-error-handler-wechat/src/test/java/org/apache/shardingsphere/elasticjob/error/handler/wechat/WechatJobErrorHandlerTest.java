@@ -72,7 +72,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).info("An exception has occurred in Job '{}', Notification to wechat was successful.", "test_job", cause);
+        verify(log).info("An exception has occurred in Job '{}', an wechat message has been sent successful.", "test_job", cause);
     }
     
     @Test
@@ -81,7 +81,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", "test_job", "token is invalid", cause);
+        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of: {}", "test_job", "token is invalid", cause);
     }
     
     @Test
@@ -90,7 +90,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", "test_job", cause);
+        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of", "test_job", cause);
     }
     
     @Test
@@ -99,7 +99,7 @@ public final class WechatJobErrorHandlerTest {
         setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", "test_job", 404, cause);
+        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of: unexpected http response status: {}", "test_job", 404, cause);
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler(final Properties props) {

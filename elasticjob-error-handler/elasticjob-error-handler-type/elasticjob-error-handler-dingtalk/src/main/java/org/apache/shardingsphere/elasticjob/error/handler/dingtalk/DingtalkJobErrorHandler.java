@@ -95,16 +95,16 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject responseMessage = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(responseMessage.get("errcode").getAsString())) {
-                    log.info("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: {}", jobName, responseMessage.get("errmsg").getAsString(), cause);
+                    log.error("An exception has occurred in Job '{}' but failed to send dingtalk because of: {}", jobName, responseMessage.get("errmsg").getAsString(), cause);
                 } else {
-                    log.info("An exception has occurred in Job '{}', Notification to Dingtalk was successful.", jobName, cause);
+                    log.info("An exception has occurred in Job '{}', an dingtalk message been sent successful.", jobName, cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of: Unexpected response status: {}", jobName, status, cause);
+                log.error("An exception has occurred in Job '{}' but failed to send dingtalk because of: unexpected http response status: {}", jobName, status, cause);
             }
         } catch (final IOException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by Dingtalk because of", jobName, cause);
+            log.error("An exception has occurred in Job '{}', but failed to send dingtalk because of", jobName, cause);
         }
     }
     
