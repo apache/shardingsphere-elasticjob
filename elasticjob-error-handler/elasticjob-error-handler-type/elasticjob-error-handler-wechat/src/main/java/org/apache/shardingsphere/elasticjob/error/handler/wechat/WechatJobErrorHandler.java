@@ -81,16 +81,16 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
             if (HttpURLConnection.HTTP_OK == status) {
                 JsonObject resp = GsonFactory.getGson().fromJson(EntityUtils.toString(response.getEntity()), JsonObject.class);
                 if (!"0".equals(resp.get("errcode").getAsString())) {
-                    log.info("An exception has occurred in Job '{}', But failed to send alert by wechat because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
+                    log.error("An exception has occurred in Job '{}' but failed to send wechat because of: {}", jobName, resp.get("errmsg").getAsString(), cause);
                 } else {
-                    log.info("An exception has occurred in Job '{}', Notification to wechat was successful.", jobName, cause);
+                    log.info("An exception has occurred in Job '{}', an wechat message has been sent successful.", jobName, cause);
                 }
             } else {
-                log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of: Unexpected response status: {}", jobName, status, cause);
+                log.error("An exception has occurred in Job '{}' but failed to send wechat because of: unexpected http response status: {}", jobName, status, cause);
             }
         } catch (final IOException ex) {
             cause.addSuppressed(ex);
-            log.error("An exception has occurred in Job '{}', But failed to send alert by wechat because of", jobName, cause);
+            log.error("An exception has occurred in Job '{}' but failed to send wechat because of", jobName, cause);
         }
     }
     
