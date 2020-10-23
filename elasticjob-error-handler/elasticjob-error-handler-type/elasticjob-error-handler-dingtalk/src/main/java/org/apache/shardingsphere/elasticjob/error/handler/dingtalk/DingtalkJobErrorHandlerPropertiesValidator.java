@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
-import com.google.common.base.Preconditions;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
+import org.apache.shardingsphere.elasticjob.infra.validator.JobPropertiesValidateRule;
 
 import java.util.Properties;
 
@@ -29,26 +29,9 @@ public final class DingtalkJobErrorHandlerPropertiesValidator implements JobErro
     
     @Override
     public void validate(final Properties props) {
-        validateIsRequired(DingtalkPropertiesConstants.WEBHOOK, props);
-        validateIsPositiveInteger(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, props);
-        validateIsPositiveInteger(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, props);
-    }
-    
-    private void validateIsRequired(final String propertyKey, final Properties props) {
-        Preconditions.checkNotNull(props.getProperty(propertyKey), "The property `%s` is required.", propertyKey);
-    }
-    
-    private void validateIsPositiveInteger(final String propertyKey, final Properties props) {
-        String propertyValue = props.getProperty(propertyKey);
-        if (null != propertyValue) {
-            int integerValue;
-            try {
-                integerValue = Integer.parseInt(propertyValue);
-            } catch (final NumberFormatException ignored) {
-                throw new IllegalArgumentException(String.format("The property `%s` should be integer.", propertyKey));
-            }
-            Preconditions.checkArgument(integerValue > 0, "The property `%s` should be positive.", propertyKey);
-        }
+        JobPropertiesValidateRule.validateIsRequired(props, DingtalkPropertiesConstants.WEBHOOK);
+        JobPropertiesValidateRule.validateIsPositiveInteger(props, DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS);
+        JobPropertiesValidateRule.validateIsPositiveInteger(props, DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS);
     }
     
     @Override
