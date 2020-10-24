@@ -10,15 +10,15 @@
 
 1. Support HTTP job
 1. Remove spring boot dependencies from job kernel module
-1. Support sent email when job execute error
-1. Support sent wechat message when job execute error
-1. Support sent dingtalk message when job execute error
+1. Support email notification when job execute error
+1. Support wechat notification when job execute error
+1. Support dingtalk notification when job execute error
 
 ### Bug Fixes
 
 1. Fix bug of one-off job cannot work with sharding
 1. Fix bug of table and index name case-insensitive for event trace using database
-1. Fix bug of dead lock for one-off job when resharding flag set incorrectly
+1. Fix bug of dead lock when resharding flag set incorrectly
 
 ###  Change Logs
 
