@@ -2,7 +2,9 @@
 
 ### API Changes
 
-1. Refactor job listener API
+1. Refactor job listener configuration
+1. Refactor job error handler configuration
+1. Refactor job tracing configuration
 
 ### New Features
 
