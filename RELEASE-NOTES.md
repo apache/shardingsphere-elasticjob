@@ -14,8 +14,9 @@
 
 ### Bug Fixes
 
-1. Fix bug of One-off job cannot work with sharding
+1. Fix bug of one-off job cannot work with sharding
 1. Fix bug of table and index name case-insensitive for event trace using database
+1. Fix bug of dead lock for one-off job when resharding flag set incorrectly
 
 ###  Change Logs
 
