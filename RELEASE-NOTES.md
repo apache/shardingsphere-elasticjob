@@ -1,3 +1,27 @@
+## 3.0.0-beta
+
+### API Changes
+
+1. Refactor job listener API
+
+### New Features
+
+1. Support HTTP job
+1. Remove spring boot dependencies from job kernel module
+1. Support sent email when job execute error
+1. Support sent wechat message when job execute error
+1. Support sent dingtalk message when job execute error
+
+### Bug Fixes
+
+1. Fix bug of one-off job cannot work with sharding
+1. Fix bug of table and index name case-insensitive for event trace using database
+1. Fix bug of dead lock for one-off job when resharding flag set incorrectly
+
+###  Change Logs
+
+1. [MILESTONE](https://github.com/apache/shardingsphere-elasticjob/milestone/2)
+
 ## 3.0.0-alpha
 
 ### Build & Dependencies
