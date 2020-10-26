@@ -29,9 +29,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
 
 import static org.mockito.Mockito.mock;
@@ -68,10 +70,11 @@ public class ZookeeperElectionServiceTest {
         KillSession.kill(client.getZookeeperClient().getZooKeeper());
         service.stop();
         blockUntilCondition(() -> hasLeadership(anotherService));
-        anotherService.stop();
+        ((CountDownLatch) getFieldValue(anotherService, "leaderLatch")).countDown();
         blockUntilCondition(() -> !hasLeadership(anotherService));
-        verify(anotherElectionCandidate).startLeadership();
-        verify(anotherElectionCandidate).stopLeadership();
+        anotherService.stop();
+        verify(anotherElectionCandidate, VerificationModeFactory.atLeastOnce()).startLeadership();
+        verify(anotherElectionCandidate, VerificationModeFactory.atLeastOnce()).stopLeadership();
     }
     
     @SneakyThrows
@@ -82,9 +85,14 @@ public class ZookeeperElectionServiceTest {
     }
 
     @SneakyThrows
-    private boolean hasLeadership(final ZookeeperElectionService obj) {
-        Field field = ZookeeperElectionService.class.getDeclaredField("leaderSelector");
+    private boolean hasLeadership(final ZookeeperElectionService zookeeperElectionService) {
+        return ((LeaderSelector) getFieldValue(zookeeperElectionService, "leaderSelector")).hasLeadership();
+    }
+
+    @SneakyThrows
+    private Object getFieldValue(final Object target, final String fieldName) {
+        Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
-        return ((LeaderSelector) field.get(obj)).hasLeadership();
+        return field.get(target);
     }
 }
