@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 76 家公司。
+共计 77 家公司。
 
 ### 电子商务
 <ul>
@@ -48,6 +48,7 @@ chapter = true
     <li><a href="https://www.kaniu.com/" rel="nofollow">卡牛信用管家</a></li>
     <li><a href="http://www.jiedaibao.com/" rel="nofollow">借贷宝</a></li>
     <li><a href="https://www.jinhui365.com/" rel="nofollow">金汇金融</a></li>
+    <li><a href="https://gj.jchl.com/" rel="nofollow">金财互联</a></li>
 </ul>
 
 ### 数字化与云服务
