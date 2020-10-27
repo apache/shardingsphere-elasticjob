@@ -29,7 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
@@ -38,6 +37,7 @@ import java.util.function.Supplier;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ZookeeperElectionServiceTest {
@@ -73,8 +73,8 @@ public class ZookeeperElectionServiceTest {
         ((CountDownLatch) getFieldValue(anotherService, "leaderLatch")).countDown();
         blockUntilCondition(() -> !hasLeadership(anotherService));
         anotherService.stop();
-        verify(anotherElectionCandidate, VerificationModeFactory.atLeastOnce()).startLeadership();
-        verify(anotherElectionCandidate, VerificationModeFactory.atLeastOnce()).stopLeadership();
+        verify(anotherElectionCandidate, atLeastOnce()).startLeadership();
+        verify(anotherElectionCandidate, atLeastOnce()).stopLeadership();
     }
     
     @SneakyThrows
