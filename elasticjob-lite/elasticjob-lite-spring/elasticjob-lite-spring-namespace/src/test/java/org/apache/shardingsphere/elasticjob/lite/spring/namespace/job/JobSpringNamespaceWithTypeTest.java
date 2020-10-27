@@ -25,7 +25,10 @@ import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZ
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.After;
 import org.junit.Test;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
 public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit4SpringContextTests {
@@ -35,14 +38,22 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     @Resource
     private CoordinatorRegistryCenter regCenter;
     
+    private Scheduler scheduler;
+
     @After
-    public void tearDown() {
-        JobRegistry.getInstance().shutdown(scriptJobName);
+    public void tearDown() throws SchedulerException {
+        while (!scheduler.getCurrentlyExecutingJobs().isEmpty()) {
+            BlockUtils.waitingShortTime();
+        }
+        JobRegistry.getInstance().getJobScheduleController(scriptJobName).shutdown();
     }
     
     @Test
-    public void jobScriptWithJobTypeTest() {
-        BlockUtils.sleep(1000L);
-        assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
+    public void jobScriptWithJobTypeTest() throws SchedulerException {
+        while (!regCenter.isExisted("/" + scriptJobName + "/sharding")) {
+            BlockUtils.waitingShortTime();
+        }
+        scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
+        assertTrue(scheduler.isStarted());
     }
 }

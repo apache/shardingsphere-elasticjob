@@ -76,7 +76,7 @@ public final class OneOffJobBootstrapTest {
             counter.incrementAndGet();
         }, JobConfiguration.newBuilder("test_one_off_job_execute", SHARDING_TOTAL_COUNT).build());
         oneOffJobBootstrap.execute();
-        blockUtilFinish(oneOffJobBootstrap);
+        blockUtilFinish(oneOffJobBootstrap, counter);
         assertThat(counter.get(), is(SHARDING_TOTAL_COUNT));
         getJobScheduler(oneOffJobBootstrap).shutdown();
     }
@@ -105,9 +105,9 @@ public final class OneOffJobBootstrapTest {
     }
 
     @SneakyThrows
-    private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap) {
+    private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
         Scheduler scheduler = getScheduler(oneOffJobBootstrap);
-        while (!scheduler.isStarted() || !scheduler.getCurrentlyExecutingJobs().isEmpty()) {
+        while (0 == counter.get() || !scheduler.getCurrentlyExecutingJobs().isEmpty()) {
             Thread.sleep(100);
         }
     }
