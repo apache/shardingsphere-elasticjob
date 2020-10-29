@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.script;
 
+import org.apache.commons.exec.OS;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
@@ -78,8 +79,20 @@ public final class ScriptJobExecutorTest {
     @Test
     public void assertProcess() {
         when(jobConfig.getProps()).thenReturn(properties);
-        when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("echo script-job");
+        when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn(determineCommandByPlatform());
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+    }
+
+    private String determineCommandByPlatform() {
+        return OS.isFamilyWindows() ? getWindowsEcho() : getEcho();
+    }
+
+    private String getWindowsEcho() {
+        return "cmd /c echo script-job";
+    }
+
+    private String getEcho() {
+        return "echo script-job";
     }
     
     @Test
