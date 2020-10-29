@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elasticjob</artifactId>
-    <version>3.0.0-beta-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
@@ -41,6 +41,7 @@
     </modules>
     
     <properties>
+        <revision>3.0.0-beta-SNAPSHOT</revision>
         <java.version>1.8</java.version>
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,7 +97,8 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-        
+        <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
+
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
     
@@ -583,6 +585,31 @@
                         <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
                         </goals>
                     </execution>
                 </executions>
