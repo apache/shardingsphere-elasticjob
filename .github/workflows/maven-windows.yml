@@ -38,4 +38,4 @@ jobs:
           java-version: 1.8
       - name: Build with Maven
         run: |
-          mvn --batch-mode --no-transfer-progress clean install cobertura:cobertura -Dmaven.javadoc.skip=true
+          mvn --batch-mode --no-transfer-progress clean install cobertura:cobertura -D"maven.javadoc.skip=true"
