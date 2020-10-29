@@ -39,4 +39,3 @@ jobs:
       - name: Build with Maven
         run: |
           mvn --batch-mode --no-transfer-progress clean install cobertura:cobertura -Dmaven.javadoc.skip=true
-          bash <(curl -s https://codecov.io/bash)
