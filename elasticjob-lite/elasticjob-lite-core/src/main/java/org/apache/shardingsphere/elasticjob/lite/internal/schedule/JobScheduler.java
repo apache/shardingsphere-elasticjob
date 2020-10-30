@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -80,12 +80,12 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
-        validateJobProperties(jobConfig);
-        jobExecutor = new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        validateJobProperties();
+        jobExecutor = new ElasticJobExecutor(elasticJob, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -95,11 +95,11 @@ public final class JobScheduler {
         this.regCenter = regCenter;
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
-        validateJobProperties(jobConfig);
-        jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
+        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        validateJobProperties();
+        jobExecutor = new ElasticJobExecutor(elasticJobType, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -110,15 +110,15 @@ public final class JobScheduler {
                 .collect(Collectors.toList());
     }
     
-    private Optional<TracingConfiguration<?>> findTracingConfiguration(final JobConfiguration jobConfig) {
+    private Optional<TracingConfiguration<?>> findTracingConfiguration() {
         return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
     }
     
-    private void validateJobProperties(final JobConfiguration jobConfig) {
-        validateJobErrorHandlerProperties(jobConfig);
+    private void validateJobProperties() {
+        validateJobErrorHandlerProperties();
     }
     
-    private void validateJobErrorHandlerProperties(final JobConfiguration jobConfig) {
+    private void validateJobErrorHandlerProperties() {
         if (null != jobConfig.getJobErrorHandlerType()) {
             ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
                     .ifPresent(validator -> validator.validate(jobConfig.getProps()));
@@ -178,9 +178,9 @@ public final class JobScheduler {
         setUpFacade.registerStartUpInfo(!jobConfig.isDisabled());
     }
     
-   /**
-    * Shutdown job.
-    */
+    /**
+     * Shutdown job.
+     */
     public void shutdown() {
         schedulerFacade.shutdownInstance();
         jobExecutor.shutdown();
