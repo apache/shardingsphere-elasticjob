@@ -82,10 +82,10 @@ public final class JobScheduler {
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
+        validateJobProperties(jobConfig);
         jobExecutor = new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
-        validateJobProperties();
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -97,9 +97,9 @@ public final class JobScheduler {
         setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
+        validateJobProperties(jobConfig);
         jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
-        validateJobProperties();
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -114,11 +114,11 @@ public final class JobScheduler {
         return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
     }
     
-    private void validateJobProperties() {
-        validateJobErrorHandlerProperties();
+    private void validateJobProperties(final JobConfiguration jobConfig) {
+        validateJobErrorHandlerProperties(jobConfig);
     }
     
-    private void validateJobErrorHandlerProperties() {
+    private void validateJobErrorHandlerProperties(final JobConfiguration jobConfig) {
         if (null != jobConfig.getJobErrorHandlerType()) {
             ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
                     .ifPresent(validator -> validator.validate(jobConfig.getProps()));
