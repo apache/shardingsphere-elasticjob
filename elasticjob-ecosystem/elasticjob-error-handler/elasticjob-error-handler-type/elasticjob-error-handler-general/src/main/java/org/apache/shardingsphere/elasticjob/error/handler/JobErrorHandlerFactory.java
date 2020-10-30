@@ -35,6 +35,7 @@ public final class JobErrorHandlerFactory {
     
     static {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandler.class);
+        ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
     
     /**
@@ -46,8 +47,15 @@ public final class JobErrorHandlerFactory {
      */
     public static Optional<JobErrorHandler> createHandler(final String type, final Properties props) {
         if (Strings.isNullOrEmpty(type)) {
+            validateJobErrorHandlerProperties(DEFAULT_HANDLER, props);
             return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, DEFAULT_HANDLER, props);
         }
+        validateJobErrorHandlerProperties(type, props);
         return ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandler.class, type, props);
+    }
+    
+    private static void validateJobErrorHandlerProperties(final String type, final Properties props) {
+        ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, type, props)
+                .ifPresent(validator -> validator.validate(props));
     }
 }

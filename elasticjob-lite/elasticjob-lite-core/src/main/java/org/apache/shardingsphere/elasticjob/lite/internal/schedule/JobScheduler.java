@@ -22,13 +22,11 @@ import com.google.common.base.Strings;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListenerFactory;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
@@ -51,10 +49,6 @@ import java.util.stream.Collectors;
  * Job scheduler.
  */
 public final class JobScheduler {
-    
-    static {
-        ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
-    }
     
     private static final String JOB_EXECUTOR_DATA_MAP_KEY = "jobExecutor";
     
@@ -85,7 +79,6 @@ public final class JobScheduler {
         jobExecutor = new ElasticJobExecutor(elasticJob, jobConfig, jobFacade);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
         this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
-        validateJobProperties();
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -99,7 +92,6 @@ public final class JobScheduler {
         jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration(jobConfig).orElse(null));
         jobExecutor = new ElasticJobExecutor(elasticJobType, jobConfig, jobFacade);
         this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
-        validateJobProperties();
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
@@ -112,15 +104,6 @@ public final class JobScheduler {
     
     private Optional<TracingConfiguration<?>> findTracingConfiguration(final JobConfiguration jobConfig) {
         return jobConfig.getExtraConfigurations().stream().filter(each -> each instanceof TracingConfiguration).findFirst().map(extraConfig -> (TracingConfiguration<?>) extraConfig);
-    }
-    
-    private void validateJobProperties() {
-        validateJobErrorHandlerProperties();
-    }
-    
-    private void validateJobErrorHandlerProperties() {
-        ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
-                .ifPresent(validator -> validator.validate(jobConfig.getProps()));
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final Collection<ElasticJobListener> elasticJobListeners) {
