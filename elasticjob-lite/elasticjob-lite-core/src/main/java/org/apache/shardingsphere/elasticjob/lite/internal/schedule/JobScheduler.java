@@ -119,8 +119,10 @@ public final class JobScheduler {
     }
     
     private void validateJobErrorHandlerProperties() {
-        ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
-                .ifPresent(validator -> validator.validate(jobConfig.getProps()));
+        if (null != jobConfig.getJobErrorHandlerType()) {
+            ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
+                    .ifPresent(validator -> validator.validate(jobConfig.getProps()));
+        }
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final Collection<ElasticJobListener> elasticJobListeners) {
