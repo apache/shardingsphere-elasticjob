@@ -92,6 +92,10 @@ Uses Mesos to manage and isolate resources.
 
 Java 8 or above required.
 
+### Maven
+
+Maven 3.5.0 or above required.
+
 ### ZooKeeper
 
 ZooKeeper 3.6.0 or above required. [See details](https://zookeeper.apache.org/)
