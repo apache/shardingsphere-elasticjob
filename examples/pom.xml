@@ -24,7 +24,7 @@
     <artifactId>elasticjob-example</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
-    <version>3.0.0-beta</version>
+    <version>${revision}</version>
     
     <modules>
         <module>elasticjob-example-jobs</module>
@@ -38,8 +38,8 @@
     </modules>
     
     <properties>
+        <revision>3.0.0-beta-SNAPSHOT</revision>
         <java.version>1.8</java.version>
-        <elasticjob.version>3.0.0-beta</elasticjob.version>
         <curator.version>5.1.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -48,6 +48,7 @@
         <h2.version>1.4.184</h2.version>
         <mysql.version>8.0.16</mysql.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
     </properties>
     
     <dependencyManagement>
@@ -55,7 +56,7 @@
             <dependency>
                 <artifactId>elasticjob-lite-core</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <version>${elasticjob.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
@@ -65,13 +66,13 @@
             <dependency>
                 <artifactId>elasticjob-lite-spring-namespace</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <version>${elasticjob.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <artifactId>elasticjob-cloud-executor</artifactId>
-                <version>${elasticjob.version}</version>
+                <version>${revision}</version>
             </dependency>
             
             <dependency>
@@ -135,6 +136,31 @@
                         <testTarget>${java.version}</testTarget>
                     </configuration>
                     <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin.version}</version>
+                    <configuration>
+                        <updatePomFile>true</updatePomFile>
+                        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten.clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

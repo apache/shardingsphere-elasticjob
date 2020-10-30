@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-example</artifactId>
-        <version>3.0.0-beta</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>elasticjob-example-embed-zk</artifactId>
     <name>${project.artifactId}</name>

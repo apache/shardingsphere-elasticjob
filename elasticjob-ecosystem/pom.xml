@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob</artifactId>
-        <version>3.0.0-beta-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>elasticjob-ecosystem</artifactId>
     <packaging>pom</packaging>

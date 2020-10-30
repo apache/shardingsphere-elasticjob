@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-tracing</artifactId>
-        <version>3.0.0-beta-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>elasticjob-tracing-api</artifactId>
     <name>${project.artifactId}</name>
