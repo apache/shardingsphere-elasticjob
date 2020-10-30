@@ -78,7 +78,8 @@ public final class ElasticJobServiceLoader {
      * @return new typed service instance
      */
     public static <T extends TypedSPI> Optional<T> newTypedServiceInstance(final Class<T> typedServiceInterface, final String type, final Properties props) {
-        Optional<T> result = Optional.ofNullable(TYPED_SERVICE_CLASSES.get(typedServiceInterface)).map(serviceClasses -> serviceClasses.get(type)).map(clazz -> (T) newServiceInstance(clazz));
+        Optional<T> result = Optional.ofNullable(type).map(unused -> TYPED_SERVICE_CLASSES.get(typedServiceInterface))
+                .map(serviceClasses -> serviceClasses.get(type)).map(clazz -> (T) newServiceInstance(clazz));
         if (result.isPresent() && result.get() instanceof SPIPostProcessor) {
             ((SPIPostProcessor) result.get()).init(props);
         }
