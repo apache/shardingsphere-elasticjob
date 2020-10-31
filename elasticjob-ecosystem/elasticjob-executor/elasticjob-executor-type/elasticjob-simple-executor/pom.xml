@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-executor-type</artifactId>
-        <version>3.0.0-beta</version>
+        <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-simple-executor</artifactId>
     <name>${project.artifactId}</name>
@@ -33,8 +33,4 @@
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>3.0.0-beta</tag>
-  </scm>
 </project>

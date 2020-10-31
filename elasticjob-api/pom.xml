@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob</artifactId>
-        <version>3.0.0-beta</version>
+        <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-api</artifactId>
     <name>${project.artifactId}</name>
@@ -42,8 +42,4 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>3.0.0-beta</tag>
-  </scm>
 </project>

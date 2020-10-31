@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-ecosystem</artifactId>
-        <version>3.0.0-beta</version>
+        <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-tracing</artifactId>
     <packaging>pom</packaging>
@@ -31,8 +31,4 @@
         <module>elasticjob-tracing-api</module>
         <module>elasticjob-tracing-rdb</module>
     </modules>
-
-  <scm>
-    <tag>3.0.0-beta</tag>
-  </scm>
 </project>

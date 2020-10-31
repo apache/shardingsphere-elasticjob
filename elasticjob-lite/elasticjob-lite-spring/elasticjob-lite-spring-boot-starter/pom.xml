@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-lite-spring</artifactId>
-        <version>3.0.0-beta</version>
+        <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
     <name>${project.artifactId}</name>
@@ -71,8 +71,4 @@
             <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>3.0.0-beta</tag>
-  </scm>
 </project>

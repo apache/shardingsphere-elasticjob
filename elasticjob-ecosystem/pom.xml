@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob</artifactId>
-        <version>3.0.0-beta</version>
+        <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-ecosystem</artifactId>
     <packaging>pom</packaging>
@@ -32,8 +32,4 @@
         <module>elasticjob-error-handler</module>
         <module>elasticjob-tracing</module>
     </modules>
-
-  <scm>
-    <tag>3.0.0-beta</tag>
-  </scm>
 </project>
