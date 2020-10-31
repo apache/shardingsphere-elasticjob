@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-lite</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-beta</version>
     </parent>
     <artifactId>elasticjob-lite-core</artifactId>
     <name>${project.artifactId}</name>
@@ -121,4 +121,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>3.0.0-beta</tag>
+  </scm>
 </project>

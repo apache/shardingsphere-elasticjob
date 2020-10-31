@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-beta</version>
     </parent>
     <artifactId>elasticjob-cloud</artifactId>
     <packaging>pom</packaging>
@@ -32,4 +32,8 @@
         <module>elasticjob-cloud-scheduler</module>
         <module>elasticjob-cloud-executor</module>
     </modules>
+
+  <scm>
+    <tag>3.0.0-beta</tag>
+  </scm>
 </project>

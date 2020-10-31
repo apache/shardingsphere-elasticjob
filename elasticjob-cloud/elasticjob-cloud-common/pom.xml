@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-cloud</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-beta</version>
     </parent>
     <artifactId>elasticjob-cloud-common</artifactId>
     <name>${project.artifactId}</name>
@@ -140,4 +140,8 @@
             <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>3.0.0-beta</tag>
+  </scm>
 </project>
