@@ -44,6 +44,7 @@
                 <exclude>**/*.zip</exclude>
                 <exclude>**/*.tar</exclude>
                 <exclude>**/*.tar.gz</exclude>
+                <exclude>**/.flattened-pom.xml</exclude>
                 
                 <!-- maven plugin ignore -->
                 <exclude>release.properties</exclude>
