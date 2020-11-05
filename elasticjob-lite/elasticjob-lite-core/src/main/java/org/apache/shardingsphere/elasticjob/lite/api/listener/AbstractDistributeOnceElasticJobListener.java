@@ -53,6 +53,9 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Override
     public final void beforeJobExecuted(final ShardingContexts shardingContexts) {
         Set<Integer> shardingItems = shardingContexts.getShardingItemParameters().keySet();
+        if (shardingItems.isEmpty()) {
+            return;
+        }
         guaranteeService.registerStart(shardingItems);
         while (!guaranteeService.isRegisterStartSuccess(shardingItems)) {
             BlockUtils.waitingShortTime();
@@ -79,6 +82,9 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Override
     public final void afterJobExecuted(final ShardingContexts shardingContexts) {
         Set<Integer> shardingItems = shardingContexts.getShardingItemParameters().keySet();
+        if (shardingItems.isEmpty()) {
+            return;
+        }
         guaranteeService.registerComplete(shardingItems);
         while (!guaranteeService.isRegisterCompleteSuccess(shardingItems)) {
             BlockUtils.waitingShortTime();
