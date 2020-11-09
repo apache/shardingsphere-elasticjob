@@ -28,8 +28,9 @@
 
 ### Build & Dependencies
 
-1. Upgrade to Java 8
-1. Upgrade ZooKeeper to 3.6.x
+1. Upgrade the minimum supported version of JDK to Java8
+1. Update Zookeeper to version 3.6.x and curator to version 5.1.0
+1. Update Google Guava to version 29.0-jre
 
 ### API Changes
 
