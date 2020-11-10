@@ -29,7 +29,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 @Setter
 @Slf4j
-public class ElasticJobStartupRunner implements CommandLineRunner, ApplicationContextAware {
+public class ScheduleJobBootstrapStartupRunner implements CommandLineRunner, ApplicationContextAware {
     
     private ApplicationContext applicationContext;
     
