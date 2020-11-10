@@ -43,7 +43,7 @@
     <properties>
         <revision>3.0.0-beta-SNAPSHOT</revision>
         <java.version>1.8</java.version>
-        <maven.version.range>[3.0.4,)</maven.version.range>
+        <maven.version.range>[3.5.0,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
         
