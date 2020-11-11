@@ -61,7 +61,7 @@
         <httpcore.version>4.4.13</httpcore.version>
         <snakeyaml.version>1.26</snakeyaml.version>
         <gson.version>2.6.1</gson.version>
-        <netty.version>4.1.52.Final</netty.version>
+        <netty.version>4.1.45.Final</netty.version>
         <mesos.version>1.1.0</mesos.version>
         <fenzo.version>0.11.1</fenzo.version>
         
@@ -222,8 +222,10 @@
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http</artifactId>
+                <artifactId>netty-bom</artifactId>
                 <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             
             <dependency>
