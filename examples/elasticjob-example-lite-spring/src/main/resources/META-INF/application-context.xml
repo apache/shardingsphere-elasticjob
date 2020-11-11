@@ -42,19 +42,19 @@
         <property name="username" value="${event.rdb.username}" />
         <property name="password" value="${event.rdb.password}" />
     </bean>
-    
+
     <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
-    
+
     <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
     <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
-    
+
     <elasticjob:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
                     sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}"
                     sharding-item-parameters="${simple.shardingItemParameters}"
                     monitor-execution="${simple.monitorExecution}" failover="${simple.failover}"
                     description="${simple.description}"
                     disabled="${simple.disabled}" overwrite="${simple.overwrite}" />
-    
+
     <elasticjob:job id="${dataflow.id}" job-ref="dataflowJob" registry-center-ref="regCenter"
                     sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}"
                     sharding-item-parameters="${dataflow.shardingItemParameters}"
@@ -65,6 +65,17 @@
             <prop key="streaming.process">${dataflow.streamingProcess}</prop>
         </props>
     </elasticjob:job>
+
+
+    <!-- use One-off job-->
+<!--    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />-->
+<!--    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
+<!--      sharding-total-count="${simple.shardingTotalCount}"-->
+<!--      sharding-item-parameters="${simple.shardingItemParameters}"-->
+<!--      monitor-execution="${simple.monitorExecution}"-->
+<!--      failover="${simple.failover}"-->
+<!--      description="${simple.description}"-->
+<!--      disabled="${simple.disabled}" overwrite="${simple.overwrite}" />-->
 
     <!-- use absolute path to run script job -->
     <!--<elasticjob:job id="${script.id}" registry-center-ref="regCenter" -->

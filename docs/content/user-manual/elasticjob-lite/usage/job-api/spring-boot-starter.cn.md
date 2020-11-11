@@ -74,26 +74,39 @@ elasticjob:
 一次性调度的作业的执行权在开发者手中，开发者可以在需要调用作业的位置注入 `OneOffJobBootstrap`，
 通过 `execute()` 方法执行作业。
 
-**关于@DependsOn注解**
-
-JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 Starter 创建 JobBootstrap，将无法注入 JobBootstrap 的实例。
-
-也可以通过 ApplicationContext 获取 JobBootstrap 的 Bean。
-
 `OneOffJobBootstrap` bean 的名称通过属性 jobBootstrapBeanName 配置，注入时需要指定依赖的 bean 名称。
 具体配置请参考[配置文档](/cn/user-manual/elasticjob-lite/configuration/spring-boot-starter)。
 
+```yaml
+elasticjob:
+  jobs:
+    myOneOffJob:
+      jobBootstrapBeanName: myOneOffJobBean
+      ....
+```
+
 ```java
 @RestController
-@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
 
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
-    private OneOffJobBootstrap manualScriptJob;
-
+    // 通过 "@Resource" 注入
+    @Resource(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob;
+    
     @GetMapping("/execute")
     public String executeOneOffJob() {
-        manualScriptJob.execute();
+        myOneOffJob.execute();
+        return "{\"msg\":\"OK\"}";
+    }
+
+    // 通过 "@Autowired" 注入
+    @Autowired
+    @Qualifier(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob2;
+
+    @GetMapping("/execute2")
+    public String executeOneOffJob2() {
+        myOneOffJob2.execute();
         return "{\"msg\":\"OK\"}";
     }
 }

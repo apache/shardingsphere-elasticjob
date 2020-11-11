@@ -76,26 +76,39 @@ When to execute OneOffJob is up to you.
 Developers can inject the `OneOffJobBootstrap` bean into where they plan to invoke.
 Trigger the job by invoking `execute()` method manually.
 
-**About @DependsOn Annotation**
-
-JobBootstraps are created by the Starter dynamically. It's unable to inject the `JobBootstrap` beans if the beans which depends on `JobBootstrap` were instantiated earlier than the instantiation of `JobBootstrap`.
-
-Developers can also retrieve `JobBootstrap` beans by ApplicationContext.
-
 The bean name of `OneOffJobBootstrap` is specified by property "jobBootstrapBeanName",
 Please refer to [Spring Boot Starter Configuration](/en/user-manual/elasticjob-lite/configuration/spring-boot-starter).
 
+```yaml
+elasticjob:
+  jobs:
+    myOneOffJob:
+      jobBootstrapBeanName: myOneOffJobBean
+      ....
+```
+
 ```java
 @RestController
-@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
-    
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
-    private OneOffJobBootstrap manualScriptJob;
+
+    // Inject via "@Resource"
+    @Resource(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob;
     
     @GetMapping("/execute")
     public String executeOneOffJob() {
-        manualScriptJob.execute();
+        myOneOffJob.execute();
+        return "{\"msg\":\"OK\"}";
+    }
+
+    // Inject via "@Autowired"
+    @Autowired
+    @Qualifier(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob2;
+
+    @GetMapping("/execute2")
+    public String executeOneOffJob2() {
+        myOneOffJob2.execute();
         return "{\"msg\":\"OK\"}";
     }
 }

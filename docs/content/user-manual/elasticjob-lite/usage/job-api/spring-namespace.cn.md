@@ -41,7 +41,28 @@ ElasticJob-Lite 提供自定义的 Spring 命名空间，可以与 Spring 容器
 
 ## 作业启动
 
+### 定时调度
+
 将配置 Spring 命名空间的 xml 通过 Spring 启动，作业将自动加载。
+
+### 一次性调度
+
+一次性调度的作业的执行权在开发者手中，开发者可以在需要调用作业的位置注入 `OneOffJobBootstrap`，
+通过 `execute()` 方法执行作业。
+
+```xml
+    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
+    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
+```
+```java
+public final class SpringMain {
+    public static void main(final String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
+        OneOffJobBootstrap oneOffJobBootstrap = context.getBean("oneOffJobBean", OneOffJobBootstrap.class);
+        oneOffJobBootstrap.execute();
+    }
+}
+```
 
 ## 配置作业导出端口
 

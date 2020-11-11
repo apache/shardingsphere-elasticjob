@@ -41,7 +41,29 @@ Through the way of DI (Dependency Injection), developers can easily use data sou
 
 ## Job Start
 
+### Schedule Job
+
 If the Spring container start, the `XML` that configures the Spring namespace will be loaded, and the job will be automatically started.
+
+### One-off Job
+
+When to execute OneOffJob is up to you. 
+Developers can inject the `OneOffJobBootstrap` bean into where they plan to invoke.
+Trigger the job by invoking `execute()` method manually.
+
+```xml
+    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
+    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
+```
+```java
+public final class SpringMain {
+    public static void main(final String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
+        OneOffJobBootstrap oneOffJobBootstrap = context.getBean("oneOffJobBean", OneOffJobBootstrap.class);
+        oneOffJobBootstrap.execute();
+    }
+}
+```
 
 ## Job Dump
 
