@@ -17,29 +17,31 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example.controller;
 
+import javax.annotation.Resource;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-
 @RestController
-@DependsOn("org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
     
     private static final String RES_TEXT = "{\"msg\":\"OK\"}";
     
     @Resource(name = "manualScriptJobBean")
     private OneOffJobBootstrap manualScriptJob;
-    
-    @Resource(name = "occurErrorNoticeDingtalkBean")
+
+    @Autowired
+    @Qualifier(value = "occurErrorNoticeDingtalkBean")
     private OneOffJobBootstrap occurErrorNoticeDingtalkJob;
-    
-    @Resource(name = "occurErrorNoticeWechatBean")
+
+    @Autowired
+    @Qualifier(value = "occurErrorNoticeWechatBean")
     private OneOffJobBootstrap occurErrorNoticeWechatJob;
-    
-    @Resource(name = "occurErrorNoticeEmailBean")
+
+    @Autowired
+    @Qualifier(value = "occurErrorNoticeEmailBean")
     private OneOffJobBootstrap occurErrorNoticeEmailJob;
     
     @GetMapping("/execute/manualScriptJob")
