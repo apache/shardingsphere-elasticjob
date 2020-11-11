@@ -91,7 +91,7 @@ elasticjob:
 @RestController
 public class OneOffJobController {
 
-    // Through "@Resource" injection
+    // Inject via "@Resource"
     @Resource(name = "myOneOffJobBean")
     private OneOffJobBootstrap myOneOffJob;
     
@@ -101,7 +101,7 @@ public class OneOffJobController {
         return "{\"msg\":\"OK\"}";
     }
 
-    // Through "@Autowired" injection
+    // Inject via "@Autowired"
     @Autowired
     @Qualifier(name = "myOneOffJobBean")
     private OneOffJobBootstrap myOneOffJob2;
