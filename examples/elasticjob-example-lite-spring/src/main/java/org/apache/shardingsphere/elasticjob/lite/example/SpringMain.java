@@ -27,6 +27,9 @@ public final class SpringMain {
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
-        new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
+        // One-off Job
+        //OneOffJobBootstrap oneOffJobBootstrap = context.getBean("oneOffJobBean", OneOffJobBootstrap.class);
+        //oneOffJobBootstrap.execute();
     }
 }
