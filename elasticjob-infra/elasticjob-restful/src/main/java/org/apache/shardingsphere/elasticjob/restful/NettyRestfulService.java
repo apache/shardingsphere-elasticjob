@@ -24,6 +24,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.NettyRuntime;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChannelInitializer;
@@ -32,6 +33,7 @@ import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChann
  * Implemented {@link RestfulService} via Netty.
  */
 @Slf4j
+@RequiredArgsConstructor
 public final class NettyRestfulService implements RestfulService {
     
     private static final int DEFAULT_WORKER_GROUP_THREADS = 1 + 2 * NettyRuntime.availableProcessors();
@@ -43,10 +45,6 @@ public final class NettyRestfulService implements RestfulService {
     private EventLoopGroup bossEventLoopGroup;
     
     private EventLoopGroup workerEventLoopGroup;
-    
-    public NettyRestfulService(final NettyRestfulServiceConfiguration configuration) {
-        this.configuration = configuration;
-    }
     
     private void initServerBootstrap() {
         bossEventLoopGroup = new NioEventLoopGroup();
