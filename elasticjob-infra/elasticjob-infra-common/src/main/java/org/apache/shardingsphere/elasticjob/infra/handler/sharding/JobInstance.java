@@ -39,11 +39,11 @@ public final class JobInstance {
     private final String jobInstanceId;
     
     public JobInstance() {
-        String jobInstanceIdSuffix  = System.getProperty(PROPERTY_JOB_INSTANCE_ID);
-        if (null == jobInstanceIdSuffix ) {
-            jobInstanceIdSuffix  = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        String jobInstanceIdSuffix = System.getProperty(PROPERTY_JOB_INSTANCE_ID);
+        if (null == jobInstanceIdSuffix) {
+            jobInstanceIdSuffix = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         }
-        jobInstanceId = IpUtils.getIp() + DELIMITER + jobInstanceIdSuffix ;
+        jobInstanceId = IpUtils.getIp() + DELIMITER + jobInstanceIdSuffix;
     }
     
     /**
