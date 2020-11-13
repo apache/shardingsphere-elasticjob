@@ -105,3 +105,13 @@ ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的�
 打开cmd.exe并执行下面的命令：
 
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
+
+## 13. 运行 Cloud Scheduler 持续输出日志 "Elastic job: IP:PORT has leadership"，不能正常运行
+
+回答：
+
+Cloud Scheduler 依赖 Mesos 库，启动时需要通过 `-Djava.library.path` 指定 Mesos 库所在目录。
+
+例如，Mesos 库位于 `/usr/local/lib`，启动 Cloud Scheduler 前需要设置 `-Djava.library.path=/usr/local/lib`。
+
+Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
