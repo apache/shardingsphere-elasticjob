@@ -32,9 +32,9 @@ import java.lang.management.ManagementFactory;
 @EqualsAndHashCode(of = "jobInstanceId")
 public final class JobInstance {
     
-    private static final String DELIMITER = "@-@";
+    public static final String DELIMITER = "@-@";
     
-    private static final String PROPERTY_JOB_INSTANCE_ID = "jobInstanceId";
+    public static final String PROPERTY_JOB_INSTANCE_ID = "jobInstanceId";
 
     private final String jobInstanceId;
     
