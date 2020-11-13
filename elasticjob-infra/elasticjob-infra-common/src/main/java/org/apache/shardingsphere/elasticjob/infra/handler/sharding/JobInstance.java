@@ -40,7 +40,7 @@ public final class JobInstance {
     
     public JobInstance() {
         String jobInstIdSuffix = System.getProperty(PROPERTY_JOB_INSTANCE_ID);
-        if (jobInstIdSuffix == null) {
+        if (null == jobInstIdSuffix) {
             jobInstIdSuffix = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         }
         jobInstanceId = IpUtils.getIp() + DELIMITER + jobInstIdSuffix;
