@@ -34,12 +34,12 @@ public final class JobInstance {
     
     private static final String DELIMITER = "@-@";
     
-    private static final String PARAM_JOB_INST_ID = "jobInstanceId";
+    private static final String PROPERTY_JOB_INSTANCE_ID = "jobInstanceId";
 
     private final String jobInstanceId;
     
     public JobInstance() {
-        String jobInstIdSuffix = System.getProperty(PARAM_JOB_INST_ID);
+        String jobInstIdSuffix = System.getProperty(PROPERTY_JOB_INSTANCE_ID);
         if (jobInstIdSuffix == null) {
             jobInstIdSuffix = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         }
