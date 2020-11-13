@@ -241,14 +241,14 @@ The text of each license is the standard Apache 2.0 license.
     log4j 1.2.17: http://logging.apache.org/log4j/1.2/, Apache 2.0
     log4j-over-slf4j 1.7.7: https://github.com/qos-ch/slf4j, Apache 2.0
     mesos 1.1.0: http://mesos.apache.org/, Apache 2.0
-    netty-buffer 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-codec 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-common 4.1.50.Final: https://github.com/netty, Apache 2.0
-    netty-handler 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-resolver 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-transport 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-transport-native-epoll 4.1.52.Final: https://github.com/netty, Apache 2.0
-    netty-transport-native-unix-common 4.1.52.Final: https://github.com/netty, Apache 2.0
+    netty-buffer 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-codec 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-common 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-handler 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-resolver 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-transport 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-transport-native-epoll 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-transport-native-unix-common 4.1.45.Final: https://github.com/netty, Apache 2.0
     quartz 2.3.2: https://github.com/quartz-scheduler/quartz, Apache 2.0
     snakeyaml 1.26: http://www.snakeyaml.org, Apache 2.0
     spring-aop 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
@@ -293,5 +293,5 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
 
     checker-qual 2.11.1: https://github.com/typetools/checker-framework, MIT
     jcl-over-slf4j 1.7.7: https://github.com/qos-ch/slf4j, MIT
-    jul-to-slf4j 1.7.30: https://github.com/qos-ch/slf4j, MIT
+    jul-to-slf4j 1.7.7: https://github.com/qos-ch/slf4j, MIT
     slf4j-api 1.7.7: https://github.com/qos-ch/slf4j, MIT
