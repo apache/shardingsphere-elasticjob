@@ -104,3 +104,13 @@ Some decompression tools may truncate the file name when decompressing the Shard
 Open cmd.exe and execute the following command:
 
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
+
+## 13. Unable to startup Cloud Scheduler. Continuously output "Elastic job: IP:PORT has leadership"gg
+
+Answer: 
+
+Cloud Scheduler required Mesos native library. Specify Mesos native library path by property `-Djava.library.path`.
+
+For instance, Mesos native libraries are under `/usr/local/lib`, so the property `-Djava.library.path=/usr/local/lib` need to be set to start the Cloud Scheduler.
+
+About Apache Mesos, please refer to [Apache Mesos](https://mesos.apache.org/).
