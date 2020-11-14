@@ -22,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
@@ -64,6 +65,7 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
         }
         MappingContext<Handler> mappingContext = mappingRegistry.getMappingContext(request);
         if (null == mappingContext) {
+            ReferenceCountUtil.release(request);
             throw new HandlerNotFoundException(request.uri());
         }
         HandleContext<Handler> handleContext = new HandleContext<>(request, mappingContext);
