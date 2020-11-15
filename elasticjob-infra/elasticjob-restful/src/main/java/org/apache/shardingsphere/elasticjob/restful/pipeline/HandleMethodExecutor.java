@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.ReferenceCountUtil;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
@@ -44,21 +45,23 @@ public final class HandleMethodExecutor extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         HandleContext<Handler> handleContext = (HandleContext<Handler>) msg;
-        Handler handler = handleContext.getMappingContext().payload();
-        Object[] args = handleContext.getArgs();
-        
-        Object handleResult = handler.execute(args);
-        
-        FullHttpResponse response;
-        if (null != handleResult) {
-            String mimeType = HttpUtil.getMimeType(handler.getProducing()).toString();
-            ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer(mimeType);
-            byte[] bodyBytes = serializer.serialize(handleResult);
-            response = createHttpResponse(handler.getProducing(), bodyBytes, handler.getHttpStatusCode());
-        } else {
-            response = createHttpResponse(handler.getProducing(), new byte[0], handler.getHttpStatusCode());
+        try {
+            Handler handler = handleContext.getMappingContext().payload();
+            Object[] args = handleContext.getArgs();
+            Object handleResult = handler.execute(args);
+            FullHttpResponse response;
+            if (null != handleResult) {
+                String mimeType = HttpUtil.getMimeType(handler.getProducing()).toString();
+                ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer(mimeType);
+                byte[] bodyBytes = serializer.serialize(handleResult);
+                response = createHttpResponse(handler.getProducing(), bodyBytes, handler.getHttpStatusCode());
+            } else {
+                response = createHttpResponse(handler.getProducing(), new byte[0], handler.getHttpStatusCode());
+            }
+            ctx.writeAndFlush(response);
+        } finally {
+            ReferenceCountUtil.release(handleContext.getHttpRequest());
         }
-        ctx.writeAndFlush(response);
     }
     
     private FullHttpResponse createHttpResponse(final String producingContentType, final byte[] bodyBytes, final int statusCode) {
