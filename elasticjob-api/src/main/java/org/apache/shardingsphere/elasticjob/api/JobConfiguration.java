@@ -251,13 +251,13 @@ public final class JobConfiguration {
         }
         
         /**
-         * Set job sharding sharding type.
+         * Set job sharding strategy type.
          *
          * <p>
          * Default for {@code AverageAllocationJobShardingStrategy}.
          * </p>
          *
-         * @param jobShardingStrategyType job sharding sharding type
+         * @param jobShardingStrategyType job sharding strategy type
          * @return ElasticJob configuration builder
          */
         public Builder jobShardingStrategyType(final String jobShardingStrategyType) {
