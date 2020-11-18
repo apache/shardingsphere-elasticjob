@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.http.executor.fixture;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
@@ -64,16 +65,13 @@ public final class InternalController implements RestfulController {
     }
     
     /**
-     * Post with 3 mills delay for request IO Exception.
+     * Post with 100 mills delay for request IO Exception.
      *
      * @return "ejob"
      */
     @Mapping(method = Http.POST, path = "/postWithTimeout")
     public String postWithTimeout() {
-        try {
-            Thread.sleep(3);
-        } catch (InterruptedException ignore) {
-        }
+        BlockUtils.waitingShortTime();
         return "ejob";
     }
 }
