@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 76 家公司。
+共计 77 家公司。
 
 ### 电子商务
 <ul>
@@ -132,6 +132,7 @@ chapter = true
     <li><a href="https://www.zyzc8.com/" rel="nofollow">众畅网络科技</a></li>
     <li><a href="http://www.deepdraw.cn/" rel="nofollow">深绘智能</a></li>
     <li><a href="https://www.go-future.cn/" rel="nofollow">未来信封</a></li>
+    <li><a href="http://www.gzcss.net/" rel="nofollow">广州中软信息技术有限公司</a></li>
 </ul>
 
 ### 医疗健康
