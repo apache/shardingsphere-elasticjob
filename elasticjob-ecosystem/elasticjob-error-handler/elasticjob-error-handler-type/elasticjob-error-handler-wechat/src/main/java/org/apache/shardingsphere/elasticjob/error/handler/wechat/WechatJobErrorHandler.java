@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -58,19 +57,6 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
         connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
         readTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
-        registerShutdownHook();
-    }
-    
-    private void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread("WechatJobErrorHandler Shutdown-Hook") {
-            
-            @SneakyThrows
-            @Override
-            public void run() {
-                log.info("Shutting down HTTP client...");
-                httpclient.close();
-            }
-        });
     }
     
     @Override
@@ -118,5 +104,10 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     @Override
     public String getType() {
         return "WECHAT";
+    }
+    
+    @Override
+    public void close() throws IOException {
+        httpclient.close();
     }
 }

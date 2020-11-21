@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.executor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -34,8 +35,11 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -48,15 +52,11 @@ public final class ElasticJobExecutor {
     
     private final ElasticJob elasticJob;
     
-    private final JobConfiguration jobConfig;
-    
     private final JobFacade jobFacade;
     
     private final JobItemExecutor jobItemExecutor;
     
     private final ExecutorService executorService;
-    
-    private final JobErrorHandler jobErrorHandler;
     
     private final Map<Integer, String> itemErrorMessages;
     
@@ -70,12 +70,9 @@ public final class ElasticJobExecutor {
     
     private ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
         this.elasticJob = elasticJob;
-        this.jobConfig = jobConfig;
         this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
         executorService = JobExecutorServiceHandlerFactory.getHandler(jobConfig.getJobExecutorServiceHandlerType()).createExecutorService(jobConfig.getJobName());
-        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
-                .orElseThrow(() -> new JobConfigurationException("Can not find job error handler type '%s'.", jobConfig.getJobErrorHandlerType()));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
     
@@ -83,6 +80,8 @@ public final class ElasticJobExecutor {
      * Execute job.
      */
     public void execute() {
+        JobConfiguration jobConfig = jobFacade.loadJobConfiguration(true);
+        JobErrorHandler jobErrorHandler = new JobErrorHandlerProxy(jobConfig.getJobErrorHandlerType(), jobConfig.getProps());
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
@@ -103,10 +102,10 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:ON
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
-        execute(shardingContexts, ExecutionSource.NORMAL_TRIGGER);
+        execute(jobConfig, shardingContexts, ExecutionSource.NORMAL_TRIGGER, jobErrorHandler);
         while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
             jobFacade.clearMisfire(shardingContexts.getShardingItemParameters().keySet());
-            execute(shardingContexts, ExecutionSource.MISFIRE);
+            execute(jobConfig, shardingContexts, ExecutionSource.MISFIRE, jobErrorHandler);
         }
         jobFacade.failoverIfNecessary();
         try {
@@ -116,9 +115,14 @@ public final class ElasticJobExecutor {
             //CHECKSTYLE:ON
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
+        try {
+            jobErrorHandler.close();
+        } catch (final IOException ex) {
+            log.error("An error occurred when closing JobErrorHandler.", ex);
+        }
     }
     
-    private void execute(final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
+    private void execute(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource, final JobErrorHandler jobErrorHandler) {
         if (shardingContexts.getShardingItemParameters().isEmpty()) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format("Sharding item for job '%s' is empty.", jobConfig.getJobName()));
             return;
@@ -127,7 +131,7 @@ public final class ElasticJobExecutor {
         String taskId = shardingContexts.getTaskId();
         jobFacade.postJobStatusTraceEvent(taskId, State.TASK_RUNNING, "");
         try {
-            process(shardingContexts, executionSource);
+            process(jobConfig, shardingContexts, executionSource, jobErrorHandler);
         } finally {
             // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
             jobFacade.registerJobCompleted(shardingContexts);
@@ -139,12 +143,12 @@ public final class ElasticJobExecutor {
         }
     }
     
-    private void process(final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
+    private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource, final JobErrorHandler jobErrorHandler) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
             int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, item);
-            process(shardingContexts, item, jobExecutionEvent);
+            process(jobConfig, shardingContexts, item, jobExecutionEvent, jobErrorHandler);
             return;
         }
         CountDownLatch latch = new CountDownLatch(items.size());
@@ -155,7 +159,7 @@ public final class ElasticJobExecutor {
             }
             executorService.submit(() -> {
                 try {
-                    process(shardingContexts, each, jobExecutionEvent);
+                    process(jobConfig, shardingContexts, each, jobExecutionEvent, jobErrorHandler);
                 } finally {
                     latch.countDown();
                 }
@@ -169,7 +173,7 @@ public final class ElasticJobExecutor {
     }
     
     @SuppressWarnings("unchecked")
-    private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent startEvent) {
+    private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final int item, final JobExecutionEvent startEvent, final JobErrorHandler jobErrorHandler) {
         jobFacade.postJobExecutionEvent(startEvent);
         log.trace("Job '{}' executing, item is: '{}'.", jobConfig.getJobName(), item);
         JobExecutionEvent completeEvent;
@@ -193,5 +197,45 @@ public final class ElasticJobExecutor {
      */
     public void shutdown() {
         executorService.shutdown();
+    }
+    
+    @RequiredArgsConstructor
+    private static class JobErrorHandlerProxy implements JobErrorHandler {
+        
+        private final String jobErrorHandlerType;
+        
+        private final Properties properties;
+        
+        private JobErrorHandler actualJobErrorHandler;
+        
+        @Override
+        public void handleException(final String jobName, final Throwable cause) {
+            Optional.ofNullable(actualJobErrorHandler).orElseGet(this::initJobErrorHandler).handleException(jobName, cause);
+        }
+        
+        private synchronized JobErrorHandler initJobErrorHandler() {
+            if (null == actualJobErrorHandler) {
+                actualJobErrorHandler = JobErrorHandlerFactory.createHandler(jobErrorHandlerType, properties)
+                        .orElseThrow(() -> new JobConfigurationException("Cannot find job error handler type '%s'.", jobErrorHandlerType));
+            }
+            return actualJobErrorHandler;
+        }
+        
+        @Override
+        public void init(final Properties props) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public String getType() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void close() throws IOException {
+            if (null != actualJobErrorHandler) {
+                actualJobErrorHandler.close();
+            }
+        }
     }
 }
