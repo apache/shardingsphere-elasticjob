@@ -42,3 +42,13 @@ elasticjob:
       shardingTotalCount: 3
       props:
         print.content: "test print job"
+    defaultBeanNameClassJob:
+      cron: 0/5 * * * * ?
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      shardingTotalCount: 3
+    defaultBeanNameTypeJob:
+      cron: 0/5 * * * * ?
+      elasticJobType: PRINT
+      shardingTotalCount: 3
+      props:
+        print.content: "test print job"
