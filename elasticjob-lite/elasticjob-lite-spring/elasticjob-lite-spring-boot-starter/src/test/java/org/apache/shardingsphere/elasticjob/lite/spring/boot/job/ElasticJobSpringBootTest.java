@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties;
@@ -90,7 +91,7 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
         assertNotNull(elasticJobProperties);
         assertNotNull(elasticJobProperties.getJobs());
-        assertThat(elasticJobProperties.getJobs().size(), is(2));
+        assertThat(elasticJobProperties.getJobs().size(), is(4));
         ElasticJobConfigurationProperties customTestJobProperties = elasticJobProperties.getJobs().get("customTestJob");
         assertNotNull(customTestJobProperties);
         assertThat(customTestJobProperties.getElasticJobClass(), is(CustomTestJob.class));
@@ -125,5 +126,19 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class));
         assertNotNull(applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class));
+    }
+
+    @Test
+    public void assertDefaultBeanNameWithClassJob() {
+        assertNotNull(applicationContext);
+        assertNotNull(applicationContext.getBean("defaultBeanNameClassJobScheduleJobBootstrap",
+            ScheduleJobBootstrap.class));
+    }
+
+    @Test
+    public void assertDefaultBeanNameWithTypeJob() {
+        assertNotNull(applicationContext);
+        assertNotNull(applicationContext.getBean("defaultBeanNameTypeJobScheduleJobBootstrap",
+            ScheduleJobBootstrap.class));
     }
 }
