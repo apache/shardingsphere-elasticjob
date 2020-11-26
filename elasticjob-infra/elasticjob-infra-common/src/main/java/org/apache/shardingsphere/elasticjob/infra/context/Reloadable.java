@@ -20,12 +20,14 @@ package org.apache.shardingsphere.elasticjob.infra.context;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
 
+import java.io.Closeable;
+
 /**
  * Reloadable.
  *
  * @param <T> reload target
  */
-public interface Reloadable<T> extends TypedSPI {
+public interface Reloadable<T> extends TypedSPI, Closeable {
     
     /**
      * Reload if necessary.

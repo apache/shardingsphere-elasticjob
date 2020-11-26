@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -74,5 +75,10 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     @Override
     public String getType() {
         return JobErrorHandler.class.getName();
+    }
+    
+    @Override
+    public void close() {
+        Optional.ofNullable(jobErrorHandler).ifPresent(JobErrorHandler::close);
     }
 }

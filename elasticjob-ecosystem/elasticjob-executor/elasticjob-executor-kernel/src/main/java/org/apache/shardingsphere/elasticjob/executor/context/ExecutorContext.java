@@ -21,7 +21,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -74,13 +73,11 @@ public final class ExecutorContext {
      * Shutdown all closeable instances.
      */
     public void shutdown() {
-        reloadableItems.values().stream().map(Reloadable::getInstance).forEach(each -> {
-            if (each instanceof Closeable) {
-                try {
-                    ((Closeable) each).close();
-                } catch (IOException ignored) {
-                }
+        for (Reloadable<?> each : reloadableItems.values()) {
+            try {
+                each.close();
+            } catch (final IOException ignored) {
             }
-        });
+        }
     }
 }

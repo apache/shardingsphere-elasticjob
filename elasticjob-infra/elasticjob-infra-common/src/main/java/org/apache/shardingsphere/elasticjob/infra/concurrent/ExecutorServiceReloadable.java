@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -64,6 +66,11 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
     @Override
     public ExecutorService getInstance() {
         return executorService;
+    }
+    
+    @Override
+    public void close() {
+        Optional.ofNullable(executorService).ifPresent(ExecutorService::shutdown);
     }
     
     @Override
