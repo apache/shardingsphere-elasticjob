@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler;
 
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -27,6 +28,7 @@ import java.util.Properties;
 /**
  * JobErrorHandler reloadable.
  */
+@Slf4j
 public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler> {
     
     private String jobErrorHandlerType;
@@ -45,6 +47,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
         if (newJobErrorHandlerType.equals(jobErrorHandlerType) && props.equals(jobConfig.getProps())) {
             return;
         }
+        log.debug("JobErrorHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobErrorHandlerType, newJobErrorHandlerType);
         reload(newJobErrorHandlerType, jobConfig.getProps());
     }
     

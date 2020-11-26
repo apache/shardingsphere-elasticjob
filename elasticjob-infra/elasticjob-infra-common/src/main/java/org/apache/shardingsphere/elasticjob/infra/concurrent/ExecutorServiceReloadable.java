@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
@@ -27,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Executor service reloadable.
  */
+@Slf4j
 public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
     
     private String jobExecutorServiceHandlerType;
@@ -44,6 +46,7 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
         if (newJobExecutorServiceHandlerType.equals(jobExecutorServiceHandlerType)) {
             return;
         }
+        log.debug("JobExecutorServiceHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorServiceHandlerType, newJobExecutorServiceHandlerType);
         reload(newJobExecutorServiceHandlerType, jobConfig.getJobName());
     }
     
