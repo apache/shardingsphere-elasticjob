@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
