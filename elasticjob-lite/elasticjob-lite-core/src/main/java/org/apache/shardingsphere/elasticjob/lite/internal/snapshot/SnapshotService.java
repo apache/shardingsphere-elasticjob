@@ -115,8 +115,8 @@ public final class SnapshotService {
             CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
             if (null != cache) {
                 Optional<ChildData> cacheData = cache.get(zkPath);
-                cachePath = cacheData.map(ChildData::getPath).orElse(zkPath);
-                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse(zkValue);
+                cachePath = cacheData.map(ChildData::getPath).orElse("");
+                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
             }
             if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
                 result.add(String.join(" | ", zkPath, zkValue));
