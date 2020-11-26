@@ -31,7 +31,7 @@ import java.util.Properties;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobErrorHandlerFactory {
     
-    private static final String DEFAULT_HANDLER = "LOG";
+    public static final String DEFAULT_HANDLER = "LOG";
     
     static {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandler.class);

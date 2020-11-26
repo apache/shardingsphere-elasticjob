@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorServiceHandlerFactory {
     
-    private static final String DEFAULT_HANDLER = "CPU";
+    public static final String DEFAULT_HANDLER = "CPU";
     
     static {
         ElasticJobServiceLoader.registerTypedService(JobExecutorServiceHandler.class);
