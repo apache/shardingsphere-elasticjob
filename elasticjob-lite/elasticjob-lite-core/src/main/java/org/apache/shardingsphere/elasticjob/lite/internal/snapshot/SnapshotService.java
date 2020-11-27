@@ -109,14 +109,15 @@ public final class SnapshotService {
     private void dumpDirectly(final String path, final String jobName, final List<String> result) {
         for (String each : regCenter.getChildrenKeys(path)) {
             String zkPath = path + "/" + each;
-            String zkValue = regCenter.get(zkPath);
-            if (null == zkValue) {
-                zkValue = "";
-            }
+            String zkValue = Optional.ofNullable(regCenter.get(zkPath)).orElse("");
+            String cachePath = zkPath;
+            String cacheValue = zkValue;
             CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-            Optional<ChildData> cacheData = cache.get(zkPath);
-            String cachePath = cacheData.map(ChildData::getPath).orElse("");
-            String cacheValue = cacheData.map(childData -> new String(childData.getData())).orElse("");
+            if (null != cache) {
+                Optional<ChildData> cacheData = cache.get(zkPath);
+                cachePath = cacheData.map(ChildData::getPath).orElse("");
+                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
+            }
             if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
                 result.add(String.join(" | ", zkPath, zkValue));
             } else {
