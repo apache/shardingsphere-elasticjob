@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
@@ -51,6 +52,7 @@ public final class SnapshotService {
     private volatile boolean closed;
     
     public SnapshotService(final CoordinatorRegistryCenter regCenter, final int port) {
+        Preconditions.checkArgument(port >= 0 && port <= 0xFFFF, "Port value out of range: " + port);
         this.regCenter = regCenter;
         this.port = port;
     }
@@ -59,20 +61,17 @@ public final class SnapshotService {
      * Start to listen.
      */
     public void listen() {
-        if (port < 0) {
-            log.error("Elastic job: Snapshot service port must greater than 0, the port is '{}'", port);
-            throw new RuntimeException("config Snapshot service port must greater than 0.");
-        }
         try {
-            log.info("Elastic job: Snapshot service is running, the port is '{}'", port);
+            log.info("ElasticJob: Snapshot service is running on port '{}'", port);
             openSocket(port);
         } catch (final IOException ex) {
-            log.error("Elastic job: Snapshot service listen failure, error is: ", ex);
+            log.error("ElasticJob: Snapshot service listen failure, error is: ", ex);
         }
     }
     
     private void openSocket(final int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        String threadName = String.format("elasticjob-snapshot-service-%d", port);
         new Thread(() -> {
             while (!closed) {
                 try {
@@ -81,10 +80,10 @@ public final class SnapshotService {
                     if (isIgnoredException()) {
                         return;
                     }
-                    log.error("Elastic job: Snapshot service open socket failure, error is: ", ex);
+                    log.error("ElasticJob: Snapshot service open socket failure, error is: ", ex);
                 }
             }
-        }).start();
+        }, threadName).start();
     }
     
     private boolean isIgnoredException() {

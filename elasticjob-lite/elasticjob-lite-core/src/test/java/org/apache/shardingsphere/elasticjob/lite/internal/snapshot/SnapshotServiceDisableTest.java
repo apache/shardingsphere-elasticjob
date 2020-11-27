@@ -38,7 +38,7 @@ public final class SnapshotServiceDisableTest extends BaseSnapshotServiceTest {
         SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND, DUMP_PORT - 1);
     }
     
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void assertPortInvalid() {
         SnapshotService snapshotService = new SnapshotService(getREG_CENTER(), -1);
         snapshotService.listen();
