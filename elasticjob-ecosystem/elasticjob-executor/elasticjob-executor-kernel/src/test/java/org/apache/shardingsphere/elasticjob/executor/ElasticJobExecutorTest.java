@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -62,6 +63,7 @@ public final class ElasticJobExecutorTest {
     @Before
     public void setUp() {
         jobConfig = createJobConfiguration();
+        when(jobFacade.loadJobConfiguration(anyBoolean())).thenReturn(jobConfig);
         elasticJobExecutor = new ElasticJobExecutor(fooJob, jobConfig, jobFacade);
         setJobItemExecutor();
     }

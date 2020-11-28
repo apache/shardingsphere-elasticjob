@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,27 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler;
+package org.apache.shardingsphere.elasticjob.infra.context;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.SPIPostProcessor;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
 
 import java.io.Closeable;
 
 /**
- * Job error handler.
+ * Reloadable.
+ *
+ * @param <T> reload target
  */
-public interface JobErrorHandler extends TypedSPI, SPIPostProcessor, Closeable {
+public interface Reloadable<T> extends TypedSPI, Closeable {
     
     /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause failure cause
+     * Reload if necessary.
+     *
+     * @param jobConfiguration job configuration
      */
-    void handleException(String jobName, Throwable cause);
+    void reloadIfNecessary(JobConfiguration jobConfiguration);
     
-    @Override
-    default void close() {
-    }
+    /**
+     * Get target instance.
+     *
+     * @return instance
+     */
+    T getInstance();
 }
