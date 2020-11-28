@@ -72,19 +72,6 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         secret = props.getProperty(DingtalkPropertiesConstants.SECRET);
         connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
         readTimeoutMilliseconds = Integer.parseInt(props.getProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, DingtalkPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
-        registerShutdownHook();
-    }
-    
-    private void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread("DingtalkJobErrorHandler Shutdown-Hook") {
-            
-            @SneakyThrows
-            @Override
-            public void run() {
-                log.info("Shutting down HTTP client...");
-                httpclient.close();
-            }
-        });
     }
     
     @Override
@@ -154,5 +141,11 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     @Override
     public String getType() {
         return "DINGTALK";
+    }
+    
+    @SneakyThrows
+    @Override
+    public void close() {
+        httpclient.close();
     }
 }
