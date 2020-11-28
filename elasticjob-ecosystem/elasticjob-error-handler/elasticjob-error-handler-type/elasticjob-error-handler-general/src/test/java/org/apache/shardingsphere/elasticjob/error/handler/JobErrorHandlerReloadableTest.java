@@ -49,7 +49,7 @@ public final class JobErrorHandlerReloadableTest {
         String jobErrorHandlerType = "IGNORE";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(jobErrorHandlerType).build();
         assertNull(jobErrorHandlerReloadable.getInstance());
-        jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
+        jobErrorHandlerReloadable.init(jobConfig);
         JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
         assertNotNull(actual);
         assertThat(actual.getType(), equalTo(jobErrorHandlerType));
@@ -76,7 +76,7 @@ public final class JobErrorHandlerReloadableTest {
         JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable();
         String jobErrorHandlerType = "IGNORE";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(jobErrorHandlerType).build();
-        jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
+        jobErrorHandlerReloadable.init(jobConfig);
         JobErrorHandler expected = jobErrorHandlerReloadable.getInstance();
         jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
         JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();

@@ -21,6 +21,7 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
+import org.apache.shardingsphere.elasticjob.infra.context.ReloadablePostProcessor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 import java.util.Optional;
@@ -30,7 +31,7 @@ import java.util.Properties;
  * JobErrorHandler reloadable.
  */
 @Slf4j
-public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler> {
+public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler>, ReloadablePostProcessor {
     
     private String jobErrorHandlerType;
     
@@ -39,24 +40,21 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     private JobErrorHandler jobErrorHandler;
     
     @Override
+    public void init(final JobConfiguration jobConfig) {
+        jobErrorHandlerType = Strings.isNullOrEmpty(jobConfig.getJobErrorHandlerType()) ? JobErrorHandlerFactory.DEFAULT_HANDLER : jobConfig.getJobErrorHandlerType();
+        props = (Properties) jobConfig.getProps().clone();
+        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobErrorHandlerType, props)
+                .orElseThrow(() -> new JobConfigurationException("Cannot find job error handler type '%s'.", jobErrorHandlerType));
+    }
+    
+    @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (null == jobErrorHandler) {
-            init(jobConfig.getJobErrorHandlerType(), jobConfig.getProps());
-            return;
-        }
         String newJobErrorHandlerType = Strings.isNullOrEmpty(jobConfig.getJobErrorHandlerType()) ? JobErrorHandlerFactory.DEFAULT_HANDLER : jobConfig.getJobErrorHandlerType();
         if (newJobErrorHandlerType.equals(jobErrorHandlerType) && props.equals(jobConfig.getProps())) {
             return;
         }
         log.debug("JobErrorHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobErrorHandlerType, newJobErrorHandlerType);
         reload(newJobErrorHandlerType, jobConfig.getProps());
-    }
-    
-    private void init(final String jobErrorHandlerType, final Properties props) {
-        this.jobErrorHandlerType = Strings.isNullOrEmpty(jobErrorHandlerType) ? JobErrorHandlerFactory.DEFAULT_HANDLER : jobErrorHandlerType;
-        this.props = (Properties) props.clone();
-        jobErrorHandler = JobErrorHandlerFactory.createHandler(jobErrorHandlerType, props)
-                .orElseThrow(() -> new JobConfigurationException("Cannot find job error handler type '%s'.", jobErrorHandlerType));
     }
     
     private void reload(final String jobErrorHandlerType, final Properties props) {

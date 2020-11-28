@@ -21,6 +21,7 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
+import org.apache.shardingsphere.elasticjob.infra.context.ReloadablePostProcessor;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
 
 import java.util.Optional;
@@ -30,18 +31,21 @@ import java.util.concurrent.ExecutorService;
  * Executor service reloadable.
  */
 @Slf4j
-public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
+public final class ExecutorServiceReloadable implements Reloadable<ExecutorService>, ReloadablePostProcessor {
     
     private String jobExecutorServiceHandlerType;
     
     private ExecutorService executorService;
     
     @Override
+    public void init(final JobConfiguration jobConfig) {
+        jobExecutorServiceHandlerType = Strings.isNullOrEmpty(jobConfig.getJobExecutorServiceHandlerType())
+                ? JobExecutorServiceHandlerFactory.DEFAULT_HANDLER : jobConfig.getJobExecutorServiceHandlerType();
+        executorService = JobExecutorServiceHandlerFactory.getHandler(jobExecutorServiceHandlerType).createExecutorService(jobConfig.getJobName());
+    }
+    
+    @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (null == executorService) {
-            init(jobConfig.getJobExecutorServiceHandlerType(), jobConfig.getJobName());
-            return;
-        }
         String newJobExecutorServiceHandlerType = Strings.isNullOrEmpty(jobConfig.getJobExecutorServiceHandlerType())
                 ? JobExecutorServiceHandlerFactory.DEFAULT_HANDLER : jobConfig.getJobExecutorServiceHandlerType();
         if (newJobExecutorServiceHandlerType.equals(jobExecutorServiceHandlerType)) {
@@ -49,11 +53,6 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
         }
         log.debug("JobExecutorServiceHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorServiceHandlerType, newJobExecutorServiceHandlerType);
         reload(newJobExecutorServiceHandlerType, jobConfig.getJobName());
-    }
-    
-    private void init(final String jobExecutorServiceHandlerType, final String jobName) {
-        this.jobExecutorServiceHandlerType = Strings.isNullOrEmpty(jobExecutorServiceHandlerType) ? JobExecutorServiceHandlerFactory.DEFAULT_HANDLER : jobExecutorServiceHandlerType;
-        executorService = JobExecutorServiceHandlerFactory.getHandler(jobExecutorServiceHandlerType).createExecutorService(jobName);
     }
     
     private void reload(final String jobExecutorServiceHandlerType, final String jobName) {

@@ -46,7 +46,7 @@ public final class ExecutorServiceReloadableTest {
         String jobExecutorServiceHandlerType = "SINGLE_THREAD";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).build();
         assertNull(executorServiceReloadable.getInstance());
-        executorServiceReloadable.reloadIfNecessary(jobConfig);
+        executorServiceReloadable.init(jobConfig);
         ExecutorService actual = executorServiceReloadable.getInstance();
         assertNotNull(actual);
         assertFalse(actual.isShutdown());
@@ -72,7 +72,7 @@ public final class ExecutorServiceReloadableTest {
     public void assertUnnecessaryToReload() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
-        executorServiceReloadable.reloadIfNecessary(jobConfig);
+        executorServiceReloadable.init(jobConfig);
         ExecutorService expected = executorServiceReloadable.getInstance();
         executorServiceReloadable.reloadIfNecessary(jobConfig);
         ExecutorService actual = executorServiceReloadable.getInstance();

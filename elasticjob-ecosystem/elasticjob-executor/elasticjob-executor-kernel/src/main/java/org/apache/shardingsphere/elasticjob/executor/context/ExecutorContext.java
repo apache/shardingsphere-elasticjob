@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.executor.context;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
+import org.apache.shardingsphere.elasticjob.infra.context.ReloadablePostProcessor;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 import java.io.IOException;
@@ -41,11 +42,16 @@ public final class ExecutorContext {
     
     private final Map<String, Reloadable<?>> reloadableItems = new LinkedHashMap<>();
     
-    public ExecutorContext() {
+    public ExecutorContext(final JobConfiguration jobConfig) {
         ServiceLoader.load(Reloadable.class).forEach(each -> {
             ElasticJobServiceLoader.newTypedServiceInstance(Reloadable.class, each.getType(), new Properties())
                     .ifPresent(reloadable -> reloadableItems.put(reloadable.getType(), reloadable));
         });
+        initReloadable(jobConfig);
+    }
+    
+    private void initReloadable(final JobConfiguration jobConfig) {
+        reloadableItems.values().stream().filter(each -> each instanceof ReloadablePostProcessor).forEach(each -> ((ReloadablePostProcessor) each).init(jobConfig));
     }
     
     /**

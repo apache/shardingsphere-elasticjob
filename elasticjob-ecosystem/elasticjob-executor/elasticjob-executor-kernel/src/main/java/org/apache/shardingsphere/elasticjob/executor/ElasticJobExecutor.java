@@ -66,7 +66,7 @@ public final class ElasticJobExecutor {
         this.elasticJob = elasticJob;
         this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
-        executorContext = new ExecutorContext();
+        executorContext = new ExecutorContext(jobFacade.loadJobConfiguration(true));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
     
