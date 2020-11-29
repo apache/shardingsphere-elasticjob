@@ -58,19 +58,6 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         webhook = props.getProperty(WechatPropertiesConstants.WEBHOOK);
         connectTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_CONNECT_TIMEOUT_MILLISECONDS));
         readTimeoutMilliseconds = Integer.parseInt(props.getProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, WechatPropertiesConstants.DEFAULT_READ_TIMEOUT_MILLISECONDS));
-        registerShutdownHook();
-    }
-    
-    private void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread("WechatJobErrorHandler Shutdown-Hook") {
-            
-            @SneakyThrows
-            @Override
-            public void run() {
-                log.info("Shutting down HTTP client...");
-                httpclient.close();
-            }
-        });
     }
     
     @Override
@@ -118,5 +105,11 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     @Override
     public String getType() {
         return "WECHAT";
+    }
+    
+    @SneakyThrows
+    @Override
+    public void close() {
+        httpclient.close();
     }
 }
