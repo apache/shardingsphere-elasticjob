@@ -87,9 +87,8 @@ public class CloudJobControllerTest extends AbstractCloudControllerTest {
     @Test
     public void assertRegisterWithExistedName() {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
-        when(getRegCenter().isExisted("/config/test_job")).thenReturn(false);
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(null, CloudJsonConstants.getJobJson());
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(200));
-        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/job/register", CloudJsonConstants.getJobJson()), is(500));
         HttpTestUtil.delete("http://127.0.0.1:19000/api/job/test_job/deregister");
     }
