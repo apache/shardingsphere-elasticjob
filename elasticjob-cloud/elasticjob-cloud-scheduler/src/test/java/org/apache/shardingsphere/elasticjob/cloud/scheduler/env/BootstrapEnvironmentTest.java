@@ -121,6 +121,8 @@ public final class BootstrapEnvironmentTest {
 
     @Test
     public void assertGetFrameworkHostPort() {
+        Properties properties = new Properties();
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("localhost:8899"));
     }
 
