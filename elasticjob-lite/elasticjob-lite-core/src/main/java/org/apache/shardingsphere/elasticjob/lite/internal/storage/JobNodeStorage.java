@@ -109,7 +109,7 @@ public final class JobNodeStorage {
     /**
      * Create job node if needed.
      * 
-     * <p>Do not create node if root root not existed, which means job is shutdown.</p>
+     * <p>Do not create node if root node not existed, which means job is shutdown.</p>
      * 
      * @param node node
      */
