@@ -33,7 +33,7 @@ public final class NettyRestfulServiceTrailingSlashInsensitiveTest {
     public void assertPathDuplicateWhenTrailingSlashInsensitive() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
-        configuration.addControllerInstance(new TrailingSlashTestController());
+        configuration.addControllerInstances(new TrailingSlashTestController());
         RestfulService restfulService = new NettyRestfulService(configuration);
         restfulService.startup();
     }

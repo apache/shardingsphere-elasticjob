@@ -54,7 +54,7 @@ public final class DingtalkJobErrorHandlerTest {
     public static void init() {
         NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
         config.setHost(HOST);
-        config.addControllerInstance(new DingtalkInternalController());
+        config.addControllerInstances(new DingtalkInternalController());
         restfulService = new NettyRestfulService(config);
         restfulService.startup();
     }

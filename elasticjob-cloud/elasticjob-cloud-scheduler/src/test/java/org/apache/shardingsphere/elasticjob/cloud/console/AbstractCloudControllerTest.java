@@ -76,11 +76,11 @@ public abstract class AbstractCloudControllerTest {
     private static void initMesosServer() {
         MesosStateService.register("127.0.0.1", 9050);
         NettyRestfulServiceConfiguration masterServerConfiguration = new NettyRestfulServiceConfiguration(9050);
-        masterServerConfiguration.addControllerInstance(new MesosMasterServerMock());
+        masterServerConfiguration.addControllerInstances(new MesosMasterServerMock());
         masterServer = new NettyRestfulService(masterServerConfiguration);
         masterServer.startup();
         NettyRestfulServiceConfiguration slaveServerConfiguration = new NettyRestfulServiceConfiguration(9051);
-        slaveServerConfiguration.addControllerInstance(new MesosSlaveServerMock());
+        slaveServerConfiguration.addControllerInstances(new MesosSlaveServerMock());
         slaveServer = new NettyRestfulService(slaveServerConfiguration);
         slaveServer.startup();
     }

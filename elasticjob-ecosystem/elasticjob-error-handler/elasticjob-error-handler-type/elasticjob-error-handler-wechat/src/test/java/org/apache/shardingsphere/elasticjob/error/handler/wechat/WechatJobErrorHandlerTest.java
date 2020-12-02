@@ -54,7 +54,7 @@ public final class WechatJobErrorHandlerTest {
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
-        configuration.addControllerInstance(new WechatInternalController());
+        configuration.addControllerInstances(new WechatInternalController());
         restfulService = new NettyRestfulService(configuration);
         restfulService.startup();
     }

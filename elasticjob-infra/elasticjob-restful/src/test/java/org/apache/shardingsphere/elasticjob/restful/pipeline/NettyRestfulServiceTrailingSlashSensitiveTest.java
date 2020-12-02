@@ -49,7 +49,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
         configuration.setTrailingSlashSensitive(true);
-        configuration.addControllerInstance(new TrailingSlashTestController());
+        configuration.addControllerInstances(new TrailingSlashTestController());
         restfulService = new NettyRestfulService(configuration);
         restfulService.startup();
     }
