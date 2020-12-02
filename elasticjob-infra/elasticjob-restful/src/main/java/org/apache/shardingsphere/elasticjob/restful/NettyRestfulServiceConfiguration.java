@@ -23,9 +23,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.restful.handler.ExceptionHandler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class NettyRestfulServiceConfiguration {
     @Setter
     private boolean trailingSlashSensitive;
     
-    private final List<RestfulController> controllerInstances = new ArrayList<>();
+    private final List<RestfulController> controllerInstances = new LinkedList<>();
     
     private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers = new HashMap<>();
     
@@ -56,7 +56,7 @@ public final class NettyRestfulServiceConfiguration {
      *
      * @param instances instances of RestfulController
      */
-    public void addControllerInstance(final RestfulController... instances) {
+    public void addControllerInstances(final RestfulController... instances) {
         controllerInstances.addAll(Arrays.asList(instances));
     }
     

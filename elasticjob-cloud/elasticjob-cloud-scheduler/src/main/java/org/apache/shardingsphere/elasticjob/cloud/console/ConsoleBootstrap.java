@@ -41,7 +41,7 @@ public class ConsoleBootstrap {
         CloudAppController.init(regCenter, producerManager);
         CloudOperationController.init(regCenter, reconcileService);
         NettyRestfulServiceConfiguration restfulServiceConfiguration = new NettyRestfulServiceConfiguration(config.getPort());
-        restfulServiceConfiguration.addControllerInstance(new CloudJobController(), new CloudAppController(), new CloudOperationController());
+        restfulServiceConfiguration.addControllerInstances(new CloudJobController(), new CloudAppController(), new CloudOperationController());
         restfulServiceConfiguration.addExceptionHandler(Exception.class, new ConsoleExceptionHandler());
         restfulService = new NettyRestfulService(restfulServiceConfiguration);
     }

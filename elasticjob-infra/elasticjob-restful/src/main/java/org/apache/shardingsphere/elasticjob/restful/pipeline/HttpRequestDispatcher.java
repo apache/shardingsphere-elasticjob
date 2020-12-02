@@ -24,14 +24,14 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandlerMappingRegistry;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
 import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
-import org.apache.shardingsphere.elasticjob.restful.RestfulController;
-import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
-import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -63,13 +63,14 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
         if (!trailingSlashSensitive) {
             request.setUri(appendTrailingSlashIfAbsent(request.uri()));
         }
-        MappingContext<Handler> mappingContext = mappingRegistry.getMappingContext(request);
-        if (null == mappingContext) {
+        Optional<MappingContext<Handler>> mappingContext = mappingRegistry.getMappingContext(request);
+        if (mappingContext.isPresent()) {
+            HandleContext<Handler> handleContext = new HandleContext<>(request, mappingContext.get());
+            ctx.fireChannelRead(handleContext);
+        } else {
             ReferenceCountUtil.release(request);
             throw new HandlerNotFoundException(request.uri());
         }
-        HandleContext<Handler> handleContext = new HandleContext<>(request, mappingContext);
-        ctx.fireChannelRead(handleContext);
     }
     
     private void initMappingRegistry(final List<RestfulController> restfulControllers) {

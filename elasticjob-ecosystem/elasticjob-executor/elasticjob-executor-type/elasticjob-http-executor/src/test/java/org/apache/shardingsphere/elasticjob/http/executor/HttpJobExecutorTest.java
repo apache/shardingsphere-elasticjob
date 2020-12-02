@@ -72,7 +72,7 @@ public final class HttpJobExecutorTest {
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
-        configuration.addControllerInstance(new InternalController());
+        configuration.addControllerInstances(new InternalController());
         restfulService = new NettyRestfulService(configuration);
         restfulService.startup();
     }
