@@ -31,6 +31,8 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     
     private final ContextInitializationInboundHandler contextInitializationInboundHandler;
     
+    private final FilterChainInboundHandler filterChainInboundHandler;
+    
     private final HttpRequestDispatcher httpRequestDispatcher;
     
     private final HandlerParameterDecoder handlerParameterDecoder;
@@ -41,6 +43,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     
     public RestfulServiceChannelInitializer(final NettyRestfulServiceConfiguration configuration) {
         contextInitializationInboundHandler = new ContextInitializationInboundHandler();
+        filterChainInboundHandler = new FilterChainInboundHandler(configuration.getFilterInstances());
         httpRequestDispatcher = new HttpRequestDispatcher(configuration.getControllerInstances(), configuration.isTrailingSlashSensitive());
         handlerParameterDecoder = new HandlerParameterDecoder();
         handleMethodExecutor = new HandleMethodExecutor();
@@ -53,6 +56,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
         pipeline.addLast("codec", new HttpServerCodec());
         pipeline.addLast("aggregator", new HttpObjectAggregator(1024 * 1024));
         pipeline.addLast("contextInitialization", contextInitializationInboundHandler);
+        pipeline.addLast("filterChain", filterChainInboundHandler);
         pipeline.addLast("dispatcher", httpRequestDispatcher);
         pipeline.addLast("handlerParameterDecoder", handlerParameterDecoder);
         pipeline.addLast("handleMethodExecutor", handleMethodExecutor);
