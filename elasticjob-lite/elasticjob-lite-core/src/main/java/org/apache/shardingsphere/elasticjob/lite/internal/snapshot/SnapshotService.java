@@ -62,14 +62,13 @@ public final class SnapshotService {
      */
     public void listen() {
         try {
-            log.info("ElasticJob: Snapshot service is running on port '{}'", port);
-            openSocket(port);
+            log.info("ElasticJob: Snapshot service is running on port '{}'", openSocket(port));
         } catch (final IOException ex) {
             log.error("ElasticJob: Snapshot service listen failure, error is: ", ex);
         }
     }
     
-    private void openSocket(final int port) throws IOException {
+    private int openSocket(final int port) throws IOException {
         serverSocket = new ServerSocket(port);
         String threadName = String.format("elasticjob-snapshot-service-%d", port);
         new Thread(() -> {
@@ -84,6 +83,7 @@ public final class SnapshotService {
                 }
             }
         }, threadName).start();
+        return serverSocket.getLocalPort();
     }
     
     private boolean isIgnoredException() {
