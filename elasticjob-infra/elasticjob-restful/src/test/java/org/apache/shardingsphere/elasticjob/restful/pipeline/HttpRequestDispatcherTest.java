@@ -23,8 +23,9 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
-import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
 import org.apache.shardingsphere.elasticjob.restful.controller.JobController;
+import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
+import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
 import org.junit.Test;
 
 public final class HttpRequestDispatcherTest {
@@ -33,6 +34,6 @@ public final class HttpRequestDispatcherTest {
     public void assertDispatcherHandlerNotFound() {
         EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDispatcher(Lists.newArrayList(new JobController()), false));
         FullHttpRequest fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/hello/myJob/myCron");
-        channel.writeInbound(fullHttpRequest);
+        channel.writeInbound(new HandleContext<>(fullHttpRequest, null));
     }
 }
