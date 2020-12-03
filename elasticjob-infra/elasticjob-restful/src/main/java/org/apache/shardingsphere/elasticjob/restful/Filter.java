@@ -42,6 +42,6 @@ public interface Filter {
      * @return HTTP response
      */
     default FullHttpResponse doResponse(final FullHttpRequest httpRequest) {
-        throw new UnsupportedOperationException("The filter [%s] is doing response but didn't override method Filter#doResponse.");
+        throw new UnsupportedOperationException(String.format("The filter [%s] is doing response but didn't override method Filter#doResponse.", getClass().getSimpleName()));
     }
 }
