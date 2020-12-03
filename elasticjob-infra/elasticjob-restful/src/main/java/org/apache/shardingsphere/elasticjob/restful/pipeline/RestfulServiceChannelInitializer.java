@@ -29,6 +29,8 @@ import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfigura
  */
 public final class RestfulServiceChannelInitializer extends ChannelInitializer<Channel> {
     
+    private final FilterChainInboundHandler filterChainInboundHandler;
+    
     private final HttpRequestDispatcher httpRequestDispatcher;
     
     private final HandlerParameterDecoder handlerParameterDecoder;
@@ -38,6 +40,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     private final ExceptionHandling exceptionHandling;
     
     public RestfulServiceChannelInitializer(final NettyRestfulServiceConfiguration configuration) {
+        filterChainInboundHandler = new FilterChainInboundHandler(configuration.getFilterInstances());
         httpRequestDispatcher = new HttpRequestDispatcher(configuration.getControllerInstances(), configuration.isTrailingSlashSensitive());
         handlerParameterDecoder = new HandlerParameterDecoder();
         handleMethodExecutor = new HandleMethodExecutor();
@@ -49,6 +52,7 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
         ChannelPipeline pipeline = channel.pipeline();
         pipeline.addLast("codec", new HttpServerCodec());
         pipeline.addLast("aggregator", new HttpObjectAggregator(1024 * 1024));
+        pipeline.addLast("filterChain", filterChainInboundHandler);
         pipeline.addLast("dispatcher", httpRequestDispatcher);
         pipeline.addLast("handlerParameterDecoder", handlerParameterDecoder);
         pipeline.addLast("handleMethodExecutor", handleMethodExecutor);
