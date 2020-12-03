@@ -70,7 +70,8 @@ public final class SnapshotService {
     
     private int openSocket(final int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        String threadName = String.format("elasticjob-snapshot-service-%d", port);
+        int localPort = serverSocket.getLocalPort();
+        String threadName = String.format("elasticjob-snapshot-service-%d", localPort);
         new Thread(() -> {
             while (!closed) {
                 try {
@@ -83,7 +84,7 @@ public final class SnapshotService {
                 }
             }
         }, threadName).start();
-        return serverSocket.getLocalPort();
+        return localPort;
     }
     
     private boolean isIgnoredException() {
