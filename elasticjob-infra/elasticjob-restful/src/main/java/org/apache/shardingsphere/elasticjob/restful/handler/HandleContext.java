@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.restful.handler;
 
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -35,7 +36,9 @@ public final class HandleContext<T> {
     
     private final FullHttpRequest httpRequest;
     
-    private final MappingContext<T> mappingContext;
+    private final FullHttpResponse httpResponse;
+    
+    private MappingContext<T> mappingContext;
     
     private Object[] args = new Object[0];
 }

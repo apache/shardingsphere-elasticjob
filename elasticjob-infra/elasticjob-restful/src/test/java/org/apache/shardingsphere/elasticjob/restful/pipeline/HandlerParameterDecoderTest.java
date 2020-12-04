@@ -49,10 +49,11 @@ public final class HandlerParameterDecoderTest {
     
     @Before
     public void setUp() {
+        ContextInitializationInboundHandler contextInitializationInboundHandler = new ContextInitializationInboundHandler();
         HttpRequestDispatcher httpRequestDispatcher = new HttpRequestDispatcher(Collections.singletonList(new DecoderTestController()), false);
         HandlerParameterDecoder handlerParameterDecoder = new HandlerParameterDecoder();
         HandleMethodExecutor handleMethodExecutor = new HandleMethodExecutor();
-        channel = new EmbeddedChannel(httpRequestDispatcher, handlerParameterDecoder, handleMethodExecutor);
+        channel = new EmbeddedChannel(contextInitializationInboundHandler, httpRequestDispatcher, handlerParameterDecoder, handleMethodExecutor);
     }
     
     @Test

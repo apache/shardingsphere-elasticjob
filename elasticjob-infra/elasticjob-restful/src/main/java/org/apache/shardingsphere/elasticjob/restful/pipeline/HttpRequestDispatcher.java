@@ -23,7 +23,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.ReferenceCountUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ContextPath;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
@@ -42,7 +41,6 @@ import java.util.Optional;
  * Assemble a {@link HandleContext} with HTTP request and {@link MappingContext}, then pass it to the next in-bound handler.
  */
 @Sharable
-@Slf4j
 public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
     
     private static final String TRAILING_SLASH = "/";
@@ -56,16 +54,17 @@ public final class HttpRequestDispatcher extends ChannelInboundHandlerAdapter {
         initMappingRegistry(restfulControllers);
     }
     
+    @SuppressWarnings({"unchecked", "NullableProblems"})
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
-        log.debug("{}", msg);
-        FullHttpRequest request = (FullHttpRequest) msg;
+        HandleContext<Handler> handleContext = (HandleContext<Handler>) msg;
+        FullHttpRequest request = handleContext.getHttpRequest();
         if (!trailingSlashSensitive) {
             request.setUri(appendTrailingSlashIfAbsent(request.uri()));
         }
         Optional<MappingContext<Handler>> mappingContext = mappingRegistry.getMappingContext(request);
         if (mappingContext.isPresent()) {
-            HandleContext<Handler> handleContext = new HandleContext<>(request, mappingContext.get());
+            handleContext.setMappingContext(mappingContext.get());
             ctx.fireChannelRead(handleContext);
         } else {
             ReferenceCountUtil.release(request);

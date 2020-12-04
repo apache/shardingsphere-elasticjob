@@ -53,6 +53,7 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
     
     private final PathMatcher pathMatcher = new RegexPathMatcher();
     
+    @SuppressWarnings({"unchecked", "NullableProblems"})
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         HandleContext<Handler> handleContext = (HandleContext<Handler>) msg;
