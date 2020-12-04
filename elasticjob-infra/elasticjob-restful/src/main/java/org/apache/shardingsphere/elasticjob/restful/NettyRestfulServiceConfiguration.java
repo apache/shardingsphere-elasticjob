@@ -47,9 +47,20 @@ public final class NettyRestfulServiceConfiguration {
     @Setter
     private boolean trailingSlashSensitive;
     
+    private final List<Filter> filterInstances = new LinkedList<>();
+    
     private final List<RestfulController> controllerInstances = new LinkedList<>();
     
     private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers = new HashMap<>();
+    
+    /**
+     * Add instances of {@link Filter}.
+     *
+     * @param instances instances of Filter
+     */
+    public void addFilterInstances(final Filter... instances) {
+        filterInstances.addAll(Arrays.asList(instances));
+    }
     
     /**
      * Add instances of RestfulController.
