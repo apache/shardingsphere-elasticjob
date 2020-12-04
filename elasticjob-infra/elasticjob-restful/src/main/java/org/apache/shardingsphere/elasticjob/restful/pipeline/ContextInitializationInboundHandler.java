@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
@@ -42,6 +43,7 @@ public final class ContextInitializationInboundHandler extends ChannelInboundHan
         log.debug("{}", msg);
         FullHttpRequest httpRequest = (FullHttpRequest) msg;
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND, ctx.alloc().buffer());
+        HttpUtil.setContentLength(httpResponse, httpResponse.content().readableBytes());
         ctx.fireChannelRead(new HandleContext<Handler>(httpRequest, httpResponse));
     }
 }
