@@ -37,9 +37,10 @@ import java.util.Collections;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class DefaultFilterChainTest {
@@ -52,15 +53,6 @@ public final class DefaultFilterChainTest {
     
     @Mock
     private FullHttpResponse httpResponse;
-    
-    @Mock
-    private Filter firstFilter;
-    
-    @Mock
-    private Filter secondFilter;
-    
-    @Mock
-    private Filter thirdFilter;
     
     private HandleContext<Handler> handleContext;
     
@@ -75,56 +67,61 @@ public final class DefaultFilterChainTest {
         filterChain.next(httpRequest);
         verify(ctx, never()).writeAndFlush(httpResponse);
         verify(ctx).fireChannelRead(handleContext);
+        assertTrue(isPassedThrough(filterChain));
+        assertFalse(isReplied(filterChain));
     }
     
     @Test
     public void assertWithSingleFilterPassed() {
-        DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(firstFilter), ctx, handleContext);
-        when(firstFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
+        Filter passableFilter = spy(new PassableFilter());
+        DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(passableFilter), ctx, handleContext);
         filterChain.next(httpRequest);
-        verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
-        filterChain.next(httpRequest);
+        verify(passableFilter).doFilter(httpRequest, httpResponse, filterChain);
         verify(ctx).fireChannelRead(handleContext);
         verify(ctx, never()).writeAndFlush(httpResponse);
+        assertTrue(isPassedThrough(filterChain));
+        assertFalse(isReplied(filterChain));
     }
     
     @Test
     public void assertWithSingleFilterDoResponse() {
-        DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(firstFilter), ctx, handleContext);
+        Filter impassableFilter = mock(Filter.class);
+        DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(impassableFilter), ctx, handleContext);
         filterChain.next(httpRequest);
-        verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
+        verify(impassableFilter).doFilter(httpRequest, httpResponse, filterChain);
         verify(ctx, never()).fireChannelRead(any(HandleContext.class));
         verify(ctx).writeAndFlush(httpResponse);
+        assertTrue(isReplied(filterChain));
+        assertFalse(isPassedThrough(filterChain));
     }
     
     @Test
     public void assertWithThreeFiltersPassed() {
+        Filter firstFilter = spy(new PassableFilter());
+        Filter secondFilter = spy(new PassableFilter());
+        Filter thirdFilter = spy(new PassableFilter());
         DefaultFilterChain filterChain = new DefaultFilterChain(Arrays.asList(firstFilter, secondFilter, thirdFilter), ctx, handleContext);
-        when(firstFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
         filterChain.next(httpRequest);
         verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
-        when(secondFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
-        filterChain.next(httpRequest);
         verify(secondFilter).doFilter(httpRequest, httpResponse, filterChain);
-        when(thirdFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
-        filterChain.next(httpRequest);
         verify(thirdFilter).doFilter(httpRequest, httpResponse, filterChain);
-        filterChain.next(httpRequest);
+        assertTrue(isPassedThrough(filterChain));
+        assertFalse(isReplied(filterChain));
         verify(ctx).fireChannelRead(handleContext);
         verify(ctx, never()).writeAndFlush(any(FullHttpResponse.class));
     }
     
     @Test
     public void assertWithThreeFiltersDoResponseByTheSecond() {
+        Filter firstFilter = spy(new PassableFilter());
+        Filter secondFilter = mock(Filter.class);
+        Filter thirdFilter = spy(new PassableFilter());
         DefaultFilterChain filterChain = new DefaultFilterChain(Arrays.asList(firstFilter, secondFilter, thirdFilter), ctx, handleContext);
-        when(firstFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
         filterChain.next(httpRequest);
         verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
-        when(secondFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(false);
-        assertFalse(isFinished(filterChain));
-        filterChain.next(httpRequest);
         verify(secondFilter).doFilter(httpRequest, httpResponse, filterChain);
-        assertTrue(isFinished(filterChain));
+        assertFalse(isPassedThrough(filterChain));
+        assertTrue(isReplied(filterChain));
         verify(thirdFilter, never()).doFilter(httpRequest, httpResponse, filterChain);
         verify(ctx, never()).fireChannelRead(any(HandleContext.class));
         verify(ctx).writeAndFlush(httpResponse);
@@ -138,23 +135,37 @@ public final class DefaultFilterChainTest {
     }
     
     @Test(expected = IllegalStateException.class)
-    public void assertInvokeFinishedFilterChainWithTwoFilters() {
+    public void assertInvokePassedThroughFilterChainWithTwoFilters() {
+        Filter firstFilter = spy(new PassableFilter());
+        Filter secondFilter = spy(new PassableFilter());
         DefaultFilterChain filterChain = new DefaultFilterChain(Arrays.asList(firstFilter, secondFilter), ctx, handleContext);
-        when(firstFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
         filterChain.next(httpRequest);
         verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
-        when(secondFilter.doFilter(httpRequest, httpResponse, filterChain)).thenReturn(true);
-        filterChain.next(httpRequest);
         verify(secondFilter).doFilter(httpRequest, httpResponse, filterChain);
-        filterChain.next(httpRequest);
         verify(ctx).fireChannelRead(handleContext);
         filterChain.next(httpRequest);
     }
     
+    private boolean isPassedThrough(final DefaultFilterChain filterChain) {
+        return getBoolean(filterChain, "passedThrough");
+    }
+    
+    private boolean isReplied(final DefaultFilterChain filterChain) {
+        return getBoolean(filterChain, "replied");
+    }
+    
     @SneakyThrows
-    private boolean isFinished(final DefaultFilterChain filterChain) {
-        Field field = DefaultFilterChain.class.getDeclaredField("finished");
+    private boolean getBoolean(final DefaultFilterChain filterChain, final String fieldName) {
+        Field field = DefaultFilterChain.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         return (boolean) field.get(filterChain);
+    }
+    
+    private static class PassableFilter implements Filter {
+        
+        @Override
+        public void doFilter(final FullHttpRequest httpRequest, final FullHttpResponse httpResponse, final FilterChain filterChain) {
+            filterChain.next(httpRequest);
+        }
     }
 }

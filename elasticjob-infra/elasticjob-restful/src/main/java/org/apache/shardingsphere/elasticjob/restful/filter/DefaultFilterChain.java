@@ -39,7 +39,9 @@ public final class DefaultFilterChain implements FilterChain {
     
     private int current;
     
-    private boolean finished;
+    private boolean passedThrough;
+    
+    private boolean replied;
     
     public DefaultFilterChain(final List<Filter> filterInstances, final ChannelHandlerContext ctx, final HandleContext<?> handleContext) {
         filters = filterInstances.toArray(new Filter[0]);
@@ -49,23 +51,22 @@ public final class DefaultFilterChain implements FilterChain {
     
     @Override
     public void next(final FullHttpRequest httpRequest) {
-        Preconditions.checkState(!finished, "FilterChain has already finished.");
+        Preconditions.checkState(!passedThrough && !replied, "FilterChain has already finished.");
         if (current < filters.length) {
-            Filter currentFilter = filters[current++];
-            boolean passThrough = currentFilter.doFilter(httpRequest, handleContext.getHttpResponse(), this);
-            if (!passThrough) {
-                finished = true;
+            filters[current++].doFilter(httpRequest, handleContext.getHttpResponse(), this);
+            if (!passedThrough && !replied) {
                 doResponse();
             }
             return;
         }
-        finished = true;
+        passedThrough = true;
         ctx.fireChannelRead(handleContext);
     }
     
     private void doResponse() {
         try {
             ctx.writeAndFlush(handleContext.getHttpResponse());
+            replied = true;
         } finally {
             ReferenceCountUtil.release(handleContext.getHttpRequest());
         }

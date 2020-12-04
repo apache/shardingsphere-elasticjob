@@ -32,7 +32,6 @@ public interface Filter {
      * @param httpRequest  HTTP request
      * @param httpResponse HTTP response
      * @param filterChain  filter chain
-     * @return pass through the filter if true, else do response
      */
-    boolean doFilter(FullHttpRequest httpRequest, FullHttpResponse httpResponse, FilterChain filterChain);
+    void doFilter(FullHttpRequest httpRequest, FullHttpResponse httpResponse, FilterChain filterChain);
 }
