@@ -121,6 +121,15 @@ public final class BootstrapEnvironment {
     public FrameworkConfiguration getFrameworkConfiguration() {
         return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)), Integer.parseInt(getValue(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES)));
     }
+
+    /**
+     * Get user auth config.
+     *
+     * @return the user auth config.
+     */
+    public AuthConfiguration getUserAuthConfiguration() {
+        return new AuthConfiguration(getValue(EnvironmentArgument.AUTH_USERNAME), getValue(EnvironmentArgument.AUTH_PASSWORD));
+    }
     
     /**
      * Get tracing configuration.
@@ -213,7 +222,11 @@ public final class BootstrapEnvironment {
 
         EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
     
-        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false);
+        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false),
+
+        AUTH_USERNAME("auth_username", "root", true),
+
+        AUTH_PASSWORD("auth_password", "pwd", true);
         
         private final String key;
         
