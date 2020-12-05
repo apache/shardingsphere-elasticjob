@@ -39,7 +39,7 @@ public final class AuthenticationService {
      * @return check success or failure
      */
     public boolean check(final AuthenticationInfo authenticationInfo) {
-        if (authenticationInfo == null || Strings.isNullOrEmpty(authenticationInfo.getUsername()) || Strings.isNullOrEmpty(authenticationInfo.getPassword())) {
+        if (null == authenticationInfo || Strings.isNullOrEmpty(authenticationInfo.getUsername()) || Strings.isNullOrEmpty(authenticationInfo.getPassword())) {
             return false;
         }
         AuthConfiguration userAuthConfiguration = env.getUserAuthConfiguration();

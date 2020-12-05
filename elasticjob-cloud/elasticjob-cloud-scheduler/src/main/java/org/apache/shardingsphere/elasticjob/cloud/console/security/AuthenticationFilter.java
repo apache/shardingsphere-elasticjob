@@ -48,8 +48,7 @@ public final class AuthenticationFilter implements Filter {
             handleLogin(httpRequest, httpResponse);
         } else {
             String accessToken = httpRequest.headers().get(AuthenticationConstants.HEADER_NAME);
-            if (!Strings.isNullOrEmpty(accessToken) && accessToken
-                .equals(authenticationService.getToken())) {
+            if (!Strings.isNullOrEmpty(accessToken) && accessToken.equals(authenticationService.getToken())) {
                 filterChain.next(httpRequest);
             } else {
                 respondWithUnauthorized(httpResponse);
@@ -65,8 +64,7 @@ public final class AuthenticationFilter implements Filter {
         AuthenticationInfo authenticationInfo = deserializer.deserialize(AuthenticationInfo.class, bytes);
         boolean result = authenticationService.check(authenticationInfo);
         if (result) {
-            String token = GsonFactory.getGson().toJson(Collections
-                .singletonMap(AuthenticationConstants.HEADER_NAME,
+            String token = GsonFactory.getGson().toJson(Collections.singletonMap(AuthenticationConstants.HEADER_NAME,
                     authenticationService.getToken()));
             respond(httpResponse, HttpResponseStatus.OK, token.getBytes());
         } else {
@@ -75,8 +73,7 @@ public final class AuthenticationFilter implements Filter {
     }
 
     private void respondWithUnauthorized(final FullHttpResponse httpResponse) {
-        String result = GsonFactory.getGson()
-            .toJson(Collections.singletonMap("message", "Unauthorized."));
+        String result = GsonFactory.getGson().toJson(Collections.singletonMap("message", "Unauthorized."));
         respond(httpResponse, HttpResponseStatus.UNAUTHORIZED, result.getBytes());
     }
 
