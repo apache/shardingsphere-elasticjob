@@ -21,6 +21,8 @@ import org.apache.shardingsphere.elasticjob.cloud.console.config.advice.ConsoleE
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudAppController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudJobController;
 import org.apache.shardingsphere.elasticjob.cloud.console.controller.CloudOperationController;
+import org.apache.shardingsphere.elasticjob.cloud.console.security.AuthenticationFilter;
+import org.apache.shardingsphere.elasticjob.cloud.console.security.AuthenticationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.RestfulServerConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.ReconcileService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
@@ -43,6 +45,7 @@ public class ConsoleBootstrap {
         NettyRestfulServiceConfiguration restfulServiceConfiguration = new NettyRestfulServiceConfiguration(config.getPort());
         restfulServiceConfiguration.addControllerInstances(new CloudJobController(), new CloudAppController(), new CloudOperationController());
         restfulServiceConfiguration.addExceptionHandler(Exception.class, new ConsoleExceptionHandler());
+        restfulServiceConfiguration.addFilterInstances(new AuthenticationFilter(new AuthenticationService()));
         restfulService = new NettyRestfulService(restfulServiceConfiguration);
     }
     
