@@ -18,20 +18,23 @@
 package org.apache.shardingsphere.elasticjob.cloud.console.security;
 
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.AuthConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 
 /**
  * User authentication service.
  */
 public final class AuthenticationService {
-
+    
+    private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    
     private final Base64 base64 = new Base64();
-
+    
     private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
-
+    
     /**
      * Check auth.
      *
@@ -45,13 +48,13 @@ public final class AuthenticationService {
         AuthConfiguration userAuthConfiguration = env.getUserAuthConfiguration();
         return userAuthConfiguration.getAuthUsername().equals(authenticationInfo.getUsername()) && userAuthConfiguration.getAuthPassword().equals(authenticationInfo.getPassword());
     }
-
+    
     /**
      * Get user authentication token.
      *
      * @return authentication token
      */
     public String getToken() {
-        return base64.encodeToString(GsonFactory.getGson().toJson(env.getUserAuthConfiguration()).getBytes());
+        return base64.encodeToString(gson.toJson(env.getUserAuthConfiguration()).getBytes());
     }
 }

@@ -20,12 +20,14 @@ package org.apache.shardingsphere.elasticjob.cloud.console.security;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Authentication info.
+ */
 @Getter
 @Setter
 public final class AuthenticationInfo {
-
+    
     private String username;
-
+    
     private String password;
-
 }

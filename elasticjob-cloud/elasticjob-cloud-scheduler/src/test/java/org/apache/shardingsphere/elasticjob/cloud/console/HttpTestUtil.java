@@ -44,13 +44,13 @@ import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpTestUtil {
-
+    
     private static final AuthenticationService AUTH_SERVICE = new AuthenticationService();
-
+    
     private static void setAuth(final HttpRequestBase httpRequestBase) {
         httpRequestBase.setHeader(AuthenticationConstants.HEADER_NAME, AUTH_SERVICE.getToken());
     }
-
+    
     /**
      * Send post request.
      *
@@ -66,11 +66,11 @@ public final class HttpTestUtil {
             throw new HttpClientException("send a post request for '%s' failed", e, url);
         }
     }
-
+    
     /**
      * Send post request.
      *
-     * @param url url
+     * @param url     url
      * @param content content
      * @return http status code
      */
@@ -87,11 +87,11 @@ public final class HttpTestUtil {
             throw new HttpClientException("send a post request for '%s' with parameter '%s' failed", e, url, content);
         }
     }
-
+    
     /**
      * Send put request.
      *
-     * @param url url
+     * @param url     url
      * @param content content
      * @return http status code
      */
@@ -129,7 +129,7 @@ public final class HttpTestUtil {
     /**
      * Send get request.
      *
-     * @param url url
+     * @param url     url
      * @param content content
      * @return http result
      */
@@ -163,11 +163,11 @@ public final class HttpTestUtil {
             throw new HttpClientException("send a delete request for '%s' failed", e, url);
         }
     }
-
+    
     /**
      * Send post request.
      *
-     * @param url url
+     * @param url     url
      * @param content content
      * @return http response
      */
@@ -183,7 +183,7 @@ public final class HttpTestUtil {
             throw new HttpClientException("send a post request for '%s' with parameter '%s' failed", e, url, content);
         }
     }
-
+    
     /**
      * Send get request.
      *

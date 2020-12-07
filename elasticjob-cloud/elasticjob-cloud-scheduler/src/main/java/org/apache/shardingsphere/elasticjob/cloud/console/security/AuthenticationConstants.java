@@ -17,12 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.security;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Authentication constants.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AuthenticationConstants {
-
+    
     public static final String LOGIN_URI = "/api/login";
-
+    
     public static final String HEADER_NAME = "accessToken";
 }

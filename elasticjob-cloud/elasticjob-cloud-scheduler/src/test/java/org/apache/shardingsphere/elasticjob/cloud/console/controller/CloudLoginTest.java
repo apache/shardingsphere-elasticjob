@@ -17,13 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.console.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.shardingsphere.elasticjob.cloud.console.AbstractCloudControllerTest;
@@ -34,6 +28,13 @@ import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CloudLoginTest extends AbstractCloudControllerTest {
@@ -50,7 +51,7 @@ public class CloudLoginTest extends AbstractCloudControllerTest {
         String token = GsonFactory.getGson().fromJson(entity, JsonObject.class).get(AuthenticationConstants.HEADER_NAME).getAsString();
         assertThat(token, is(authenticationService.getToken()));
     }
-
+    
     @Test
     public void assertLoginFail() {
         Map<String, String> authInfo = new HashMap<>();
@@ -59,7 +60,7 @@ public class CloudLoginTest extends AbstractCloudControllerTest {
         CloseableHttpResponse actual = HttpTestUtil.unauthorizedPost("http://127.0.0.1:19000/api/login", authInfo);
         assertThat(actual.getStatusLine().getStatusCode(), is(401));
     }
-
+    
     @Test
     public void assertUnauthorized() {
         assertThat(HttpTestUtil.unauthorizedGet("http://127.0.0.1:19000/api/unauthorized"), is(401));
