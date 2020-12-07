@@ -18,65 +18,68 @@
 package org.apache.shardingsphere.elasticjob.cloud.console.security;
 
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
-import java.util.Collections;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Filter;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializerFactory;
 import org.apache.shardingsphere.elasticjob.restful.filter.FilterChain;
 
+import java.util.Collections;
+import java.util.Optional;
+
 /**
  * Authentication filter.
  */
 @RequiredArgsConstructor
 public final class AuthenticationFilter implements Filter {
-
+    
+    private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    
     private final AuthenticationService authenticationService;
-
+    
     @Override
     public void doFilter(final FullHttpRequest httpRequest, final FullHttpResponse httpResponse, final FilterChain filterChain) {
-        if (AuthenticationConstants.LOGIN_URI.equals(httpRequest.uri())) {
+        if (HttpMethod.POST.equals(httpRequest.method()) && AuthenticationConstants.LOGIN_URI.equals(httpRequest.uri())) {
             handleLogin(httpRequest, httpResponse);
-        } else {
-            String accessToken = httpRequest.headers().get(AuthenticationConstants.HEADER_NAME);
-            if (!Strings.isNullOrEmpty(accessToken) && accessToken.equals(authenticationService.getToken())) {
-                filterChain.next(httpRequest);
-            } else {
-                respondWithUnauthorized(httpResponse);
-            }
+            return;
         }
+        String accessToken = httpRequest.headers().get(AuthenticationConstants.HEADER_NAME);
+        if (Strings.isNullOrEmpty(accessToken) || !accessToken.equals(authenticationService.getToken())) {
+            respondWithUnauthorized(httpResponse);
+            return;
+        }
+        filterChain.next(httpRequest);
     }
-
+    
     private void handleLogin(final FullHttpRequest httpRequest, final FullHttpResponse httpResponse) {
         byte[] bytes = ByteBufUtil.getBytes(httpRequest.content());
-        String mimeType = Optional.ofNullable(HttpUtil.getMimeType(httpRequest))
-            .orElseGet(() -> HttpUtil.getMimeType(Http.DEFAULT_CONTENT_TYPE)).toString();
+        String mimeType = Optional.ofNullable(HttpUtil.getMimeType(httpRequest)).orElseGet(() -> HttpUtil.getMimeType(Http.DEFAULT_CONTENT_TYPE)).toString();
         RequestBodyDeserializer deserializer = RequestBodyDeserializerFactory.getRequestBodyDeserializer(mimeType);
         AuthenticationInfo authenticationInfo = deserializer.deserialize(AuthenticationInfo.class, bytes);
         boolean result = authenticationService.check(authenticationInfo);
-        if (result) {
-            String token = GsonFactory.getGson().toJson(Collections.singletonMap(AuthenticationConstants.HEADER_NAME,
-                    authenticationService.getToken()));
-            respond(httpResponse, HttpResponseStatus.OK, token.getBytes());
-        } else {
+        if (!result) {
             respondWithUnauthorized(httpResponse);
+            return;
         }
+        String token = gson.toJson(Collections.singletonMap(AuthenticationConstants.HEADER_NAME, authenticationService.getToken()));
+        respond(httpResponse, HttpResponseStatus.OK, token.getBytes());
     }
-
+    
     private void respondWithUnauthorized(final FullHttpResponse httpResponse) {
-        String result = GsonFactory.getGson().toJson(Collections.singletonMap("message", "Unauthorized."));
+        String result = gson.toJson(Collections.singletonMap("message", "Unauthorized."));
         respond(httpResponse, HttpResponseStatus.UNAUTHORIZED, result.getBytes());
     }
-
+    
     private void respond(final FullHttpResponse httpResponse, final HttpResponseStatus status, final byte[] result) {
         httpResponse.setStatus(status);
         httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, Http.DEFAULT_CONTENT_TYPE);
