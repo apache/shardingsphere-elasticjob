@@ -50,9 +50,9 @@ public final class TracingListenerFactory {
      */
     @SuppressWarnings("unchecked")
     public static TracingListener getListener(final TracingConfiguration tracingConfig) throws TracingConfigurationException {
-        if (Strings.isNullOrEmpty(tracingConfig.getType()) || !LISTENER_CONFIGS.containsKey(tracingConfig.getType())) {
+        if (null == tracingConfig.getTracingStorageConfiguration() || Strings.isNullOrEmpty(tracingConfig.getType()) || !LISTENER_CONFIGS.containsKey(tracingConfig.getType())) {
             throw new TracingConfigurationException(String.format("Can not find executor service handler type '%s'.", tracingConfig.getType()));
         }
-        return LISTENER_CONFIGS.get(tracingConfig.getType()).createTracingListener(tracingConfig.getStorage());
+        return LISTENER_CONFIGS.get(tracingConfig.getType()).createTracingListener(tracingConfig.getTracingStorageConfiguration().getStorage());
     }
 }

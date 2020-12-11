@@ -80,8 +80,8 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         TracingConfiguration<?> tracingConfig = applicationContext.getBean(TracingConfiguration.class);
         assertNotNull(tracingConfig);
         assertThat(tracingConfig.getType(), is("RDB"));
-        assertTrue(tracingConfig.getStorage() instanceof DataSource);
-        DataSource dataSource = (DataSource) tracingConfig.getStorage();
+        assertTrue(tracingConfig.getTracingStorageConfiguration().getStorage() instanceof DataSource);
+        DataSource dataSource = (DataSource) tracingConfig.getTracingStorageConfiguration().getStorage();
         assertNotNull(dataSource.getConnection());
     }
     
