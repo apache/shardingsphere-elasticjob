@@ -66,7 +66,9 @@
         <fenzo.version>0.11.1</fenzo.version>
         
         <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-dbcp2.version>2.2.0</commons-dbcp2.version>
         <commons-pool.version>1.5.4</commons-pool.version>
+        <hikaricp.version>3.4.2</hikaricp.version>
         <mail.version>1.6.0</mail.version>
         
         <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
@@ -285,9 +287,19 @@
                 <version>${commons-dbcp.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${commons-dbcp2.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-pool</groupId>
                 <artifactId>commons-pool</artifactId>
                 <version>${commons-pool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.mail</groupId>
