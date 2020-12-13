@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml;
+package org.apache.shardingsphere.elasticjob.infra.yaml.config;
 
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
+import java.io.Serializable;
 
 /**
- * ElasticJob YAML representer.
+ * YAML configuration.
+ *
+ * @param <T> type of configuration
  */
-public final class ElasticJobYamlRepresenter extends Representer {
+public interface YamlConfiguration<T> extends Serializable {
     
-    @Override
-    protected NodeTuple representJavaBeanProperty(final Object javaBean, final Property property, final Object propertyValue, final Tag customTag) {
-        return new DefaultYamlTupleProcessor().process(super.representJavaBeanProperty(javaBean, property, propertyValue, customTag));
-    }
+    /**
+     * Convert to original configuration.
+     *
+     * @return configuration
+     */
+    T toConfiguration();
 }

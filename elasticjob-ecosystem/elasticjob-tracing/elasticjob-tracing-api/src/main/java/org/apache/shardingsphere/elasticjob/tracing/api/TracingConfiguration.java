@@ -17,10 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.api;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingStorageConverterNotFoundException;
 import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverterFactory;
@@ -31,14 +29,12 @@ import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConver
  * @param <T> type of tracing storage
  */
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class TracingConfiguration<T> implements JobExtraConfiguration {
     
-    private String type;
+    private final String type;
     
-    private TracingStorageConfiguration<T> tracingStorageConfiguration;
+    private final TracingStorageConfiguration<T> tracingStorageConfiguration;
     
     @SuppressWarnings("unchecked")
     public TracingConfiguration(final String type, final T storage) {

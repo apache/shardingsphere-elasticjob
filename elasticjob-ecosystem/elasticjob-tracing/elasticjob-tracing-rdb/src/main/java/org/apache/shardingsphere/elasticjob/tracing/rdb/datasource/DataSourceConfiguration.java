@@ -22,8 +22,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
 
@@ -41,9 +40,8 @@ import java.util.ServiceLoader;
 /**
  * Data source configuration.
  */
-@Setter
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public final class DataSourceConfiguration implements TracingStorageConfiguration<DataSource> {
     
     private static final String GETTER_PREFIX = "get";
@@ -59,13 +57,9 @@ public final class DataSourceConfiguration implements TracingStorageConfiguratio
         SKIPPED_PROPERTY_NAMES = Sets.newHashSet("loginTimeout");
     }
     
-    private String dataSourceClassName;
+    private final String dataSourceClassName;
     
-    private Map<String, Object> props = new LinkedHashMap<>();
-    
-    public DataSourceConfiguration(final String dataSourceClassName) {
-        this.dataSourceClassName = dataSourceClassName;
-    }
+    private final Map<String, Object> props = new LinkedHashMap<>();
     
     /**
      * Get data source configuration.

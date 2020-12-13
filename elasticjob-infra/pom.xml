@@ -29,6 +29,7 @@
     
     <modules>
         <module>elasticjob-infra-common</module>
+        <module>elasticjob-infra-yaml</module>
         <module>elasticjob-registry-center</module>
         <module>elasticjob-restful</module>
     </modules>
