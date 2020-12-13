@@ -15,23 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.tracing.yaml;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCaller;
+import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCallerConfiguration;
 
 /**
- * {@link TracingStorageConverter} for {@link JobEventCaller}.
+ * YAML JobEventCaller configuration.
  */
-public final class JobEventCallerTracingStorageConverter implements TracingStorageConverter<JobEventCaller> {
+@Getter
+@Setter
+public final class YamlJobEventCallerConfiguration implements YamlTracingStorageConfiguration<JobEventCaller> {
+    
+    private static final long serialVersionUID = -3152825887223378472L;
+    
+    private JobEventCaller jobEventCaller;
     
     @Override
-    public TracingStorageConfiguration<JobEventCaller> convertObjectToConfiguration(final JobEventCaller storage) {
-        return new JobEventCallerTracingStorageConfiguration(storage);
-    }
-    
-    @Override
-    public Class<JobEventCaller> storageType() {
-        return JobEventCaller.class;
+    public TracingStorageConfiguration<JobEventCaller> toConfiguration() {
+        return new JobEventCallerConfiguration(jobEventCaller);
     }
 }

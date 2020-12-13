@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.listener;
 
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCallerTracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCallerConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.fixture.TestTracingListener;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public final class TracingListenerFactoryTest {
     
     @Test
     public void assertGetListener() throws TracingConfigurationException {
-        assertThat(TracingListenerFactory.getListener(new TracingConfiguration<>("TEST", new JobEventCallerTracingStorageConfiguration(() -> {
+        assertThat(TracingListenerFactory.getListener(new TracingConfiguration<>("TEST", new JobEventCallerConfiguration(() -> {
         }))), instanceOf(TestTracingListener.class));
     }
 }
