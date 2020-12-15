@@ -15,18 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml.fixture;
+package org.apache.shardingsphere.elasticjob.infra.yaml.config;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.junit.Test;
 
-@Getter
-@Setter
-public final class FooYamlConfiguration {
+import static org.junit.Assert.assertFalse;
+
+public final class YamlConfigurationConverterFactoryTest {
     
-    private String foo;
+    @Test
+    public void assertConverterNotFound() {
+        assertFalse(YamlConfigurationConverterFactory.findConverter(AClassWithoutCorrespondingConverter.class).isPresent());
+    }
     
-    private String bar;
+    private static class AClassWithoutCorrespondingConverter {
     
-    private FooYamlConfiguration nest;
+    }
 }

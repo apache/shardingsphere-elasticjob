@@ -15,18 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml.fixture;
+package org.apache.shardingsphere.elasticjob.tracing.yaml;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
+/**
+ * YAML configuration for {@link org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration}.
+ *
+ * @param <T> type of storage
+ */
 @Getter
 @Setter
-public final class FooYamlConfiguration {
+@NoArgsConstructor
+public final class YamlTracingConfiguration<T> implements YamlConfiguration<TracingConfiguration<T>> {
     
-    private String foo;
+    private static final long serialVersionUID = -6625535892000287729L;
     
-    private String bar;
+    private String type;
     
-    private FooYamlConfiguration nest;
+    private YamlTracingStorageConfiguration<T> tracingStorageConfiguration;
+    
+    @Override
+    public TracingConfiguration<T> toConfiguration() {
+        return new TracingConfiguration<>(type, tracingStorageConfiguration.toConfiguration());
+    }
 }

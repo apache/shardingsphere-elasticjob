@@ -15,18 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml.fixture;
+package org.apache.shardingsphere.elasticjob.infra.yaml.config;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public final class FooYamlConfiguration {
+/**
+ * YAML configuration converter.
+ *
+ * @param <T> type of original configuration object
+ * @param <Y> type of YAML configuration
+ */
+public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> {
     
-    private String foo;
+    /**
+     * Convert to YAML configuration.
+     *
+     * @param data data to be converted
+     * @return YAML configuration
+     */
+    Y convertToYamlConfiguration(T data);
     
-    private String bar;
-    
-    private FooYamlConfiguration nest;
+    /**
+     * Get type of Configuration.
+     *
+     * @return configuration type
+     */
+    Class<T> configurationType();
 }

@@ -15,23 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.tracing.yaml;
 
+import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverter;
 
 /**
- * {@link TracingStorageConverter} for {@link JobEventCaller}.
+ * YAML configuration for {@link org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration}.
+ *
+ * @param <T> type of storage
  */
-public final class JobEventCallerTracingStorageConverter implements TracingStorageConverter<JobEventCaller> {
-    
-    @Override
-    public TracingStorageConfiguration<JobEventCaller> convertObjectToConfiguration(final JobEventCaller storage) {
-        return new JobEventCallerTracingStorageConfiguration(storage);
-    }
-    
-    @Override
-    public Class<JobEventCaller> storageType() {
-        return JobEventCaller.class;
-    }
+public interface YamlTracingStorageConfiguration<T> extends YamlConfiguration<TracingStorageConfiguration<T>> {
 }

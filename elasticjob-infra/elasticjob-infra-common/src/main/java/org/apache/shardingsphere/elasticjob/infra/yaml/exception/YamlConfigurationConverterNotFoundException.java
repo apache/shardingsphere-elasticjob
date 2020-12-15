@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml.fixture;
+package org.apache.shardingsphere.elasticjob.infra.yaml.exception;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public final class FooYamlConfiguration {
+/**
+ * Yaml configuration converter not found exception.
+ */
+public final class YamlConfigurationConverterNotFoundException extends RuntimeException {
     
-    private String foo;
+    private static final long serialVersionUID = 664042135874000182L;
     
-    private String bar;
-    
-    private FooYamlConfiguration nest;
+    public YamlConfigurationConverterNotFoundException(final Class<?> type) {
+        super(String.format("No YamlConfigurationConverter found for class [%s]", type.getName()));
+    }
 }

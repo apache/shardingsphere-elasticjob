@@ -15,18 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.yaml.fixture;
+package org.apache.shardingsphere.elasticjob.infra.yaml.representer;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
-@Getter
-@Setter
-public final class FooYamlConfiguration {
+/**
+ * ElasticJob YAML representer.
+ */
+public final class ElasticJobYamlRepresenter extends Representer {
     
-    private String foo;
-    
-    private String bar;
-    
-    private FooYamlConfiguration nest;
+    @Override
+    protected NodeTuple representJavaBeanProperty(final Object javaBean, final Property property, final Object propertyValue, final Tag customTag) {
+        return new DefaultYamlTupleProcessor().process(super.representJavaBeanProperty(javaBean, property, propertyValue, customTag));
+    }
 }

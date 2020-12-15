@@ -15,21 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.infra.yaml.config;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
+import java.io.Serializable;
 
 /**
- * {@link TracingStorageConfiguration} for {@link JobEventCaller}.
+ * YAML configuration.
+ *
+ * @param <T> type of configuration
  */
-@RequiredArgsConstructor
-public final class JobEventCallerTracingStorageConfiguration implements TracingStorageConfiguration<JobEventCaller> {
+public interface YamlConfiguration<T> extends Serializable {
     
-    private final JobEventCaller jobEventCaller;
-    
-    @Override
-    public JobEventCaller getStorage() {
-        return jobEventCaller;
-    }
+    /**
+     * Convert to original configuration.
+     *
+     * @return configuration
+     */
+    T toConfiguration();
 }
