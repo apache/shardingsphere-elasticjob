@@ -1,3 +1,29 @@
+## 3.0.0-RC1
+
+### API Changes
+
+1. Simplify usage of injecting OneOffJob when using Spring Boot Starter
+1. Refactor job tracing configuration to support persistence
+
+### New Features
+
+1. Support reloading JobErrorHandler and ExecutorService when configuration changed
+1. Add authentication support in Cloud Scheduler
+
+### Bug Fixes
+
+1. Fix TracingConfiguration doesn't work when the property overwrite is false
+1. Fix SnapshotService may be unavailable in specific situation
+1. Fix some minor problems in Restful module
+
+### Build & Dependencies
+
+1. Upgrade commons-dbcp to commons-dbcp2
+
+###  Change Logs
+
+1. [MILESTONE 3.0.0-RC1](https://github.com/apache/shardingsphere-elasticjob/milestone/3)
+
 ## 3.0.0-beta
 
 ### API Changes
