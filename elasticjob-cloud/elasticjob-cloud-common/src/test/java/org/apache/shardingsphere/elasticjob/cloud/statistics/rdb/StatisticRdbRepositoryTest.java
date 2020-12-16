@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.statistics.rdb;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRegisterStatistics;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.job.JobRunningStatistics;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.junit.Test;
 

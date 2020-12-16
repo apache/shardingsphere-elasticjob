@@ -33,7 +33,7 @@ chapter = true
     <bean id="myJob" class="xxx.MyJob" />
     
     <!-- Configure DataSource -->
-    <bean id="tracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="tracingDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${driver.class.name}" />
         <property name="url" value="${url}" />
         <property name="username" value="${username}" />

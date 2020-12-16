@@ -36,7 +36,7 @@
     
     <elasticjob:snapshot id="jobSnapshot" registry-center-ref="regCenter" dump-port="9999" />
     
-    <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="elasticJobTracingDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${event.rdb.driver}" />
         <property name="url" value="${event.rdb.url}" />
         <property name="username" value="${event.rdb.username}" />

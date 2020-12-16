@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
