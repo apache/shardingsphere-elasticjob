@@ -18,7 +18,7 @@
 
 ### Build & Dependencies
 
-1. Upgrade commons-dbcp to commons-dbcp2
+1. Upgrade commons-dbcp to commons-dbcp2 in Cloud Scheduler
 
 ###  Change Logs
 
