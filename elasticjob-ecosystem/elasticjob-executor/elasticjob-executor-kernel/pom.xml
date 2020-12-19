@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-executor</artifactId>
-        <version>3.0.0-RC1-SNAPSHOT</version>
+        <version>3.0.0-RC1</version>
     </parent>
     <artifactId>elasticjob-executor-kernel</artifactId>
     <name>${project.artifactId}</name>
