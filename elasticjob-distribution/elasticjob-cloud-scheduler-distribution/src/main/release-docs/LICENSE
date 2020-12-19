@@ -217,12 +217,12 @@ The text of each license is the standard Apache 2.0 license.
 
     audience-annotations 0.5.0: https://github.com/apache/yetus, Apache 2.0
     commons-codec 1.10: https://github.com/apache/commons-codec, Apache 2.0
-    commons-dbcp 1.4: https://github.com/apache/commons-dbcp, Apache 2.0
+    commons-dbcp2 2.7.0: https://github.com/apache/commons-dbcp, Apache 2.0
     commons-exec 1.3: http://commons.apache.org/proper/commons-exec, Apache 2.0
     commons-lang 2.6: https://github.com/apache/commons-lang, Apache 2.0
     commons-lang3 3.4: https://github.com/apache/commons-lang, Apache 2.0
     commons-logging 1.2: https://github.com/apache/commons-logging, Apache 2.0
-    commons-pool 1.5.4: https://github.com/apache/commons-pool, Apache 2.0
+    commons-pool2 2.8.1: https://github.com/apache/commons-pool, Apache 2.0
     curator-client 5.1.0: https://github.com/apache/curator,  Apache 2.0
     curator-framework 5.1.0: https://github.com/apache/curator,  Apache 2.0
     curator-recipes 5.1.0: https://github.com/apache/curator,  Apache 2.0
@@ -243,6 +243,7 @@ The text of each license is the standard Apache 2.0 license.
     mesos 1.1.0: http://mesos.apache.org/, Apache 2.0
     netty-buffer 4.1.45.Final: https://github.com/netty, Apache 2.0
     netty-codec 4.1.45.Final: https://github.com/netty, Apache 2.0
+    netty-codec-http 4.1.45.Final: https://github.com/netty, Apache 2.0
     netty-common 4.1.45.Final: https://github.com/netty, Apache 2.0
     netty-handler 4.1.45.Final: https://github.com/netty, Apache 2.0
     netty-resolver 4.1.45.Final: https://github.com/netty, Apache 2.0
@@ -251,23 +252,6 @@ The text of each license is the standard Apache 2.0 license.
     netty-transport-native-unix-common 4.1.45.Final: https://github.com/netty, Apache 2.0
     quartz 2.3.2: https://github.com/quartz-scheduler/quartz, Apache 2.0
     snakeyaml 1.26: http://www.snakeyaml.org, Apache 2.0
-    spring-aop 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-beans 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-autoconfigure 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-starter 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-starter-json 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-starter-logging 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-starter-tomcat 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-boot-starter-web 2.3.1.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-context 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-core 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-expression 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-jcl 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-web 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    spring-webmvc 5.2.7.RELEASE: https://projects.spring.io/spring-boot, Apache 2.0
-    tomcat-embed-core 9.0.36: https://tomcat.apache.org, Apache 2.0
-    tomcat-embed-websocket 9.0.36: https://tomcat.apache.org, Apache 2.0
     zookeeper 3.6.0: https://github.com/apache/zookeeper, Apache 2.0
     zookeeper-jute 3.6.0: https://github.com/apache/zookeeper, Apache 2.0
 
