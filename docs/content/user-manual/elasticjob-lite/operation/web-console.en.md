@@ -12,7 +12,13 @@ Open the browser and visit `http://localhost:8899/` to access the console.
 
 The console provides two types of accounts: administrator and guest.
 The administrator has all operation rights, and the visitors only have the viewing rights.
-The default administrator user name and password are root/root，and the guest user name and password are guest/guest，You can modify the administrator and guest user names and passwords through `conf\auth.properties`.
+The default administrator user name and password are root/root，and the guest user name and password are guest/guest，You can modify the administrator and guest user names and passwords through `conf\application.properties`.
+```
+auth.root_username=root
+auth.root_password=root
+auth.guest_username=guest
+auth.guest_password=guest
+```
 
 ## Function list
 
