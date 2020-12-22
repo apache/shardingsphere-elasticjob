@@ -37,6 +37,8 @@ Configuration description:
 | event_trace_rdb_url      | no       |                           | Url of Job event tracking database                                                         |
 | event_trace_rdb_username | no       |                           | Username of Job event tracking database                                                    |
 | event_trace_rdb_password | no       |                           | Password of Job event tracking database                                                     |
+| auth_username            | no       | root                      | API authentication username                                                                |
+| auth_password            | no       | pwd                       | API authentication password                                                                |
 
 ***
 

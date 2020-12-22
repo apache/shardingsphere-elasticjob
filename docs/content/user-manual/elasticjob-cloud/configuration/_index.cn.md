@@ -7,6 +7,43 @@ chapter = true
 
 ElasticJob-Cloud 提供应用发布及作业注册等 RESTful API， 可通过 curl 操作。
 
+请求 url 前缀为 `/api`
+
+## 鉴权 API
+
+### 获取 AccessToken
+
+url: login
+
+方法：POST
+
+参数类型：application/json
+
+参数列表：
+
+| 属性名                   | 类型    | 是否必填 | 缺省值     | 描述                           |
+| ----------------------- |:------- |:------- |:--------- |:----------------------------- |
+| username                | String  | 是      |           | API 鉴权用户名                 |
+| password                | String  | 是      |           | API 鉴权密码                 |
+
+响应体：
+
+| 属性名                   | 类型      | 描述                           |
+| ----------------------- |:-------  |:----------------------------- |
+| accessToken             | String   | API 鉴权 token              |
+
+示例：
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://elasticjob_cloud_host:8899/api/login -d '{"username": "root", "password": "pwd"}'
+```
+
+响应体：
+
+```json
+{"accessToken":"some_token"}
+```
+
 ## 应用 API
 
 ### 发布应用

@@ -7,6 +7,44 @@ chapter = true
 
 ElasticJob-Cloud provides RESTful APIs such as application publishing and job registration, which can be operated by curl.
 
+Request URL prefix is `/api`
+
+## Authentication API
+
+### Get AccessToken
+
+url: login
+
+Method: POST
+
+Content type: application/json
+
+Parameter list:
+
+| Property name           | Type    | Required or not | Default value  | Description                                                  |
+| ----------------------- |:------- |:--------------- |:-------------- |:------------------------------------------------------------ |
+| username                | String  | Yes             |                | API authentication username                                  |
+| password                | String  | Yes             |                | API authentication password                                  |
+
+Response parameter:
+
+| Property name           | Type     | Description                                                  |
+| ----------------------- |:-------  |:----------------------------- |
+| accessToken             | String   | API authentication token      |
+
+Example:
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://elasticjob_cloud_host:8899/api/login -d '{"username": "root", "password": "pwd"}'
+```
+
+Response body:
+
+```json
+{"accessToken":"some_token"}
+```
+
+
 ## Application API
 
 ### Publish application
@@ -17,7 +55,7 @@ Method: POST
 
 Parameter type: application/json
 
-parameter list: 
+Parameter list: 
 
 | Property name           | Type    | Required or not | Default value  | Description                                                  |
 | ----------------------- |:------- |:--------------- |:-------------- |:------------------------------------------------------------ |
@@ -65,7 +103,7 @@ Method: PUT
 
 Parameter type: application/json
 
-parameter list: 
+Parameter list: 
 
 | Property name           | Type    | Required or not | Default value      | Description                                          |
 | ----------------------- |:------- |:--------------- |:------------------ |:---------------------------------------------------- |
@@ -89,7 +127,7 @@ Method: POST
 
 Parameter type: application/json
 
-parameter list: 
+Parameter list: 
 
 | Property name                 | Type       | Required or not  | Default value  | Description                                                                            |
 | ----------------------------- |:---------- |:---------------- |:-------------- |:-------------------------------------------------------------------------------------- |

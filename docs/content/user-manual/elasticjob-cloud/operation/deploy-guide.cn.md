@@ -37,6 +37,8 @@ chapter = true
 | event_trace_rdb_url      | 否      |                           | 作业事件追踪数据库 URL                                                                         |
 | event_trace_rdb_username | 否      |                           | 作业事件追踪数据库用户名                                                                       |
 | event_trace_rdb_password | 否      |                           | 作业事件追踪数据库密码                                                                         |
+| auth_username            | 否      | root                      | API 鉴权用户名                                                                               |
+| auth_password            | 否      | pwd                       | API 鉴权密码                                                                                 |
 
 ***
 
