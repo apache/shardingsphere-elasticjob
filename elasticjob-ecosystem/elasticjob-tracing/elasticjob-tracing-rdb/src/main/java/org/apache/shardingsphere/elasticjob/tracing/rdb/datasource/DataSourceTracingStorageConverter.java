@@ -40,7 +40,9 @@ public final class DataSourceTracingStorageConverter implements TracingStorageCo
             log.error(ex.getLocalizedMessage(), ex);
             throw new TracingStorageUnavailableException(ex);
         }
-        return DataSourceConfiguration.getDataSourceConfiguration(dataSource);
+        DataSourceConfiguration result = DataSourceConfiguration.getDataSourceConfiguration(dataSource);
+        DataSourceRegistry.getInstance().registerDataSource(result, dataSource);
+        return result;
     }
     
     @Override
