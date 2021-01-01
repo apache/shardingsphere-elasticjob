@@ -25,6 +25,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
@@ -99,6 +100,7 @@ public final class HandlerParameterDecoder extends ChannelInboundHandlerAdapter 
                 case BODY:
                     Preconditions.checkState(!requestBodyAlreadyParsed, "@RequestBody duplicated on handle method.");
                     byte[] bytes = ByteBufUtil.getBytes(httpRequest.content());
+                    ReferenceCountUtil.release(httpRequest);
                     String mimeType = Optional.ofNullable(HttpUtil.getMimeType(httpRequest))
                             .orElseGet(() -> HttpUtil.getMimeType(Http.DEFAULT_CONTENT_TYPE)).toString();
                     RequestBodyDeserializer deserializer = RequestBodyDeserializerFactory.getRequestBodyDeserializer(mimeType);

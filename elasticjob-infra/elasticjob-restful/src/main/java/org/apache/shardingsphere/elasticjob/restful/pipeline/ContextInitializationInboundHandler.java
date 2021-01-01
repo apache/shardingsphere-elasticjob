@@ -42,7 +42,7 @@ public final class ContextInitializationInboundHandler extends ChannelInboundHan
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         log.debug("{}", msg);
         FullHttpRequest httpRequest = (FullHttpRequest) msg;
-        FullHttpResponse httpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND, ctx.alloc().buffer());
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND);
         HttpUtil.setContentLength(httpResponse, httpResponse.content().readableBytes());
         ctx.fireChannelRead(new HandleContext<Handler>(httpRequest, httpResponse));
     }
