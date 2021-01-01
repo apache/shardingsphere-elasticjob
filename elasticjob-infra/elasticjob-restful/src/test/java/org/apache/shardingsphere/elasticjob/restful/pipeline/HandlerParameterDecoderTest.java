@@ -68,9 +68,10 @@ public final class HandlerParameterDecoderTest {
         ByteBuf body = Unpooled.wrappedBuffer("BODY".getBytes());
         HttpHeaders headers = new DefaultHttpHeaders();
         headers.set("Message", "some_message");
-        FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, uri, body, headers, headers);
+        FullHttpRequest httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, uri, body, headers, headers).retain();
         channel.writeInbound(httpRequest);
         FullHttpResponse httpResponse = channel.readOutbound();
+        assertThat(httpRequest.refCnt(), is(0));
         assertThat(httpResponse.status().code(), is(200));
         assertThat(new String(ByteBufUtil.getBytes(httpResponse.content())), is("ok"));
     }
