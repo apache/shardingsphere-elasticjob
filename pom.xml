@@ -24,20 +24,20 @@
         <version>21</version>
     </parent>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob</artifactId>
+    <artifactId>shardingsphere-elasticjob</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-api</module>
-        <module>elasticjob-infra</module>
+        <module>shardingsphere-elasticjob-api</module>
+        <module>shardingsphere-elasticjob-infra</module>
         
-        <module>elasticjob-lite</module>
-        <module>elasticjob-cloud</module>
+        <module>shardingsphere-elasticjob-lite</module>
+        <module>shardingsphere-elasticjob-cloud</module>
         
-        <module>elasticjob-distribution</module>
-        <module>elasticjob-ecosystem</module>
+        <module>shardingsphere-elasticjob-distribution</module>
+        <module>shardingsphere-elasticjob-ecosystem</module>
     </modules>
     
     <properties>
