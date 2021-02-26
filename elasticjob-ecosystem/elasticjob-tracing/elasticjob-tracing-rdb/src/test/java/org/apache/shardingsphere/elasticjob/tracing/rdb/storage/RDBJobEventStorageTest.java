@@ -53,7 +53,7 @@ public final class RDBJobEventStorageTest {
     }
     
     @After
-    public void teardown() throws SQLException{
+    public void teardown() throws SQLException {
         dataSource.close();
     }
 
