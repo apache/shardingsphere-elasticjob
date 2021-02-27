@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,10 +39,12 @@ import static org.junit.Assert.assertTrue;
 public final class RDBJobEventStorageTest {
     
     private RDBJobEventStorage storage;
+
+    private BasicDataSource dataSource;
     
     @Before
     public void setup() throws SQLException {
-        BasicDataSource dataSource = new BasicDataSource();
+        dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
@@ -49,6 +52,11 @@ public final class RDBJobEventStorageTest {
         storage = new RDBJobEventStorage(dataSource);
     }
     
+    @After
+    public void teardown() throws SQLException {
+        dataSource.close();
+    }
+
     @Test
     public void assertAddJobExecutionEvent() {
         assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0)));
