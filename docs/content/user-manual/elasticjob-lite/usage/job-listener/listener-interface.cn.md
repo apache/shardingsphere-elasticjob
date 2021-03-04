@@ -39,9 +39,13 @@ public class MyJobListener implements ElasticJobListener {
 
 public class MyDistributeOnceJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    public MyDistributeOnceJobListener(long startTimeoutMills, long completeTimeoutMills) {
+    private static final long startTimeoutMills = 3000;
+    private static final long completeTimeoutMills = 3000;
+
+    public MyDistributeOnceJobListener() {
         super(startTimeoutMills, completeTimeoutMills);
     }
+    
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts) {
