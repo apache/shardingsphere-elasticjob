@@ -39,7 +39,7 @@ public class MyJobListener implements ElasticJobListener {
 
 public class MyDistributeOnceJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    public TestDistributeOnceElasticJobListener(long startTimeoutMills, long completeTimeoutMills) {
+    public MyDistributeOnceJobListener(long startTimeoutMills, long completeTimeoutMills) {
         super(startTimeoutMills, completeTimeoutMills);
     }
     
