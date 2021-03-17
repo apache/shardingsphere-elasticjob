@@ -67,6 +67,7 @@ Total: 79 companies.
     <li><a href="https://www.itrip.com/" rel="nofollow">iTrip</a></li>
     <li><a href="https://www.maihaoche.com/" rel="nofollow">MaiHaoche</a></li>
     <li><a href="https://www.ttpai.cn/" rel="nofollow">TTPai</a></li>
+    <li><a href="https://www.didiglobal.com/" rel="nofollow">DiDi</a></li>
 </ul>
 
 ### Logistics
@@ -122,6 +123,7 @@ Total: 79 companies.
     <li><a href="http://www.gdyuanpeng.com/" rel="nofollow">YY Cloud</a></li>
     <li><a href="https://www.g7.com.cn/" rel="nofollow">G7</a></li>
     <li><a href="http://www.glsx.com.cn/">ShenzhenGuangliansaixun Co.，LTD.</a></li>
+    <li><a href="https://sunwuu.com">Guangzhou shang mai network technology co. LTD</a></li>
 </ul>
 
 ### Software Development Services
@@ -135,6 +137,7 @@ Total: 79 companies.
     <li><a href="http://www.deepdraw.cn/" rel="nofollow">DeepDraw</a></li>
     <li><a href="https://www.go-future.cn/" rel="nofollow">WeiLaiXinFeng</a></li>
     <li><a href="http://www.gzcss.net/" rel="nofollow">Guangzhou Zhongruan</a></li>
+    <li><a href="https://www.shb.ltd/" rel="nofollow">PubLink</a></li>
 </ul>
 
 ### Health Care
