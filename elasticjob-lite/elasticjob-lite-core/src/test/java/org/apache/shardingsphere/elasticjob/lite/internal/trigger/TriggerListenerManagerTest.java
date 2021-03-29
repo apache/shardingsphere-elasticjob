@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.instance;
+package org.apache.shardingsphere.elasticjob.lite.internal.trigger;
 
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ public final class TriggerListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private InstanceService instanceService;
+    private TriggerService triggerService;
     
     @Mock
     private JobScheduleController jobScheduleController;
@@ -55,7 +55,7 @@ public final class TriggerListenerManagerTest {
     public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         triggerListenerManager = new TriggerListenerManager(null, "test_job");
-        ReflectionUtils.setFieldValue(triggerListenerManager, "instanceService", instanceService);
+        ReflectionUtils.setFieldValue(triggerListenerManager, "triggerService", triggerService);
         ReflectionUtils.setSuperclassFieldValue(triggerListenerManager, "jobNodeStorage", jobNodeStorage);
     }
     
@@ -66,27 +66,21 @@ public final class TriggerListenerManagerTest {
     }
     
     @Test
-    public void assertNotTriggerWhenIsNotTriggerOperation() {
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CHANGED, "");
-        verify(instanceService, times(0)).clearTriggerFlag();
-    }
-    
-    @Test
     public void assertNotTriggerWhenIsNotLocalInstancePath() {
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_CHANGED, InstanceOperation.TRIGGER.name());
-        verify(instanceService, times(0)).clearTriggerFlag();
+        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/trigger/127.0.0.2@-@0", Type.NODE_CREATED, "");
+        verify(triggerService, times(0)).removeTriggerFlag();
     }
     
     @Test
-    public void assertNotTriggerWhenIsNotUpdate() {
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CREATED, InstanceOperation.TRIGGER.name());
-        verify(instanceService, times(0)).clearTriggerFlag();
+    public void assertNotTriggerWhenIsNotCreate() {
+        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/trigger/127.0.0.1@-@0", Type.NODE_CHANGED, "");
+        verify(triggerService, times(0)).removeTriggerFlag();
     }
     
     @Test
     public void assertTriggerWhenJobScheduleControllerIsNull() {
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CHANGED, InstanceOperation.TRIGGER.name());
-        verify(instanceService).clearTriggerFlag();
+        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/trigger/127.0.0.1@-@0", Type.NODE_CREATED, "");
+        verify(triggerService).removeTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
     }
     
@@ -95,8 +89,8 @@ public final class TriggerListenerManagerTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", true);
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CHANGED, InstanceOperation.TRIGGER.name());
-        verify(instanceService).clearTriggerFlag();
+        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/trigger/127.0.0.1@-@0", Type.NODE_CREATED, "");
+        verify(triggerService).removeTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
         JobRegistry.getInstance().setJobRunning("test_job", false);
         JobRegistry.getInstance().shutdown("test_job");
@@ -106,8 +100,8 @@ public final class TriggerListenerManagerTest {
     public void assertTriggerWhenJobIsNotRunning() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
-        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_CHANGED, InstanceOperation.TRIGGER.name());
-        verify(instanceService).clearTriggerFlag();
+        triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/trigger/127.0.0.1@-@0", Type.NODE_CREATED, "");
+        verify(triggerService).removeTriggerFlag();
         verify(jobScheduleController).triggerJob();
         JobRegistry.getInstance().shutdown("test_job");
     }
