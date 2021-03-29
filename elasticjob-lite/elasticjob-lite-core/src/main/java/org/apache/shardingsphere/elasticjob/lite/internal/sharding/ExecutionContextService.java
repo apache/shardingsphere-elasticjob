@@ -71,7 +71,7 @@ public final class ExecutionContextService {
     private String buildTaskId(final JobConfiguration jobConfig, final List<Integer> shardingItems) {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
         String shardingItemsString = shardingItems.stream().map(Object::toString).collect(Collectors.joining(","));
-        String jobInstanceId = null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
+        String jobInstanceId = null == jobInstance || null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
         return String.join("@-@", jobConfig.getJobName(), shardingItemsString, "READY", jobInstanceId); 
     }
     

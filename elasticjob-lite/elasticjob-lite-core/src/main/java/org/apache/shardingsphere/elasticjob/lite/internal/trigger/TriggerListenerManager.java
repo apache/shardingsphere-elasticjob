@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.instance;
+package org.apache.shardingsphere.elasticjob.lite.internal.trigger;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
@@ -29,15 +29,15 @@ public final class TriggerListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final InstanceNode instanceNode;
+    private final TriggerNode triggerNode;
     
-    private final InstanceService instanceService;
+    private final TriggerService triggerService;
     
     public TriggerListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        instanceNode = new InstanceNode(jobName);
-        instanceService = new InstanceService(regCenter, jobName);
+        triggerNode = new TriggerNode(jobName);
+        triggerService = new TriggerService(regCenter, jobName);
     }
     
     @Override
@@ -49,10 +49,10 @@ public final class TriggerListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_CHANGED != eventType) {
+            if (!triggerNode.isLocalTriggerPath(path) || Type.NODE_CREATED != eventType) {
                 return;
             }
-            instanceService.clearTriggerFlag();
+            triggerService.removeTriggerFlag();
             if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().isJobRunning(jobName)) {
                 // TODO At present, it cannot be triggered when the job is running, and it will be changed to a stacked trigger in the future.
                 JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();

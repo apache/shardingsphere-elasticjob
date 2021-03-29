@@ -71,12 +71,6 @@ public final class InstanceServiceTest {
     }
     
     @Test
-    public void assertClearTriggerFlag() {
-        instanceService.clearTriggerFlag();
-        verify(jobNodeStorage).updateJobNode("instances/127.0.0.1@-@0", "");
-    }
-    
-    @Test
     public void assertGetAvailableJobInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
@@ -93,7 +87,7 @@ public final class InstanceServiceTest {
     public void assertTriggerAllInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         instanceService.triggerAllInstances();
-        verify(jobNodeStorage).replaceJobNode("instances/127.0.0.1@-@0", InstanceOperation.TRIGGER.name());
-        verify(jobNodeStorage).replaceJobNode("instances/127.0.0.2@-@0", InstanceOperation.TRIGGER.name());
+        verify(jobNodeStorage).createJobNodeIfNeeded("trigger/127.0.0.1@-@0");
+        verify(jobNodeStorage).createJobNodeIfNeeded("trigger/127.0.0.2@-@0");
     }
 }

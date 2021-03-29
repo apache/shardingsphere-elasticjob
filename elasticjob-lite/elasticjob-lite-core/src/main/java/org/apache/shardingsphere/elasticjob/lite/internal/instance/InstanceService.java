@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.instance;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.internal.trigger.TriggerNode;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.LinkedList;
@@ -34,11 +35,14 @@ public final class InstanceService {
     
     private final InstanceNode instanceNode;
     
+    private final TriggerNode triggerNode;
+    
     private final ServerService serverService;
     
     public InstanceService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         instanceNode = new InstanceNode(jobName);
+        triggerNode = new TriggerNode(jobName);
         serverService = new ServerService(regCenter, jobName);
     }
     
@@ -54,10 +58,6 @@ public final class InstanceService {
      */
     public void removeInstance() {
         jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstancePath());
-    }
-    
-    void clearTriggerFlag() {
-        jobNodeStorage.updateJobNode(instanceNode.getLocalInstancePath(), "");
     }
     
     /**
@@ -84,6 +84,7 @@ public final class InstanceService {
      * Trigger all instances.
      */
     public void triggerAllInstances() {
-        jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT).forEach(each -> jobNodeStorage.replaceJobNode(instanceNode.getInstancePath(each), InstanceOperation.TRIGGER.name()));
+        jobNodeStorage.removeJobNodeIfExisted(triggerNode.getTriggerRoot());
+        jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT).forEach(each -> jobNodeStorage.createJobNodeIfNeeded(triggerNode.getTriggerPath(each)));
     }
 }

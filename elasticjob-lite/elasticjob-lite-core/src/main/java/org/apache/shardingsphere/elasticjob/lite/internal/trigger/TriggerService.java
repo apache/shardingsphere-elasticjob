@@ -15,12 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.instance;
+package org.apache.shardingsphere.elasticjob.lite.internal.trigger;
+
+import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
- * Instance operation.
+ * Trigger service.
  */
-public enum InstanceOperation {
+public final class TriggerService {
     
-    TRIGGER
+    private final JobNodeStorage jobNodeStorage;
+    
+    private final TriggerNode triggerNode;
+    
+    public TriggerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        triggerNode = new TriggerNode(jobName);
+    }
+    
+    /**
+     * Remove trigger flag.
+     */
+    public void removeTriggerFlag() {
+        jobNodeStorage.removeJobNodeIfExisted(triggerNode.getLocalTriggerPath());
+    }
 }
