@@ -27,7 +27,7 @@ public final class TriggerNode {
     
     public static final String ROOT = "trigger";
     
-    private static final String INSTANCES = ROOT + "/%s";
+    private static final String TRIGGER = ROOT + "/%s";
     
     private final String jobName;
     
@@ -39,31 +39,40 @@ public final class TriggerNode {
     }
     
     /**
-     * Is local instance path.
+     * Is local trigger path.
      *
      * @param path path
-     * @return is local instance path or not
+     * @return is local trigger path or not
      */
-    public boolean isLocalInstancePath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
+    public boolean isLocalTriggerPath(final String path) {
+        return path.equals(jobNodePath.getFullPath(String.format(TRIGGER, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
     }
     
     /**
-     * Get local instance path.
+     * Get local trigger path.
      *
-     * @return local instance path
+     * @return local trigger path
      */
-    public String getLocalInstancePath() {
-        return getInstancePath(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+    public String getLocalTriggerPath() {
+        return getTriggerPath(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
     
     /**
-     * Get instance path.
+     * Get trigger path.
      *
      * @param instanceId instance id
-     * @return instance path
+     * @return trigger path
      */
-    public String getInstancePath(final String instanceId) {
-        return String.format(INSTANCES, instanceId);
+    public String getTriggerPath(final String instanceId) {
+        return String.format(TRIGGER, instanceId);
+    }
+    
+    /**
+     * Get trigger root.
+     *
+     * @return trigger root
+     */
+    public String getTriggerRoot() {
+        return ROOT;
     }
 }

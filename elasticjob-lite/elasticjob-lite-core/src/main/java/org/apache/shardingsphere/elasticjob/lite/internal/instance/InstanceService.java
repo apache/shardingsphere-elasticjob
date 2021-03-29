@@ -84,6 +84,7 @@ public final class InstanceService {
      * Trigger all instances.
      */
     public void triggerAllInstances() {
-        jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT).forEach(each -> jobNodeStorage.createJobNodeIfNeeded(triggerNode.getInstancePath(each)));
+        jobNodeStorage.removeJobNodeIfExisted(triggerNode.getTriggerRoot());
+        jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT).forEach(each -> jobNodeStorage.createJobNodeIfNeeded(triggerNode.getTriggerPath(each)));
     }
 }

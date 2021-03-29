@@ -38,6 +38,6 @@ public final class TriggerService {
      * Remove trigger flag.
      */
     public void removeTriggerFlag() {
-        jobNodeStorage.removeJobNodeIfExisted(triggerNode.getLocalInstancePath());
+        jobNodeStorage.removeJobNodeIfExisted(triggerNode.getLocalTriggerPath());
     }
 }

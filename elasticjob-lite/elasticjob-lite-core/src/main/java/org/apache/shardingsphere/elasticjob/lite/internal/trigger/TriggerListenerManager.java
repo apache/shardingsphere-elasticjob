@@ -49,7 +49,7 @@ public final class TriggerListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!triggerNode.isLocalInstancePath(path) || Type.NODE_CREATED != eventType) {
+            if (!triggerNode.isLocalTriggerPath(path) || Type.NODE_CREATED != eventType) {
                 return;
             }
             triggerService.removeTriggerFlag();
