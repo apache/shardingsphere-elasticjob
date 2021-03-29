@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.trigger;
 
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 
@@ -45,7 +46,8 @@ public final class TriggerNode {
      * @return is local trigger path or not
      */
     public boolean isLocalTriggerPath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(TRIGGER, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
+        JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+        return jobInstance != null && path.equals(jobNodePath.getFullPath(String.format(TRIGGER, jobInstance.getJobInstanceId())));
     }
     
     /**
