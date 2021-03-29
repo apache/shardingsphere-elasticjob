@@ -47,7 +47,7 @@ public final class TriggerNode {
      */
     public boolean isLocalTriggerPath(final String path) {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
-        return jobInstance != null && path.equals(jobNodePath.getFullPath(String.format(TRIGGER, jobInstance.getJobInstanceId())));
+        return null != jobInstance && path.equals(jobNodePath.getFullPath(String.format(TRIGGER, jobInstance.getJobInstanceId())));
     }
     
     /**
