@@ -54,7 +54,7 @@ public final class ServerServiceTest {
     
     @Before
     public void setUp() {
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
         serverService = new ServerService(null, "test_job");
         ServerNode serverNode = new ServerNode("test_job");
         ReflectionUtils.setFieldValue(serverService, "serverNode", serverNode);

@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.instance;
 
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.internal.trigger.TriggerNode;
@@ -50,7 +51,7 @@ public final class InstanceService {
      * Persist job online status.
      */
     public void persistOnline() {
-        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstancePath(), "");
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstancePath(), instanceNode.getLocalInstanceValue());
     }
     
     /**
@@ -68,8 +69,8 @@ public final class InstanceService {
     public List<JobInstance> getAvailableJobInstances() {
         List<JobInstance> result = new LinkedList<>();
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            JobInstance jobInstance = new JobInstance(each);
-            if (serverService.isEnableServer(jobInstance.getIp())) {
+            JobInstance jobInstance = YamlEngine.unmarshal(jobNodeStorage.getJobNodeData(instanceNode.getInstancePath(each)), JobInstance.class);
+            if (serverService.isEnableServer(jobInstance.getServerIp())) {
                 result.add(new JobInstance(each));
             }
         }

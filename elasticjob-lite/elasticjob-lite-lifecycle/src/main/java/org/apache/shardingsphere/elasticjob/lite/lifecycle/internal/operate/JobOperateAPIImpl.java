@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
 import com.google.common.base.Preconditions;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
@@ -94,7 +96,8 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
         if (null != jobName && null != serverIp) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-                if (serverIp.equals(each.split("@-@")[0])) {
+                JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+                if (serverIp.equals(jobInstance.getServerIp())) {
                     regCenter.remove(jobNodePath.getInstanceNodePath(each));
                 }
             }
@@ -109,7 +112,8 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                 JobNodePath jobNodePath = new JobNodePath(job);
                 List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
                 for (String each : instances) {
-                    if (serverIp.equals(each.split("@-@")[0])) {
+                    JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+                    if (serverIp.equals(jobInstance.getServerIp())) {
                         regCenter.remove(jobNodePath.getInstanceNodePath(each));
                     }
                 }

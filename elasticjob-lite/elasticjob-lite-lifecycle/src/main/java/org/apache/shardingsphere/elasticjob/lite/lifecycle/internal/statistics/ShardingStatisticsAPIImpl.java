@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ShardingInfo;
@@ -59,9 +61,9 @@ public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {
         result.setStatus(ShardingInfo.ShardingStatus.getShardingStatus(disabled, running, shardingError));
         result.setFailover(regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover")));
         if (null != instanceId) {
-            String[] ipAndPid = instanceId.split("@-@");
-            result.setServerIp(ipAndPid[0]);
-            result.setInstanceId(ipAndPid[1]);
+            JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(instanceId)), JobInstance.class);
+            result.setServerIp(jobInstance.getServerIp());
+            result.setInstanceId(jobInstance.getJobInstanceId());
         }
         return result;
     }

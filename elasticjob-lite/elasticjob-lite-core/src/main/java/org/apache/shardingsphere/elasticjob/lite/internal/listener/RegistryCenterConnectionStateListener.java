@@ -60,7 +60,7 @@ public final class RegistryCenterConnectionStateListener implements ConnectionSt
         if (ConnectionState.SUSPENDED == newState || ConnectionState.LOST == newState) {
             jobScheduleController.pauseJob();
         } else if (ConnectionState.RECONNECTED == newState) {
-            serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
+            serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp()));
             instanceService.persistOnline();
             executionService.clearRunningInfo(shardingService.getLocalShardingItems());
             jobScheduleController.resumeJob();

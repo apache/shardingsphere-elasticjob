@@ -50,7 +50,7 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     }
     
     private void setJobEnable() {
-        getREGISTRY_CENTER().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), ServerStatus.ENABLED.name());
+        getREGISTRY_CENTER().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), ServerStatus.ENABLED.name());
     }
     
     private void assertEnabledRegCenterInfo() {

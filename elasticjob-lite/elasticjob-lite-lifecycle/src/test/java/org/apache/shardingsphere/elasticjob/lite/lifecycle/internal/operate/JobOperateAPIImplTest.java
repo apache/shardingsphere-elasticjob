@@ -110,6 +110,7 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertShutdownWithJobNameAndServerIp() {
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
+        when(regCenter.get("/test_job/instances/localhost@-@defaultInstance")).thenReturn("jobInstanceId: localhost@-@defaultInstance\nserverIp: localhost\n");
         jobOperateAPI.shutdown("test_job", "localhost");
         verify(regCenter).remove("/test_job/instances/localhost@-@defaultInstance");
     }
@@ -127,6 +128,8 @@ public final class JobOperateAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job2/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
+        when(regCenter.get("/test_job1/instances/localhost@-@defaultInstance")).thenReturn("jobInstanceId: localhost@-@defaultInstance\nserverIp: localhost\n");
+        when(regCenter.get("/test_job2/instances/localhost@-@defaultInstance")).thenReturn("jobInstanceId: localhost@-@defaultInstance\nserverIp: localhost\n");
         jobOperateAPI.shutdown(null, "localhost");
         verify(regCenter).getChildrenKeys("/");
         verify(regCenter).remove("/test_job1/instances/localhost@-@defaultInstance");
