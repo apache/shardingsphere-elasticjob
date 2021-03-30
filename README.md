@@ -14,7 +14,7 @@ Developers only need code one time and can deploy at will.
 
 ElasticJob became an [Apache ShardingSphere](https://shardingsphere.apache.org/) Sub-project on May 28 2020.
 
-Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apache.org).
+You are welcome to communicate with the community via the [mailing list](mailto:dev@shardingsphere.apache.org).
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -27,8 +27,8 @@ Welcome communicate with community via [mail list](mailto:dev@shardingsphere.apa
 
 ## Introduction
 
-Using ElasticJob can make developers no longer worry about the non functional requirements such as jobs scale out, so that they can focus more on business coding;
-At the same time, it can release operators too, so that they do not have to worry about jobs high availability and management, and can automatic operation by simply adding servers.
+Using ElasticJob developers can no longer worry about the non functional requirements such as job scale out, so that they can focus more on business coding.
+At the same time, it can release operators too, so that they do not have to worry about high availability and management, and can automatically operate by simply adding servers.
 
 ### ElasticJob-Lite
 
