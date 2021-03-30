@@ -53,6 +53,10 @@ public final class ShardingStatisticsAPIImplTest {
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@2341");
         when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@3412");
         when(regCenter.get("/test_job/sharding/3/instance")).thenReturn("ip4@-@4123");
+        when(regCenter.get("/test_job/instances/ip1@-@1234")).thenReturn("jobInstanceId: ip1@-@1234\nserverIp: ip1\n");
+        when(regCenter.get("/test_job/instances/ip2@-@2341")).thenReturn("jobInstanceId: ip2@-@2341\nserverIp: ip2\n");
+        when(regCenter.get("/test_job/instances/ip3@-@3412")).thenReturn("jobInstanceId: ip3@-@3412\nserverIp: ip3\n");
+        when(regCenter.get("/test_job/instances/ip4@-@4123")).thenReturn("jobInstanceId: ip4@-@4123\nserverIp: ip4\n");
         when(regCenter.isExisted("/test_job/instances/ip4@-@4123")).thenReturn(true);
         when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
         when(regCenter.isExisted("/test_job/sharding/1/running")).thenReturn(false);
@@ -69,23 +73,23 @@ public final class ShardingStatisticsAPIImplTest {
                 case 1:
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.RUNNING));
                     assertThat(each.getServerIp(), is("ip1"));
-                    assertThat(each.getInstanceId(), is("1234"));
+                    assertThat(each.getInstanceId(), is("ip1@-@1234"));
                     break;
                 case 2:
                     assertTrue(each.isFailover());
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
                     assertThat(each.getServerIp(), is("ip2"));
-                    assertThat(each.getInstanceId(), is("2341"));
+                    assertThat(each.getInstanceId(), is("ip2@-@2341"));
                     break;
                 case 3:
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.DISABLED));
                     assertThat(each.getServerIp(), is("ip3"));
-                    assertThat(each.getInstanceId(), is("3412"));
+                    assertThat(each.getInstanceId(), is("ip3@-@3412"));
                     break;
                 case 4:
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
                     assertThat(each.getServerIp(), is("ip4"));
-                    assertThat(each.getInstanceId(), is("4123"));
+                    assertThat(each.getInstanceId(), is("ip4@-@4123"));
                     break;
                 default:
                     break;

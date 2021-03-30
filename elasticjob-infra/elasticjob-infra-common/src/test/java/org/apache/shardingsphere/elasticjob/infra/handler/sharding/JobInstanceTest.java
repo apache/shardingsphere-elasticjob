@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,6 +33,14 @@ public final class JobInstanceTest {
     
     @Test
     public void assertGetIp() {
-        assertThat(new JobInstance().getIp(), is(IpUtils.getIp()));
+        assertThat(new JobInstance().getServerIp(), is(IpUtils.getIp()));
+    }
+    
+    @Test
+    public void assertYamlConvert() {
+        JobInstance actual = YamlEngine.unmarshal(YamlEngine.marshal(new JobInstance("id", "labels")), JobInstance.class);
+        assertThat(actual.getJobInstanceId(), is("id"));
+        assertThat(actual.getServerIp(), is(IpUtils.getIp()));
+        assertThat(actual.getLabels(), is("labels"));
     }
 }

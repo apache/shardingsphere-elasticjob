@@ -33,7 +33,7 @@ public final class ServerNodeTest {
     
     @BeforeClass
     public static void setUp() {
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
     }
     
     @Test

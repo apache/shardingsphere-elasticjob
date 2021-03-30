@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 
 import java.lang.management.ManagementFactory;
@@ -27,25 +27,34 @@ import java.lang.management.ManagementFactory;
 /**
  * Job instance.
  */
-@RequiredArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(of = "jobInstanceId")
 public final class JobInstance {
     
     private static final String DELIMITER = "@-@";
     
-    private final String jobInstanceId;
+    private String jobInstanceId;
+    
+    private String labels;
+    
+    private String serverIp;
     
     public JobInstance() {
-        jobInstanceId = IpUtils.getIp() + DELIMITER + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        this(IpUtils.getIp() + DELIMITER + ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
     }
     
-    /**
-     * Get server IP address.
-     * 
-     * @return server IP address
-     */
-    public String getIp() {
-        return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
+    public JobInstance(final String jobInstanceId) {
+        this(jobInstanceId, null);
+    }
+    
+    public JobInstance(final String jobInstanceId, final String labels) {
+        this(jobInstanceId, labels, IpUtils.getIp());
+    }
+    
+    public JobInstance(final String jobInstanceId, final String labels, final String serverIp) {
+        this.jobInstanceId = jobInstanceId;
+        this.labels = labels;
+        this.serverIp = serverIp;
     }
 }

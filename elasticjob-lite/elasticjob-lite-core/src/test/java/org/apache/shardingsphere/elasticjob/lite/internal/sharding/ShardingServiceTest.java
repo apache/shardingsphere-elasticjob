@@ -93,7 +93,7 @@ public final class ShardingServiceTest {
         ReflectionUtils.setFieldValue(shardingService, "executionService", executionService);
         ReflectionUtils.setFieldValue(shardingService, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
     }
     
     @Test
@@ -178,9 +178,10 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
-        
+    
     @Test
     public void assertGetShardingItemsWithNotAvailableServer() {
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
     }
     
@@ -193,6 +194,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -219,6 +221,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getLocalShardingItems(), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }

@@ -66,7 +66,7 @@ public final class LeaderService {
         while (!hasLeader() && serverService.hasAvailableServers()) {
             log.info("Leader is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
-            if (!JobRegistry.getInstance().isShutdown(jobName) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp())) {
                 electLeader();
             }
         }

@@ -26,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategyFactory;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
@@ -59,6 +60,8 @@ public final class ShardingService {
     
     private final InstanceService instanceService;
     
+    private final InstanceNode instanceNode;
+    
     private final ServerService serverService;
     
     private final ExecutionService executionService;
@@ -71,6 +74,7 @@ public final class ShardingService {
         leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
+        instanceNode = new InstanceNode(jobName);
         serverService = new ServerService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
@@ -157,8 +161,8 @@ public final class ShardingService {
      * @return sharding items
      */
     public List<Integer> getShardingItems(final String jobInstanceId) {
-        JobInstance jobInstance = new JobInstance(jobInstanceId);
-        if (!serverService.isAvailableServer(jobInstance.getIp())) {
+        JobInstance jobInstance = YamlEngine.unmarshal(jobNodeStorage.getJobNodeData(instanceNode.getInstancePath(jobInstanceId)), JobInstance.class);
+        if (!serverService.isAvailableServer(jobInstance.getServerIp())) {
             return Collections.emptyList();
         }
         List<Integer> result = new LinkedList<>();
@@ -177,7 +181,7 @@ public final class ShardingService {
      * @return sharding items from localhost job server
      */
     public List<Integer> getLocalShardingItems() {
-        if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+        if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp())) {
             return Collections.emptyList();
         }
         return getShardingItems(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());

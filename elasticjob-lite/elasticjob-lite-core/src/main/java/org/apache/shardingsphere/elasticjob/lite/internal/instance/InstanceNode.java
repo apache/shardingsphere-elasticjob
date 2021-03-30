@@ -77,10 +77,16 @@ public final class InstanceNode {
      * @return local instance value
      */
     public String getLocalInstanceValue() {
-        return YamlEngine.marshal(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+        return YamlEngine.marshal(JobRegistry.getInstance().getJobInstance(jobName));
     }
-
-    String getInstancePath(final String instanceId) {
+    
+    /**
+     * Get instance path.
+     *
+     * @param instanceId instance id
+     * @return instance path
+     */
+    public String getInstancePath(final String instanceId) {
         return String.format(INSTANCES, instanceId);
     }
 }

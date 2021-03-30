@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
@@ -159,7 +160,8 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
         for (String each : instances) {
-            if (ip.equals(each.split("@-@")[0])) {
+            JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+            if (ip.equals(jobInstance.getServerIp())) {
                 result++;
             }
         }
