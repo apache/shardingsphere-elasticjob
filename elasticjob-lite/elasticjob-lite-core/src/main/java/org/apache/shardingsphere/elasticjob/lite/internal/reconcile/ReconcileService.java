@@ -21,6 +21,7 @@ import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
+import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.concurrent.TimeUnit;
@@ -37,10 +38,16 @@ public final class ReconcileService extends AbstractScheduledService {
     
     private final ShardingService shardingService;
     
+    private final JobNodePath jobNodePath;
+    
+    private final CoordinatorRegistryCenter regCenter;
+    
     public ReconcileService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.regCenter = regCenter;
         lastReconcileTime = System.currentTimeMillis();
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
+        jobNodePath = new JobNodePath(jobName);
     }
     
     @Override
@@ -48,11 +55,19 @@ public final class ReconcileService extends AbstractScheduledService {
         int reconcileIntervalMinutes = configService.load(true).getReconcileIntervalMinutes();
         if (reconcileIntervalMinutes > 0 && (System.currentTimeMillis() - lastReconcileTime >= reconcileIntervalMinutes * 60 * 1000)) {
             lastReconcileTime = System.currentTimeMillis();
-            if (!shardingService.isNeedSharding() && shardingService.hasShardingInfoInOfflineServers()) {
+            if (!shardingService.isNeedSharding() && shardingService.hasShardingInfoInOfflineServers() && !(isStaticSharding() && hasShardingInfo())) {
                 log.warn("Elastic Job: job status node has inconsistent value,start reconciling...");
                 shardingService.setReshardingFlag();
             }
         }
+    }
+    
+    private boolean isStaticSharding() {
+        return configService.load(true).isStaticSharding();
+    }
+    
+    private boolean hasShardingInfo() {
+        return !regCenter.getChildrenKeys(jobNodePath.getShardingNodePath()).isEmpty();
     }
     
     @Override

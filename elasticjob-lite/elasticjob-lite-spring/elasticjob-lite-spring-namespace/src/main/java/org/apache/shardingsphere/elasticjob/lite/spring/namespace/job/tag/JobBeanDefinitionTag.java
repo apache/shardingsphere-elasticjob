@@ -67,4 +67,8 @@ public final class JobBeanDefinitionTag {
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
+    
+    public static final String LABEL_ATTRIBUTE = "label";
+    
+    public static final String STATIC_SHARDING_ATTRIBUTE = "static-sharding";
 }

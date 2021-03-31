@@ -75,6 +75,10 @@ public final class JobConfigurationPOJO {
     
     private boolean overwrite;
     
+    private String label;
+    
+    private boolean staticSharding;
+    
     /**
      * Convert to job configuration.
      * 
@@ -123,6 +127,8 @@ public final class JobConfigurationPOJO {
         result.setProps(jobConfiguration.getProps());
         result.setDisabled(jobConfiguration.isDisabled());
         result.setOverwrite(jobConfiguration.isOverwrite());
+        result.setLabel(jobConfiguration.getLabel());
+        result.setStaticSharding(jobConfiguration.isStaticSharding());
         return result;
     }
 }
