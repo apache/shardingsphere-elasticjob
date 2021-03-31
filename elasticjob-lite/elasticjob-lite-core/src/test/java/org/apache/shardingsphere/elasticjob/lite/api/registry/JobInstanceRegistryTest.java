@@ -66,7 +66,7 @@ public final class JobInstanceRegistryTest {
         jobInstanceRegistry.new JobInstanceRegistryListener().dataChanged("/jobName/config", CuratorCacheListener.Type.NODE_CREATED, jobConfig);
     }
     
-    private String toYaml(JobConfiguration build) {
+    private String toYaml(final JobConfiguration build) {
         return YamlEngine.marshal(JobConfigurationPOJO.fromJobConfiguration(build));
     }
 }
