@@ -92,4 +92,11 @@ public final class SetUpFacadeTest {
         verify(leaderService).electLeader();
         verify(serverService).persistOnline(true);
     }
+    
+    @Test
+    public void assertTearDown() {
+        when(reconcileService.isRunning()).thenReturn(true);
+        setUpFacade.tearDown();
+        verify(reconcileService).stopAsync();
+    }
 }

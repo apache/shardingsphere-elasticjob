@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -48,9 +47,6 @@ public final class SchedulerFacadeTest {
     @Mock
     private ShardingService shardingService;
     
-    @Mock
-    private ReconcileService reconcileService;
-    
     private SchedulerFacade schedulerFacade;
     
     @Before
@@ -59,7 +55,6 @@ public final class SchedulerFacadeTest {
         schedulerFacade = new SchedulerFacade(null, "test_job");
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "reconcileService", reconcileService);
     }
     
     @Test
@@ -68,19 +63,16 @@ public final class SchedulerFacadeTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         schedulerFacade.shutdownInstance();
         verify(leaderService, times(0)).removeLeader();
-        verify(reconcileService, times(0)).stopAsync();
         verify(jobScheduleController).shutdown();
     }
     
     @Test
     public void assertShutdownInstanceIfLeaderAndReconcileServiceIsRunning() {
         when(leaderService.isLeader()).thenReturn(true);
-        when(reconcileService.isRunning()).thenReturn(true);
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         schedulerFacade.shutdownInstance();
         verify(leaderService).removeLeader();
-        verify(reconcileService).stopAsync();
         verify(jobScheduleController).shutdown();
     }
 }
