@@ -80,4 +80,10 @@ public final class SetUpFacade {
             reconcileService.startAsync();
         }
     }
+    
+    public void tearDown() {
+        if (reconcileService.isRunning()) {
+            reconcileService.stopAsync();
+        }
+    }
 }

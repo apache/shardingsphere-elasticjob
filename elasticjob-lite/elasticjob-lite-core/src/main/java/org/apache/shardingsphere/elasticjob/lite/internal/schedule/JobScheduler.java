@@ -182,6 +182,7 @@ public final class JobScheduler {
      * Shutdown job.
      */
     public void shutdown() {
+        setUpFacade.tearDown();
         schedulerFacade.shutdownInstance();
         jobExecutor.shutdown();
     }
