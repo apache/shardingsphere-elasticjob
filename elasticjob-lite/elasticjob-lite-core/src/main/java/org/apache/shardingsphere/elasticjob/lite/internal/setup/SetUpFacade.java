@@ -81,6 +81,9 @@ public final class SetUpFacade {
         }
     }
     
+    /**
+     * Tear down.
+     */
     public void tearDown() {
         if (reconcileService.isRunning()) {
             reconcileService.stopAsync();
