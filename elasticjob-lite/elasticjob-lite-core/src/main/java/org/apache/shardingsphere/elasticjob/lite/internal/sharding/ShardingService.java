@@ -174,6 +174,27 @@ public final class ShardingService {
         }
         return result;
     }
+
+    /**
+     * Get crashed sharding items.
+     *
+     * @param jobInstanceId crashed job instance ID
+     * @return crashed sharding items
+     */
+    public List<Integer> getCrashedShardingItems(final String jobInstanceId) {
+        String serverIp = jobInstanceId.substring(0, jobInstanceId.indexOf(JobInstance.DELIMITER));
+        if (!serverService.isEnableServer(serverIp)) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new LinkedList<>();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (jobInstanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
     
     /**
      * Get sharding items from localhost job server.
