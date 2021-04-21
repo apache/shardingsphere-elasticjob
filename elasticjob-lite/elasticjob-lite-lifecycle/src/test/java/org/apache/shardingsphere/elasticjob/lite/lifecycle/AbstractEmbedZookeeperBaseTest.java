@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public abstract class AbstractEmbedZookeeperBaseTest {
     
-    private static final int PORT = 3181;
+    private static final int PORT = 8181;
     
     private static volatile TestingServer testingServer;
     
