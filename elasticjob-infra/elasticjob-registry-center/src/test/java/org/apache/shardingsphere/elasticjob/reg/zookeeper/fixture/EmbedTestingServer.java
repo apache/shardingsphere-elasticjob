@@ -28,7 +28,7 @@ import java.io.IOException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedTestingServer {
     
-    private static final int PORT = 10181;
+    private static final int PORT = 9181;
     
     private static volatile TestingServer testingServer;
     
