@@ -22,7 +22,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 [![GitHub release](https://img.shields.io/github/release/apache/shardingsphere-elasticjob.svg)](https://github.com/apache/shardingsphere-elasticjob/releases)
 
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob)
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
 [![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
 
