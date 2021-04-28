@@ -32,6 +32,8 @@ public final class EmailPropertiesConstants {
     
     public static final String HOST = PREFIX + "host";
     
+    public static final String SSL_TRUST = PREFIX + "ssl.trust";
+    
     public static final String PORT = PREFIX + "port";
     
     public static final String USERNAME = PREFIX + "username";
