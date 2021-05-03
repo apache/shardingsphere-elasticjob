@@ -1,3 +1,22 @@
+## 3.0.0
+
+### Enhancements
+
+1. Support configuring Mail SMTP SSL trust in elasticjob-error-handler-email
+
+### Bug Fixes
+
+1. The failover may not work in distributed deployment
+2. ReconcileService is still running after the job shutdown
+
+### Dependencies
+
+1. Make the spring-boot-starter-jdbc optional in ElasticJob Spring Boot Starter
+
+### Change Logs
+
+1. [MILESTONE 3.0.0](https://github.com/apache/shardingsphere-elasticjob/milestone/4)
+
 ## 3.0.0-RC1
 
 ### API Changes
