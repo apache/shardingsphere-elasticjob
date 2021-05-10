@@ -37,7 +37,7 @@ Method signature：void removeJobConfiguration(String jobName)
 
 ## Operation API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI`
+Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI`
 
 ### Trigger job execution
 
