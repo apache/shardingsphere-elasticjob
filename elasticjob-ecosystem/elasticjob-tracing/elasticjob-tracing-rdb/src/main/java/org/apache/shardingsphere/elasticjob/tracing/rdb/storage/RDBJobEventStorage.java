@@ -358,19 +358,9 @@ public final class RDBJobEventStorage {
             preparedStatement.setString(1, taskId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(
-                            resultSet.getString(1),
-                            resultSet.getString(2),
-                            resultSet.getString(3),
-                            resultSet.getString(4),
-                            resultSet.getString(5),
-                            Source.valueOf(resultSet.getString(6)),
-                            resultSet.getString(7),
-                            resultSet.getString(8),
-                            State.valueOf(resultSet.getString(9)),
-                            resultSet.getString(10),
-                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(11))
-                    );
+                    JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                            resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
+                            State.valueOf(resultSet.getString(9)), resultSet.getString(10), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(11)));
                     result.add(jobStatusTraceEvent);
                 }
             }
