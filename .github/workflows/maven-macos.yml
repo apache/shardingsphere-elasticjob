@@ -37,6 +37,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: install OpenSSL
+        run: |
+          brew install OpenSSL
       - name: Build with Maven
         run: |
           mvn --batch-mode --no-transfer-progress clean install cobertura:cobertura -Dmaven.javadoc.skip=true
