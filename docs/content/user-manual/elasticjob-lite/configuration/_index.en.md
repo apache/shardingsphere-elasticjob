@@ -75,10 +75,6 @@ When the execution time and interval of each job are very short, it is recommend
 There is no need to monitor because it is a transient state. User can add data accumulation monitoring by self. And there is no guarantee that the data will be selected repeatedly, idempotency should be achieved in the job.
 If the job execution time and interval time are longer, it is recommended to monitor the job status, and it can guarantee that the data will not be selected repeatedly.
 
-**failover:**
-
-Enable failover and monitorExecution together to take effect.
-
 **maxTimeDiffSeconds:**
 
 If the time error exceeds the configured seconds, an exception will be thrown when the job starts.
