@@ -31,9 +31,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonFactory {
     
-    private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
+    private static GsonBuilder gsonBuilder = new GsonBuilder();
     
-    private static volatile Gson gson = GSON_BUILDER.create();
+    private static volatile Gson gson = gsonBuilder.create();
     
     private static final JsonParser JSON_PARSER = new JsonParser();
     
@@ -44,8 +44,8 @@ public final class GsonFactory {
      * @param typeAdapter Gson type adapter
      */
     public static synchronized void registerTypeAdapter(final Type type, final TypeAdapter typeAdapter) {
-        GSON_BUILDER.registerTypeAdapter(type, typeAdapter);
-        gson = GSON_BUILDER.create();
+        gsonBuilder.registerTypeAdapter(type, typeAdapter);
+        gson = gsonBuilder.create();
     }
     
     /**
@@ -64,5 +64,13 @@ public final class GsonFactory {
      */
     public static JsonParser getJsonParser() {
         return JSON_PARSER;
+    }
+
+    /**
+     * Re-initialize the GsonBuilder.
+     */
+    public static synchronized void clean() {
+        gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
     }
 }
