@@ -20,10 +20,11 @@ You are welcome to communicate with the community via the [mailing list](mailto:
 
 [![GitHub release](https://img.shields.io/github/release/apache/shardingsphere-elasticjob.svg)](https://github.com/apache/shardingsphere-elasticjob/releases)
 
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob)
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
 [![GitHub Workflow](https://img.shields.io/github/workflow/status/apache/shardingsphere-elasticjob/Java%20CI%20with%20Maven%20on%20macOS/master)](https://github.com/apache/shardingsphere-elasticjob/actions?query=workflow%3A%22Java+CI+with+Maven+on+macOS%22)
 [![codecov](https://codecov.io/gh/apache/shardingsphere-elasticjob/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/shardingsphere-elasticjob)
+[![Maintainability](https://cloud.quality-gate.com/dashboard/api/badge?projectName=apache_shardingsphere-elasticjob&branchName=master)](https://cloud.quality-gate.com/dashboard/branches/396041#overview)
 
 ## Introduction
 

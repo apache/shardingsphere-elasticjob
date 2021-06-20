@@ -49,7 +49,8 @@ public final class JobConfigurationPOJOTest {
             + "  key: value\n"
             + "reconcileIntervalMinutes: 0\n"
             + "shardingItemParameters: 0=A,1=B,2=C\n"
-            + "shardingTotalCount: 3\n";
+            + "shardingTotalCount: 3\n"
+            + "staticSharding: false\n";
     
     private static final String YAML_WITH_NULL = "cron: 0/1 * * * * ?\n"
             + "disabled: false\n"
@@ -60,7 +61,8 @@ public final class JobConfigurationPOJOTest {
             + "monitorExecution: false\n"
             + "overwrite: false\n"
             + "reconcileIntervalMinutes: 0\n"
-            + "shardingTotalCount: 3\n";
+            + "shardingTotalCount: 3\n"
+            + "staticSharding: false\n";
     
     @Test
     public void assertToJobConfiguration() {

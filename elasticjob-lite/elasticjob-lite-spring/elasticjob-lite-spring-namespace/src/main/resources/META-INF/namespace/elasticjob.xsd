@@ -50,6 +50,8 @@
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" default="false" />
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
+                    <xsd:attribute name="label" type="xsd:string" />
+                    <xsd:attribute name="static-sharding" type="xsd:string" default="false" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

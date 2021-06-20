@@ -92,7 +92,7 @@ Shard to be adjusted indicates the state when the job has started but has not ye
 
 Answer:
 
-ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set -Djava.net.preferIPv4Stack=true.
+ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set `-Djava.net.preferIPv4Stack=true`.
 
 
 ## 12. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
@@ -103,9 +103,11 @@ Some decompression tools may truncate the file name when decompressing the Shard
 
 Open cmd.exe and execute the following command:
 
+```bash
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
+```
 
-## 13. Unable to startup Cloud Scheduler. Continuously output "Elastic job: IP:PORT has leadership"gg
+## 13. Unable to startup Cloud Scheduler. Continuously output "Elastic job: IP:PORT has leadership"
 
 Answer: 
 
@@ -114,3 +116,11 @@ Cloud Scheduler required Mesos native library. Specify Mesos native library path
 For instance, Mesos native libraries are under `/usr/local/lib`, so the property `-Djava.library.path=/usr/local/lib` need to be set to start the Cloud Scheduler.
 
 About Apache Mesos, please refer to [Apache Mesos](https://mesos.apache.org/).
+
+## 14. Unable to obtain a suitable IP in the case of multiple network interfaces
+
+Answer: 
+
+You may specify interface by system property `elasticjob.preferred.network.interface`.
+
+For example, specify the interface eno1: `-Delasticjob.preferred.network.interface=eno1`.

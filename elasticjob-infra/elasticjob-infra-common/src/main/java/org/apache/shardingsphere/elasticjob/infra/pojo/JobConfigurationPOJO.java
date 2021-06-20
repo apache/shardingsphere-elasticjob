@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,9 +75,13 @@ public final class JobConfigurationPOJO {
     
     private boolean overwrite;
     
+    private String label;
+    
+    private boolean staticSharding;
+    
     /**
      * Convert to job configuration.
-     * 
+     *
      * @return job configuration
      */
     public JobConfiguration toJobConfiguration() {
@@ -85,8 +89,9 @@ public final class JobConfigurationPOJO {
                 .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
-                .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)
-                .jobListenerTypes(jobListenerTypes.toArray(new String[]{})).description(description).disabled(disabled).overwrite(overwrite).build();
+                .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType)
+                .jobErrorHandlerType(jobErrorHandlerType).jobListenerTypes(jobListenerTypes.toArray(new String[]{})).description(description)
+                .disabled(disabled).overwrite(overwrite).label(label).staticSharding(staticSharding).build();
         jobExtraConfigurations.stream().map(YamlConfiguration::toConfiguration).forEach(result.getExtraConfigurations()::add);
         for (Object each : props.keySet()) {
             result.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
@@ -96,7 +101,7 @@ public final class JobConfigurationPOJO {
     
     /**
      * Convert from job configuration.
-     * 
+     *
      * @param jobConfiguration job configuration
      * @return job configuration POJO
      */
@@ -123,6 +128,8 @@ public final class JobConfigurationPOJO {
         result.setProps(jobConfiguration.getProps());
         result.setDisabled(jobConfiguration.isDisabled());
         result.setOverwrite(jobConfiguration.isOverwrite());
+        result.setLabel(jobConfiguration.getLabel());
+        result.setStaticSharding(jobConfiguration.isStaticSharding());
         return result;
     }
 }

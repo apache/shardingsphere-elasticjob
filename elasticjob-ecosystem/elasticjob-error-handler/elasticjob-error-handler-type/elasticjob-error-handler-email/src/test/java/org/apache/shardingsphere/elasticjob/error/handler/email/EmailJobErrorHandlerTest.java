@@ -105,6 +105,7 @@ public final class EmailJobErrorHandlerTest {
     private Properties createConfigurationProperties() {
         Properties result = new Properties();
         result.setProperty(EmailPropertiesConstants.HOST, "localhost");
+        result.setProperty(EmailPropertiesConstants.SSL_TRUST, "*");
         result.setProperty(EmailPropertiesConstants.PORT, "465");
         result.setProperty(EmailPropertiesConstants.USERNAME, "user");
         result.setProperty(EmailPropertiesConstants.PASSWORD, "xxx");

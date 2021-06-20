@@ -65,7 +65,8 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         boolean isDebug = Boolean.parseBoolean(props.getProperty(EmailPropertiesConstants.IS_DEBUG, EmailPropertiesConstants.DEFAULT_IS_DEBUG));
         String username = props.getProperty(EmailPropertiesConstants.USERNAME);
         String password = props.getProperty(EmailPropertiesConstants.PASSWORD);
-        session = Session.getDefaultInstance(createSessionProperties(host, port, isUseSSL, isDebug), getSessionAuthenticator(username, password));
+        String sslTrust = props.getProperty(EmailPropertiesConstants.SSL_TRUST);
+        session = Session.getDefaultInstance(createSessionProperties(host, port, isUseSSL, isDebug, sslTrust), getSessionAuthenticator(username, password));
         subject = props.getProperty(EmailPropertiesConstants.SUBJECT, EmailPropertiesConstants.DEFAULT_SUBJECT);
         from = props.getProperty(EmailPropertiesConstants.FROM);
         to = props.getProperty(EmailPropertiesConstants.TO);
@@ -73,7 +74,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         bcc = props.getProperty(EmailPropertiesConstants.BCC);
     }
     
-    private Properties createSessionProperties(final String host, final int port, final boolean isUseSSL, final boolean isDebug) {
+    private Properties createSessionProperties(final String host, final int port, final boolean isUseSSL, final boolean isDebug, final String sslTrust) {
         Properties result = new Properties();
         result.put("mail.smtp.host", host);
         result.put("mail.smtp.port", port);
@@ -83,6 +84,9 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
         if (isUseSSL) {
             result.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             result.setProperty("mail.smtp.socketFactory.fallback", Boolean.FALSE.toString());
+            if (!Strings.isNullOrEmpty(sslTrust)) {
+                result.setProperty("mail.smtp.ssl.trust", sslTrust);
+            }
         }
         return result;
     }

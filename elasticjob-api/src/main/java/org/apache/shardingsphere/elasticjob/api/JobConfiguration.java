@@ -75,6 +75,10 @@ public final class JobConfiguration {
     
     private final boolean overwrite;
     
+    private final String label;
+    
+    private final boolean staticSharding;
+    
     /**
      * Create ElasticJob configuration builder.
      *
@@ -126,6 +130,10 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
+    
+        private String label;
+        
+        private boolean staticSharding;
     
         /**
          * Cron expression.
@@ -367,6 +375,28 @@ public final class JobConfiguration {
         }
         
         /**
+         * Set label.
+         *
+         * @param label label
+         * @return ElasticJob configuration builder
+         */
+        public Builder label(final String label) {
+            this.label = label;
+            return this;
+        }
+        
+        /**
+         * Set static sharding.
+         *
+         * @param staticSharding static sharding
+         * @return ElasticJob configuration builder
+         */
+        public Builder staticSharding(final boolean staticSharding) {
+            this.staticSharding = staticSharding;
+            return this;
+        }
+        
+        /**
          * Build ElasticJob configuration.
          * 
          * @return ElasticJob configuration
@@ -376,7 +406,8 @@ public final class JobConfiguration {
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes, extraConfigurations, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
         }
     }
 }

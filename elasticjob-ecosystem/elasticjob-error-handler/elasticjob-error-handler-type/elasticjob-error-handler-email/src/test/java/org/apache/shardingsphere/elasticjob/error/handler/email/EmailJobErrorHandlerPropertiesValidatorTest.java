@@ -38,6 +38,7 @@ public final class EmailJobErrorHandlerPropertiesValidatorTest {
     public void assertValidateWithNormal() {
         Properties properties = new Properties();
         properties.setProperty(EmailPropertiesConstants.HOST, "host");
+        properties.setProperty(EmailPropertiesConstants.SSL_TRUST, "*");
         properties.setProperty(EmailPropertiesConstants.PORT, "465");
         properties.setProperty(EmailPropertiesConstants.USERNAME, "username");
         properties.setProperty(EmailPropertiesConstants.PASSWORD, "password");
