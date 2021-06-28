@@ -117,7 +117,7 @@ public final class ElasticJobExecutorTest {
         assertExecuteFailureWhenThrowException(createSingleShardingContexts());
     }
     
-    @Test
+    @Test(expected = JobSystemException.class)
     public void assertExecuteFailureWhenThrowExceptionForMultipleShardingItems() {
         assertExecuteFailureWhenThrowException(createMultipleShardingContexts());
     }

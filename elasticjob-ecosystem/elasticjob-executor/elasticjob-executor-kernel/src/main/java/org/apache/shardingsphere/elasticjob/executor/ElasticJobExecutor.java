@@ -135,31 +135,38 @@ public final class ElasticJobExecutor {
     
     private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        if (1 == items.size()) {
-            int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, item);
-            process(jobConfig, shardingContexts, item, jobExecutionEvent);
-            return;
-        }
         CountDownLatch latch = new CountDownLatch(items.size());
+        List<Future<Boolean>> futures = new ArrayList<>();
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
             ExecutorService executorService = executorContext.get(ExecutorService.class);
             if (executorService.isShutdown()) {
                 return;
             }
-            executorService.submit(() -> {
+            Future<Boolean> future = executorService.submit(() -> {
                 try {
                     process(jobConfig, shardingContexts, each, jobExecutionEvent);
                 } finally {
                     latch.countDown();
                 }
+                return true;
             });
+            futures.add(future);
         }
         try {
             latch.await();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
+        }
+
+        try {
+            for (Future<Boolean> future : futures) {
+                future.get();
+            }
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
+            throw new JobSystemException(ex);
         }
     }
     
