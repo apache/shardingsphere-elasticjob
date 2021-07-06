@@ -34,14 +34,15 @@ public final class LiteYamlConstants {
             + "reconcileIntervalMinutes: 15\n"
             + "description: 'desc'\n"
             + "disabled: true\n"
-            + "overwrite: true";
-    
+            + "overwrite: true\n"
+            + "maxRuntimeSeconds: 60\n";
+
     private static final boolean DEFAULT_FAILOVER = true;
     
     private static final boolean DEFAULT_MONITOR_EXECUTION = true;
     
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
-    
+
     /**
      * Get the config of simple job in YAML format.
      *

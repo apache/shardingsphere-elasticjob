@@ -58,6 +58,7 @@ public final class ConfigurationServiceTest {
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getMaxRunTimeSeconds(), is(60));
     }
     
     @Test
@@ -67,6 +68,7 @@ public final class ConfigurationServiceTest {
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getMaxRunTimeSeconds(), is(60));
     }
     
     @Test
@@ -77,6 +79,7 @@ public final class ConfigurationServiceTest {
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getMaxRunTimeSeconds(), is(60));
     }
     
     @Test(expected = JobConfigurationException.class)

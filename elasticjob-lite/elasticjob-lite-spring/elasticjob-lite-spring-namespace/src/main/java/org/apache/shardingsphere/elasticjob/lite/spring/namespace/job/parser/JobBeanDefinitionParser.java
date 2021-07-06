@@ -91,6 +91,7 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.OVERWRITE_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.LABEL_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.STATIC_SHARDING_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MAX_RUNTIME_SECONDS_ATTRIBUTE));
         return result.getBeanDefinition();
     }
     

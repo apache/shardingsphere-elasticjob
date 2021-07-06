@@ -73,4 +73,6 @@ public final class JobBeanDefinitionTag {
     public static final String LABEL_ATTRIBUTE = "label";
     
     public static final String STATIC_SHARDING_ATTRIBUTE = "static-sharding";
+
+    public static final String MAX_RUNTIME_SECONDS_ATTRIBUTE = "max-runtime-seconds";
 }

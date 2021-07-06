@@ -64,6 +64,7 @@
                     <xsd:attribute name="overwrite" type="xsd:string" default="false" />
                     <xsd:attribute name="label" type="xsd:string" />
                     <xsd:attribute name="static-sharding" type="xsd:string" default="false" />
+                    <xsd:attribute name="max-runtime-seconds" type="xsd:string" default="-1" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

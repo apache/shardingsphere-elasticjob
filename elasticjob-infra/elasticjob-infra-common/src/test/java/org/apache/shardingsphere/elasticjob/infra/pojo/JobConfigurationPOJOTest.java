@@ -41,6 +41,7 @@ public final class JobConfigurationPOJOTest {
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
+            + "maxRuntimeSeconds: -1\n"
             + "maxTimeDiffSeconds: -1\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
@@ -56,6 +57,7 @@ public final class JobConfigurationPOJOTest {
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
+            + "maxRuntimeSeconds: -1\n"
             + "maxTimeDiffSeconds: -1\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
@@ -144,6 +146,7 @@ public final class JobConfigurationPOJOTest {
         actual.setJobErrorHandlerType("IGNORE");
         actual.setDescription("Job description");
         actual.getProps().setProperty("key", "value");
+        actual.setMaxRuntimeSeconds(-1);
         assertThat(YamlEngine.marshal(actual), is(YAML));
     }
     
