@@ -78,6 +78,8 @@ public final class JobConfiguration {
     private final String label;
     
     private final boolean staticSharding;
+
+    private final int maxRunTimeSeconds;
     
     /**
      * Create ElasticJob configuration builder.
@@ -134,7 +136,9 @@ public final class JobConfiguration {
         private String label;
         
         private boolean staticSharding;
-    
+
+        private int maxRuntimeSeconds = -1;
+
         /**
          * Cron expression.
          *
@@ -395,7 +399,23 @@ public final class JobConfiguration {
             this.staticSharding = staticSharding;
             return this;
         }
-        
+
+        /**
+         * Set max runtime seconds.
+         *
+         * <p>
+         * if job running for a long time more than it, will enabled interrupting.
+         * 0 means do not timeout.
+         * </p>
+         *
+         * @param maxRuntimeSeconds max Runtime Seconds
+         * @return ElasticJob configuration builder
+         */
+        public Builder maxRuntimeSeconds(final int maxRuntimeSeconds) {
+            this.maxRuntimeSeconds = maxRuntimeSeconds;
+            return this;
+        }
+
         /**
          * Build ElasticJob configuration.
          * 
@@ -407,7 +427,7 @@ public final class JobConfiguration {
             return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
-                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding, maxRuntimeSeconds);
         }
     }
 }
