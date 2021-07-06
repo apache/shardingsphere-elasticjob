@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -140,6 +141,7 @@ public final class ElasticJobExecutor {
     private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         Queue<Future<Boolean>> futures = new LinkedList<>();
+        CountDownLatch latch = new CountDownLatch(items.size());
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
             ExecutorService executorService = executorContext.get(ExecutorService.class);
@@ -147,7 +149,11 @@ public final class ElasticJobExecutor {
                 return;
             }
             Future<Boolean> future = executorService.submit(() -> {
-                process(jobConfig, shardingContexts, each, jobExecutionEvent);
+                try {
+                    process(jobConfig, shardingContexts, each, jobExecutionEvent);
+                } finally {
+                    latch.countDown();
+                }
                 return true;
             });
             futures.offer(future);
@@ -178,7 +184,12 @@ public final class ElasticJobExecutor {
             } finally {
                 futures.poll();
             }
+        }
 
+        try {
+            latch.await();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
     
