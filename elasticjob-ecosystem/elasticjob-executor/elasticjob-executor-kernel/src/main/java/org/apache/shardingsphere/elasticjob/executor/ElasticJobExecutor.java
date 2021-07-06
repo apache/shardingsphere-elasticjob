@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.executor.context.ExecutorContext;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -31,12 +32,15 @@ import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
-
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * ElasticJob executor.
@@ -135,31 +139,46 @@ public final class ElasticJobExecutor {
     
     private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        if (1 == items.size()) {
-            int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, item);
-            process(jobConfig, shardingContexts, item, jobExecutionEvent);
-            return;
-        }
-        CountDownLatch latch = new CountDownLatch(items.size());
+        Queue<Future<Boolean>> futures = new LinkedList<>();
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
             ExecutorService executorService = executorContext.get(ExecutorService.class);
             if (executorService.isShutdown()) {
                 return;
             }
-            executorService.submit(() -> {
-                try {
-                    process(jobConfig, shardingContexts, each, jobExecutionEvent);
-                } finally {
-                    latch.countDown();
-                }
+            Future<Boolean> future = executorService.submit(() -> {
+                process(jobConfig, shardingContexts, each, jobExecutionEvent);
+                return true;
             });
+            futures.offer(future);
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
+
+        int sumWaitTime = 0;
+        int maxRunTime = jobConfig.getMaxRunTimeSeconds() > 0 ? jobConfig.getMaxRunTimeSeconds() * 1000 : 0;
+        while (!futures.isEmpty()) {
+            //waiting process Done
+            Future<Boolean> future = futures.peek();
+            if (!future.isDone()) {
+                if (maxRunTime == 0 || sumWaitTime < maxRunTime) {
+                    BlockUtils.sleep(100);
+                    sumWaitTime += 100;
+                    continue;
+                } else {
+                    future.cancel(true);
+                }
+            }
+
+            try {
+                future.get();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException | CancellationException ignore) {
+                // ignore process Exception and Canceled for future
+                // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
+            } finally {
+                futures.poll();
+            }
+
         }
     }
     
