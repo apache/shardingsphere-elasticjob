@@ -112,7 +112,7 @@ public final class ElasticJobExecutorTest {
         verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
     }
     
-    @Test(expected = JobSystemException.class)
+    @Test
     public void assertExecuteFailureWhenThrowExceptionForSingleShardingItem() {
         assertExecuteFailureWhenThrowException(createSingleShardingContexts());
     }

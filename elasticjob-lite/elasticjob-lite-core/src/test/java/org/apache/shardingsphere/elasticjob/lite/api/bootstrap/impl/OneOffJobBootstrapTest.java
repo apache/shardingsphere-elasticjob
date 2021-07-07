@@ -89,6 +89,23 @@ public final class OneOffJobBootstrapTest {
         assertTrue(getScheduler(oneOffJobBootstrap).isShutdown());
     }
 
+    @Test
+    public void assertTimeout() {
+        AtomicInteger counter = new AtomicInteger(0);
+        final OneOffJobBootstrap oneOffJobBootstrap = new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
+            try {
+                Thread.sleep(50000);
+            } catch (InterruptedException e) {
+                counter.incrementAndGet();
+                throw new RuntimeException("Timeout");
+            }
+        }, JobConfiguration.newBuilder("test_timeout_job_execute", SHARDING_TOTAL_COUNT).maxRuntimeSeconds(1).build());
+        oneOffJobBootstrap.execute();
+        blockUtilFinish(oneOffJobBootstrap, counter);
+        assertThat(counter.get(), is(SHARDING_TOTAL_COUNT));
+        getJobScheduler(oneOffJobBootstrap).shutdown();
+    }
+
     @SneakyThrows
     private JobScheduler getJobScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
         Field field = OneOffJobBootstrap.class.getDeclaredField("jobScheduler");
@@ -106,6 +123,7 @@ public final class OneOffJobBootstrapTest {
 
     @SneakyThrows
     private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
+        JobScheduler jobScheduler = getJobScheduler(oneOffJobBootstrap);
         Scheduler scheduler = getScheduler(oneOffJobBootstrap);
         while (0 == counter.get() || !scheduler.getCurrentlyExecutingJobs().isEmpty()) {
             Thread.sleep(100);
