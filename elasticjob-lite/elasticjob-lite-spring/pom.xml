@@ -28,6 +28,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
+        <module>elasticjob-lite-spring-core</module>
         <module>elasticjob-lite-spring-boot-starter</module>
         <module>elasticjob-lite-spring-namespace</module>
     </modules>
