@@ -23,12 +23,14 @@ import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.Cus
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.repository.BarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class CustomTestJob implements CustomJob {
     
     @Autowired
