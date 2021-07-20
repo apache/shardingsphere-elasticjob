@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 import com.google.common.base.Preconditions;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
@@ -41,10 +42,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     @Override
     public void trigger(final String jobName) {
         Preconditions.checkNotNull(jobName, "Job name cannot be null");
-        JobNodePath jobNodePath = new JobNodePath(jobName);
-        for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-            regCenter.persist(jobNodePath.getInstanceNodePath(each), "TRIGGER");
-        }
+        new InstanceService(regCenter, jobName).triggerAllInstances();
     }
     
     @Override
