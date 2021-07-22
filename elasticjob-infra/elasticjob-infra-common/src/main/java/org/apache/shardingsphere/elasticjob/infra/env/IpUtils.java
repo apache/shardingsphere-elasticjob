@@ -39,8 +39,8 @@ public final class IpUtils {
     
     public static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)){3})";
     
-    private static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
-    
+    public static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
+
     private static volatile String cachedIpAddress;
     
     private static volatile String cachedHostName;
@@ -113,7 +113,8 @@ public final class IpUtils {
         }
         return result;
     }
-    
+
+    // For testing.
     private static boolean isPreferredNetworkInterface(final NetworkInterface networkInterface) {
         String preferredNetworkInterface = System.getProperty(PREFERRED_NETWORK_INTERFACE);
         return Objects.equals(networkInterface.getDisplayName(), preferredNetworkInterface);
