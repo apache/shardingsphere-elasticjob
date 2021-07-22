@@ -98,6 +98,7 @@ public final class IpUtils {
         return result;
     }
 
+    // For testing.
     private static NetworkInterface getFirstNetworkInterface(final List<NetworkInterface> validNetworkInterfaces) {
         NetworkInterface result = null;
         for (NetworkInterface each : validNetworkInterfaces) {
