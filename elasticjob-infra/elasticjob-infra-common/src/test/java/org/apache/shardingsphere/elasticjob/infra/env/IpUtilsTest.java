@@ -17,11 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.infra.env;
 
+import java.lang.reflect.Method;
+import java.net.InetAddress;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,5 +45,20 @@ public final class IpUtilsTest {
         field.setAccessible(true);
         String hostName = (String) field.get(null);
         assertThat(hostName, is(IpUtils.getHostName()));
+    }
+    
+    @Test
+    public void assertIsReachable() throws Exception {
+        Method method = IpUtils.class.getDeclaredMethod("isRuntimeReachable", InetAddress.class);
+        method.setAccessible(true);
+        InetAddress addr = InetAddress.getLocalHost();
+        boolean value1 = addr.isReachable(100);
+        boolean value2 = (boolean) method.invoke(null, addr);
+        assertEquals(value1, value2);
+        
+        addr = InetAddress.getByName("www.google.com");
+        value1 = addr.isReachable(100);
+        value2 = (boolean) method.invoke(null, addr);
+        assertNotEquals(value1, value2);
     }
 }

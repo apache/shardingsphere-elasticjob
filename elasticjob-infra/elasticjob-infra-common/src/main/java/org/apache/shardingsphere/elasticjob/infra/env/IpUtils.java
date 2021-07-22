@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * IP address utility.
@@ -44,6 +45,10 @@ public final class IpUtils {
     private static volatile String cachedIpAddress;
     
     private static volatile String cachedHostName;
+    
+    private static final int PING_IP_TIMEOUT_MILLS = 100;
+    
+    private static final String PING_COMMAND = "ping -c 1 ";
     
     /**
      * Get IP address for localhost.
@@ -131,16 +136,30 @@ public final class IpUtils {
     }
     
     private static boolean isValidAddress(final InetAddress inetAddress) {
-        try {
-            return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
-                    && !isIp6Address(inetAddress) && inetAddress.isReachable(100);
-        } catch (final IOException ex) {
-            return false;
-        }
+        return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
+                && !isIp6Address(inetAddress) && isReachable(inetAddress);
     }
     
     private static boolean isIp6Address(final InetAddress ipAddress) {
         return ipAddress instanceof Inet6Address;
+    }
+    
+    private static boolean isReachable(final InetAddress inetAddress) {
+        try {
+            return inetAddress.isReachable(PING_IP_TIMEOUT_MILLS) || isRuntimeReachable(inetAddress);
+        } catch (final IOException ex) {
+            return isRuntimeReachable(inetAddress);
+        }
+    }
+    
+    private static boolean isRuntimeReachable(final InetAddress inetAddress) {
+        try {
+            return Runtime.getRuntime()
+                    .exec(PING_COMMAND + inetAddress.getHostAddress())
+                    .waitFor(PING_IP_TIMEOUT_MILLS, TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException | IOException ex) {
+            return false;
+        }
     }
     
     /**
