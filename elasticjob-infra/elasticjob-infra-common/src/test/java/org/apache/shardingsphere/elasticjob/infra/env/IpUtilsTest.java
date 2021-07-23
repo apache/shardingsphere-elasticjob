@@ -63,14 +63,12 @@ public final class IpUtilsTest {
         Method declaredMethod = IpUtils.class.getDeclaredMethod("isPreferredAddress", InetAddress.class);
         declaredMethod.setAccessible(true);
         InetAddress inetAddress = mock(InetAddress.class);
-
         System.setProperty(IpUtils.PREFERRED_NETWORK_IP, "192.168");
         when(inetAddress.getHostAddress()).thenReturn("192.168.0.100");
         assertTrue((boolean) declaredMethod.invoke("isPreferredAddress", inetAddress));
         when(inetAddress.getHostAddress()).thenReturn("10.10.0.100");
         assertFalse((boolean) declaredMethod.invoke("isPreferredAddress", inetAddress));
         System.clearProperty(IpUtils.PREFERRED_NETWORK_IP);
-
         System.setProperty(IpUtils.PREFERRED_NETWORK_IP, "10.10.*");
         when(inetAddress.getHostAddress()).thenReturn("10.10.0.100");
         assertTrue((boolean) declaredMethod.invoke("isPreferredAddress", inetAddress));
@@ -89,7 +87,6 @@ public final class IpUtilsTest {
         when(address1.getHostAddress()).thenReturn("10.10.0.1");
         Vector<InetAddress> addresses1 = new Vector<>();
         addresses1.add(address1);
-
         InetAddress address2 = mock(Inet4Address.class);
         when(address2.isLoopbackAddress()).thenReturn(false);
         when(address2.isAnyLocalAddress()).thenReturn(false);
@@ -97,27 +94,22 @@ public final class IpUtilsTest {
         when(address2.getHostAddress()).thenReturn("192.168.99.100");
         Vector<InetAddress> addresses2 = new Vector<>();
         addresses2.add(address2);
-
         NetworkInterface networkInterface1 = mock(NetworkInterface.class);
         NetworkInterface networkInterface2 = mock(NetworkInterface.class);
         when(networkInterface1.getInetAddresses()).thenReturn(addresses1.elements());
         when(networkInterface2.getInetAddresses()).thenReturn(addresses2.elements());
         when(networkInterface1.getDisplayName()).thenReturn("eth1");
         when(networkInterface2.getDisplayName()).thenReturn("eth2");
-
         Method declaredMethod = IpUtils.class.getDeclaredMethod("getFirstNetworkInterface", List.class);
         declaredMethod.setAccessible(true);
         List<NetworkInterface> validNetworkInterfaces = Arrays.asList(networkInterface1, networkInterface2);
         assertThat(declaredMethod.invoke("getFirstNetworkInterface", validNetworkInterfaces), is(networkInterface2));
-
         System.setProperty(IpUtils.PREFERRED_NETWORK_INTERFACE, "eth1");
         assertThat(declaredMethod.invoke("getFirstNetworkInterface", validNetworkInterfaces), is(networkInterface1));
         System.clearProperty(IpUtils.PREFERRED_NETWORK_INTERFACE);
-
         System.setProperty(IpUtils.PREFERRED_NETWORK_IP, "10.10.*");
         assertThat(declaredMethod.invoke("getFirstNetworkInterface", validNetworkInterfaces), is(networkInterface1));
         System.clearProperty(IpUtils.PREFERRED_NETWORK_IP);
-
     }
 
     @Test

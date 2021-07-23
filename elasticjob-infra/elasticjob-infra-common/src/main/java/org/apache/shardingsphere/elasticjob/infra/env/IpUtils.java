@@ -98,7 +98,6 @@ public final class IpUtils {
         return result;
     }
 
-    // For testing.
     private static NetworkInterface getFirstNetworkInterface(final List<NetworkInterface> validNetworkInterfaces) {
         NetworkInterface result = null;
         for (NetworkInterface each : validNetworkInterfaces) {
@@ -117,7 +116,6 @@ public final class IpUtils {
         return result;
     }
 
-    // For testing.
     private static boolean isPreferredNetworkInterface(final NetworkInterface networkInterface) {
         String preferredNetworkInterface = System.getProperty(PREFERRED_NETWORK_INTERFACE);
         return Objects.equals(networkInterface.getDisplayName(), preferredNetworkInterface);
@@ -134,7 +132,6 @@ public final class IpUtils {
         }
     }
 
-    // For testing.
     private static boolean isPreferredAddress(final InetAddress inetAddress) {
         String preferredNetworkIp = System.getProperty(PREFERRED_NETWORK_IP);
         if (preferredNetworkIp == null) {
