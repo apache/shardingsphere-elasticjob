@@ -29,10 +29,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ public final class IpUtilsTest {
     public void assertGetIp() {
         assertNotNull(IpUtils.getIp());
     }
-
+    
     @Test
     @SneakyThrows
     public void assertPreferredNetworkInterface() {
@@ -56,7 +56,7 @@ public final class IpUtilsTest {
         assertTrue(result);
         System.clearProperty(IpUtils.PREFERRED_NETWORK_INTERFACE);
     }
-
+    
     @Test
     @SneakyThrows
     public void assertPreferredNetworkAddress() {
@@ -76,7 +76,7 @@ public final class IpUtilsTest {
         assertFalse((boolean) declaredMethod.invoke("isPreferredAddress", inetAddress));
         System.clearProperty(IpUtils.PREFERRED_NETWORK_IP);
     }
-
+    
     @Test
     @SneakyThrows
     public void assertGetFirstNetworkInterface() {
@@ -111,7 +111,7 @@ public final class IpUtilsTest {
         assertThat(declaredMethod.invoke("getFirstNetworkInterface", validNetworkInterfaces), is(networkInterface1));
         System.clearProperty(IpUtils.PREFERRED_NETWORK_IP);
     }
-
+    
     @Test
     @SneakyThrows
     public void assertGetHostName() {
