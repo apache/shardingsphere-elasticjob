@@ -122,6 +122,10 @@ Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
 
 回答：
 
-可以通过系统变量 `elasticjob.preferred.network.interface` 指定网卡。
+可以通过系统变量 `elasticjob.preferred.network.interface` 指定网卡或 `elasticjob.preferred.network.ip` 指定IP地址。
 
-例如指定网卡 eno1：`-Delasticjob.preferred.network.interface=eno1`。
+例如:
+
+1. 指定网卡 eno1：`-Delasticjob.preferred.network.interface=eno1`。
+1. 指定IP地址 192.168.0.100：`-Delasticjob.preferred.network.ip=192.168.0.100`。
+1. 泛指IP地址(正则表达式) 192.168.*：`-Delasticjob.preferred.network.ip=192.168.*`。

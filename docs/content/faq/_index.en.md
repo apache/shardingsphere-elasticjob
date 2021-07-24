@@ -121,6 +121,10 @@ About Apache Mesos, please refer to [Apache Mesos](https://mesos.apache.org/).
 
 Answer: 
 
-You may specify interface by system property `elasticjob.preferred.network.interface`.
+You may specify interface by system property `elasticjob.preferred.network.interface` or specify IP by system property `elasticjob.preferred.network.ip`.
 
-For example, specify the interface eno1: `-Delasticjob.preferred.network.interface=eno1`.
+For example
+
+1. specify the interface eno1: `-Delasticjob.preferred.network.interface=eno1`.
+1. specify network addresses, 192.168.0.100: `-Delasticjob.preferred.network.ip=192.168.0.100`.
+1. specify network addresses for regular expressions, 192.168.*: `-Delasticjob.preferred.network.ip=192.168.*`.
