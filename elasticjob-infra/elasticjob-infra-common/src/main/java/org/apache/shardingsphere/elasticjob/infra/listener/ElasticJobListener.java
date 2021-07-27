@@ -23,6 +23,8 @@ import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
  * ElasticJob listener.
  */
 public interface ElasticJobListener extends TypedSPI {
+
+    int LOWEST = Integer.MAX_VALUE;
     
     /**
      * Called before job executed.
@@ -37,4 +39,12 @@ public interface ElasticJobListener extends TypedSPI {
      * @param shardingContexts sharding contexts
      */
     void afterJobExecuted(ShardingContexts shardingContexts);
+
+    /**
+     * Listener order, default is the lowest.
+     * @return order
+     */
+    default int order() {
+        return LOWEST;
+    }
 }
