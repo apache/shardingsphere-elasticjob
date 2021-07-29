@@ -32,16 +32,16 @@ import java.lang.annotation.Target;
 public @interface EnableElasticJob {
     
     /**
+     * Job name.
+     * @return jobName
+     */
+    String jobName();
+    
+    /**
      * CRON expression, control the job trigger time.
      * @return cron
      */
     String cron() default "";
-    
-    /**
-     * Job name.
-     * @return jobName
-     */
-    String jobName() default "";
     
     /**
      * Sharding total count.
