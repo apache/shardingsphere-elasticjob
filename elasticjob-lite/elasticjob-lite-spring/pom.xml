@@ -34,8 +34,8 @@
     </modules>
 
     <properties>
-        <springboot.version>2.3.1.RELEASE</springboot.version>
-        <springframework.version>[3.1.0.RELEASE,5.2.7.RELEASE]</springframework.version>
+        <springboot.version>2.5.3</springboot.version>
+        <springframework.version>[3.1.0.RELEASE,5.3.9]</springframework.version>
     </properties>
 
     <dependencyManagement>

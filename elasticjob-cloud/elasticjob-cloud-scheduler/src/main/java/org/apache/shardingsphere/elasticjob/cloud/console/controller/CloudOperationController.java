@@ -63,7 +63,7 @@ public final class CloudOperationController implements RestfulController {
     /**
      * Explicit reconcile service.
      *
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/reconcile/explicit")
     public boolean explicitReconcile() {
@@ -75,7 +75,7 @@ public final class CloudOperationController implements RestfulController {
     /**
      * Implicit reconcile service.
      *
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/reconcile/implicit")
     public boolean implicitReconcile() {

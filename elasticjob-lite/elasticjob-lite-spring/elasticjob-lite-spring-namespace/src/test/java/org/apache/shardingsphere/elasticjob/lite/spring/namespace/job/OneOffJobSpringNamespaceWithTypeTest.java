@@ -24,9 +24,8 @@ import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZ
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.After;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-
-import javax.annotation.Resource;
 
 import static org.junit.Assert.assertTrue;
 
@@ -35,7 +34,7 @@ public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeepe
     
     private final String scriptJobName = "oneOffScriptElasticJob_job_type";
     
-    @Resource
+    @Autowired
     private CoordinatorRegistryCenter regCenter;
     
     @After
