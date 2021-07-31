@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
 import static org.junit.Assert.assertTrue;
-import javax.annotation.Resource;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
@@ -27,6 +26,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -35,7 +35,7 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     
     private final String scriptJobName = "scriptElasticJob_job_type";
     
-    @Resource
+    @Autowired
     private CoordinatorRegistryCenter regCenter;
     
     private Scheduler scheduler;
