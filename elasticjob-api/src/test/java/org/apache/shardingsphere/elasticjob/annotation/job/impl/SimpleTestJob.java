@@ -24,11 +24,25 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 @EnableElasticJob(
         cron = "0/5 * * * * ?",
-        jobName = "SimpleTestJob",
+        jobName = "SimpleTestJobFirst",
         shardingTotalCount = 3,
         shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
         jobListenerTypes = {"NOOP", "LOG"},
-        props = {@ElasticJobProp(key = "print.title", value = "test title")}
+        props = {
+                @ElasticJobProp(key = "print.title", value = "test title"),
+                @ElasticJobProp(key = "print.content", value = "test content")
+        }
+)
+@EnableElasticJob(
+        cron = "0/5 * * * * ?",
+        jobName = "SimpleTestJobSecond",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
+        jobListenerTypes = {"NOOP", "LOG"},
+        props = {
+                @ElasticJobProp(key = "print.title", value = "test title"),
+                @ElasticJobProp(key = "print.content", value = "test content")
+        }
 )
 public class SimpleTestJob implements CustomJob {
     
