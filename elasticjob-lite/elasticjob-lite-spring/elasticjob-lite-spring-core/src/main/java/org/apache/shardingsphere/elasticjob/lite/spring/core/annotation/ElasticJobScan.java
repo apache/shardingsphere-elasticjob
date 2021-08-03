@@ -15,25 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Container annotation that aggregates several {@link EnableElasticJob} annotations.
+ * Use this annotation to register Elastic Job interfaces when using Java Config.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface EnableElasticJobs {
+@Repeatable(ElasticJobScans.class)
+public @interface ElasticJobScan {
     
     /**
-     * EnableElasticJob list.
-     * @return EnableElasticJob list
+     * Alias for the {@link #basePackages()} attribute.
+     *
+     * @return base package names
      */
-    EnableElasticJob[] value();
+    String[] value() default {};
+    
+    /**
+     * Base packages to scan for Elastic Job interfaces.
+     *
+     * @return base package names for scanning Elastic Job interface
+     */
+    String[] basePackages() default {};
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,16 +24,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Container annotation that aggregates several {@link EnableElasticJob} annotations.
+ * The Container annotation that aggregates several {@link ElasticJobScan} annotations.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface EnableElasticJobs {
+public @interface ElasticJobScans {
     
     /**
-     * EnableElasticJob list.
-     * @return EnableElasticJob list
+     * ElasticJobScan list.
+     * @return ElasticJobScan list
      */
-    EnableElasticJob[] value();
+    ElasticJobScan[] value();
 }
