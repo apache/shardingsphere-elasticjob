@@ -137,10 +137,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             return getDirectly(key);
         }
         Optional<ChildData> resultInCache = cache.get(key);
-        if (resultInCache.isPresent()) {
-            return null == resultInCache.get().getData() ? null : new String(resultInCache.get().getData(), StandardCharsets.UTF_8);
-        }
-        return getDirectly(key);
+        return resultInCache.map(v -> null == v.getData() ? null : new String(v.getData(), StandardCharsets.UTF_8)).orElseGet(() -> getDirectly(key));
     }
     
     private CuratorCache findCuratorCache(final String key) {
