@@ -49,7 +49,7 @@ public @interface EnableElasticJob {
      * Sharding total count.
      * @return shardingTotalCount
      */
-    int shardingTotalCount() default 1;
+    int shardingTotalCount();
     
     /**
      * Sharding item parameters.
