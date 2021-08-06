@@ -223,7 +223,7 @@ public final class JobScheduleControllerTest {
     public void assertRescheduleJobIfShutdown() throws SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(true);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
     
@@ -233,7 +233,7 @@ public final class JobScheduleControllerTest {
         doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         try {
-            jobScheduleController.rescheduleJob("0/1 * * * * ?");
+            jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         } finally {
             verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
         }
@@ -243,14 +243,14 @@ public final class JobScheduleControllerTest {
     public void assertRescheduleJobSuccess() throws SchedulerException {
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
     
     @Test
     public void assertRescheduleJobWhenTriggerIsNull() throws SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
     

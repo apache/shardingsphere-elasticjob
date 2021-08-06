@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
+import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
@@ -46,11 +47,12 @@ public final class JobScheduleController {
      * Schedule job.
      * 
      * @param cron CRON expression
+     * @param timeZone the time zone
      */
-    public void scheduleJob(final String cron) {
+    public void scheduleJob(final String cron, final String timeZone) {
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
-                scheduler.scheduleJob(jobDetail, createCronTrigger(cron));
+                scheduler.scheduleJob(jobDetail, createCronTrigger(cron, timeZone));
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
@@ -62,12 +64,13 @@ public final class JobScheduleController {
      * Reschedule job.
      * 
      * @param cron CRON expression
+     * @param timeZone the time zone
      */
-    public synchronized void rescheduleJob(final String cron) {
+    public synchronized void rescheduleJob(final String cron, final String timeZone) {
         try {
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
             if (!scheduler.isShutdown() && null != trigger && !cron.equals(trigger.getCronExpression())) {
-                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createCronTrigger(cron));
+                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createCronTrigger(cron, timeZone));
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
@@ -88,8 +91,23 @@ public final class JobScheduleController {
         }
     }
     
-    private Trigger createCronTrigger(final String cron) {
-        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
+    private Trigger createCronTrigger(final String cron, final String timeZoneString) {
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(
+                CronScheduleBuilder.cronSchedule(cron).inTimeZone(parseTimeZoneString(timeZoneString)).withMisfireHandlingInstructionDoNothing()
+        ).build();
+    }
+    
+    private TimeZone parseTimeZoneString(final String timeZoneString) {
+        TimeZone timeZone;
+        if (null != timeZoneString) {
+            timeZone = TimeZone.getTimeZone(timeZoneString);
+            if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
+                throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
+            }
+        } else {
+            timeZone = TimeZone.getDefault();
+        }
+        return timeZone;
     }
     
     /**

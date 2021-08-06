@@ -41,6 +41,8 @@ public final class JobConfiguration {
     
     private final String cron;
     
+    private final String timeZone;
+    
     private final int shardingTotalCount;
     
     private final String shardingItemParameters;
@@ -97,6 +99,8 @@ public final class JobConfiguration {
         
         private String cron;
         
+        private String timeZone;
+        
         private final int shardingTotalCount;
         
         private String shardingItemParameters = "";
@@ -144,6 +148,19 @@ public final class JobConfiguration {
         public Builder cron(final String cron) {
             if (null != cron) {
                 this.cron = cron;
+            }
+            return this;
+        }
+    
+        /**
+         * time zone.
+         *
+         * @param timeZone the time zone
+         * @return job configuration builder
+         */
+        public Builder timeZone(final String timeZone) {
+            if (null != timeZone) {
+                this.timeZone = timeZone;
             }
             return this;
         }
@@ -404,7 +421,7 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
+            return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
                     extraConfigurations, description, props, disabled, overwrite, label, staticSharding);

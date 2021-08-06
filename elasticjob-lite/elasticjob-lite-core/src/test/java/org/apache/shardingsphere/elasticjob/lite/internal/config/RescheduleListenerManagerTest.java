@@ -63,19 +63,19 @@ public final class RescheduleListenerManagerTest {
     @Test
     public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_CREATED, LiteYamlConstants.getJobYaml());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYaml());
-        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
     
     @Test
@@ -84,7 +84,7 @@ public final class RescheduleListenerManagerTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_CHANGED, LiteYamlConstants.getJobYaml());
-        verify(jobScheduleController).rescheduleJob("0/1 * * * * ?");
+        verify(jobScheduleController).rescheduleJob("0/1 * * * * ?", null);
         JobRegistry.getInstance().shutdown("test_job");
     }
 }
