@@ -13,7 +13,7 @@ Please register [here](https://github.com/apache/shardingsphere-elasticjob/issue
 
 ## Who are using ElasticJob?
 
-Total: 79 companies.
+Total: 83 companies.
 
 ### E-commerce
 <ul>
@@ -31,6 +31,7 @@ Total: 79 companies.
     <li><a href="https://www.yunyangtao.com/" rel="nofollow">YangSC</a></li>
     <li><a href="https://www.dg-mall.com/" rel="nofollow">DG-Mail</a></li>
     <li><a href="https://nexposter.com/" rel="nofollow">Nex Poster</a></li>
+    <li><a href="https://www.jd.com/" rel="nofollow">JD</a></li>
 </ul>
 
 ### Financial Industry
@@ -56,6 +57,7 @@ Total: 79 companies.
     <li><a href="http://www.yunjiacloud.com/" rel="nofollow">YunJia cloud</a></li>
     <li><a href="https://www.joyowo.com/" rel="nofollow">Joyowo</a></li>
     <li><a href="https://www.treebear.cn/" rel="nofollow">Tree Bear</a></li>
+    <li><a href="https://www.szdgri.com/" rel="nofollow">南方电网深圳数研院</a></li>
 </ul>
 
 ### Transportation
@@ -107,6 +109,7 @@ Total: 79 companies.
     <li><a href="https://auto.ifeng.com/" rel="nofollow">IFeng</a></li>
     <li><a href="https://www.taoguba.com.cn/" rel="nofollow">Taoguba</a></li>
     <li><a href="https://www.fanhaoyue.com/" rel="nofollow">FanHaoYue</a></li>
+    <li><a href="https://www.sohu.com/" rel="nofollow">SOHU</a></li>
 </ul>
 
 ### Communication
@@ -151,6 +154,11 @@ Total: 79 companies.
 ### Retail
 <ul>
     <li><a href="http://www.yonghui.com.cn/" rel="nofollow">YH</a></li>
+</ul>
+
+### AI
+<ul>
+    <li><a href="https://www.deepblueai.com/" rel="nofollow">DeepBlue</a></li>
 </ul>
 
 <img src="https://shardingsphere.apache.org/community/image/powered-by.png" width = "30%" height = "30%" align="right" alt="Powered By ShardingSphere" />

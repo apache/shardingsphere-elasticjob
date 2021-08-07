@@ -39,7 +39,9 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.So
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Lite job facade.
@@ -67,7 +69,7 @@ public final class LiteJobFacade implements JobFacade {
         executionContextService = new ExecutionContextService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
-        this.elasticJobListeners = elasticJobListeners;
+        this.elasticJobListeners = elasticJobListeners.stream().sorted(Comparator.comparingInt(ElasticJobListener::order)).collect(Collectors.toList());
         this.jobTracingEventBus = null == tracingConfig ? new JobTracingEventBus() : new JobTracingEventBus(tracingConfig);
     }
     

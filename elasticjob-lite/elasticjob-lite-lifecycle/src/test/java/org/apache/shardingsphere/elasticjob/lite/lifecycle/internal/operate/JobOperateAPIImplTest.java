@@ -48,11 +48,14 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertTriggerWithJobName() {
+        when(regCenter.isExisted("/test_job")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/trigger/ip1@-@defaultInstance")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/trigger/ip2@-@defaultInstance")).thenReturn(false);
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         jobOperateAPI.trigger("test_job");
         verify(regCenter).getChildrenKeys("/test_job/instances");
-        verify(regCenter).persist("/test_job/instances/ip1@-@defaultInstance", "TRIGGER");
-        verify(regCenter).persist("/test_job/instances/ip2@-@defaultInstance", "TRIGGER");
+        verify(regCenter).persist("/test_job/trigger/ip1@-@defaultInstance", "");
+        verify(regCenter).persist("/test_job/trigger/ip2@-@defaultInstance", "");
     }
     
     @Test

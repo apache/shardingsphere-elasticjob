@@ -15,19 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.setup;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
-public class TargetJob implements ElasticJob {
+import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
+import org.junit.Test;
+
+public final class JobClassNameProviderFactoryTest {
     
-    /**
-     * Mocker object for AopTargetUtilsTest.
-     *
-     * @param shardingContext shardingContext
-     */
-    public void execute(final ShardingContext shardingContext) {
-    
+    @Test
+    public void assertGetStrategy() {
+        assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(SpringProxyJobClassNameProvider.class));
     }
 }

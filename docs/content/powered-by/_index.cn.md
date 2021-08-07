@@ -13,7 +13,7 @@ chapter = true
 
 ## 谁在使用 ElasticJob?
 
-共计 79 家公司。
+共计 83 家公司。
 
 ### 电子商务
 <ul>
@@ -31,6 +31,7 @@ chapter = true
     <li><a href="https://www.yunyangtao.com/" rel="nofollow">洋桃跨境供应链</a></li>
     <li><a href="https://www.dg-mall.com/" rel="nofollow">点购集团</a></li>
     <li><a href="https://nexposter.com/" rel="nofollow">晶泓科技</a></li>
+    <li><a href="https://www.jd.com/" rel="nofollow">京东</a></li>
 </ul>
 
 ### 金融行业
@@ -56,6 +57,7 @@ chapter = true
     <li><a href="http://www.yunjiacloud.com/" rel="nofollow">云嘉云计算</a></li>
     <li><a href="https://www.joyowo.com/" rel="nofollow">金柚网</a></li>
     <li><a href="https://www.treebear.cn/" rel="nofollow">树熊网络</a></li>
+    <li><a href="https://www.szdgri.com/" rel="nofollow">南方电网深圳数研院</a></li>
 </ul>
 
 ### 出行
@@ -107,6 +109,7 @@ chapter = true
     <li><a href="https://auto.ifeng.com/" rel="nofollow">凤凰汽车</a></li>
     <li><a href="https://www.taoguba.com.cn/" rel="nofollow">淘股吧</a></li>
     <li><a href="https://www.fanhaoyue.com/" rel="nofollow">饭好约</a></li>
+    <li><a href="https://www.sohu.com/" rel="nofollow">搜狐网</a></li>
 </ul>
 
 ### 通信科技
@@ -151,6 +154,11 @@ chapter = true
 ### 零售业
 <ul>
     <li><a href="http://www.yonghui.com.cn/" rel="nofollow">永辉超市</a></li>
+</ul>
+
+### 人工智能
+<ul>
+    <li><a href="https://www.deepblueai.com/" rel="nofollow">深兰科技</a></li>
 </ul>
 
 

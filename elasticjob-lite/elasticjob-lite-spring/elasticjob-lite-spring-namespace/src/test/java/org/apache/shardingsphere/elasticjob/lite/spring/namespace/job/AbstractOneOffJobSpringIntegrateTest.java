@@ -28,8 +28,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +39,7 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     
     private final String throughputDataflowJobName;
     
-    @Resource
+    @Autowired
     private CoordinatorRegistryCenter regCenter;
     
     @Before

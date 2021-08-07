@@ -52,6 +52,7 @@ public final class GsonFactoryTest {
         });
         assertThat(beforeRegisterGson.toJson(new GsonFactoryTest()), is("{}"));
         assertThat(GsonFactory.getGson().toJson(new GsonFactoryTest()), is("test"));
+        GsonFactory.clean();
     }
     
     @Test

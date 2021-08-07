@@ -20,15 +20,14 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.liste
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.service.FooService;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener {
     
-    @Resource
+    @Autowired
     private FooService fooService;
     
     private final long startedTimeoutMilliseconds;

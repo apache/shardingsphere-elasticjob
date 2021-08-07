@@ -37,25 +37,27 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public final class JobTracingEventBus {
-    
-    private final ExecutorService executorService;
+
+    private static final ExecutorService EXECUTOR_SERVICE;
     
     private final EventBus eventBus;
     
     private volatile boolean isRegistered;
+
+    static {
+        EXECUTOR_SERVICE = createExecutorService(Runtime.getRuntime().availableProcessors() * 2);
+    }
     
     public JobTracingEventBus() {
-        executorService = null;
         eventBus = null;
     }
     
     public JobTracingEventBus(final TracingConfiguration<?> tracingConfig) {
-        executorService = createExecutorService(Runtime.getRuntime().availableProcessors() * 2);
-        eventBus = new AsyncEventBus(executorService);
+        eventBus = new AsyncEventBus(EXECUTOR_SERVICE);
         register(tracingConfig);
     }
     
-    private ExecutorService createExecutorService(final int threadSize) {
+    private static ExecutorService createExecutorService(final int threadSize) {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, 
                 new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(String.join("-", "job-event", "%s")).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
@@ -77,7 +79,7 @@ public final class JobTracingEventBus {
      * @param event job event
      */
     public void post(final JobEvent event) {
-        if (isRegistered && !executorService.isShutdown()) {
+        if (isRegistered && !EXECUTOR_SERVICE.isShutdown()) {
             eventBus.post(event);
         }
     }

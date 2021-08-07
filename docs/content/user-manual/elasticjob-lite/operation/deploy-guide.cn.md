@@ -8,7 +8,8 @@ chapter = true
 
 1. 启动 ElasticJob-Lite 指定注册中心的 ZooKeeper。
 1. 运行包含 ElasticJob-Lite 和业务代码的 jar 文件。不限于 jar 或 war 的启动方式。
-1. 当作业服务器配置多网卡时，可通过设置系统变量 `elasticjob.preferred.network.interface` 指定网卡地址。ElasticJob 默认获取网卡列表中第一个非回环可用 IPV4 地址。
+1. 当作业服务器配置多网卡时，可通过设置系统变量 `elasticjob.preferred.network.interface` 指定网卡地址或
+ `elasticjob.preferred.network.ip` 指定IP。 ElasticJob 默认获取网卡列表中第一个非回环可用 IPV4 地址。
 
 ## 运维平台和 RESTFul API 部署(可选)
 

@@ -91,7 +91,7 @@ ElasticJob 已将 IP 地址等敏感信息过滤，导出的信息可在公网�
 ## 11. 为什么首次启动存在任务调度延迟的情况？
 
 回答：
-ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的情况。尝试设置-Djava.net.preferIPv4Stack=true.
+ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的情况。尝试设置 `-Djava.net.preferIPv4Stack=true`.
 
 
 ## 12. Windows环境下，运行ShardingSphere-ElasticJob-UI，找不到或无法加载主类 org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap，如何解决？
@@ -104,7 +104,9 @@ ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的�
 
 打开cmd.exe并执行下面的命令：
 
+```bash
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
+```
 
 ## 13. 运行 Cloud Scheduler 持续输出日志 "Elastic job: IP:PORT has leadership"，不能正常运行
 
@@ -115,3 +117,15 @@ Cloud Scheduler 依赖 Mesos 库，启动时需要通过 `-Djava.library.path` �
 例如，Mesos 库位于 `/usr/local/lib`，启动 Cloud Scheduler 前需要设置 `-Djava.library.path=/usr/local/lib`。
 
 Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
+
+## 14. 在多网卡的情况下无法获取到合适的 IP
+
+回答：
+
+可以通过系统变量 `elasticjob.preferred.network.interface` 指定网卡或 `elasticjob.preferred.network.ip` 指定IP地址。
+
+例如:
+
+1. 指定网卡 eno1：`-Delasticjob.preferred.network.interface=eno1`。
+1. 指定IP地址 192.168.0.100：`-Delasticjob.preferred.network.ip=192.168.0.100`。
+1. 泛指IP地址(正则表达式) 192.168.*：`-Delasticjob.preferred.network.ip=192.168.*`。

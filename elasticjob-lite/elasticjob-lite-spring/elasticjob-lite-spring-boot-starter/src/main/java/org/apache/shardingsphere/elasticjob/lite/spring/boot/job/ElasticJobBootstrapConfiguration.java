@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
@@ -27,28 +28,34 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobB
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * JobBootstrap configuration.
  */
-public class ElasticJobBootstrapConfiguration implements ApplicationContextAware, BeanPostProcessor {
-    
+@Slf4j
+public class ElasticJobBootstrapConfiguration implements SmartInitializingSingleton, ApplicationContextAware {
+
     @Setter
     private ApplicationContext applicationContext;
-    
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        log.info("creating Job Bootstrap Beans");
+        createJobBootstrapBeans();
+        log.info("Job Bootstrap Beans created.");
+    }
+
     /**
      * Create job bootstrap instances and register them into container.
      */
-    @PostConstruct
     public void createJobBootstrapBeans() {
         ElasticJobProperties elasticJobProperties = applicationContext.getBean(ElasticJobProperties.class);
         SingletonBeanRegistry singletonBeanRegistry = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
