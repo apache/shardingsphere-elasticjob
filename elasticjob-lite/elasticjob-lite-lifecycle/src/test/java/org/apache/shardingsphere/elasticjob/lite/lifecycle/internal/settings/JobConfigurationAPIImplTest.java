@@ -39,17 +39,17 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class JobConfigurationAPIImplTest {
-
+    
     private JobConfigurationAPI jobConfigAPI;
-
+    
     @Mock
     private CoordinatorRegistryCenter regCenter;
-
+    
     @Before
     public void setUp() {
         jobConfigAPI = new JobConfigurationAPIImpl(regCenter);
     }
-
+    
     @Test
     public void assertGetJobConfigNull() {
         when(regCenter.get("/test_job/config")).thenReturn(null);
@@ -57,7 +57,7 @@ public final class JobConfigurationAPIImplTest {
         assertNull(actual);
         verify(regCenter).get("/test_job/config");
     }
-
+    
     @Test
     public void assertGetDataflowJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
@@ -66,7 +66,7 @@ public final class JobConfigurationAPIImplTest {
         assertThat(actual.getProps().getProperty(DataflowJobProperties.STREAM_PROCESS_KEY), is("true"));
         verify(regCenter).get("/test_job/config");
     }
-
+    
     @Test
     public void assertGetScriptJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
@@ -75,7 +75,7 @@ public final class JobConfigurationAPIImplTest {
         assertThat(actual.getProps().getProperty(ScriptJobProperties.SCRIPT_KEY), is("echo"));
         verify(regCenter).get("/test_job/config");
     }
-
+    
     private void assertJobConfig(final JobConfigurationPOJO pojo) {
         assertThat(pojo.getJobName(), is("test_job"));
         assertThat(pojo.getShardingTotalCount(), is(3));
@@ -90,7 +90,7 @@ public final class JobConfigurationAPIImplTest {
         assertThat(pojo.getReconcileIntervalMinutes(), is(10));
         assertThat(pojo.getDescription(), is(""));
     }
-
+    
     @Test
     public void assertUpdateJobConfig() {
         JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
@@ -108,14 +108,14 @@ public final class JobConfigurationAPIImplTest {
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
         verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfJobNameIsEmpty() {
         JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("");
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfCronIsEmpty() {
         JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
@@ -123,7 +123,7 @@ public final class JobConfigurationAPIImplTest {
         jobConfiguration.setCron("");
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
         JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
@@ -132,7 +132,7 @@ public final class JobConfigurationAPIImplTest {
         jobConfiguration.setShardingTotalCount(0);
         jobConfigAPI.updateJobConfiguration(jobConfiguration);
     }
-
+    
     @Test
     public void assertRemoveJobConfiguration() {
         jobConfigAPI.removeJobConfiguration("test_job");

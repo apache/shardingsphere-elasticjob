@@ -31,9 +31,9 @@ import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
  */
 @RequiredArgsConstructor
 public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
-
+    
     private final CoordinatorRegistryCenter regCenter;
-
+    
     @Override
     public JobConfigurationPOJO getJobConfiguration(final String jobName) {
         String yamlContent = regCenter.get(new JobNodePath(jobName).getConfigNodePath());
@@ -42,7 +42,7 @@ public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
         }
         return YamlEngine.unmarshal(yamlContent, JobConfigurationPOJO.class);
     }
-
+    
     @Override
     public void updateJobConfiguration(final JobConfigurationPOJO jobConfig) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobConfig.getJobName()), "jobName can not be empty.");
@@ -50,7 +50,7 @@ public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
         JobNodePath jobNodePath = new JobNodePath(jobConfig.getJobName());
         regCenter.update(jobNodePath.getConfigNodePath(), YamlEngine.marshal(jobConfig));
     }
-
+    
     @Override
     public void removeJobConfiguration(final String jobName) {
         regCenter.remove("/" + jobName);
