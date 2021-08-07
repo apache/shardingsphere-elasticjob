@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
+import com.google.common.base.Preconditions;
 import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -96,18 +97,20 @@ public final class JobScheduleController {
                 CronScheduleBuilder.cronSchedule(cron).inTimeZone(parseTimeZoneString(timeZoneString)).withMisfireHandlingInstructionDoNothing()
         ).build();
     }
-    
+
+    /**
+     * Get the TimeZone for the time zone specification.
+     *
+     * @param timeZoneString must start with "GMT", such as "GMT+8:00"
+     * @return the specified TimeZone, or the GMT zone if the `timeZoneString` cannot be understood.
+     */
     private TimeZone parseTimeZoneString(final String timeZoneString) {
-        TimeZone timeZone;
-        if (null != timeZoneString) {
-            timeZone = TimeZone.getTimeZone(timeZoneString);
-            if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
-                throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
-            }
-        } else {
-            timeZone = TimeZone.getDefault();
+        if (null == timeZoneString) {
+            return TimeZone.getDefault();
         }
-        return timeZone;
+
+        Preconditions.checkArgument(!timeZoneString.startsWith("GMT"), "Invalid time zone specification '%s'.", timeZoneString);
+        return TimeZone.getTimeZone(timeZoneString);
     }
     
     /**
