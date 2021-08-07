@@ -108,7 +108,6 @@ public final class JobScheduleController {
         if (null == timeZoneString) {
             return TimeZone.getDefault();
         }
-
         Preconditions.checkArgument(!timeZoneString.startsWith("GMT"), "Invalid time zone specification '%s'.", timeZoneString);
         return TimeZone.getTimeZone(timeZoneString);
     }
