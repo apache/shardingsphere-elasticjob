@@ -66,6 +66,8 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
         result.addConstructorArgValue(element.getAttribute(ID_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.CRON_ATTRIBUTE));
+        //TODO Need support the timeZone
+        result.addConstructorArgValue(null);
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.SHARDING_TOTAL_COUNT_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_PARAMETER_ATTRIBUTE));
