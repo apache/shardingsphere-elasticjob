@@ -39,6 +39,8 @@ public final class ElasticJobConfigurationProperties {
     
     private String cron;
     
+    private String timeZone;
+    
     private String jobBootstrapBeanName;
     
     private int shardingTotalCount;
@@ -81,7 +83,7 @@ public final class ElasticJobConfigurationProperties {
      */
     public JobConfiguration toJobConfiguration(final String jobName) {
         JobConfiguration result = JobConfiguration.newBuilder(jobName, shardingTotalCount)
-                .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
+                .cron(cron).timeZone(timeZone).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).jobErrorHandlerType(jobErrorHandlerType)

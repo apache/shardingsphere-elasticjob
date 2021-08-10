@@ -33,6 +33,7 @@ public final class ElasticJobConfigurationPropertiesTest {
         properties.setElasticJobClass(ElasticJob.class);
         properties.setElasticJobType("jobType");
         properties.setCron("cron");
+        properties.setTimeZone("timeZone");
         properties.setJobBootstrapBeanName("beanName");
         properties.setShardingTotalCount(3);
         properties.setShardingItemParameters("a=1,b=2");
@@ -54,6 +55,7 @@ public final class ElasticJobConfigurationPropertiesTest {
         assertThat(actual.getJobName(), is("testJob"));
         assertThat(actual.getShardingTotalCount(), is(properties.getShardingTotalCount()));
         assertThat(actual.getCron(), is(properties.getCron()));
+        assertThat(actual.getTimeZone(), is(properties.getTimeZone()));
         assertThat(actual.getShardingItemParameters(), is(properties.getShardingItemParameters()));
         assertThat(actual.getJobParameter(), is(properties.getJobParameter()));
         assertThat(actual.getMaxTimeDiffSeconds(), is(properties.getMaxTimeDiffSeconds()));
