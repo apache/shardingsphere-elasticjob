@@ -36,6 +36,8 @@ public final class JobBeanDefinitionTag {
     
     public static final String CRON_ATTRIBUTE = "cron";
     
+    public static final String TIME_ZONE_ATTRIBUTE = "time-zone";
+    
     public static final String SHARDING_TOTAL_COUNT_ATTRIBUTE = "sharding-total-count";
     
     public static final String SHARDING_ITEM_PARAMETERS_ATTRIBUTE = "sharding-item-parameters";

@@ -44,6 +44,7 @@ elasticjob:
         print.content: "test print job"
     defaultBeanNameClassJob:
       cron: 0/5 * * * * ?
+      timeZome: GMT+08:00
       elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
       shardingTotalCount: 3
     defaultBeanNameTypeJob:

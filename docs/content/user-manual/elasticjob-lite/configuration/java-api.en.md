@@ -34,6 +34,7 @@ Configuration:
 | jobName                       | Yes                   |
 | shardingTotalCount            | Yes                   |
 | cron                          | No                    |
+| timeZone                      | No                    |
 | shardingItemParameters        | No                    |
 | jobParameter                  | No                    |
 | monitorExecution              | No                    |

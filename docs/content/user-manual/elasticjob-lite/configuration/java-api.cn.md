@@ -34,6 +34,7 @@ chapter = true
 | jobName                       | 是        |
 | shardingTotalCount            | 是        |
 | cron                          | 否        |
+| timeZone                      | 否        |
 | shardingItemParameters        | 否        |
 | jobParameter                  | 否        |
 | monitorExecution              | 否        |

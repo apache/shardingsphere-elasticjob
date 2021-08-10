@@ -41,6 +41,7 @@ Include IP and port, multiple addresses are separated by commas, such as: `host1
 | jobName                       | String          |                      | Job name                                                                              |
 | shardingTotalCount            | int             |                      | Sharding total count                                                                  |
 | cron                          | String          |                      | CRON expression, control the job trigger time                                         |
+| timeZone                      | String          |                      | time zone of CRON                                                                     |
 | shardingItemParameters        | String          |                      | Sharding item parameters                                                              |
 | jobParameter                  | String          |                      | Job parameter                                                                         |
 | monitorExecution              | boolean         | true                 | Monitor job execution status                                                          |
