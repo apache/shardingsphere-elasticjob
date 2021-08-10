@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotation that specify a job of elastic.
+ * The annotation that specify a jo of elastic.
  */
 @Documented
 @Repeatable(ElasticSchedules.class)

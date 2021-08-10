@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation.job.impl;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation.job.impl;
 
-import org.apache.shardingsphere.elasticjob.annotation.ElasticScheduled;
-import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
-import org.apache.shardingsphere.elasticjob.annotation.job.CustomJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.lite.spring.core.annotation.ElasticJobProp;
+import org.apache.shardingsphere.elasticjob.lite.spring.core.annotation.ElasticScheduled;
+import org.apache.shardingsphere.elasticjob.lite.spring.core.annotation.job.CustomJob;
 
 @ElasticScheduled(
         cron = "0/5 * * * * ?",

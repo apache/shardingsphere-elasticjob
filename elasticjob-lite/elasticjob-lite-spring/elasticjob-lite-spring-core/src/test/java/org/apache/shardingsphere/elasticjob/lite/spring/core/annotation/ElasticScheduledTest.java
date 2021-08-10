@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import org.apache.shardingsphere.elasticjob.annotation.job.impl.SimpleTestJob;
+import org.apache.shardingsphere.elasticjob.lite.spring.core.annotation.job.impl.SimpleTestJob;
 import org.junit.Test;
 
 public class ElasticScheduledTest {

@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,17 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation.job;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface CustomJob extends ElasticJob {
+/**
+ * The annotation that specify elastic-job prop.
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ElasticJobProp {
     
     /**
-     * Execute custom job.
-     *
-     * @param shardingContext sharding context
+     * prop key.
+     * @return key
      */
-    void execute(ShardingContext shardingContext);
+    String key();
+    
+    /**
+     * prop value.
+     * @return value
+     */
+    String value() default "";
 }

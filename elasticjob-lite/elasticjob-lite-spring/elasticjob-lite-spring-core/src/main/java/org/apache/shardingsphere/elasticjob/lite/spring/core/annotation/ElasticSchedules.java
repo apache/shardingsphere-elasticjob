@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
