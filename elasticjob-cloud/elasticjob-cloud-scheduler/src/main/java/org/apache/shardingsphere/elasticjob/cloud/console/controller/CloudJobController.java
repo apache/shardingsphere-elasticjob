@@ -107,7 +107,7 @@ public final class CloudJobController implements RestfulController {
      * Register cloud job.
      *
      * @param cloudJobConfig cloud job configuration
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/register")
     public boolean register(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
@@ -119,7 +119,7 @@ public final class CloudJobController implements RestfulController {
      * Update cloud job.
      *
      * @param cloudJobConfig cloud job configuration
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.PUT, path = "/update")
     public boolean update(@RequestBody final CloudJobConfigurationPOJO cloudJobConfig) {
@@ -131,7 +131,7 @@ public final class CloudJobController implements RestfulController {
      * Deregister cloud job.
      *
      * @param jobName job name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.DELETE, path = "/{jobName}/deregister")
     public boolean deregister(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
@@ -154,7 +154,7 @@ public final class CloudJobController implements RestfulController {
      * Enable cloud job.
      *
      * @param jobName job name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/{jobName}/enable")
     public boolean enable(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
@@ -170,7 +170,7 @@ public final class CloudJobController implements RestfulController {
      * Disable cloud job.
      *
      * @param jobName job name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/{jobName}/disable")
     public boolean disable(@Param(name = "jobName", source = ParamSource.PATH) final String jobName) {
@@ -185,7 +185,7 @@ public final class CloudJobController implements RestfulController {
      * Trigger job once.
      *
      * @param jobName job name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/trigger")
     public boolean trigger(@RequestBody final String jobName) {

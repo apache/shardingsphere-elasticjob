@@ -25,9 +25,8 @@ import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-
-import javax.annotation.Resource;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +35,7 @@ public final class JobSpringNamespaceWithRefTest extends AbstractZookeeperJUnit4
     
     private final String simpleJobName = "simpleElasticJob_job_ref";
     
-    @Resource
+    @Autowired
     private CoordinatorRegistryCenter regCenter;
     
     @Before

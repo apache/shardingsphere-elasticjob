@@ -31,6 +31,7 @@ public final class JobConfigurationTest {
     public void assertBuildAllProperties() {
         JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?")
+                .timeZone("GMT+8")
                 .shardingItemParameters("0=a,1=b,2=c").jobParameter("param")
                 .monitorExecution(false).failover(true).misfire(false)
                 .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60)
@@ -39,6 +40,7 @@ public final class JobConfigurationTest {
                 .disabled(true).overwrite(true).build();
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getTimeZone(), is("GMT+8"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(actual.getJobParameter(), is("param"));
@@ -58,9 +60,10 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build();
+        JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").timeZone("GMT+8").build();
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getTimeZone(), is("GMT+8"));
         assertThat(actual.getShardingTotalCount(), is(3));
         assertThat(actual.getShardingItemParameters(), is(""));
         assertThat(actual.getJobParameter(), is(""));

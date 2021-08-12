@@ -48,6 +48,7 @@ Configuration:
 | registry-center-ref               | Yes      |
 | tracing-ref                       | No       |
 | cron                              | Yes      |
+| timeZone                          | No       |
 | sharding-total-count              | Yes      |
 | sharding-item-parameters          | No       |
 | job-parameter                     | No       |

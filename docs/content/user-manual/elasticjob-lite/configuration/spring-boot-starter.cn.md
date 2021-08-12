@@ -47,6 +47,7 @@ elasticjob.reg-center.server-lists=localhost:6181
 | --------------------------------- |:-------- |
 | elasticJobClass / elasticJobType  | 是       |
 | cron                              | 否       |
+| timeZone                          | 否       |
 | jobBootstrapBeanName              | 否       |
 | sharding-total-count              | 是       |
 | sharding-item-parameters          | 否       |
@@ -80,6 +81,7 @@ elasticjob:
     simpleJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
       cron: 0/5 * * * * ?
+      timeZone: GMT+08:00
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
     scriptJob:
@@ -100,6 +102,7 @@ elasticjob:
 ```
 elasticjob.jobs.simpleJob.elastic-job-class=org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
 elasticjob.jobs.simpleJob.cron=0/5 * * * * ?
+elasticjob.jobs.simpleJob.timeZone=GMT+08:00
 elasticjob.jobs.simpleJob.sharding-total-count=3
 elasticjob.jobs.simpleJob.sharding-item-parameters=0=Beijing,1=Shanghai,2=Guangzhou
 elasticjob.jobs.scriptJob.elastic-job-type=SCRIPT

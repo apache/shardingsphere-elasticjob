@@ -70,7 +70,7 @@ public final class InstanceService {
         List<JobInstance> result = new LinkedList<>();
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
             JobInstance jobInstance = YamlEngine.unmarshal(jobNodeStorage.getJobNodeData(instanceNode.getInstancePath(each)), JobInstance.class);
-            if (serverService.isEnableServer(jobInstance.getServerIp())) {
+            if (null != jobInstance && serverService.isEnableServer(jobInstance.getServerIp())) {
                 result.add(new JobInstance(each));
             }
         }

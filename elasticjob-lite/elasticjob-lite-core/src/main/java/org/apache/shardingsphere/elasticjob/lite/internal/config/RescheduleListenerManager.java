@@ -55,7 +55,7 @@ public final class RescheduleListenerManager extends AbstractListenerManager {
                 if (StringUtils.isEmpty(jobConfiguration.getCron())) {
                     JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob();
                 } else {
-                    JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(jobConfiguration.getCron());
+                    JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(jobConfiguration.getCron(), jobConfiguration.getTimeZone());
                 }
             }
         }

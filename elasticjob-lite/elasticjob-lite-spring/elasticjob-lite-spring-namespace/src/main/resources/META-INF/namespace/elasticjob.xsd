@@ -35,6 +35,7 @@
                     <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
                     <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
                     <xsd:attribute name="cron" type="xsd:string" />
+                    <xsd:attribute name="time-zone" type="xsd:string" />
                     <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
                     <xsd:attribute name="job-parameter" type="xsd:string" />
                     <xsd:attribute name="monitor-execution" type="xsd:string" default="true" />

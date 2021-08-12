@@ -48,6 +48,7 @@ chapter = true
 | registry-center-ref               | 是       |
 | tracing-ref                       | 否       |
 | cron                              | 是       |
+| timeZone                          | 否       |
 | sharding-total-count              | 是       |
 | sharding-item-parameters          | 否       |
 | job-parameter                     | 否       |

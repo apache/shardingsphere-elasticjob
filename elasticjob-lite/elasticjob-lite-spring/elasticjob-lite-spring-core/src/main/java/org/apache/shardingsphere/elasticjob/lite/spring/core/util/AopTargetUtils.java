@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.util;
 
+import java.lang.reflect.Field;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.support.AopUtils;
-
-import java.lang.reflect.Field;
 
 /**
  * Aop target Utility.

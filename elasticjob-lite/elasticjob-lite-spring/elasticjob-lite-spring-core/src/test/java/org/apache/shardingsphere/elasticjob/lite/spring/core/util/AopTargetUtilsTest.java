@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job.util;
-
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.junit.Test;
-import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.aop.support.AopUtils;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.junit.Test;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.support.AopUtils;
 
 public final class AopTargetUtilsTest {
     

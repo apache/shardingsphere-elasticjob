@@ -41,6 +41,8 @@ public final class JobConfigurationPOJO {
     
     private String cron;
     
+    private String timeZone;
+    
     private int shardingTotalCount;
     
     private String shardingItemParameters;
@@ -86,7 +88,7 @@ public final class JobConfigurationPOJO {
      */
     public JobConfiguration toJobConfiguration() {
         JobConfiguration result = JobConfiguration.newBuilder(jobName, shardingTotalCount)
-                .cron(cron).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
+                .cron(cron).timeZone(timeZone).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType)
@@ -110,6 +112,7 @@ public final class JobConfigurationPOJO {
         JobConfigurationPOJO result = new JobConfigurationPOJO();
         result.setJobName(jobConfiguration.getJobName());
         result.setCron(jobConfiguration.getCron());
+        result.setTimeZone(jobConfiguration.getTimeZone());
         result.setShardingTotalCount(jobConfiguration.getShardingTotalCount());
         result.setShardingItemParameters(jobConfiguration.getShardingItemParameters());
         result.setJobParameter(jobConfiguration.getJobParameter());

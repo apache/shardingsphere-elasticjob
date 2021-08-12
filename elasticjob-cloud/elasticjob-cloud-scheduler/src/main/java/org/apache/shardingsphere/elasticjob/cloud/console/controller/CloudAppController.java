@@ -82,7 +82,7 @@ public final class CloudAppController implements RestfulController {
      * Register app config.
      *
      * @param appConfig cloud app config
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST)
     public boolean register(@RequestBody final CloudAppConfigurationPOJO appConfig) {
@@ -98,7 +98,7 @@ public final class CloudAppController implements RestfulController {
      * Update app config.
      *
      * @param appConfig cloud app config
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.PUT)
     public boolean update(@RequestBody final CloudAppConfigurationPOJO appConfig) {
@@ -143,7 +143,7 @@ public final class CloudAppController implements RestfulController {
      * Disable app config.
      *
      * @param appName app name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/{appName}/disable")
     public boolean disable(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
@@ -162,7 +162,7 @@ public final class CloudAppController implements RestfulController {
      * Enable app.
      *
      * @param appName app name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.POST, path = "/{appName}/enable")
     public boolean enable(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
@@ -181,7 +181,7 @@ public final class CloudAppController implements RestfulController {
      * Deregister app.
      *
      * @param appName app name
-     * @return <tt>true</tt> for operation finished.
+     * @return <em>true</em> for operation finished.
      */
     @Mapping(method = Http.DELETE, path = "/{appName}")
     public boolean deregister(@Param(name = "appName", source = ParamSource.PATH) final String appName) {
