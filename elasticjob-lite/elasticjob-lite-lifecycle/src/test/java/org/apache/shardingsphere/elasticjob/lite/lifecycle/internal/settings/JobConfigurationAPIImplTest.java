@@ -51,6 +51,14 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
+    public void assertGetJobConfigNull() {
+        when(regCenter.get("/test_job/config")).thenReturn(null);
+        JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
+        assertNull(actual);
+        verify(regCenter).get("/test_job/config");
+    }
+    
+    @Test
     public void assertGetDataflowJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
         JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");

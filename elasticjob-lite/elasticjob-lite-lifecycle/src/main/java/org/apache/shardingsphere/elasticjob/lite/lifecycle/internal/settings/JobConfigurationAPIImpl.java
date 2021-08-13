@@ -36,7 +36,11 @@ public final class JobConfigurationAPIImpl implements JobConfigurationAPI {
     
     @Override
     public JobConfigurationPOJO getJobConfiguration(final String jobName) {
-        return YamlEngine.unmarshal(regCenter.get(new JobNodePath(jobName).getConfigNodePath()), JobConfigurationPOJO.class);
+        String yamlContent = regCenter.get(new JobNodePath(jobName).getConfigNodePath());
+        if (null == yamlContent) {
+            return null;
+        }
+        return YamlEngine.unmarshal(yamlContent, JobConfigurationPOJO.class);
     }
     
     @Override
