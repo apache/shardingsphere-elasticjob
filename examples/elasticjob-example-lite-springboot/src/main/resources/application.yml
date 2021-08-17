@@ -14,6 +14,8 @@ elasticjob:
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      enableEventTrace: true
+      overwrite: true
     dataflowJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootDataflowJob
       cron: 0/5 * * * * ?

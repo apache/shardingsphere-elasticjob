@@ -80,6 +80,8 @@ public final class JobConfiguration {
     private final String label;
     
     private final boolean staticSharding;
+
+    private final boolean enableEventTrace;
     
     /**
      * Create ElasticJob configuration builder.
@@ -138,6 +140,8 @@ public final class JobConfiguration {
         private String label;
         
         private boolean staticSharding;
+
+        private boolean enableEventTrace;
     
         /**
          * Cron expression.
@@ -412,6 +416,17 @@ public final class JobConfiguration {
             this.staticSharding = staticSharding;
             return this;
         }
+
+        /**
+         * Set static enableEventTrace.
+         *
+         * @param enableEventTrace static enableEventTrace
+         * @return ElasticJob configuration builder
+         */
+        public Builder enableEventTrace(final boolean enableEventTrace) {
+            this.enableEventTrace = enableEventTrace;
+            return this;
+        }
         
         /**
          * Build ElasticJob configuration.
@@ -424,7 +439,7 @@ public final class JobConfiguration {
             return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
-                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding, enableEventTrace);
         }
     }
 }

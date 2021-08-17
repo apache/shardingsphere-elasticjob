@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,14 +41,14 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RDBTracingListenerTest {
-    
+
     private static final String JOB_NAME = "test_rdb_event_listener";
-    
+
     @Mock
     private RDBJobEventStorage repository;
-    
+
     private JobTracingEventBus jobTracingEventBus;
-    
+
     @Before
     public void setUp() throws SQLException {
         BasicDataSource dataSource = new BasicDataSource();
@@ -60,21 +60,21 @@ public final class RDBTracingListenerTest {
         setRepository(tracingListener);
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
     }
-    
+
     @SneakyThrows
     private void setRepository(final RDBTracingListener tracingListener) {
         Field field = RDBTracingListener.class.getDeclaredField("repository");
         field.setAccessible(true);
         field.set(tracingListener, repository);
     }
-    
+
     @Test
     public void assertPostJobExecutionEvent() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0, true);
         jobTracingEventBus.post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
     }
-    
+
     @Test
     public void assertPostJobStatusTraceEvent() {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.");

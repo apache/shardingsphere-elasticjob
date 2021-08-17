@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,94 +43,94 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobFacadeTest {
-    
+
     private ShardingContexts shardingContexts;
-    
+
     @Mock
     private JobTracingEventBus jobTracingEventBus;
-    
+
     private JobFacade jobFacade;
-    
+
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
         jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), jobTracingEventBus);
     }
-    
+
     private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
         shardingItemParameters.put(0, "A");
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
-    
+
     private JobConfiguration getJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 1).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
-    
+
     @Test
     public void assertCheckJobExecutionEnvironment() throws JobExecutionEnvironmentException {
         jobFacade.checkJobExecutionEnvironment();
     }
-    
+
     @Test
     public void assertFailoverIfNecessary() {
         jobFacade.failoverIfNecessary();
     }
-    
+
     @Test
     public void assertRegisterJobBegin() {
         jobFacade.registerJobBegin(null);
     }
-    
+
     @Test
     public void assertRegisterJobCompleted() {
         jobFacade.registerJobCompleted(null);
     }
-    
+
     @Test
     public void assertGetShardingContext() {
         assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
     }
-    
+
     @Test
     public void assertMisfireIfNecessary() {
         jobFacade.misfireIfRunning(null);
     }
-    
+
     @Test
     public void assertClearMisfire() {
         jobFacade.clearMisfire(null);
     }
-    
+
     @Test
     public void assertIsExecuteMisfired() {
         assertFalse(jobFacade.isExecuteMisfired(null));
     }
-    
+
     @Test
     public void assertIsNeedSharding() {
         assertFalse(jobFacade.isNeedSharding());
     }
-    
+
     @Test
     public void assertBeforeJobExecuted() {
         jobFacade.beforeJobExecuted(null);
     }
-    
+
     @Test
     public void assertAfterJobExecuted() {
         jobFacade.afterJobExecuted(null);
     }
-    
+
     @Test
     public void assertPostJobExecutionEvent() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0, true);
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
         verify(jobTracingEventBus).post(jobExecutionEvent);
     }
-    
+
     @Test
     public void assertPostJobStatusTraceEvent() {
-        jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.");
+        jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.", true);
     }
 }

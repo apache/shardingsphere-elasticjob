@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,25 +43,25 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 public final class ElasticJobExecutor {
-    
+
     private final ElasticJob elasticJob;
-    
+
     private final JobFacade jobFacade;
-    
+
     private final JobItemExecutor jobItemExecutor;
-    
+
     private final ExecutorContext executorContext;
-    
+
     private final Map<Integer, String> itemErrorMessages;
-    
+
     public ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade) {
         this(elasticJob, jobConfig, jobFacade, JobItemExecutorFactory.getExecutor(elasticJob.getClass()));
     }
-    
+
     public ElasticJobExecutor(final String type, final JobConfiguration jobConfig, final JobFacade jobFacade) {
         this(null, jobConfig, jobFacade, JobItemExecutorFactory.getExecutor(type));
     }
-    
+
     private ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
         this.elasticJob = elasticJob;
         this.jobFacade = jobFacade;
@@ -69,7 +69,7 @@ public final class ElasticJobExecutor {
         executorContext = new ExecutorContext(jobFacade.loadJobConfiguration(true));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
-    
+
     /**
      * Execute job.
      */
@@ -83,11 +83,11 @@ public final class ElasticJobExecutor {
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
-        jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()));
+        jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobConfig.getJobName()), jobConfig.isEnableEventTrace());
         if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format(
                     "Previous job '%s' - shardingItems '%s' is still running, misfired job will start after previous job completed.", jobConfig.getJobName(),
-                    shardingContexts.getShardingItemParameters().keySet()));
+                    shardingContexts.getShardingItemParameters().keySet()), jobConfig.isEnableEventTrace());
             return;
         }
         try {
@@ -111,39 +111,42 @@ public final class ElasticJobExecutor {
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }
-    
+
     private void execute(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         if (shardingContexts.getShardingItemParameters().isEmpty()) {
-            jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format("Sharding item for job '%s' is empty.", jobConfig.getJobName()));
+            jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED,
+                    String.format("Sharding item for job '%s' is empty.", jobConfig.getJobName()), jobConfig.isEnableEventTrace());
             return;
         }
         jobFacade.registerJobBegin(shardingContexts);
         String taskId = shardingContexts.getTaskId();
-        jobFacade.postJobStatusTraceEvent(taskId, State.TASK_RUNNING, "");
+        jobFacade.postJobStatusTraceEvent(taskId, State.TASK_RUNNING, "", jobConfig.isEnableEventTrace());
         try {
             process(jobConfig, shardingContexts, executionSource);
         } finally {
             // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
             jobFacade.registerJobCompleted(shardingContexts);
             if (itemErrorMessages.isEmpty()) {
-                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
+                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "", jobConfig.isEnableEventTrace());
             } else {
-                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_ERROR, itemErrorMessages.toString());
+                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_ERROR, itemErrorMessages.toString(), jobConfig.isEnableEventTrace());
             }
         }
     }
-    
+
     private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
             int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, item);
+            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(),
+                    jobConfig.getJobName(), executionSource, item, jobConfig.isEnableEventTrace());
             process(jobConfig, shardingContexts, item, jobExecutionEvent);
             return;
         }
         CountDownLatch latch = new CountDownLatch(items.size());
         for (int each : items) {
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
+            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(),
+                    jobConfig.getJobName(), executionSource, each, jobConfig.isEnableEventTrace());
             ExecutorService executorService = executorContext.get(ExecutorService.class);
             if (executorService.isShutdown()) {
                 return;
@@ -162,7 +165,7 @@ public final class ElasticJobExecutor {
             Thread.currentThread().interrupt();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void process(final JobConfiguration jobConfig, final ShardingContexts shardingContexts, final int item, final JobExecutionEvent startEvent) {
         jobFacade.postJobExecutionEvent(startEvent);
@@ -183,7 +186,7 @@ public final class ElasticJobExecutor {
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }
-    
+
     /**
      * Shutdown executor.
      */

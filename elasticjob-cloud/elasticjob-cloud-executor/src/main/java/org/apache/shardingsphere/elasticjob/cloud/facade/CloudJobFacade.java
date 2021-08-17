@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,81 +35,86 @@ import java.util.Collection;
  */
 @RequiredArgsConstructor
 public final class CloudJobFacade implements JobFacade {
-    
+
     private final ShardingContexts shardingContexts;
-    
+
     private final JobConfiguration jobConfig;
-    
+
     private final JobTracingEventBus jobTracingEventBus;
-    
+
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {
         JobConfiguration result = JobConfiguration.newBuilder(jobConfig.getJobName(), jobConfig.getShardingTotalCount())
                 .cron(jobConfig.getCron()).shardingItemParameters(jobConfig.getShardingItemParameters()).jobParameter(jobConfig.getJobParameter())
                 .failover(jobConfig.isFailover()).misfire(jobConfig.isMisfire()).description(jobConfig.getDescription())
                 .jobExecutorServiceHandlerType(jobConfig.getJobExecutorServiceHandlerType())
-                .jobErrorHandlerType(jobConfig.getJobErrorHandlerType()).build();
+                .jobErrorHandlerType(jobConfig.getJobErrorHandlerType()).enableEventTrace(jobConfig.isEnableEventTrace()).build();
         result.getProps().putAll(jobConfig.getProps());
         return result;
     }
-    
+
     @Override
     public void checkJobExecutionEnvironment() {
     }
-    
+
     @Override
     public void failoverIfNecessary() {
     }
-    
+
     @Override
     public void registerJobBegin(final ShardingContexts shardingContexts) {
     }
-    
+
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
     }
-    
+
     @Override
     public ShardingContexts getShardingContexts() {
         return shardingContexts;
     }
-    
+
     @Override
     public boolean misfireIfRunning(final Collection<Integer> shardingItems) {
         return false;
     }
-    
+
     @Override
     public void clearMisfire(final Collection<Integer> shardingItems) {
     }
-    
+
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
         return false;
     }
-    
+
     @Override
     public boolean isNeedSharding() {
         return false;
     }
-    
+
     @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }
-    
+
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
     }
-    
+
     @Override
     public void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
-        jobTracingEventBus.post(jobExecutionEvent);
+        if (jobExecutionEvent.isEnableEventTrace()) {
+            jobTracingEventBus.post(jobExecutionEvent);
+        }
     }
-    
+
     @Override
-    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message, final boolean enableEventTrace) {
+        if (!enableEventTrace) {
+            return;
+        }
         TaskContext taskContext = TaskContext.from(taskId);
-        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                 Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }
