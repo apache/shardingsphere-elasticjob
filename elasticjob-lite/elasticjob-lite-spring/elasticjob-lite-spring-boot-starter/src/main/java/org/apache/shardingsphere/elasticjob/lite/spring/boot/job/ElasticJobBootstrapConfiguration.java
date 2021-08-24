@@ -25,6 +25,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
@@ -34,8 +35,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * JobBootstrap configuration.
@@ -45,7 +46,7 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
 
     @Setter
     private ApplicationContext applicationContext;
-
+    
     @Override
     public void afterSingletonsInstantiated() {
         log.info("creating Job Bootstrap Beans");
@@ -95,10 +96,28 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
         }
     }
     
+    private void jobExtraConfigurations(final JobConfiguration jobConfig, final TracingConfiguration<?> tracingConfig) {
+        if (null == tracingConfig) {
+            return;
+        }
+        
+        TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
+        if (null == tracingProperties.getIncludeJobNames()) {
+            if (null == tracingProperties.getExcludeJobNames()
+                    || !Arrays.asList(tracingProperties.getExcludeJobNames()).contains(jobConfig.getJobName())) {
+                log.warn("{} add {}", jobConfig.getJobName(), tracingConfig.getType());
+                jobConfig.getExtraConfigurations().add(tracingConfig);
+            }
+        } else if (Arrays.asList(tracingProperties.getIncludeJobNames()).contains(jobConfig.getJobName())) {
+            log.warn("IncludeJobNames {} add {}", jobConfig.getJobName(), tracingConfig.getType());
+            jobConfig.getExtraConfigurations().add(tracingConfig);
+        }
+    }
+    
     private void registerClassedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                     final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
-        Optional.ofNullable(tracingConfig).ifPresent(jobConfig.getExtraConfigurations()::add);
+        jobExtraConfigurations(jobConfig, tracingConfig);
         ElasticJob elasticJob = applicationContext.getBean(jobConfigurationProperties.getElasticJobClass());
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for One-off job.");
@@ -112,7 +131,7 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
     private void registerTypedJob(final String jobName, final String jobBootstrapBeanName, final SingletonBeanRegistry singletonBeanRegistry, final CoordinatorRegistryCenter registryCenter,
                                   final TracingConfiguration<?> tracingConfig, final ElasticJobConfigurationProperties jobConfigurationProperties) {
         JobConfiguration jobConfig = jobConfigurationProperties.toJobConfiguration(jobName);
-        Optional.ofNullable(tracingConfig).ifPresent(jobConfig.getExtraConfigurations()::add);
+        jobExtraConfigurations(jobConfig, tracingConfig);
         if (Strings.isNullOrEmpty(jobConfig.getCron())) {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobBootstrapBeanName), "The property [jobBootstrapBeanName] is required for One-off job.");
             singletonBeanRegistry.registerSingleton(jobBootstrapBeanName, new OneOffJobBootstrap(registryCenter, jobConfigurationProperties.getElasticJobType(), jobConfig));

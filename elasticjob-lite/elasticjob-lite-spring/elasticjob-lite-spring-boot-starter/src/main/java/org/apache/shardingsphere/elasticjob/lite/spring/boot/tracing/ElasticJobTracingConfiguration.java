@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
@@ -27,6 +28,7 @@ import javax.sql.DataSource;
 /**
  * ElasticJob tracing auto configuration.
  */
+@EnableConfigurationProperties(TracingProperties.class)
 public class ElasticJobTracingConfiguration {
     
     /**
