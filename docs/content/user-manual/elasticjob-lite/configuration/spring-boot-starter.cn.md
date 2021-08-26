@@ -4,6 +4,16 @@ weight = 2
 chapter = true
 +++
 
+使用 Spring-boot 需在 pom.xml 文件中添加 elasticjob-lite-spring-boot-starter 模块的依赖。
+
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+
 ## 注册中心配置
 
 配置前缀：`elasticjob.reg-center`
