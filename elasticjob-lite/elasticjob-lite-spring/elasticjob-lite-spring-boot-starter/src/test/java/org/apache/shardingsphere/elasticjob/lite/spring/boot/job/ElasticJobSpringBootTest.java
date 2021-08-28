@@ -42,7 +42,9 @@ import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -96,7 +98,8 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
         assertNotNull(tracingProperties);
         assertNull(tracingProperties.getIncludeJobNames());
-        String[] excludeJobNames = {"customTestJob"};
+        Set<String> excludeJobNames = new HashSet<>();
+        excludeJobNames.add("customTestJob");
         assertThat(tracingProperties.getExcludeJobNames(), is(excludeJobNames));
     }
 

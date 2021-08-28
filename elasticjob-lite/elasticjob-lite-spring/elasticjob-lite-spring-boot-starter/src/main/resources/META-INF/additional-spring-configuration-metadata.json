@@ -90,13 +90,13 @@
     },
     {
       "name": "elasticjob.tracing.includeJobNames",
-      "type": "java.lang.String[]",
+      "type": "java.util.Set<java.lang.String>",
       "description": "include the specific job.",
       "defaultValue": null
     },
     {
       "name": "elasticjob.tracing.excludeJobNames",
-      "type": "java.lang.String[]",
+      "type": "java.util.Set<java.lang.String>",
       "description": "exclude the specific job.",
       "defaultValue": null
     },

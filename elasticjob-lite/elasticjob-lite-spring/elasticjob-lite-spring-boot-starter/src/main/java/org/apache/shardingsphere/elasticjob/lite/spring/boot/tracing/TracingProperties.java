@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing;
 
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,8 +29,8 @@ public class TracingProperties {
     
     private String type;
     
-    private String[] includeJobNames;
+    private Set<String> includeJobNames;
     
-    private String[] excludeJobNames;
+    private Set<String> excludeJobNames;
     
 }

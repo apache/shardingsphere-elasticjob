@@ -35,7 +35,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -103,10 +102,10 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
         TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
         if (null == tracingProperties.getIncludeJobNames()) {
             if (null == tracingProperties.getExcludeJobNames()
-                    || !Arrays.asList(tracingProperties.getExcludeJobNames()).contains(jobConfig.getJobName())) {
+                    || !tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
                 jobConfig.getExtraConfigurations().add(tracingConfig);
             }
-        } else if (Arrays.asList(tracingProperties.getIncludeJobNames()).contains(jobConfig.getJobName())) {
+        } else if (tracingProperties.getIncludeJobNames().contains(jobConfig.getJobName())) {
             jobConfig.getExtraConfigurations().add(tracingConfig);
         }
     }
