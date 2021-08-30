@@ -100,12 +100,17 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
             return;
         }
         TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
-        if (null == tracingProperties.getIncludeJobNames()) {
-            if (null == tracingProperties.getExcludeJobNames()
-                    || !tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
+        Preconditions.checkArgument(null == tracingProperties.getIncludeJobNames()
+                || null == tracingProperties.getExcludeJobNames(),
+                "[tracing.includeJobNames] and [tracing.excludeJobNames] are mutually exclusive.");
+        if (null == tracingProperties.getIncludeJobNames() && null == tracingProperties.getExcludeJobNames()) {
+            jobConfig.getExtraConfigurations().add(tracingConfig);
+        } else if (null != tracingProperties.getIncludeJobNames()) {
+            if (tracingProperties.getIncludeJobNames().contains(jobConfig.getJobName())) {
                 jobConfig.getExtraConfigurations().add(tracingConfig);
             }
-        } else if (tracingProperties.getIncludeJobNames().contains(jobConfig.getJobName())) {
+        } else if (null != tracingProperties.getExcludeJobNames()
+                && !tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
             jobConfig.getExtraConfigurations().add(tracingConfig);
         }
     }
