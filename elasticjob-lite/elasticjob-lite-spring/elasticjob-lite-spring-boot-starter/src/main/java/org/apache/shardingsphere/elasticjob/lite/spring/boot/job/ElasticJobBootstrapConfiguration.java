@@ -105,12 +105,15 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
                 "[tracing.includeJobNames] and [tracing.excludeJobNames] are mutually exclusive.");
         if (null == tracingProperties.getIncludeJobNames() && null == tracingProperties.getExcludeJobNames()) {
             jobConfig.getExtraConfigurations().add(tracingConfig);
-        } else if (null != tracingProperties.getIncludeJobNames()) {
+            return;
+        }
+        if (null != tracingProperties.getIncludeJobNames()) {
             if (tracingProperties.getIncludeJobNames().contains(jobConfig.getJobName())) {
                 jobConfig.getExtraConfigurations().add(tracingConfig);
             }
-        } else if (null != tracingProperties.getExcludeJobNames()
-                && !tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
+            return;
+        }
+        if (!tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
             jobConfig.getExtraConfigurations().add(tracingConfig);
         }
     }
