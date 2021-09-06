@@ -97,7 +97,7 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         assertNotNull(applicationContext);
         TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
         assertNotNull(tracingProperties);
-        assertNull(tracingProperties.getIncludeJobNames());
+        assertTrue(tracingProperties.getIncludeJobNames().isEmpty());
         Set<String> excludeJobNames = new HashSet<>();
         excludeJobNames.add("customTestJob");
         assertThat(tracingProperties.getExcludeJobNames(), is(excludeJobNames));

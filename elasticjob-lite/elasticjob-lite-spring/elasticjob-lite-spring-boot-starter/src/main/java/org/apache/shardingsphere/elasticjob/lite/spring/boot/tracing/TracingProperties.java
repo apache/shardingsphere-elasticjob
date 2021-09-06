@@ -17,10 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing;
 
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,8 +31,7 @@ public class TracingProperties {
     
     private String type;
     
-    private Set<String> includeJobNames;
+    private Set<String> includeJobNames = new HashSet<>();
     
-    private Set<String> excludeJobNames;
-    
+    private Set<String> excludeJobNames = new HashSet<>();
 }
