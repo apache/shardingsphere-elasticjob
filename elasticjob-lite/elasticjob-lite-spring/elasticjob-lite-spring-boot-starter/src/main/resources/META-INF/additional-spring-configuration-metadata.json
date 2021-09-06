@@ -89,6 +89,18 @@
       "description": "Type of Event Trace storage."
     },
     {
+      "name": "elasticjob.tracing.includeJobNames",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "include the specific job.",
+      "defaultValue": null
+    },
+    {
+      "name": "elasticjob.tracing.excludeJobNames",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "exclude the specific job.",
+      "defaultValue": null
+    },
+    {
       "name": "elasticjob.jobs",
       "type": "java.util.Map<java.lang.String,org.apache.shardingsphere.elasticjob.lite.spring.boot.job.ElasticJobConfigurationProperties>"
     },

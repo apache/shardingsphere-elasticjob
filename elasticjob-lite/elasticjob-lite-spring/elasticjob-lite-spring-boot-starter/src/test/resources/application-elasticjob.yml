@@ -25,6 +25,7 @@ spring:
 elasticjob:
   tracing:
     type: RDB
+    excludeJobNames: [customTestJob]
   regCenter:
     serverLists: localhost:18181
     namespace: elasticjob-lite-spring-boot-starter

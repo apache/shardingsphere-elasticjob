@@ -18,13 +18,16 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProperties;
+import org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.BeforeClass;
@@ -35,9 +38,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -84,7 +91,18 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
         DataSource dataSource = (DataSource) tracingConfig.getTracingStorageConfiguration().getStorage();
         assertNotNull(dataSource.getConnection());
     }
-    
+
+    @Test
+    public void assertTracingProperties() {
+        assertNotNull(applicationContext);
+        TracingProperties tracingProperties = applicationContext.getBean(TracingProperties.class);
+        assertNotNull(tracingProperties);
+        assertNull(tracingProperties.getIncludeJobNames());
+        Set<String> excludeJobNames = new HashSet<>();
+        excludeJobNames.add("customTestJob");
+        assertThat(tracingProperties.getExcludeJobNames(), is(excludeJobNames));
+    }
+
     @Test
     public void assertElasticJobProperties() {
         assertNotNull(applicationContext);
@@ -122,10 +140,24 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
     }
     
     @Test
-    public void assertOneOffJobBootstrapBeanName() {
+    public void assertOneOffJobBootstrapBeanName()
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         assertNotNull(applicationContext);
-        assertNotNull(applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class));
-        assertNotNull(applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class));
+        OneOffJobBootstrap customTestJobBootstrap =
+                applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class);
+        assertNotNull(customTestJobBootstrap);
+        Field jobSchedulerField = customTestJobBootstrap.getClass().getDeclaredField("jobScheduler");
+        jobSchedulerField.setAccessible(true);
+        Collection<JobExtraConfiguration> extraConfigurations =
+                ((JobScheduler) jobSchedulerField.get(customTestJobBootstrap)).getJobConfig().getExtraConfigurations();
+        assertThat(extraConfigurations.size(), is(0));
+        OneOffJobBootstrap printTestJobBootstrap =
+                applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class);
+        jobSchedulerField = printTestJobBootstrap.getClass().getDeclaredField("jobScheduler");
+        jobSchedulerField.setAccessible(true);
+        extraConfigurations =
+                ((JobScheduler) jobSchedulerField.get(printTestJobBootstrap)).getJobConfig().getExtraConfigurations();
+        assertThat(extraConfigurations.size(), is(1));
     }
 
     @Test
