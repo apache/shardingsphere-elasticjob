@@ -129,9 +129,15 @@ elasticjob.jobs.manualScriptJob.props.script.command.line=echo Manual SCRIPT Job
 
 配置前缀：`elasticjob.tracing`
 
-| 属性名           | 可选值        | 是否必填 |
-| -----------------|:------------- |:-------- |
-| type             | RDB           | 否       |
+| 属性名            | 可选值    | 是否必填  |描述       |
+| -----------------|:-------- |:------- |:--------- |
+| type             | RDB      | 否       |          |
+| includeJobNames  |          | 否       | 作业白名单 |
+| excludeJobNames  |          | 否       | 作业黑名单 |
+
+**includeJobNames 与 excludeJobNames 互斥，事件追踪配置只能有一种属性**
+
+**includeJobNames 与 excludeJobNames 都为空时，默认为所有作业加载事件追踪**
 
 目前仅提供了 RDB 类型的事件追踪数据源实现。
 Spring IoC 容器中存在 DataSource 类型的 bean 且配置数据源类型为 RDB 时会自动配置事件追踪，无须显式创建。
@@ -143,11 +149,13 @@ Spring IoC 容器中存在 DataSource 类型的 bean 且配置数据源类型为
 elasticjob:
   tracing:
     type: RDB
+    excludeJobNames: [ job-name-1, job-name-2 ]
 ```
 
 **Properties**
 ```
 elasticjob.tracing.type=RDB
+elasticjob.tracing.excludeJobNames=[ job-name ]
 ```
 
 ## 作业信息导出配置
