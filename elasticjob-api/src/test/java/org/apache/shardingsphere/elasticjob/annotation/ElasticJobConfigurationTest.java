@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.apache.shardingsphere.elasticjob.annotation.job.impl.SimpleTestJob;
+import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 import org.junit.Test;
 
 public class ElasticJobConfigurationTest {
@@ -35,6 +36,9 @@ public class ElasticJobConfigurationTest {
         assertEquals(annotation.cron(), "0/5 * * * * ?");
         assertEquals(annotation.shardingTotalCount(), 3);
         assertEquals(annotation.shardingItemParameters(), "0=Beijing,1=Shanghai,2=Guangzhou");
+        for (Class<? extends JobExtraConfigurationFactory> factory :annotation.extraConfigurations()) {
+            assertEquals(factory, SimpleTracingConfigurationFactory.class);
+        }
         assertArrayEquals(annotation.jobListenerTypes(), new String[] {"NOOP", "LOG"});
         Queue<String> propsKey = new LinkedList<>(Arrays.asList("print.title", "print.content"));
         Queue<String> propsValue = new LinkedList<>(Arrays.asList("test title", "test content"));

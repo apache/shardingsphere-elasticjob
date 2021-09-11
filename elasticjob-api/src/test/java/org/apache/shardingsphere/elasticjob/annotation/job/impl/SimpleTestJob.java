@@ -19,19 +19,21 @@ package org.apache.shardingsphere.elasticjob.annotation.job.impl;
 
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
+import org.apache.shardingsphere.elasticjob.annotation.SimpleTracingConfigurationFactory;
 import org.apache.shardingsphere.elasticjob.annotation.job.CustomJob;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 @ElasticJobConfiguration(
-        cron = "0/5 * * * * ?",
-        jobName = "SimpleTestJob",
-        shardingTotalCount = 3,
-        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
-        jobListenerTypes = {"NOOP", "LOG"},
-        props = {
-                @ElasticJobProp(key = "print.title", value = "test title"),
-                @ElasticJobProp(key = "print.content", value = "test content")
-        }
+    cron = "0/5 * * * * ?",
+    jobName = "SimpleTestJob",
+    shardingTotalCount = 3,
+    shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
+    jobListenerTypes = {"NOOP", "LOG"},
+    extraConfigurations = {SimpleTracingConfigurationFactory.class},
+    props = {
+        @ElasticJobProp(key = "print.title", value = "test title"),
+        @ElasticJobProp(key = "print.content", value = "test content")
+    }
 )
 public class SimpleTestJob implements CustomJob {
     
