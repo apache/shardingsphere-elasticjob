@@ -130,9 +130,15 @@ elasticjob.jobs.manualScriptJob.props.script.command.line=echo Manual SCRIPT Job
 
 Prefix: `elasticjob.tracing`
 
-| Property name    | Options       | Required |
-| -----------------|:------------- |:-------- |
-| type             | RDB           | No       |
+| Property name    | Options  | Required | Description       |
+| -----------------|:---------|:-------- |:----------------- |
+| type             | RDB      | No       |                   |
+| includeJobNames  |          | No       | allow list of job |
+| excludeJobNames  |          | No       | block list of job |
+
+**"includeJobNames" and "excludeJobNames" are mutually exclusive.**
+
+**Load all Job When "includeJobNames" and "excludeJobNames" are null.**
 
 RDB is the only supported type at present.
 If Spring IoC container contained a bean of DataSource and RDB was set in configuration, an instance of TracingConfiguration will be created automatically.
@@ -144,11 +150,13 @@ Reference:
 elasticjob:
   tracing:
     type: RDB
+    excludeJobNames: [ job-name-1, job-name-2 ]
 ```
 
 **Properties**
 ```
 elasticjob.tracing.type=RDB
+elasticjob.tracing.excludeJobNames=[ job-name ]
 ```
 
 ### Dump Job Info Configuration
