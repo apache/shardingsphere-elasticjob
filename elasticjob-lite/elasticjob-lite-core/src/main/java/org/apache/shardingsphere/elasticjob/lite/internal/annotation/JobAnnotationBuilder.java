@@ -9,13 +9,12 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobAnnotationExcepti
 
 public class JobAnnotationBuilder {
     
-    private final Class<?> type;
-    
-    public JobAnnotationBuilder(Class<?> type) {
-        this.type = type;
-    }
-    
-    public JobConfiguration generateJobConfiguration() {
+    /**
+     * generate JobConfiguration from @ElasticJobConfiguration.
+     * @param type The job of @ElasticJobConfiguration annotation class
+     * @return JobConfiguration
+     */
+    public static JobConfiguration generateJobConfiguration(final Class<?> type) {
         ElasticJobConfiguration annotation = type.getAnnotation(ElasticJobConfiguration.class);
         String jobName = annotation.jobName();
         JobConfiguration.Builder jobConfigurationBuilder = JobConfiguration.newBuilder(jobName, annotation.shardingTotalCount())
@@ -31,9 +30,7 @@ public class JobAnnotationBuilder {
                 .jobExecutorServiceHandlerType(annotation.jobExecutorServiceHandlerType())
                 .jobErrorHandlerType(annotation.jobErrorHandlerType())
                 .jobListenerTypes(annotation.jobListenerTypes())
-                .addExtraConfigurations(null)
                 .description(annotation.description())
-                .setProperty(null, null)
                 .disabled(annotation.disabled())
                 .overwrite(annotation.overwrite())
                 .label(annotation.label())
@@ -42,7 +39,7 @@ public class JobAnnotationBuilder {
             try {
                 JobExtraConfiguration jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();
                 jobConfigurationBuilder.addExtraConfigurations(jobExtraConfiguration);
-            } catch (IllegalAccessException | InstantiationException  exception) {
+            } catch (IllegalAccessException | InstantiationException exception) {
                 throw (JobAnnotationException) new JobAnnotationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
             }
         }

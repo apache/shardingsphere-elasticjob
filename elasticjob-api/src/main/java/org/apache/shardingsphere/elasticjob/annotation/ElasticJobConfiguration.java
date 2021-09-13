@@ -146,8 +146,16 @@ public @interface ElasticJobConfiguration {
      */
     boolean overwrite() default false;
     
+    /**
+     * Label.
+     * @return label
+     */
     String label() default "";
     
+    /**
+     * Static sharding.
+     * @return Static sharding
+     */
     boolean staticSharding() default false;
     
 }
