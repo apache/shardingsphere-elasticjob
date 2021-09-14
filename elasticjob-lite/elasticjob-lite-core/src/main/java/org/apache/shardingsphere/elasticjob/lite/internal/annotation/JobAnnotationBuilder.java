@@ -1,5 +1,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.annotation;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -16,10 +18,12 @@ public class JobAnnotationBuilder {
      */
     public static JobConfiguration generateJobConfiguration(final Class<?> type) {
         ElasticJobConfiguration annotation = type.getAnnotation(ElasticJobConfiguration.class);
-        String jobName = annotation.jobName();
-        JobConfiguration.Builder jobConfigurationBuilder = JobConfiguration.newBuilder(jobName, annotation.shardingTotalCount())
-                .cron(annotation.cron())
+        Preconditions.checkArgument(null != annotation, "@ElasticJobConfiguration not found by class '%s'.", type);
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(annotation.jobName()), "@ElasticJobConfiguration jobName not be empty by class '%s'.", type);
+        JobConfiguration.Builder jobConfigurationBuilder = JobConfiguration.newBuilder(annotation.jobName(), annotation.shardingTotalCount())
                 .shardingItemParameters(annotation.shardingItemParameters())
+                .cron(Strings.isNullOrEmpty(annotation.cron()) ? null : annotation.cron())
+                .timeZone(Strings.isNullOrEmpty(annotation.timeZone()) ? null : annotation.timeZone())
                 .jobParameter(annotation.jobParameter())
                 .monitorExecution(annotation.monitorExecution())
                 .failover(annotation.failover())
@@ -28,13 +32,11 @@ public class JobAnnotationBuilder {
                 .reconcileIntervalMinutes(annotation.reconcileIntervalMinutes())
                 .jobShardingStrategyType(annotation.jobShardingStrategyType())
                 .jobExecutorServiceHandlerType(annotation.jobExecutorServiceHandlerType())
-                .jobErrorHandlerType(annotation.jobErrorHandlerType())
+                .jobErrorHandlerType(Strings.isNullOrEmpty(annotation.jobErrorHandlerType()) ? null : annotation.jobErrorHandlerType())
                 .jobListenerTypes(annotation.jobListenerTypes())
                 .description(annotation.description())
                 .disabled(annotation.disabled())
-                .overwrite(annotation.overwrite())
-                .label(annotation.label())
-                .staticSharding(annotation.staticSharding());
+                .overwrite(annotation.overwrite());
         for (Class<? extends JobExtraConfigurationFactory> clazz : annotation.extraConfigurations()) {
             try {
                 JobExtraConfiguration jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();

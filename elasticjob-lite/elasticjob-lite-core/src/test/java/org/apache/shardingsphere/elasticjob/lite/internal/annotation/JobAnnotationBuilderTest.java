@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.annotation;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +43,7 @@ public final class JobAnnotationBuilderTest {
         assertThat(jobConfiguration.getReconcileIntervalMinutes(), is(10));
         assertThat(jobConfiguration.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
         assertThat(jobConfiguration.getJobExecutorServiceHandlerType(), is("CPU"));
-        assertThat(jobConfiguration.getJobErrorHandlerType(), is(""));
+        assertNull(jobConfiguration.getJobErrorHandlerType());
         assertThat(jobConfiguration.getDescription(), is("desc"));
         assertThat(jobConfiguration.getProps().getProperty("print.title"), is("test title"));
         assertThat(jobConfiguration.getProps().getProperty("print.content"), is("test content"));

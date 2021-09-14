@@ -22,6 +22,7 @@ import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.internal.annotation.JobAnnotationBuilder;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -38,6 +39,11 @@ public final class ScheduleJobBootstrap implements JobBootstrap {
     
     public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
         jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig);
+    }
+    
+    public ScheduleJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob) {
+        JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(elasticJob.getClass());
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig);
     }
     
     /**

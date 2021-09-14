@@ -45,6 +45,12 @@ public @interface ElasticJobConfiguration {
     String cron() default "";
     
     /**
+     * time zone of CRON.
+     * @return timeZone
+     */
+    String timeZone() default "";
+    
+    /**
      * Sharding total count.
      * @return shardingTotalCount
      */
@@ -145,17 +151,5 @@ public @interface ElasticJobConfiguration {
      * @return overwrite
      */
     boolean overwrite() default false;
-    
-    /**
-     * Label.
-     * @return label
-     */
-    String label() default "";
-    
-    /**
-     * Static sharding.
-     * @return Static sharding
-     */
-    boolean staticSharding() default false;
     
 }
