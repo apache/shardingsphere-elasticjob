@@ -65,9 +65,9 @@ public abstract class BaseAnnotationTest {
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob);
             case ONE_OFF:
-                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
