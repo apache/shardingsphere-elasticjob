@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 
 /**
- * The annotation that specify a jo of elastic.
+ * The annotation that specify a job of elastic.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -45,7 +45,7 @@ public @interface ElasticJobConfiguration {
     String cron() default "";
     
     /**
-     * time zone of CRON.
+     * Time zone of CRON.
      * @return timeZone
      */
     String timeZone() default "";
@@ -102,13 +102,13 @@ public @interface ElasticJobConfiguration {
      * Job sharding strategy type.
      * @return jobShardingStrategyType
      */
-    String jobShardingStrategyType() default "AVG_ALLOCATION";
+    String jobShardingStrategyType() default "";
     
     /**
      * Job thread pool handler type.
      * @return jobExecutorServiceHandlerType
      */
-    String jobExecutorServiceHandlerType() default "CPU";
+    String jobExecutorServiceHandlerType() default "";
     
     /**
      * Job thread pool handler type.

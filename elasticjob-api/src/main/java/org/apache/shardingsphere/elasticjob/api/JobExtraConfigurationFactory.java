@@ -23,7 +23,7 @@ package org.apache.shardingsphere.elasticjob.api;
 public interface JobExtraConfigurationFactory {
     
     /**
-     * get JobExtraConfiguration.
+     * Get JobExtraConfiguration.
      * @return JobExtraConfiguration
      */
     JobExtraConfiguration getJobExtraConfiguration();

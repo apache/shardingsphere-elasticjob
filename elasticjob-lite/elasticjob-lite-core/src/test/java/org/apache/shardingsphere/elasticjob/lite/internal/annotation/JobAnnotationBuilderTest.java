@@ -41,8 +41,8 @@ public final class JobAnnotationBuilderTest {
         assertTrue(jobConfiguration.isMisfire());
         assertThat(jobConfiguration.getMaxTimeDiffSeconds(), is(-1));
         assertThat(jobConfiguration.getReconcileIntervalMinutes(), is(10));
-        assertThat(jobConfiguration.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
-        assertThat(jobConfiguration.getJobExecutorServiceHandlerType(), is("CPU"));
+        assertNull(jobConfiguration.getJobShardingStrategyType());
+        assertNull(jobConfiguration.getJobExecutorServiceHandlerType());
         assertNull(jobConfiguration.getJobErrorHandlerType());
         assertThat(jobConfiguration.getDescription(), is("desc"));
         assertThat(jobConfiguration.getProps().getProperty("print.title"), is("test title"));

@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.annotation;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -32,19 +33,19 @@ public class ElasticJobConfigurationTest {
     @Test
     public void assertAnnotationJob() {
         ElasticJobConfiguration annotation = SimpleTestJob.class.getAnnotation(ElasticJobConfiguration.class);
-        assertEquals(annotation.jobName(), "SimpleTestJob");
-        assertEquals(annotation.cron(), "0/5 * * * * ?");
-        assertEquals(annotation.shardingTotalCount(), 3);
-        assertEquals(annotation.shardingItemParameters(), "0=Beijing,1=Shanghai,2=Guangzhou");
+        assertThat(annotation.jobName(), is("SimpleTestJob"));
+        assertThat(annotation.cron(), is("0/5 * * * * ?"));
+        assertThat(annotation.shardingTotalCount(), is(3));
+        assertThat(annotation.shardingItemParameters(), is("0=Beijing,1=Shanghai,2=Guangzhou"));
         for (Class<? extends JobExtraConfigurationFactory> factory :annotation.extraConfigurations()) {
-            assertEquals(factory, SimpleTracingConfigurationFactory.class);
+            assertThat(factory, is(SimpleTracingConfigurationFactory.class));
         }
         assertArrayEquals(annotation.jobListenerTypes(), new String[] {"NOOP", "LOG"});
         Queue<String> propsKey = new LinkedList<>(Arrays.asList("print.title", "print.content"));
         Queue<String> propsValue = new LinkedList<>(Arrays.asList("test title", "test content"));
         for (ElasticJobProp prop :annotation.props()) {
-            assertEquals(prop.key(), propsKey.poll());
-            assertEquals(prop.value(), propsValue.poll());
+            assertThat(prop.key(), is(propsKey.poll()));
+            assertThat(prop.value(), is(propsValue.poll()));
         }
     }
 }

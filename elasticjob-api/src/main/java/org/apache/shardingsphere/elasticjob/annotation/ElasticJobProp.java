@@ -29,13 +29,13 @@ import java.lang.annotation.RetentionPolicy;
 public @interface ElasticJobProp {
     
     /**
-     * prop key.
+     * Prop key.
      * @return key
      */
     String key();
     
     /**
-     * prop value.
+     * Prop value.
      * @return value
      */
     String value() default "";

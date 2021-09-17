@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobAnnotationException;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 public class JobAnnotationBuilder {
     
@@ -47,8 +47,8 @@ public class JobAnnotationBuilder {
                 .misfire(annotation.misfire())
                 .maxTimeDiffSeconds(annotation.maxTimeDiffSeconds())
                 .reconcileIntervalMinutes(annotation.reconcileIntervalMinutes())
-                .jobShardingStrategyType(annotation.jobShardingStrategyType())
-                .jobExecutorServiceHandlerType(annotation.jobExecutorServiceHandlerType())
+                .jobShardingStrategyType(Strings.isNullOrEmpty(annotation.jobShardingStrategyType()) ? null : annotation.jobShardingStrategyType())
+                .jobExecutorServiceHandlerType(Strings.isNullOrEmpty(annotation.jobExecutorServiceHandlerType()) ? null : annotation.jobExecutorServiceHandlerType())
                 .jobErrorHandlerType(Strings.isNullOrEmpty(annotation.jobErrorHandlerType()) ? null : annotation.jobErrorHandlerType())
                 .jobListenerTypes(annotation.jobListenerTypes())
                 .description(annotation.description())
@@ -59,14 +59,12 @@ public class JobAnnotationBuilder {
                 JobExtraConfiguration jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();
                 jobConfigurationBuilder.addExtraConfigurations(jobExtraConfiguration);
             } catch (IllegalAccessException | InstantiationException exception) {
-                throw (JobAnnotationException) new JobAnnotationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
+                throw (JobConfigurationException) new JobConfigurationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
             }
         }
         for (ElasticJobProp prop :annotation.props()) {
             jobConfigurationBuilder.setProperty(prop.key(), prop.value());
         }
-    
         return jobConfigurationBuilder.build();
     }
-    
 }
