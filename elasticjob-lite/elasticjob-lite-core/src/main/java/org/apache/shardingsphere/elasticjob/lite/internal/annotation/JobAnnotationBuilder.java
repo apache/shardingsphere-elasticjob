@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.annotation;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import java.util.Optional;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -56,8 +57,8 @@ public class JobAnnotationBuilder {
                 .overwrite(annotation.overwrite());
         for (Class<? extends JobExtraConfigurationFactory> clazz : annotation.extraConfigurations()) {
             try {
-                JobExtraConfiguration jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();
-                jobConfigurationBuilder.addExtraConfigurations(jobExtraConfiguration);
+                Optional<JobExtraConfiguration> jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();
+                jobExtraConfiguration.ifPresent(jobConfigurationBuilder::addExtraConfigurations);
             } catch (IllegalAccessException | InstantiationException exception) {
                 throw (JobConfigurationException) new JobConfigurationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
             }

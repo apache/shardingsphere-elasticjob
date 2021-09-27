@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.api;
 
+import java.util.Optional;
+
 /**
  * Job extra configuration factory.
  */
@@ -26,5 +28,5 @@ public interface JobExtraConfigurationFactory {
      * Get JobExtraConfiguration.
      * @return JobExtraConfiguration
      */
-    JobExtraConfiguration getJobExtraConfiguration();
+    Optional<JobExtraConfiguration> getJobExtraConfiguration();
 }
