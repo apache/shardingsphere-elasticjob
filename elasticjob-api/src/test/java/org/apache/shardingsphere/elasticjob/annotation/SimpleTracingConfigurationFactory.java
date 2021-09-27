@@ -17,13 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.annotation;
 
+import java.util.Optional;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 
 public class SimpleTracingConfigurationFactory implements JobExtraConfigurationFactory {
     
     @Override
-    public JobExtraConfiguration getJobExtraConfiguration() {
-        return null;
+    public Optional<JobExtraConfiguration> getJobExtraConfiguration() {
+        return Optional.empty();
     }
 }
