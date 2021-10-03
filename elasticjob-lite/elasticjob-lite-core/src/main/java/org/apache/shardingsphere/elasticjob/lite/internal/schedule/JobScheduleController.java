@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
@@ -106,7 +107,7 @@ public final class JobScheduleController {
      * @return the specified TimeZone, or the GMT zone if the `timeZoneString` cannot be understood.
      */
     private TimeZone parseTimeZoneString(final String timeZoneString) {
-        if (null == timeZoneString) {
+        if (Strings.isNullOrEmpty(timeZoneString)) {
             return TimeZone.getDefault();
         }
         Preconditions.checkArgument(timeZoneString.startsWith("GMT"), "Invalid time zone specification '%s'.", timeZoneString);
