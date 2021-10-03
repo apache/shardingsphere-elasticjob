@@ -1,3 +1,23 @@
+## 3.0.1
+
+### Enhancements
+
+1. Avoids creating too many threads for JobTracingEventBus
+1. Job listeners can be ordered
+1. Supports setting timezone for job
+1. Some enhancements in Spring Boot Starter
+1. Supports configuring preferred ip by regex
+
+### Bug Fixes
+
+1. Lifecycle module: JobOperateAPIImpl#trigger does not work
+1. Job conflict may occur when using Spring Boot Starter
+
+### Change Logs
+
+1. [MILESTONE 3.0.1](https://github.com/apache/shardingsphere-elasticjob/milestone/6)
+
+
 ## 3.0.0
 
 ### Enhancements
