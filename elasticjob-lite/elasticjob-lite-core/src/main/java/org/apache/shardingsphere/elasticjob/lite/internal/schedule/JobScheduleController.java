@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.base.Preconditions;
-import java.util.TimeZone;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
@@ -31,6 +30,8 @@ import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+
+import java.util.TimeZone;
 
 /**
  * Job schedule controller.
@@ -108,7 +109,7 @@ public final class JobScheduleController {
         if (null == timeZoneString) {
             return TimeZone.getDefault();
         }
-        Preconditions.checkArgument(!timeZoneString.startsWith("GMT"), "Invalid time zone specification '%s'.", timeZoneString);
+        Preconditions.checkArgument(timeZoneString.startsWith("GMT"), "Invalid time zone specification '%s'.", timeZoneString);
         return TimeZone.getTimeZone(timeZoneString);
     }
     
