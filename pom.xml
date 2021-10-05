@@ -98,6 +98,7 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <checksum-maven-plugin.version>1.10</checksum-maven-plugin.version>
     </properties>
     
     <dependencyManagement>
@@ -452,6 +453,33 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>net.nicoulaj.maven.plugins</groupId>
+                    <artifactId>checksum-maven-plugin</artifactId>
+                    <version>${checksum-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>artifacts</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <appendFilename>true</appendFilename>
+                        <algorithms>
+                            <algorithm>SHA-512</algorithm>
+                        </algorithms>
+                        <fileSets>
+                            <fileSet>
+                                <includes>
+                                    <include>*.tar.gz</include>
+                                    <include>*.zip</include>
+                                </includes>
+                            </fileSet>
+                        </fileSets>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
