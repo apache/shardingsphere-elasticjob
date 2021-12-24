@@ -60,15 +60,15 @@ public final class ReconcileServiceTest {
     }
     
     @Test
-    public void assertRunOneIteration() throws Exception {
+    public void assertRunOneIteration() {
         reconcileService.runOneIteration();
-        verify(schedulerDriver).reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
+        verify(schedulerDriver).reconcileTasks(Collections.emptyList());
     }
     
     @Test
     public void assertImplicitReconcile() {
         reconcileService.implicitReconcile();
-        verify(schedulerDriver).reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
+        verify(schedulerDriver).reconcileTasks(Collections.emptyList());
     }
     
     @Test

@@ -12,7 +12,13 @@ chapter = true
 
 控制台提供两种账户：管理员及访客。
 管理员拥有全部操作权限，访客仅拥有察看权限。
-默认管理员用户名和密码是 root/root，访客用户名和密码是 guest/guest，可通过 `conf\auth.properties` 修改管理员及访客用户名及密码。
+默认管理员用户名和密码是 root/root，访客用户名和密码是 guest/guest，可通过 `conf\application.properties` 修改管理员及访客用户名及密码。
+```
+auth.root_username=root
+auth.root_password=root
+auth.guest_username=guest
+auth.guest_password=guest
+```
 
 ## 功能列表
 

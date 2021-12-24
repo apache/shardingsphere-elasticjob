@@ -22,9 +22,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BarRepositoryImpl implements BarRepository {
-
+    
     private static final String[] DATA = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-
+    
     @Override
     public String getById(final int id) {
         return id >= 0 && id < DATA.length ? DATA[id] : null;

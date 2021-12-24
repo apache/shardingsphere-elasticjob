@@ -11,7 +11,7 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob 是一个分布式调度解决方案，由两个相互独立的子项目 ElasticJob Lite 和 ElasticJob Cloud 组成。
+ElasticJob 是面向互联网生态和海量任务的分布式调度解决方案，由两个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
 它通过弹性调度、资源管控、以及作业治理的功能，打造一个适用于互联网场景的分布式调度解决方案，并通过开放的架构设计，提供多元化的作业生态。
 它的各个产品使用统一的作业 API，开发者仅需一次开发，即可随意部署。
 
@@ -22,7 +22,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 [![GitHub release](https://img.shields.io/github/release/apache/shardingsphere-elasticjob.svg)](https://github.com/apache/shardingsphere-elasticjob/releases)
 
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.shardingsphere.elasticjob/elasticjob)
 [![Build Status](https://secure.travis-ci.org/apache/shardingsphere-elasticjob.png?branch=master)](https://travis-ci.org/apache/shardingsphere-elasticjob)
 [![Coverage Status](https://coveralls.io/repos/github/apache/shardingsphere-elasticjob/badge.svg?branch=master)](https://coveralls.io/github/apache/shardingsphere-elasticjob?branch=master)
 
@@ -86,6 +86,10 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 ### Java
 
 请使用 Java 8 及其以上版本。
+
+### Maven
+
+请使用 Maven 3.5.0 及其以上版本。
 
 ### ZooKeeper
 

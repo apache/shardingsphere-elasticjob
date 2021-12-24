@@ -31,6 +31,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -155,13 +156,14 @@ public final class JobScheduleControllerTest {
     public void assertTriggerJobFailure() throws SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(jobKey)).thenReturn(true);
         doThrow(SchedulerException.class).when(scheduler).triggerJob(jobKey);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
         try {
             jobScheduleController.triggerJob();
         } finally {
-            verify(jobDetail).getKey();
+            verify(jobDetail, times(2)).getKey();
             verify(scheduler).triggerJob(jobKey);
         }
     }
@@ -170,11 +172,25 @@ public final class JobScheduleControllerTest {
     public void assertTriggerJobSuccess() throws SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(any(JobKey.class))).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
         jobScheduleController.triggerJob();
-        verify(jobDetail).getKey();
+        verify(jobDetail, times(2)).getKey();
         verify(scheduler).triggerJob(jobKey);
+    }
+    
+    @Test
+    public void assertTriggerOneOffJobSuccess() throws SchedulerException {
+        JobKey jobKey = new JobKey("test_job");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
+        jobScheduleController.triggerJob();
+        verify(jobDetail, times(2)).getKey();
+        verify(scheduler).scheduleJob(eq(jobDetail), any(Trigger.class));
+        verify(scheduler).start();
     }
     
     @Test
@@ -207,7 +223,7 @@ public final class JobScheduleControllerTest {
     public void assertRescheduleJobIfShutdown() throws SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(true);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
     
@@ -217,7 +233,7 @@ public final class JobScheduleControllerTest {
         doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         try {
-            jobScheduleController.rescheduleJob("0/1 * * * * ?");
+            jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         } finally {
             verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
         }
@@ -227,14 +243,49 @@ public final class JobScheduleControllerTest {
     public void assertRescheduleJobSuccess() throws SchedulerException {
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
         verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
     
     @Test
     public void assertRescheduleJobWhenTriggerIsNull() throws SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        jobScheduleController.rescheduleJob("0/1 * * * * ?", null);
+        verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
+    }
+    
+    @Test
+    public void assertRescheduleJobIfShutdownForOneOffJob() throws SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(true);
+        jobScheduleController.rescheduleJob();
+        verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
+    }
+    
+    @Test(expected = JobSystemException.class)
+    public void assertRescheduleJobFailureForOneOffJob() throws SchedulerException {
+        when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new SimpleTriggerImpl());
+        doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        try {
+            jobScheduleController.rescheduleJob();
+        } finally {
+            verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
+        }
+    }
+    
+    @Test
+    public void assertRescheduleJobSuccessForOneOffJob() throws SchedulerException {
+        when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new SimpleTriggerImpl());
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.rescheduleJob();
+        verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
+    }
+    
+    @Test
+    public void assertRescheduleJobWhenTriggerIsNullForOneOffJob() throws SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.rescheduleJob();
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), any());
     }
 }

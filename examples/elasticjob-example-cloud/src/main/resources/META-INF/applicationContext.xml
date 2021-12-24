@@ -7,8 +7,8 @@
                         http://www.springframework.org/schema/context 
                         http://www.springframework.org/schema/context/spring-context.xsd 
                         ">
-    <context:component-scan base-package="com.dangdang.ddframe.job.example" />
+    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
     
-    <bean id="springSimpleJob" class="com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob" />
-    <bean id="springDataflowJob" class="com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob" />
+    <bean id="springSimpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
+    <bean id="springDataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
 </beans>

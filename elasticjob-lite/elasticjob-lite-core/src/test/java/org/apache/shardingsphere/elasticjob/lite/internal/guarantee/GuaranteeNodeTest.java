@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class GuaranteeNodeTest {
     
-    private GuaranteeNode guaranteeNode = new GuaranteeNode("test_job");
+    private final GuaranteeNode guaranteeNode = new GuaranteeNode("test_job");
     
     @Test
     public void assertGetStartedNode() {

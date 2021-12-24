@@ -73,7 +73,7 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         
         private boolean isPassiveElection(final String path, final Type eventType) {
             JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
-            return !Objects.isNull(jobInstance) && isLeaderCrashed(path, eventType) && serverService.isAvailableServer(jobInstance.getIp());
+            return !Objects.isNull(jobInstance) && isLeaderCrashed(path, eventType) && serverService.isAvailableServer(jobInstance.getServerIp());
         }
         
         private boolean isLeaderCrashed(final String path, final Type eventType) {

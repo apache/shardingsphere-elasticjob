@@ -27,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManag
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,9 +57,6 @@ public final class SetUpFacadeTest {
     private InstanceService instanceService;
     
     @Mock
-    private ShardingService shardingService;
-    
-    @Mock
     private ReconcileService reconcileService;
     
     @Mock
@@ -76,7 +72,6 @@ public final class SetUpFacadeTest {
         ReflectionUtils.setFieldValue(setUpFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(setUpFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(setUpFacade, "instanceService", instanceService);
-        ReflectionUtils.setFieldValue(setUpFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(setUpFacade, "reconcileService", reconcileService);
         ReflectionUtils.setFieldValue(setUpFacade, "listenerManager", listenerManager);
     }
@@ -96,6 +91,12 @@ public final class SetUpFacadeTest {
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
         verify(serverService).persistOnline(true);
-        verify(shardingService).setReshardingFlag();
+    }
+    
+    @Test
+    public void assertTearDown() {
+        when(reconcileService.isRunning()).thenReturn(true);
+        setUpFacade.tearDown();
+        verify(reconcileService).stopAsync();
     }
 }

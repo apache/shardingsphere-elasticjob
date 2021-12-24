@@ -59,7 +59,16 @@ public final class FailoverService {
             jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
         }
     }
-    
+
+    /**
+     * set crashed failover flag directly.
+     *
+     * @param item crashed item
+     */
+    public void setCrashedFailoverFlagDirectly(final int item) {
+        jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
+    }
+
     private boolean isFailoverAssigned(final Integer item) {
         return jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(item));
     }
@@ -86,6 +95,7 @@ public final class FailoverService {
     public void updateFailoverComplete(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutingFailoverNode(each));
         }
     }
     
@@ -101,6 +111,26 @@ public final class FailoverService {
         for (String each : items) {
             int item = Integer.parseInt(each);
             String node = FailoverNode.getExecutionFailoverNode(item);
+            if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
+                result.add(item);
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Get failovering items.
+     *
+     * @param jobInstanceId job instance ID
+     * @return failovering items
+     */
+    public List<Integer> getFailoveringItems(final String jobInstanceId) {
+        List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
+        List<Integer> result = new ArrayList<>(items.size());
+        for (String each : items) {
+            int item = Integer.parseInt(each);
+            String node = FailoverNode.getExecutingFailoverNode(item);
             if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
                 result.add(item);
             }
@@ -156,6 +186,7 @@ public final class FailoverService {
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
             log.debug("Failover job '{}' begin, crashed item '{}'", jobName, crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+            jobNodeStorage.fillJobNode(FailoverNode.getExecutingFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO Instead of using triggerJob, use executor for unified scheduling
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);

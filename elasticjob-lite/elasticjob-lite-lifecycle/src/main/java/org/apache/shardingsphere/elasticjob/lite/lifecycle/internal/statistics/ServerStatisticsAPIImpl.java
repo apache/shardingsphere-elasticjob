@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.ServerBriefInfo;
@@ -65,8 +67,8 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
             }
             List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
             for (String each : instances) {
-                String serverIp = each.split("@-@")[0];
-                ServerBriefInfo serverInfo = servers.get(serverIp);
+                JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+                ServerBriefInfo serverInfo = servers.get(jobInstance.getServerIp());
                 if (null != serverInfo) {
                     serverInfo.getInstances().add(each);
                     serverInfo.setInstancesNum(serverInfo.getInstances().size());

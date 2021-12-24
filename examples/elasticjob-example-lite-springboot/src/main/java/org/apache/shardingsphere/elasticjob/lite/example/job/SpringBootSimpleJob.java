@@ -32,14 +32,14 @@ import java.util.List;
 
 @Component
 public class SpringBootSimpleJob implements SimpleJob {
-
+    
     private final Logger logger = LoggerFactory.getLogger(SpringBootSimpleJob.class);
-
+    
     @Autowired
     private FooRepository fooRepository;
-
+    
     @Override
-    public void execute(ShardingContext shardingContext) {
+    public void execute(final ShardingContext shardingContext) {
         logger.info("Item: {} | Time: {} | Thread: {} | {}",
                 shardingContext.getShardingItem(), new SimpleDateFormat("HH:mm:ss").format(new Date()), Thread.currentThread().getId(), "SIMPLE");
         List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);

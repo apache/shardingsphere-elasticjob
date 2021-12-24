@@ -59,7 +59,7 @@ final class TransientProducerRepository {
     
     List<String> get(final JobKey jobKey) {
         List<String> result = cronTasks.get(jobKey);
-        return null == result ? Collections.<String>emptyList() : result;
+        return null == result ? Collections.emptyList() : result;
     }
     
     boolean containsKey(final JobKey jobKey) {

@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 public final class FailoverNodeTest {
     
-    private FailoverNode failoverNode = new FailoverNode("test_job");
+    private final FailoverNode failoverNode = new FailoverNode("test_job");
     
     @Test
     public void assertGetItemsNode() {
@@ -45,5 +45,10 @@ public final class FailoverNodeTest {
     @Test
     public void assertGetItemByExecutionFailoverPath() {
         assertThat(failoverNode.getItemByExecutionFailoverPath("/test_job/sharding/0/failover"), is(0));
+    }
+
+    @Test
+    public void assertGetProcessingFailoverNode() {
+        assertThat(FailoverNode.getExecutingFailoverNode(0), is("sharding/0/failovering"));
     }
 }

@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.lite.api.listener;
 
 import com.google.common.collect.Sets;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.infra.env.TimeService;

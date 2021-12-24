@@ -10,7 +10,7 @@ chapter = true
 public class JobMain {
     
     public static void main(String[] args) {
-        new ScheduleJobBootstrap(createRegistryCenter(), createJobConfiguration(), new MyElasticJobListener()).schedule();
+        new ScheduleJobBootstrap(createRegistryCenter(), createJobConfiguration()).schedule();
     }
     
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -20,8 +20,8 @@ public class JobMain {
     }
     
     private static JobConfiguration createJobConfiguration() {
-        // 创建作业配置
-        ...
+        JobConfiguration jobConfiguration = JobConfiguration.newBuilder("test", 2)
+                                .jobListenerTypes("simpleListener", "distributeListener").build();
     }
 }
 ```
@@ -32,9 +32,7 @@ public class JobMain {
 public class JobMain {
     
     public static void main(String[] args) {
-        long startTimeoutMills = 5000L;
-        long completeTimeoutMills = 10000L;
-        new ScheduleJobBootstrap(createRegistryCenter(), createJobConfiguration(), new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).schedule();
+        new ScheduleJobBootstrap(createRegistryCenter(), createJobConfiguration()).schedule();
     }
     
     private static CoordinatorRegistryCenter createRegistryCenter() {
@@ -44,8 +42,8 @@ public class JobMain {
     }
     
     private static JobConfiguration createJobConfiguration() {
-        // 创建作业配置
-        ...
+        JobConfiguration jobConfiguration = JobConfiguration.newBuilder("test", 2)
+                        .jobListenerTypes("simpleListener", "distributeListener").build();
     }
 }
 ```

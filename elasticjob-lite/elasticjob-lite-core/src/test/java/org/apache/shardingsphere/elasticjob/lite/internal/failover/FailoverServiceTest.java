@@ -81,6 +81,12 @@ public final class FailoverServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/failover");
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
     }
+
+    @Test
+    public void assertSetCrashedFailoverFlagDirectly() {
+        failoverService.setCrashedFailoverFlag(0);
+        verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
+    }
     
     @Test
     public void assertFailoverIfUnnecessaryWhenItemsRootNodeNotExisted() {
@@ -146,9 +152,28 @@ public final class FailoverServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");
         verify(jobNodeStorage).fillEphemeralJobNode("sharding/0/failover", "127.0.0.1@-@0");
+        verify(jobNodeStorage).fillJobNode("sharding/0/failovering", "127.0.0.1@-@0");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/failover/items/0");
         verify(jobScheduleController).triggerJob();
         JobRegistry.getInstance().setJobRunning("test_job", false);
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+
+    @Test
+    public void assertGetFailoveringItems() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/failovering")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/failovering")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/failovering")).thenReturn(false);
+        when(jobNodeStorage.getJobNodeDataDirectly("sharding/0/failovering")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeDataDirectly("sharding/1/failovering")).thenReturn("127.0.0.1@-@1");
+        assertThat(failoverService.getFailoveringItems("127.0.0.1@-@1"), is(Collections.singletonList(1)));
+        verify(jobNodeStorage).getJobNodeChildrenKeys("sharding");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/failovering");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/failovering");
+        verify(jobNodeStorage).getJobNodeDataDirectly("sharding/0/failovering");
+        verify(jobNodeStorage).getJobNodeDataDirectly("sharding/1/failovering");
         JobRegistry.getInstance().shutdown("test_job");
     }
     

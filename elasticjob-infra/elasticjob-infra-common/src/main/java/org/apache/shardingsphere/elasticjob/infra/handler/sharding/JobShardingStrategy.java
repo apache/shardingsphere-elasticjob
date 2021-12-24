@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Job sharding sharding.
+ * Job sharding strategy.
  */
 public interface JobShardingStrategy extends TypedSPI {
     

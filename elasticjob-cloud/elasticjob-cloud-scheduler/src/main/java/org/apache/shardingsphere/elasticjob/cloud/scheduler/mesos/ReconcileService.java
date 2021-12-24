@@ -95,7 +95,7 @@ public class ReconcileService extends AbstractScheduledService {
     
     @Override
     protected Scheduler scheduler() {
-        FrameworkConfiguration configuration = BootstrapEnvironment.getInstance().getFrameworkConfiguration();
+        FrameworkConfiguration configuration = BootstrapEnvironment.getINSTANCE().getFrameworkConfiguration();
         return Scheduler.newFixedDelaySchedule(configuration.getReconcileIntervalMinutes(), configuration.getReconcileIntervalMinutes(), TimeUnit.MINUTES);
     }
 }

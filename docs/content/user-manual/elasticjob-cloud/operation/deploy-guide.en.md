@@ -15,13 +15,13 @@ chapter = true
 
 1. Ensure that ZooKeeper, Mesos Master/Agent and ElasticJob-Cloud-Scheduler have been started correctly.
 2. Place the tar.gz file of the packaging job in a network accessible location, such as ftp or http. The `main` method in the packaged tar.gz file needs to call the `JobBootstrap.execute` method provided by ElasticJob-Cloud.
-3. Use curl command to call RESTful API to publish applications and register jobs. For details：[Configuration](/cn/user-manual/elasticjob-cloud/configuration)
+3. Use curl command to call RESTful API to publish applications and register jobs. For details: [Configuration](/en/user-manual/elasticjob-cloud/configuration)
 
 ## Scheduler configuration steps
 
 Modify the `conf\elasticjob-cloud-scheduler.properties` to change the system configuration.
 
-Configuration description：
+Configuration description:
 
 | Attribute Name           | Required | Default                  | Description                                                                                 |
 | ------------------------ |:-------  |:------------------------- |:------------------------------------------------------------------------------------------ |
@@ -37,7 +37,9 @@ Configuration description：
 | event_trace_rdb_url      | no       |                           | Url of Job event tracking database                                                         |
 | event_trace_rdb_username | no       |                           | Username of Job event tracking database                                                    |
 | event_trace_rdb_password | no       |                           | Password of Job event tracking database                                                     |
+| auth_username            | no       | root                      | API authentication username                                                                |
+| auth_password            | no       | pwd                       | API authentication password                                                                |
 
 ***
 
-* Stop：No stop script is provided, you can directly use the kill command to terminate the process.
+* Stop: No stop script is provided, you can directly use the kill command to terminate the process.

@@ -19,11 +19,14 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
 import com.google.common.util.concurrent.Service;
 import org.apache.mesos.SchedulerDriver;
+import org.apache.shardingsphere.elasticjob.cloud.console.ConsoleBootstrap;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.BootstrapEnvironment;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.env.FrameworkConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.restful.RestfulService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app.CloudAppDisableListener;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.CloudJobDisableListener;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.StatisticManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,18 +65,28 @@ public class SchedulerServiceTest {
     private Service taskLaunchScheduledService;
     
     @Mock
-    private RestfulService restfulService;
+    private ConsoleBootstrap consoleBootstrap;
     
     @Mock
     private ReconcileService reconcileService;
+    
+    @Mock
+    private CloudJobDisableListener cloudJobDisableListener;
+    
+    @Mock
+    private CloudAppConfigurationListener cloudAppConfigurationListener;
+    
+    @Mock
+    private CloudAppDisableListener cloudAppDisableListener;
     
     private SchedulerService schedulerService;
     
     @Before
     public void setUp() {
-        schedulerService = new SchedulerService(env, facadeService, schedulerDriver,  
-                producerManager, statisticManager, cloudJobConfigurationListener, 
-                taskLaunchScheduledService, restfulService, reconcileService);
+        schedulerService = new SchedulerService(env, facadeService, schedulerDriver,
+                producerManager, statisticManager, cloudJobConfigurationListener,
+                taskLaunchScheduledService, consoleBootstrap, reconcileService, cloudJobDisableListener,
+                cloudAppConfigurationListener, cloudAppDisableListener);
     }
     
     @Test
@@ -86,7 +99,7 @@ public class SchedulerServiceTest {
         inOrder.verify(statisticManager).startup();
         inOrder.verify(cloudJobConfigurationListener).start();
         inOrder.verify(taskLaunchScheduledService).startAsync();
-        inOrder.verify(restfulService).start();
+        inOrder.verify(consoleBootstrap).start();
         inOrder.verify(schedulerDriver).start();
         inOrder.verify(reconcileService).startAsync();
     }
@@ -101,7 +114,7 @@ public class SchedulerServiceTest {
         inOrder.verify(statisticManager).startup();
         inOrder.verify(cloudJobConfigurationListener).start();
         inOrder.verify(taskLaunchScheduledService).startAsync();
-        inOrder.verify(restfulService).start();
+        inOrder.verify(consoleBootstrap).start();
         inOrder.verify(schedulerDriver).start();
         inOrder.verify(reconcileService, never()).stopAsync();
     }
@@ -111,7 +124,7 @@ public class SchedulerServiceTest {
         setReconcileEnabled(true);
         schedulerService.stop();
         InOrder inOrder = getInOrder();
-        inOrder.verify(restfulService).stop();
+        inOrder.verify(consoleBootstrap).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();
@@ -126,7 +139,7 @@ public class SchedulerServiceTest {
         setReconcileEnabled(false);
         schedulerService.stop();
         InOrder inOrder = getInOrder();
-        inOrder.verify(restfulService).stop();
+        inOrder.verify(consoleBootstrap).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();
@@ -137,8 +150,8 @@ public class SchedulerServiceTest {
     }
     
     private InOrder getInOrder() {
-        return inOrder(facadeService, schedulerDriver, producerManager, 
-                statisticManager, cloudJobConfigurationListener, taskLaunchScheduledService, restfulService, reconcileService);
+        return inOrder(facadeService, schedulerDriver, producerManager,
+                statisticManager, cloudJobConfigurationListener, taskLaunchScheduledService, consoleBootstrap, reconcileService);
     }
     
     private void setReconcileEnabled(final boolean isEnabled) {

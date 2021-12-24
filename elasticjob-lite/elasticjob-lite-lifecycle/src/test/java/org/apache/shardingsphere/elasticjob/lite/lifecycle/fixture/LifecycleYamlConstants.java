@@ -49,7 +49,8 @@ public final class LifecycleYamlConstants {
             + "props:\n"
             + "  streaming.process: 'true'\n"
             + "reconcileIntervalMinutes: 10\n"
-            + "shardingTotalCount: 3\n";
+            + "shardingTotalCount: 3\n"
+            + "staticSharding: false\n";
     
     private static final String SCRIPT_JOB_YAML = "jobName: test_job\n"
             + "cron: 0/1 * * * * ?\n"

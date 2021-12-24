@@ -93,13 +93,21 @@ public final class ShardingServiceTest {
         ReflectionUtils.setFieldValue(shardingService, "executionService", executionService);
         ReflectionUtils.setFieldValue(shardingService, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
     }
     
     @Test
-    public void assertSetReshardingFlag() {
+    public void assertSetReshardingFlagOnLeader() {
+        when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         shardingService.setReshardingFlag();
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/sharding/necessary");
+    }
+    
+    @Test
+    public void assertSetReshardingFlagOnNonLeader() {
+        when(leaderService.isLeaderUntilBlock()).thenReturn(false);
+        shardingService.setReshardingFlag();
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("leader/sharding/necessary");
     }
     
     @Test
@@ -170,14 +178,15 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
-        
+    
     @Test
     public void assertGetShardingItemsWithNotAvailableServer() {
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
     }
     
     @Test
-    public void assertGetShardingItemsWithEnabledServer() {
+    public void assertGetShardingItemsWithAvailableServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
@@ -185,6 +194,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -211,6 +221,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getLocalShardingItems(), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }
@@ -262,5 +273,23 @@ public final class ShardingServiceTest {
         assertThat(actual.createCuratorOperators(transactionOp), is(Arrays.asList(createOp0, createOp1, createOp2, necessaryDeleteOp, processingDeleteOp)));
         verify(transactionOp, times(3)).create();
         verify(transactionOp, times(2)).delete();
+    }
+
+    @Test
+    public void assertGetCrashedShardingItemsWithNotEnableServer() {
+        assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
+    }
+
+    @Test
+    public void assertGetCrashedShardingItemsWithEnabledServer() {
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+        when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
+        when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
+        JobRegistry.getInstance().shutdown("test_job");
     }
 }

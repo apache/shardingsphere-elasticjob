@@ -70,7 +70,7 @@ public final class TaskContext {
         this.type = type;
         this.slaveId = slaveId;
     }
-
+    
     /**
      * Get task context via task ID.
      *
@@ -82,7 +82,7 @@ public final class TaskContext {
         Preconditions.checkState(5 == result.length);
         return new TaskContext(id, MetaInfo.from(result[0] + DELIMITER + result[1]), ExecutionType.valueOf(result[2]), result[3]);
     }
-
+    
     /**
      * Get unassigned task ID before job execute.
      *
@@ -92,7 +92,7 @@ public final class TaskContext {
     public static String getIdForUnassignedSlave(final String id) {
         return id.replaceAll(TaskContext.from(id).getSlaveId(), UNASSIGNED_SLAVE_ID);
     }
-
+    
     /**
      * Set job server ID.
      *
@@ -102,7 +102,7 @@ public final class TaskContext {
         id = id.replaceAll(this.slaveId, slaveId);
         this.slaveId = slaveId;
     }
-
+    
     /**
      * Get task name.
      *
@@ -111,7 +111,7 @@ public final class TaskContext {
     public String getTaskName() {
         return String.join(DELIMITER, metaInfo.toString(), type.toString(), slaveId);
     }
-
+    
     /**
      * Get executor ID.
      *
@@ -121,7 +121,7 @@ public final class TaskContext {
     public String getExecutorId(final String appName) {
         return String.join(DELIMITER, appName, slaveId);
     }
-
+    
     /**
      * Task meta data.
      */

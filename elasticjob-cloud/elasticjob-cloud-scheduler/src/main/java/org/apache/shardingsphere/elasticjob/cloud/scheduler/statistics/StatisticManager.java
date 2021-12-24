@@ -104,7 +104,7 @@ public final class StatisticManager {
     private static void init() {
         if (null != instance.tracingConfiguration) {
             try {
-                instance.rdbRepository = new StatisticRdbRepository((DataSource) instance.tracingConfiguration.getStorage());
+                instance.rdbRepository = new StatisticRdbRepository((DataSource) instance.tracingConfiguration.getTracingStorageConfiguration().getStorage());
             } catch (final SQLException ex) {
                 log.error("Init StatisticRdbRepository error:", ex);
             }

@@ -21,7 +21,7 @@ import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -29,13 +29,15 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorService;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 
 import javax.sql.DataSource;
@@ -55,7 +57,9 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService = new ElasticJobExecutorService("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     
-    private volatile JobEventBus jobEventBus = new JobEventBus();
+    private volatile ElasticJobExecutor jobExecutor;
+    
+    private volatile JobTracingEventBus jobTracingEventBus = new JobTracingEventBus();
     
     public TaskExecutor(final ElasticJob elasticJob) {
         this(elasticJob, null);
@@ -74,7 +78,7 @@ public final class TaskExecutor implements Executor {
             dataSource.setUrl(data.get("event_trace_rdb_url"));
             dataSource.setPassword(data.get("event_trace_rdb_password"));
             dataSource.setUsername(data.get("event_trace_rdb_username"));
-            jobEventBus = new JobEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
+            jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
         }
     }
     
@@ -121,18 +125,17 @@ public final class TaskExecutor implements Executor {
         
         private final TaskInfo taskInfo;
         
-        @SuppressWarnings("unchecked")
         @Override
         public void run() {
             Thread.currentThread().setContextClassLoader(TaskThread.class.getClassLoader());
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
             Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
-            JobConfiguration jobConfig = JobConfigurationUtil.createJobConfiguration((Map<String, String>) data.get("jobConfigContext"));
+            JobConfiguration jobConfig = YamlEngine.unmarshal(data.get("jobConfigContext").toString(), JobConfigurationPOJO.class).toJobConfiguration();
             try {
-                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
+                JobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobTracingEventBus);
                 if (isTransient(jobConfig)) {
-                    createElasticJobExecutor(jobFacade).execute();
+                    getJobExecutor(jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
                     new DaemonTaskScheduler(elasticJob, elasticJobType, jobConfig, jobFacade, executorDriver, taskInfo.getTaskId()).init();
@@ -150,10 +153,21 @@ public final class TaskExecutor implements Executor {
         private boolean isTransient(final JobConfiguration jobConfig) {
             return Strings.isNullOrEmpty(jobConfig.getCron());
         }
+        
+        private ElasticJobExecutor getJobExecutor(final JobFacade jobFacade) {
+            if (null == jobExecutor) {
+                createJobExecutor(jobFacade);
+            }
+            return jobExecutor;
+        }
     
-        private ElasticJobExecutor createElasticJobExecutor(final JobFacade jobFacade) {
-            return null == elasticJob
-                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade) : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
+        private synchronized void createJobExecutor(final JobFacade jobFacade) {
+            if (null != jobExecutor) {
+                return;
+            }
+            jobExecutor = null == elasticJob
+                    ? new ElasticJobExecutor(elasticJobType, jobFacade.loadJobConfiguration(true), jobFacade)
+                    : new ElasticJobExecutor(elasticJob, jobFacade.loadJobConfiguration(true), jobFacade);
         }
     }
 }

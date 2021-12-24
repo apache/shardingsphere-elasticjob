@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.fixture.TestElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionCont
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,22 +64,27 @@ public final class LiteJobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
-    private JobEventBus jobEventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     @Mock
     private ElasticJobListenerCaller caller;
     
     private LiteJobFacade liteJobFacade;
+
+    private StringBuilder orderResult;
     
     @Before
     public void setUp() {
-        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.singletonList(new TestElasticJobListener(caller)), null);
+        orderResult = new StringBuilder();
+        TestElasticJobListener l1 = new TestElasticJobListener(caller, "l1", 2, orderResult);
+        TestElasticJobListener l2 = new TestElasticJobListener(caller, "l2", 1, orderResult);
+        liteJobFacade = new LiteJobFacade(null, "test_job", Lists.newArrayList(l1, l2), null);
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "jobEventBus", jobEventBus);
+        ReflectionUtils.setFieldValue(liteJobFacade, "jobTracingEventBus", jobTracingEventBus);
     }
     
     @Test
@@ -198,18 +203,20 @@ public final class LiteJobFacadeTest {
     @Test
     public void assertBeforeJobExecuted() {
         liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
-        verify(caller).before();
+        verify(caller, times(2)).before();
+        assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
     public void assertAfterJobExecuted() {
         liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
-        verify(caller).after();
+        verify(caller, times(2)).after();
+        assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
     public void assertPostJobExecutionEvent() {
         liteJobFacade.postJobExecutionEvent(null);
-        verify(jobEventBus).post(null);
+        verify(jobTracingEventBus).post(null);
     }
 }

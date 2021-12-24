@@ -21,10 +21,7 @@ import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 
 /**
  * Job executor service handler factory.
@@ -32,14 +29,10 @@ import java.util.ServiceLoader;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorServiceHandlerFactory {
     
-    private static final Map<String, JobExecutorServiceHandler> HANDLERS = new LinkedHashMap<>();
-    
-    private static final String DEFAULT_HANDLER = "CPU";
+    public static final String DEFAULT_HANDLER = "CPU";
     
     static {
-        for (JobExecutorServiceHandler each : ServiceLoader.load(JobExecutorServiceHandler.class)) {
-            HANDLERS.put(each.getType(), each);
-        }
+        ElasticJobServiceLoader.registerTypedService(JobExecutorServiceHandler.class);
     }
     
     /**
@@ -50,11 +43,9 @@ public final class JobExecutorServiceHandlerFactory {
      */
     public static JobExecutorServiceHandler getHandler(final String type) {
         if (Strings.isNullOrEmpty(type)) {
-            return HANDLERS.get(DEFAULT_HANDLER);
+            return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, DEFAULT_HANDLER).get();
         }
-        if (!HANDLERS.containsKey(type)) {
-            throw new JobConfigurationException("Can not find executor service handler type '%s'.", type);
-        }
-        return HANDLERS.get(type);
+        return ElasticJobServiceLoader.getCachedTypedServiceInstance(JobExecutorServiceHandler.class, type)
+                .orElseThrow(() -> new JobConfigurationException("Cannot find executor service handler using type '%s'.", type));
     }
 }

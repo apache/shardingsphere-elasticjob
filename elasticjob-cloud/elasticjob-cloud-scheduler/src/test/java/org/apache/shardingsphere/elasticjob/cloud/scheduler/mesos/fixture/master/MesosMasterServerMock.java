@@ -17,25 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.master;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import org.codehaus.jettison.json.JSONException;
+import org.apache.shardingsphere.elasticjob.restful.Http;
+import org.apache.shardingsphere.elasticjob.restful.RestfulController;
+import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
-@Path("/")
-public class MesosMasterServerMock {
-
+public class MesosMasterServerMock implements RestfulController {
+    
     /**
      * Check master server state.
+     *
      * @return json object
-     * @throws JSONException json exception
      */
-    @GET
-    @Path("/state")
-    public JsonObject state() throws JSONException {
-        return (JsonObject) new JsonParser().parse("{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohongtao\",\"start_time\""
+    @Mapping(method = Http.GET, path = "/state")
+    public String state() {
+        return "{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"user\",\"start_time\""
                 + ":1488179758.62289,\"elected_time\":1488179758.69795,\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d\",\"pid\":\"master@127.0.0.1:9050\",\"hostname\":\"127.0.0.1\","
                 + "\"activated_slaves\":1.0,\"deactivated_slaves\":0.0,\"leader\":\"master@127.0.0.1:9050\",\"leader_info\":{\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d\","
                 + "\"pid\":\"master@127.0.0.1:9050\",\"port\":9050,\"hostname\":\"127.0.0.1\"},\"flags\":{\"agent_ping_timeout\":\"15secs\",\"agent_reregister_timeout\":\"10mins\","
@@ -46,7 +41,7 @@ public class MesosMasterServerMock {
                 + "\"max_completed_frameworks\":\"50\",\"max_completed_tasks_per_framework\":\"1000\",\"port\":\"9050\",\"quiet\":\"false\",\"quorum\":\"1\",\"recovery_agent_removal_limit\":\"100%\","
                 + "\"registry\":\"replicated_log\",\"registry_fetch_timeout\":\"1mins\",\"registry_gc_interval\":\"15mins\",\"registry_max_agent_age\":\"2weeks\",\"registry_max_agent_count\""
                 + ":\"102400\",\"registry_store_timeout\":\"20secs\",\"registry_strict\":\"false\",\"root_submissions\":\"true\",\"user_sorter\":\"drf\",\"version\":\"false\",\"webui_dir\":\"\\/home"
-                + "\\/gaohongtao\\/mesos\\/mesos-1.1.0\\/build\\/..\\/src\\/webui\",\"work_dir\":\"\\/home\\/gaohongtao\\/mesos\\/work-1.1.0\",\"zk\":\"zk:\\/\\/localhost:4181,\\/mesos\","
+                + "\\/user\\/mesos\\/mesos-1.1.0\\/build\\/..\\/src\\/webui\",\"work_dir\":\"\\/home\\/user\\/mesos\\/work-1.1.0\",\"zk\":\"zk:\\/\\/localhost:4181,\\/mesos\","
                 + "\"zk_session_timeout\":\"10secs\"},\"slaves\":[{\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"pid\":\"slave(1)@127.0.0.1:9051\",\"hostname\":\"127.0.0.1\","
                 + "\"registered_time\":1488179768.08728,\"resources\":{\"disk\":416050.0,\"mem\":6883.0,\"gpus\":0.0,\"cpus\":4.0,\"ports\":\"[31000-32000]\"},\"used_resources\":"
                 + "{\"disk\":0.0,\"mem\":512.0,\"gpus\":0.0,\"cpus\":2.5},\"offered_resources\":{\"disk\":416050.0,\"mem\":6371.0,\"gpus\":0.0,\"cpus\":1.5,\"ports\":\"[31000-32000]\"},"
@@ -54,7 +49,7 @@ public class MesosMasterServerMock {
                 + "\"version\":\"1.1.0\"}],\"frameworks\":[{\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d-0000\",\"name\":\"ElasticJob-Cloud\",\"pid\":"
                 + "\"scheduler-da326b36-34ed-4b6e-ac40-0c936f76be4e@127.0.0.1:53639\",\"used_resources\":{\"disk\":0.0,\"mem\":512.0,\"gpus\":0.0,\"cpus\":2.5},\"offered_resources\""
                 + ":{\"disk\":416050.0,\"mem\":6371.0,\"gpus\":0.0,\"cpus\":1.5,\"ports\":\"[31000-32000]\"},\"capabilities\":[],\"hostname\":\"127.0.0.1\",\"webui_url\":\"http:\\/"
-                + "\\/127.0.0.1:8899\",\"active\":true,\"user\":\"gaohongtao\",\"failover_timeout\":604800.0,\"checkpoint\":false,\"role\":\"*\",\"registered_time\":1488179830.94584,"
+                + "\\/127.0.0.1:8899\",\"active\":true,\"user\":\"user\",\"failover_timeout\":604800.0,\"checkpoint\":false,\"role\":\"*\",\"registered_time\":1488179830.94584,"
                 + "\"unregistered_time\":0.0,\"resources\":{\"disk\":416050.0,\"mem\":6883.0,\"gpus\":0.0,\"cpus\":4.0,\"ports\":\"[31000-32000]\"},\"tasks\":[{\"id\":"
                 + "\"cpu_job_1@-@2@-@READY@-@d8701508-41b7-471e-9b32-61cf824a660d-S0@-@a03017a7-f520-483b-afce-2a5685d0ca2e\",\"name\":\"cpu_job_1@-@2@-@READY@-@d8701508-41b7-471e-"
                 + "9b32-61cf824a660d-S0\",\"framework_id\":\"d8701508-41b7-471e-9b32-61cf824a660d-0000\",\"executor_id\":\"foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"slave_id\":"
@@ -73,6 +68,6 @@ public class MesosMasterServerMock {
                 + "[{\"executor_id\":\"foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"name\":\"\",\"framework_id\":\"d8701508-41b7-471e-9b32-61cf824a660d-0000\",\"command\":"
                 + "{\"shell\":true,\"value\":\"bin\\/start.sh\",\"argv\":[],\"uris\":[{\"value\":\"http:\\/\\/127.0.0.1\\/image\\/es-test-1.0.tar.gz\",\"executable\":false}]},"
                 + "\"resources\":{\"disk\":0.0,\"mem\":128.0,\"gpus\":0.0,\"cpus\":1.0},\"slave_id\":\"d8701508-41b7-471e-9b32-61cf824a660d-S0\"}]}],\"completed_frameworks\":[],"
-                + "\"orphan_tasks\":[],\"unregistered_frameworks\":[]}");
+                + "\"orphan_tasks\":[],\"unregistered_frameworks\":[]}";
     }
 }

@@ -17,11 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.example;
 
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
+import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.email.EmailPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatPropertiesConstants;
+import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
+import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob;
 import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
@@ -61,10 +67,15 @@ public final class JavaMain {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
-        TracingConfiguration tracingConfig = new TracingConfiguration<>("RDB", setUpEventTraceDataSource());
+        TracingConfiguration<DataSource> tracingConfig = new TracingConfiguration<>("RDB", setUpEventTraceDataSource());
+        setUpHttpJob(regCenter, tracingConfig);
         setUpSimpleJob(regCenter, tracingConfig);
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
+        setUpOneOffJob(regCenter, tracingConfig);
+//        setUpOneOffJobWithEmail(regCenter, tracingConfig);
+//        setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
+//        setUpOneOffJobWithWechat(regCenter, tracingConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {
@@ -83,20 +94,73 @@ public final class JavaMain {
         return result;
     }
     
-    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
-        new ScheduleJobBootstrap(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaSimpleJob", 3)
-                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build(), tracingConfig).schedule();
+    private static void setUpHttpJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        new ScheduleJobBootstrap(regCenter, "HTTP", JobConfiguration.newBuilder("javaHttpJob", 3)
+                .setProperty(HttpJobProperties.URI_KEY, "https://github.com")
+                .setProperty(HttpJobProperties.METHOD_KEY, "GET")
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").addExtraConfigurations(tracingConfig).build()).schedule();
+        
     }
     
-    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) {
+    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        new ScheduleJobBootstrap(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaSimpleJob", 3)
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").addExtraConfigurations(tracingConfig).build()).schedule();
+    }
+    
+    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
         new ScheduleJobBootstrap(regCenter, new JavaDataflowJob(), JobConfiguration.newBuilder("javaDataflowElasticJob", 3)
                 .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
-                .setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build(), tracingConfig).schedule();
+                .setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).addExtraConfigurations(tracingConfig).build()).schedule();
+    }
+
+    private static void setUpOneOffJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        new OneOffJobBootstrap(regCenter, new JavaSimpleJob(), JobConfiguration.newBuilder("javaOneOffSimpleJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").addExtraConfigurations(tracingConfig).build()).execute();
     }
     
-    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration tracingConfig) throws IOException {
+    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) throws IOException {
         new ScheduleJobBootstrap(regCenter, "SCRIPT", JobConfiguration.newBuilder("scriptElasticJob", 3)
-                .cron("0/5 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).build(), tracingConfig).schedule();
+                .cron("0/5 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, buildScriptCommandLine()).addExtraConfigurations(tracingConfig).build()).schedule();
+    }
+    
+    private static void setUpOneOffJobWithEmail(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfEmailJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("EMAIL").addExtraConfigurations(tracingConfig).build();
+        setEmailProperties(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
+    }
+    
+    private static void setUpOneOffJobWithDingtalk(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfDingtalkJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("DINGTALK").addExtraConfigurations(tracingConfig).build();
+        setDingtalkProperties(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
+    }
+    
+    private static void setUpOneOffJobWithWechat(final CoordinatorRegistryCenter regCenter, final TracingConfiguration<DataSource> tracingConfig) {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("javaOccurErrorOfWechatJob", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobErrorHandlerType("WECHAT").addExtraConfigurations(tracingConfig).build();
+        setWechatProperties(jobConfig);
+        new OneOffJobBootstrap(regCenter, new JavaOccurErrorJob(), jobConfig).execute();
+    }
+    
+    private static void setEmailProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.HOST, "host");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PORT, "465");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.USERNAME, "username");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.PASSWORD, "password");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
+        jobConfig.getProps().setProperty(EmailPropertiesConstants.TO, "to1@xxx.xx,to1@xxx.xx");
+    }
+    
+    private static void setDingtalkProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.WEBHOOK, "https://oapi.dingtalk.com/robot/send?access_token=token");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.KEYWORD, "keyword");
+        jobConfig.getProps().setProperty(DingtalkPropertiesConstants.SECRET, "secret");
+    }
+    
+    private static void setWechatProperties(final JobConfiguration jobConfig) {
+        jobConfig.getProps().setProperty(WechatPropertiesConstants.WEBHOOK, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=key");
     }
     
     private static String buildScriptCommandLine() throws IOException {

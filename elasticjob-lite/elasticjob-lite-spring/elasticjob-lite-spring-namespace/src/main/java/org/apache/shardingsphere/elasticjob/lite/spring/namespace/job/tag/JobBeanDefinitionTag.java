@@ -36,6 +36,8 @@ public final class JobBeanDefinitionTag {
     
     public static final String CRON_ATTRIBUTE = "cron";
     
+    public static final String TIME_ZONE_ATTRIBUTE = "time-zone";
+    
     public static final String SHARDING_TOTAL_COUNT_ATTRIBUTE = "sharding-total-count";
     
     public static final String SHARDING_ITEM_PARAMETERS_ATTRIBUTE = "sharding-item-parameters";
@@ -58,6 +60,8 @@ public final class JobBeanDefinitionTag {
     
     public static final String JOB_ERROR_HANDLER_TYPE_ATTRIBUTE = "job-error-handler-type";
     
+    public static final String JOB_LISTENER_TYPES_ATTRIBUTE = "job-listener-types";
+    
     public static final String DESCRIPTION_ATTRIBUTE = "description";
     
     public static final String PROPS_TAG = "props";
@@ -65,4 +69,8 @@ public final class JobBeanDefinitionTag {
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
+    
+    public static final String LABEL_ATTRIBUTE = "label";
+    
+    public static final String STATIC_SHARDING_ATTRIBUTE = "static-sharding";
 }

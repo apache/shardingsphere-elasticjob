@@ -34,7 +34,8 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").disabled(true).overwrite(true).build();
+        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C")
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").disabled(true).overwrite(true).build();
     }
     
     @Test
@@ -49,12 +50,12 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     }
     
     private void setJobEnable() {
-        getRegCenter().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), ServerStatus.ENABLED.name());
+        getREGISTRY_CENTER().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), ServerStatus.ENABLED.name());
     }
     
     private void assertEnabledRegCenterInfo() {
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        getRegCenter().remove("/" + getJobName() + "/leader/election");
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }

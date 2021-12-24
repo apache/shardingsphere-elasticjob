@@ -1,2 +1,2 @@
 #!/bin/bash
-java -classpath lib/*:. com.dangdang.ddframe.job.example.CloudJobMain
+java -classpath lib/*:. org.apache.shardingsphere.elasticjob.cloud.example.CloudJobMain

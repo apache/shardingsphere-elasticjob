@@ -22,6 +22,11 @@ public class MyJobListener implements ElasticJobListener {
     public void afterJobExecuted(ShardingContexts shardingContexts) {
         // do something ...
     }
+    
+    @Override
+    public String getType() {
+        return "simpleJobListener";
+    }
 }
 ```
 
@@ -34,9 +39,13 @@ public class MyJobListener implements ElasticJobListener {
 
 public class MyDistributeOnceJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    public TestDistributeOnceElasticJobListener(long startTimeoutMills, long completeTimeoutMills) {
+    private static final long startTimeoutMills = 3000;
+    private static final long completeTimeoutMills = 3000;
+
+    public MyDistributeOnceJobListener() {
         super(startTimeoutMills, completeTimeoutMills);
     }
+    
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts) {
@@ -47,5 +56,14 @@ public class MyDistributeOnceJobListener extends AbstractDistributeOnceElasticJo
     public void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts) {
         // do something ...
     }
+    
+    @Override
+    public String getType() {
+        return "distributeOnceJobListener";
+    }
 }
 ```
+
+## 添加SPI实现
+
+将JobListener实现添加至infra-common下resources/META-INF/services/org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener

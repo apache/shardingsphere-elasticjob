@@ -17,14 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.executor.prod;
 
+import lombok.SneakyThrows;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.mesos.Protos.TaskStatus;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.cloud.executor.prod.DaemonTaskScheduler.DaemonJob;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +36,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.quartz.JobExecutionContext;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,13 +59,19 @@ public final class DaemonTaskSchedulerTest {
     @Mock
     private ShardingContexts shardingContexts;
     
-    private TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
+    @Mock
+    private JobConfiguration jobConfig;
     
-    private DaemonTaskScheduler.DaemonJob daemonJob;
+    @Mock
+    private ElasticJob elasticJob;
+    
+    private final TaskID taskId = TaskID.newBuilder().setValue(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY)).build();
+    
+    private DaemonJob daemonJob;
     
     @Before
     public void setUp() {
-        daemonJob = new DaemonTaskScheduler.DaemonJob();
+        daemonJob = new DaemonJob();
         daemonJob.setJobFacade(jobFacade);
         daemonJob.setElasticJobType("SCRIPT");
         daemonJob.setExecutorDriver(executorDriver);
@@ -92,7 +106,35 @@ public final class DaemonTaskSchedulerTest {
     }
     
     private JobConfiguration createJobConfiguration() {
-        return JobConfiguration.newBuilder("test_script_job", 3).cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE")
-                .setProperty(ScriptJobProperties.SCRIPT_KEY, "test.sh").build();
+        return JobConfiguration.newBuilder("test_script_job", 3).cron("0/1 * * * * ?").jobErrorHandlerType("IGNORE").setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build();
+    }
+    
+    @Test
+    @SneakyThrows
+    public void assertInit() {
+        DaemonTaskScheduler scheduler = createScheduler();
+        scheduler.init();
+        Field field = DaemonTaskScheduler.class.getDeclaredField("RUNNING_SCHEDULERS");
+        field.setAccessible(true);
+        assertTrue(((ConcurrentHashMap) field.get(scheduler)).containsKey(taskId.getValue()));
+        DaemonTaskScheduler.shutdown(taskId);
+    }
+    
+    @Test
+    @SneakyThrows
+    public void assertShutdown() {
+        DaemonTaskScheduler scheduler = createScheduler();
+        scheduler.init();
+        DaemonTaskScheduler.shutdown(taskId);
+        Field field = DaemonTaskScheduler.class.getDeclaredField("RUNNING_SCHEDULERS");
+        field.setAccessible(true);
+        assertFalse(((ConcurrentHashMap) field.get(scheduler)).containsKey(taskId.getValue()));
+        assertTrue(((ConcurrentHashMap) field.get(scheduler)).isEmpty());
+    }
+    
+    private DaemonTaskScheduler createScheduler() {
+        when(jobConfig.getJobName()).thenReturn(taskId.getValue());
+        when(jobConfig.getCron()).thenReturn("0/1 * * * * ?");
+        return new DaemonTaskScheduler(elasticJob, "transient", jobConfig, jobFacade, executorDriver, taskId);
     }
 }

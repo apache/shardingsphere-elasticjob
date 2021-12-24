@@ -17,9 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import com.google.common.base.Charsets;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Job Listener.
@@ -36,7 +37,7 @@ public abstract class AbstractJobListener implements CuratorCacheListener {
         if (path.isEmpty()) {
             return;
         }
-        dataChanged(path, type, null == data ? "" : new String(data, Charsets.UTF_8));
+        dataChanged(path, type, null == data ? "" : new String(data, StandardCharsets.UTF_8));
     }
     
     protected abstract void dataChanged(String path, Type eventType, String data);

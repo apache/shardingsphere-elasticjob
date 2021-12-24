@@ -27,14 +27,12 @@
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
-    
-    <context:property-placeholder location="classpath:conf/job/conf.properties" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath:conf/job/conf.properties" ignore-unresolvable="true" />
     
     <elasticjob:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}"
                           base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}"
                           max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}"
-                          max-retries="${regCenter.maxRetries}"/>
+                          max-retries="${regCenter.maxRetries}" />
     
-    <elasticjob:snapshot id="jobSnapshotEnabled" registry-center-ref="regCenter" dump-port="9988"/>
-
+    <elasticjob:snapshot id="jobSnapshotEnabled" registry-center-ref="regCenter" dump-port="9988" />
 </beans>

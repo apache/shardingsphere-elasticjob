@@ -32,3 +32,6 @@ github:
     - shard
     - quartz
     - middleware
+  features:
+    issues: true
+    projects: true

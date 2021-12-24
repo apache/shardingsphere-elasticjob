@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -101,7 +101,7 @@ public final class ExecutionService {
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
         JobConfiguration jobConfig = configService.load(true);
-        if (null == jobConfig || !jobConfig.isMonitorExecution()) {
+        if (!jobConfig.isMonitorExecution()) {
             return false;
         }
         for (int each : items) {

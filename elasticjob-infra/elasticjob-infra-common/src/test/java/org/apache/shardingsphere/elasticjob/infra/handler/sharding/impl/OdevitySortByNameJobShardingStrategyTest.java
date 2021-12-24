@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 
 public final class OdevitySortByNameJobShardingStrategyTest {
     
-    private OdevitySortByNameJobShardingStrategy odevitySortByNameJobShardingStrategy = new OdevitySortByNameJobShardingStrategy();
+    private final OdevitySortByNameJobShardingStrategy odevitySortByNameJobShardingStrategy = new OdevitySortByNameJobShardingStrategy();
     
     @Test
     public void assertShardingByAsc() {

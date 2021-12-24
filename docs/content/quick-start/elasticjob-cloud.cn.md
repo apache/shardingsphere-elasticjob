@@ -57,14 +57,26 @@ public class MyJobDemo {
 tar -cvf my-job.tar.gz my-job
 ```
 
+## API 鉴权
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://elasticjob_cloud_host:8899/api/login -d '{"username": "root", "password": "pwd"}'
+```
+
+响应体：
+
+```json
+{"accessToken":"some_token"}
+```
+
 ## 作业发布
 
 ```bash
-curl -l -H "Content-type: application/json" -X POST -d '{"appName":"my_app","appURL":"http://app_host:8080/my-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elasticjob_cloud_host:8899/api/app
+curl -l -H "Content-type: application/json" -H "accessToken: some_token" -X POST -d '{"appName":"my_app","appURL":"http://app_host:8080/my-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elasticjob_cloud_host:8899/api/app
 ```
 
 ## 作业调度
 
 ```bash
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"my_job","appName":"my_app","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://elasticjob_cloud_host:8899/api/job/register
+curl -l -H "Content-type: application/json" -H "accessToken: some_token" -X POST -d '{"jobName":"my_job","appName":"my_app","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://elasticjob_cloud_host:8899/api/job/register
 ```

@@ -24,9 +24,6 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBoo
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -41,10 +38,10 @@ import org.junit.BeforeClass;
 @Getter(AccessLevel.PROTECTED)
 public abstract class BaseIntegrateTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     @Getter(AccessLevel.PROTECTED)
-    private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
+    private static final CoordinatorRegistryCenter REGISTRY_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
     
     private final ElasticJob elasticJob;
             
@@ -60,7 +57,7 @@ public abstract class BaseIntegrateTest {
         this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJob);
-        leaderService = new LeaderService(regCenter, jobName);
+        leaderService = new LeaderService(REGISTRY_CENTER, jobName);
     }
     
     protected abstract JobConfiguration getJobConfiguration(String jobName);
@@ -68,9 +65,9 @@ public abstract class BaseIntegrateTest {
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             case ONE_OFF:
-                return new OneOffJobBootstrap(regCenter, elasticJob, jobConfiguration, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
@@ -79,8 +76,8 @@ public abstract class BaseIntegrateTest {
     @BeforeClass
     public static void init() {
         EmbedTestingServer.start();
-        zkConfig.setConnectionTimeoutMilliseconds(30000);
-        regCenter.init();
+        ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
+        REGISTRY_CENTER.init();
     }
     
     @Before
@@ -101,33 +98,5 @@ public abstract class BaseIntegrateTest {
     public enum TestType {
         
         SCHEDULE, ONE_OFF
-    }
-    
-    private final class TestElasticJobListener implements ElasticJobListener {
-        
-        @Override
-        public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-            regCenter.persist("/" + jobName + "/listener/every", "test");
-        }
-        
-        @Override
-        public void afterJobExecuted(final ShardingContexts shardingContexts) {
-        }
-    }
-    
-    private final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
-    
-        private TestDistributeOnceElasticJobListener() {
-            super(100L, 100L);
-        }
-        
-        @Override
-        public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-            regCenter.persist("/" + jobName + "/listener/once", "test");
-        }
-    
-        @Override
-        public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-        }
     }
 }

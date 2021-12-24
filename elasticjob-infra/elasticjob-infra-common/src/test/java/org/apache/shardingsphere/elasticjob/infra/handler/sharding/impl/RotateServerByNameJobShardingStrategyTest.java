@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 
 public final class RotateServerByNameJobShardingStrategyTest {
     
-    private RoundRobinByNameJobShardingStrategy rotateServerByNameJobShardingStrategy = new RoundRobinByNameJobShardingStrategy();
+    private final RoundRobinByNameJobShardingStrategy rotateServerByNameJobShardingStrategy = new RoundRobinByNameJobShardingStrategy();
     
     @Test
     public void assertSharding1() {

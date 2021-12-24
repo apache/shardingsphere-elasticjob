@@ -24,7 +24,7 @@
     <artifactId>elasticjob-example</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
-    <version>3.0.0.M1-SNAPSHOT</version>
+    <version>${revision}</version>
     
     <modules>
         <module>elasticjob-example-jobs</module>
@@ -38,40 +38,41 @@
     </modules>
     
     <properties>
+        <revision>3.0.0</revision>
         <java.version>1.8</java.version>
-        <elastic-job.version>3.0.0.M1-SNAPSHOT</elastic-job.version>
         <curator.version>5.1.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
-        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-dbcp2.version>2.7.0</commons-dbcp2.version>
         <h2.version>1.4.184</h2.version>
         <mysql.version>8.0.16</mysql.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
     </properties>
     
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <artifactId>elasticjob-lite-core</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <version>${elastic-job.version}</version>
+                <artifactId>elasticjob-lite-core</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <artifactId>elasticjob-simple-executor</artifactId>
-                <version>${project.parent.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <artifactId>elasticjob-lite-spring-namespace</artifactId>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <version>${elastic-job.version}</version>
+                <artifactId>elasticjob-lite-spring-namespace</artifactId>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
                 <artifactId>elasticjob-cloud-executor</artifactId>
-                <version>${elastic-job.version}</version>
+                <version>${revision}</version>
             </dependency>
             
             <dependency>
@@ -105,9 +106,9 @@
                 <version>${logback.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>${commons-dbcp.version}</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${commons-dbcp2.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -138,5 +139,32 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

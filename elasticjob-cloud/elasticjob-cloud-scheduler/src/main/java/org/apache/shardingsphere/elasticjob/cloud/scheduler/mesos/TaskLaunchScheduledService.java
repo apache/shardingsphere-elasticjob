@@ -32,7 +32,6 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.OfferID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobConfiguration;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
@@ -43,8 +42,9 @@ import org.apache.shardingsphere.elasticjob.infra.context.ShardingItemParameters
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 
@@ -71,9 +71,9 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private final FacadeService facadeService;
     
-    private final JobEventBus jobEventBus;
+    private final JobTracingEventBus jobTracingEventBus;
     
-    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment env = BootstrapEnvironment.getINSTANCE();
     
     @Override
     protected String serviceName() {
@@ -118,7 +118,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             }
             for (TaskContext each : taskContextsList) {
                 facadeService.addRunning(each);
-                jobEventBus.post(createJobStatusTraceEvent(each));
+                jobTracingEventBus.post(createJobStatusTraceEvent(each));
             }
             facadeService.removeLaunchTasksFromQueue(taskContextsList);
             for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {

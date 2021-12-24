@@ -17,13 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Guarantee listener manager.
@@ -32,9 +32,9 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
     
     private final GuaranteeNode guaranteeNode;
     
-    private final List<ElasticJobListener> elasticJobListeners;
+    private final Collection<ElasticJobListener> elasticJobListeners;
     
-    public GuaranteeListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    public GuaranteeListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         super(regCenter, jobName);
         this.guaranteeNode = new GuaranteeNode(jobName);
         this.elasticJobListeners = elasticJobListeners;

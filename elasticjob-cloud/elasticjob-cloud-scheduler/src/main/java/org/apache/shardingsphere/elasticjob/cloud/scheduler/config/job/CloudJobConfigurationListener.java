@@ -51,9 +51,8 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
     }
     
     @Override
-
     public void event(final Type type, final ChildData oldData, final ChildData data) {
-        String path = data.getPath();
+        String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_CREATED == type && isJobConfigNode(path)) {
             CloudJobConfigurationPOJO cloudJobConfig = getCloudJobConfiguration(data);
             if (null != cloudJobConfig) {
@@ -72,7 +71,7 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
             }
             producerManager.reschedule(cloudJobConfig.getJobName());
         } else if (Type.NODE_DELETED == type && isJobConfigNode(path)) {
-            String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
+            String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1);
             producerManager.unschedule(jobName);
         }
     }
@@ -86,7 +85,7 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
             return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());
+            log.warn("Wrong Cloud Job Configuration with:", ex);
             // CHECKSTYLE:ON
             return null;
         }

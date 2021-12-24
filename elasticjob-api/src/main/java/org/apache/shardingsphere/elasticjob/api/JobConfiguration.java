@@ -24,6 +24,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Properties;
 
 /**
@@ -36,6 +40,8 @@ public final class JobConfiguration {
     private final String jobName;
     
     private final String cron;
+    
+    private final String timeZone;
     
     private final int shardingTotalCount;
     
@@ -59,6 +65,10 @@ public final class JobConfiguration {
     
     private final String jobErrorHandlerType;
     
+    private final Collection<String> jobListenerTypes;
+    
+    private final Collection<JobExtraConfiguration> extraConfigurations;
+    
     private final String description;
     
     private final Properties props;
@@ -66,6 +76,10 @@ public final class JobConfiguration {
     private final boolean disabled;
     
     private final boolean overwrite;
+    
+    private final String label;
+    
+    private final boolean staticSharding;
     
     /**
      * Create ElasticJob configuration builder.
@@ -84,6 +98,8 @@ public final class JobConfiguration {
         private final String jobName;
         
         private String cron;
+        
+        private String timeZone;
         
         private final int shardingTotalCount;
         
@@ -106,6 +122,10 @@ public final class JobConfiguration {
         private String jobExecutorServiceHandlerType;
         
         private String jobErrorHandlerType;
+    
+        private final Collection<String> jobListenerTypes = new ArrayList<>();
+
+        private final Collection<JobExtraConfiguration> extraConfigurations = new LinkedList<>();
         
         private String description = "";
         
@@ -114,6 +134,10 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
+    
+        private String label;
+        
+        private boolean staticSharding;
     
         /**
          * Cron expression.
@@ -124,6 +148,19 @@ public final class JobConfiguration {
         public Builder cron(final String cron) {
             if (null != cron) {
                 this.cron = cron;
+            }
+            return this;
+        }
+    
+        /**
+         * time zone.
+         *
+         * @param timeZone the time zone
+         * @return job configuration builder
+         */
+        public Builder timeZone(final String timeZone) {
+            if (null != timeZone) {
+                this.timeZone = timeZone;
             }
             return this;
         }
@@ -239,13 +276,13 @@ public final class JobConfiguration {
         }
         
         /**
-         * Set job sharding sharding type.
+         * Set job sharding strategy type.
          *
          * <p>
          * Default for {@code AverageAllocationJobShardingStrategy}.
          * </p>
          *
-         * @param jobShardingStrategyType job sharding sharding type
+         * @param jobShardingStrategyType job sharding strategy type
          * @return ElasticJob configuration builder
          */
         public Builder jobShardingStrategyType(final String jobShardingStrategyType) {
@@ -274,6 +311,28 @@ public final class JobConfiguration {
          */
         public Builder jobErrorHandlerType(final String jobErrorHandlerType) {
             this.jobErrorHandlerType = jobErrorHandlerType;
+            return this;
+        }
+        
+        /**
+         * Set job listener types.
+         *
+         * @param jobListenerTypes job listener types
+         * @return ElasticJob configuration builder
+         */
+        public Builder jobListenerTypes(final String... jobListenerTypes) {
+            this.jobListenerTypes.addAll(Arrays.asList(jobListenerTypes));
+            return this;
+        }
+        
+        /**
+         * Add extra configurations.
+         *
+         * @param extraConfig job extra configuration
+         * @return job configuration builder
+         */
+        public Builder addExtraConfigurations(final JobExtraConfiguration extraConfig) {
+            extraConfigurations.add(extraConfig);
             return this;
         }
         
@@ -333,6 +392,28 @@ public final class JobConfiguration {
         }
         
         /**
+         * Set label.
+         *
+         * @param label label
+         * @return ElasticJob configuration builder
+         */
+        public Builder label(final String label) {
+            this.label = label;
+            return this;
+        }
+        
+        /**
+         * Set static sharding.
+         *
+         * @param staticSharding static sharding
+         * @return ElasticJob configuration builder
+         */
+        public Builder staticSharding(final boolean staticSharding) {
+            this.staticSharding = staticSharding;
+            return this;
+        }
+        
+        /**
          * Build ElasticJob configuration.
          * 
          * @return ElasticJob configuration
@@ -340,9 +421,10 @@ public final class JobConfiguration {
         public final JobConfiguration build() {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, 
+            return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, description, props, disabled, overwrite);
+                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
         }
     }
 }

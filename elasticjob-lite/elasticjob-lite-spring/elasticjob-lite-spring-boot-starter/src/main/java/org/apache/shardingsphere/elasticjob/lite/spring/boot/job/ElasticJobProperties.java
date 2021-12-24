@@ -19,11 +19,9 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,10 +29,8 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "elasticjob.jobs")
+@ConfigurationProperties(prefix = "elasticjob")
 public class ElasticJobProperties {
-
-    private Map<String, List<JobConfigurationPOJO>> typed = new LinkedHashMap<>();
-
-    private Map<String, List<JobConfigurationPOJO>> classed = new LinkedHashMap<>();
+    
+    private Map<String, ElasticJobConfigurationProperties> jobs = new LinkedHashMap<>();
 }

@@ -29,11 +29,11 @@ import static org.junit.Assert.assertTrue;
 
 public final class ServerNodeTest {
     
-    private ServerNode serverNode = new ServerNode("test_job");
+    private final ServerNode serverNode = new ServerNode("test_job");
     
     @BeforeClass
     public static void setUp() {
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
     }
     
     @Test

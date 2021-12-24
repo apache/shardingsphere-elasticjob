@@ -26,15 +26,15 @@ public final class TaskNode {
     
     private static final String DELIMITER = "@-@";
     
-    private String jobName;
+    private final String jobName;
     
-    private int shardingItem;
+    private final int shardingItem;
     
-    private ExecutionType type;
+    private final ExecutionType type;
     
-    private String slaveId;
+    private final String slaveId;
     
-    private String uuid;
+    private final String uuid;
     
     /**
      * Get task node path.
