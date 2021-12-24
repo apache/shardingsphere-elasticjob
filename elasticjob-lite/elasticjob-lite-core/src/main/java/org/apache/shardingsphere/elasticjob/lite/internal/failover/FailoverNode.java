@@ -37,6 +37,10 @@ public final class FailoverNode {
     static final String LATCH = LEADER_ROOT + "/latch";
     
     private static final String EXECUTION_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVER;
+
+    private static final String FAILOVERING = "failovering";
+
+    private static final String EXECUTING_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVERING;
     
     private final JobNodePath jobNodePath;
     
@@ -50,6 +54,10 @@ public final class FailoverNode {
     
     static String getExecutionFailoverNode(final int item) {
         return String.format(EXECUTION_FAILOVER, item);
+    }
+
+    static String getExecutingFailoverNode(final int item) {
+        return String.format(EXECUTING_FAILOVER, item);
     }
     
     /**

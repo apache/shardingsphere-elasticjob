@@ -7,17 +7,55 @@ chapter = true
 
 ElasticJob-Cloud provides RESTful APIs such as application publishing and job registration, which can be operated by curl.
 
+Request URL prefix is `/api`
+
+## Authentication API
+
+### Get AccessToken
+
+url: login
+
+Method: POST
+
+Content type: application/json
+
+Parameter list:
+
+| Property name           | Type    | Required or not | Default value  | Description                                                  |
+| ----------------------- |:------- |:--------------- |:-------------- |:------------------------------------------------------------ |
+| username                | String  | Yes             |                | API authentication username                                  |
+| password                | String  | Yes             |                | API authentication password                                  |
+
+Response parameter:
+
+| Property name           | Type     | Description                                                  |
+| ----------------------- |:-------  |:----------------------------- |
+| accessToken             | String   | API authentication token      |
+
+Example:
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://elasticjob_cloud_host:8899/api/login -d '{"username": "root", "password": "pwd"}'
+```
+
+Response body:
+
+```json
+{"accessToken":"some_token"}
+```
+
+
 ## Application API
 
 ### Publish application
 
-url：app
+url: app
 
-Method：POST
+Method: POST
 
 Parameter type: application/json
 
-parameter list：
+Parameter list: 
 
 | Property name           | Type    | Required or not | Default value  | Description                                                  |
 | ----------------------- |:------- |:--------------- |:-------------- |:------------------------------------------------------------ |
@@ -29,7 +67,7 @@ parameter list：
 | appCacheEnable          | boolean | No              | true           | Whether to read the application from the cache every time the job is executed |
 | eventTraceSamplingCount | int     | No              | 0 (no sampling)| Number of resident job event sampling rate statistics        |
 
-Detailed parameter description：
+Detailed parameter description: 
 
 **appName:**
 
@@ -41,7 +79,7 @@ A path that can be accessed through the network must be provided.
 
 **bootstrapScript:**
 
-如：bin\start.sh
+Example: bin\start.sh
 
 **appCacheEnable:**
 
@@ -51,7 +89,7 @@ Disabled, every time the task is executed, the application will be downloaded fr
 
 To avoid excessive data volume, you can configure the sampling rate for frequently scheduled resident jobs, that is, every N times the job is executed, the job execution and tracking related data will be recorded.
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X POST -d '{"appName":"my_app","appURL":"http://app_host:8080/my-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elastic_job_cloud_host:8899/api/app
@@ -59,13 +97,13 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"my_app","app
 
 ### Modify application configuration
 
-url：app
+url: app
 
-Method：PUT
+Method: PUT
 
 Parameter type: application/json
 
-parameter list：
+Parameter list: 
 
 | Property name           | Type    | Required or not | Default value      | Description                                          |
 | ----------------------- |:------- |:--------------- |:------------------ |:---------------------------------------------------- |
@@ -73,7 +111,7 @@ parameter list：
 | appCacheEnable          | boolean | Yes             | true               | Whether to read the application from the cache every time the job is executed |
 | eventTraceSamplingCount | int     | No              | 0 (no sampling)    | Number of resident job event sampling rate statistics|
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X PUT -d '{"appName":"my_app","appCacheEnable":true}' http://elastic_job_cloud_host:8899/api/app
@@ -83,13 +121,13 @@ curl -l -H "Content-type: application/json" -X PUT -d '{"appName":"my_app","appC
 
 ### Register job
 
-url：job/register
+url: job/register
 
-Method：POST
+Method: POST
 
 Parameter type: application/json
 
-parameter list：
+Parameter list: 
 
 | Property name                 | Type       | Required or not  | Default value  | Description                                                                            |
 | ----------------------------- |:---------- |:---------------- |:-------------- |:-------------------------------------------------------------------------------------- |
@@ -113,7 +151,7 @@ Use the script type instantaneous job to upload the script directly to appURL wi
 If there is only a single script file, no compression is required.
 If it is a complex script application, you can still upload a tar package and support various common compression formats.
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X POST -d '{"appName":"my_app","cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT","jobName":"my_job","cron":"0/5 * * * * ?","shardingTotalCount":5,"failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
@@ -121,15 +159,15 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"my_app","cpu
 
 ### update job configuration
 
-url：job/update
+url: job/update
 
-Method：PUT
+Method: PUT
 
 Parameter type: application/json
 
-Parameters：same as registration job
+Parameters: same as registration job
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X PUT -d '{"appName":"my_app","jobName":"my_job","cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/update
@@ -137,15 +175,15 @@ curl -l -H "Content-type: application/json" -X PUT -d '{"appName":"my_app","jobN
 
 ### Deregister Job
 
-url：job/deregister
+url: job/deregister
 
-Method：DELETE
+Method: DELETE
 
 Parameter type: application/json
 
-Parameters：Job name
+Parameters: Job name
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X DELETE -d 'my_job' http://elastic_job_cloud_host:8899/api/job/deregister
@@ -153,17 +191,17 @@ curl -l -H "Content-type: application/json" -X DELETE -d 'my_job' http://elastic
 
 ### Trigger job
 
-url：job/trigger
+url: job/trigger
 
-Method：POST
+Method: POST
 
 Parameter type: application/json
 
-Parameters：Job name
+Parameters: Job name
 
 Description: Event-driven, triggering jobs by calling API instead of timing. Currently only valid for transient operations.
 
-Example：
+Example: 
 
 ```bash
 curl -l -H "Content-type: application/json" -X POST -d 'my_job' http://elastic_job_cloud_host:8899/api/job/trigger

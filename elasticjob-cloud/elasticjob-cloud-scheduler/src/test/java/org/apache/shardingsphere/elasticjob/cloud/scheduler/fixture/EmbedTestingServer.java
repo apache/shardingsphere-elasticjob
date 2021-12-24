@@ -28,7 +28,7 @@ import java.io.IOException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedTestingServer {
     
-    private static final int PORT = 3181;
+    private static final int PORT = 10181;
     
     private static volatile TestingServer testingServer;
     
@@ -54,6 +54,15 @@ public final class EmbedTestingServer {
                 }
             }));
         }
+    }
+    
+    /**
+     * Get the connection string.
+     *
+     * @return connection string
+     */
+    public static String getConnectionString() {
+        return "localhost:" + PORT;
     }
 }
 

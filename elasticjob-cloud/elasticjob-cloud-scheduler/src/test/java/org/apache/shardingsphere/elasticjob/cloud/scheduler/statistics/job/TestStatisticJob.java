@@ -17,17 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestStatisticJob extends AbstractStatisticJob {
     
@@ -52,7 +51,7 @@ public class TestStatisticJob extends AbstractStatisticJob {
     }
     
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
+    public void execute(final JobExecutionContext context) {
         System.out.println("do something...");
     }
 }

@@ -17,13 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl;
 
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * One off job bootstrap.
@@ -32,29 +33,25 @@ public final class OneOffJobBootstrap implements JobBootstrap {
     
     private final JobScheduler jobScheduler;
     
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, elasticJobListeners);
+    private final InstanceService instanceService;
+
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(Strings.isNullOrEmpty(jobConfig.getCron()), "Cron should be empty.");
+        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig);
+        instanceService = new InstanceService(regCenter, jobConfig.getJobName());
     }
     
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
-                              final ElasticJobListener... elasticJobListeners) {
-        jobScheduler = new JobScheduler(regCenter, elasticJob, jobConfig, tracingConfig, elasticJobListeners);
-    }
-    
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, elasticJobListeners);
-    }
-    
-    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig, final TracingConfiguration tracingConfig,
-                              final ElasticJobListener... elasticJobListeners) {
-        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig, tracingConfig, elasticJobListeners);
+    public OneOffJobBootstrap(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
+        Preconditions.checkArgument(Strings.isNullOrEmpty(jobConfig.getCron()), "Cron should be empty.");
+        jobScheduler = new JobScheduler(regCenter, elasticJobType, jobConfig);
+        instanceService = new InstanceService(regCenter, jobConfig.getJobName());
     }
     
     /**
      * Execute job.
      */
     public void execute() {
-        jobScheduler.getJobScheduleController().executeJob();
+        instanceService.triggerAllInstances();
     }
     
     @Override

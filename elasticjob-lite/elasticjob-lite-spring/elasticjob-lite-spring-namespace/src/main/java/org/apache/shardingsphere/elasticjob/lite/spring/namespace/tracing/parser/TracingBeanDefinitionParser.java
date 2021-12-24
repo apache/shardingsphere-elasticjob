@@ -26,7 +26,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Job bean definition parser.
+ * Tracing bean definition parser.
  */
 public final class TracingBeanDefinitionParser extends AbstractBeanDefinitionParser {
     

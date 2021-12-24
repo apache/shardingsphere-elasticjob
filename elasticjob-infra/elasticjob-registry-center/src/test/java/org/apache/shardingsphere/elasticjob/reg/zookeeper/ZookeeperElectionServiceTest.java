@@ -17,21 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import lombok.SneakyThrows;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Supplier;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ZookeeperElectionServiceTest {
@@ -49,7 +55,6 @@ public class ZookeeperElectionServiceTest {
     }
     
     @Test
-    @Ignore
     public void assertContend() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
@@ -64,6 +69,30 @@ public class ZookeeperElectionServiceTest {
         anotherService.start();
         KillSession.kill(client.getZookeeperClient().getZooKeeper());
         service.stop();
-        verify(anotherElectionCandidate).startLeadership();
+        blockUntilCondition(() -> hasLeadership(anotherService));
+        ((CountDownLatch) getFieldValue(anotherService, "leaderLatch")).countDown();
+        blockUntilCondition(() -> !hasLeadership(anotherService));
+        anotherService.stop();
+        verify(anotherElectionCandidate, atLeastOnce()).startLeadership();
+        verify(anotherElectionCandidate, atLeastOnce()).stopLeadership();
+    }
+    
+    @SneakyThrows
+    private void blockUntilCondition(final Supplier<Boolean> condition) {
+        while (!condition.get()) {
+            Thread.sleep(100);
+        }
+    }
+
+    @SneakyThrows
+    private boolean hasLeadership(final ZookeeperElectionService zookeeperElectionService) {
+        return ((LeaderSelector) getFieldValue(zookeeperElectionService, "leaderSelector")).hasLeadership();
+    }
+
+    @SneakyThrows
+    private Object getFieldValue(final Object target, final String fieldName) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(target);
     }
 }

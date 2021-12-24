@@ -58,13 +58,11 @@ public final class LaunchingTasksTest {
     @Mock
     private FailoverService failoverService;
     
-    private FacadeService facadeService;
-    
     private LaunchingTasks launchingTasks;
     
     @Before
     public void setUp() {
-        facadeService = new FacadeService(regCenter);
+        FacadeService facadeService = new FacadeService(regCenter);
         ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);

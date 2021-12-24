@@ -26,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategyFactory;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
@@ -59,6 +60,8 @@ public final class ShardingService {
     
     private final InstanceService instanceService;
     
+    private final InstanceNode instanceNode;
+    
     private final ServerService serverService;
     
     private final ExecutionService executionService;
@@ -71,6 +74,7 @@ public final class ShardingService {
         leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
+        instanceNode = new InstanceNode(jobName);
         serverService = new ServerService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
@@ -80,6 +84,9 @@ public final class ShardingService {
      * Set resharding flag.
      */
     public void setReshardingFlag() {
+        if (!leaderService.isLeaderUntilBlock()) {
+            return;
+        }
         jobNodeStorage.createJobNodeIfNeeded(ShardingNode.NECESSARY);
     }
     
@@ -154,14 +161,35 @@ public final class ShardingService {
      * @return sharding items
      */
     public List<Integer> getShardingItems(final String jobInstanceId) {
-        JobInstance jobInstance = new JobInstance(jobInstanceId);
-        if (!serverService.isAvailableServer(jobInstance.getIp())) {
+        JobInstance jobInstance = YamlEngine.unmarshal(jobNodeStorage.getJobNodeData(instanceNode.getInstancePath(jobInstanceId)), JobInstance.class);
+        if (!serverService.isAvailableServer(jobInstance.getServerIp())) {
             return Collections.emptyList();
         }
         List<Integer> result = new LinkedList<>();
         int shardingTotalCount = configService.load(true).getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get crashed sharding items.
+     *
+     * @param jobInstanceId crashed job instance ID
+     * @return crashed sharding items
+     */
+    public List<Integer> getCrashedShardingItems(final String jobInstanceId) {
+        String serverIp = jobInstanceId.substring(0, jobInstanceId.indexOf(JobInstance.DELIMITER));
+        if (!serverService.isEnableServer(serverIp)) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new LinkedList<>();
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (jobInstanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
@@ -174,7 +202,7 @@ public final class ShardingService {
      * @return sharding items from localhost job server
      */
     public List<Integer> getLocalShardingItems() {
-        if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+        if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp())) {
             return Collections.emptyList();
         }
         return getShardingItems(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
@@ -209,7 +237,6 @@ public final class ShardingService {
                     result.add(transactionOp.create().forPath(jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()));
                 }
             }
-            System.out.println(jobNodePath.getFullPath(ShardingNode.NECESSARY));
             result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)));
             result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.PROCESSING)));
             return result;

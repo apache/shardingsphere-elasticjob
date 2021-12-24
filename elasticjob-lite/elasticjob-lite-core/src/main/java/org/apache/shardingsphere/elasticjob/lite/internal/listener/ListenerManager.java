@@ -17,19 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.RescheduleListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.ElectionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.failover.FailoverListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.ShutdownListenerManager;
-import org.apache.shardingsphere.elasticjob.lite.internal.instance.TriggerListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.MonitorExecutionListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.shardingsphere.elasticjob.lite.internal.trigger.TriggerListenerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Listener manager facade.
@@ -56,7 +56,7 @@ public final class ListenerManager {
     
     private final RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
-    public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);

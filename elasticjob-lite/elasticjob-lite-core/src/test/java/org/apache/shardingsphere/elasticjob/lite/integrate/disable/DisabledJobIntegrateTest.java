@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobB
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.integrate.BaseIntegrateTest;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
@@ -40,8 +40,8 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     
     protected final void assertDisabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
-        assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getIp(), is(IpUtils.getIp()));
-        JobConfiguration jobConfig = YamlEngine.unmarshal(getRegCenter().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
+        assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
+        JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         if (getJobBootstrap() instanceof ScheduleJobBootstrap) {
             assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
@@ -49,8 +49,8 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
             assertNull(jobConfig.getCron());
         }
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(getRegCenter().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getIp()), is(ServerStatus.DISABLED.name()));
-        while (null != getRegCenter().get("/" + getJobName() + "/leader/election/instance")) {
+        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.DISABLED.name()));
+        while (null != getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance")) {
             BlockUtils.waitingShortTime();
         }
     }

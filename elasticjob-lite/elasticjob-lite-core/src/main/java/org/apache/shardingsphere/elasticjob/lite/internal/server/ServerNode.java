@@ -64,7 +64,7 @@ public final class ServerNode {
         if (Objects.isNull(jobInstance)) {
             return false;
         }
-        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, jobInstance.getIp())));
+        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, jobInstance.getServerIp())));
     }
     
     String getServerNode(final String ip) {

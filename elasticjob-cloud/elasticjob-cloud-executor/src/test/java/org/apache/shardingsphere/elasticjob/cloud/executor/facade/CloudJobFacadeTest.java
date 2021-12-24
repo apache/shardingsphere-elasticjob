@@ -18,13 +18,13 @@
 package org.apache.shardingsphere.elasticjob.cloud.executor.facade;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.cloud.executor.prod.JobConfigurationUtil;
 import org.apache.shardingsphere.elasticjob.cloud.facade.CloudJobFacade;
+import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.Before;
@@ -42,22 +42,19 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CloudJobFacadeTest {
+public final class CloudJobFacadeTest {
     
     private ShardingContexts shardingContexts;
     
-    private JobConfiguration jobConfig;
-    
     @Mock
-    private JobEventBus eventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     private JobFacade jobFacade;
     
     @Before
     public void setUp() {
         shardingContexts = getShardingContexts();
-        jobConfig = JobConfigurationUtil.createJobConfiguration(getJobConfigurationMap(false));
-        jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
+        jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), jobTracingEventBus);
     }
     
     private ShardingContexts getShardingContexts() {
@@ -66,11 +63,8 @@ public class CloudJobFacadeTest {
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
-    private Map<String, String> getJobConfigurationMap(final boolean streamingProcess) {
-        Map<String, String> result = new HashMap<>(10, 1);
-        result.put("jobName", "test_job");
-        result.put("streamingProcess", Boolean.toString(streamingProcess));
-        return result;
+    private JobConfiguration getJobConfiguration() {
+        return JobConfiguration.newBuilder("test_job", 1).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build();
     }
     
     @Test
@@ -132,7 +126,7 @@ public class CloudJobFacadeTest {
     public void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
-        verify(eventBus).post(jobExecutionEvent);
+        verify(jobTracingEventBus).post(jobExecutionEvent);
     }
     
     @Test

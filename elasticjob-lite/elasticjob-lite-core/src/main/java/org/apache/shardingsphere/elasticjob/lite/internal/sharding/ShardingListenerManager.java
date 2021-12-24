@@ -17,14 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerNode;
+import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
@@ -42,6 +44,10 @@ public final class ShardingListenerManager extends AbstractListenerManager {
     
     private final ShardingService shardingService;
     
+    private final JobNodePath jobNodePath;
+    
+    private final ConfigurationService configService;
+    
     public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
@@ -49,6 +55,8 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
         shardingService = new ShardingService(regCenter, jobName);
+        jobNodePath = new JobNodePath(jobName);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     @Override
@@ -75,9 +83,17 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().isShutdown(jobName) && (isInstanceChange(eventType, path) || isServerChange(path))) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && (isInstanceChange(eventType, path) || isServerChange(path)) && !(isStaticSharding() && hasShardingInfo())) {
                 shardingService.setReshardingFlag();
             }
+        }
+        
+        private boolean isStaticSharding() {
+            return configService.load(true).isStaticSharding();
+        }
+        
+        private boolean hasShardingInfo() {
+            return !JobRegistry.getInstance().getRegCenter(jobName).getChildrenKeys(jobNodePath.getShardingNodePath()).isEmpty();
         }
         
         private boolean isInstanceChange(final Type eventType, final String path) {

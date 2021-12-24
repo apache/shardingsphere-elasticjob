@@ -1,4 +1,5 @@
 +++
+pre = "<b>5.2. </b>"
 title = "Thread Pool Strategy"
 weight = 2
 +++

@@ -27,11 +27,11 @@ import java.io.IOException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedTestingServer {
-
+    
     private static final int PORT = 18181;
-
+    
     private static volatile TestingServer testingServer;
-
+    
     /**
      * Get the connection string.
      *
@@ -40,7 +40,7 @@ public final class EmbedTestingServer {
     public static String getConnectionString() {
         return "localhost:" + PORT;
     }
-
+    
     /**
      * Start the server.
      */

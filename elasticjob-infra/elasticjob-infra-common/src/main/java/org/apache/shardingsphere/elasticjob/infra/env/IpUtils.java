@@ -21,11 +21,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.net.Inet6Address;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,9 +39,13 @@ public final class IpUtils {
     
     public static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)){3})";
     
-    private static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
+    public static final String PREFERRED_NETWORK_INTERFACE = "elasticjob.preferred.network.interface";
+    
+    public static final String PREFERRED_NETWORK_IP = "elasticjob.preferred.network.ip";
     
     private static volatile String cachedIpAddress;
+    
+    private static volatile String cachedHostName;
     
     /**
      * Get IP address for localhost.
@@ -57,7 +61,7 @@ public final class IpUtils {
             Enumeration<InetAddress> ipAddresses = networkInterface.getInetAddresses();
             while (ipAddresses.hasMoreElements()) {
                 InetAddress ipAddress = ipAddresses.nextElement();
-                if (isValidAddress(ipAddress)) {
+                if (isValidAddress(ipAddress) && isPreferredAddress(ipAddress)) {
                     cachedIpAddress = ipAddress.getHostAddress();
                     return cachedIpAddress;
                 }
@@ -100,7 +104,7 @@ public final class IpUtils {
             Enumeration<InetAddress> addresses = each.getInetAddresses();
             while (addresses.hasMoreElements()) {
                 InetAddress inetAddress = addresses.nextElement();
-                if (isValidAddress(inetAddress)) {
+                if (isValidAddress(inetAddress) && isPreferredAddress(inetAddress)) {
                     result = each;
                     break;
                 }
@@ -128,6 +132,15 @@ public final class IpUtils {
         }
     }
     
+    private static boolean isPreferredAddress(final InetAddress inetAddress) {
+        String preferredNetworkIp = System.getProperty(PREFERRED_NETWORK_IP);
+        if (null == preferredNetworkIp) {
+            return true;
+        }
+        String hostAddress = inetAddress.getHostAddress();
+        return hostAddress.startsWith(preferredNetworkIp) || hostAddress.matches(preferredNetworkIp);
+    }
+    
     private static boolean isValidAddress(final InetAddress inetAddress) {
         try {
             return !inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
@@ -147,10 +160,14 @@ public final class IpUtils {
      * @return host name for localhost
      */
     public static String getHostName() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (final UnknownHostException ex) {
-            return "unknown";
+        if (null != cachedHostName) {
+            return cachedHostName;
         }
+        try {
+            cachedHostName = InetAddress.getLocalHost().getHostName();
+        } catch (final UnknownHostException ex) {
+            cachedHostName = "unknown";
+        }
+        return cachedHostName;
     }
 }

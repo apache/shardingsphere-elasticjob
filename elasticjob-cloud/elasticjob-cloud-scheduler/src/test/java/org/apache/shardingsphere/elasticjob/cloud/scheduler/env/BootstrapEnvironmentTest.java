@@ -17,10 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.env;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.Test;
 
 import java.util.Map;
@@ -34,7 +33,7 @@ import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
     
-    private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getINSTANCE();
     
     @Test
     public void assertGetMesosConfiguration() {
@@ -75,8 +74,7 @@ public final class BootstrapEnvironmentTest {
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), "sa");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
-        Optional<TracingConfiguration> tracingConfiguration = bootstrapEnvironment.getTracingConfiguration();
-        tracingConfiguration.ifPresent(tracingConfiguration1 -> assertThat(tracingConfiguration1.getStorage(), instanceOf(BasicDataSource.class)));
+        bootstrapEnvironment.getTracingConfiguration().ifPresent(tracingConfig -> assertThat(tracingConfig.getTracingStorageConfiguration().getStorage(), instanceOf(BasicDataSource.class)));
     }
     
     @Test
@@ -111,4 +109,21 @@ public final class BootstrapEnvironmentTest {
         assertThat(configuration.getReconcileIntervalMinutes(), is(0));
         assertFalse(configuration.isEnabledReconcile());
     }
+
+    @Test
+    public void assertGetMesosRole() {
+        assertThat(bootstrapEnvironment.getMesosRole(), is(Optional.empty()));
+        Properties properties = new Properties();
+        properties.setProperty(BootstrapEnvironment.EnvironmentArgument.MESOS_ROLE.getKey(), "0");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        assertThat(bootstrapEnvironment.getMesosRole(), is(Optional.of("0")));
+    }
+
+    @Test
+    public void assertGetFrameworkHostPort() {
+        Properties properties = new Properties();
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("localhost:8899"));
+    }
+
 }

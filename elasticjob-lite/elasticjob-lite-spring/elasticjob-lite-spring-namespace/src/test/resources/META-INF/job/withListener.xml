@@ -31,9 +31,7 @@
     
     <elasticjob:job id="${simpleJob.id}" job-ref="fooJob" registry-center-ref="regCenter" 
              cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 
-             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
-        <elasticjob:listener class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener.SimpleListener" />
-        <elasticjob:distributed-listener class="org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.listener.SimpleOnceListener" started-timeout-milliseconds="10000" completed-timeout-milliseconds="20000" />
+             disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" job-listener-types="simpleListener,simpleOnceListener">
     </elasticjob:job>
     
     <elasticjob:job id="dataflowElasticJob_namespace_listener" job-ref="dataflowJob" registry-center-ref="regCenter" 

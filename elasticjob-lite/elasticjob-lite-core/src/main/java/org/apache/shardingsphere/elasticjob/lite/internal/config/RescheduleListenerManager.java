@@ -17,8 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -49,7 +51,12 @@ public final class RescheduleListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (configNode.isConfigPath(path) && Type.NODE_CHANGED == eventType && !JobRegistry.getInstance().isShutdown(jobName)) {
-                JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration().getCron());
+                JobConfiguration jobConfiguration = YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration();
+                if (StringUtils.isEmpty(jobConfiguration.getCron())) {
+                    JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob();
+                } else {
+                    JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(jobConfiguration.getCron(), jobConfiguration.getTimeZone());
+                }
             }
         }
     }

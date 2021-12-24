@@ -20,5 +20,5 @@ ElasticJob-Cloud uses Mesos to manage and isolate resources.
 | Job Execution     | Daemon            | `Daemon + Transient` |
 | Deploy Dependency | ZooKeeper         | `ZooKeeper + Mesos`  |
 
-The advantages of Elasticjob Cloud are resource management and isolation, 
+The advantages of ElasticJob-Cloud are resource management and isolation, 
 which is suitable for big data application with starve resource environment.

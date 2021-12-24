@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -33,15 +34,15 @@ public final class JobRegistry {
     
     private static volatile JobRegistry instance;
     
-    private Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
+    private final Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
     
-    private Map<String, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>();
+    private final Map<String, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>();
     
-    private Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
+    private final Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
     
-    private Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
+    private final Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
     
-    private Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
+    private final Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
     
     /**
      * Get instance of job registry.
@@ -127,8 +128,7 @@ public final class JobRegistry {
      * @return job is running or not
      */
     public boolean isJobRunning(final String jobName) {
-        Boolean result = jobRunningMap.get(jobName);
-        return null == result ? false : result;
+        return jobRunningMap.getOrDefault(jobName, false);
     }
     
     /**
@@ -148,8 +148,7 @@ public final class JobRegistry {
      * @return sharding total count which running on current job server
      */
     public int getCurrentShardingTotalCount(final String jobName) {
-        Integer result = currentShardingTotalCountMap.get(jobName);
-        return null == result ? 0 : result;
+        return currentShardingTotalCountMap.getOrDefault(jobName, 0);
     }
     
     /**
@@ -168,14 +167,8 @@ public final class JobRegistry {
      * @param jobName job name
      */
     public void shutdown(final String jobName) {
-        JobScheduleController scheduleController = schedulerMap.remove(jobName);
-        if (null != scheduleController) {
-            scheduleController.shutdown();
-        }
-        CoordinatorRegistryCenter regCenter = regCenterMap.remove(jobName);
-        if (null != regCenter) {
-            regCenter.evictCacheData("/" + jobName);
-        }
+        Optional.ofNullable(schedulerMap.remove(jobName)).ifPresent(JobScheduleController::shutdown);
+        Optional.ofNullable(regCenterMap.remove(jobName)).ifPresent(regCenter -> regCenter.evictCacheData("/" + jobName));
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);
         currentShardingTotalCountMap.remove(jobName);

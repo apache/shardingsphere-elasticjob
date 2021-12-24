@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 
 public final class JobNodePathTest {
     
-    private JobNodePath jobNodePath = new JobNodePath("test_job");
+    private final JobNodePath jobNodePath = new JobNodePath("test_job");
     
     @Test
     public void assertGetFullPath() {

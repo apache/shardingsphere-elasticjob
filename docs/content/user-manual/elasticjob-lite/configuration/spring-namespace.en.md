@@ -38,7 +38,7 @@ Configuration:
 
 \<elasticjob:job />
 
-Configuration：
+Configuration: 
 
 | Name                              | Required |
 | --------------------------------- |:-------- |
@@ -48,6 +48,7 @@ Configuration：
 | registry-center-ref               | Yes      |
 | tracing-ref                       | No       |
 | cron                              | Yes      |
+| timeZone                          | No       |
 | sharding-total-count              | Yes      |
 | sharding-item-parameters          | No       |
 | job-parameter                     | No       |
@@ -64,33 +65,9 @@ Configuration：
 | disabled                          | No       |
 | overwrite                         | No       |
 
-## Job Listener Configuration
-
-\<elasticjob:listener />
-
-`elasticjob:listener` must be configured as a child element of `elasticjob:job`, and configure only once in the child element.
-
-Configuration: 
-
-| Name   | Data Type   | Required | Default Value | Description                                                              |
-| ------ |:----------- |:-------- |:------------- |:------------------------------------------------------------------------ |
-| class  | String      | Yes      |               | Common listener class, need to implement `ElasticJobListener` interface  |
-
-\<elasticjob:distributed-listener />
-
-`elasticjob:distributed-listener` must be configured as a child element of `elasticjob:job`, and configure only once in the child element.
-
-Configuration: 
-
-| Name                           | Data Type   | Required | Default Value  | Description                                                                                   |
-| ------------------------------ |:----------- |:-------- |:-------------- |:--------------------------------------------------------------------------------------------- |
-| class                          | String      | Yes      |                | Distributed listener class, need to extend `AbstractDistributeOnceElasticJobListener` class   |
-| started-timeout-milliseconds   | long        | No       | Long.MAX_VALUE | The timeout in milliseconds before the last job is executed                                   |
-| completed-timeout-milliseconds | long        | No       | Long.MAX_VALUE | The timeout in milliseconds after the last job is executed                                    |
-
 ## Event Tracing Configuration
 
-\<elasticjob:rdb-event-trace />
+\<elasticjob:rdb-tracing />
 
 Configuration:
 

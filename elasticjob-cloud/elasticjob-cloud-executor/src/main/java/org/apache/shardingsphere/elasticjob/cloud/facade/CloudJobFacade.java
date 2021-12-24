@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.cloud.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
@@ -40,7 +40,7 @@ public final class CloudJobFacade implements JobFacade {
     
     private final JobConfiguration jobConfig;
     
-    private final JobEventBus jobEventBus;
+    private final JobTracingEventBus jobTracingEventBus;
     
     @Override
     public JobConfiguration loadJobConfiguration(final boolean fromCache) {
@@ -103,13 +103,13 @@ public final class CloudJobFacade implements JobFacade {
     
     @Override
     public void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
-        jobEventBus.post(jobExecutionEvent);
+        jobTracingEventBus.post(jobExecutionEvent);
     }
     
     @Override
     public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
-        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
                 Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }

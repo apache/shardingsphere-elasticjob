@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.infra.context.ShardingItemParameters;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -71,7 +71,7 @@ public final class ExecutionContextService {
     private String buildTaskId(final JobConfiguration jobConfig, final List<Integer> shardingItems) {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
         String shardingItemsString = shardingItems.stream().map(Object::toString).collect(Collectors.joining(","));
-        String jobInstanceId = null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
+        String jobInstanceId = null == jobInstance || null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
         return String.join("@-@", jobConfig.getJobName(), shardingItemsString, "READY", jobInstanceId); 
     }
     
@@ -93,7 +93,7 @@ public final class ExecutionContextService {
     }
     
     private Map<Integer, String> getAssignedShardingItemParameterMap(final List<Integer> shardingItems, final Map<Integer, String> shardingItemParameterMap) {
-        Map<Integer, String> result = new HashMap<>(shardingItemParameterMap.size(), 1);
+        Map<Integer, String> result = new HashMap<>(shardingItems.size(), 1);
         for (int each : shardingItems) {
             result.put(each, shardingItemParameterMap.get(each));
         }

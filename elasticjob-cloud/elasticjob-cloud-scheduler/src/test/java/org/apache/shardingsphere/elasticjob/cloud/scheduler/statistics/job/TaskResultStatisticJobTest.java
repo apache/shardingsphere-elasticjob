@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TaskResultStatisticJobTest {
     
-    private StatisticInterval statisticInterval = StatisticInterval.MINUTE;
+    private final StatisticInterval statisticInterval = StatisticInterval.MINUTE;
     
     private TaskResultMetaData sharedData;
     

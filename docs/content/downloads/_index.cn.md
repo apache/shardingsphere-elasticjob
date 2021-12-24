@@ -3,6 +3,9 @@ pre = "<b>6. </b>"
 title = "下载"
 weight = 6
 chapter = true
+
+extracss = true
+
 +++
 
 ## 最新版本
@@ -10,14 +13,20 @@ chapter = true
 ElasticJob 的发布版包括源码包及其对应的二进制包。
 由于下载内容分布在镜像服务器上，所以下载后应该进行 GPG 或 SHA-512 校验，以此来保证内容没有被篡改。
 
-**ElasticJob**
+##### ElasticJob - 版本: 3.0.1 ( 发布日期: Oct 11, 2021 )
 
-| 版本 | 发布日期 | 说明 | 下载 |
-| - | - | - | - |
-| 3.0.0-alpha | Coming soon  | 源码 | [[src]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite-Console 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud 二进制包 | [[tar]]() [[asc]]() [[sha512]]() |
+- 源码: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip.sha512) ]
+- ElasticJob-Lite 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Scheduler 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Executor 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz.sha512) ]
+
+##### ElasticJob-UI - 版本: 3.0.0 ( 发布日期: July 29, 2021 )
+
+- 源码: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip.sha512) ]
+- ElasticJob-Lite-UI 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-UI 二进制包: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz.sha512) ]
+
+即将发布
 
 ## 全部版本
 

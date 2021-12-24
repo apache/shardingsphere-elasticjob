@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.settings;
 
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -48,6 +48,14 @@ public final class JobConfigurationAPIImplTest {
     @Before
     public void setUp() {
         jobConfigAPI = new JobConfigurationAPIImpl(regCenter);
+    }
+    
+    @Test
+    public void assertGetJobConfigNull() {
+        when(regCenter.get("/test_job/config")).thenReturn(null);
+        JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
+        assertNull(actual);
+        verify(regCenter).get("/test_job/config");
     }
     
     @Test

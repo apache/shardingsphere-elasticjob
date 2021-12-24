@@ -34,7 +34,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.fixture.OfferB
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
-import org.apache.shardingsphere.elasticjob.tracing.JobEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.junit.After;
 import org.junit.Before;
@@ -70,14 +70,14 @@ public final class TaskLaunchScheduledServiceTest {
     private FacadeService facadeService;
     
     @Mock
-    private JobEventBus jobEventBus;
+    private JobTracingEventBus jobTracingEventBus;
     
     private TaskLaunchScheduledService taskLaunchScheduledService;
     
     @Before
     public void setUp() {
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
-        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
+        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobTracingEventBus);
         taskLaunchScheduledService.startUp();
     }
     
@@ -100,7 +100,7 @@ public final class TaskLaunchScheduledServiceTest {
         taskLaunchScheduledService.runOneIteration();
         verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.anyList());
         verify(facadeService).loadAppConfig("test_app");
-        verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
+        verify(jobTracingEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
     }
     
     @Test
@@ -118,7 +118,7 @@ public final class TaskLaunchScheduledServiceTest {
         verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.anyList());
         verify(facadeService).isRunning(TaskContext.from(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "script_job", ExecutionType.READY)));
         verify(facadeService).loadAppConfig("test_app");
-        verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
+        verify(jobTracingEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
     }
     
     private TaskAssignmentResult mockTaskAssignmentResult(final String taskName, final ExecutionType executionType) {

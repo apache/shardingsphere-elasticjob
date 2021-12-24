@@ -25,17 +25,32 @@ spring:
 elasticjob:
   tracing:
     type: RDB
+    excludeJobNames: [customTestJob]
   regCenter:
     serverLists: localhost:18181
     namespace: elasticjob-lite-spring-boot-starter
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob:
-        - jobName: customTestJob
-          shardingTotalCount: 3
-    typed:
-      PRINT:
-        - jobName: printTestJob
-          shardingTotalCount: 3
-          props:
-            print.content: "test print job"
+    customTestJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      jobBootstrapBeanName: customTestJobBean
+      shardingTotalCount: 3
+      jobListenerTypes:
+        - NOOP
+        - LOG
+    printTestJob:
+      elasticJobType: PRINT
+      jobBootstrapBeanName: printTestJobBean
+      shardingTotalCount: 3
+      props:
+        print.content: "test print job"
+    defaultBeanNameClassJob:
+      cron: 0/5 * * * * ?
+      timeZome: GMT+08:00
+      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      shardingTotalCount: 3
+    defaultBeanNameTypeJob:
+      cron: 0/5 * * * * ?
+      elasticJobType: PRINT
+      shardingTotalCount: 3
+      props:
+        print.content: "test print job"

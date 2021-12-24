@@ -3,27 +3,34 @@ pre = "<b>6. </b>"
 title = "Downloads"
 weight = 6
 chapter = true
+
+extracss = true
+
 +++
 
-## Latest releases
+## Latest Releases
 
 ElasticJob is released as source code tarballs with corresponding binary tarballs for convenience. 
 The downloads are distributed via mirror sites and should be checked for tampering using GPG or SHA-512.
 
-**ElasticJob**
+##### ElasticJob - Version: 3.0.1 ( Release Date: Oct 11, 2021 )
 
-| Version | Release date | Description | Downloads |
-| - | - | - | - |
-| 3.0.0-alpha | Coming soon  | Source codes | [[src]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Lite Console Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
-|             |              | ElasticJob-Cloud Binary Distribution | [[tar]]() [[asc]]() [[sha512]]() |
+- Source Codes: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-src.zip.sha512) ]
+- ElasticJob-Lite Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-lite-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Scheduler Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-scheduler-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-Executor Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.1/apache-shardingsphere-elasticjob-3.0.1-cloud-executor-bin.tar.gz.sha512) ]
 
-## All releases
+##### ElasticJob-UI - Version: 3.0.0 ( Release Date: July 29, 2021 )
+
+- Source Codes: [ [SRC](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-ui-src.zip.sha512) ]
+- ElasticJob-Lite-UI Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-lite-ui-bin.tar.gz.sha512) ]
+- ElasticJob-Cloud-UI Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.cgi/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-ui-3.0.0/apache-shardingsphere-elasticjob-3.0.0-cloud-ui-bin.tar.gz.sha512) ]
+
+## All Releases
 
 Find all releases in the [Archive repository](https://archive.apache.org/dist/shardingsphere/).
 
-## Verify the releases
+## Verify the Releases
 
 [PGP signatures KEYS](https://downloads.apache.org/shardingsphere/KEYS)
 

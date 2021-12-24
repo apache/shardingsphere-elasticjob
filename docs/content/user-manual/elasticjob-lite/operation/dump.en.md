@@ -6,14 +6,14 @@ chapter = true
 
 Using ElasticJob may meet some distributed problem which is not easy to observe.
 
-Because of developer can not debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
+Because of developer cannot debug in production environment, ElasticJob provide `dump` command to export job runtime information for debugging.
 
 For security reason, the information dumped had already mask sensitive information, it instead of real IP address to `ip1`, `ip2` ...  
 
 ## Open Listener Port
 
-Using Java API please refer to [Java API usage](/en/user-manual/elasticjob-lite/usage/java-api) for more details.
-Using Spring please refer to [Spring usage](/en/user-manual/elasticjob-lite/usage/spring-namespace) for more details.
+Using Java API please refer to [Java API usage](/en/user-manual/elasticjob-lite/usage/job-api/java-api) for more details.
+Using Spring please refer to [Spring usage](/en/user-manual/elasticjob-lite/usage/job-api/spring-namespace) for more details.
 
 ## Execute Dump
 

@@ -53,7 +53,7 @@ public final class AverageAllocationJobShardingStrategy implements JobShardingSt
     }
     
     private Map<JobInstance, List<Integer>> shardingAliquot(final List<JobInstance> shardingUnits, final int shardingTotalCount) {
-        Map<JobInstance, List<Integer>> result = new LinkedHashMap<>(shardingTotalCount, 1);
+        Map<JobInstance, List<Integer>> result = new LinkedHashMap<>(shardingUnits.size(), 1);
         int itemCountPerSharding = shardingTotalCount / shardingUnits.size();
         int count = 0;
         for (JobInstance each : shardingUnits) {

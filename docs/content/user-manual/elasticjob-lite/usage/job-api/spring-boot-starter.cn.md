@@ -39,8 +39,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
 
 在配置文件中指定 ElasticJob 所使用的 Zookeeper。配置前缀为 `elasticjob.reg-center`。
 
-实现了 ElasticJob 的作业逻辑属于 classed 类型作业，需要配置在 `elasticjob.jobs.classed` 下，
-`elasticjob.jobs.classed` 是一个 Map，限定类名作为 key，value 是一个 List<JobConfigurationPOJO>，
+`elasticjob.jobs` 是一个 Map，key 为作业名称，value 为作业类型与配置。
 Starter 会根据该配置自动创建 `OneOffJobBootstrap` 或 `ScheduleJobBootstrap` 的实例并注册到 Spring 容器中。
 
 配置参考：
@@ -51,19 +50,17 @@ elasticjob:
     serverLists: localhost:6181
     namespace: elasticjob-lite-springboot
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.example.job.SpringBootDataflowJob:
-        - jobName: dataflowJob
-          cron: 0/5 * * * * ?
-          shardingTotalCount: 3
-          shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
-    typed:
-      SCRIPT:
-        - jobName: scriptJob
-          cron: 0/10 * * * * ?
-          shardingTotalCount: 3
-          props:
-            script.command.line: "echo SCRIPT Job: "
+    dataflowJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    scriptJob:
+      elasticJobType: SCRIPT
+      cron: 0/10 * * * * ?
+      shardingTotalCount: 3
+      props:
+        script.command.line: "echo SCRIPT Job: "
 ```
 
 ## 作业启动
@@ -77,25 +74,174 @@ elasticjob:
 一次性调度的作业的执行权在开发者手中，开发者可以在需要调用作业的位置注入 `OneOffJobBootstrap`，
 通过 `execute()` 方法执行作业。
 
-**关于@DependsOn注解**
+`OneOffJobBootstrap` bean 的名称通过属性 jobBootstrapBeanName 配置，注入时需要指定依赖的 bean 名称。
+具体配置请参考[配置文档](/cn/user-manual/elasticjob-lite/configuration/spring-boot-starter)。
 
-JobBootstrap 由 Starter 动态创建，如果依赖方的实例化时间早于 Starter 创建 JobBootstrap，将无法注入 JobBoostrap 的实例。
-
-也可以通过 ApplicationContext 获取 JobBootstrap 的 Bean。
+```yaml
+elasticjob:
+  jobs:
+    myOneOffJob:
+      jobBootstrapBeanName: myOneOffJobBean
+      ....
+```
 
 ```java
 @RestController
-@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
 
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
-    private OneOffJobBootstrap manualScriptJob;
-
+    // 通过 "@Resource" 注入
+    @Resource(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob;
+    
     @GetMapping("/execute")
     public String executeOneOffJob() {
-        manualScriptJob.execute();
+        myOneOffJob.execute();
+        return "{\"msg\":\"OK\"}";
+    }
+
+    // 通过 "@Autowired" 注入
+    @Autowired
+    @Qualifier(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob2;
+
+    @GetMapping("/execute2")
+    public String executeOneOffJob2() {
+        myOneOffJob2.execute();
         return "{\"msg\":\"OK\"}";
     }
 }
 ```
 
+
+## 配置错误处理策略
+
+使用 ElasticJob-Lite 过程中当作业发生异常后，可采用以下错误处理策略。
+
+| *错误处理策略名称*         | *说明*                            |  *是否内置* | *是否默认*| *是否需要额外配置* |
+| ----------------------- | --------------------------------- |  -------  |  --------|  -------------  |
+| 记录日志策略              | 记录作业异常日志，但不中断作业执行     |   是       |     是   |                 |
+| 抛出异常策略              | 抛出系统异常并中断作业执行            |   是       |         |                 |
+| 忽略异常策略              | 忽略系统异常且不中断作业执行          |   是       |          |                 |
+| 邮件通知策略              | 发送邮件消息通知，但不中断作业执行     |            |          |      是         |
+| 企业微信通知策略           | 发送企业微信消息通知，但不中断作业执行 |            |          |      是          |
+| 钉钉通知策略              | 发送钉钉消息通知，但不中断作业执行     |            |          |      是          |
+
+### 记录日志策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: LOG 
+```
+
+### 抛出异常策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: THROW 
+```
+
+
+### 忽略异常策略
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: IGNORE 
+```
+
+### 邮件通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#邮件通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: EMAIL 
+  props:
+    email:
+      host: host
+      port: 465
+      username: username
+      password: password
+      useSsl: true
+      subject: ElasticJob error message
+      from: from@xxx.xx
+      to: to1@xxx.xx,to2@xxx.xx
+      cc: cc@xxx.xx
+      bcc: bcc@xxx.xx
+      debug: false
+```
+
+### 企业微信通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#企业微信通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-wechat</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: WECHAT 
+  props:
+    wechat:
+      webhook: you_webhook
+      connectTimeout: 3000
+      readTimeout: 5000
+```
+
+
+### 钉钉通知策略
+
+请参考 [这里](/cn/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#钉钉通知策略) 了解更多。
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: DINGTALK 
+  props:
+    dingtalk:
+       webhook: you_webhook
+       keyword: you_keyword
+       secret: you_secret
+       connectTimeout: 3000
+       readTimeout: 5000
+```

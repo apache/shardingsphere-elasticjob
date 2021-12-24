@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class LeasesQueueTest {
     
-    private LeasesQueue leasesQueue = LeasesQueue.getInstance();
+    private final LeasesQueue leasesQueue = LeasesQueue.getInstance();
     
     @Test
     public void assertOperate() {

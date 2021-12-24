@@ -66,6 +66,9 @@ public final class ServerStatisticsAPIImplTest {
         
         when(regCenter.get("/test_job2/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.get("/test_job2/servers/ip2")).thenReturn("DISABLED");
+        when(regCenter.get("/test_job1/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
+        when(regCenter.get("/test_job2/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
+        when(regCenter.get("/test_job2/instances/ip2@-@defaultInstance2")).thenReturn("jobInstanceId: ip2@-@defaultInstance2\nserverIp: ip2\n");
         when(regCenter.getChildrenKeys("/test_job2/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance2"));
         
         int i = 0;

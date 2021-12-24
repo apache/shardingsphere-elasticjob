@@ -40,9 +40,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
 
 Configure the Zookeeper which will be used by ElasticJob via configuration files.
 
-Those jobs which have implemented ElasticJob are `classed` job. 
-They should be configured under `elasticjob.jobs.classed`.
-`elasticjob.jobs.classed` is a Map which using qualified class name as keys and List<JobConfigurationPOJO> as values.
+`elasticjob.jobs` is a Map. Using key as job name. Specific job type and configuration in value.
 The Starter will create instances of `OneOffJobBootstrap` or `ScheduleJobBootstrap` and register them into the Spring IoC container automatically. 
 
 Configuration reference:
@@ -53,19 +51,17 @@ elasticjob:
     serverLists: localhost:6181
     namespace: elasticjob-lite-springboot
   jobs:
-    classed:
-      org.apache.shardingsphere.elasticjob.example.job.SpringBootDataflowJob:
-        - jobName: dataflowJob
-          cron: 0/5 * * * * ?
-          shardingTotalCount: 3
-          shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
-    typed:
-      SCRIPT:
-        - jobName: scriptJob
-          cron: 0/10 * * * * ?
-          shardingTotalCount: 3
-          props:
-            script.command.line: "echo SCRIPT Job: "
+    dataflowJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    scriptJob:
+      elasticJobType: SCRIPT
+      cron: 0/10 * * * * ?
+      shardingTotalCount: 3
+      props:
+        script.command.line: "echo SCRIPT Job: "
 ```
 
 ## Job Start
@@ -80,24 +76,171 @@ When to execute OneOffJob is up to you.
 Developers can inject the `OneOffJobBootstrap` bean into where they plan to invoke.
 Trigger the job by invoking `execute()` method manually.
 
-**About @DependsOn Annotation**
+The bean name of `OneOffJobBootstrap` is specified by property "jobBootstrapBeanName",
+Please refer to [Spring Boot Starter Configuration](/en/user-manual/elasticjob-lite/configuration/spring-boot-starter).
 
-JobBootstraps are created by the Starter dynamically. It's unable to inject the `JobBootstrap` beans if the beans which depends on `JobBootstrap` were instantiated earlier than the instantiation of `JobBootstrap`.
-
-Developers can also retrieve `JobBootstrap` beans by ApplicationContext.
+```yaml
+elasticjob:
+  jobs:
+    myOneOffJob:
+      jobBootstrapBeanName: myOneOffJobBean
+      ....
+```
 
 ```java
 @RestController
-@DependsOn("ElasticJobLiteAutoConfiguration")
 public class OneOffJobController {
-    
-    @Resource(name = "manualScriptJobOneOffJobBootstrap")
-    private OneOffJobBootstrap manualScriptJob;
+
+    // Inject via "@Resource"
+    @Resource(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob;
     
     @GetMapping("/execute")
     public String executeOneOffJob() {
-        manualScriptJob.execute();
+        myOneOffJob.execute();
+        return "{\"msg\":\"OK\"}";
+    }
+
+    // Inject via "@Autowired"
+    @Autowired
+    @Qualifier(name = "myOneOffJobBean")
+    private OneOffJobBootstrap myOneOffJob2;
+
+    @GetMapping("/execute2")
+    public String executeOneOffJob2() {
+        myOneOffJob2.execute();
         return "{\"msg\":\"OK\"}";
     }
 }
+```
+
+## Configuration error handler strategy
+
+In the process of using ElasticJob-Lite, when the job is abnormal, the following error handling strategies can be used.
+
+| *Error handler strategy name*            | *Description*                                                 |  *Built-in*  | *Default*| *Extra config*   |
+| ---------------------------------------- | ------------------------------------------------------------- |  -------     |  --------|  --------------  |
+| Log Strategy                             | Log error and do not interrupt job                            |   Yes        |     Yes  |                  |
+| Throw Strategy                           | Throw system exception and interrupt job                      |   Yes        |          |                  |
+| Ignore Strategy                          | Ignore exception and do not interrupt job                     |   Yes        |          |                  |
+| Email Notification Strategy              | Send email message notification and do not interrupt job      |              |          |    Yes           |
+| Wechat Enterprise Notification Strategy  | Send wechat message notification and do not interrupt job     |              |          |    Yes           |
+| Dingtalk Notification Strategy           | Send dingtalk message notification and do not interrupt job   |              |          |    Yes           |
+
+### Log Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: LOG 
+```
+
+### Throw Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: THROW 
+```
+
+### Ignore Strategy
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: IGNORE 
+```
+
+### Email Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#email-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: EMAIL 
+  props:
+    email:
+      host: host
+      port: 465
+      username: username
+      password: password
+      useSsl: true
+      subject: ElasticJob error message
+      from: from@xxx.xx
+      to: to1@xxx.xx,to2@xxx.xx
+      cc: cc@xxx.xx
+      bcc: bcc@xxx.xx
+      debug: false
+```
+
+### Wechat Enterprise Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#wechat-enterprise-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-wechat</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: WECHAT 
+  props:
+    wechat:
+      webhook: you_webhook
+      connectTimeout: 3000
+      readTimeout: 5000
+```
+
+### Dingtalk Notification Strategy
+
+Please refer to [here](/en/user-manual/elasticjob-lite/configuration/built-in-strategy/error-handler/#dingtalk-notification-strategy) for more details.
+
+Maven POM:
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+```yaml
+elasticjob:
+  regCenter:
+    ...
+  jobs:
+    ...
+    jobErrorHandlerType: DINGTALK 
+  props:
+    dingtalk:
+       webhook: you_webhook
+       keyword: you_keyword
+       secret: you_secret
+       connectTimeout: 3000
+       readTimeout: 5000
 ```

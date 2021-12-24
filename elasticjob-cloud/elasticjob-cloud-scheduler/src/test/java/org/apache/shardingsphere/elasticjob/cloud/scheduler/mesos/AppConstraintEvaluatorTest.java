@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.google.gson.JsonParseException;
 import com.netflix.fenzo.ConstraintEvaluator;
 import com.netflix.fenzo.SchedulingResult;
 import com.netflix.fenzo.TaskRequest;
@@ -30,7 +31,6 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConf
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.codehaus.jettison.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -71,7 +71,8 @@ public final class AppConstraintEvaluatorTest {
     
     @Before
     public void setUp() {
-        taskScheduler = new TaskScheduler.Builder().withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(virtualMachineLease -> { }).build();
+        taskScheduler = new TaskScheduler.Builder().withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(virtualMachineLease -> {
+        }).build();
     }
     
     @After
@@ -102,7 +103,7 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertExistExecutorOnS0() throws Exception {
+    public void assertExistExecutorOnS0() {
         when(facadeService.loadExecutorInfo()).thenReturn(Collections.singletonList(new ExecutorStateInfo("foo-app@-@S0", "S0")));
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
@@ -111,8 +112,8 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertGetExecutorError() throws Exception {
-        when(facadeService.loadExecutorInfo()).thenThrow(JSONException.class);
+    public void assertGetExecutorError() {
+        when(facadeService.loadExecutorInfo()).thenThrow(JsonParseException.class);
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
         assertThat(result.getResultMap().size(), is(2));

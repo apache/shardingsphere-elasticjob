@@ -17,18 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.api.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
-import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Set up facade.
@@ -43,18 +42,15 @@ public final class SetUpFacade {
     
     private final InstanceService instanceService;
     
-    private final ShardingService shardingService;
-    
     private final ReconcileService reconcileService;
     
-    private ListenerManager listenerManager;
+    private final ListenerManager listenerManager;
     
-    public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
     }
@@ -80,9 +76,17 @@ public final class SetUpFacade {
         leaderService.electLeader();
         serverService.persistOnline(enabled);
         instanceService.persistOnline();
-        shardingService.setReshardingFlag();
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
+        }
+    }
+    
+    /**
+     * Tear down.
+     */
+    public void tearDown() {
+        if (reconcileService.isRunning()) {
+            reconcileService.stopAsync();
         }
     }
 }

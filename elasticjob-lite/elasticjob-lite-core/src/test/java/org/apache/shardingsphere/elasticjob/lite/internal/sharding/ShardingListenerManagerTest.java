@@ -17,15 +17,18 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
+import com.google.common.collect.Lists;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
-import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +38,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class ShardingListenerManagerTest {
@@ -51,6 +55,9 @@ public final class ShardingListenerManagerTest {
     @Mock
     private ShardingService shardingService;
     
+    @Mock
+    private ConfigurationService configService;
+    
     private ShardingListenerManager shardingListenerManager;
     
     @Before
@@ -59,6 +66,7 @@ public final class ShardingListenerManagerTest {
         shardingListenerManager = new ShardingListenerManager(null, "test_job");
         ReflectionUtils.setSuperclassFieldValue(shardingListenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingListenerManager, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(shardingListenerManager, "configService", configService);
     }
     
     @Test
@@ -117,6 +125,7 @@ public final class ShardingListenerManagerTest {
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).build());
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_CREATED, "");
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");
@@ -126,8 +135,20 @@ public final class ShardingListenerManagerTest {
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).build());
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_CHANGED, "");
         verify(shardingService).setReshardingFlag();
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
+    public void assertListenServersChangedJobListenerWhenIsStaticSharding() {
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).staticSharding(true).build());
+        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Lists.newArrayList("0"));
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_CHANGED, "");
+        verify(shardingService, times(0)).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");
     }
 }

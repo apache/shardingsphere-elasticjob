@@ -27,8 +27,7 @@ import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertTrue;
 
@@ -39,7 +38,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     private final String throughputDataflowJobName;
     
-    @Resource
+    @Autowired
     private CoordinatorRegistryCenter regCenter;
     
     @Before

@@ -24,17 +24,14 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
 
-/**
- * Print Job Executor.
- */
 @Slf4j
-public class PrintJobExecutor implements TypedJobItemExecutor {
-
+public final class PrintJobExecutor implements TypedJobItemExecutor {
+    
     @Override
     public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
         log.info(jobConfig.getProps().getProperty(PrintJobProperties.CONTENT_KEY));
     }
-
+    
     @Override
     public String getType() {
         return "PRINT";

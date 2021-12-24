@@ -32,7 +32,7 @@ public final class JobClassNameProviderFactory {
     
     private static final List<JobClassNameProvider> PROVIDERS = new LinkedList<>();
     
-    private static final JobClassNameProvider DEFAULT_PROVIDER = new SimpleJobClassNameProvider();
+    private static final JobClassNameProvider DEFAULT_PROVIDER = new DefaultJobClassNameProvider();
     
     static {
         for (JobClassNameProvider each : ServiceLoader.load(JobClassNameProvider.class)) {

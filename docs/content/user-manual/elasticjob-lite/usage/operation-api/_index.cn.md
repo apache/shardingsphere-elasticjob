@@ -37,7 +37,7 @@ ElasticJob-Lite 提供了 Java API，可以通过直接对注册中心进行操�
 
 ## 操作类 API
 
-类名称：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI`
 
 ### 触发作业执行
 

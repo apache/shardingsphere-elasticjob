@@ -321,7 +321,7 @@ public final class FacadeServiceTest {
     }
     
     @Test
-    public void assertLoadExecutor() throws Exception {
+    public void assertLoadExecutor() {
         facadeService.loadExecutorInfo();
         verify(mesosStateService).executors();
     }

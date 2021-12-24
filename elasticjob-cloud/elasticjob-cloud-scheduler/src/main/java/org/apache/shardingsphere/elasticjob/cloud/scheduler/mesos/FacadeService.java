@@ -17,6 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
+import com.google.gson.JsonParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
@@ -35,16 +44,6 @@ import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.codehaus.jettison.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Mesos facade service.
@@ -89,7 +88,7 @@ public final class FacadeService {
     
     /**
      * Get eligible job.
-     * 
+     *
      * @return collection of eligible job context
      */
     public Collection<JobContext> getEligibleJobContext() {
@@ -103,7 +102,7 @@ public final class FacadeService {
     
     /**
      * Remove launched task from queue.
-     * 
+     *
      * @param taskContexts task running contexts
      */
     public void removeLaunchTasksFromQueue(final List<TaskContext> taskContexts) {
@@ -136,7 +135,7 @@ public final class FacadeService {
     
     /**
      * Update daemon task status.
-     * 
+     *
      * @param taskContext task running context
      * @param isIdle set to idle or not
      */
@@ -155,7 +154,7 @@ public final class FacadeService {
     
     /**
      * Record task to failover queue.
-     * 
+     *
      * @param taskContext task running context
      */
     public void recordFailoverTask(final TaskContext taskContext) {
@@ -291,7 +290,7 @@ public final class FacadeService {
     
     /**
      * Determine whether the job is disable or not.
-     * 
+     *
      * @param jobName job name
      * @return true is disabled, otherwise not
      */
@@ -320,11 +319,11 @@ public final class FacadeService {
     
     /**
      * Get all running executor info.
-     * 
+     *
      * @return collection of executor info
-     * @throws JSONException json exception
+     * @throws JsonParseException parse json exception
      */
-    public Collection<ExecutorStateInfo> loadExecutorInfo() throws JSONException {
+    public Collection<ExecutorStateInfo> loadExecutorInfo() throws JsonParseException {
         return mesosStateService.executors();
     }
     

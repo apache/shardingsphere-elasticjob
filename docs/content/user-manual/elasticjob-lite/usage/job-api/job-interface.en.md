@@ -104,3 +104,38 @@ When the job runs, it will output:
 sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","shardingItem":0,"shardingParameter":"A"}
 ```
 
+## HTTP job (Since 3.0.0-beta)
+
+The http information to be requested can be configured through the properties of `http.url`, `http.method`, `http.data`, etc.
+Sharding information is transmitted in the form of Header, the key is `shardingContext`, and the value is in json format.
+
+```java
+
+public class HttpJobMain {
+    
+    public static void main(String[] args) {
+        
+        new ScheduleJobBootstrap(regCenter, "HTTP", JobConfiguration.newBuilder("javaHttpJob", 1)
+                .setProperty(HttpJobProperties.URI_KEY, "http://xxx.com/execute")
+                .setProperty(HttpJobProperties.METHOD_KEY, "POST")
+                .setProperty(HttpJobProperties.DATA_KEY, "source=ejob")
+                .cron("0/5 * * * * ?").shardingItemParameters("0=Beijing").build()).schedule();
+    }
+}
+```
+```java
+@Controller
+@Slf4j
+public class HttpJobController {
+    
+    @RequestMapping(path = "/execute", method = RequestMethod.POST)
+    public void execute(String source, @RequestHeader String shardingContext) {
+        log.info("execute from source : {}, shardingContext : {}", source, shardingContext);
+    }
+}
+```
+
+When the job runs, it will output：
+```
+execute from source : ejob, shardingContext : {"jobName":"scriptElasticDemoJob","shardingTotalCount":3,"jobParameter":"","shardingItem":0,"shardingParameter":"Beijing"}
+```

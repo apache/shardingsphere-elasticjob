@@ -19,7 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.domain.JobBriefInfo;
@@ -140,7 +141,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
         result.setStatus(getJobStatusByJobNameAndIp(jobName, ip));
-        result.setInstanceCount(getJobInstanceCountByJobNameAndIp(jobName, ip));
+        result.setInstanceCount(getJobInstanceCountByJobNameAndIP(jobName, ip));
         return result;
     }
     
@@ -154,15 +155,16 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         }
     }
     
-    private int getJobInstanceCountByJobNameAndIp(final String jobName, final String ip) {
-        int instanceCount = 0;
+    private int getJobInstanceCountByJobNameAndIP(final String jobName, final String ip) {
+        int result = 0;
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
         for (String each : instances) {
-            if (ip.equals(each.split("@-@")[0])) {
-                instanceCount++;
+            JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+            if (ip.equals(jobInstance.getServerIp())) {
+                result++;
             }
         }
-        return instanceCount;
+        return result;
     }
 }
