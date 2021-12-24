@@ -27,7 +27,11 @@ public final class JobSystemException extends RuntimeException {
     public JobSystemException(final String errorMessage, final Object... args) {
         super(String.format(errorMessage, args));
     }
-    
+
+    public JobSystemException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public JobSystemException(final Throwable cause) {
         super(cause);
     }
