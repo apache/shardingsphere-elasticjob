@@ -31,6 +31,13 @@ public final class JobSystemExceptionTest {
     }
     
     @Test
+    public void assertGetMessageCause() {
+        JobSystemException jobSystemException = new JobSystemException("message is: ", new RuntimeException());
+        assertThat(jobSystemException.getMessage(), is("message is: "));
+        assertThat(jobSystemException.getCause(), instanceOf(RuntimeException.class));
+    }
+    
+    @Test
     public void assertGetCause() {
         assertThat(new JobSystemException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
