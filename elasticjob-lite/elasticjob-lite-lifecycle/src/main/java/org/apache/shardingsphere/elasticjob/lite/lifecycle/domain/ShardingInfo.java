@@ -50,10 +50,25 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
      * Job sharding status.
      */
     public enum ShardingStatus {
-        
-        DISABLED, 
+
+        /**
+         * Disabled status
+         */
+        DISABLED,
+
+        /**
+         * Running status
+         */
         RUNNING,
+
+        /**
+         * Sharding flag status
+         */
         SHARDING_FLAG,
+
+        /**
+         * Pending status
+         */
         PENDING;
     
         /**

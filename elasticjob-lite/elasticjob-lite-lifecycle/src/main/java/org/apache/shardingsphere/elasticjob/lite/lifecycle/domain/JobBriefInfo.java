@@ -28,33 +28,48 @@ import java.io.Serializable;
 @Getter
 @Setter
 public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo> {
-    
+
     private static final long serialVersionUID = 8405751873086755148L;
-    
+
     private String jobName;
-    
+
     private JobStatus status;
-    
+
     private String description;
-    
+
     private String cron;
-    
+
     private int instanceCount;
-    
+
     private int shardingTotalCount;
-    
+
     @Override
     public int compareTo(final JobBriefInfo o) {
         return getJobName().compareTo(o.getJobName());
     }
-    
+
     /**
      * Job status.
      */
     public enum JobStatus {
-        OK, 
+        /**
+         * OK status
+         */
+        OK,
+
+        /**
+         * Crashed status
+         */
         CRASHED,
+
+        /**
+         * Disabled status
+         */
         DISABLED,
-        SHARDING_FLAG 
+
+        /**
+         * Sharding flag status
+         */
+        SHARDING_FLAG
     }
 }
