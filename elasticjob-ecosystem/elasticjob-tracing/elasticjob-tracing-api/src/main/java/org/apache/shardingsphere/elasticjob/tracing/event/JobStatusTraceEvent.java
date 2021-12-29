@@ -32,105 +32,105 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public final class JobStatusTraceEvent implements JobEvent {
-
+    
     private String id = UUID.randomUUID().toString();
-
+    
     private final String jobName;
-
+    
     @Setter
     private String originalTaskId = "";
-
+    
     private final String taskId;
-
+    
     private final String slaveId;
-
+    
     private final Source source;
-
+    
     private final String executionType;
-
+    
     private final String shardingItems;
-
+    
     private final State state;
-
+    
     private final String message;
-
+    
     private Date creationTime = new Date();
-
+    
     public enum State {
         /**
-         * Task staging state
+         * Task staging state.
          */
         TASK_STAGING,
 
         /**
-         * Task running state
+         * Task running state.
          */
         TASK_RUNNING,
 
         /**
-         * Task finished state
+         * Task finished state.
          */
         TASK_FINISHED,
 
         /**
-         * Task killed state
+         * Task killed state.
          */
         TASK_KILLED,
 
         /**
-         * Task lost state
+         * Task lost state.
          */
         TASK_LOST,
 
         /**
-         * Task failed state
+         * Task failed state.
          */
         TASK_FAILED,
 
         /**
-         * Task error state
+         * Task error state.
          */
         TASK_ERROR,
 
         /**
-         * Task dropped state
+         * Task dropped state.
          */
         TASK_DROPPED,
 
         /**
-         * Task gone state
+         * Task gone state.
          */
         TASK_GONE,
 
         /**
-         * Task gone by operator state
+         * Task gone by operator state.
          */
         TASK_GONE_BY_OPERATOR,
 
         /**
-         * Task unreachable state
+         * Task unreachable state.
          */
         TASK_UNREACHABLE,
 
         /**
-         * task unknown state
+         * task unknown state.
          */
         TASK_UNKNOWN
     }
-
+    
     public enum Source {
         /**
-         * Cloud scheduler source
+         * Cloud scheduler source.
          */
         CLOUD_SCHEDULER,
 
         /**
-         * Cloud executor source
+         * Cloud executor source.
          */
         CLOUD_EXECUTOR,
 
         /**
-         * Lite executor source
+         * Lite executor source.
          */
         LITE_EXECUTOR
     }

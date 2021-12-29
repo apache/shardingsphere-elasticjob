@@ -26,19 +26,19 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum StatisticInterval {
-
+    
     /**
-     * Minute interval
+     * Minute interval.
      */
     MINUTE("0 * * * * ?"),
-
+    
     /**
-     * Hour interval
+     * Hour interval.
      */
     HOUR("0 0 * * * ?"),
-
+    
     /**
-     * Day interval
+     * Day interval.
      */
     DAY("0 0 0 * * ?");
     

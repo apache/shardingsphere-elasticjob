@@ -32,32 +32,32 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public final class JobExecutionEvent implements JobEvent {
-
+    
     private String id = UUID.randomUUID().toString();
-
+    
     private final String hostname;
-
+    
     private final String ip;
-
+    
     private final String taskId;
-
+    
     private final String jobName;
-
+    
     private final ExecutionSource source;
-
+    
     private final int shardingItem;
-
+    
     private Date startTime = new Date();
-
+    
     @Setter
     private Date completeTime;
-
+    
     @Setter
     private boolean success;
-
+    
     @Setter
     private String failureCause;
-
+    
     /**
      * Execution success.
      *
@@ -69,7 +69,7 @@ public final class JobExecutionEvent implements JobEvent {
         result.setSuccess(true);
         return result;
     }
-
+    
     /**
      * Execution failure.
      *
@@ -83,24 +83,24 @@ public final class JobExecutionEvent implements JobEvent {
         result.setFailureCause(failureCause);
         return result;
     }
-
+    
     /**
      * Execution source.
      */
     public enum ExecutionSource {
 
         /**
-         * Normal trigger execution
+         * Normal trigger execution.
          */
         NORMAL_TRIGGER,
 
         /**
-         * Misfire execution
+         * Misfire execution.
          */
         MISFIRE,
 
         /**
-         * Failover execution
+         * Failover execution.
          */
         FAILOVER
     }

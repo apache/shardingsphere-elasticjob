@@ -23,12 +23,12 @@ package org.apache.shardingsphere.elasticjob.cloud.config;
 public enum CloudJobExecutionType {
 
     /**
-     * Daemon execution type
+     * Daemon execution type.
      */
     DAEMON,
 
     /**
-     * Transient execution type
+     * Transient execution type.
      */
     TRANSIENT
 }
