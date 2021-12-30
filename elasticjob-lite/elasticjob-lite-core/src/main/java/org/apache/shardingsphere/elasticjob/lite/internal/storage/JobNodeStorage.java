@@ -27,6 +27,7 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -243,7 +244,7 @@ public final class JobNodeStorage {
      * 
      * @param listener data listener
      */
-    public void addDataListener(final CuratorCacheListener listener) {
+    public void addDataListener(final DataChangedEventListener listener) {
         CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
         cache.listenable().addListener(listener);
     }

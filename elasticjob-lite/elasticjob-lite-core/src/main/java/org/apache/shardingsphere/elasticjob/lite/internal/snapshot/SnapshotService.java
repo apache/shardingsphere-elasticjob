@@ -19,8 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -112,12 +110,13 @@ public final class SnapshotService {
             String zkValue = Optional.ofNullable(regCenter.get(zkPath)).orElse("");
             String cachePath = zkPath;
             String cacheValue = zkValue;
-            CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-            if (null != cache) {
-                Optional<ChildData> cacheData = cache.get(zkPath);
-                cachePath = cacheData.map(ChildData::getPath).orElse("");
-                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
-            }
+            // TODO Curator cache
+//            CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
+//            if (null != cache) {
+//                Optional<ChildData> cacheData = cache.get(zkPath);
+//                cachePath = cacheData.map(ChildData::getPath).orElse("");
+//                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
+//            }
             if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
                 result.add(String.join(" | ", zkPath, zkValue));
             } else {

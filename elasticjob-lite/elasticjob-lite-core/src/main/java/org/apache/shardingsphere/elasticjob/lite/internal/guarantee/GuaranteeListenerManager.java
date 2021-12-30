@@ -19,9 +19,11 @@ package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.Collection;
 
@@ -46,11 +48,11 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
         addDataListener(new CompletedNodeRemovedJobListener());
     }
     
-    class StartedNodeRemovedJobListener extends AbstractJobListener {
+    class StartedNodeRemovedJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (Type.NODE_DELETED == eventType && guaranteeNode.isStartedRootNode(path)) {
+        public void onChange(final DataChangedEvent event) {
+            if (Type.DELETED == event.getType() && guaranteeNode.isStartedRootNode(event.getKey())) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
                         ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskStart();
@@ -60,11 +62,11 @@ public final class GuaranteeListenerManager extends AbstractListenerManager {
         }
     }
     
-    class CompletedNodeRemovedJobListener extends AbstractJobListener {
+    class CompletedNodeRemovedJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (Type.NODE_DELETED == eventType && guaranteeNode.isCompletedRootNode(path)) {
+        public void onChange(final DataChangedEvent event) {
+            if (Type.DELETED == event.getType() && guaranteeNode.isCompletedRootNode(event.getKey())) {
                 for (ElasticJobListener each : elasticJobListeners) {
                     if (each instanceof AbstractDistributeOnceElasticJobListener) {
                         ((AbstractDistributeOnceElasticJobListener) each).notifyWaitingTaskComplete();

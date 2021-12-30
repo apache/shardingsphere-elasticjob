@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.listener;
+package org.apache.shardingsphere.elasticjob.reg.listener;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Listener manager.
+ * Data changed event.
  */
-public abstract class AbstractListenerManager {
+@RequiredArgsConstructor
+@Getter
+public final class DataChangedEvent {
     
-    private final JobNodeStorage jobNodeStorage;
+    private final String key;
     
-    protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-    }
+    private final String value;
+    
+    private final Type type;
     
     /**
-     * Start listener.
+     * Data changed type.
      */
-    public abstract void start();
-    
-    protected void addDataListener(final DataChangedEventListener listener) {
-        jobNodeStorage.addDataListener(listener);
+    public enum Type {
+        
+        ADDED, UPDATED, DELETED, IGNORED
     }
 }
