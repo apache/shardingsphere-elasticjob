@@ -15,15 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.storage;
+package org.apache.shardingsphere.elasticjob.reg.listener;
+
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
- * Leader server execution callback.
+ * Connection state changed event listener.
  */
-public interface LeaderExecutionCallback {
+public interface ConnectionStateChangedEventListener {
+    
+    enum State {
+        
+        CONNECTED,
+    
+        RECONNECTED,
+    
+        UNAVAILABLE,
+    }
     
     /**
-     * Execute after leader elected.
+     * Invoke if connection state of registry center changed.
+     *
+     * @param registryCenter registry center
+     * @param newState new state
      */
-    void execute();
+    void onStateChanged(CoordinatorRegistryCenter registryCenter, State newState);
 }

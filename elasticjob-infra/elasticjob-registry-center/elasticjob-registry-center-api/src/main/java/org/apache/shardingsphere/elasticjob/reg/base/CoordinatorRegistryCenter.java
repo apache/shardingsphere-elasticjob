@@ -17,6 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.reg.base;
 
+import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
+
 import java.util.List;
 
 /**
@@ -26,7 +30,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get value from registry center directly.
-     * 
+     *
      * @param key key
      * @return value
      */
@@ -34,7 +38,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get children keys.
-     * 
+     *
      * @param key key
      * @return children keys
      */
@@ -50,7 +54,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Persist ephemeral data.
-     * 
+     *
      * @param key key
      * @param value value
      */
@@ -67,14 +71,14 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Persist ephemeral sequential data.
-     * 
+     *
      * @param key key
      */
     void persistEphemeralSequential(String key);
     
     /**
      * Add data to cache.
-     * 
+     *
      * @param cachePath cache path
      */
     void addCacheData(String cachePath);
@@ -88,9 +92,40 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get raw cache object of registry center.
-     * 
+     *
      * @param cachePath cache path
      * @return raw cache object of registry center
      */
     Object getRawCache(String cachePath);
+    
+    /**
+     * Execute in leader.
+     *
+     * @param key key
+     * @param callback callback of leader
+     */
+    void executeInLeader(String key, LeaderExecutionCallback callback);
+    
+    /**
+     * Watch changes of a key.
+     *
+     * @param key key to be watched
+     * @param listener data listener
+     */
+    void watch(String key, DataChangedEventListener listener);
+    
+    /**
+     * Add connection state changed event listener to registry center.
+     *
+     * @param listener connection state changed event listener
+     */
+    void addConnectionStateChangedEventListener(ConnectionStateChangedEventListener listener);
+    
+    /**
+     * Execute oprations in transaction.
+     *
+     * @param transactionOperations operations
+     * @throws Exception exception
+     */
+    void executeInTransaction(List<TransactionOperation> transactionOperations) throws Exception;
 }

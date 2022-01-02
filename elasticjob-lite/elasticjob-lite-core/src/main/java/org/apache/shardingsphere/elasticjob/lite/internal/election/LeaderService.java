@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.LeaderExecutionCallback;
+import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 

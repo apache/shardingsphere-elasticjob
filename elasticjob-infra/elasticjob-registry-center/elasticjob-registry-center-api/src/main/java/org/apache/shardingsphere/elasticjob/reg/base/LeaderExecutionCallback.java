@@ -5,7 +5,7 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ *  
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,24 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.storage;
-
-import org.apache.curator.framework.api.transaction.CuratorOp;
-import org.apache.curator.framework.api.transaction.TransactionOp;
-
-import java.util.List;
+package org.apache.shardingsphere.elasticjob.reg.base;
 
 /**
- * Transaction execution callback.
+ * Leader server execution callback.
  */
-public interface TransactionExecutionCallback {
+public interface LeaderExecutionCallback {
     
     /**
-     * Create curator operators.
-     * 
-     * @param transactionOp transaction operation
-     * @return curator operations
-     * @throws Exception exception
+     * Execute after leader elected.
      */
-    List<CuratorOp> createCuratorOperators(TransactionOp transactionOp) throws Exception;
+    void execute();
 }

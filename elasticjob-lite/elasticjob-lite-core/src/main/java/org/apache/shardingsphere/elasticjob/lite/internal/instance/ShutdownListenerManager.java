@@ -53,7 +53,6 @@ public final class ShutdownListenerManager extends AbstractListenerManager {
     
     class InstanceShutdownStatusJobListener implements DataChangedEventListener {
         
-        
         @Override
         public void onChange(final DataChangedEvent event) {
             if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().getJobScheduleController(jobName).isPaused()

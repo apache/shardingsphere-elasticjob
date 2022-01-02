@@ -25,13 +25,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
+import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
+import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener.State;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
@@ -39,6 +50,7 @@ import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -298,13 +310,72 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     }
     
     @Override
+    public void addConnectionStateChangedEventListener(final ConnectionStateChangedEventListener listener) {
+        CoordinatorRegistryCenter coordinatorRegistryCenter = this;
+        client.getConnectionStateListenable().addListener((client, newState) -> {
+            State state;
+            switch (newState) {
+                case CONNECTED:
+                    state = State.CONNECTED;
+                    break;
+                case LOST:
+                case SUSPENDED:
+                    state = State.UNAVAILABLE;
+                    break;
+                case RECONNECTED:
+                    state = State.RECONNECTED;
+                    break;
+                case READ_ONLY:
+                default:
+                    throw new IllegalStateException("Illegal registry center connection state: " + newState);
+            }
+            listener.onStateChanged(coordinatorRegistryCenter, state);
+        });
+    }
+    
+    @Override
+    public void executeInTransaction(final List<TransactionOperation> transactionOperations) throws Exception {
+        client.transaction().forOperations(toCuratorOps(transactionOperations));
+    }
+    
+    private List<CuratorOp> toCuratorOps(final List<TransactionOperation> transactionOperations) {
+        List<CuratorOp> result = new ArrayList<>(transactionOperations.size());
+        TransactionOp transactionOp = client.transactionOp();
+        for (TransactionOperation each : transactionOperations) {
+            result.add(toCuratorOp(each, transactionOp));
+        }
+        return result;
+    }
+    
+    private CuratorOp toCuratorOp(final TransactionOperation each, final TransactionOp transactionOp) {
+        try {
+            switch (each.getType()) {
+                case CHECK_EXISTS:
+                    return transactionOp.check().forPath(each.getKey());
+                case ADD:
+                    return transactionOp.create().forPath(each.getKey(), each.getValue().getBytes(StandardCharsets.UTF_8));
+                case UPDATE:
+                    return transactionOp.setData().forPath(each.getKey(), each.getValue().getBytes(StandardCharsets.UTF_8));
+                case DELETE:
+                    return transactionOp.delete().forPath(each.getKey());
+                default:
+                    throw new UnsupportedOperationException(each.toString());
+            }
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
+            throw new RegException(ex);
+        }
+    }
+    
+    @Override
     public void addCacheData(final String cachePath) {
         CuratorCache cache = CuratorCache.build(client, cachePath);
         try {
             cache.start();
-        //CHECKSTYLE:OFF
+            //CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         caches.put(cachePath + "/", cache);
@@ -321,5 +392,56 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public Object getRawCache(final String cachePath) {
         return caches.get(cachePath + "/");
+    }
+    
+    @Override
+    public void executeInLeader(final String key, final LeaderExecutionCallback callback) {
+        try (LeaderLatch latch = new LeaderLatch(client, key)) {
+            latch.start();
+            latch.await();
+            callback.execute();
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
+            handleException(ex);
+        }
+    }
+    
+    @Override
+    public void watch(final String key, final DataChangedEventListener listener) {
+        CuratorCache cache = caches.get(key + "/");
+        cache.listenable().addListener((curatorType, oldData, newData) -> {
+            if (null == newData && null == oldData) {
+                return;
+            }
+            Type type = getTypeFromCuratorType(curatorType);
+            String path = Type.DELETED == type ? oldData.getPath() : newData.getPath();
+            if (path.isEmpty() || Type.IGNORED == type) {
+                return;
+            }
+            byte[] data = Type.DELETED == type ? oldData.getData() : newData.getData();
+            listener.onChange(new DataChangedEvent(path, null == data ? "" : new String(data, StandardCharsets.UTF_8), type));
+        });
+    }
+    
+    private Type getTypeFromCuratorType(final CuratorCacheListener.Type curatorType) {
+        switch (curatorType) {
+            case NODE_CREATED:
+                return Type.ADDED;
+            case NODE_DELETED:
+                return Type.DELETED;
+            case NODE_CHANGED:
+                return Type.UPDATED;
+            default:
+                return Type.IGNORED;
+        }
+    }
+    
+    private void handleException(final Exception ex) {
+        if (ex instanceof InterruptedException) {
+            Thread.currentThread().interrupt();
+        } else {
+            throw new RegException(ex);
+        }
     }
 }

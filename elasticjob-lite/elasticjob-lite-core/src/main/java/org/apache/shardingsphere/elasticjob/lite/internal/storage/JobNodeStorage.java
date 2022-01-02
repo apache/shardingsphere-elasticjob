@@ -17,19 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorOp;
-import org.apache.curator.framework.api.transaction.TransactionOp;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.recipes.leader.LeaderLatch;
-import org.apache.curator.framework.state.ConnectionStateListener;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
+import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -181,18 +176,16 @@ public final class JobNodeStorage {
     }
     
     /**
-     * Execute operator in transaction.
+     * Execute operations in transaction.
      * 
-     * @param callback transaction execution callback
+     * @param transactionOperations operations to be executed in transaction
      */
-    public void executeInTransaction(final TransactionExecutionCallback callback) {
+    public void executeInTransaction(final List<TransactionOperation> transactionOperations) {
+        List<TransactionOperation> result = new ArrayList<>(transactionOperations.size() + 1);
+        result.add(TransactionOperation.opCheckExists("/"));
+        result.addAll(transactionOperations);
         try {
-            List<CuratorOp> operations = new LinkedList<>();
-            CuratorFramework client = getClient();
-            TransactionOp transactionOp = client.transactionOp();
-            operations.add(transactionOp.check().forPath("/"));
-            operations.addAll(callback.createCuratorOperators(transactionOp));
-            client.transaction().forOperations(operations);
+            regCenter.executeInTransaction(result);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -207,23 +200,7 @@ public final class JobNodeStorage {
      * @param callback execute callback
      */
     public void executeInLeader(final String latchNode, final LeaderExecutionCallback callback) {
-        try (LeaderLatch latch = new LeaderLatch(getClient(), jobNodePath.getFullPath(latchNode))) {
-            latch.start();
-            latch.await();
-            callback.execute();
-        //CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-        //CHECKSTYLE:ON
-            handleException(ex);
-        }
-    }
-    
-    private void handleException(final Exception ex) {
-        if (ex instanceof InterruptedException) {
-            Thread.currentThread().interrupt();
-        } else {
-            throw new JobSystemException(ex);
-        }
+        regCenter.executeInLeader(jobNodePath.getFullPath(latchNode), callback);
     }
     
     /**
@@ -231,12 +208,8 @@ public final class JobNodeStorage {
      * 
      * @param listener connection state listener
      */
-    public void addConnectionStateListener(final ConnectionStateListener listener) {
-        getClient().getConnectionStateListenable().addListener(listener);
-    }
-    
-    private CuratorFramework getClient() {
-        return (CuratorFramework) regCenter.getRawClient();
+    public void addConnectionStateListener(final ConnectionStateChangedEventListener listener) {
+        regCenter.addConnectionStateChangedEventListener(listener);
     }
     
     /**
@@ -245,8 +218,7 @@ public final class JobNodeStorage {
      * @param listener data listener
      */
     public void addDataListener(final DataChangedEventListener listener) {
-        CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-        cache.listenable().addListener(listener);
+        regCenter.watch("/" + jobName, listener);
     }
     
     /**
