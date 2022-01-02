@@ -24,6 +24,8 @@ import com.google.common.hash.Hashing;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -62,11 +64,10 @@ public final class RegistryCenterFactory {
     private static CoordinatorRegistryCenter newCoordinatorRegistryCenter(final String connectString,
                                                                           final String namespace,
                                                                           final String digest) {
-//        final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
-//        if (!Strings.isNullOrEmpty(digest)) {
-//            zkConfig.setDigest(digest);
-//        }
-//        return new ZookeeperRegistryCenter(zkConfig);
-        throw new UnsupportedOperationException();
+        final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
+        if (!Strings.isNullOrEmpty(digest)) {
+            zkConfig.setDigest(digest);
+        }
+        return new ZookeeperRegistryCenter(zkConfig);
     }
 }

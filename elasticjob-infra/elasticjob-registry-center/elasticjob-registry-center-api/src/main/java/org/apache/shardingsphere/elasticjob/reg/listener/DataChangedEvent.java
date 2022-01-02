@@ -27,11 +27,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public final class DataChangedEvent {
     
+    private final Type type;
+    
     private final String key;
     
     private final String value;
-    
-    private final Type type;
     
     /**
      * Data changed type.

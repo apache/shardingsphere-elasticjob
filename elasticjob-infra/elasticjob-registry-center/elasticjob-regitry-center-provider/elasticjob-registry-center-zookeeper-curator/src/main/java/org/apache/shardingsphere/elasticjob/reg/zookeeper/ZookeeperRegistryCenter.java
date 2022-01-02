@@ -420,7 +420,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
                 return;
             }
             byte[] data = Type.DELETED == type ? oldData.getData() : newData.getData();
-            listener.onChange(new DataChangedEvent(path, null == data ? "" : new String(data, StandardCharsets.UTF_8), type));
+            listener.onChange(new DataChangedEvent(type, path, null == data ? "" : new String(data, StandardCharsets.UTF_8)));
         });
     }
     

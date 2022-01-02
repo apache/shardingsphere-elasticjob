@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.registry;
 
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,7 +41,7 @@ public final class JobInstanceRegistryTest {
     @Test
     public void assertListenWithoutConfigPath() {
         JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
-        jobInstanceRegistry.new JobInstanceRegistryListener().dataChanged("/jobName", CuratorCacheListener.Type.NODE_CREATED, "");
+        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName", ""));
         verify(regCenter, times(0)).get("/jobName");
     }
     
@@ -48,7 +49,7 @@ public final class JobInstanceRegistryTest {
     public void assertListenLabelNotMatch() {
         JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label1,label2"));
         String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().dataChanged("/jobName/config", CuratorCacheListener.Type.NODE_CREATED, jobConfig);
+        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
         verify(regCenter, times(0)).get("/jobName");
     }
     
@@ -56,14 +57,14 @@ public final class JobInstanceRegistryTest {
     public void assertListenScheduleJob() {
         JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
         String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).cron("0/1 * * * * ?").label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().dataChanged("/jobName/config", CuratorCacheListener.Type.NODE_CREATED, jobConfig);
+        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
     }
     
     @Test(expected = RuntimeException.class)
     public void assertListenOneOffJob() {
         JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label"));
         String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().dataChanged("/jobName/config", CuratorCacheListener.Type.NODE_CREATED, jobConfig);
+        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
     }
     
     private String toYaml(final JobConfiguration build) {
