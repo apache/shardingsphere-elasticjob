@@ -45,7 +45,6 @@
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-registry-center-zookeeper-curator</artifactId>
             <version>${project.parent.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
