@@ -48,14 +48,17 @@ public final class ZookeeperRegistryCenterWatchTest {
     
     @Test(timeout = 10000L)
     public void assertWatch() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
+        CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         zkRegCenter.addCacheData("/test");
+        CountDownLatch waitingForWatchReady = new CountDownLatch(1);
         zkRegCenter.watch("/test", event -> {
+            waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
-                countDownLatch.countDown();
+                waitingForCountDownValue.countDown();
             }
         });
+        waitingForWatchReady.await();
         zkRegCenter.update("/test", "countDown");
-        countDownLatch.await();
+        waitingForCountDownValue.await();
     }
 }
