@@ -18,7 +18,9 @@
 package org.apache.shardingsphere.elasticjob.reg.zookeeper.exception;
 
 import org.apache.shardingsphere.elasticjob.reg.exception.IgnoredExceptionProvider;
-import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.KeeperException.ConnectionLossException;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +32,6 @@ public final class ZookeeperCuratorIgnoredExceptionProvider implements IgnoredEx
 
     @Override
     public Collection<Class<? extends Throwable>> getIgnoredExceptions() {
-        return Arrays.asList(KeeperException.ConnectionLossException.class, KeeperException.NoNodeException.class, KeeperException.NodeExistsException.class);
+        return Arrays.asList(ConnectionLossException.class, NoNodeException.class, NodeExistsException.class);
     }
 }
