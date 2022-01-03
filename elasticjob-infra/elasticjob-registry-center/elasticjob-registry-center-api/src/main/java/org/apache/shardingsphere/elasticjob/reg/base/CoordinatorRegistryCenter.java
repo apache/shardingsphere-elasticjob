@@ -30,7 +30,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get value from registry center directly.
-     *
+     * 
      * @param key key
      * @return value
      */
@@ -38,7 +38,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get children keys.
-     *
+     * 
      * @param key key
      * @return children keys
      */
@@ -54,7 +54,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Persist ephemeral data.
-     *
+     * 
      * @param key key
      * @param value value
      */
@@ -71,14 +71,14 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Persist ephemeral sequential data.
-     *
+     * 
      * @param key key
      */
     void persistEphemeralSequential(String key);
     
     /**
      * Add data to cache.
-     *
+     * 
      * @param cachePath cache path
      */
     void addCacheData(String cachePath);
@@ -92,7 +92,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     
     /**
      * Get raw cache object of registry center.
-     *
+     * 
      * @param cachePath cache path
      * @return raw cache object of registry center
      */
