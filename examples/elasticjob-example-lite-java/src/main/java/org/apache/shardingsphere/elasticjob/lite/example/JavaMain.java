@@ -51,7 +51,7 @@ public final class JavaMain {
     private static final String JOB_NAMESPACE = "elasticjob-example-lite-java";
     
     // switch to MySQL by yourself
-//    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.jdbc.Driver";
+//    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.cj.jdbc.Driver";
 //    private static final String EVENT_RDB_STORAGE_URL = "jdbc:mysql://localhost:3306/elastic_job_log";
     
     private static final String EVENT_RDB_STORAGE_DRIVER = "org.h2.Driver";
