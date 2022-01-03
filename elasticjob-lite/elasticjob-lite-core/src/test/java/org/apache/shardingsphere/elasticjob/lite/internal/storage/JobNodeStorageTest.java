@@ -17,18 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorMultiTransaction;
-import org.apache.curator.framework.api.transaction.CuratorOp;
-import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
-import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
-import org.apache.curator.framework.api.transaction.TransactionOp;
-import org.apache.curator.framework.listen.Listenable;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
-import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +31,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -159,92 +156,28 @@ public final class JobNodeStorageTest {
     
     @Test
     public void assertExecuteInTransactionSuccess() throws Exception {
-        CuratorFramework client = mock(CuratorFramework.class);
-        when(regCenter.getRawClient()).thenReturn(client);
-        TransactionOp transactionOp = mockTransactionOp(client);
-        CuratorOp checkOp = mockCheckOp(transactionOp);
-        CuratorOp createOp = mockCreateOp(transactionOp);
-        CuratorMultiTransaction transaction = mockTransaction(client);
-        jobNodeStorage.executeInTransaction(input -> Collections.singletonList(input.create().forPath("/test_transaction")));
-        verify(transaction).forOperations(Arrays.asList(checkOp, createOp));
+        jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
+        verify(regCenter).executeInTransaction(any(List.class));
     }
     
-    private TransactionOp mockTransactionOp(final CuratorFramework client) {
-        TransactionOp result = mock(TransactionOp.class);
-        when(client.transactionOp()).thenReturn(result);
-        return result;
-    }
-    
-    @SuppressWarnings("unchecked")
-    private CuratorOp mockCheckOp(final TransactionOp transactionOperation) throws Exception {
-        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
-        when(transactionOperation.check()).thenReturn(transactionCheckBuilder);
-        CuratorOp result = mock(CuratorOp.class);
-        when(transactionCheckBuilder.forPath("/")).thenReturn(result);
-        return result;
-    }
-    
-    @SuppressWarnings("unchecked")
-    private CuratorOp mockCreateOp(final TransactionOp transactionOperation) throws Exception {
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
-        when(transactionOperation.create()).thenReturn(transactionCreateBuilder);
-        CuratorOp result = mock(CuratorOp.class);
-        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(result);
-        return result;
-    }
-    
-    private CuratorMultiTransaction mockTransaction(final CuratorFramework client) {
-        CuratorMultiTransaction result = mock(CuratorMultiTransaction.class);
-        when(client.transaction()).thenReturn(result);
-        return result;
-    }
-    
-    @Test(expected = RuntimeException.class)
+    @Test(expected = RegException.class)
     public void assertExecuteInTransactionFailure() throws Exception {
-        CuratorFramework client = mock(CuratorFramework.class);
-        when(regCenter.getRawClient()).thenReturn(client);
-        TransactionOp transactionOp = mockTransactionOp(client);
-        CuratorOp checkOp = mockCheckOp(transactionOp);
-        CuratorOp createFailedOp = mockCreateFailedOp(transactionOp);
-        CuratorMultiTransaction transaction = mockTransaction(client);
-        try {
-            jobNodeStorage.executeInTransaction(input -> Collections.singletonList(input.create().forPath("/test_transaction")));
-        } finally {
-            verify(transaction, times(0)).forOperations(Arrays.asList(checkOp, createFailedOp));
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    private CuratorOp mockCreateFailedOp(final TransactionOp transactionOperation) throws Exception {
-        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
-        when(transactionOperation.create()).thenReturn(transactionCreateBuilder);
-        CuratorOp result = mock(CuratorOp.class);
-        when(transactionCreateBuilder.forPath("/test_transaction")).thenThrow(new RuntimeException());
-        return result;
+        doThrow(RuntimeException.class).when(regCenter).executeInTransaction(any(List.class));
+        jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
     }
     
     @Test
     public void assertAddConnectionStateListener() {
-        CuratorFramework client = mock(CuratorFramework.class);
-        @SuppressWarnings("unchecked")
-        Listenable<ConnectionStateListener> listeners = mock(Listenable.class);
-        ConnectionStateListener listener = mock(ConnectionStateListener.class);
-        when(client.getConnectionStateListenable()).thenReturn(listeners);
-        when(regCenter.getRawClient()).thenReturn(client);
+        ConnectionStateChangedEventListener listener = mock(ConnectionStateChangedEventListener.class);
         jobNodeStorage.addConnectionStateListener(listener);
-        verify(listeners).addListener(listener);
+        verify(regCenter).addConnectionStateChangedEventListener(listener);
     }
     
     @Test
     public void assertAddDataListener() {
-        CuratorCache cache = mock(CuratorCache.class);
-        @SuppressWarnings("unchecked")
-        Listenable<CuratorCacheListener> listeners = mock(Listenable.class);
-        CuratorCacheListener listener = mock(CuratorCacheListener.class);
-        when(cache.listenable()).thenReturn(listeners);
-        when(regCenter.getRawCache("/test_job")).thenReturn(cache);
+        DataChangedEventListener listener = mock(DataChangedEventListener.class);
         jobNodeStorage.addDataListener(listener);
-        verify(listeners).addListener(listener);
+        verify(regCenter).watch("/test_job", listener);
     }
     
     @Test

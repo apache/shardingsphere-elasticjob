@@ -22,11 +22,13 @@ import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.List;
 
@@ -67,12 +69,12 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         return configService.load(true).isFailover();
     }
     
-    class JobCrashedJobListener extends AbstractJobListener {
+    class JobCrashedJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().isShutdown(jobName) && isFailoverEnabled() && Type.NODE_DELETED == eventType && instanceNode.isInstancePath(path)) {
-                String jobInstanceId = path.substring(instanceNode.getInstanceFullPath().length() + 1);
+        public void onChange(final DataChangedEvent event) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && isFailoverEnabled() && Type.DELETED == event.getType() && instanceNode.isInstancePath(event.getKey())) {
+                String jobInstanceId = event.getKey().substring(instanceNode.getInstanceFullPath().length() + 1);
                 if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
                     return;
                 }
@@ -92,11 +94,11 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         }
     }
     
-    class FailoverSettingsChangedJobListener extends AbstractJobListener {
+    class FailoverSettingsChangedJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_CHANGED == eventType && !YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration().isFailover()) {
+        public void onChange(final DataChangedEvent event) {
+            if (configNode.isConfigPath(event.getKey()) && Type.UPDATED == event.getType() && !YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration().isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }

@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 /**
  * Listener manager.
@@ -37,7 +37,7 @@ public abstract class AbstractListenerManager {
      */
     public abstract void start();
     
-    protected void addDataListener(final CuratorCacheListener listener) {
+    protected void addDataListener(final DataChangedEventListener listener) {
         jobNodeStorage.addDataListener(listener);
     }
 }

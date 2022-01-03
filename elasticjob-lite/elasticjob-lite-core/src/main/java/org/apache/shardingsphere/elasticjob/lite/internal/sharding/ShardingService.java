@@ -17,10 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.api.transaction.CuratorOp;
-import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -35,9 +32,11 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.TransactionExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +122,7 @@ public final class ShardingService {
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(jobConfig.getJobShardingStrategyType());
-        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
+        jobNodeStorage.executeInTransaction(getShardingResultTransactionOperations(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
         log.debug("Job '{}' sharding complete.", jobName);
     }
     
@@ -152,6 +151,20 @@ public final class ShardingService {
                 jobNodeStorage.removeJobNodeIfExisted(ShardingNode.ROOT + "/" + i);
             }
         }
+    }
+    
+    private List<TransactionOperation> getShardingResultTransactionOperations(final Map<JobInstance, List<Integer>> shardingResults) {
+        List<TransactionOperation> result = new ArrayList<>(shardingResults.size() + 2);
+        for (Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
+            for (int shardingItem : entry.getValue()) {
+                String key = jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem));
+                String value = new String(entry.getKey().getJobInstanceId().getBytes(), StandardCharsets.UTF_8);
+                result.add(TransactionOperation.opAdd(key, value));
+            }
+        }
+        result.add(TransactionOperation.opDelete(jobNodePath.getFullPath(ShardingNode.NECESSARY)));
+        result.add(TransactionOperation.opDelete(jobNodePath.getFullPath(ShardingNode.PROCESSING)));
+        return result;
     }
     
     /**
@@ -224,22 +237,4 @@ public final class ShardingService {
         return false;
     }
     
-    @RequiredArgsConstructor
-    class PersistShardingInfoTransactionExecutionCallback implements TransactionExecutionCallback {
-        
-        private final Map<JobInstance, List<Integer>> shardingResults;
-        
-        @Override
-        public List<CuratorOp> createCuratorOperators(final TransactionOp transactionOp) throws Exception {
-            List<CuratorOp> result = new LinkedList<>();
-            for (Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
-                for (int shardingItem : entry.getValue()) {
-                    result.add(transactionOp.create().forPath(jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()));
-                }
-            }
-            result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)));
-            result.add(transactionOp.delete().forPath(jobNodePath.getFullPath(ShardingNode.PROCESSING)));
-            return result;
-        }
-    }
 }

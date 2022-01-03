@@ -17,9 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.state.ConnectionState;
-import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
@@ -27,11 +24,12 @@ import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
 
 /**
  * Registry center connection state listener.
  */
-public final class RegistryCenterConnectionStateListener implements ConnectionStateListener {
+public final class RegistryCenterConnectionStateListener implements ConnectionStateChangedEventListener {
     
     private final String jobName;
     
@@ -52,14 +50,14 @@ public final class RegistryCenterConnectionStateListener implements ConnectionSt
     }
     
     @Override
-    public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
+    public void onStateChanged(final CoordinatorRegistryCenter registryCenter, final State newState) {
         if (JobRegistry.getInstance().isShutdown(jobName)) {
             return;
         }
         JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-        if (ConnectionState.SUSPENDED == newState || ConnectionState.LOST == newState) {
+        if (State.UNAVAILABLE == newState) {
             jobScheduleController.pauseJob();
-        } else if (ConnectionState.RECONNECTED == newState) {
+        } else if (State.RECONNECTED == newState) {
             serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp()));
             instanceService.persistOnline();
             executionService.clearRunningInfo(shardingService.getLocalShardingItems());

@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.api.registry;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -26,9 +25,10 @@ import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -51,18 +51,17 @@ public final class JobInstanceRegistry {
      * Register.
      */
     public void register() {
-        CuratorCache cache = (CuratorCache) regCenter.getRawCache("/");
-        cache.listenable().addListener(new JobInstanceRegistryListener());
+        regCenter.watch("/", new JobInstanceRegistryListener());
     }
     
-    public class JobInstanceRegistryListener extends AbstractJobListener {
+    public class JobInstanceRegistryListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (eventType != Type.NODE_CREATED || !isJobConfigPath(path)) {
+        public void onChange(final DataChangedEvent event) {
+            if (event.getType() != DataChangedEvent.Type.ADDED || !isJobConfigPath(event.getKey())) {
                 return;
             }
-            JobConfiguration jobConfig = YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration();
+            JobConfiguration jobConfig = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration();
             if (jobConfig.isDisabled() || !isLabelMatch(jobConfig)) {
                 return;
             }
