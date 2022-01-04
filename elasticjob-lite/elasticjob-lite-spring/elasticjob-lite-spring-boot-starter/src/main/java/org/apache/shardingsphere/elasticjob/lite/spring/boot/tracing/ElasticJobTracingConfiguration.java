@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.Nullable;
@@ -42,12 +43,13 @@ public class ElasticJobTracingConfiguration {
      */
     @Bean("tracingDataSource")
     public DataSource tracingDataSource(final TracingProperties tracingProperties) {
-        if (tracingProperties.getDataSource() == null) {
+        DataSourceProperties dataSource = tracingProperties.getDataSource();
+        if (dataSource == null) {
             return null;
         }
         HikariDataSource tracingDataSource = new HikariDataSource();
-        tracingDataSource.setJdbcUrl(tracingProperties.getDataSource().getUrl());
-        BeanUtils.copyProperties(tracingProperties.getDataSource(), tracingDataSource);
+        tracingDataSource.setJdbcUrl(dataSource.getUrl());
+        BeanUtils.copyProperties(dataSource, tracingDataSource);
         return tracingDataSource;
     }
 
