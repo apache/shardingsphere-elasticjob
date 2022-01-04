@@ -34,6 +34,12 @@ import javax.sql.DataSource;
 @EnableConfigurationProperties(TracingProperties.class)
 public class ElasticJobTracingConfiguration {
 
+    /**
+     * Create a bean of tracing DataSource.
+     *
+     * @param tracingProperties tracing Properties
+     * @return tracing DataSource
+     */
     @Bean("tracingDataSource")
     public DataSource tracingDataSource(final TracingProperties tracingProperties) {
         if (tracingProperties.getDataSource() == null) {
@@ -54,7 +60,7 @@ public class ElasticJobTracingConfiguration {
     @Bean
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = "RDB")
-    public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, @Nullable DataSource tracingDataSource) {
+    public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, @Nullable final DataSource tracingDataSource) {
         DataSource ds = tracingDataSource;
         if (ds == null) {
             ds = dataSource;
