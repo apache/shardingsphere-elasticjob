@@ -57,6 +57,7 @@ public class ElasticJobTracingConfiguration {
      * Create a bean of tracing configuration.
      *
      * @param dataSource required by constructor
+     * @param tracingDataSource tracing ataSource
      * @return a bean of tracing configuration
      */
     @Bean
