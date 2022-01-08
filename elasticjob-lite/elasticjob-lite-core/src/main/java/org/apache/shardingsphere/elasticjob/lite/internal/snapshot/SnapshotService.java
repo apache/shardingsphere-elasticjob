@@ -23,6 +23,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -112,11 +113,14 @@ public final class SnapshotService {
             String zkValue = Optional.ofNullable(regCenter.get(zkPath)).orElse("");
             String cachePath = zkPath;
             String cacheValue = zkValue;
-            CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-            if (null != cache) {
-                Optional<ChildData> cacheData = cache.get(zkPath);
-                cachePath = cacheData.map(ChildData::getPath).orElse("");
-                cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
+            // TODO Decoupling ZooKeeper
+            if (regCenter instanceof ZookeeperRegistryCenter) {
+                CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
+                if (null != cache) {
+                    Optional<ChildData> cacheData = cache.get(zkPath);
+                    cachePath = cacheData.map(ChildData::getPath).orElse("");
+                    cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
+                }
             }
             if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
                 result.add(String.join(" | ", zkPath, zkValue));

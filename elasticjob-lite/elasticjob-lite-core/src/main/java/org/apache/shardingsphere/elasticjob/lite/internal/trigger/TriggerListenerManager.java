@@ -17,10 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.trigger;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 /**
  * Job trigger listener manager.
@@ -45,11 +47,11 @@ public final class TriggerListenerManager extends AbstractListenerManager {
         addDataListener(new JobTriggerStatusJobListener());
     }
     
-    class JobTriggerStatusJobListener extends AbstractJobListener {
+    class JobTriggerStatusJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!triggerNode.isLocalTriggerPath(path) || Type.NODE_CREATED != eventType) {
+        public void onChange(final DataChangedEvent event) {
+            if (!triggerNode.isLocalTriggerPath(event.getKey()) || Type.ADDED != event.getType()) {
                 return;
             }
             triggerService.removeTriggerFlag();
