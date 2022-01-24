@@ -25,11 +25,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -165,5 +167,11 @@ public final class JobOperateAPIImplTest {
         jobOperateAPI.remove(null, "ip1");
         assertFalse(regCenter.isExisted("/test_job1/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job2/servers/ip1"));
+    }
+
+    @Test
+    public void assertDumpJob() throws IOException {
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job"));
+        assertNotNull(jobOperateAPI.dump("test_job", "localhost", 9888));
     }
 }

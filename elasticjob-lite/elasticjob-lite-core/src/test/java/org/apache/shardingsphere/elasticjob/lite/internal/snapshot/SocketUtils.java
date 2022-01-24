@@ -17,15 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.io.*;
+import java.net.Socket;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SocketUtils {
@@ -47,7 +43,12 @@ public final class SocketUtils {
             writer.write(command);
             writer.newLine();
             writer.flush();
-            return reader.readLine();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while (null != (line = reader.readLine())) {
+                sb.append(line).append("\n");
+            }
+            return sb.toString();
         }
     }
 }

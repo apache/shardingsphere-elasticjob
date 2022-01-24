@@ -22,10 +22,12 @@ import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
+import org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -136,5 +138,10 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                 regCenter.remove(new JobNodePath(each).getServerNodePath(serverIp));
             }
         }
+    }
+
+    @Override
+    public String dump(final String jobName, final String instanceIp, final int dumpPort) throws IOException {
+        return SnapshotService.dumpJob(instanceIp, dumpPort, jobName);
     }
 }

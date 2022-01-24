@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.api;
 
+import java.io.IOException;
+
 /**
  * Job operate API.
  */
@@ -64,4 +66,15 @@ public interface JobOperateAPI {
      * @param serverIp server IP address
      */
     void remove(String jobName, String serverIp);
+
+    /**
+     * Dump job.
+     *
+     * @param jobName job name
+     * @param instanceIp instance IP address
+     * @param dumpPort dump port
+     * @return dump job result
+     * @throws IOException i/o exception
+     */
+    String dump(String jobName, String instanceIp, int dumpPort) throws IOException;
 }
