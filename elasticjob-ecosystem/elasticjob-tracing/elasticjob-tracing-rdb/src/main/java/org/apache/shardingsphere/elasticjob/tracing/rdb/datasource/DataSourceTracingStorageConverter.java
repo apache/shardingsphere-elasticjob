@@ -37,7 +37,6 @@ public final class DataSourceTracingStorageConverter implements TracingStorageCo
         try (Connection connection = dataSource.getConnection()) {
             log.trace("Try to get connection from {}", connection.getMetaData().getURL());
         } catch (final SQLException ex) {
-            log.error(ex.getLocalizedMessage(), ex);
             throw new TracingStorageUnavailableException(ex);
         }
         DataSourceConfiguration result = DataSourceConfiguration.getDataSourceConfiguration(dataSource);
