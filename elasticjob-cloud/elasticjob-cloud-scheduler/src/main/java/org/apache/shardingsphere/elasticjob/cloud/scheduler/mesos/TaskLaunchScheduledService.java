@@ -246,7 +246,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
         MetaInfo metaInfo = taskContext.getMetaInfo();
-        JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
+        JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), null, taskContext.getId(), taskContext.getSlaveId(),
                 Source.CLOUD_SCHEDULER, taskContext.getType().toString(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
             Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);

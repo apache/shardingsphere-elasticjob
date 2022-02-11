@@ -178,13 +178,14 @@ public final class RDBJobEventStorage {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLog())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setBoolean(8, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(9, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+            preparedStatement.setString(3, jobExecutionEvent.getExecutionId());
+            preparedStatement.setString(4, jobExecutionEvent.getTaskId());
+            preparedStatement.setString(5, jobExecutionEvent.getHostname());
+            preparedStatement.setString(6, jobExecutionEvent.getIp());
+            preparedStatement.setInt(7, jobExecutionEvent.getShardingItem());
+            preparedStatement.setString(8, jobExecutionEvent.getSource().toString());
+            preparedStatement.setBoolean(9, jobExecutionEvent.isSuccess());
+            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
@@ -222,14 +223,15 @@ public final class RDBJobEventStorage {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForComplete())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setBoolean(8, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(9, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
-            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
+            preparedStatement.setString(3, jobExecutionEvent.getExecutionId());
+            preparedStatement.setString(4, jobExecutionEvent.getTaskId());
+            preparedStatement.setString(5, jobExecutionEvent.getHostname());
+            preparedStatement.setString(6, jobExecutionEvent.getIp());
+            preparedStatement.setInt(7, jobExecutionEvent.getShardingItem());
+            preparedStatement.setString(8, jobExecutionEvent.getSource().toString());
+            preparedStatement.setBoolean(9, jobExecutionEvent.isSuccess());
+            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+            preparedStatement.setTimestamp(11, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
@@ -269,14 +271,15 @@ public final class RDBJobEventStorage {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForFailure())) {
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setString(8, truncateString(jobExecutionEvent.getFailureCause()));
-            preparedStatement.setBoolean(9, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+            preparedStatement.setString(3, jobExecutionEvent.getExecutionId());
+            preparedStatement.setString(4, jobExecutionEvent.getTaskId());
+            preparedStatement.setString(5, jobExecutionEvent.getHostname());
+            preparedStatement.setString(6, jobExecutionEvent.getIp());
+            preparedStatement.setInt(7, jobExecutionEvent.getShardingItem());
+            preparedStatement.setString(8, jobExecutionEvent.getSource().toString());
+            preparedStatement.setString(9, truncateString(jobExecutionEvent.getFailureCause()));
+            preparedStatement.setBoolean(10, jobExecutionEvent.isSuccess());
+            preparedStatement.setTimestamp(11, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
@@ -310,15 +313,16 @@ public final class RDBJobEventStorage {
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobStatusTraceLog())) {
             preparedStatement.setString(1, UUID.randomUUID().toString());
             preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
-            preparedStatement.setString(3, originalTaskId);
-            preparedStatement.setString(4, jobStatusTraceEvent.getTaskId());
-            preparedStatement.setString(5, jobStatusTraceEvent.getSlaveId());
-            preparedStatement.setString(6, jobStatusTraceEvent.getSource().toString());
-            preparedStatement.setString(7, jobStatusTraceEvent.getExecutionType());
-            preparedStatement.setString(8, jobStatusTraceEvent.getShardingItems());
-            preparedStatement.setString(9, jobStatusTraceEvent.getState().toString());
-            preparedStatement.setString(10, truncateString(jobStatusTraceEvent.getMessage()));
-            preparedStatement.setTimestamp(11, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
+            preparedStatement.setString(3, jobStatusTraceEvent.getExecutionId());
+            preparedStatement.setString(4, originalTaskId);
+            preparedStatement.setString(5, jobStatusTraceEvent.getTaskId());
+            preparedStatement.setString(6, jobStatusTraceEvent.getSlaveId());
+            preparedStatement.setString(7, jobStatusTraceEvent.getSource().toString());
+            preparedStatement.setString(8, jobStatusTraceEvent.getExecutionType());
+            preparedStatement.setString(9, jobStatusTraceEvent.getShardingItems());
+            preparedStatement.setString(10, jobStatusTraceEvent.getState().toString());
+            preparedStatement.setString(11, truncateString(jobStatusTraceEvent.getMessage()));
+            preparedStatement.setTimestamp(12, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
@@ -359,8 +363,8 @@ public final class RDBJobEventStorage {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                            resultSet.getString(5), Source.valueOf(resultSet.getString(6)), resultSet.getString(7), resultSet.getString(8),
-                            State.valueOf(resultSet.getString(9)), resultSet.getString(10), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(11)));
+                            resultSet.getString(5), resultSet.getString(6), Source.valueOf(resultSet.getString(7)), resultSet.getString(8), resultSet.getString(9),
+                            State.valueOf(resultSet.getString(10)), resultSet.getString(11), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(12)));
                     result.add(jobStatusTraceEvent);
                 }
             }

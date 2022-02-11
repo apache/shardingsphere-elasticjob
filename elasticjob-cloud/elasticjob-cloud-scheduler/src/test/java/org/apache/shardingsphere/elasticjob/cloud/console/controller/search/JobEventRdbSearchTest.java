@@ -72,10 +72,10 @@ public final class JobEventRdbSearchTest {
     @Test
     @SneakyThrows
     public void assertFindJobExecutionEvents() {
-        when(resultSet.getString(5)).thenReturn("TestJobName");
-        when(resultSet.getString(6)).thenReturn("FAILOVER");
-        when(resultSet.getString(7)).thenReturn("1");
-        when(resultSet.getTimestamp(8)).thenReturn(new Timestamp(System.currentTimeMillis()));
+        when(resultSet.getString(6)).thenReturn("TestJobName");
+        when(resultSet.getString(7)).thenReturn("FAILOVER");
+        when(resultSet.getString(8)).thenReturn("1");
+        when(resultSet.getTimestamp(9)).thenReturn(new Timestamp(System.currentTimeMillis()));
         Map<String, Object> fields = new HashMap<>();
         fields.put("job_name", "TestJobName");
         condition = new JobEventRdbSearch.Condition(1, 10, "job_name", "ASC", new Date(), new Date(), fields);
@@ -91,9 +91,9 @@ public final class JobEventRdbSearchTest {
     @SneakyThrows
     public void assertFindJobStatusTraceEvents() {
         when(resultSet.getString(2)).thenReturn("TestJobName");
-        when(resultSet.getString(6)).thenReturn("LITE_EXECUTOR");
-        when(resultSet.getString(9)).thenReturn("TASK_RUNNING");
-        when(resultSet.getTimestamp(11)).thenReturn(new Timestamp(System.currentTimeMillis()));
+        when(resultSet.getString(7)).thenReturn("LITE_EXECUTOR");
+        when(resultSet.getString(10)).thenReturn("TASK_RUNNING");
+        when(resultSet.getTimestamp(12)).thenReturn(new Timestamp(System.currentTimeMillis()));
         Map<String, Object> fields = new HashMap<>();
         fields.put("job_name", "TestJobName");
         condition = new JobEventRdbSearch.Condition(0, 0, "job_name", "DESC", new Date(), new Date(), fields);

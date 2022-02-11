@@ -84,7 +84,7 @@ public final class ElasticJobExecutorTest {
     public void assertExecuteWhenCheckMaxTimeDiffSecondsIntolerable() throws JobExecutionEnvironmentException {
         doThrow(JobExecutionEnvironmentException.class).when(jobFacade).checkJobExecutionEnvironment();
         try {
-            elasticJobExecutor.execute();
+            elasticJobExecutor.execute("fake_execution_id");
         } finally {
             verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
@@ -95,9 +95,9 @@ public final class ElasticJobExecutorTest {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
-        elasticJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, 
+        elasticJobExecutor.execute("fake_execution_id");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_FINISHED,
                 "Previous job 'test_job' - shardingItems '[]' is still running, misfired job will start after previous job completed.");
         verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
     }
@@ -106,9 +106,9 @@ public final class ElasticJobExecutorTest {
     public void assertExecuteWhenShardingItemsIsEmpty() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "", Collections.emptyMap());
         prepareForIsNotMisfire(jobFacade, shardingContexts);
-        elasticJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "Sharding item for job 'test_job' is empty.");
+        elasticJobExecutor.execute("fake_execution_id");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_FINISHED, "Sharding item for job 'test_job' is empty.");
         verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
     }
     
@@ -126,11 +126,11 @@ public final class ElasticJobExecutorTest {
         prepareForIsNotMisfire(jobFacade, shardingContexts);
         doThrow(RuntimeException.class).when(jobItemExecutor).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         try {
-            elasticJobExecutor.execute();
+            elasticJobExecutor.execute("fake_execution_id");
         } finally {
-            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
-            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
+            verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+            verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_RUNNING, "");
+            verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
             verify(jobFacade).registerJobCompleted(shardingContexts);
@@ -155,9 +155,9 @@ public final class ElasticJobExecutorTest {
     
     private void assertExecuteSuccess(final ShardingContexts shardingContexts) {
         prepareForIsNotMisfire(jobFacade, shardingContexts);
-        elasticJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "");
+        elasticJobExecutor.execute("fake_execution_id");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_FINISHED, "");
         verifyForIsNotMisfire(jobFacade, shardingContexts);
         verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
     }
@@ -166,7 +166,7 @@ public final class ElasticJobExecutorTest {
     public void assertExecuteWithMisfireIsEmpty() {
         ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        elasticJobExecutor.execute();
+        elasticJobExecutor.execute("fake_execution_id");
         verifyForIsNotMisfire(jobFacade, shardingContexts);
         verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
     }
@@ -175,7 +175,7 @@ public final class ElasticJobExecutorTest {
     public void assertExecuteWithMisfireIsNotEmptyButIsNotEligibleForJobRunning() {
         ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        elasticJobExecutor.execute();
+        elasticJobExecutor.execute("fake_execution_id");
         verifyForIsNotMisfire(jobFacade, shardingContexts);
         verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         verify(jobFacade, times(0)).clearMisfire(shardingContexts.getShardingItemParameters().keySet());
@@ -186,9 +186,9 @@ public final class ElasticJobExecutorTest {
         ShardingContexts shardingContexts = createMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
-        elasticJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade, times(2)).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
+        elasticJobExecutor.execute("fake_execution_id");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade, times(2)).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_RUNNING, "");
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
         verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
@@ -201,7 +201,7 @@ public final class ElasticJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContexts);
         try {
-            elasticJobExecutor.execute();
+            elasticJobExecutor.execute("fake_execution_id");
         } finally {
             verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
@@ -213,7 +213,7 @@ public final class ElasticJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContexts);
         try {
-            elasticJobExecutor.execute();
+            elasticJobExecutor.execute("fake_execution_id");
         } finally {
             verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
         }
@@ -244,7 +244,7 @@ public final class ElasticJobExecutorTest {
         } catch (final JobExecutionEnvironmentException ex) {
             throw new RuntimeException(ex);
         }
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent("fake_execution_id", shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
         verify(jobFacade).registerJobCompleted(shardingContexts);

@@ -30,7 +30,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertNewJobExecutionEvent() {
-        JobExecutionEvent actual = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent actual = new JobExecutionEvent("localhost", "127.0.0.1", "fake_execution_id", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getSource(), is(JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER));
         assertThat(actual.getShardingItem(), is(0));
@@ -43,7 +43,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertExecutionSuccess() {
-        JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_execution_id", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent successEvent = startEvent.executionSuccess();
         assertNotNull(successEvent.getCompleteTime());
         assertTrue(successEvent.isSuccess());
@@ -51,7 +51,7 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertExecutionFailure() {
-        JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_execution_id", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
         assertNotNull(failureEvent.getCompleteTime());
         assertFalse(failureEvent.isSuccess());

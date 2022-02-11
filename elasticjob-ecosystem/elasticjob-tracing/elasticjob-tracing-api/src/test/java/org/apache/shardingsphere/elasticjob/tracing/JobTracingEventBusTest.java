@@ -58,7 +58,7 @@ public final class JobTracingEventBusTest {
     public void assertPost() throws InterruptedException {
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
         assertIsRegistered(true);
-        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_execution_id", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestTracingListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
@@ -72,7 +72,7 @@ public final class JobTracingEventBusTest {
         Field field = JobTracingEventBus.class.getDeclaredField("eventBus");
         field.setAccessible(true);
         field.set(jobTracingEventBus, eventBus);
-        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_execution_id", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     

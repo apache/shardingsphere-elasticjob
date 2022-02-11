@@ -36,6 +36,8 @@ public final class JobStatusTraceEvent implements JobEvent {
     private String id = UUID.randomUUID().toString();
     
     private final String jobName;
+
+    private final String executionId;
     
     @Setter
     private String originalTaskId = "";
