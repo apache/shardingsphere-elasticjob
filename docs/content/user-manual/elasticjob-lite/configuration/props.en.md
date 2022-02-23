@@ -44,7 +44,7 @@ Configuration:
 
 | *Name*                             | *Data Type*    | *Description*          |  *Default Value*  |
 | ---------------------------------- | -----------    | ----------------       | --------          |
-| http.url                           | String         | http request url       | -                 |
+| http.uri                           | String         | http request uri       | -                 |
 | http.method                        | String         | http request method    | -                 |
 | http.data                          | String         | http request data      | -                 |
 | http.connect.timeout.milliseconds  | String         | http connect timeout   | 3000              |
