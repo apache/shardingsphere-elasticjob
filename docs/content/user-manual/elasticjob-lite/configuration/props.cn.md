@@ -44,7 +44,7 @@ ElasticJob 提供属性配置的方式为不同类型的作业提供定制化配
 
 | *名称*                               | *数据类型*   | *说明*              |  *默认值*  |
 | ----------------------------------- | ----------- | ------------------ | --------  |
-| http.url                            | String      | http请求url         | -         |
+| http.uri                            | String      | http请求uri         | -         |
 | http.method                         | String      | http请求方法         | -         |
 | http.data                           | String      | http请求数据         | -         |
 | http.connect.timeout.milliseconds   | String      | http连接超时         | 3000      |
