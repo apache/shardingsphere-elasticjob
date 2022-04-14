@@ -3,9 +3,9 @@
 {{ $currentNode := . }}
 {{ $showvisitedlinks := .Site.Params.showVisitedLinks }}
   <div id="header-wrapper">
-    <div id="header">
+    <!-- <div id="header">
       {{ partial "logo.html" . }}
-    </div>
+    </div> -->
     {{if not .Site.Params.disableSearch}}
         {{ partial "search.html" . }}
     {{end}}
@@ -39,7 +39,7 @@
       </section>
     {{end}}
 
-    {{ if or .Site.IsMultiLingual $showvisitedlinks }}
+    <!-- {{ if or .Site.IsMultiLingual $showvisitedlinks }}
     <section id="prefooter">
       <hr/>
       <ul>
@@ -83,10 +83,10 @@
       {{ end }}
       </ul>
     </section>
-    {{ end }}
+    {{ end }} -->
 
     <!-- download button -->
-    <hr />
+    <!-- <hr /> -->
     {{ if eq .Lang "en"}}
       <a class="padding" href="{{"https://shardingsphere.apache.org/pdf/shardingsphere-elasticjob_docs_en.pdf" | absURL}}">
         <i class="fa fa-fw fa-file-pdf-o" ></i>&nbsp;Download PDF&nbsp;&nbsp;<!-- &nbsp; is a placeholder -->
