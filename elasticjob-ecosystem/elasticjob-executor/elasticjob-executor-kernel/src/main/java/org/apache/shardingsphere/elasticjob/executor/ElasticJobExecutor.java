@@ -129,6 +129,7 @@ public final class ElasticJobExecutor {
                 jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
             } else {
                 jobFacade.postJobStatusTraceEvent(taskId, State.TASK_ERROR, itemErrorMessages.toString());
+                itemErrorMessages.clear();
             }
         }
     }

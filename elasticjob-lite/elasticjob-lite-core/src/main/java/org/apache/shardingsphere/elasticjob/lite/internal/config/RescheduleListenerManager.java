@@ -19,12 +19,14 @@ package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 /**
  * Reschedule listener manager.
@@ -46,12 +48,12 @@ public final class RescheduleListenerManager extends AbstractListenerManager {
         addDataListener(new CronSettingAndJobEventChangedJobListener());
     }
     
-    class CronSettingAndJobEventChangedJobListener extends AbstractJobListener {
+    class CronSettingAndJobEventChangedJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_CHANGED == eventType && !JobRegistry.getInstance().isShutdown(jobName)) {
-                JobConfiguration jobConfiguration = YamlEngine.unmarshal(data, JobConfigurationPOJO.class).toJobConfiguration();
+        public void onChange(final DataChangedEvent event) {
+            if (configNode.isConfigPath(event.getKey()) && Type.UPDATED == event.getType() && !JobRegistry.getInstance().isShutdown(jobName)) {
+                JobConfiguration jobConfiguration = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration();
                 if (StringUtils.isEmpty(jobConfiguration.getCron())) {
                     JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob();
                 } else {

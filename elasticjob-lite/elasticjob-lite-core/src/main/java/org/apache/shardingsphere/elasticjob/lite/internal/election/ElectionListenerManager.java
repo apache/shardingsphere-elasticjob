@@ -18,13 +18,15 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.election;
 
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.Objects;
 
@@ -58,11 +60,11 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         addDataListener(new LeaderAbdicationJobListener());
     }
     
-    class LeaderElectionJobListener extends AbstractJobListener {
+    class LeaderElectionJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().isShutdown(jobName) && (isActiveElection(path, data) || isPassiveElection(path, eventType))) {
+        public void onChange(final DataChangedEvent event) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && (isActiveElection(event.getKey(), event.getValue()) || isPassiveElection(event.getKey(), event.getType()))) {
                 leaderService.electLeader();
             }
         }
@@ -77,7 +79,7 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         }
         
         private boolean isLeaderCrashed(final String path, final Type eventType) {
-            return leaderNode.isLeaderInstancePath(path) && Type.NODE_DELETED == eventType;
+            return leaderNode.isLeaderInstancePath(path) && Type.DELETED == eventType;
         }
         
         private boolean isLocalServerEnabled(final String path, final String data) {
@@ -85,11 +87,11 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         }
     }
     
-    class LeaderAbdicationJobListener extends AbstractJobListener {
+    class LeaderAbdicationJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (leaderService.isLeader() && isLocalServerDisabled(path, data)) {
+        public void onChange(final DataChangedEvent event) {
+            if (leaderService.isLeader() && isLocalServerDisabled(event.getKey(), event.getValue())) {
                 leaderService.removeLeader();
             }
         }

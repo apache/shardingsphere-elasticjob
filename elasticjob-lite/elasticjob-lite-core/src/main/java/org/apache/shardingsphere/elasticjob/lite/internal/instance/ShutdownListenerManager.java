@@ -17,11 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.instance;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.SchedulerFacade;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
+import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 /**
  * Job instance shutdown listener manager.
@@ -49,18 +51,18 @@ public final class ShutdownListenerManager extends AbstractListenerManager {
         addDataListener(new InstanceShutdownStatusJobListener());
     }
     
-    class InstanceShutdownStatusJobListener extends AbstractJobListener {
+    class InstanceShutdownStatusJobListener implements DataChangedEventListener {
         
         @Override
-        protected void dataChanged(final String path, final Type eventType, final String data) {
+        public void onChange(final DataChangedEvent event) {
             if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().getJobScheduleController(jobName).isPaused()
-                    && isRemoveInstance(path, eventType) && !isReconnectedRegistryCenter()) {
+                    && isRemoveInstance(event.getKey(), event.getType()) && !isReconnectedRegistryCenter()) {
                 schedulerFacade.shutdownInstance();
             }
         }
         
         private boolean isRemoveInstance(final String path, final Type eventType) {
-            return instanceNode.isLocalInstancePath(path) && Type.NODE_DELETED == eventType;
+            return instanceNode.isLocalInstancePath(path) && Type.DELETED == eventType;
         }
         
         private boolean isReconnectedRegistryCenter() {
