@@ -50,7 +50,7 @@
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.2</quartz.version>
         <curator.version>5.1.0</curator.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <aspectj.version>1.9.1</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.2.3</logback.version>
@@ -91,7 +91,7 @@
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
@@ -379,6 +379,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <trimStackTrace>false</trimStackTrace>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -681,6 +684,28 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>jdk11+</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <trimStackTrace>false</trimStackTrace>
+                                <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
     
     <reporting>
         <plugins>
