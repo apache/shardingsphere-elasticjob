@@ -31,6 +31,8 @@ import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
@@ -89,7 +91,7 @@ public final class EmailJobErrorHandlerTest {
     private void setStaticFieldValue(final EmailJobErrorHandler wechatJobErrorHandler, final String name, final Object value) {
         Field fieldLog = wechatJobErrorHandler.getClass().getDeclaredField(name);
         fieldLog.setAccessible(true);
-        Field modifiers = fieldLog.getClass().getDeclaredField("modifiers");
+        Field modifiers = getModifierField();
         modifiers.setAccessible(true);
         modifiers.setInt(fieldLog, fieldLog.getModifiers() & ~Modifier.FINAL);
         fieldLog.set(wechatJobErrorHandler, value);
@@ -115,5 +117,17 @@ public final class EmailJobErrorHandlerTest {
         result.setProperty(EmailPropertiesConstants.CC, "cc@xxx.xx");
         result.setProperty(EmailPropertiesConstants.BCC, "bcc@xxx.xx");
         return result;
+    }
+    
+    @SneakyThrows({NoSuchMethodException.class, IllegalAccessException.class, InvocationTargetException.class})
+    private static Field getModifierField() {
+        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+        getDeclaredFields0.setAccessible(true);
+        for (Field each : (Field[]) getDeclaredFields0.invoke(Field.class, false)) {
+            if ("modifiers".equals(each.getName())) {
+                return each;
+            }
+        }
+        throw new UnsupportedOperationException();
     }
 }

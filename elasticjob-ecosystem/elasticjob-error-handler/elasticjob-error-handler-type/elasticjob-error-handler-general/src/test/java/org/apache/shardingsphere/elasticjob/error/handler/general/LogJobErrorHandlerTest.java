@@ -27,6 +27,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
@@ -51,9 +53,21 @@ public final class LogJobErrorHandlerTest {
     private void setStaticFieldValue(final LogJobErrorHandler logJobErrorHandler) {
         Field field = logJobErrorHandler.getClass().getDeclaredField("log");
         field.setAccessible(true);
-        Field modifiers = field.getClass().getDeclaredField("modifiers");
+        Field modifiers = getModifierField();
         modifiers.setAccessible(true);
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(logJobErrorHandler, log);
+    }
+    
+    @SneakyThrows({NoSuchMethodException.class, IllegalAccessException.class, InvocationTargetException.class})
+    private static Field getModifierField() {
+        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+        getDeclaredFields0.setAccessible(true);
+        for (Field each : (Field[]) getDeclaredFields0.invoke(Field.class, false)) {
+            if ("modifiers".equals(each.getName())) {
+                return each;
+            }
+        }
+        throw new UnsupportedOperationException();
     }
 }
