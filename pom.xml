@@ -70,7 +70,7 @@
         <mail.version>1.6.0</mail.version>
         
         <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
-        <h2.version>1.4.184</h2.version>
+        <h2.version>2.1.210</h2.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>3.11.2</mockito.version>
