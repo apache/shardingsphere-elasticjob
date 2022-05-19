@@ -30,7 +30,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java-version: [ 8, 11, 17 ]
+        java: [ 8, 11, 17 ]
         os: [ 'windows-latest', 'macos-latest' ]
 
     runs-on: ${{ matrix.os }}
@@ -41,17 +41,15 @@ jobs:
         run: |
           git config --global core.longpaths true
       - uses: actions/checkout@v3
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ matrix.java }}
       - name: Build with Maven
+        run: |
+          ./mvnw --batch-mode --no-transfer-progress clean install -Dmaven.javadoc.skip=true
+      - name: Trigger codecov webhook
         if: matrix.os == 'macos-latest'
         run: |
-          mvnw --batch-mode --no-transfer-progress clean install cobertura:cobertura -Dmaven.javadoc.skip=true
           bash <(curl -s https://codecov.io/bash)
-      - name: Build with Maven
-        if: matrix.os == 'windows-latest'
-        run: |
-          mvnw --batch-mode --no-transfer-progress clean install -D"maven.javadoc.skip=true"
