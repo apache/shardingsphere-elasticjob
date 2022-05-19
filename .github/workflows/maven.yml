@@ -48,7 +48,7 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with Maven
         run: |
-          ./mvnw --batch-mode --no-transfer-progress clean install -Dmaven.javadoc.skip=true
+          ./mvnw --batch-mode --no-transfer-progress clean install -D"maven.javadoc.skip=true"
       - name: Trigger codecov webhook
         if: matrix.os == 'macos-latest'
         run: |
