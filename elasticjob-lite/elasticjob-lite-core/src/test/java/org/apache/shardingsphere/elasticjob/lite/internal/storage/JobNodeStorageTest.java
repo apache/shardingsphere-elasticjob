@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
+import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerNotifierManager;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
@@ -32,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -176,8 +178,11 @@ public final class JobNodeStorageTest {
     @Test
     public void assertAddDataListener() {
         DataChangedEventListener listener = mock(DataChangedEventListener.class);
+        String jobName = "test_job";
+        ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
+        Executor executor = ListenerNotifierManager.getInstance().getJobNotifyExecutor(jobName);
         jobNodeStorage.addDataListener(listener);
-        verify(regCenter).watch("/test_job", listener);
+        verify(regCenter).watch("/test_job", listener, executor);
     }
     
     @Test

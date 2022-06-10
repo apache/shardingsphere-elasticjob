@@ -17,14 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.startsWith;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public final class ZookeeperRegistryCenterWatchTest {
     
@@ -51,12 +57,16 @@ public final class ZookeeperRegistryCenterWatchTest {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         zkRegCenter.addCacheData("/test");
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
+        String threadNamePreffix = "ListenerNotify";
+        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePreffix);
+        Executor executor = Executors.newSingleThreadExecutor(threadFactory);
         zkRegCenter.watch("/test", event -> {
+            assertThat(Thread.currentThread().getName(), startsWith(threadNamePreffix));
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
-        });
+        }, executor);
         waitingForWatchReady.await();
         zkRegCenter.update("/test", "countDown");
         waitingForCountDownValue.await();

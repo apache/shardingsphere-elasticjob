@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 
+import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerNotifierManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
@@ -26,6 +27,7 @@ import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListene
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Job node storage.
@@ -218,7 +220,8 @@ public final class JobNodeStorage {
      * @param listener data listener
      */
     public void addDataListener(final DataChangedEventListener listener) {
-        regCenter.watch("/" + jobName, listener);
+        Executor executor = ListenerNotifierManager.getInstance().getJobNotifyExecutor(jobName);
+        regCenter.watch("/" + jobName, listener, executor);
     }
     
     /**
