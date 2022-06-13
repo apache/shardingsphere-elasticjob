@@ -411,20 +411,17 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public void watch(final String key, final DataChangedEventListener listener, final Executor executor) {
         CuratorCache cache = caches.get(key + "/");
-        CuratorCacheListener cacheListener = new CuratorCacheListener() {
-            @Override
-            public void event(final Type curatorType, final ChildData oldData, final ChildData newData) {
-                if (null == newData && null == oldData) {
-                    return;
-                }
-                DataChangedEvent.Type type = getTypeFromCuratorType(curatorType);
-                String path = DataChangedEvent.Type.DELETED == type ? oldData.getPath() : newData.getPath();
-                if (path.isEmpty() || DataChangedEvent.Type.IGNORED == type) {
-                    return;
-                }
-                byte[] data = DataChangedEvent.Type.DELETED == type ? oldData.getData() : newData.getData();
-                listener.onChange(new DataChangedEvent(type, path, null == data ? "" : new String(data, StandardCharsets.UTF_8)));
+        CuratorCacheListener cacheListener = (curatorType, oldData, newData) -> {
+            if (null == newData && null == oldData) {
+                return;
             }
+            Type type = getTypeFromCuratorType(curatorType);
+            String path = Type.DELETED == type ? oldData.getPath() : newData.getPath();
+            if (path.isEmpty() || Type.IGNORED == type) {
+                return;
+            }
+            byte[] data = Type.DELETED == type ? oldData.getData() : newData.getData();
+            listener.onChange(new DataChangedEvent(type, path, null == data ? "" : new String(data, StandardCharsets.UTF_8)));
         };
         if (executor != null) {
             cache.listenable().addListener(cacheListener, executor);
