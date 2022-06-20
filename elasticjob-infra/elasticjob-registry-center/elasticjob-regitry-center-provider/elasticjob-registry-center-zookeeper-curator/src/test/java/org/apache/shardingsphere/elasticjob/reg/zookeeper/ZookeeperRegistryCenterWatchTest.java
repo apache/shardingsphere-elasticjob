@@ -51,9 +51,25 @@ public final class ZookeeperRegistryCenterWatchTest {
     public static void tearDown() {
         zkRegCenter.close();
     }
+
+    @Test(timeout = 10000L)
+    public void assertWatchWithoutExecutor() throws InterruptedException {
+        CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
+        zkRegCenter.addCacheData("/test");
+        CountDownLatch waitingForWatchReady = new CountDownLatch(1);
+        zkRegCenter.watch("/test", event -> {
+            waitingForWatchReady.countDown();
+            if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
+                waitingForCountDownValue.countDown();
+            }
+        }, null);
+        waitingForWatchReady.await();
+        zkRegCenter.update("/test", "countDown");
+        waitingForCountDownValue.await();
+    }
     
     @Test(timeout = 10000L)
-    public void assertWatch() throws InterruptedException {
+    public void assertWatchWithExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         zkRegCenter.addCacheData("/test");
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
