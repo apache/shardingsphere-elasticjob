@@ -70,6 +70,7 @@ public final class SnapshotService {
     }
     
     private int openSocket(final int port) throws IOException {
+        closed = false;
         serverSocket = new ServerSocket(port);
         int localPort = serverSocket.getLocalPort();
         String threadName = String.format("elasticjob-snapshot-service-%d", localPort);
