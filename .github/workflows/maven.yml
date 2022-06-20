@@ -49,7 +49,7 @@ jobs:
       - name: Build with Maven
         run: |
           ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install
-      - name: Upload codecov report
-        if: matrix.os != 'windows-latest'
-        run: |
-          bash <(curl -s https://codecov.io/bash)
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: '**/target/site/jacoco/jacoco.xml'
