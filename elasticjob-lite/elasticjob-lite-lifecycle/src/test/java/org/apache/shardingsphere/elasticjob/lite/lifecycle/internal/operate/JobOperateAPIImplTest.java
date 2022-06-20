@@ -17,8 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
+import org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +42,22 @@ public final class JobOperateAPIImplTest {
     
     private JobOperateAPI jobOperateAPI;
     
+    static final int DUMP_PORT = 9000;
+
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
+    SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
+        
     @Before
     public void setUp() {
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
+        snapshotService.listen();
+    }
+    
+    @After
+    public void close() {
+        snapshotService.close();
     }
     
     @Test
@@ -172,6 +184,6 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertDumpJob() throws IOException {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job"));
-        assertNotNull(jobOperateAPI.dump("test_job", "localhost", 9888));
+        assertNotNull(jobOperateAPI.dump("test_job", "localhost", DUMP_PORT));
     }
 }
