@@ -47,7 +47,7 @@ public final class JobOperateAPIImplTest {
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
-    SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
+    private SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
         
     @Before
     public void setUp() {
