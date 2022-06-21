@@ -39,11 +39,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class JobOperateAPIImplTest {
-    
-    private JobOperateAPI jobOperateAPI;
-    
+
     static final int DUMP_PORT = 9000;
 
+    private JobOperateAPI jobOperateAPI;
+    
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
