@@ -184,7 +184,6 @@ public final class JobOperateAPIImplTest {
 
     @Test
     public void assertDumpJob() throws IOException {
-        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job"));
         assertNotNull(jobOperateAPI.dump("test_job", "localhost", DUMP_PORT));
     }
 }
