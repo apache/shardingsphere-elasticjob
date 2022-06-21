@@ -44,14 +44,15 @@ public final class JobOperateAPIImplTest {
 
     private JobOperateAPI jobOperateAPI;
     
+    private SnapshotService snapshotService;
+        
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
-    private SnapshotService snapshotService = new SnapshotService(regCenter, DUMP_PORT);
-        
     @Before
     public void setUp() {
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
+        snapshotService = new SnapshotService(regCenter, DUMP_PORT);
         snapshotService.listen();
     }
     
