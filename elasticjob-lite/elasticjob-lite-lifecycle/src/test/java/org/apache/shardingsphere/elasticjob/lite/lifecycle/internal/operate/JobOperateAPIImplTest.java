@@ -184,6 +184,6 @@ public final class JobOperateAPIImplTest {
 
     @Test
     public void assertDumpJob() throws IOException {
-        assertNotNull(jobOperateAPI.dump("test_job", "localhost", DUMP_PORT));
+        assertNotNull(jobOperateAPI.dump("test_job", "127.0.0.1", DUMP_PORT));
     }
 }
