@@ -17,10 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
-import org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +31,6 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,21 +41,12 @@ public final class JobOperateAPIImplTest {
 
     private JobOperateAPI jobOperateAPI;
     
-    private SnapshotService snapshotService;
-        
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @Before
     public void setUp() {
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
-        snapshotService = new SnapshotService(regCenter, DUMP_PORT);
-        snapshotService.listen();
-    }
-    
-    @After
-    public void close() {
-        snapshotService.close();
     }
     
     @Test
@@ -182,8 +170,4 @@ public final class JobOperateAPIImplTest {
         assertFalse(regCenter.isExisted("/test_job2/servers/ip1"));
     }
 
-    @Test
-    public void assertDumpJob() throws IOException {
-        assertNotNull(jobOperateAPI.dump("test_job", "127.0.0.1", DUMP_PORT));
-    }
 }
