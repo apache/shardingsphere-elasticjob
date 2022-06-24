@@ -34,10 +34,12 @@ import java.util.UUID;
 public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
-    
+
     private final String hostname;
     
     private final String ip;
+
+    private final String executionId;
     
     private final String taskId;
     
@@ -64,7 +66,7 @@ public final class JobExecutionEvent implements JobEvent {
      * @return job execution event
      */
     public JobExecutionEvent executionSuccess() {
-        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
+        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, executionId, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
         result.setCompleteTime(new Date());
         result.setSuccess(true);
         return result;
@@ -77,7 +79,7 @@ public final class JobExecutionEvent implements JobEvent {
      * @return job execution event
      */
     public JobExecutionEvent executionFailure(final String failureCause) {
-        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
+        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, executionId, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
         result.setCompleteTime(new Date());
         result.setSuccess(false);
         result.setFailureCause(failureCause);

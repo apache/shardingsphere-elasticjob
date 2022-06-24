@@ -125,9 +125,10 @@ public interface JobFacade {
     /**
      * Post job status trace event.
      *
+     * @param executionId executionId
      * @param taskId task Id
      * @param state job state
      * @param message job message
      */
-    void postJobStatusTraceEvent(String taskId, State state, String message);
+    void postJobStatusTraceEvent(String executionId, String taskId, State state, String message);
 }
