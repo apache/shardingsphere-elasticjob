@@ -15,12 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -29,21 +26,24 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.util.Assert;
 
 /**
- * 补充注释.
+ * BeanDefinitionRegistryPostProcessor that searches recursively starting from a base package for interfaces.
+ *
  */
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class JobScannerConfiguration
-    implements BeanDefinitionRegistryPostProcessor, InitializingBean {
+public class JobScannerConfiguration implements BeanDefinitionRegistryPostProcessor, InitializingBean {
 
-    private String basePackage;
+    private final String[] basePackages;
+
+    public JobScannerConfiguration(final String[] basePackages) {
+        this.basePackages = basePackages;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        Assert.notNull(this.basePackage, "Property 'basePackage' is required");
+        Assert.notNull(this.basePackages, "Property 'basePackage' is required");
     }
 
     /**
@@ -55,15 +55,12 @@ public class JobScannerConfiguration
     }
 
     /**
-     * 启动扫描.
-     * @param registry registry
-     * @throws BeansException BeansException
+     * {@inheritDoc}
      */
     @Override
     public void postProcessBeanDefinitionRegistry(final BeanDefinitionRegistry registry) throws BeansException {
         ClassPathJobScanner classPathJobScanner = new ClassPathJobScanner(registry);
-        classPathJobScanner.setAnnotationClass(ElasticJobConfiguration.class);
-        classPathJobScanner.scan(basePackage);
+        classPathJobScanner.scan(basePackages);
     }
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
 
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
@@ -26,36 +26,28 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * A {@link ClassPathBeanDefinitionScanner} that registers ScheduleJobBootstrap by {@code basePackage}.
+ *
+ * @see ScheduleJobBootstrap
+ */
 public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
-
-    private Class<? extends Annotation> annotationClass;
 
     public ClassPathJobScanner(final BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 
     /**
-     * 设置.
-     * @param annotationClass annotationClass
-     */
-    public void setAnnotationClass(final Class<? extends Annotation> annotationClass) {
-        this.annotationClass = annotationClass;
-    }
-
-    /**
-     * 扫描注解，并注入系统.
-     * @param basePackages basePackages
-     * @return
+     * Calls the parent search that will search and register all the candidates by {@code ElasticJobConfiguration}.
+     *
+     * @param basePackages the packages to check for annotated classes
      */
     @Override
-    public Set<BeanDefinitionHolder> doScan(final String... basePackages) {
-        if (this.annotationClass != null) {
-            addIncludeFilter(new AnnotationTypeFilter(this.annotationClass));
-        }
+    protected Set<BeanDefinitionHolder> doScan(final String... basePackages) {
+        addIncludeFilter(new AnnotationTypeFilter(ElasticJobConfiguration.class));
 
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
@@ -67,7 +59,6 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
     }
 
     private void processBeanDefinitions(final Set<BeanDefinitionHolder> beanDefinitions) {
-        //关键部分，注入实体
         BeanDefinitionRegistry registry = getRegistry();
 
         for (BeanDefinitionHolder holder : beanDefinitions) {

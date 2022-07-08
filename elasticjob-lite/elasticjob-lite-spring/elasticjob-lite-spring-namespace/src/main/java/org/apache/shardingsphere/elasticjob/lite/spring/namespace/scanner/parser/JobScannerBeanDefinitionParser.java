@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner.parser;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner.JobScannerConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.spring.core.scanner.JobScannerConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner.tag.JobScannerBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;

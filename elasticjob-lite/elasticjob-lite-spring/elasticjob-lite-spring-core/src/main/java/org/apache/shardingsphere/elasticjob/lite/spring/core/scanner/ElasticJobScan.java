@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.spring.namespace.annotation;
+package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
+
+import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
 
@@ -29,6 +31,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Import(ElasticJobScanRegistrar.class)
 @Target(ElementType.TYPE)
 public @interface ElasticJobScan {
     
