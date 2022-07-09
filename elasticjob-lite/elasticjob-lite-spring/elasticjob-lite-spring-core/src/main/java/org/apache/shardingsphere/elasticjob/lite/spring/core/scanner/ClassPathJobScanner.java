@@ -17,9 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -71,9 +74,14 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
                 continue;
             }
             ElasticJobConfiguration jobAnnotation = jobClass.getAnnotation(ElasticJobConfiguration.class);
+            String registryCenter = jobAnnotation.registryCenter();
             BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
             factory.setInitMethodName("schedule");
-            factory.addConstructorArgReference(jobAnnotation.registryCenter());
+            if (!StringUtils.isEmpty(registryCenter)) {
+                factory.addConstructorArgReference(registryCenter);
+            } else {
+                factory.addConstructorArgValue(new RuntimeBeanReference(CoordinatorRegistryCenter.class));
+            }
             factory.addConstructorArgReference(Objects.requireNonNull(holder.getBeanName()));
             registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
         }
