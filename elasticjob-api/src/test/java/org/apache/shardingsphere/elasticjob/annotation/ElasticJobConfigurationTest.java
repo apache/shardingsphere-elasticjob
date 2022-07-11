@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.annotation.job.impl.SimpleTestJob;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 import org.junit.Test;
 
-public class ElasticJobConfigurationTest {
+public final class ElasticJobConfigurationTest {
     
     @Test
     public void assertAnnotationJob() {

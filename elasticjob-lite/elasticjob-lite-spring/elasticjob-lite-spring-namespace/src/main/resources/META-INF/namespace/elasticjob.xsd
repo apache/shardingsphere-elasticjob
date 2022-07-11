@@ -28,11 +28,6 @@
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
-<!--                    <xsd:attribute name="id" type="xsd:ID">-->
-<!--                        <xsd:annotation>-->
-<!--                            <xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>-->
-<!--                        </xsd:annotation>-->
-<!--                    </xsd:attribute>-->
                     <xsd:attribute name="base-package" type="xsd:string" use="required"/>
                 </xsd:extension>
             </xsd:complexContent>
@@ -44,7 +39,7 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:all>
-                        <xsd:element ref="beans:props" minOccurs="0"/>
+                        <xsd:element ref="beans:props" minOccurs="0" />
                     </xsd:all>
                     <xsd:attribute name="job-ref" type="xsd:string"/>
                     <xsd:attribute name="job-type" type="xsd:string"/>

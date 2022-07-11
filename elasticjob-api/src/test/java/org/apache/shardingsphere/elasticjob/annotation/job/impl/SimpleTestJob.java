@@ -35,10 +35,9 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
         @ElasticJobProp(key = "print.content", value = "test content")
     }
 )
-public class SimpleTestJob implements CustomJob {
+public final class SimpleTestJob implements CustomJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
     }
-    
 }

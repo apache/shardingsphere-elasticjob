@@ -51,19 +51,15 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
     @Override
     protected Set<BeanDefinitionHolder> doScan(final String... basePackages) {
         addIncludeFilter(new AnnotationTypeFilter(ElasticJobConfiguration.class));
-
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
-
         if (!beanDefinitions.isEmpty()) {
             processBeanDefinitions(beanDefinitions);
         }
-
         return beanDefinitions;
     }
 
     private void processBeanDefinitions(final Set<BeanDefinitionHolder> beanDefinitions) {
         BeanDefinitionRegistry registry = getRegistry();
-
         for (BeanDefinitionHolder holder : beanDefinitions) {
             ScannedGenericBeanDefinition definition = (ScannedGenericBeanDefinition) holder.getBeanDefinition();
             Class<?> jobClass;
@@ -86,5 +82,4 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
             registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
         }
     }
-
 }

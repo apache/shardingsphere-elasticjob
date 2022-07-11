@@ -38,25 +38,16 @@ public class JobScannerConfiguration implements BeanDefinitionRegistryPostProces
         this.basePackages = basePackages;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(this.basePackages, "Property 'basePackage' is required");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postProcessBeanFactory(final ConfigurableListableBeanFactory beanFactory) throws BeansException {
         // left intentionally blank
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postProcessBeanDefinitionRegistry(final BeanDefinitionRegistry registry) throws BeansException {
         ClassPathJobScanner classPathJobScanner = new ClassPathJobScanner(registry);

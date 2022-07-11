@@ -62,7 +62,6 @@ public class ElasticJobScanRegistrar implements ImportBeanDefinitionRegistrar, R
 
     private void registerBeanDefinitions(final AnnotationMetadata annoMeta, final AnnotationAttributes annoAttrs,
             final BeanDefinitionRegistry registry) {
-
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobScannerConfiguration.class);
 
         List<String> basePackages = new ArrayList<>();

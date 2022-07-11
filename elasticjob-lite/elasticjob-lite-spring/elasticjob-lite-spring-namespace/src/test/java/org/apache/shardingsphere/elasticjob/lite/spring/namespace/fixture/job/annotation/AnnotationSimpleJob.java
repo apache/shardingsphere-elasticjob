@@ -36,7 +36,7 @@ import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
         @ElasticJobProp(key = "print.content", value = "test content")
     }
 )
-public class AnnotationSimpleJob implements SimpleJob {
+public final class AnnotationSimpleJob implements SimpleJob {
 
     @Getter
     private static volatile boolean completed;
