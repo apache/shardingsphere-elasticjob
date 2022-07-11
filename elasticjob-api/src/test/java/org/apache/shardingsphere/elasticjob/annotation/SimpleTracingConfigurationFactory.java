@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 
-public class SimpleTracingConfigurationFactory implements JobExtraConfigurationFactory {
+public final class SimpleTracingConfigurationFactory implements JobExtraConfigurationFactory {
     
     @Override
     public Optional<JobExtraConfiguration> getJobExtraConfiguration() {

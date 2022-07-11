@@ -27,7 +27,10 @@ import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
-public class JobAnnotationBuilder {
+/**
+ * Job Builder from @ElasticJobConfiguration.
+ */
+public final class JobAnnotationBuilder {
     
     /**
      * generate JobConfiguration from @ElasticJobConfiguration.
@@ -37,7 +40,7 @@ public class JobAnnotationBuilder {
     public static JobConfiguration generateJobConfiguration(final Class<?> type) {
         ElasticJobConfiguration annotation = type.getAnnotation(ElasticJobConfiguration.class);
         Preconditions.checkArgument(null != annotation, "@ElasticJobConfiguration not found by class '%s'.", type);
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(annotation.jobName()), "@ElasticJobConfiguration jobName not be empty by class '%s'.", type);
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(annotation.jobName()), "@ElasticJobConfiguration jobName could not be empty by class '%s'.", type);
         JobConfiguration.Builder jobConfigurationBuilder = JobConfiguration.newBuilder(annotation.jobName(), annotation.shardingTotalCount())
                 .shardingItemParameters(annotation.shardingItemParameters())
                 .cron(Strings.isNullOrEmpty(annotation.cron()) ? null : annotation.cron())

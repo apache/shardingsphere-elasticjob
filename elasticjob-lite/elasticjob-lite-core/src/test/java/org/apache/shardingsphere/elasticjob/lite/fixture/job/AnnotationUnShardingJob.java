@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
     description = "desc",
     shardingTotalCount = 1
 )
-public class AnnotationUnShardingJob implements SimpleJob {
+public final class AnnotationUnShardingJob implements SimpleJob {
     
     private volatile boolean completed;
     

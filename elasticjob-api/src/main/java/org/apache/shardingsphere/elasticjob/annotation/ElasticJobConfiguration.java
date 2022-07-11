@@ -158,5 +158,4 @@ public @interface ElasticJobConfiguration {
      * @return overwrite
      */
     boolean overwrite() default false;
-    
 }

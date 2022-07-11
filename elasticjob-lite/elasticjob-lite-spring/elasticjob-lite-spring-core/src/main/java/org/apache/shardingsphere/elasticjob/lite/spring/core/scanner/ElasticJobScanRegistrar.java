@@ -76,5 +76,4 @@ public class ElasticJobScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private static String generateBaseBeanName(final AnnotationMetadata importingClassMetadata) {
         return importingClassMetadata.getClassName() + "#" + ElasticJobScanRegistrar.class.getSimpleName();
     }
-
 }
