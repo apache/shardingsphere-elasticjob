@@ -46,7 +46,7 @@ public final class ZookeeperRegistryCenterWatchTest {
         zkRegCenter.close();
     }
     
-    @Test(timeout = 10000L)
+    @Test(timeout = 30000L)
     public void assertWatch() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         zkRegCenter.addCacheData("/test");
