@@ -68,10 +68,12 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
             List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
             for (String each : instances) {
                 JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
-                ServerBriefInfo serverInfo = servers.get(jobInstance.getServerIp());
-                if (null != serverInfo) {
-                    serverInfo.getInstances().add(each);
-                    serverInfo.setInstancesNum(serverInfo.getInstances().size());
+                if (null != jobInstance) {
+                    ServerBriefInfo serverInfo = servers.get(jobInstance.getServerIp());
+                    if (null != serverInfo) {
+                        serverInfo.getInstances().add(each);
+                        serverInfo.setInstancesNum(serverInfo.getInstances().size());
+                    }
                 }
             }
         }
