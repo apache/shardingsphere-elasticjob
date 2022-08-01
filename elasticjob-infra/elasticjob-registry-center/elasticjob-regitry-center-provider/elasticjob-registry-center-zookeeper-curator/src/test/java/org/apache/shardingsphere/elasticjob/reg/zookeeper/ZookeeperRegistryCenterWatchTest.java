@@ -55,36 +55,36 @@ public final class ZookeeperRegistryCenterWatchTest {
     @Test(timeout = 10000L)
     public void assertWatchWithoutExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
-        zkRegCenter.addCacheData("/test");
+        zkRegCenter.addCacheData("/test-watch-without-executor");
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
-        zkRegCenter.watch("/test", event -> {
+        zkRegCenter.watch("/test-watch-without-executor", event -> {
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
         }, null);
         waitingForWatchReady.await();
-        zkRegCenter.update("/test", "countDown");
+        zkRegCenter.update("/test-watch-without-executor", "countDown");
         waitingForCountDownValue.await();
     }
     
     @Test(timeout = 30000L)
     public void assertWatchWithExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
-        zkRegCenter.addCacheData("/test");
+        zkRegCenter.addCacheData("/test-watch-with-executor");
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
-        String threadNamePreffix = "ListenerNotify";
-        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePreffix);
+        String threadNamePrefix = "ListenerNotify";
+        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePrefix);
         Executor executor = Executors.newSingleThreadExecutor(threadFactory);
-        zkRegCenter.watch("/test", event -> {
-            assertThat(Thread.currentThread().getName(), startsWith(threadNamePreffix));
+        zkRegCenter.watch("/test-watch-with-executor", event -> {
+            assertThat(Thread.currentThread().getName(), startsWith(threadNamePrefix));
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
         }, executor);
         waitingForWatchReady.await();
-        zkRegCenter.update("/test", "countDown");
+        zkRegCenter.update("/test-watch-with-executor", "countDown");
         waitingForCountDownValue.await();
     }
 }
