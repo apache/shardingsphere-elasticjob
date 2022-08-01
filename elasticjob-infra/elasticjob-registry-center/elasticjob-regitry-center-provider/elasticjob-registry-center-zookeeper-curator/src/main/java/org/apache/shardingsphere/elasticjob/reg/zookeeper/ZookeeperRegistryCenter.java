@@ -58,6 +58,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -408,9 +409,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     }
     
     @Override
-    public void watch(final String key, final DataChangedEventListener listener) {
+    public void watch(final String key, final DataChangedEventListener listener, final Executor executor) {
         CuratorCache cache = caches.get(key + "/");
-        cache.listenable().addListener((curatorType, oldData, newData) -> {
+        CuratorCacheListener cacheListener = (curatorType, oldData, newData) -> {
             if (null == newData && null == oldData) {
                 return;
             }
@@ -421,7 +422,12 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             }
             byte[] data = Type.DELETED == type ? oldData.getData() : newData.getData();
             listener.onChange(new DataChangedEvent(type, path, null == data ? "" : new String(data, StandardCharsets.UTF_8)));
-        });
+        };
+        if (executor != null) {
+            cache.listenable().addListener(cacheListener, executor);
+        } else {
+            cache.listenable().addListener(cacheListener);
+        }
     }
     
     private Type getTypeFromCuratorType(final CuratorCacheListener.Type curatorType) {

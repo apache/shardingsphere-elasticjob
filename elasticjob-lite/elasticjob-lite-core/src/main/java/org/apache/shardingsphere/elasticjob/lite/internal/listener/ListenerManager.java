@@ -58,6 +58,7 @@ public final class ListenerManager {
     
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
