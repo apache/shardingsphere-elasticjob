@@ -24,13 +24,14 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistry
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.startsWith;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterWatchTest {
     
@@ -79,7 +80,7 @@ public final class ZookeeperRegistryCenterWatchTest {
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
         String threadNamePrefix = "ListenerNotify";
         ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePrefix);
-        Executor executor = Executors.newSingleThreadExecutor(threadFactory);
+        ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         zkRegCenter.watch(key, event -> {
             assertThat(Thread.currentThread().getName(), startsWith(threadNamePrefix));
             waitingForWatchReady.countDown();
@@ -90,5 +91,6 @@ public final class ZookeeperRegistryCenterWatchTest {
         waitingForWatchReady.await();
         zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
+        executor.shutdown();
     }
 }
