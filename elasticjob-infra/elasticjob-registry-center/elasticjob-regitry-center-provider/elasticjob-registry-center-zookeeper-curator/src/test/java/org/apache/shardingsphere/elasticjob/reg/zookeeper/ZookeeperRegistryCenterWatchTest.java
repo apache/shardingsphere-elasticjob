@@ -57,7 +57,6 @@ public final class ZookeeperRegistryCenterWatchTest {
     public void assertWatchWithoutExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         String key = "/test-watch-without-executor";
-        zkRegCenter.persist(key, "");
         zkRegCenter.addCacheData(key);
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
         zkRegCenter.watch(key, event -> {
@@ -66,6 +65,7 @@ public final class ZookeeperRegistryCenterWatchTest {
                 waitingForCountDownValue.countDown();
             }
         }, null);
+        zkRegCenter.persist(key, "");
         waitingForWatchReady.await();
         zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
@@ -75,7 +75,6 @@ public final class ZookeeperRegistryCenterWatchTest {
     public void assertWatchWithExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
         String key = "/test-watch-with-executor";
-        zkRegCenter.persist(key, "");
         zkRegCenter.addCacheData(key);
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
         String threadNamePrefix = "ListenerNotify";
@@ -88,6 +87,7 @@ public final class ZookeeperRegistryCenterWatchTest {
                 waitingForCountDownValue.countDown();
             }
         }, executor);
+        zkRegCenter.persist(key, "");
         waitingForWatchReady.await();
         zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
