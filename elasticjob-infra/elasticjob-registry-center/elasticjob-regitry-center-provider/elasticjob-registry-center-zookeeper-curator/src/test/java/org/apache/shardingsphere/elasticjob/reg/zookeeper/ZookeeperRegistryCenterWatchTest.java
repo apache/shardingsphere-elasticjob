@@ -24,13 +24,14 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistry
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.startsWith;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterWatchTest {
     
@@ -55,36 +56,41 @@ public final class ZookeeperRegistryCenterWatchTest {
     @Test(timeout = 10000L)
     public void assertWatchWithoutExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
-        zkRegCenter.addCacheData("/test");
+        String key = "/test-watch-without-executor";
+        zkRegCenter.addCacheData(key);
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
-        zkRegCenter.watch("/test", event -> {
+        zkRegCenter.watch(key, event -> {
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
         }, null);
+        zkRegCenter.persist(key, "");
         waitingForWatchReady.await();
-        zkRegCenter.update("/test", "countDown");
+        zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
     }
     
-    @Test(timeout = 30000L)
+    @Test(timeout = 10000L)
     public void assertWatchWithExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
-        zkRegCenter.addCacheData("/test");
+        String key = "/test-watch-with-executor";
+        zkRegCenter.addCacheData(key);
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
-        String threadNamePreffix = "ListenerNotify";
-        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePreffix);
-        Executor executor = Executors.newSingleThreadExecutor(threadFactory);
-        zkRegCenter.watch("/test", event -> {
-            assertThat(Thread.currentThread().getName(), startsWith(threadNamePreffix));
+        String threadNamePrefix = "ListenerNotify";
+        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePrefix);
+        ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
+        zkRegCenter.watch(key, event -> {
+            assertThat(Thread.currentThread().getName(), startsWith(threadNamePrefix));
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
         }, executor);
+        zkRegCenter.persist(key, "");
         waitingForWatchReady.await();
-        zkRegCenter.update("/test", "countDown");
+        zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
+        executor.shutdown();
     }
 }
