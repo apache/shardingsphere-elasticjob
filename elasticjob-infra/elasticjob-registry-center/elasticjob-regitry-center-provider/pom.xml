@@ -31,5 +31,6 @@
 
     <modules>
         <module>elasticjob-registry-center-zookeeper-curator</module>
+        <module>elasticjob-registry-center-zookeeper-curator2</module>
     </modules>
 </project>
