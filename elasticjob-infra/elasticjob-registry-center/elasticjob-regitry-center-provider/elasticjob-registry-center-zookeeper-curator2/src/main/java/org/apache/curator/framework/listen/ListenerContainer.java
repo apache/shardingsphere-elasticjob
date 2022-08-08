@@ -72,7 +72,7 @@ public class ListenerContainer<T> implements Listenable<T> {
      *
      * @param function function to call for each listener
      */
-    public void forEach(final Function<T, @Nullable Void> function) {
+    public void forEach(final Function<T, Void> function) {
         for (final ListenerEntry<T> entry : listeners.values()) {
             entry.executor.execute(
                 () -> function.apply(entry.listener)
