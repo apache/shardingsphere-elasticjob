@@ -69,7 +69,6 @@ public class ZookeeperElectionServiceTest {
         anotherClient.start();
         anotherClient.blockUntilConnected();
         anotherService.start();
-        KillSession.kill(client.getZookeeperClient().getZooKeeper(), HOST_AND_PORT);
         service.stop();
         blockUntilCondition(() -> hasLeadership(anotherService));
         ((CountDownLatch) getFieldValue(anotherService, "leaderLatch")).countDown();
