@@ -35,4 +35,11 @@ public class ListenerNotifierManagerTest {
         ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
         assertThat(ListenerNotifierManager.getInstance().getJobNotifyExecutor(jobName), notNullValue(Executor.class));
     }
+
+    @Test
+    public void assertRemoveAndShutDownJobNotifyExecutor() {
+        String jobName = "test_job";
+        ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
+        ListenerNotifierManager.getInstance().removeJobNotifyExecutor(jobName);
+    }
 }
