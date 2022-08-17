@@ -56,7 +56,11 @@ public final class ConfigurationService {
         } else {
             result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
         }
-        return YamlEngine.unmarshal(result, JobConfigurationPOJO.class).toJobConfiguration();
+        if (result != null) {
+            return YamlEngine.unmarshal(result, JobConfigurationPOJO.class).toJobConfiguration();
+        } else {
+            throw new JobConfigurationException("JobConfiguration was not found. It maybe has been removed or has not been configured correctly.");
+        }
     }
     
     /**
