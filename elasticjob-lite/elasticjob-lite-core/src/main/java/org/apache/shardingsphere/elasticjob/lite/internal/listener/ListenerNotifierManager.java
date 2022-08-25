@@ -20,8 +20,10 @@ package org.apache.shardingsphere.elasticjob.lite.internal.listener;
 import org.apache.curator.utils.ThreadUtils;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
@@ -33,7 +35,7 @@ public final class ListenerNotifierManager {
 
     private static volatile ListenerNotifierManager instance;
 
-    private final Map<String, Executor> listenerNotifyExecutors = new ConcurrentHashMap<>();
+    private final Map<String, ExecutorService> listenerNotifyExecutors = new ConcurrentHashMap<>();
 
     private ListenerNotifierManager() { }
 
@@ -61,7 +63,7 @@ public final class ListenerNotifierManager {
             synchronized (this) {
                 if (!listenerNotifyExecutors.containsKey(jobName)) {
                     ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory("ListenerNotify-" + jobName);
-                    Executor notifyExecutor = Executors.newSingleThreadExecutor(threadFactory);
+                    ExecutorService notifyExecutor = Executors.newSingleThreadExecutor(threadFactory);
                     listenerNotifyExecutors.put(jobName, notifyExecutor);
                 }
             }
@@ -75,5 +77,13 @@ public final class ListenerNotifierManager {
      */
     public Executor getJobNotifyExecutor(final String jobName) {
         return listenerNotifyExecutors.get(jobName);
+    }
+
+    /**
+     * Remove and shutdown the listener notify executor from listenerNotifyExecutors.
+     * @param jobName The job's name.
+     */
+    public void removeJobNotifyExecutor(final String jobName) {
+        Optional.ofNullable(listenerNotifyExecutors.remove(jobName)).ifPresent(ExecutorService::shutdown);
     }
 }
