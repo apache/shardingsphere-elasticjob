@@ -104,6 +104,10 @@ public final class LeaderService {
         @Override
         public void execute() {
             if (!hasLeader()) {
+                if (JobRegistry.getInstance().isShutdown(jobName)) {
+                    log.warn("JobName {} already shutdown, ignore elect leader.", jobName);
+                    return;
+                }
                 jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }

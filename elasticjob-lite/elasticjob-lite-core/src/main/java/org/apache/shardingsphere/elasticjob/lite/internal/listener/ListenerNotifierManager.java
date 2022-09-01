@@ -63,7 +63,8 @@ public final class ListenerNotifierManager {
             synchronized (this) {
                 if (!listenerNotifyExecutors.containsKey(jobName)) {
                     ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory("ListenerNotify-" + jobName);
-                    ExecutorService notifyExecutor = Executors.newSingleThreadExecutor(threadFactory);
+                    // The thread pool count should be as consistent as possible with the listener count, avoid watch loss.
+                    ExecutorService notifyExecutor = Executors.newFixedThreadPool(15, threadFactory);
                     listenerNotifyExecutors.put(jobName, notifyExecutor);
                 }
             }
