@@ -138,7 +138,11 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertElectLeaderExecutionCallbackWithoutLeader() {
+        String jobName = "test_job";
+        JobRegistry.getInstance().registerRegistryCenter(jobName, regCenter);
+        JobRegistry.getInstance().registerJob(jobName, jobScheduleController);
         leaderService.new LeaderElectionExecutionCallback().execute();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/election/instance", "127.0.0.1@-@0");
+        JobRegistry.getInstance().shutdown(jobName);
     }
 }

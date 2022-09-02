@@ -63,7 +63,6 @@ public final class ListenerNotifierManager {
             synchronized (this) {
                 if (!listenerNotifyExecutors.containsKey(jobName)) {
                     ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory("ListenerNotify-" + jobName);
-                    // Use unbounded thread pool to cover all the listeners to execute event, avoid zk watch loss.
                     ExecutorService notifyExecutor = Executors.newCachedThreadPool(threadFactory);
                     listenerNotifyExecutors.put(jobName, notifyExecutor);
                 }
