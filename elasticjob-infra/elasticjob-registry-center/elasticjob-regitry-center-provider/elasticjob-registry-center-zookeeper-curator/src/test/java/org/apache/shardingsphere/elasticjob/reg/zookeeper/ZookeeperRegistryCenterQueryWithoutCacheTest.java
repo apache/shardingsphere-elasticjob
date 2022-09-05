@@ -91,8 +91,8 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
         assertTrue(regCenterTime <= System.currentTimeMillis());
         try {
             TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e){
-            // interrupt error ignore
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
         }
         long updatedRegCenterTime = zkRegCenter.getRegistryCenterTime(systemTimePath);
         assertTrue(regCenterTime < updatedRegCenterTime);
