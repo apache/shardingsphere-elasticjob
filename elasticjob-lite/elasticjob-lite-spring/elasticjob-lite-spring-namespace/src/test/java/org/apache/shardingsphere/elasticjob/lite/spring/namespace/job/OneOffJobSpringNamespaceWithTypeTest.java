@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
@@ -45,6 +46,7 @@ public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeepe
     public void jobScriptWithJobTypeTest() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(scriptJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
+        BlockUtils.sleep(2000L);
         assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
     }
 }
