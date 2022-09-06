@@ -31,6 +31,10 @@ public abstract class AbstractJobExecutorServiceHandler implements JobExecutorSe
     public ExecutorService createExecutorService(final String jobName) {
         return new ElasticJobExecutorService("elasticjob-" + jobName, getPoolSize()).createExecutorService();
     }
-    
+
+    /**
+     * Get pool size.
+     * @return pool size
+     */
     protected abstract int getPoolSize();
 }
