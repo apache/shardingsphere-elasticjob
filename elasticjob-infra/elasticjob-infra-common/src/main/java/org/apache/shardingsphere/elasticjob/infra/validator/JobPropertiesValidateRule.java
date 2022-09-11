@@ -47,14 +47,15 @@ public final class JobPropertiesValidateRule {
      */
     public static void validateIsPositiveInteger(final Properties props, final String key) {
         String propertyValue = props.getProperty(key);
-        if (null != propertyValue) {
-            int integerValue;
-            try {
-                integerValue = Integer.parseInt(propertyValue);
-            } catch (final NumberFormatException ignored) {
-                throw new IllegalArgumentException(String.format("The property `%s` should be integer.", key));
-            }
-            Preconditions.checkArgument(integerValue > 0, "The property `%s` should be positive.", key);
+        if (null == propertyValue) {
+            return;
         }
+        int integerValue;
+        try {
+            integerValue = Integer.parseInt(propertyValue);
+        } catch (final NumberFormatException ignored) {
+            throw new IllegalArgumentException(String.format("The property `%s` should be integer.", key));
+        }
+        Preconditions.checkArgument(integerValue > 0, "The property `%s` should be positive.", key);
     }
 }

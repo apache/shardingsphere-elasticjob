@@ -58,9 +58,8 @@ public final class ConfigurationService {
         }
         if (result != null) {
             return YamlEngine.unmarshal(result, JobConfigurationPOJO.class).toJobConfiguration();
-        } else {
-            throw new JobConfigurationException("JobConfiguration was not found. It maybe has been removed or has not been configured correctly.");
         }
+        throw new JobConfigurationException("JobConfiguration was not found. It maybe has been removed or has not been configured correctly.");
     }
     
     /**
