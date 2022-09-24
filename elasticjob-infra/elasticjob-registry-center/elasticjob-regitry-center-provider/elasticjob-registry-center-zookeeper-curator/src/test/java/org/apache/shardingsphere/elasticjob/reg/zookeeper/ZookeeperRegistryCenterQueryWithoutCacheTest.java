@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -85,9 +86,15 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
     @Test
     public void assertGetRegistryCenterTime() {
-        long regCenterTime = zkRegCenter.getRegistryCenterTime("/_systemTime/current");
+        String systemTimePath = "/_systemTime/current";
+        long regCenterTime = zkRegCenter.getRegistryCenterTime(systemTimePath);
         assertTrue(regCenterTime <= System.currentTimeMillis());
-        long updatedRegCenterTime = zkRegCenter.getRegistryCenterTime("/_systemTime/current");
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        long updatedRegCenterTime = zkRegCenter.getRegistryCenterTime(systemTimePath);
         assertTrue(regCenterTime < updatedRegCenterTime);
     }
     
