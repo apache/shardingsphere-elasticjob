@@ -21,11 +21,12 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.Collections;
+import java.util.HashSet;
 
 public final class DetailedFooJob implements FooJob {
     
-    private final Collection<Integer> completedJobItems = new CopyOnWriteArraySet<>();
+    private final Collection<Integer> completedJobItems = Collections.synchronizedSet(new HashSet<>());
     
     @Getter
     private volatile boolean completed;
