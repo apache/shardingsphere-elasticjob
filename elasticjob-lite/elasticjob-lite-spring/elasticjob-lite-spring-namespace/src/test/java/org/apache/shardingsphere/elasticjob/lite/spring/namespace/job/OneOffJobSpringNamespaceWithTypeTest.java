@@ -46,7 +46,7 @@ public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeepe
     public void jobScriptWithJobTypeTest() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(scriptJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        BlockUtils.sleep(1000L);
+        BlockUtils.sleep(3000L);
         assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
     }
 }
