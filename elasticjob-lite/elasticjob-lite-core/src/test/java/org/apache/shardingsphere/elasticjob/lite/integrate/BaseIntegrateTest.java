@@ -26,11 +26,9 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
-import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -92,7 +90,7 @@ public abstract class BaseIntegrateTest {
     @After
     public void tearDown() {
         jobBootstrap.shutdown();
-        ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
+        // ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
     public enum TestType {

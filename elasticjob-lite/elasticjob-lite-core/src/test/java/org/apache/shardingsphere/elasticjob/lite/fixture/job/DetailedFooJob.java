@@ -33,6 +33,7 @@ public final class DetailedFooJob implements FooJob {
     
     @Override
     public void foo(final ShardingContext shardingContext) {
+        System.out.println(Thread.currentThread().getName() + " foo execute " + shardingContext);
         completedJobItems.add(shardingContext.getShardingItem());
         completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
     }
