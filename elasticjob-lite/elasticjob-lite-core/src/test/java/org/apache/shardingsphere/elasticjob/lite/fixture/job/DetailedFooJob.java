@@ -32,7 +32,7 @@ public final class DetailedFooJob implements FooJob {
     private volatile boolean completed;
     
     @Override
-    public synchronized void foo(final ShardingContext shardingContext) {
+    public void foo(final ShardingContext shardingContext) {
         completedJobItems.add(shardingContext.getShardingItem());
         completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
     }

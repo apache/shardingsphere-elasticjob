@@ -38,9 +38,10 @@ public final class OneOffEnabledJobIntegrateTest extends EnabledJobIntegrateTest
     
     @Test
     public void assertJobInit() {
-        while (!((DetailedFooJob) getElasticJob()).isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        // while (!((DetailedFooJob) getElasticJob()).isCompleted()) {
+        //     BlockUtils.waitingShortTime();
+        // }
+        BlockUtils.sleep(2000L);
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }
