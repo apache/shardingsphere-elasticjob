@@ -17,12 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.app;
 
+import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
+import org.apache.shardingsphere.elasticjob.infra.listener.CuratorCacheListener;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Objects;
@@ -31,21 +34,43 @@ import java.util.concurrent.Executors;
 /**
  * Cloud app disable listener.
  */
-public final class CloudAppDisableListener implements CuratorCacheListener {
-    
+public final class CloudAppDisableListener implements TreeCacheListener, CuratorCacheListener {
+
     private final CoordinatorRegistryCenter regCenter;
-    
+
     private final ProducerManager producerManager;
-    
+
     private final CloudJobConfigurationService jobConfigService;
-    
+
     public CloudAppDisableListener(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         this.regCenter = regCenter;
         this.producerManager = producerManager;
         jobConfigService = new CloudJobConfigurationService(regCenter);
     }
-    
+
     @Override
+    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
+        switch (event.getType()) {
+            case NODE_ADDED:
+                event(Type.NODE_CREATED, null, event.getData());
+                break;
+            case NODE_REMOVED:
+                event(Type.NODE_DELETED, event.getData(), null);
+                break;
+            case NODE_UPDATED:
+                event(Type.NODE_CHANGED, null, event.getData());
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Cloud app disable event.
+     * @param type the event type
+     * @param oldData  the oldData
+     * @param data the data
+     */
     public void event(final Type type, final ChildData oldData, final ChildData data) {
         String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_CREATED == type && isAppDisableNode(path)) {
@@ -69,25 +94,25 @@ public final class CloudAppDisableListener implements CuratorCacheListener {
      * Start the listener service of the cloud job service.
      */
     public void start() {
-        getCache().listenable().addListener(this, Executors.newSingleThreadExecutor());
+        getCache().getListenable().addListener(this, Executors.newSingleThreadExecutor());
     }
-    
+
     /**
      * Stop the listener service of the cloud job service.
      */
     public void stop() {
-        getCache().listenable().removeListener(this);
+        getCache().getListenable().removeListener(this);
     }
-    
-    private CuratorCache getCache() {
-        CuratorCache result = (CuratorCache) regCenter.getRawCache(DisableAppNode.ROOT);
+
+    private TreeCache getCache() {
+        TreeCache result = (TreeCache) regCenter.getRawCache(DisableAppNode.ROOT);
         if (null != result) {
             return result;
         }
         regCenter.addCacheData(DisableAppNode.ROOT);
-        return (CuratorCache) regCenter.getRawCache(DisableAppNode.ROOT);
+        return (TreeCache) regCenter.getRawCache(DisableAppNode.ROOT);
     }
-    
+
     private void disableApp(final String appName) {
         for (CloudJobConfigurationPOJO each : jobConfigService.loadAll()) {
             if (appName.equals(each.getAppName())) {

@@ -19,13 +19,16 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.producer.ProducerManager;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
+import org.apache.shardingsphere.elasticjob.infra.listener.CuratorCacheListener;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
@@ -36,7 +39,7 @@ import java.util.concurrent.Executors;
  * Cloud job configuration change listener.
  */
 @Slf4j
-public final class CloudJobConfigurationListener implements CuratorCacheListener {
+public final class CloudJobConfigurationListener implements TreeCacheListener, CuratorCacheListener {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -49,8 +52,30 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
         readyService = new ReadyService(regCenter);
         this.producerManager = producerManager;
     }
-    
+
     @Override
+    public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
+        switch (event.getType()) {
+            case NODE_ADDED:
+                event(Type.NODE_CREATED, null, event.getData());
+                break;
+            case NODE_REMOVED:
+                event(Type.NODE_DELETED, event.getData(), null);
+                break;
+            case NODE_UPDATED:
+                event(Type.NODE_CHANGED, null, event.getData());
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Cloud job configuration change event.
+     * @param type the event type
+     * @param oldData  the oldData
+     * @param data the data
+     */
     public void event(final Type type, final ChildData oldData, final ChildData data) {
         String path = Type.NODE_DELETED == type ? oldData.getPath() : data.getPath();
         if (Type.NODE_CREATED == type && isJobConfigNode(path)) {
@@ -95,22 +120,22 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
      * Start the listener service of the cloud job service.
      */
     public void start() {
-        getCache().listenable().addListener(this, Executors.newSingleThreadExecutor());
+        getCache().getListenable().addListener(this, Executors.newSingleThreadExecutor());
     }
     
     /**
      * Stop the listener service of the cloud job service.
      */
     public void stop() {
-        getCache().listenable().removeListener(this);
+        getCache().getListenable().removeListener(this);
     }
     
-    private CuratorCache getCache() {
-        CuratorCache result = (CuratorCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
+    private TreeCache getCache() {
+        TreeCache result = (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
         if (null != result) {
             return result;
         }
         regCenter.addCacheData(CloudJobConfigurationNode.ROOT);
-        return (CuratorCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
+        return (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
     }
 }
