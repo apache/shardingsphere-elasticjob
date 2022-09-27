@@ -24,8 +24,8 @@ import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
 import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.curator.framework.listen.Listenable;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -237,11 +237,11 @@ public final class JobNodeStorageTest {
     
     @Test
     public void assertAddDataListener() {
-        CuratorCache cache = mock(CuratorCache.class);
+        TreeCache cache = mock(TreeCache.class);
         @SuppressWarnings("unchecked")
-        Listenable<CuratorCacheListener> listeners = mock(Listenable.class);
-        CuratorCacheListener listener = mock(CuratorCacheListener.class);
-        when(cache.listenable()).thenReturn(listeners);
+        Listenable<TreeCacheListener> listeners = mock(Listenable.class);
+        TreeCacheListener listener = mock(TreeCacheListener.class);
+        when(cache.getListenable()).thenReturn(listeners);
         when(regCenter.getRawCache("/test_job")).thenReturn(cache);
         jobNodeStorage.addDataListener(listener);
         verify(listeners).addListener(listener);

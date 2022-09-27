@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
+import org.apache.shardingsphere.elasticjob.infra.listener.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractJobListener;

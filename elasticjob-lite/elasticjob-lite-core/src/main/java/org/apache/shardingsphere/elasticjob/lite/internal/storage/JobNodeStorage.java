@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.lite.internal.storage;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.api.transaction.TransactionOp;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -243,9 +243,9 @@ public final class JobNodeStorage {
      * 
      * @param listener data listener
      */
-    public void addDataListener(final CuratorCacheListener listener) {
-        CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-        cache.listenable().addListener(listener);
+    public void addDataListener(final TreeCacheListener listener) {
+        TreeCache cache = (TreeCache) regCenter.getRawCache("/" + jobName);
+        cache.getListenable().addListener(listener);
     }
     
     /**

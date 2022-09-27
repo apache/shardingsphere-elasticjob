@@ -15,29 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.internal.listener;
-
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+package org.apache.shardingsphere.elasticjob.infra.listener;
 
 /**
- * Listener manager.
+ * Cache Listener.
  */
-public abstract class AbstractListenerManager {
-    
-    private final JobNodeStorage jobNodeStorage;
-    
-    protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-    }
-    
+public interface CuratorCacheListener {
+
     /**
-     * Start listener.
+     * An enumerated type that describes a change.
      */
-    public abstract void start();
-    
-    protected void addDataListener(final TreeCacheListener listener) {
-        jobNodeStorage.addDataListener(listener);
+    enum Type {
+        /**
+         * A new node was added to the cache.
+         */
+        NODE_CREATED,
+
+        /**
+         * A node already in the cache has changed.
+         */
+        NODE_CHANGED,
+
+        /**
+         * A node already in the cache was deleted.
+         */
+        NODE_DELETED;
     }
 }

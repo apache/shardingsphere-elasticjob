@@ -27,7 +27,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.framework.api.transaction.TransactionOp;
 import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -57,7 +57,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Getter(AccessLevel.PROTECTED)
     private final ZookeeperConfiguration zkConfig;
     
-    private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
+    private final Map<String, TreeCache> caches = new ConcurrentHashMap<>();
     
     @Getter
     private CuratorFramework client;
@@ -110,7 +110,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void close() {
-        for (Entry<String, CuratorCache> each : caches.entrySet()) {
+        for (Entry<String, TreeCache> each : caches.entrySet()) {
             each.getValue().close();
         }
         waitForCacheClose();
@@ -132,16 +132,16 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public String get(final String key) {
-        CuratorCache cache = findCuratorCache(key);
+        TreeCache cache = findCuratorCache(key);
         if (null == cache) {
             return getDirectly(key);
         }
-        Optional<ChildData> resultInCache = cache.get(key);
+        Optional<ChildData> resultInCache = Optional.ofNullable(cache.getCurrentData(key));
         return resultInCache.map(v -> null == v.getData() ? null : new String(v.getData(), StandardCharsets.UTF_8)).orElseGet(() -> getDirectly(key));
     }
     
-    private CuratorCache findCuratorCache(final String key) {
-        for (Entry<String, CuratorCache> entry : caches.entrySet()) {
+    private TreeCache findCuratorCache(final String key) {
+        for (Entry<String, TreeCache> entry : caches.entrySet()) {
             if (key.startsWith(entry.getKey())) {
                 return entry.getValue();
             }
@@ -299,7 +299,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void addCacheData(final String cachePath) {
-        CuratorCache cache = CuratorCache.build(client, cachePath);
+        TreeCache cache = TreeCache.newBuilder(client, cachePath).build();
         try {
             cache.start();
         //CHECKSTYLE:OFF
@@ -312,7 +312,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void evictCacheData(final String cachePath) {
-        CuratorCache cache = caches.remove(cachePath + "/");
+        TreeCache cache = caches.remove(cachePath + "/");
         if (null != cache) {
             cache.close();
         }

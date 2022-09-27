@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
-import org.apache.curator.framework.recipes.cache.CuratorCacheListener.Type;
+import org.apache.shardingsphere.elasticjob.infra.listener.CuratorCacheListener.Type;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
