@@ -41,8 +41,6 @@ public abstract class AbstractJobListener implements TreeCacheListener, CuratorC
             case NODE_UPDATED:
                 event(Type.NODE_CHANGED, null, event.getData());
                 break;
-            case INITIALIZED:
-                break;
             default:
                 break;
         }

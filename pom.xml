@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elasticjob</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
@@ -49,7 +49,7 @@
         <guava.version>29.0-jre</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.2</quartz.version>
-        <curator.version>4.0.1</curator.version>
+        <curator.version>4.2.0</curator.version>
         <lombok.version>1.18.12</lombok.version>
         <aspectj.version>1.9.1</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -748,4 +748,5 @@
             <unsubscribe>dev-unsubscribe@shardingsphere.apache.org</unsubscribe>
         </mailingList>
     </mailingLists>
+
 </project>
