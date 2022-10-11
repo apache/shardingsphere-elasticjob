@@ -17,7 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
-import lombok.SneakyThrows;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -25,22 +27,17 @@ import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Properties;
 
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class WechatJobErrorHandlerTest {
     
     private static final int PORT = 9872;
@@ -49,9 +46,9 @@ public final class WechatJobErrorHandlerTest {
     
     private static RestfulService restfulService;
     
-    @Mock
-    private Logger log;
+    private static List<LoggingEvent> appenderList;
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeClass
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
@@ -59,6 +56,14 @@ public final class WechatJobErrorHandlerTest {
         configuration.addControllerInstances(new WechatInternalController());
         restfulService = new NettyRestfulService(configuration);
         restfulService.startup();
+        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(WechatJobErrorHandler.class);
+        ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("WechatJobErrorHandlerTestAppender");
+        appenderList = appender.list;
+    }
+    
+    @Before
+    public void setUp() {
+        appenderList.clear();
     }
     
     @AfterClass
@@ -71,51 +76,45 @@ public final class WechatJobErrorHandlerTest {
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=mocked_key"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).info("An exception has occurred in Job '{}', an wechat message has been sent successful.", "test_job", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.INFO));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job', an wechat message has been sent successful."));
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=wrong_key"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of: {}", "test_job", "token is invalid", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send wechat because of: token is invalid"));
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://wrongUrl"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of", "test_job", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send wechat because of"));
     }
     
     @Test
     public void assertHandleExceptionWithUrlIsNotFound() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/404"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send wechat because of: unexpected http response status: {}", "test_job", 404, cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send wechat because of: unexpected http response status: 404"));
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler(final Properties props) {
         return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT", props).orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
-    }
-    
-    @SneakyThrows
-    private void setStaticFieldValue(final WechatJobErrorHandler wechatJobErrorHandler) {
-        Field field = wechatJobErrorHandler.getClass().getDeclaredField("log");
-        field.setAccessible(true);
-        Field modifiers = getModifierField();
-        modifiers.setAccessible(true);
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(wechatJobErrorHandler, log);
     }
     
     private Properties createConfigurationProperties(final String webhook) {
@@ -124,17 +123,5 @@ public final class WechatJobErrorHandlerTest {
         result.setProperty(WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "1000");
         result.setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "2000");
         return result;
-    }
-    
-    @SneakyThrows({NoSuchMethodException.class, IllegalAccessException.class, InvocationTargetException.class})
-    private static Field getModifierField() {
-        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
-        getDeclaredFields0.setAccessible(true);
-        for (Field each : (Field[]) getDeclaredFields0.invoke(Field.class, false)) {
-            if ("modifiers".equals(each.getName())) {
-                return each;
-            }
-        }
-        throw new UnsupportedOperationException();
     }
 }
