@@ -30,7 +30,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ 8, 11, 17 ]
+        java: [ 8, 17, 19 ]
         os: [ 'windows-latest', 'macos-latest', 'ubuntu-latest' ]
 
     runs-on: ${{ matrix.os }}
