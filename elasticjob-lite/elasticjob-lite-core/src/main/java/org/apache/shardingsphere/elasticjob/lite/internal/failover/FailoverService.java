@@ -23,8 +23,8 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleCo
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +57,7 @@ public final class FailoverService {
     public void setCrashedFailoverFlag(final int item) {
         if (!isFailoverAssigned(item)) {
             jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(item));
         }
     }
 

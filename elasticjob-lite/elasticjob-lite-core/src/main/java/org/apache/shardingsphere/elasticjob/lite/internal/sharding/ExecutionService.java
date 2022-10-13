@@ -52,11 +52,16 @@ public final class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
-        if (!configService.load(true).isMonitorExecution()) {
+        JobConfiguration jobConfiguration = configService.load(true);
+        if (!jobConfiguration.isMonitorExecution()) {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+            if (jobConfiguration.isFailover()) {
+                jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), "");
+            } else {
+                jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+            }
         }
     }
     
