@@ -135,4 +135,9 @@ public final class ServerServiceTest {
         when(jobNodeStorage.getJobNodeData("servers/127.0.0.1")).thenReturn("", ServerStatus.ENABLED.name());
         assertTrue(serverService.isEnableServer("127.0.0.1"));
     }
+    
+    @Test
+    public void assertServerNodeAbsent() {
+        assertFalse(serverService.isEnableServer("127.0.0.1"));
+    }
 }
