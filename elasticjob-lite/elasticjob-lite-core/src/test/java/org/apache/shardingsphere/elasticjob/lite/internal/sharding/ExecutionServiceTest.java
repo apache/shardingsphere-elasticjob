@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -76,11 +77,13 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWithMonitorExecution() {
+        String jobInstanceId = "127.0.0.1@-@1";
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(jobInstanceId));
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
         executionService.registerJobBegin(getShardingContext());
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/0/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/1/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/2/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/0/running", jobInstanceId);
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/1/running", jobInstanceId);
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/2/running", jobInstanceId);
         assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
     }
     
