@@ -60,11 +60,12 @@ public final class ExecutionService {
         if (!jobConfiguration.isMonitorExecution()) {
             return;
         }
+        String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             if (jobConfiguration.isFailover()) {
-                jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), "");
+                jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), jobInstanceId);
             } else {
-                jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+                jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), jobInstanceId);
             }
         }
     }
