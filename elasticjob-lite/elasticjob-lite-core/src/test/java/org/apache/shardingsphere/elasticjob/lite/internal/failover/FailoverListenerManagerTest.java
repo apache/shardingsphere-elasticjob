@@ -74,7 +74,7 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertStart() {
         failoverListenerManager.start();
-        verify(jobNodeStorage, times(2)).addDataListener(ArgumentMatchers.any(DataChangedEventListener.class));
+        verify(jobNodeStorage, times(3)).addDataListener(ArgumentMatchers.any(DataChangedEventListener.class));
     }
     
     @Test
