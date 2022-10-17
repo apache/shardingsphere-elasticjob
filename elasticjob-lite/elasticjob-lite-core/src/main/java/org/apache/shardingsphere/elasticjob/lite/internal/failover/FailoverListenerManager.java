@@ -147,6 +147,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                     failoverService.clearFailoveringItem(entry.getKey());
                 }
             }
+            failoverService.failoverIfNecessary();
         }
         
         private boolean isCurrentInstanceOnline(final DataChangedEvent event) {
