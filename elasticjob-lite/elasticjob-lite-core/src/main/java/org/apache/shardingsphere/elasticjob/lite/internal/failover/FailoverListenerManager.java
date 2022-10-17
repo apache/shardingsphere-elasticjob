@@ -17,20 +17,28 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Failover listener manager.
@@ -45,6 +53,10 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     
     private final FailoverService failoverService;
     
+    private final ExecutionService executionService;
+    
+    private final InstanceService instanceService;
+    
     private final ConfigurationNode configNode;
     
     private final InstanceNode instanceNode;
@@ -55,6 +67,8 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
         instanceNode = new InstanceNode(jobName);
     }
@@ -63,6 +77,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     public void start() {
         addDataListener(new JobCrashedJobListener());
         addDataListener(new FailoverSettingsChangedJobListener());
+        addDataListener(new LegacyCrashedRunningItemListener());
     }
     
     private boolean isFailoverEnabled() {
@@ -101,6 +116,45 @@ public final class FailoverListenerManager extends AbstractListenerManager {
             if (configNode.isConfigPath(event.getKey()) && Type.UPDATED == event.getType() && !YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration().isFailover()) {
                 failoverService.removeFailoverInfo();
             }
+        }
+    }
+    
+    class LegacyCrashedRunningItemListener implements DataChangedEventListener {
+        
+        @Override
+        public void onChange(final DataChangedEvent event) {
+            if (!isCurrentInstanceOnline(event) || !isFailoverEnabled()) {
+                return;
+            }
+            Set<JobInstance> availableJobInstances = new HashSet<>(instanceService.getAvailableJobInstances());
+            if (!isTheOnlyInstance(availableJobInstances)) {
+                return;
+            }
+            Map<Integer, JobInstance> allRunningItems = executionService.getAllRunningItems();
+            Map<Integer, JobInstance> allFailoveringItems = failoverService.getAllFailoveringItems();
+            if (allRunningItems.isEmpty() && allFailoveringItems.isEmpty()) {
+                return;
+            }
+            for (Entry<Integer, JobInstance> entry : allRunningItems.entrySet()) {
+                if (!availableJobInstances.contains(entry.getValue())) {
+                    failoverService.setCrashedFailoverFlag(entry.getKey());
+                    executionService.clearRunningInfo(Collections.singletonList(entry.getKey()));
+                }
+            }
+            for (Entry<Integer, JobInstance> entry : allFailoveringItems.entrySet()) {
+                if (!availableJobInstances.contains(entry.getValue())) {
+                    failoverService.setCrashedFailoverFlagDirectly(entry.getKey());
+                    failoverService.clearFailoveringItem(entry.getKey());
+                }
+            }
+        }
+        
+        private boolean isCurrentInstanceOnline(final DataChangedEvent event) {
+            return Type.ADDED == event.getType() && event.getKey().endsWith(instanceNode.getLocalInstancePath());
+        }
+        
+        private boolean isTheOnlyInstance(final Set<JobInstance> availableJobInstances) {
+            return Collections.singleton(JobRegistry.getInstance().getJobInstance(jobName)).equals(availableJobInstances);
         }
     }
 }

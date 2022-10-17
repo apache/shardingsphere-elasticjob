@@ -17,7 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingNode;
@@ -29,7 +32,9 @@ import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Failover service.
@@ -43,10 +48,13 @@ public final class FailoverService {
     
     private final ShardingService shardingService;
     
+    private final ConfigurationService configService;
+    
     public FailoverService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**
@@ -166,6 +174,32 @@ public final class FailoverService {
             }
         }
         return result;
+    }
+    
+    /**
+     * Get all failovering items.
+     *
+     * @return all failovering items
+     */
+    public Map<Integer, JobInstance> getAllFailoveringItems() {
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
+        Map<Integer, JobInstance> result = new LinkedHashMap<>(shardingTotalCount, 1);
+        for (int i = 0; i < shardingTotalCount; i++) {
+            String data = jobNodeStorage.getJobNodeData(FailoverNode.getExecutingFailoverNode(i));
+            if (!Strings.isNullOrEmpty(data)) {
+                result.put(i, new JobInstance(data));
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Clear failovering item.
+     *
+     * @param item item
+     */
+    public void clearFailoveringItem(final int item) {
+        jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutingFailoverNode(item));
     }
     
     /**
