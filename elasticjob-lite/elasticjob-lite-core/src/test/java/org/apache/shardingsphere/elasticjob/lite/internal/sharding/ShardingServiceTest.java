@@ -250,8 +250,9 @@ public final class ShardingServiceTest {
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
-        when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(true);
         assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }

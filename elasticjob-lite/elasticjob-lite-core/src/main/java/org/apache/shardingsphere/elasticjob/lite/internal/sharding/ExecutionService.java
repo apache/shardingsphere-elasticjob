@@ -17,7 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
+import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -26,7 +28,9 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Execution service.
@@ -52,11 +56,17 @@ public final class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
-        if (!configService.load(true).isMonitorExecution()) {
+        JobConfiguration jobConfiguration = configService.load(true);
+        if (!jobConfiguration.isMonitorExecution()) {
             return;
         }
+        String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+            if (jobConfiguration.isFailover()) {
+                jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), jobInstanceId);
+            } else {
+                jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), jobInstanceId);
+            }
         }
     }
     
@@ -126,6 +136,23 @@ public final class ExecutionService {
         List<Integer> result = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             result.add(i);
+        }
+        return result;
+    }
+    
+    /**
+     * Get all running items with instance.
+     *
+     * @return running items with instance.
+     */
+    public Map<Integer, JobInstance> getAllRunningItems() {
+        int shardingTotalCount = configService.load(true).getShardingTotalCount();
+        Map<Integer, JobInstance> result = new LinkedHashMap<>(shardingTotalCount, 1);
+        for (int i = 0; i < shardingTotalCount; i++) {
+            String data = jobNodeStorage.getJobNodeData(ShardingNode.getRunningNode(i));
+            if (!Strings.isNullOrEmpty(data)) {
+                result.put(i, new JobInstance(data));
+            }
         }
         return result;
     }
