@@ -136,6 +136,8 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
         when(shardingService.getCrashedShardingItems("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
+        when(instanceNode.isInstancePath("/test_job/instances/127.0.0.1@-@1")).thenReturn(true);
+        when(instanceNode.getInstanceFullPath()).thenReturn("/test_job/instances");
         failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@1", ""));
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(failoverService).setCrashedFailoverFlag(2);
@@ -149,6 +151,8 @@ public final class FailoverListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
         when(failoverService.getFailoveringItems("127.0.0.1@-@1")).thenReturn(Collections.singletonList(1));
+        when(instanceNode.isInstancePath("/test_job/instances/127.0.0.1@-@1")).thenReturn(true);
+        when(instanceNode.getInstanceFullPath()).thenReturn("/test_job/instances");
         failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@1", ""));
         verify(failoverService).setCrashedFailoverFlagDirectly(1);
         verify(failoverService).failoverIfNecessary();
