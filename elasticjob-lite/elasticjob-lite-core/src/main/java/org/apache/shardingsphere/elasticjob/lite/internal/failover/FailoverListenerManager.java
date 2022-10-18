@@ -135,16 +135,19 @@ public final class FailoverListenerManager extends AbstractListenerManager {
             if (allRunningItems.isEmpty() && allFailoveringItems.isEmpty()) {
                 return;
             }
+            for (Entry<Integer, JobInstance> entry : allFailoveringItems.entrySet()) {
+                if (!availableJobInstances.contains(entry.getValue())) {
+                    int item = entry.getKey();
+                    failoverService.setCrashedFailoverFlagDirectly(item);
+                    failoverService.clearFailoveringItem(item);
+                    executionService.clearRunningInfo(Collections.singletonList(item));
+                    allRunningItems.remove(item);
+                }
+            }
             for (Entry<Integer, JobInstance> entry : allRunningItems.entrySet()) {
                 if (!availableJobInstances.contains(entry.getValue())) {
                     failoverService.setCrashedFailoverFlag(entry.getKey());
                     executionService.clearRunningInfo(Collections.singletonList(entry.getKey()));
-                }
-            }
-            for (Entry<Integer, JobInstance> entry : allFailoveringItems.entrySet()) {
-                if (!availableJobInstances.contains(entry.getValue())) {
-                    failoverService.setCrashedFailoverFlagDirectly(entry.getKey());
-                    failoverService.clearFailoveringItem(entry.getKey());
                 }
             }
             failoverService.failoverIfNecessary();
