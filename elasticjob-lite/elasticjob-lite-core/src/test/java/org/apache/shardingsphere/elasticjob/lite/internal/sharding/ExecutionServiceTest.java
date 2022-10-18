@@ -88,6 +88,18 @@ public final class ExecutionServiceTest {
     }
     
     @Test
+    public void assertRegisterJobBeginWithFailoverEnabled() {
+        String jobInstanceId = "127.0.0.1@-@1";
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(jobInstanceId));
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
+        executionService.registerJobBegin(getShardingContext());
+        verify(jobNodeStorage).fillJobNode("sharding/0/running", jobInstanceId);
+        verify(jobNodeStorage).fillJobNode("sharding/1/running", jobInstanceId);
+        verify(jobNodeStorage).fillJobNode("sharding/2/running", jobInstanceId);
+        assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
+    }
+    
+    @Test
     public void assertRegisterJobCompletedWithoutMonitorExecution() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
@@ -162,6 +174,18 @@ public final class ExecutionServiceTest {
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
         assertFalse(executionService.hasRunningItems());
+    }
+    
+    @Test
+    public void assertGetAllRunningItems() {
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).build());
+        String jobInstanceId = "127.0.0.1@-@1";
+        when(jobNodeStorage.getJobNodeData("sharding/0/running")).thenReturn(jobInstanceId);
+        when(jobNodeStorage.getJobNodeData("sharding/2/running")).thenReturn(jobInstanceId);
+        Map<Integer, JobInstance> actual = executionService.getAllRunningItems();
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(0), is(new JobInstance(jobInstanceId)));
+        assertThat(actual.get(2), is(new JobInstance(jobInstanceId)));
     }
     
     @Test
