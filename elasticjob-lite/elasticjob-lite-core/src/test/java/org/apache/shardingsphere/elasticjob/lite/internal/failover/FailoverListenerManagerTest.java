@@ -21,8 +21,11 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
+import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
+import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -38,6 +41,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,6 +66,15 @@ public final class FailoverListenerManagerTest {
     @Mock
     private FailoverService failoverService;
     
+    @Mock
+    private InstanceService instanceService;
+    
+    @Mock
+    private ExecutionService executionService;
+    
+    @Mock
+    private InstanceNode instanceNode;
+    
     private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, "test_job");
     
     @Before
@@ -69,6 +83,9 @@ public final class FailoverListenerManagerTest {
         ReflectionUtils.setFieldValue(failoverListenerManager, "configService", configService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(failoverListenerManager, "instanceService", instanceService);
+        ReflectionUtils.setFieldValue(failoverListenerManager, "executionService", executionService);
+        ReflectionUtils.setFieldValue(failoverListenerManager, "instanceNode", instanceNode);
     }
     
     @Test
@@ -160,5 +177,26 @@ public final class FailoverListenerManagerTest {
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
         failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYamlWithFailover(false)));
         verify(failoverService).removeFailoverInfo();
+    }
+    
+    @Test
+    public void assertLegacyCrashedRunningItemListenerWhenRunningItemsArePresent() {
+        JobInstance jobInstance = new JobInstance("127.0.0.1@-@1");
+        JobRegistry.getInstance().addJobInstance("test_job", jobInstance);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
+        when(instanceNode.getLocalInstancePath()).thenReturn("instances/127.0.0.1@-@1");
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(jobInstance));
+        Map<Integer, JobInstance> allRunningItems = new LinkedHashMap<>(2, 1);
+        allRunningItems.put(0, new JobInstance("127.0.0.1@-@2"));
+        allRunningItems.put(1, new JobInstance("127.0.0.1@-@2"));
+        when(executionService.getAllRunningItems()).thenReturn(allRunningItems);
+        when(failoverService.getAllFailoveringItems()).thenReturn(Collections.singletonMap(1, new JobInstance("127.0.0.1@-@2")));
+        failoverListenerManager.new LegacyCrashedRunningItemListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/instances/127.0.0.1@-@1", ""));
+        verify(failoverService).setCrashedFailoverFlagDirectly(1);
+        verify(failoverService).clearFailoveringItem(1);
+        verify(executionService).clearRunningInfo(Collections.singletonList(1));
+        verify(failoverService).setCrashedFailoverFlag(0);
+        verify(executionService).clearRunningInfo(Collections.singletonList(0));
+        verify(failoverService).failoverIfNecessary();
     }
 }
