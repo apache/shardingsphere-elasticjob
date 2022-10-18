@@ -1,3 +1,23 @@
+## 3.0.2
+
+### Bug Fixes
+
+1. Fix itemErrorMessages not cleared after job finished.
+1. Fix Curator notify thread may be blocked and avoid probably endless loop in ServerService.
+1. NPE occur when job instance could not be unmarshalled.
+1. Fix failover too sensitive.
+
+## Enhancements
+
+1. Script Job exception's stack was ignored.
+1. Support using different event trace data source when using Spring Boot.
+1. Supports building project by Java 19.
+
+### Change Logs
+
+1. [MILESTONE 3.0.2](https://github.com/apache/shardingsphere-elasticjob/milestone/5)
+
+
 ## 3.0.1
 
 ### Enhancements
