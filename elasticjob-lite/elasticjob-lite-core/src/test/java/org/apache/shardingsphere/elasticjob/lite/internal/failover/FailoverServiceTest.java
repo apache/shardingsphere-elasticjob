@@ -17,7 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.failover;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.lite.internal.sharding.ShardingService;
@@ -33,6 +35,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -56,6 +59,9 @@ public final class FailoverServiceTest {
     @Mock
     private ShardingService shardingService;
     
+    @Mock
+    private ConfigurationService configService;
+    
     private final FailoverService failoverService = new FailoverService(null, "test_job");
     
     @Before
@@ -63,6 +69,7 @@ public final class FailoverServiceTest {
         ReflectionUtils.setFieldValue(failoverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(failoverService, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverService, "jobName", "test_job");
+        ReflectionUtils.setFieldValue(failoverService, "configService", configService);
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
@@ -84,7 +91,7 @@ public final class FailoverServiceTest {
 
     @Test
     public void assertSetCrashedFailoverFlagDirectly() {
-        failoverService.setCrashedFailoverFlag(0);
+        failoverService.setCrashedFailoverFlagDirectly(0);
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
     }
     
@@ -239,6 +246,24 @@ public final class FailoverServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/failover");
         verify(jobNodeStorage).isJobNodeExisted("sharding/1/failover");
         verify(jobNodeStorage).isJobNodeExisted("sharding/2/failover");
+    }
+    
+    @Test
+    public void assertGetAllFailoveringItems() {
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).build());
+        String jobInstanceId = "127.0.0.1@-@1";
+        when(jobNodeStorage.getJobNodeData("sharding/0/failovering")).thenReturn(jobInstanceId);
+        when(jobNodeStorage.getJobNodeData("sharding/2/failovering")).thenReturn(jobInstanceId);
+        Map<Integer, JobInstance> actual = failoverService.getAllFailoveringItems();
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(0), is(new JobInstance(jobInstanceId)));
+        assertThat(actual.get(2), is(new JobInstance(jobInstanceId)));
+    }
+    
+    @Test
+    public void assertClearFailoveringItem() {
+        failoverService.clearFailoveringItem(0);
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/failovering");
     }
     
     @Test

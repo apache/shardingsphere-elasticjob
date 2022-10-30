@@ -96,10 +96,10 @@ public final class ServerService {
      */
     public boolean isEnableServer(final String ip) {
         String serverStatus = jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip));
-        while (Strings.isNullOrEmpty(serverStatus)) {
+        for (int i = 0; Strings.isNullOrEmpty(serverStatus) && i < 10; i++) {
             BlockUtils.waitingShortTime();
             serverStatus = jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip));
         }
-        return !ServerStatus.DISABLED.name().equals(serverStatus);
+        return ServerStatus.ENABLED.name().equals(serverStatus);
     }
 }

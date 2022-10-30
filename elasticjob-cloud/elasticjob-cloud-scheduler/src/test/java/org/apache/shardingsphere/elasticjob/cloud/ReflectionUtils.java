@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
@@ -55,9 +57,21 @@ public final class ReflectionUtils {
     public static void setStaticFieldValue(final Class target, final String fieldName, final Object fieldValue) {
         Field field = target.getDeclaredField(fieldName);
         field.setAccessible(true);
-        Field modifiers = field.getClass().getDeclaredField("modifiers");
+        Field modifiers = getModifierField();
         modifiers.setAccessible(true);
         modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(target, fieldValue);
+    }
+    
+    @SneakyThrows({NoSuchMethodException.class, IllegalAccessException.class, InvocationTargetException.class})
+    private static Field getModifierField() {
+        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+        getDeclaredFields0.setAccessible(true);
+        for (Field each : (Field[]) getDeclaredFields0.invoke(Field.class, false)) {
+            if ("modifiers".equals(each.getName())) {
+                return each;
+            }
+        }
+        throw new UnsupportedOperationException();
     }
 }

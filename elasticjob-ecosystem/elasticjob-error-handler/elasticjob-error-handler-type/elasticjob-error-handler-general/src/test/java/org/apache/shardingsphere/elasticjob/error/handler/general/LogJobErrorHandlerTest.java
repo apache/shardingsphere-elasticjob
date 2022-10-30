@@ -17,43 +17,47 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import lombok.SneakyThrows;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Properties;
 
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class LogJobErrorHandlerTest {
     
-    @Mock
-    private Logger log;
+    private static List<LoggingEvent> appenderList;
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @BeforeClass
+    public static void setupLogger() {
+        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LogJobErrorHandler.class);
+        ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("LogJobErrorHandlerTestAppender");
+        appenderList = appender.list;
+    }
+    
+    @Before
+    public void setUp() {
+        appenderList.clear();
+    }
     
     @Test
     public void assertHandleException() {
         LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG", new Properties()).orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("Job 'test_job' exception occur in job processing", cause);
-    }
-    
-    @SneakyThrows
-    private void setStaticFieldValue(final LogJobErrorHandler logJobErrorHandler) {
-        Field field = logJobErrorHandler.getClass().getDeclaredField("log");
-        field.setAccessible(true);
-        Field modifiers = field.getClass().getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(logJobErrorHandler, log);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("Job 'test_job' exception occur in job processing"));
+        actual.close();
     }
 }

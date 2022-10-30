@@ -17,23 +17,30 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,8 +48,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class EmailJobErrorHandlerTest {
     
-    @Mock
-    private Logger log;
+    private static List<LoggingEvent> appenderList;
     
     @Mock
     private Session session;
@@ -50,21 +56,34 @@ public final class EmailJobErrorHandlerTest {
     @Mock
     private Transport transport;
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @BeforeClass
+    public static void init() {
+        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(EmailJobErrorHandler.class);
+        ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("EmailJobErrorHandlerTestAppender");
+        appenderList = appender.list;
+    }
+    
+    @Before
+    public void setUp() {
+        appenderList.clear();
+    }
+    
     @Test
     public void assertHandleExceptionWithMessagingException() {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
-        setStaticFieldValue(emailJobErrorHandler, "log", log);
         Throwable cause = new RuntimeException("test");
         String jobName = "test_job";
         emailJobErrorHandler.handleException(jobName, cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send email because of", jobName, cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send email because of"));
     }
     
     @Test
     @SneakyThrows
     public void assertHandleExceptionSucceedInSendingEmail() {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
-        setStaticFieldValue(emailJobErrorHandler, "log", log);
         setUpMockSession(session);
         setFieldValue(emailJobErrorHandler, "session", session);
         Throwable cause = new RuntimeException("test");
@@ -72,7 +91,9 @@ public final class EmailJobErrorHandlerTest {
         when(session.getTransport()).thenReturn(transport);
         emailJobErrorHandler.handleException(jobName, cause);
         verify(transport).sendMessage(any(Message.class), any(Address[].class));
-        verify(log).info("An exception has occurred in Job '{}', an email has been sent successfully.", jobName, cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.INFO));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job', an email has been sent successfully."));
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {
@@ -83,16 +104,6 @@ public final class EmailJobErrorHandlerTest {
         Properties props = new Properties();
         setFieldValue(session, "props", props);
         when(session.getProperties()).thenReturn(props);
-    }
-    
-    @SneakyThrows
-    private void setStaticFieldValue(final EmailJobErrorHandler wechatJobErrorHandler, final String name, final Object value) {
-        Field fieldLog = wechatJobErrorHandler.getClass().getDeclaredField(name);
-        fieldLog.setAccessible(true);
-        Field modifiers = fieldLog.getClass().getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(fieldLog, fieldLog.getModifiers() & ~Modifier.FINAL);
-        fieldLog.set(wechatJobErrorHandler, value);
     }
     
     @SneakyThrows

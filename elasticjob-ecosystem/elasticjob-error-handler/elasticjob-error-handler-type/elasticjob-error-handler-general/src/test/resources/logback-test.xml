@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
@@ -17,8 +17,8 @@
   -->
 
 <configuration>
-    <appender name="WechatJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
-    <logger name="org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatJobErrorHandler" level="info" additivity="false">
-        <appender-ref ref="WechatJobErrorHandlerTestAppender" />
+    <appender name="LogJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
+    <logger name="org.apache.shardingsphere.elasticjob.error.handler.general.LogJobErrorHandler" level="error" additivity="false">
+        <appender-ref ref="LogJobErrorHandlerTestAppender" />
     </logger>
-</configuration>
+</configuration> 

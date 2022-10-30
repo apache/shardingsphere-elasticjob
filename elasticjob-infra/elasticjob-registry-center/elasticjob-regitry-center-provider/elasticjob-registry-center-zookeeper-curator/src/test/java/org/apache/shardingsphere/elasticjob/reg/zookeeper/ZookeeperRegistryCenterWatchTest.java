@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
@@ -25,6 +26,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterWatchTest {
     
@@ -45,20 +52,45 @@ public final class ZookeeperRegistryCenterWatchTest {
     public static void tearDown() {
         zkRegCenter.close();
     }
-    
+
     @Test(timeout = 10000L)
-    public void assertWatch() throws InterruptedException {
+    public void assertWatchWithoutExecutor() throws InterruptedException {
         CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
-        zkRegCenter.addCacheData("/test");
+        String key = "/test-watch-without-executor";
+        zkRegCenter.addCacheData(key);
         CountDownLatch waitingForWatchReady = new CountDownLatch(1);
-        zkRegCenter.watch("/test", event -> {
+        zkRegCenter.watch(key, event -> {
             waitingForWatchReady.countDown();
             if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
                 waitingForCountDownValue.countDown();
             }
-        });
+        }, null);
+        zkRegCenter.persist(key, "");
         waitingForWatchReady.await();
-        zkRegCenter.update("/test", "countDown");
+        zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
+    }
+    
+    @Test(timeout = 10000L)
+    public void assertWatchWithExecutor() throws InterruptedException {
+        CountDownLatch waitingForCountDownValue = new CountDownLatch(1);
+        String key = "/test-watch-with-executor";
+        zkRegCenter.addCacheData(key);
+        CountDownLatch waitingForWatchReady = new CountDownLatch(1);
+        String threadNamePrefix = "ListenerNotify";
+        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory(threadNamePrefix);
+        ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
+        zkRegCenter.watch(key, event -> {
+            assertThat(Thread.currentThread().getName(), startsWith(threadNamePrefix));
+            waitingForWatchReady.countDown();
+            if (DataChangedEvent.Type.UPDATED == event.getType() && "countDown".equals(event.getValue())) {
+                waitingForCountDownValue.countDown();
+            }
+        }, executor);
+        zkRegCenter.persist(key, "");
+        waitingForWatchReady.await();
+        zkRegCenter.update(key, "countDown");
+        waitingForCountDownValue.await();
+        executor.shutdown();
     }
 }

@@ -202,11 +202,15 @@ public final class ShardingService {
         List<Integer> result = new LinkedList<>();
         int shardingTotalCount = configService.load(true).getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
-            if (jobInstanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+            if (isRunningItem(i) && jobInstanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
         return result;
+    }
+    
+    private boolean isRunningItem(final int item) {
+        return jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(item));
     }
     
     /**
