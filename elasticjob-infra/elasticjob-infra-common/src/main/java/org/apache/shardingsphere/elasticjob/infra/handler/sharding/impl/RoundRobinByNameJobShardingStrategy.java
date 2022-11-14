@@ -40,7 +40,7 @@ public final class RoundRobinByNameJobShardingStrategy implements JobShardingStr
         int shardingUnitsSize = shardingUnits.size();
         int jobHashCode = jobName.hashCode();
         int offset = 0;
-        if(jobHashCode != Integer.MIN_VALUE) {
+        if (jobHashCode != Integer.MIN_VALUE) {
             offset = Math.abs(jobHashCode) % shardingUnitsSize;
         } else {
             offset = Integer.MIN_VALUE % shardingUnitsSize;
