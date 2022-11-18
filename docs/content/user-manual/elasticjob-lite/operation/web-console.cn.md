@@ -13,12 +13,60 @@ chapter = true
 控制台提供两种账户：管理员及访客。
 管理员拥有全部操作权限，访客仅拥有察看权限。
 默认管理员用户名和密码是 root/root，访客用户名和密码是 guest/guest，可通过 `conf\application.properties` 修改管理员及访客用户名及密码。
+
 ```
 auth.root_username=root
 auth.root_password=root
 auth.guest_username=guest
 auth.guest_password=guest
 ```
+
+## Casdoor登录
+
+控制台集成了[Casdoor](https://casdoor.org/)单点登录,用户可以选择Casdoor进行登录等一些列操作。
+
+步骤一: 部署casdoor
+Casdoor的源代码托管在 GitHub: https://github.com/casdoor/casdoor 
+
+启动模式有开发模式和生产模式,此处以开发模式为例,[更多详细](https://casdoor.org/docs/basic/server-installation)
+
+后端启动方式
+
+```bash
+go run main.go
+```
+
+前端启动方式
+
+```bash
+cd web
+yarn install
+yarn start
+```
+
+步骤二:配置casdoor并得到所需的数据
+
+![casdoorConfig](/docs/public/img/casdoor/casdoorConfig.png)
+
+用红线指出来的是后端配置需要用到的,其中Redirect URLs取决于你要要callback的地址
+
+我们还需要根据所选cert到cert选项中找到对应的cert,如本例为cert-built-in,其中certificate也是我们所需要用到的。
+
+![cert](/docs/public/img/casdoor/cert.png)
+
+更多[casdoor文档](https://casdoor.org/docs/overview)
+
+步骤三:在ShardingSphere中进行配置
+
+在[sharingshphere-elasticjob-ui](https://github.com/apache/shardingsphere-elasticjob-ui)中的该application.properties进行配置
+
+![list](/docs/public/img/casdoor/list.png)
+
+将我们在casdoor获取的数据粘贴到相应位置即可如:
+
+![application](/docs/public/img/casdoor/application.png)
+
+这样我们就可以在shardingsphere-elasticjob-ui中使用casdoor了！更多功能详见[Casdoor](https://casdoor.org/)
 
 ## 功能列表
 
