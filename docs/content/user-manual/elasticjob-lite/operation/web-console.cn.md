@@ -46,13 +46,13 @@ yarn start
 
 步骤二:配置casdoor并得到所需的数据
 
-![casdoorConfig](/docs/public/img/casdoor/casdoorConfig.png)
+![casdoorConfig](..\..\..\..\static\img\casdoor\casdoorConfig.png)
 
 用红线指出来的是后端配置需要用到的,其中Redirect URLs取决于你要要callback的地址
 
 我们还需要根据所选cert到cert选项中找到对应的cert,如本例为cert-built-in,其中certificate也是我们所需要用到的。
 
-![cert](/docs/public/img/casdoor/cert.png)
+![cert](..\..\..\..\static\img\casdoor\cert.png)
 
 更多[casdoor文档](https://casdoor.org/docs/overview)
 
@@ -60,11 +60,11 @@ yarn start
 
 在[sharingshphere-elasticjob-ui](https://github.com/apache/shardingsphere-elasticjob-ui)中的该application.properties进行配置
 
-![list](/docs/public/img/casdoor/list.png)
+![list](..\..\..\..\static\img\casdoor\list.png)
 
 将我们在casdoor获取的数据粘贴到相应位置即可如:
 
-![application](/docs/public/img/casdoor/application.png)
+![application](..\..\..\..\static\img\casdoor\application.png)
 
 这样我们就可以在shardingsphere-elasticjob-ui中使用casdoor了！更多功能详见[Casdoor](https://casdoor.org/)
 
