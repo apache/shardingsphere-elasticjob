@@ -46,23 +46,23 @@ yarn start
 
 Step2:Configure Casdoor
 
-![casdoorConfig](/docs/public/img/casdoor/casdoorConfig.png)
+![casdoorConfig](..\..\..\..\static\img\casdoor\casdoorConfig.png)
 
 RedirectURLs is depend on what url you need redirect.The selected data will use in next.
 
 2.On the certificate editing page, you can see your `Certificate`
 
-![cert](/docs/public/img/casdoor/cert.png)
+![cert](..\..\..\..\static\img\casdoor\cert.png)
 
 Step3:Configure application in ShardingSphere
 
 First we need find the application.properties we need configure
 
-![list](/docs/public/img/casdoor/list.png)
+![list](..\..\..\..\static\img\casdoor\list.png)
 
 Second we need copy the data in Casdoor application and paste them into application.
 
-![application](/docs/public/img/casdoor/application.png)
+![application](..\..\..\..\static\img\casdoor\application.png)
 
 Now we can use it
 
