@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     
@@ -46,6 +46,16 @@ public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     @Test
     public void assertMonitorWithCommand() throws IOException {
         assertNotNull(SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND + getJobName(), DUMP_PORT));
-        assertNull(SocketUtils.sendCommand("unknown_command", DUMP_PORT));
+        assertEquals(SocketUtils.sendCommand("unknown_command", DUMP_PORT), "");
+    }
+
+    @Test
+    public void assertDumpJobDirectly() throws IOException {
+        assertNotNull(getSnapshotService().dumpJobDirectly(getJobName()));
+    }
+
+    @Test
+    public void assertDumpJob() throws IOException {
+        assertNotNull(SnapshotService.dumpJob("127.0.0.1", DUMP_PORT, getJobName()));
     }
 }
