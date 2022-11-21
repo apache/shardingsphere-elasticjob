@@ -20,6 +20,52 @@ auth.guest_username=guest
 auth.guest_password=guest
 ```
 
+## Login with Casdoor
+
+The console have integrated [Casdoor](https://casdoor.org/). We can choose it  for SSO.
+
+Step1: Deploy Casdoor
+
+Casdoor code in GitHub: https://github.com/casdoor/casdoor 
+
+Here a example for development mode. [More](https://casdoor.org/docs/basic/server-installation)
+
+Backend
+
+```bash
+go run main.go
+```
+
+Frontend
+
+```bash
+cd web
+yarn install
+yarn start
+```
+
+Step2:Configure Casdoor
+
+![casdoorConfig](https://shardingsphere.apache.org/elasticjob/current/img/casdoor/casdoorConfig.png)
+
+RedirectURLs is depend on what url you need redirect.The selected data will use in next.
+
+2.On the certificate editing page, you can see your `Certificate`
+
+![cert](https://shardingsphere.apache.org/elasticjob/current/img/casdoor/cert.png)
+
+Step3:Configure application in ShardingSphere
+
+First we need find the application.properties we need configure
+
+![list](https://shardingsphere.apache.org/elasticjob/current/img/casdoor/list.png)
+
+Second we need copy the data in Casdoor application and paste them into application.
+
+![application](https://shardingsphere.apache.org/elasticjob/current/img/casdoor/application.png)
+
+Now we can use it
+
 ## Function list
 
 - Login security control
