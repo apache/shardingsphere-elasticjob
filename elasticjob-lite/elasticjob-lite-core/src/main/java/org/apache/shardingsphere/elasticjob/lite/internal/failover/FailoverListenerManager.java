@@ -154,7 +154,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         }
         
         private boolean isCurrentInstanceOnline(final DataChangedEvent event) {
-            return Type.ADDED == event.getType() && event.getKey().endsWith(instanceNode.getLocalInstancePath());
+            return Type.ADDED == event.getType() && !JobRegistry.getInstance().isShutdown(jobName) && event.getKey().endsWith(instanceNode.getLocalInstancePath());
         }
         
         private boolean isTheOnlyInstance(final Set<JobInstance> availableJobInstances) {

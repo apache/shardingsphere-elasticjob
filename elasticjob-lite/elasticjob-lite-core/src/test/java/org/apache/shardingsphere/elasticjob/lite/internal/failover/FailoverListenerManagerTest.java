@@ -44,8 +44,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -186,6 +188,7 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertLegacyCrashedRunningItemListenerWhenRunningItemsArePresent() {
         JobInstance jobInstance = new JobInstance("127.0.0.1@-@1");
+        JobRegistry.getInstance().registerJob("test_job", mock(JobScheduleController.class));
         JobRegistry.getInstance().addJobInstance("test_job", jobInstance);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
         when(instanceNode.getLocalInstancePath()).thenReturn("instances/127.0.0.1@-@1");
@@ -202,5 +205,11 @@ public final class FailoverListenerManagerTest {
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(executionService).clearRunningInfo(Collections.singletonList(0));
         verify(failoverService).failoverIfNecessary();
+    }
+    
+    @Test
+    public void assertLegacyCrashedRunningItemListenerWhenJobInstanceAbsent() {
+        failoverListenerManager.new LegacyCrashedRunningItemListener().onChange(new DataChangedEvent(Type.ADDED, "", ""));
+        verifyNoInteractions(instanceNode);
     }
 }
