@@ -80,6 +80,14 @@ public final class InstanceServiceTest {
     }
     
     @Test
+    public void assertGetAvailableJobInstancesWhenInstanceRemoving() {
+        when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nlabels: labels\nserverIp: 127.0.0.1\n");
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        assertThat(instanceService.getAvailableJobInstances(), is(Collections.singletonList(new JobInstance("127.0.0.1@-@0"))));
+    }
+    
+    @Test
     public void assertIsLocalJobInstanceExisted() {
         when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
         assertTrue(instanceService.isLocalJobInstanceExisted());
