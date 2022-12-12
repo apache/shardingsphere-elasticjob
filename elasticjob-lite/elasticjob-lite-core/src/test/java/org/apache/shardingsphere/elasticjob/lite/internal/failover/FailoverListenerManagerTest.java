@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -46,6 +47,7 @@ import java.util.Map;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -202,5 +204,11 @@ public final class FailoverListenerManagerTest {
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(executionService).clearRunningInfo(Collections.singletonList(0));
         verify(failoverService).failoverIfNecessary();
+    }
+    
+    @Test
+    public void assertLegacyCrashedRunningItemListenerWhenJobInstanceAbsent() {
+        failoverListenerManager.new LegacyCrashedRunningItemListener().onChange(new DataChangedEvent(Type.ADDED, "", ""));
+        verifyNoInteractions(instanceNode);
     }
 }
