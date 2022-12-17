@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -30,16 +31,13 @@ import org.springframework.util.Assert;
  *
  */
 @Getter
+@RequiredArgsConstructor
 public class JobScannerConfiguration implements BeanDefinitionRegistryPostProcessor, InitializingBean {
 
     private final String[] basePackages;
 
-    public JobScannerConfiguration(final String[] basePackages) {
-        this.basePackages = basePackages;
-    }
-
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         Assert.notNull(this.basePackages, "Property 'basePackage' is required");
     }
 
