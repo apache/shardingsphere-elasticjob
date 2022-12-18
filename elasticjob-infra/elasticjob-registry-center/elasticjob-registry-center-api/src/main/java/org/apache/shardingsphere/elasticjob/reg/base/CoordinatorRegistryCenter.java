@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedE
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Coordinator registry center.
@@ -111,8 +112,9 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
      *
      * @param key key to be watched
      * @param listener data listener
+     * @param executor event notify executor
      */
-    void watch(String key, DataChangedEventListener listener);
+    void watch(String key, DataChangedEventListener listener, Executor executor);
     
     /**
      * Add connection state changed event listener to registry center.

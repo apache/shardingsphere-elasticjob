@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.internal.schedule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerNotifierManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Map;
@@ -169,6 +170,7 @@ public final class JobRegistry {
     public void shutdown(final String jobName) {
         Optional.ofNullable(schedulerMap.remove(jobName)).ifPresent(JobScheduleController::shutdown);
         Optional.ofNullable(regCenterMap.remove(jobName)).ifPresent(regCenter -> regCenter.evictCacheData("/" + jobName));
+        ListenerNotifierManager.getInstance().removeJobNotifyExecutor(jobName);
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);
         currentShardingTotalCountMap.remove(jobName);

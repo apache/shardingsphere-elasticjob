@@ -17,7 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
-import lombok.SneakyThrows;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -25,22 +27,17 @@ import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Properties;
 
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class DingtalkJobErrorHandlerTest {
     
     private static final int PORT = 9875;
@@ -49,9 +46,9 @@ public final class DingtalkJobErrorHandlerTest {
     
     private static RestfulService restfulService;
     
-    @Mock
-    private Logger log;
+    private static List<LoggingEvent> appenderList;
     
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeClass
     public static void init() {
         NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
@@ -59,6 +56,14 @@ public final class DingtalkJobErrorHandlerTest {
         config.addControllerInstances(new DingtalkInternalController());
         restfulService = new NettyRestfulService(config);
         restfulService.startup();
+        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(DingtalkJobErrorHandler.class);
+        ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("DingtalkJobErrorHandlerTestAppender");
+        appenderList = appender.list;
+    }
+    
+    @Before
+    public void setUp() {
+        appenderList.clear();
     }
     
     @AfterClass
@@ -71,60 +76,55 @@ public final class DingtalkJobErrorHandlerTest {
     @Test
     public void assertHandleExceptionWithNotifySuccessful() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).info("An exception has occurred in Job '{}', an dingtalk message been sent successful.", "test_job", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.INFO));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job', an dingtalk message been sent successful."));
     }
     
     @Test
     public void assertHandleExceptionWithWrongToken() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=wrong_token"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send dingtalk because of: {}", "test_job", "token is not exist", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send dingtalk because of: token is not exist"));
     }
     
     @Test
     public void assertHandleExceptionWithUrlIsNotFound() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/404"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}' but failed to send dingtalk because of: unexpected http response status: {}", "test_job", 404, cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job' but failed to send dingtalk because of: unexpected http response status: 404"));
     }
     
     @Test
     public void assertHandleExceptionWithWrongUrl() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://wrongUrl"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).error("An exception has occurred in Job '{}', but failed to send dingtalk because of", "test_job", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.ERROR));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job', but failed to send dingtalk because of"));
     }
     
     @Test
     public void assertHandleExceptionWithNoSign() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
-        setStaticFieldValue(actual);
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
-        verify(log).info("An exception has occurred in Job '{}', an dingtalk message been sent successful.", "test_job", cause);
+        assertThat(appenderList.size(), is(1));
+        assertThat(appenderList.get(0).getLevel(), is(Level.INFO));
+        assertThat(appenderList.get(0).getFormattedMessage(), is("An exception has occurred in Job 'test_job', an dingtalk message been sent successful."));
     }
     
     private DingtalkJobErrorHandler getDingtalkJobErrorHandler(final Properties props) {
         return (DingtalkJobErrorHandler) JobErrorHandlerFactory.createHandler("DINGTALK", props).orElseThrow(() -> new JobConfigurationException("DINGTALK error handler not found."));
-    }
-    
-    @SneakyThrows
-    private void setStaticFieldValue(final DingtalkJobErrorHandler dingtalkJobErrorHandler) {
-        Field field = dingtalkJobErrorHandler.getClass().getDeclaredField("log");
-        field.setAccessible(true);
-        Field modifiers = getModifierField();
-        modifiers.setAccessible(true);
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        field.set(dingtalkJobErrorHandler, log);
     }
     
     private Properties createConfigurationProperties(final String webhook) {
@@ -144,17 +144,5 @@ public final class DingtalkJobErrorHandlerTest {
         result.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "4000");
         result.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "6000");
         return result;
-    }
-    
-    @SneakyThrows({NoSuchMethodException.class, IllegalAccessException.class, InvocationTargetException.class})
-    private static Field getModifierField() {
-        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
-        getDeclaredFields0.setAccessible(true);
-        for (Field each : (Field[]) getDeclaredFields0.invoke(Field.class, false)) {
-            if ("modifiers".equals(each.getName())) {
-                return each;
-            }
-        }
-        throw new UnsupportedOperationException();
     }
 }

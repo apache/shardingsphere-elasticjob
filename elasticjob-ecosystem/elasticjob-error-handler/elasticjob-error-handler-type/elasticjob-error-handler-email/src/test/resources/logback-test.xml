@@ -17,8 +17,8 @@
   -->
 
 <configuration>
-    <appender name="WechatJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
-    <logger name="org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatJobErrorHandler" level="info" additivity="false">
-        <appender-ref ref="WechatJobErrorHandlerTestAppender" />
+    <appender name="EmailJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
+    <logger name="org.apache.shardingsphere.elasticjob.error.handler.email.EmailJobErrorHandler" level="info" additivity="false">
+        <appender-ref ref="EmailJobErrorHandlerTestAppender" />
     </logger>
 </configuration>

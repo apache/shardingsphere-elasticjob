@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.api.registry;
 
 import lombok.RequiredArgsConstructor;
+
+import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -31,6 +33,9 @@ import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
 
 import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -51,7 +56,9 @@ public final class JobInstanceRegistry {
      * Register.
      */
     public void register() {
-        regCenter.watch("/", new JobInstanceRegistryListener());
+        ThreadFactory threadFactory = ThreadUtils.newGenericThreadFactory("ListenerNotify-instanceRegistry");
+        Executor executor = Executors.newSingleThreadExecutor(threadFactory);
+        regCenter.watch("/", new JobInstanceRegistryListener(), executor);
     }
     
     public class JobInstanceRegistryListener implements DataChangedEventListener {

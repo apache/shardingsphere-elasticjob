@@ -35,7 +35,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class JobOperateAPIImplTest {
-    
+
+    static final int DUMP_PORT = 9000;
+
     private JobOperateAPI jobOperateAPI;
     
     @Mock
@@ -166,4 +168,5 @@ public final class JobOperateAPIImplTest {
         assertFalse(regCenter.isExisted("/test_job1/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job2/servers/ip1"));
     }
+
 }

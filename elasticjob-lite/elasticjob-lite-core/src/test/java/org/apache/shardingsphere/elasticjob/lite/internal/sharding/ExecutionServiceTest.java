@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
@@ -76,11 +77,25 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWithMonitorExecution() {
+        String jobInstanceId = "127.0.0.1@-@1";
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(jobInstanceId));
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
         executionService.registerJobBegin(getShardingContext());
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/0/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/1/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("sharding/2/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/0/running", jobInstanceId);
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/1/running", jobInstanceId);
+        verify(jobNodeStorage).fillEphemeralJobNode("sharding/2/running", jobInstanceId);
+        assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
+    }
+    
+    @Test
+    public void assertRegisterJobBeginWithFailoverEnabled() {
+        String jobInstanceId = "127.0.0.1@-@1";
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(jobInstanceId));
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
+        executionService.registerJobBegin(getShardingContext());
+        verify(jobNodeStorage).fillJobNode("sharding/0/running", jobInstanceId);
+        verify(jobNodeStorage).fillJobNode("sharding/1/running", jobInstanceId);
+        verify(jobNodeStorage).fillJobNode("sharding/2/running", jobInstanceId);
         assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
     }
     
@@ -159,6 +174,18 @@ public final class ExecutionServiceTest {
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
         assertFalse(executionService.hasRunningItems());
+    }
+    
+    @Test
+    public void assertGetAllRunningItems() {
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).build());
+        String jobInstanceId = "127.0.0.1@-@1";
+        when(jobNodeStorage.getJobNodeData("sharding/0/running")).thenReturn(jobInstanceId);
+        when(jobNodeStorage.getJobNodeData("sharding/2/running")).thenReturn(jobInstanceId);
+        Map<Integer, JobInstance> actual = executionService.getAllRunningItems();
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(0), is(new JobInstance(jobInstanceId)));
+        assertThat(actual.get(2), is(new JobInstance(jobInstanceId)));
     }
     
     @Test
