@@ -19,10 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.spring.core.scanner;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringUtils;
 
@@ -36,19 +34,7 @@ import java.util.stream.Collectors;
  *
  * @see ClassPathJobScanner
  */
-public class ElasticJobScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
-
-    /**
-     * set resourceLoader.
-     * @param resourceLoader resourceLoader
-     *
-     * @deprecated  NOP
-     */
-    @Override
-    @Deprecated
-    public void setResourceLoader(final ResourceLoader resourceLoader) {
-        // NOP
-    }
+public class ElasticJobScanRegistrar implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(final AnnotationMetadata importingClassMetadata,
