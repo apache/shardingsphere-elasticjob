@@ -21,8 +21,19 @@
             xmlns:beans="http://www.springframework.org/schema/beans"
             targetNamespace="http://shardingsphere.apache.org/schema/elasticjob"
             elementFormDefault="qualified">
-    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd" />
-    
+    <xsd:import namespace="http://www.springframework.org/schema/beans"
+                schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+
+    <xsd:element name="job-scanner">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="base-package" type="xsd:string" use="required"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:element name="job">
         <xsd:complexType>
             <xsd:complexContent>
@@ -57,7 +68,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    
+
     <xsd:element name="zookeeper">
         <xsd:complexType>
             <xsd:complexContent>
@@ -74,7 +85,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    
+
     <xsd:element name="rdb-tracing">
         <xsd:complexType>
             <xsd:complexContent>
@@ -84,7 +95,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    
+
     <xsd:element name="snapshot">
         <xsd:complexType>
             <xsd:complexContent>
