@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -85,7 +86,7 @@ public final class ConfigurationService {
             return;
         }
         String originalJobClassName = jobNodeStorage.getJobRootNodeData();
-        if (null != originalJobClassName && !originalJobClassName.equals(newJobClassName)) {
+        if (StringUtils.isNotBlank(originalJobClassName) && !originalJobClassName.equals(newJobClassName)) {
             throw new JobConfigurationException(
                     "Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", jobConfig.getJobName(), originalJobClassName, newJobClassName);
         }
