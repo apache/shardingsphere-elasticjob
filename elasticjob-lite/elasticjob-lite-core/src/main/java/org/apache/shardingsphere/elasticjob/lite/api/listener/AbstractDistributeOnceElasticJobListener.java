@@ -61,8 +61,18 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
             BlockUtils.waitingShortTime();
         }
         if (guaranteeService.isAllStarted()) {
-            doBeforeJobExecutedAtLastStarted(shardingContexts);
-            guaranteeService.clearAllStartedInfo();
+            if (!guaranteeService.lockAllStarted()) {
+                return;
+            }
+            try {
+                if (!guaranteeService.isAllStarted()) {
+                    return;
+                }
+                doBeforeJobExecutedAtLastStarted(shardingContexts);
+            } finally {
+                guaranteeService.unlockAllStarted();
+                guaranteeService.clearAllStartedInfo();
+            }
             return;
         }
         long before = timeService.getCurrentMillis();
@@ -90,8 +100,18 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
             BlockUtils.waitingShortTime();
         }
         if (guaranteeService.isAllCompleted()) {
-            doAfterJobExecutedAtLastCompleted(shardingContexts);
-            guaranteeService.clearAllCompletedInfo();
+            if (!guaranteeService.lockAllCompleted()) {
+                return;
+            }
+            try {
+                if (!guaranteeService.isAllCompleted()) {
+                    return;
+                }
+                doAfterJobExecutedAtLastCompleted(shardingContexts);
+            } finally {
+                guaranteeService.unlockAllCompleted();
+                guaranteeService.clearAllCompletedInfo();
+            }
             return;
         }
         long before = timeService.getCurrentMillis();

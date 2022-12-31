@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,10 +71,12 @@ public final class DistributeOnceElasticJobListenerTest {
     public void assertBeforeJobExecutedWhenIsAllStarted() {
         when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(true);
+        when(guaranteeService.lockAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).before();
         verify(guaranteeService).clearAllStartedInfo();
+        verify(guaranteeService).unlockAllStarted();
     }
     
     @Test
@@ -100,10 +103,12 @@ public final class DistributeOnceElasticJobListenerTest {
     public void assertAfterJobExecutedWhenIsAllCompleted() {
         when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(true);
+        when(guaranteeService.lockAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).after();
         verify(guaranteeService).clearAllCompletedInfo();
+        verify(guaranteeService).unlockAllCompleted();
     }
     
     @Test
@@ -124,5 +129,29 @@ public final class DistributeOnceElasticJobListenerTest {
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
         verify(guaranteeService, times(0)).clearAllCompletedInfo();
+    }
+
+    @Test
+    public void assertBeforeJobExecutedWhenIsAllStartedAndNotGetLock() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
+        when(guaranteeService.isAllStarted()).thenReturn(true);
+        when(guaranteeService.lockAllStarted()).thenReturn(false);
+        distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(elasticJobListenerCaller, never()).before();
+        verify(guaranteeService, never()).clearAllStartedInfo();
+        verify(guaranteeService, never()).unlockAllStarted();
+    }
+
+    @Test
+    public void assertAfterJobExecutedWhenIsAllCompletedAndNotGetLock() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
+        when(guaranteeService.isAllCompleted()).thenReturn(true);
+        when(guaranteeService.lockAllCompleted()).thenReturn(false);
+        distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(elasticJobListenerCaller, never()).after();
+        verify(guaranteeService, never()).clearAllCompletedInfo();
+        verify(guaranteeService, never()).unlockAllCompleted();
     }
 }

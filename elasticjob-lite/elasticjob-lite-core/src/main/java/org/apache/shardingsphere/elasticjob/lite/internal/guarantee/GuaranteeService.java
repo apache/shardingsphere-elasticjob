@@ -17,11 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.util.Collection;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Guarantee service.
@@ -31,10 +36,30 @@ public final class GuaranteeService {
     private final JobNodeStorage jobNodeStorage;
     
     private final ConfigurationService configService;
-    
+
+    /**
+     * all started distributed lock.
+     */
+    private final InterProcessMutex startedLock;
+
+    /**
+     * all completed distributed lock.
+     */
+    private final InterProcessMutex completedLock;
+
     public GuaranteeService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
+        GuaranteeNode guaranteeNode = new GuaranteeNode(jobName);
+        if (Objects.isNull(regCenter)) {
+            startedLock = null;
+            completedLock = null;
+            return;
+        }
+        startedLock = new InterProcessMutex((CuratorFramework) regCenter.getRawClient(),
+                guaranteeNode.getStartedLockPath());
+        completedLock = new InterProcessMutex((CuratorFramework) regCenter.getRawClient(),
+                guaranteeNode.getCompletedLockPath());
     }
     
     /**
@@ -121,5 +146,67 @@ public final class GuaranteeService {
      */
     public void clearAllCompletedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.COMPLETED_ROOT);
+    }
+
+    /**
+     * get lock after all started.
+     * @return lock or not
+     */
+    public boolean lockAllStarted() {
+        return acquire(startedLock);
+    }
+
+    /**
+     * unlock all started lock,on condition that get lock before.
+     */
+    public void unlockAllStarted() {
+        release(startedLock);
+    }
+
+    /**
+     * get lock after all completed.
+     * @return lock or not
+     */
+    public boolean lockAllCompleted() {
+        return acquire(completedLock);
+    }
+
+    /**
+     * unlock all completed lock,on condition that get lock before.
+     */
+    public void unlockAllCompleted() {
+        release(completedLock);
+    }
+
+    /**
+     * get lock or not quickly.
+     * @param lock distributed lock
+     * @return lock or not
+     */
+    private boolean acquire(final InterProcessMutex lock) {
+        try {
+            return lock.acquire(0, TimeUnit.MILLISECONDS);
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        return false;
+    }
+
+    /**
+     * release lock resource, must invoke after acquire.
+     * @param lock distributed lock
+     */
+    private void release(final InterProcessMutex lock) {
+        try {
+            lock.release();
+            // CHECKSTYLE:OFF
+        } catch (IllegalMonitorStateException ex) {
+            // ignore release error, no lock to release.
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
     }
 }

@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -28,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +44,12 @@ public final class GuaranteeServiceTest {
     
     @Mock
     private ConfigurationService configService;
+
+    @Mock
+    private InterProcessMutex startedLock;
+
+    @Mock
+    private InterProcessMutex completedLock;
     
     private final GuaranteeService guaranteeService = new GuaranteeService(null, "test_job");
     
@@ -49,6 +57,8 @@ public final class GuaranteeServiceTest {
     public void setUp() {
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
+        ReflectionUtils.setFieldValue(guaranteeService, "startedLock", startedLock);
+        ReflectionUtils.setFieldValue(guaranteeService, "completedLock", completedLock);
     }
     
     @Test
@@ -142,5 +152,29 @@ public final class GuaranteeServiceTest {
     public void assertClearAllCompletedInfo() {
         guaranteeService.clearAllCompletedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
+    }
+
+    @Test
+    public void assertLockAllStarted() throws Exception {
+        guaranteeService.lockAllStarted();
+        verify(startedLock).acquire(0, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void assertUnlockAllStarted() throws Exception {
+        guaranteeService.unlockAllStarted();
+        verify(startedLock).release();
+    }
+
+    @Test
+    public void assertLockAllCompleted() throws Exception {
+        guaranteeService.lockAllCompleted();
+        verify(completedLock).acquire(0, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void assertUnlockAllCompleted() throws Exception {
+        guaranteeService.unlockAllCompleted();
+        verify(completedLock).release();
     }
 }
