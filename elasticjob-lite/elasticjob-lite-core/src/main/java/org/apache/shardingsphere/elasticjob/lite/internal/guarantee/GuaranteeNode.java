@@ -30,9 +30,9 @@ public final class GuaranteeNode {
     
     static final String COMPLETED_ROOT = ROOT + "/completed";
 
-    static final String STARTED_LOCK_ROOT = ROOT + "/started/lock";
+    static final String STARTED_LATCH_ROOT = ROOT + "/started-latch";
 
-    static final String COMPLETED_LOCK_ROOT = ROOT + "/completed/lock";
+    static final String COMPLETED_LATCH_ROOT = ROOT + "/completed-latch";
     
     private final JobNodePath jobNodePath;
     
@@ -54,21 +54,5 @@ public final class GuaranteeNode {
     
     boolean isCompletedRootNode(final String path) {
         return jobNodePath.getFullPath(COMPLETED_ROOT).equals(path);
-    }
-
-    /**
-     * get full path of started lock.
-     * @return full path of lock
-     */
-    String getStartedLockPath() {
-        return jobNodePath.getFullPath(STARTED_LOCK_ROOT);
-    }
-
-    /**
-     * get full path of completed lock.
-     * @return full path of lock
-     */
-    String getCompletedLockPath() {
-        return jobNodePath.getFullPath(COMPLETED_LOCK_ROOT);
     }
 }

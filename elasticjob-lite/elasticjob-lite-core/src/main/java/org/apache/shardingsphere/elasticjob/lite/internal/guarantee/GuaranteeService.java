@@ -17,51 +17,30 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
+import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 
 import java.util.Collection;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Guarantee service.
  */
 public final class GuaranteeService {
-    
+
     private final JobNodeStorage jobNodeStorage;
-    
+
     private final ConfigurationService configService;
-
-    /**
-     * all started distributed lock.
-     */
-    private final InterProcessMutex startedLock;
-
-    /**
-     * all completed distributed lock.
-     */
-    private final InterProcessMutex completedLock;
 
     public GuaranteeService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
-        GuaranteeNode guaranteeNode = new GuaranteeNode(jobName);
-        if (Objects.isNull(regCenter)) {
-            startedLock = null;
-            completedLock = null;
-            return;
-        }
-        startedLock = new InterProcessMutex((CuratorFramework) regCenter.getRawClient(),
-                guaranteeNode.getStartedLockPath());
-        completedLock = new InterProcessMutex((CuratorFramework) regCenter.getRawClient(),
-                guaranteeNode.getCompletedLockPath());
     }
-    
+
     /**
      * Register start.
      *
@@ -72,7 +51,7 @@ public final class GuaranteeService {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getStartedNode(each));
         }
     }
-    
+
     /**
      * Judge whether current sharding items are all register start success.
      *
@@ -87,7 +66,7 @@ public final class GuaranteeService {
         }
         return true;
     }
-    
+
     /**
      * Judge whether job's sharding items are all started.
      *
@@ -97,14 +76,14 @@ public final class GuaranteeService {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
                 && configService.load(false).getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
     }
-    
+
     /**
      * Clear all started job's info.
      */
     public void clearAllStartedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.STARTED_ROOT);
     }
-    
+
     /**
      * Register complete.
      *
@@ -115,7 +94,7 @@ public final class GuaranteeService {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getCompletedNode(each));
         }
     }
-    
+
     /**
      * Judge whether sharding items are register complete success.
      *
@@ -130,7 +109,7 @@ public final class GuaranteeService {
         }
         return true;
     }
-    
+
     /**
      * Judge whether job's sharding items are all completed.
      *
@@ -138,9 +117,10 @@ public final class GuaranteeService {
      */
     public boolean isAllCompleted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
-                && configService.load(false).getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+                && configService.load(false).getShardingTotalCount()
+                <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
-    
+
     /**
      * Clear all completed job's info.
      */
@@ -149,64 +129,70 @@ public final class GuaranteeService {
     }
 
     /**
-     * get lock after all started.
-     * @return lock or not
+     * Invoke doBeforeJobExecutedAtLastStarted method once after last started.
+     *
+     * @param listener         AbstractDistributeOnceElasticJobListener instance
+     * @param shardingContexts sharding contexts
      */
-    public boolean lockAllStarted() {
-        return acquire(startedLock);
+    public void executeInLeaderForLastStarted(final AbstractDistributeOnceElasticJobListener listener,
+                                              final ShardingContexts shardingContexts) {
+        jobNodeStorage.executeInLeader(GuaranteeNode.STARTED_LATCH_ROOT,
+                new LeaderExecutionCallbackForLastStarted(listener, shardingContexts));
     }
 
     /**
-     * unlock all started lock,on condition that get lock before.
+     * Invoke doAfterJobExecutedAtLastCompleted method once after last completed.
+     *
+     * @param listener         AbstractDistributeOnceElasticJobListener instance
+     * @param shardingContexts sharding contexts
      */
-    public void unlockAllStarted() {
-        release(startedLock);
+    public void executeInLeaderForLastCompleted(final AbstractDistributeOnceElasticJobListener listener,
+                                                final ShardingContexts shardingContexts) {
+        jobNodeStorage.executeInLeader(GuaranteeNode.COMPLETED_LATCH_ROOT,
+                new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts));
     }
 
     /**
-     * get lock after all completed.
-     * @return lock or not
+     * Inner class for last started callback.
      */
-    public boolean lockAllCompleted() {
-        return acquire(completedLock);
-    }
+    @RequiredArgsConstructor
+    class LeaderExecutionCallbackForLastStarted implements LeaderExecutionCallback {
+        private final AbstractDistributeOnceElasticJobListener listener;
 
-    /**
-     * unlock all completed lock,on condition that get lock before.
-     */
-    public void unlockAllCompleted() {
-        release(completedLock);
-    }
+        private final ShardingContexts shardingContexts;
 
-    /**
-     * get lock or not quickly.
-     * @param lock distributed lock
-     * @return lock or not
-     */
-    private boolean acquire(final InterProcessMutex lock) {
-        try {
-            return lock.acquire(0, TimeUnit.MILLISECONDS);
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
+        @Override
+        public void execute() {
+            try {
+                if (!isAllStarted()) {
+                    return;
+                }
+                listener.doBeforeJobExecutedAtLastStarted(shardingContexts);
+            } finally {
+                clearAllStartedInfo();
+            }
         }
-        return false;
     }
 
     /**
-     * release lock resource, must invoke after acquire.
-     * @param lock distributed lock
+     * Inner class for last completed callback.
      */
-    private void release(final InterProcessMutex lock) {
-        try {
-            lock.release();
-            // CHECKSTYLE:OFF
-        } catch (IllegalMonitorStateException ex) {
-            // ignore release error, no lock to release.
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
+    @RequiredArgsConstructor
+    class LeaderExecutionCallbackForLastCompleted implements LeaderExecutionCallback {
+        private final AbstractDistributeOnceElasticJobListener listener;
+
+        private final ShardingContexts shardingContexts;
+
+        @Override
+        public void execute() {
+            try {
+                if (!isAllCompleted()) {
+                    return;
+                }
+                listener.doAfterJobExecutedAtLastCompleted(shardingContexts);
+            } finally {
+                clearAllCompletedInfo();
+            }
         }
     }
 }
