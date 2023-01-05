@@ -17,8 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -29,10 +30,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,10 +47,10 @@ public final class GuaranteeServiceTest {
     private ConfigurationService configService;
 
     @Mock
-    private InterProcessMutex startedLock;
+    private AbstractDistributeOnceElasticJobListener listener;
 
     @Mock
-    private InterProcessMutex completedLock;
+    private ShardingContexts shardingContexts;
     
     private final GuaranteeService guaranteeService = new GuaranteeService(null, "test_job");
     
@@ -57,8 +58,6 @@ public final class GuaranteeServiceTest {
     public void setUp() {
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
-        ReflectionUtils.setFieldValue(guaranteeService, "startedLock", startedLock);
-        ReflectionUtils.setFieldValue(guaranteeService, "completedLock", completedLock);
     }
     
     @Test
@@ -154,27 +153,31 @@ public final class GuaranteeServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
     }
 
-    @Test
-    public void assertLockAllStarted() throws Exception {
-        guaranteeService.lockAllStarted();
-        verify(startedLock).acquire(0, TimeUnit.MILLISECONDS);
+    public void assertExecuteInLeaderForLastCompleted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
+        guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
+        verify(listener).doAfterJobExecutedAtLastCompleted(shardingContexts);
     }
 
-    @Test
-    public void assertUnlockAllStarted() throws Exception {
-        guaranteeService.unlockAllStarted();
-        verify(startedLock).release();
+    public void assertExecuteInLeaderForNotLastCompleted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
+        guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
+        verify(listener, never()).doAfterJobExecutedAtLastCompleted(shardingContexts);
     }
 
-    @Test
-    public void assertLockAllCompleted() throws Exception {
-        guaranteeService.lockAllCompleted();
-        verify(completedLock).acquire(0, TimeUnit.MILLISECONDS);
+    public void assertExecuteInLeaderForLastStarted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
+        guaranteeService.new LeaderExecutionCallbackForLastStarted(listener, shardingContexts).execute();
+        verify(listener).doBeforeJobExecutedAtLastStarted(shardingContexts);
     }
 
-    @Test
-    public void assertUnlockAllCompleted() throws Exception {
-        guaranteeService.unlockAllCompleted();
-        verify(completedLock).release();
+    public void assertExecuteInLeaderForNotLastStarted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);
+        guaranteeService.new LeaderExecutionCallbackForLastStarted(listener, shardingContexts).execute();
+        verify(listener, never()).doBeforeJobExecutedAtLastStarted(shardingContexts);
     }
 }
