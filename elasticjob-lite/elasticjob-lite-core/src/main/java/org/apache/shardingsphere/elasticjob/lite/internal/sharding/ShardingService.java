@@ -128,7 +128,7 @@ public final class ShardingService {
     
     private void blockUntilShardingCompleted() {
         while (!leaderService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
-            log.debug("Job '{}' sleep shortAbstractDistributeOnceElasticJobListener time until sharding completed.", jobName);
+            log.debug("Job '{}' sleep short time until sharding completed.", jobName);
             BlockUtils.waitingShortTime();
         }
     }
