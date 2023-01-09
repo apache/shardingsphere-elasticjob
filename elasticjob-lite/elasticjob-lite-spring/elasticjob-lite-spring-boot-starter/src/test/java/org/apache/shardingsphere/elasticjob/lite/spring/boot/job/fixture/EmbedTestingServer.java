@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
+import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
 
 import java.io.File;
@@ -45,6 +46,9 @@ public final class EmbedTestingServer {
      * Start the server.
      */
     public static void start() {
+        // sleep some time to avoid testServer intended stop.
+        long sleepTime = 1000L;
+        BlockUtils.sleep(sleepTime);
         if (null != testingServer) {
             return;
         }
@@ -57,7 +61,7 @@ public final class EmbedTestingServer {
         } finally {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(sleepTime);
                     testingServer.close();
                 } catch (final IOException | InterruptedException ex) {
                     RegExceptionHandler.handleException(ex);
