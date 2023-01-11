@@ -41,8 +41,7 @@ public class ElasticJobTracingConfiguration {
      * @param tracingProperties tracing Properties
      * @return tracing DataSource
      */
-    @Bean("tracingDataSource")
-    public DataSource tracingDataSource(final TracingProperties tracingProperties) {
+    private DataSource tracingDataSource(final TracingProperties tracingProperties) {
         DataSourceProperties dataSource = tracingProperties.getDataSource();
         if (dataSource == null) {
             return null;
@@ -63,8 +62,8 @@ public class ElasticJobTracingConfiguration {
     @Bean
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = "RDB")
-    public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, @Nullable final DataSource tracingDataSource) {
-        DataSource ds = tracingDataSource;
+    public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, final TracingProperties tracingProperties) {
+        DataSource ds = tracingDataSource(tracingProperties);
         if (ds == null) {
             ds = dataSource;
         }
