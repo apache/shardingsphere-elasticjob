@@ -72,8 +72,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
-        verify(elasticJobListenerCaller).before();
-        verify(guaranteeService).clearAllStartedInfo();
+        verify(guaranteeService).executeInLeaderForLastStarted(distributeOnceElasticJobListener, shardingContexts);
     }
     
     @Test
@@ -102,8 +101,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
-        verify(elasticJobListenerCaller).after();
-        verify(guaranteeService).clearAllCompletedInfo();
+        verify(guaranteeService).executeInLeaderForLastCompleted(distributeOnceElasticJobListener, shardingContexts);
     }
     
     @Test

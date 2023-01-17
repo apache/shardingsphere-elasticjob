@@ -29,6 +29,10 @@ public final class GuaranteeNode {
     static final String STARTED_ROOT = ROOT + "/started";
     
     static final String COMPLETED_ROOT = ROOT + "/completed";
+
+    static final String STARTED_LATCH_ROOT = ROOT + "/started-latch";
+
+    static final String COMPLETED_LATCH_ROOT = ROOT + "/completed-latch";
     
     private final JobNodePath jobNodePath;
     

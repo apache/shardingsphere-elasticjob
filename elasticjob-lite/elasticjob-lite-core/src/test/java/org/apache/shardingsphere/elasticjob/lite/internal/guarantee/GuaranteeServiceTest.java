@@ -18,6 +18,8 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.guarantee;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
@@ -31,6 +33,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +45,12 @@ public final class GuaranteeServiceTest {
     
     @Mock
     private ConfigurationService configService;
+
+    @Mock
+    private AbstractDistributeOnceElasticJobListener listener;
+
+    @Mock
+    private ShardingContexts shardingContexts;
     
     private final GuaranteeService guaranteeService = new GuaranteeService(null, "test_job");
     
@@ -142,5 +151,37 @@ public final class GuaranteeServiceTest {
     public void assertClearAllCompletedInfo() {
         guaranteeService.clearAllCompletedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
+    }
+
+    @Test
+    public void assertExecuteInLeaderForLastCompleted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
+        guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
+        verify(listener).doAfterJobExecutedAtLastCompleted(shardingContexts);
+    }
+
+    @Test
+    public void assertExecuteInLeaderForNotLastCompleted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
+        guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
+        verify(listener, never()).doAfterJobExecutedAtLastCompleted(shardingContexts);
+    }
+
+    @Test
+    public void assertExecuteInLeaderForLastStarted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
+        guaranteeService.new LeaderExecutionCallbackForLastStarted(listener, shardingContexts).execute();
+        verify(listener).doBeforeJobExecutedAtLastStarted(shardingContexts);
+    }
+
+    @Test
+    public void assertExecuteInLeaderForNotLastStarted() {
+        when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);
+        guaranteeService.new LeaderExecutionCallbackForLastStarted(listener, shardingContexts).execute();
+        verify(listener, never()).doBeforeJobExecutedAtLastStarted(shardingContexts);
     }
 }
