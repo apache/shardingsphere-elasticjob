@@ -117,8 +117,7 @@ public final class GuaranteeService {
      */
     public boolean isAllCompleted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
-                && configService.load(false).getShardingTotalCount()
-                <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+                && configService.load(false).getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
 
     /**
