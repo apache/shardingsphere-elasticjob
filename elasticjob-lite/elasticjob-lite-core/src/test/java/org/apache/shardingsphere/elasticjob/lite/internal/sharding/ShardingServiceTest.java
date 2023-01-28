@@ -44,11 +44,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class ShardingServiceTest {
     
     @Mock
@@ -252,7 +253,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
-        when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(true);
+        lenient().when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(true);
         assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }
