@@ -41,11 +41,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public final class ExecutionServiceTest {
     
     @Mock
@@ -181,7 +182,7 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).build());
         String jobInstanceId = "127.0.0.1@-@1";
         when(jobNodeStorage.getJobNodeData("sharding/0/running")).thenReturn(jobInstanceId);
-        when(jobNodeStorage.getJobNodeData("sharding/2/running")).thenReturn(jobInstanceId);
+        lenient().when(jobNodeStorage.getJobNodeData("sharding/2/running")).thenReturn(jobInstanceId);
         Map<Integer, JobInstance> actual = executionService.getAllRunningItems();
         assertThat(actual.size(), is(2));
         assertThat(actual.get(0), is(new JobInstance(jobInstanceId)));
