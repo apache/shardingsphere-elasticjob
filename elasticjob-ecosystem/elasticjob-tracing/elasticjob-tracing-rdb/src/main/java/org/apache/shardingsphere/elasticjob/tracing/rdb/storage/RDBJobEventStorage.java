@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * RDB job event storage.
@@ -61,14 +63,41 @@ public final class RDBJobEventStorage {
     private final DatabaseType databaseType;
     
     private final RDBStorageSQLMapper sqlMapper;
+
+    private static final Map<DataSource, RDBJobEventStorage> STORAGE_MAP = new ConcurrentHashMap<>();
+
     
     static {
         for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
             DATABASE_TYPES.put(each.getType(), each);
         }
     }
+
+    public static RDBJobEventStorage getInstance(final DataSource dataSource) throws SQLException {
+        return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, (ds) -> {
+            try {
+                return new RDBJobEventStorage(ds);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+    }
+
+    public static RDBJobEventStorage wrapException(Callable<RDBJobEventStorage> callable) throws SQLException {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            if (e.getCause() instanceof SQLException) {
+                throw new SQLException(e.getCause());
+            }
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException(e);
+        }
+    }
     
-    public RDBJobEventStorage(final DataSource dataSource) throws SQLException {
+    private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         databaseType = getDatabaseType(dataSource);
         sqlMapper = new RDBStorageSQLMapper(databaseType.getSQLPropertiesFile());

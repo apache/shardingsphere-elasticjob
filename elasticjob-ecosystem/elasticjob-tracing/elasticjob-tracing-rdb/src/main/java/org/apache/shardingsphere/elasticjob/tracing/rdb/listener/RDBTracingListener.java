@@ -33,7 +33,7 @@ public final class RDBTracingListener implements TracingListener {
     private final RDBJobEventStorage repository;
     
     public RDBTracingListener(final DataSource dataSource) throws SQLException {
-        repository = new RDBJobEventStorage(dataSource);
+        repository = RDBJobEventStorage.getInstance(dataSource);
     }
     
     @Override

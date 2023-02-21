@@ -49,7 +49,7 @@ public final class RDBJobEventStorageTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        storage = new RDBJobEventStorage(dataSource);
+        storage = RDBJobEventStorage.getInstance(dataSource);
     }
     
     @After
