@@ -30,6 +30,7 @@ import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListenerFactory;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 import org.apache.shardingsphere.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.SetUpFacade;
@@ -78,26 +79,31 @@ public final class JobScheduler {
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final ElasticJob elasticJob, final JobConfiguration jobConfig) {
         Preconditions.checkArgument(null != elasticJob, "Elastic job cannot be null.");
         this.regCenter = regCenter;
-        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
-        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
         String jobClassName = JobClassNameProviderFactory.getProvider().getJobClassName(elasticJob);
-        this.jobConfig = setUpFacade.setUpJobConfiguration(jobClassName, jobConfig);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        this.jobConfig = setUpJobConfiguration(regCenter, jobClassName, jobConfig);
+        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
+        setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
+        schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
+        jobFacade = new LiteJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJob, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
-    
+
+    private JobConfiguration setUpJobConfiguration(CoordinatorRegistryCenter regCenter, final String jobClassName, JobConfiguration jobConfig) {
+        ConfigurationService configService = new ConfigurationService(regCenter, jobConfig.getJobName());
+        return configService.setUpJobConfiguration(jobClassName, jobConfig);
+    }
+
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(elasticJobType), "Elastic job type cannot be null or empty.");
         this.regCenter = regCenter;
-        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(jobConfig);
-        setUpFacade = new SetUpFacade(regCenter, jobConfig.getJobName(), jobListeners);
-        this.jobConfig = setUpFacade.setUpJobConfiguration(elasticJobType, jobConfig);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        this.jobConfig = setUpJobConfiguration(regCenter,elasticJobType, jobConfig);
+        Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
+        setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
+        schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
+        jobFacade = new LiteJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJobType, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
