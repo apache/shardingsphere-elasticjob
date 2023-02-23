@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.tracing.exception.WrapException;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultDatabaseType;
 
@@ -41,8 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * RDB job event storage.
@@ -57,53 +58,63 @@ public final class RDBJobEventStorage {
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
     private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
-    
-    private final DataSource dataSource;
-    
-    private final DatabaseType databaseType;
-    
-    private final RDBStorageSQLMapper sqlMapper;
 
     private static final Map<DataSource, RDBJobEventStorage> STORAGE_MAP = new ConcurrentHashMap<>();
 
-    
+    private final DataSource dataSource;
+
+    private final DatabaseType databaseType;
+
+    private final RDBStorageSQLMapper sqlMapper;
+
     static {
         for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
             DATABASE_TYPES.put(each.getType(), each);
         }
     }
 
-    public static RDBJobEventStorage getInstance(final DataSource dataSource) throws SQLException {
-        return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, (ds) -> {
-            try {
-                return new RDBJobEventStorage(ds);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-    }
-
-    public static RDBJobEventStorage wrapException(Callable<RDBJobEventStorage> callable) throws SQLException {
-        try {
-            return callable.call();
-        } catch (Exception e) {
-            if (e.getCause() instanceof SQLException) {
-                throw new SQLException(e.getCause());
-            }
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }
-            throw new RuntimeException(e);
-        }
-    }
-    
     private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         databaseType = getDatabaseType(dataSource);
         sqlMapper = new RDBStorageSQLMapper(databaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
-    
+
+    /**
+     * the same dataSource  always return the same RDBJobEventStorage instance.
+     *
+     * @param dataSource dataSource
+     * @return RDBJobEventStorage instance
+     * @throws SQLException SQLException
+     */
+    public static RDBJobEventStorage getInstance(final DataSource dataSource) throws SQLException {
+        return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, ds -> {
+            try {
+                return new RDBJobEventStorage(ds);
+            } catch (SQLException e) {
+                throw new WrapException(e);
+            }
+        }));
+    }
+
+    /**
+     * wrapException util method.
+     *
+     * @param supplier supplier
+     * @return RDBJobEventStorage
+     * @throws SQLException SQLException
+     */
+    public static RDBJobEventStorage wrapException(final Supplier<RDBJobEventStorage> supplier) throws SQLException {
+        try {
+            return supplier.get();
+        } catch (WrapException e) {
+            if (e.getCause() instanceof SQLException) {
+                throw new SQLException(e.getCause());
+            }
+            throw e;
+        }
+    }
+
     private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
