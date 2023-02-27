@@ -17,9 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lite.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.lite.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.lite.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.lite.internal.listener.ListenerManager;
@@ -34,8 +32,6 @@ import java.util.Collection;
  */
 public final class SetUpFacade {
     
-    private final ConfigurationService configService;
-    
     private final LeaderService leaderService;
     
     private final ServerService serverService;
@@ -47,23 +43,11 @@ public final class SetUpFacade {
     private final ListenerManager listenerManager;
     
     public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
-        configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
-    }
-    
-    /**
-     * Set up job configuration.
-     *
-     * @param jobClassName job class name
-     * @param jobConfig job configuration to be updated
-     * @return accepted job configuration
-     */
-    public JobConfiguration setUpJobConfiguration(final String jobClassName, final JobConfiguration jobConfig) {
-        return configService.setUpJobConfiguration(jobClassName, jobConfig);
     }
     
     /**
