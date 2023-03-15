@@ -81,7 +81,7 @@ public final class RDBJobEventStorage {
     }
 
     /**
-     * the same dataSource  always return the same RDBJobEventStorage instance.
+     * The same dataSource always return the same RDBJobEventStorage instance.
      *
      * @param dataSource dataSource
      * @return RDBJobEventStorage instance
