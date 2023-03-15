@@ -18,11 +18,10 @@
 package org.apache.shardingsphere.elasticjob.tracing.exception;
 
 /**
- * use to wrap Exception.
- * @author willJo
+ * Use to wrap Exception.
  */
-
 public class WrapException extends RuntimeException {
+    
     public WrapException(final Throwable cause) {
         super(cause);
     }
