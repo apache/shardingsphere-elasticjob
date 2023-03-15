@@ -98,7 +98,7 @@ public final class RDBJobEventStorage {
     }
 
     /**
-     * wrapException util method.
+     * WrapException util method.
      *
      * @param supplier supplier
      * @return RDBJobEventStorage
