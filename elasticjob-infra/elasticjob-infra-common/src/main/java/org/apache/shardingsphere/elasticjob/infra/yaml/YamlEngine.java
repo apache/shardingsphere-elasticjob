@@ -20,7 +20,12 @@ package org.apache.shardingsphere.elasticjob.infra.yaml;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.infra.yaml.representer.ElasticJobYamlRepresenter;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
+
+import java.util.Collections;
 
 /**
  * YAML engine.
@@ -35,7 +40,7 @@ public final class YamlEngine {
      * @return YAML content
      */
     public static String marshal(final Object value) {
-        return new Yaml(new ElasticJobYamlRepresenter()).dumpAsMap(value);
+        return new Yaml(new ElasticJobYamlRepresenter(new DumperOptions())).dumpAsMap(value);
     }
     
     /**
@@ -47,6 +52,8 @@ public final class YamlEngine {
      * @return object from YAML
      */
     public static <T> T unmarshal(final String yamlContent, final Class<T> classType) {
-        return new Yaml().loadAs(yamlContent, classType);
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setTagInspector(new TrustedPrefixesTagInspector(Collections.singletonList("org.apache.shardingsphere.elasticjob")));
+        return new Yaml(loaderOptions).loadAs(yamlContent, classType);
     }
 }
