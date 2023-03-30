@@ -54,7 +54,7 @@ public final class ElasticJobExecutorServiceTest {
         
         @Override
         public void run() {
-            BlockUtils.sleep(1000L);
+            BlockUtils.sleep(1800L);
         }
     }
 }
