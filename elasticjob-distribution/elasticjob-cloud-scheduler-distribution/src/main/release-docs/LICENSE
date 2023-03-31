@@ -232,7 +232,7 @@ The text of each license is the standard Apache 2.0 license.
     gson 2.6.1: https://github.com/google/gson, Apache 2.0
     guava 29.0-jre: https://github.com/google/guava, Apache 2.0
     HikariCP-java7 2.4.13: https://github.com/brettwooldridge/HikariCP, Apache 2.0
-    httpclient 4.5.12: https://github.com/apache/httpcomponents-client, Apache 2.0
+    httpclient 4.5.13: https://github.com/apache/httpcomponents-client, Apache 2.0
     httpcore 4.4.13: https://github.com/apache/httpcomponents-core, Apache 2.0
     jackson-annotations 2.4.0: https://github.com/FasterXML/jackson-annotations, Apache 2.0
     jackson-core 2.4.5: https://github.com/FasterXML/jackson-core, Apache 2.0
