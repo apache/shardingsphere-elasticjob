@@ -119,6 +119,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     /**
      * Add connection state changed event listener to registry center.
      *
+     * @param key key to be watched.
      * @param listener connection state changed event listener
      */
     void addConnectionStateChangedEventListener(String key, ConnectionStateChangedEventListener listener);
