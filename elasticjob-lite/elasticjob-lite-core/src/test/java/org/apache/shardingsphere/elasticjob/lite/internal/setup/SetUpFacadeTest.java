@@ -25,6 +25,7 @@ import org.apache.shardingsphere.elasticjob.lite.internal.reconcile.ReconcileSer
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,13 +54,16 @@ public final class SetUpFacadeTest {
     
     @Mock
     private ListenerManager listenerManager;
+
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     private SetUpFacade setUpFacade;
     
     @Before
     public void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        setUpFacade = new SetUpFacade(null, "test_job", Collections.emptyList());
+        setUpFacade = new SetUpFacade(regCenter, "test_job", Collections.emptyList());
         ReflectionUtils.setFieldValue(setUpFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(setUpFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(setUpFacade, "instanceService", instanceService);
@@ -80,5 +84,7 @@ public final class SetUpFacadeTest {
         when(reconcileService.isRunning()).thenReturn(true);
         setUpFacade.tearDown();
         verify(reconcileService).stopAsync();
+        verify(regCenter).removeDataListeners("/test_job");
+        verify(regCenter).removeConnStateListener("/test_job");
     }
 }

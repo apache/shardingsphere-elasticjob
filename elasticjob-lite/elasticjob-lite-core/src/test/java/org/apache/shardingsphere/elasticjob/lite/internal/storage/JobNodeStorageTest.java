@@ -172,7 +172,7 @@ public final class JobNodeStorageTest {
     public void assertAddConnectionStateListener() {
         ConnectionStateChangedEventListener listener = mock(ConnectionStateChangedEventListener.class);
         jobNodeStorage.addConnectionStateListener(listener);
-        verify(regCenter).addConnectionStateChangedEventListener(listener);
+        verify(regCenter).addConnectionStateChangedEventListener("/test_job", listener);
     }
     
     @Test

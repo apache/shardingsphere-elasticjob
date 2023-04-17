@@ -19,7 +19,10 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+
+import java.lang.reflect.Field;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ZookeeperRegistryCenterTestUtil {
@@ -33,5 +36,19 @@ public class ZookeeperRegistryCenterTestUtil {
         zookeeperRegistryCenter.persist("/test", "test");
         zookeeperRegistryCenter.persist("/test/deep/nested", "deepNested");
         zookeeperRegistryCenter.persist("/test/child", "child");
-    } 
+    }
+
+    /**
+     * Set field value use reflection.
+     *
+     * @param target target object
+     * @param fieldName field name
+     * @param fieldValue field value
+     */
+    @SneakyThrows
+    public static void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, fieldValue);
+    }
 }
