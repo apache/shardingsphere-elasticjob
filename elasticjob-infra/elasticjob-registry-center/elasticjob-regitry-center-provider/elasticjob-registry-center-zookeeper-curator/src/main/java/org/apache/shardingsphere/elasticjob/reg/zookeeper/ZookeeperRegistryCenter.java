@@ -78,13 +78,11 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     /**
      * Data listener list.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final Map<String, List<CuratorCacheListener>> dataListeners = new ConcurrentHashMap<>();
 
     /**
      * Connections state listener list.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final Map<String, List<ConnectionStateListener>> connStateListeners = new ConcurrentHashMap<>();
 
     @Getter

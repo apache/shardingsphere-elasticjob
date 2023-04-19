@@ -75,7 +75,7 @@ public class ZookeeperRegistryCenterListenerTest {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
         regCenter.addConnectionStateChangedEventListener(jobPath, null);
         verify(client.getConnectionStateListenable()).addListener(any());
-        assertEquals(1, regCenter.getConnStateListeners().get(jobPath).size());
+        assertEquals(1, getConnStateListeners().get(jobPath).size());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ZookeeperRegistryCenterListenerTest {
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.watch(jobPath, null, null);
         verify(cache.listenable()).addListener(any());
-        assertEquals(1, regCenter.getDataListeners().get(jobPath).size());
+        assertEquals(1, getDataListeners().get(jobPath).size());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ZookeeperRegistryCenterListenerTest {
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.removeDataListeners(jobPath);
         verify(cache.listenable(), never()).removeListener(any());
-        assertNull(regCenter.getDataListeners().get(jobPath));
+        assertNull(getDataListeners().get(jobPath));
     }
 
     @Test
@@ -102,9 +102,9 @@ public class ZookeeperRegistryCenterListenerTest {
         List<CuratorCacheListener> list = new ArrayList<>();
         list.add(null);
         list.add(null);
-        regCenter.getDataListeners().put(jobPath, list);
+        getDataListeners().put(jobPath, list);
         regCenter.removeDataListeners(jobPath);
-        assertNull(regCenter.getDataListeners().get(jobPath));
+        assertNull(getDataListeners().get(jobPath));
         verify(cache.listenable(), times(2)).removeListener(null);
     }
 
@@ -113,9 +113,8 @@ public class ZookeeperRegistryCenterListenerTest {
         when(caches.get(jobPath + "/")).thenReturn(cache);
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.removeDataListeners(jobPath);
-        assertNull(regCenter.getDataListeners().get(jobPath));
+        assertNull(getDataListeners().get(jobPath));
         verify(cache.listenable(), never()).removeListener(null);
-
     }
 
     @Test
@@ -124,10 +123,10 @@ public class ZookeeperRegistryCenterListenerTest {
         List<ConnectionStateListener> list = new ArrayList<>();
         list.add(null);
         list.add(null);
-        regCenter.getConnStateListeners().put(jobPath, list);
-        assertEquals(2, regCenter.getConnStateListeners().get(jobPath).size());
+        getConnStateListeners().put(jobPath, list);
+        assertEquals(2, getConnStateListeners().get(jobPath).size());
         regCenter.removeConnStateListener(jobPath);
-        assertNull(regCenter.getDataListeners().get(jobPath));
+        assertNull(getConnStateListeners().get(jobPath));
         verify(client.getConnectionStateListenable(), times(2)).removeListener(null);
     }
 
@@ -135,7 +134,19 @@ public class ZookeeperRegistryCenterListenerTest {
     public void testRemoveConnStateListenerEmptyListeners() throws Exception {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
         regCenter.removeConnStateListener(jobPath);
-        assertNull(regCenter.getConnStateListeners().get(jobPath));
+        assertNull(getConnStateListeners().get(jobPath));
         verify(client.getConnectionStateListenable(), never()).removeListener(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, List<ConnectionStateListener>> getConnStateListeners() {
+        return (Map<String, List<ConnectionStateListener>>) ZookeeperRegistryCenterTestUtil
+                .getFieldValue(regCenter, "connStateListeners");
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, List<CuratorCacheListener>> getDataListeners() {
+        return (Map<String, List<CuratorCacheListener>>) ZookeeperRegistryCenterTestUtil
+                .getFieldValue(regCenter, "dataListeners");
     }
 }

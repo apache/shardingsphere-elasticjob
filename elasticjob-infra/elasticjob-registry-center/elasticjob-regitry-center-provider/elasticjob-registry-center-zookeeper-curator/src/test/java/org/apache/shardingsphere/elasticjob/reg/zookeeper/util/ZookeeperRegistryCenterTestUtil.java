@@ -51,4 +51,18 @@ public class ZookeeperRegistryCenterTestUtil {
         field.setAccessible(true);
         field.set(target, fieldValue);
     }
+
+    /**
+     * Get field value use reflection.
+     *
+     * @param target target object
+     * @param fieldName field name
+     * @return field value
+     */
+    @SneakyThrows
+    public static Object getFieldValue(final Object target, final String fieldName) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(target);
+    }
 }
