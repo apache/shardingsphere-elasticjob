@@ -211,7 +211,7 @@ public final class JobNodeStorage {
      * @param listener connection state listener
      */
     public void addConnectionStateListener(final ConnectionStateChangedEventListener listener) {
-        regCenter.addConnectionStateChangedEventListener(listener);
+        regCenter.addConnectionStateChangedEventListener("/" + jobName, listener);
     }
     
     /**

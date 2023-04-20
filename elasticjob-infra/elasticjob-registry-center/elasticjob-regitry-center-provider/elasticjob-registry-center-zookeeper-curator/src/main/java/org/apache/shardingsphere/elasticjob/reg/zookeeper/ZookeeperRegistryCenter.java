@@ -31,6 +31,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -53,9 +54,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -71,7 +74,17 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     private final ZookeeperConfiguration zkConfig;
     
     private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
-    
+
+    /**
+     * Data listener list.
+     */
+    private final Map<String, List<CuratorCacheListener>> dataListeners = new ConcurrentHashMap<>();
+
+    /**
+     * Connections state listener list.
+     */
+    private final Map<String, List<ConnectionStateListener>> connStateListeners = new ConcurrentHashMap<>();
+
     @Getter
     private CuratorFramework client;
     
@@ -311,9 +324,10 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     }
     
     @Override
-    public void addConnectionStateChangedEventListener(final ConnectionStateChangedEventListener listener) {
+    public void addConnectionStateChangedEventListener(final String key,
+                                                       final ConnectionStateChangedEventListener listener) {
         CoordinatorRegistryCenter coordinatorRegistryCenter = this;
-        client.getConnectionStateListenable().addListener((client, newState) -> {
+        ConnectionStateListener connStateListener = (client, newState) -> {
             State state;
             switch (newState) {
                 case CONNECTED:
@@ -331,7 +345,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
                     throw new IllegalStateException("Illegal registry center connection state: " + newState);
             }
             listener.onStateChanged(coordinatorRegistryCenter, state);
-        });
+        };
+        client.getConnectionStateListenable().addListener(connStateListener);
+        connStateListeners.computeIfAbsent(key, k -> new LinkedList<>()).add(connStateListener);
     }
     
     @Override
@@ -428,6 +444,30 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         } else {
             cache.listenable().addListener(cacheListener);
         }
+        dataListeners.computeIfAbsent(key, k -> new LinkedList<>()).add(cacheListener);
+    }
+
+    @Override
+    public void removeDataListeners(final String key) {
+        final CuratorCache cache = caches.get(key + "/");
+        if (Objects.isNull(cache)) {
+            dataListeners.remove(key);
+            return;
+        }
+        List<CuratorCacheListener> cacheListenerList = dataListeners.remove(key);
+        if (Objects.isNull(cacheListenerList)) {
+            return;
+        }
+        cacheListenerList.forEach(listener -> cache.listenable().removeListener(listener));
+    }
+
+    @Override
+    public void removeConnStateListener(final String key) {
+        final List<ConnectionStateListener> listenerList = connStateListeners.remove(key);
+        if (Objects.isNull(listenerList)) {
+            return;
+        }
+        listenerList.forEach(listener -> client.getConnectionStateListenable().removeListener(listener));
     }
     
     private Type getTypeFromCuratorType(final CuratorCacheListener.Type curatorType) {

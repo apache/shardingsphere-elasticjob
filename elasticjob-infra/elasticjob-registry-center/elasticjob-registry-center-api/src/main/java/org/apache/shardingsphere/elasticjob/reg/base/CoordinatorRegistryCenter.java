@@ -119,15 +119,28 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     /**
      * Add connection state changed event listener to registry center.
      *
+     * @param key key to be watched.
      * @param listener connection state changed event listener
      */
-    void addConnectionStateChangedEventListener(ConnectionStateChangedEventListener listener);
-    
+    void addConnectionStateChangedEventListener(String key, ConnectionStateChangedEventListener listener);
+
     /**
-     * Execute oprations in transaction.
+     * Execute operations in transaction.
      *
      * @param transactionOperations operations
      * @throws Exception exception
      */
     void executeInTransaction(List<TransactionOperation> transactionOperations) throws Exception;
+
+    /**
+     * Remove all data listeners that have been bound to the current key.
+     * @param key key to be watched
+     */
+    void removeDataListeners(String key);
+
+    /**
+     * Remove conn state listener that have been bound to the current key.
+     * @param key key to be watched
+     */
+    void removeConnStateListener(String key);
 }

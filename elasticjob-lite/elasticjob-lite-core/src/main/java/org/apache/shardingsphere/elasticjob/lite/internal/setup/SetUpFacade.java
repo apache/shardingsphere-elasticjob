@@ -41,6 +41,16 @@ public final class SetUpFacade {
     private final ReconcileService reconcileService;
     
     private final ListenerManager listenerManager;
+
+    /**
+     * JobName.
+     */
+    private final String jobName;
+
+    /**
+     * Registry center.
+     */
+    private final CoordinatorRegistryCenter regCenter;
     
     public SetUpFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners) {
         leaderService = new LeaderService(regCenter, jobName);
@@ -48,6 +58,8 @@ public final class SetUpFacade {
         instanceService = new InstanceService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
+        this.jobName = jobName;
+        this.regCenter = regCenter;
     }
     
     /**
@@ -69,6 +81,8 @@ public final class SetUpFacade {
      * Tear down.
      */
     public void tearDown() {
+        regCenter.removeConnStateListener("/" + this.jobName);
+        regCenter.removeDataListeners("/" + this.jobName);
         if (reconcileService.isRunning()) {
             reconcileService.stopAsync();
         }
