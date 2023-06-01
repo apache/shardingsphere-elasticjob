@@ -81,7 +81,8 @@ public final class ServerService {
     
     private boolean hasOnlineInstances(final String ip) {
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            if (each.startsWith(ip)) {
+            String eachIp = each.split("@-@")[0];
+            if (eachIp.equals(ip)) {
                 return true;
             }
         }
