@@ -8,6 +8,16 @@ ElasticJob-Lite 提供自定义的 Spring Boot Starter，可以与 Spring Boot �
 基于 ElasticJob Spring Boot Starter 使用 ElasticJob ，用户无需手动创建 CoordinatorRegistryCenter、JobBootstrap 等实例，
 只需实现核心作业逻辑并辅以少量配置，即可利用轻量、无中心化的 ElasticJob 解决分布式调度问题。
 
+## 引入 Maven 依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+    <version>${springboot.version}</version>
+</dependency>
+```
+
 ## 作业配置
 
 ### 实现作业逻辑
