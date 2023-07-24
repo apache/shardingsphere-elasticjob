@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.yaml.representer;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -26,6 +27,9 @@ import org.yaml.snakeyaml.representer.Representer;
  * ElasticJob YAML representer.
  */
 public final class ElasticJobYamlRepresenter extends Representer {
+    public ElasticJobYamlRepresenter(final DumperOptions options) {
+        super(options);
+    }
     
     @Override
     protected NodeTuple representJavaBeanProperty(final Object javaBean, final Property property, final Object propertyValue, final Tag customTag) {
