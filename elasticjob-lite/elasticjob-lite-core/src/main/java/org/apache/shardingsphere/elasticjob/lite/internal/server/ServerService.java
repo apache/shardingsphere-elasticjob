@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.server;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shardingsphere.elasticjob.lite.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -25,27 +26,30 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Server service.
  */
 public final class ServerService {
-    
+
     private final String jobName;
-    
+
     private final JobNodeStorage jobNodeStorage;
-    
+
     private final ServerNode serverNode;
-    
+
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverNode = new ServerNode(jobName);
     }
-    
+
     /**
      * Persist online status of job server.
-     * 
+     *
      * @param enabled enable server or not
      */
     public void persistOnline(final boolean enabled) {
@@ -53,10 +57,10 @@ public final class ServerService {
             jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getServerIp()), enabled ? ServerStatus.ENABLED.name() : ServerStatus.DISABLED.name());
         }
     }
-    
+
     /**
      * Judge has available servers or not.
-     * 
+     *
      * @return has available servers or not
      */
     public boolean hasAvailableServers() {
@@ -68,17 +72,17 @@ public final class ServerService {
         }
         return false;
     }
-    
+
     /**
      * Judge is available server or not.
-     * 
+     *
      * @param ip job server IP address
      * @return is available server or not
      */
     public boolean isAvailableServer(final String ip) {
         return isEnableServer(ip) && hasOnlineInstances(ip);
     }
-    
+
     private boolean hasOnlineInstances(final String ip) {
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
             if (each.startsWith(ip)) {
@@ -87,7 +91,7 @@ public final class ServerService {
         }
         return false;
     }
-    
+
     /**
      * Judge is server enabled or not.
      *
@@ -101,5 +105,36 @@ public final class ServerService {
             serverStatus = jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip));
         }
         return ServerStatus.ENABLED.name().equals(serverStatus);
+    }
+
+    public int removeOfflineServers() {
+        AtomicInteger affectNums = new AtomicInteger();
+        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
+        if (instances == null || instances.isEmpty()) {
+            return affectNums.get();
+        }
+        Set<String> instanceIps = instances.stream()
+                .map(instance -> instance.split("@-@")[0])
+                .collect(Collectors.toSet());
+        if (instanceIps == null || instanceIps.isEmpty()) {
+            return affectNums.get();
+        }
+        List<String> serverIps = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
+        if (serverIps == null || serverIps.isEmpty()) {
+            return affectNums.get();
+        }
+
+        serverIps.forEach(serverIp -> {
+            if (instanceIps.contains(serverIp)) {
+                return;
+            }
+            String status = jobNodeStorage.getJobNodeData(serverNode.getServerNode(serverIp));
+            if (StringUtils.isNotBlank(status)) {
+                return;
+            }
+            jobNodeStorage.removeJobNodeIfExisted(serverNode.getServerNode(serverIp));
+            affectNums.getAndIncrement();
+        });
+        return affectNums.get();
     }
 }

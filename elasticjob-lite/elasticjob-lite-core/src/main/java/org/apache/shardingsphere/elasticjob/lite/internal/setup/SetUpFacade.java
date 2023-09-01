@@ -75,6 +75,7 @@ public final class SetUpFacade {
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
         }
+        serverService.removeOfflineServers();
     }
     
     /**
