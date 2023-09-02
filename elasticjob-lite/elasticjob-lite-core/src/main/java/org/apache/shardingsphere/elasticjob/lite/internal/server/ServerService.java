@@ -107,6 +107,10 @@ public final class ServerService {
         return ServerStatus.ENABLED.name().equals(serverStatus);
     }
 
+    /**
+     *  remove unuse serverIp
+     * @return num of serverIp be remove
+     */
     public int removeOfflineServers() {
         AtomicInteger affectNums = new AtomicInteger();
         List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
