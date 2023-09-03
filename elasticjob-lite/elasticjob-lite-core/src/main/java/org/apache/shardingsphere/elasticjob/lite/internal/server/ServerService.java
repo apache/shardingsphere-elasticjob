@@ -108,7 +108,7 @@ public final class ServerService {
     }
 
     /**
-     *  remove unuse serverIp
+     *  Remove unuse serverIp.
      * @return num of serverIp be remove
      */
     public int removeOfflineServers() {
