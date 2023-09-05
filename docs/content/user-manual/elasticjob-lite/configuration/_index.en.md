@@ -22,8 +22,8 @@ ElasticJob-Lite has provided 3 kinds of configuration methods for different situ
 | baseSleepTimeMilliseconds     | int           | 1000          | The initial value of milliseconds for the retry interval |
 | maxSleepTimeMilliseconds      | String        | 3000          | The maximum value of milliseconds for the retry interval |
 | maxRetries                    | String        | 3             | Maximum number of retries                                |
-| sessionTimeoutMilliseconds    | boolean       | 60000         | Session timeout in milliseconds                          |
-| connectionTimeoutMilliseconds | boolean       | 15000         | Connection timeout in milliseconds                       |
+| sessionTimeoutMilliseconds    | int           | 60000         | Session timeout in milliseconds                          |
+| connectionTimeoutMilliseconds | int           | 15000         | Connection timeout in milliseconds                       |
 | digest                        | String        | no need       | Permission token to connect to ZooKeeper                 |
 
 ### Core Configuration Description
