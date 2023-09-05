@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 
 public final class ElasticJobExecutorServiceTest {
     
+    private static boolean hasExecuted;
+
     @Test
     public void assertCreateExecutorService() {
         ElasticJobExecutorService executorServiceObject = new ElasticJobExecutorService("executor-service-test", 1);
@@ -48,6 +50,7 @@ public final class ElasticJobExecutorServiceTest {
         executorService.shutdownNow();
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         assertTrue(executorServiceObject.isShutdown());
+        hasExecuted = true;
     }
     
     static class FooTask implements Runnable {
@@ -55,6 +58,9 @@ public final class ElasticJobExecutorServiceTest {
         @Override
         public void run() {
             BlockUtils.sleep(1000L);
+            while (!hasExecuted) {
+                Thread.yield();
+            }
         }
     }
 }
