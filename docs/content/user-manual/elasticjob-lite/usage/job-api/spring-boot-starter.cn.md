@@ -176,19 +176,19 @@ elasticjob:
   jobs:
     ...
     jobErrorHandlerType: EMAIL 
-  props:
-    email:
-      host: host
-      port: 465
-      username: username
-      password: password
-      useSsl: true
-      subject: ElasticJob error message
-      from: from@xxx.xx
-      to: to1@xxx.xx,to2@xxx.xx
-      cc: cc@xxx.xx
-      bcc: bcc@xxx.xx
-      debug: false
+    props:
+      email:
+        host: host
+        port: 465
+        username: username
+        password: password
+        useSsl: true
+        subject: ElasticJob error message
+        from: from@xxx.xx
+        to: to1@xxx.xx,to2@xxx.xx
+        cc: cc@xxx.xx
+        bcc: bcc@xxx.xx
+        debug: false
 ```
 
 ### 企业微信通知策略
@@ -210,11 +210,11 @@ elasticjob:
   jobs:
     ...
     jobErrorHandlerType: WECHAT 
-  props:
-    wechat:
-      webhook: you_webhook
-      connectTimeout: 3000
-      readTimeout: 5000
+    props:
+      wechat:
+        webhook: you_webhook
+        connectTimeout: 3000
+        readTimeout: 5000
 ```
 
 
@@ -237,11 +237,11 @@ elasticjob:
   jobs:
     ...
     jobErrorHandlerType: DINGTALK 
-  props:
-    dingtalk:
-       webhook: you_webhook
-       keyword: you_keyword
-       secret: you_secret
-       connectTimeout: 3000
-       readTimeout: 5000
+    props:
+      dingtalk:
+        webhook: you_webhook
+        keyword: you_keyword
+        secret: you_secret
+        connectTimeout: 3000
+        readTimeout: 5000
 ```
