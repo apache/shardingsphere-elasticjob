@@ -17,9 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
+import org.awaitility.Awaitility;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -38,15 +40,17 @@ public final class ElasticJobExecutorServiceTest {
         assertFalse(executorServiceObject.isShutdown());
         ExecutorService executorService = executorServiceObject.createExecutorService();
         executorService.submit(new FooTask());
-        BlockUtils.waitingShortTime();
-        assertThat(executorServiceObject.getActiveThreadCount(), is(1));
-        assertThat(executorServiceObject.getWorkQueueSize(), is(0));
-        assertFalse(executorServiceObject.isShutdown());
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+            assertThat(executorServiceObject.getActiveThreadCount(), is(1));
+            assertThat(executorServiceObject.getWorkQueueSize(), is(0));
+            assertFalse(executorServiceObject.isShutdown());
+        });
         executorService.submit(new FooTask());
-        BlockUtils.waitingShortTime();
-        assertThat(executorServiceObject.getActiveThreadCount(), is(1));
-        assertThat(executorServiceObject.getWorkQueueSize(), is(1));
-        assertFalse(executorServiceObject.isShutdown());
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+            assertThat(executorServiceObject.getActiveThreadCount(), is(1));
+            assertThat(executorServiceObject.getWorkQueueSize(), is(1));
+            assertFalse(executorServiceObject.isShutdown());
+        });
         executorService.shutdownNow();
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         assertTrue(executorServiceObject.isShutdown());
@@ -54,13 +58,11 @@ public final class ElasticJobExecutorServiceTest {
     }
     
     static class FooTask implements Runnable {
-        
+
         @Override
         public void run() {
-            BlockUtils.sleep(1000L);
-            while (!hasExecuted) {
-                Thread.yield();
-            }
+            Awaitility.await().atMost(1L, TimeUnit.MINUTES)
+                    .untilAsserted(() -> assertThat(hasExecuted, is(true)));
         }
     }
 }

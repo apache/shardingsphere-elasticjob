@@ -19,12 +19,17 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.curator.CuratorZookeeperClient;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.test.TestingServer;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
+import org.awaitility.Awaitility;
+import org.hamcrest.Matchers;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertThat;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedTestingServer {
@@ -46,14 +51,11 @@ public final class EmbedTestingServer {
      * Start the server.
      */
     public static void start() {
-        // sleep some time to avoid testServer intended stop.
-        long sleepTime = 1000L;
-        BlockUtils.sleep(sleepTime);
         if (null != testingServer) {
             return;
         }
         try {
-            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            testingServer = new TestingServer(PORT, true);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -61,12 +63,24 @@ public final class EmbedTestingServer {
         } finally {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    Thread.sleep(sleepTime);
                     testingServer.close();
-                } catch (final IOException | InterruptedException ex) {
+                } catch (final IOException ex) {
                     RegExceptionHandler.handleException(ex);
                 }
             }));
+        }
+        try (CuratorZookeeperClient client = new CuratorZookeeperClient(getConnectionString(),
+                60 * 1000, 500, null,
+                new ExponentialBackoffRetry(500, 3, 500 * 3))) {
+            client.start();
+            Awaitility.await()
+                    .atLeast(100L, TimeUnit.MILLISECONDS)
+                    .atMost(500 * 60L, TimeUnit.MILLISECONDS)
+                    .untilAsserted(() -> assertThat(client.isConnected(), Matchers.is(true)));
+            // CHECKSTYLE:OFF
+        } catch (Exception e) {
+            // CHECKSTYLE:ON
+            throw new RuntimeException(e);
         }
     }
 }

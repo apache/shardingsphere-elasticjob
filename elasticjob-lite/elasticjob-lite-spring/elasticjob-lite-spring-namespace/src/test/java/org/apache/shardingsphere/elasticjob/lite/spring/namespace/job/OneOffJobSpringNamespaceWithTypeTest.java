@@ -17,15 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 
@@ -46,7 +48,8 @@ public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeepe
     public void jobScriptWithJobTypeTest() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(scriptJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        BlockUtils.sleep(1000L);
-        assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"));
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding"))
+        );
     }
 }

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
@@ -30,6 +29,7 @@ import org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.ZookeeperProper
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.awaitility.Awaitility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -131,12 +132,13 @@ public class ElasticJobSpringBootTest extends AbstractJUnit4SpringContextTests {
     
     @Test
     public void assertJobScheduleCreation() {
-        assertNotNull(applicationContext);
-        Map<String, ElasticJob> elasticJobBeans = applicationContext.getBeansOfType(ElasticJob.class);
-        assertFalse(elasticJobBeans.isEmpty());
-        Map<String, JobBootstrap> jobBootstrapBeans = applicationContext.getBeansOfType(JobBootstrap.class);
-        assertFalse(jobBootstrapBeans.isEmpty());
-        BlockUtils.waitingShortTime();
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> {
+            assertNotNull(applicationContext);
+            Map<String, ElasticJob> elasticJobBeans = applicationContext.getBeansOfType(ElasticJob.class);
+            assertFalse(elasticJobBeans.isEmpty());
+            Map<String, JobBootstrap> jobBootstrapBeans = applicationContext.getBeansOfType(JobBootstrap.class);
+            assertFalse(jobBootstrapBeans.isEmpty());
+        });
     }
     
     @Test

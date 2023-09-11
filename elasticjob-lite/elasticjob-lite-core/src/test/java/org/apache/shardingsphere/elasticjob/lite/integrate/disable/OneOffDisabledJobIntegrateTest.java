@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.integrate.disable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.junit.Test;
 
 public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
@@ -35,7 +34,6 @@ public final class OneOffDisabledJobIntegrateTest extends DisabledJobIntegrateTe
     
     @Test
     public void assertJobRunning() {
-        BlockUtils.waitingShortTime();
         assertDisabledRegCenterInfo();
     }
 }

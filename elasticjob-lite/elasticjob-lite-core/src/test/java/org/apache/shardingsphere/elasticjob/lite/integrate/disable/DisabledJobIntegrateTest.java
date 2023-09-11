@@ -17,16 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.integrate.disable;
 
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.lite.integrate.BaseIntegrateTest;
-import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.awaitility.Awaitility;
+import org.hamcrest.core.IsNull;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
@@ -39,8 +42,10 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     }
     
     protected final void assertDisabledRegCenterInfo() {
-        assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
-        assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> {
+            assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
+            assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
+        });
         JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         if (getJobBootstrap() instanceof ScheduleJobBootstrap) {
@@ -50,8 +55,8 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
         }
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.DISABLED.name()));
-        while (null != getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance")) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance"), is(IsNull.nullValue()))
+        );
     }
 }

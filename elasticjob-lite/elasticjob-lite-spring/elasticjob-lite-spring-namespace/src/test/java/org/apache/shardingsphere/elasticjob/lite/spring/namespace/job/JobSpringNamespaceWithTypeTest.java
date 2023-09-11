@@ -17,11 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
-import static org.junit.Assert.assertTrue;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Test;
 import org.quartz.Scheduler;
@@ -29,6 +28,12 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
 public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit4SpringContextTests {
@@ -41,18 +46,18 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     private Scheduler scheduler;
 
     @After
-    public void tearDown() throws SchedulerException {
-        while (!scheduler.getCurrentlyExecutingJobs().isEmpty()) {
-            BlockUtils.waitingShortTime();
-        }
+    public void tearDown() {
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true))
+        );
         JobRegistry.getInstance().getJobScheduleController(scriptJobName).shutdown();
     }
     
     @Test
     public void jobScriptWithJobTypeTest() throws SchedulerException {
-        while (!regCenter.isExisted("/" + scriptJobName + "/sharding")) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(regCenter.isExisted("/" + scriptJobName + "/sharding"), is(true))
+        );
         scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
         assertTrue(scheduler.isStarted());
     }

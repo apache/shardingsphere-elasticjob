@@ -18,14 +18,18 @@
 package org.apache.shardingsphere.elasticjob.http.executor.fixture;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
+import org.awaitility.Awaitility;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @Slf4j
 public final class InternalController implements RestfulController {
@@ -71,7 +75,9 @@ public final class InternalController implements RestfulController {
      */
     @Mapping(method = Http.POST, path = "/postWithTimeout")
     public String postWithTimeout() {
-        BlockUtils.waitingShortTime();
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.SECONDS).untilAsserted(() ->
+                assertThat(Boolean.TRUE, is(Boolean.TRUE))
+        );
         return "ejob";
     }
 }

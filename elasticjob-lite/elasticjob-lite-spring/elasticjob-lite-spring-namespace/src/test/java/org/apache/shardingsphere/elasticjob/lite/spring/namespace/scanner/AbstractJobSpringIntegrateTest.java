@@ -18,16 +18,20 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.scanner;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.annotation.AnnotationSimpleJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RequiredArgsConstructor
@@ -55,9 +59,9 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     }
     
     private void assertSimpleElasticJobBean() {
-        while (!AnnotationSimpleJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(AnnotationSimpleJob.isCompleted(), is(true))
+        );
         assertTrue(AnnotationSimpleJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
     }
