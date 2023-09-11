@@ -44,7 +44,7 @@
         <springframework.version>4.3.4.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.2.0</logback.version>
-        <commons-dbcp2.version>2.7.0</commons-dbcp2.version>
+        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
         <h2.version>1.4.184</h2.version>
         <mysql.version>8.0.28</mysql.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
