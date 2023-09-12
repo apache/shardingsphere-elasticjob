@@ -17,9 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.lite.api.registry;
 
+import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-
-import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
@@ -28,30 +33,23 @@ import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodePath;
+import org.apache.shardingsphere.elasticjob.lite.internal.util.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
-
-import java.util.Arrays;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Job instance registry.
  */
 @RequiredArgsConstructor
 public final class JobInstanceRegistry {
-    
+
     private static final Pattern JOB_CONFIG_COMPILE = Pattern.compile("/(\\w+)/config");
-    
+
     private final CoordinatorRegistryCenter regCenter;
-    
+
     private final JobInstance jobInstance;
-    
+
     /**
      * Register.
      */
@@ -60,9 +58,9 @@ public final class JobInstanceRegistry {
         Executor executor = Executors.newSingleThreadExecutor(threadFactory);
         regCenter.watch("/", new JobInstanceRegistryListener(), executor);
     }
-    
+
     public class JobInstanceRegistryListener implements DataChangedEventListener {
-        
+
         @Override
         public void onChange(final DataChangedEvent event) {
             if (event.getType() != DataChangedEvent.Type.ADDED || !isJobConfigPath(event.getKey())) {
@@ -78,13 +76,13 @@ public final class JobInstanceRegistry {
                 new OneOffJobBootstrap(regCenter, newElasticJobInstance(jobConfig), jobConfig).execute();
             }
         }
-        
+
         private boolean isAllShardingItemsCompleted(final JobConfiguration jobConfig) {
             JobNodePath jobNodePath = new JobNodePath(jobConfig.getJobName());
             return IntStream.range(0, jobConfig.getShardingTotalCount())
-                    .allMatch(each -> regCenter.isExisted(jobNodePath.getShardingNodePath(String.valueOf(each), "completed")));
+                .allMatch(each -> regCenter.isExisted(jobNodePath.getShardingNodePath(String.valueOf(each), "completed")));
         }
-        
+
         private ElasticJob newElasticJobInstance(final JobConfiguration jobConfig) {
             String clazz = regCenter.get(String.format("/%s", jobConfig.getJobName()));
             try {
@@ -95,7 +93,7 @@ public final class JobInstanceRegistry {
                 throw new RuntimeException(String.format("new elastic job instance by class '%s' failure", clazz), ex);
             }
         }
-        
+
         private boolean isLabelMatch(final JobConfiguration jobConfig) {
             if (jobConfig.getLabel() == null) {
                 return false;
@@ -105,7 +103,7 @@ public final class JobInstanceRegistry {
             }
             return Arrays.stream(jobInstance.getLabels().split(",")).collect(Collectors.toSet()).contains(jobConfig.getLabel());
         }
-        
+
         private boolean isJobConfigPath(final String path) {
             return JOB_CONFIG_COMPILE.matcher(path).matches();
         }

@@ -18,13 +18,6 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -35,29 +28,32 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.lite.internal.util.SensitiveInfoUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 
 /**
  * Snapshot service.
  */
 @Slf4j
 public final class SnapshotService {
-    
+
     public static final String DUMP_COMMAND = "dump@";
 
     private final int port;
-    
+
     private final CoordinatorRegistryCenter regCenter;
-    
+
     private ServerSocket serverSocket;
-    
+
     private volatile boolean closed;
-    
+
     public SnapshotService(final CoordinatorRegistryCenter regCenter, final int port) {
         Preconditions.checkArgument(port >= 0 && port <= 0xFFFF, "Port value out of range: " + port);
         this.regCenter = regCenter;
         this.port = port;
     }
-    
+
     /**
      * Start to listen.
      */
@@ -68,7 +64,7 @@ public final class SnapshotService {
             log.error("ElasticJob: Snapshot service listen failure, error is: ", ex);
         }
     }
-    
+
     private int openSocket(final int port) throws IOException {
         closed = false;
         serverSocket = new ServerSocket(port);
@@ -88,16 +84,16 @@ public final class SnapshotService {
         }, threadName).start();
         return localPort;
     }
-    
+
     private boolean isIgnoredException() {
         return serverSocket.isClosed();
     }
-    
+
     private void process(final Socket socket) throws IOException {
         try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                Socket ignored = socket) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            Socket ignored = socket) {
             String cmdLine = reader.readLine();
             if (null != cmdLine && cmdLine.startsWith(DUMP_COMMAND) && cmdLine.split("@").length == 2) {
                 String jobName = cmdLine.split("@")[1];
@@ -106,45 +102,32 @@ public final class SnapshotService {
             }
         }
     }
-    
-    private void dumpDirectly(final String path, final String jobName, final List<String> result) {
+
+    private void dumpDirectly(final String path, final List<String> result) {
         for (String each : regCenter.getChildrenKeys(path)) {
-            String zkPath = path + "/" + each;
-            String zkValue = Optional.ofNullable(regCenter.get(zkPath)).orElse("");
-            String cachePath = zkPath;
-            String cacheValue = zkValue;
-            // TODO Decoupling ZooKeeper
-            if (regCenter instanceof ZookeeperRegistryCenter) {
-                CuratorCache cache = (CuratorCache) regCenter.getRawCache("/" + jobName);
-                if (null != cache) {
-                    Optional<ChildData> cacheData = cache.get(zkPath);
-                    cachePath = cacheData.map(ChildData::getPath).orElse("");
-                    cacheValue = cacheData.map(ChildData::getData).map(String::new).orElse("");
-                }
-            }
-            if (zkValue.equals(cacheValue) && zkPath.equals(cachePath)) {
-                result.add(String.join(" | ", zkPath, zkValue));
-            } else {
-                result.add(String.join(" | ", zkPath, zkValue, cachePath, cacheValue));
-            }
-            dumpDirectly(zkPath, jobName, result);
+            String childrenPath = path + "/" + each;
+            String childrenValue = Optional.ofNullable(regCenter.get(childrenPath)).orElse("");
+            result.add(String.join(" | ", childrenPath, childrenValue));
+            dumpDirectly(childrenPath, result);
         }
     }
 
     /**
      * Dump job.
+     *
      * @param jobName job's name
      * @return dump job's info
      */
     public String dumpJobDirectly(final String jobName) {
         String path = "/" + jobName;
         final List<String> result = new ArrayList<>();
-        dumpDirectly(path, jobName, result);
+        dumpDirectly(path, result);
         return String.join("\n", SensitiveInfoUtils.filterSensitiveIps(result)) + "\n";
     }
 
     /**
      * Dump job.
+     *
      * @param instanceIp job instance ip addr
      * @param dumpPort dump port
      * @param jobName job's name
@@ -153,9 +136,9 @@ public final class SnapshotService {
      */
     public static String dumpJob(final String instanceIp, final int dumpPort, final String jobName) throws IOException {
         try (
-                Socket socket = new Socket(instanceIp, dumpPort);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
+            Socket socket = new Socket(instanceIp, dumpPort);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
             writer.write(DUMP_COMMAND + jobName);
             writer.newLine();
@@ -173,7 +156,7 @@ public final class SnapshotService {
         outputWriter.append(msg);
         outputWriter.flush();
     }
-    
+
     /**
      * Close listener.
      */
