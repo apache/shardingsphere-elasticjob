@@ -126,8 +126,8 @@ You may specify interface by system property `elasticjob.preferred.network.inter
 For example
 
 1. specify the interface eno1: `-Delasticjob.preferred.network.interface=eno1`.
-2. specify network addresses, 192.168.0.100: `-Delasticjob.preferred.network.ip=192.168.0.100`.
-3. specify network addresses for regular expressions, 192.168.*: `-Delasticjob.preferred.network.ip=192.168.*`.
+1. specify network addresses, 192.168.0.100: `-Delasticjob.preferred.network.ip=192.168.0.100`.
+1. specify network addresses for regular expressions, 192.168.*: `-Delasticjob.preferred.network.ip=192.168.*`.
 
 ## 15. During the zk authorization upgrade process, there was a false death of the instance during the rolling deployment process, and even if the historical version was rolled back, there was still false death.
 
