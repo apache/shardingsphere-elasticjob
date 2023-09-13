@@ -127,5 +127,25 @@ Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
 例如:
 
 1. 指定网卡 eno1：`-Delasticjob.preferred.network.interface=eno1`。
-1. 指定IP地址 192.168.0.100：`-Delasticjob.preferred.network.ip=192.168.0.100`。
-1. 泛指IP地址(正则表达式) 192.168.*：`-Delasticjob.preferred.network.ip=192.168.*`。
+2. 指定IP地址 192.168.0.100：`-Delasticjob.preferred.network.ip=192.168.0.100`。
+3. 泛指IP地址(正则表达式) 192.168.*：`-Delasticjob.preferred.network.ip=192.168.*`。
+
+## 15. zk授权升级,在滚动部署过程中出现实例假死,回退到历史版本也依然存在假死。
+
+回答:
+
+在滚动部署过程中,会触发竞争选举leader,有密码的实例会给zk目录加密导致无密码的实例不可访问,最终导致整体选举阻塞。
+
+例如:
+
+通过日志可以发现会抛出-102异常:
+
+```bash
+xxxx-07-27 22:33:55.224 [DEBUG] [localhost-startStop-1-EventThread] [] [] [] - o.a.c.f.r.c.TreeCache : processResult: CuratorEventImpl{type=GET_DATA, resultCode=-102, path='/xxx/leader/election/latch/_c_bccccdcc-1134-4e0a-bb52-59a13836434a-latch-0000000047', name='null', children=null, context=null, stat=null, data=null, watchedEvent=null, aclList=null}
+```
+
+解决方案:
+
+1.如果您在升级的过程中出现回退历史版本也依然假死的问题,建议删除zk上所有作业目录,之后再重启历史版本。
+2.计算出合理的作业执行间隙,比如晚上21:00-21:30作业不会触发,在此期间先将实例全部停止,然后将带密码的版本全部部署上线。
+
