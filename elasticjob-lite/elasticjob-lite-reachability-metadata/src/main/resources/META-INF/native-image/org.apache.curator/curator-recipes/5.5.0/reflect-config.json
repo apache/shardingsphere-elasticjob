@@ -1,0 +1,12 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.curator.framework.recipes.cache.CuratorCacheImpl"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.framework.recipes.cache.CuratorCacheImpl"},
+  "name":"java.lang.Object",
+  "allDeclaredFields":true
+}
+]

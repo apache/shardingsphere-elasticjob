@@ -223,9 +223,9 @@ The text of each license is the standard Apache 2.0 license.
     commons-lang3 3.4: https://github.com/apache/commons-lang, Apache 2.0
     commons-logging 1.2: https://github.com/apache/commons-logging, Apache 2.0
     commons-pool2 2.8.1: https://github.com/apache/commons-pool, Apache 2.0
-    curator-client 5.1.0: https://github.com/apache/curator,  Apache 2.0
-    curator-framework 5.1.0: https://github.com/apache/curator,  Apache 2.0
-    curator-recipes 5.1.0: https://github.com/apache/curator,  Apache 2.0
+    curator-client 5.5.0: https://github.com/apache/curator,  Apache 2.0
+    curator-framework 5.5.0: https://github.com/apache/curator,  Apache 2.0
+    curator-recipes 5.5.0: https://github.com/apache/curator,  Apache 2.0
     error_prone_annotations 2.3.4: https://github.com/google/error-prone, Apache 2.0
     failureaccess 1.0.1:https://github.com/google/guava, Apache 2.0 
     fenzo-core 0.11.1: https://github.com/Netflix/Fenzo, Apache 2.0
@@ -252,8 +252,8 @@ The text of each license is the standard Apache 2.0 license.
     netty-transport-native-unix-common 4.1.45.Final: https://github.com/netty, Apache 2.0
     quartz 2.3.2: https://github.com/quartz-scheduler/quartz, Apache 2.0
     snakeyaml 1.26: http://www.snakeyaml.org, Apache 2.0
-    zookeeper 3.6.0: https://github.com/apache/zookeeper, Apache 2.0
-    zookeeper-jute 3.6.0: https://github.com/apache/zookeeper, Apache 2.0
+    zookeeper 3.9.0: https://github.com/apache/zookeeper, Apache 2.0
+    zookeeper-jute 3.9.0: https://github.com/apache/zookeeper, Apache 2.0
 
 ========================================================================
 EPL licenses

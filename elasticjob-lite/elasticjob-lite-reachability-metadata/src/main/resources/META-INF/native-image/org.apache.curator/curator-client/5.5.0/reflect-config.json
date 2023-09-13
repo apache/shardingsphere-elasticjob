@@ -1,0 +1,86 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.io.FilePermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.retry.RetryForever"},
+  "name":"java.lang.Object",
+  "methods":[{"name":"toString","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.lang.RuntimePermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.retry.RetryForever"},
+  "name":"java.lang.StackWalker",
+  "methods":[{"name":"getInstance","parameterTypes":["java.util.Set","int"] }, {"name":"walk","parameterTypes":["java.util.function.Function"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.retry.RetryForever"},
+  "name":"java.lang.StackWalker$Option"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.retry.RetryForever"},
+  "name":"java.lang.StackWalker$StackFrame",
+  "methods":[{"name":"getClassName","parameterTypes":[] }, {"name":"getFileName","parameterTypes":[] }, {"name":"getLineNumber","parameterTypes":[] }, {"name":"getMethodName","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.net.NetPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.net.SocketPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.net.URLPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.security.AllPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.QuorumConfigBuilder"},
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.security.SecurityPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"java.util.PropertyPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.ZooKeeperServerEmbeddedAdapter"},
+  "name":"java.util.concurrent.ForkJoinTask",
+  "fields":[{"name":"aux"}, {"name":"status"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"javax.smartcardio.CardPermission"
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.QuorumConfigBuilder"},
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.curator.test.DirectoryUtils"},
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]

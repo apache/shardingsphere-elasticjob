@@ -1,0 +1,204 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[B"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[C"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[D"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[F"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[I"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[J"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[Ljava.lang.String;"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[S"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"[Z"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Byte",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Character",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Deprecated",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Double",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Float",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Long",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Short",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.StackTraceElement",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.String",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.ClientCnxn$SendThread"},
+  "name":"java.lang.Throwable",
+  "methods":[{"name":"getSuppressed","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.persistence.FileTxnLog$FileTxnIterator"},
+  "name":"java.lang.Throwable",
+  "methods":[{"name":"getSuppressed","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.lang.Void",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.math.BigDecimal"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.math.BigInteger"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.util.Date"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.util.PropertyPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.embedded.ZooKeeperServerEmbeddedImpl"},
+  "name":"java.util.concurrent.ForkJoinTask",
+  "fields":[{"name":"aux"}, {"name":"status"}]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.util.logging.LogManager",
+  "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.util.logging.LoggingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.ZooKeeper"},
+  "name":"org.apache.zookeeper.ClientCnxnSocketNIO",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.zookeeper.client.ZKClientConfig"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.metrics.impl.MetricsProviderBootstrap"},
+  "name":"org.apache.zookeeper.metrics.impl.DefaultMetricsProvider",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.quorum.QuorumPeerConfig"},
+  "name":"org.apache.zookeeper.metrics.impl.DefaultMetricsProvider"
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ServerCnxnFactory"},
+  "name":"org.apache.zookeeper.server.ConnectionBean",
+  "queryAllPublicConstructors":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ServerCnxnFactory"},
+  "name":"org.apache.zookeeper.server.ConnectionMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ZooKeeperServer"},
+  "name":"org.apache.zookeeper.server.DataTreeBean",
+  "queryAllPublicConstructors":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ZooKeeperServer"},
+  "name":"org.apache.zookeeper.server.DataTreeMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ServerCnxnFactory"},
+  "name":"org.apache.zookeeper.server.NIOServerCnxnFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ZooKeeperServer"},
+  "name":"org.apache.zookeeper.server.ZooKeeperServerBean",
+  "queryAllPublicConstructors":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ZooKeeperServer"},
+  "name":"org.apache.zookeeper.server.ZooKeeperServerMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.watch.WatchManagerFactory"},
+  "name":"org.apache.zookeeper.server.watch.WatchManager",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.ServerCnxnFactory"},
+  "name":"sun.security.provider.ConfigFile",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.server.auth.DigestAuthenticationProvider"},
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]

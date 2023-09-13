@@ -1,0 +1,7 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.zookeeper.jmx.MBeanRegistry"},
+  "name":"java.util.Arrays",
+  "methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"] }]
+}
+]

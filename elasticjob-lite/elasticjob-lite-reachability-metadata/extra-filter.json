@@ -1,0 +1,15 @@
+{
+  "rules": [
+    {"includeClasses": "**"},
+    {"excludeClasses": "java.lang.management.**"},
+    {"excludeClasses": "jdk.management.**"},
+    {"excludeClasses": "com.sun.management.**"},
+    {"excludeClasses": "sun.management.**"},
+    {"excludeClasses": "javax.management.**"}
+
+  ],
+  "regexRules": [
+    {"excludeClasses": ".*fixture*.*"},
+    {"excludeClasses": ".*Test*.*"}
+  ]
+}

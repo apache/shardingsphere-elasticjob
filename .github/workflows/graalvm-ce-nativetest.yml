@@ -1,0 +1,58 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: NativeTest by GraalVM CE with Maven
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/graalvm-ce-nativetest.yml'
+      - 'elasticjob-lite/elasticjob-lite-reachability-metadata/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/graalvm-ce-nativetest.yml'
+      - 'elasticjob-lite/elasticjob-lite-reachability-metadata/**'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [ '17.0.8' ]
+        os: [ 'windows-latest', 'ubuntu-latest' ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Configure Git
+        if: matrix.os == 'windows-latest'
+        run: |
+          git config --global core.longpaths true
+      - uses: actions/checkout@v3
+      - name: Set up GraalVM CE ${{ matrix.java }}
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'graalvm-community'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'maven'
+      - name: Build NativeTest with Maven
+        continue-on-error: true
+        run: |
+          ./mvnw -PnativeTestInElasticJob -T1C -B -e clean test
