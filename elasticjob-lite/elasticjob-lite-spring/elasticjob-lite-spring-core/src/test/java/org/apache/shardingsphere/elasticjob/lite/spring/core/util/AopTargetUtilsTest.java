@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.spring.core.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;

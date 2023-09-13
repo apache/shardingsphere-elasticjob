@@ -29,7 +29,7 @@ import org.hamcrest.Matchers;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedTestingServer {

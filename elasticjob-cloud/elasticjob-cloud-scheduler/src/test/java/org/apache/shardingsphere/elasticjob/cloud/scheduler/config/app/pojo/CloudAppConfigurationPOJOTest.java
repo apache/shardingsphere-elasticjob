@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppC
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class CloudAppConfigurationPOJOTest {

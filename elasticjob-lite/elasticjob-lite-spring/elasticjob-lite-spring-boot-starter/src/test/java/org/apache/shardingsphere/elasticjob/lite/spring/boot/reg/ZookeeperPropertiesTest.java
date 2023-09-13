@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.reg;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.Test;
