@@ -128,3 +128,20 @@ For example
 1. specify the interface eno1: `-Delasticjob.preferred.network.interface=eno1`.
 1. specify network addresses, 192.168.0.100: `-Delasticjob.preferred.network.ip=192.168.0.100`.
 1. specify network addresses for regular expressions, 192.168.*: `-Delasticjob.preferred.network.ip=192.168.*`.
+
+## 15. During the zk authorization upgrade process, there was a false death of the instance during the rolling deployment process, and even if the historical version was rolled back, there was still false death.
+
+Answer:
+
+During the rolling deployment process, competitive election leaders will be triggered, and instances with passwords will encrypt the zk directory, making instances without passwords inaccessible, ultimately leading to overall election blocking.
+
+For example
+
+Through the logs, it can be found that an -102 exception will be thrown:
+
+```bash
+xxxx-07-27 22:33:55.224 [DEBUG] [localhost-startStop-1-EventThread] [] [] [] - o.a.c.f.r.c.TreeCache : processResult: CuratorEventImpl{type=GET_DATA, resultCode=-102, path='/xxx/leader/election/latch/_c_bccccdcc-1134-4e0a-bb52-59a13836434a-latch-0000000047', name='null', children=null, context=null, stat=null, data=null, watchedEvent=null, aclList=null}
+```
+
+1.If you encounter the issue of returning to the historical version and still pretending to be dead during the upgrade process, it is recommended to delete all job directories on zk and restart the historical version afterwards.
+2.Calculate a reasonable job execution gap, such as when the job will not trigger from 21:00 to 21:30 in the evening. During this period, first stop all instances, and then deploy all versions with passwords online.
