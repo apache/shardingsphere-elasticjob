@@ -37,6 +37,7 @@ public final class JobConfigurationTest {
                 .maxTimeDiffSeconds(1000).reconcileIntervalMinutes(60)
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("SINGLE_THREAD").jobErrorHandlerType("IGNORE")
                 .description("desc").setProperty("key", "value")
+                .maxRuntimeSeconds(60)
                 .disabled(true).overwrite(true).build();
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -54,6 +55,7 @@ public final class JobConfigurationTest {
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
         assertThat(actual.getDescription(), is("desc"));
         assertThat(actual.getProps().getProperty("key"), is("value"));
+        assertThat(actual.getMaxRunTimeSeconds(), is(60));
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
     }
@@ -79,6 +81,7 @@ public final class JobConfigurationTest {
         assertTrue(actual.getProps().isEmpty());
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
+        assertThat(actual.getMaxRunTimeSeconds(), is(-1));
     }
     
     @Test(expected = IllegalArgumentException.class)
