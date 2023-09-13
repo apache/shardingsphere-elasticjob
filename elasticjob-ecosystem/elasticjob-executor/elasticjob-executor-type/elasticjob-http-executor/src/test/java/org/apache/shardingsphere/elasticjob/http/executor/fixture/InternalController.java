@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 public final class InternalController implements RestfulController {

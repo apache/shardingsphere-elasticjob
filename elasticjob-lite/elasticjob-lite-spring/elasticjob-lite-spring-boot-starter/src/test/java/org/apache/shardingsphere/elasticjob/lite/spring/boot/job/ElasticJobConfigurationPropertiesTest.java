@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Collections;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;

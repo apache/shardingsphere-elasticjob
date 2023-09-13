@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RequiredArgsConstructor
@@ -68,7 +68,7 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     private void assertSimpleElasticJobBean() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(simpleJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        Awaitility.await().atMost(10L, TimeUnit.MINUTES).untilAsserted(() ->
+        Awaitility.await().atMost(5L, TimeUnit.MINUTES).untilAsserted(() ->
                 assertThat(FooSimpleElasticJob.isCompleted(), is(true))
         );
         assertTrue(FooSimpleElasticJob.isCompleted());
@@ -78,7 +78,7 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     private void assertThroughputDataflowElasticJobBean() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(throughputDataflowJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        Awaitility.await().atMost(10L, TimeUnit.MINUTES).untilAsserted(() ->
+        Awaitility.await().atMost(5L, TimeUnit.MINUTES).untilAsserted(() ->
                 assertThat(DataflowElasticJob.isCompleted(), is(true))
         );
         assertTrue(DataflowElasticJob.isCompleted());

@@ -71,16 +71,17 @@
         
         <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <h2.version>1.4.184</h2.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.2</junit.version>
+        <junit5.version>5.10.0</junit5.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <mockito.version>4.8.0</mockito.version>
+        <mockito.version>4.11.0</mockito.version>
         <awaitility.version>4.2.0</awaitility.version>
         
         <apache-rat-plugin.version>0.15</apache-rat-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
         <maven-site-plugin.version>3.4</maven-site-plugin.version>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
@@ -354,8 +355,28 @@
                 <version>${awaitility.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit5.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     
     <build>
         <finalName>apache-shardingsphere-elasticjob-${project.version}</finalName>
@@ -386,9 +407,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
-                    <configuration>
-                        <trimStackTrace>false</trimStackTrace>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -704,7 +722,6 @@
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
-                                <trimStackTrace>false</trimStackTrace>
                                 <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
                             </configuration>
                         </plugin>

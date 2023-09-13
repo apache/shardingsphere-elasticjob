@@ -29,7 +29,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class EmbedZookeeperTestExecutionListener extends AbstractTestExecutionListener {
     
