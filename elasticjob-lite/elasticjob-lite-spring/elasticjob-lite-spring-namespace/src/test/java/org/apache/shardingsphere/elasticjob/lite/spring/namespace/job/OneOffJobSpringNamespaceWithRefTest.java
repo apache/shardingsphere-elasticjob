@@ -19,16 +19,20 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.ref.RefFooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobRef.xml")
@@ -58,9 +62,9 @@ public final class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeper
     }
 
     private void assertOneOffSimpleElasticJobBean() {
-        while (!RefFooSimpleElasticJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(RefFooSimpleElasticJob.isCompleted(), is(true))
+        );
         assertTrue(RefFooSimpleElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + oneOffSimpleJobName + "/sharding"));
     }

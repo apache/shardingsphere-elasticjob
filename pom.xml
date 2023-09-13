@@ -74,6 +74,7 @@
         <junit.version>4.12</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>4.8.0</mockito.version>
+        <awaitility.version>4.2.0</awaitility.version>
         
         <apache-rat-plugin.version>0.15</apache-rat-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -345,6 +346,12 @@
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

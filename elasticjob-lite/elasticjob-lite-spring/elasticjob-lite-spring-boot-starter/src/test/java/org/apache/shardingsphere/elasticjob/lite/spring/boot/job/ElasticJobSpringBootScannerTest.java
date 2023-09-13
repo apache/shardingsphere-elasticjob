@@ -17,18 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.AnnotationCustomJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.core.scanner.ElasticJobScan;
+import org.awaitility.Awaitility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
@@ -44,9 +48,9 @@ public class ElasticJobSpringBootScannerTest extends AbstractJUnit4SpringContext
     
     @Test
     public void assertDefaultBeanNameWithTypeJob() {
-        while (!AnnotationCustomJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(AnnotationCustomJob.isCompleted(), is(true))
+        );
         assertTrue(AnnotationCustomJob.isCompleted());
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("annotationCustomJobSchedule", ScheduleJobBootstrap.class));

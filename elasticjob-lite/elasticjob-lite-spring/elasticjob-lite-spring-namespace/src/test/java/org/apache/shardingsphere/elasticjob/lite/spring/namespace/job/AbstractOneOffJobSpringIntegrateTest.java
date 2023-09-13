@@ -18,18 +18,22 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.concurrent.BlockUtils;
 import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.DataflowElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.FooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RequiredArgsConstructor
@@ -64,9 +68,9 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     private void assertSimpleElasticJobBean() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(simpleJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        while (!FooSimpleElasticJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(10L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(FooSimpleElasticJob.isCompleted(), is(true))
+        );
         assertTrue(FooSimpleElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
     }
@@ -74,9 +78,9 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     private void assertThroughputDataflowElasticJobBean() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(throughputDataflowJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        while (!DataflowElasticJob.isCompleted()) {
-            BlockUtils.waitingShortTime();
-        }
+        Awaitility.await().atMost(10L, TimeUnit.MINUTES).untilAsserted(() ->
+                assertThat(DataflowElasticJob.isCompleted(), is(true))
+        );
         assertTrue(DataflowElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + throughputDataflowJobName + "/sharding"));
     }
