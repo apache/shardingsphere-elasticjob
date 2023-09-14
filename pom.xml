@@ -755,6 +755,68 @@
             </build>
         </profile>
         <profile>
+            <id>generateMetadata</id>
+            <properties>
+                <java.version>17</java.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <includes>
+                                    <include>org.apache.shardingsphere.elasticjob.lite.reachability.metadata.fixture.**</include>
+                                </includes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.graalvm.buildtools</groupId>
+                            <artifactId>native-maven-plugin</artifactId>
+                            <version>${native-maven-plugin.version}</version>
+                            <extensions>true</extensions>
+                            <executions>
+                                <execution>
+                                    <id>build-native</id>
+                                    <goals>
+                                        <goal>compile-no-fork</goal>
+                                    </goals>
+                                    <phase>package</phase>
+                                </execution>
+                                <execution>
+                                    <id>test-native</id>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <phase>test</phase>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <agent>
+                                    <enabled>true</enabled>
+                                    <defaultMode>Conditional</defaultMode>
+                                    <modes>
+                                        <conditional>
+                                            <userCodeFilterPath>${user.dir}/elasticjob-lite/elasticjob-lite-reachability-metadata/user-code-filter-elasticjob-lite-core.json</userCodeFilterPath>
+                                            <extraFilterPath>${user.dir}/elasticjob-lite/elasticjob-lite-reachability-metadata/extra-filter.json</extraFilterPath>
+                                            <parallel>true</parallel>
+                                        </conditional>
+                                    </modes>
+                                    <metadataCopy>
+                                        <disabledStages>
+                                            <stage>main</stage>
+                                        </disabledStages>
+                                        <merge>false</merge>
+                                        <outputDirectory>${user.dir}/elasticjob-lite/elasticjob-lite-reachability-metadata/src/main/resources/META-INF/native-image/org.apache.shardingsphere.elasticjob/elasticjob-lite-core</outputDirectory>
+                                    </metadataCopy>
+                                </agent>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
             <id>nativeTestInElasticJob</id>
             <properties>
                 <java.version>17</java.version>

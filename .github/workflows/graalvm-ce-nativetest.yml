@@ -36,8 +36,8 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ '17.0.8' ]
-        os: [ 'windows-latest', 'ubuntu-latest' ]
+        graalvm: [ '17.0.8' ]
+        os: [ 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Configure Git
@@ -48,7 +48,7 @@ jobs:
       - name: Set up GraalVM CE ${{ matrix.java }}
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: ${{ matrix.graalvm }}
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'maven'
