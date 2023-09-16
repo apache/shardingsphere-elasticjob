@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,31 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
+package org.apache.shardingsphere.elasticjob.tracing.metrics.listener;
 
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.metrics.config.MetricConfig;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
 
 /**
  * RDB tracing listener configuration.
  */
-public final class RDBTracingListenerConfiguration implements TracingListenerConfiguration<DataSource> {
-    
+public final class JobMetricsTracingListenerConfiguration implements TracingListenerConfiguration<MetricConfig> {
+
     @Override
-    public TracingListener createTracingListener(final DataSource storage) throws TracingConfigurationException {
-        try {
-            return new RDBTracingListener(storage);
-        } catch (final SQLException ex) {
-            throw new TracingConfigurationException(ex);
-        }
+    public TracingListener createTracingListener(final MetricConfig metricConfig) throws TracingConfigurationException {
+        return new JobMetricsListener(metricConfig);
     }
-    
+
     @Override
     public String getType() {
-        return TracingTypeEnum.RDB.getType();
+        return TracingTypeEnum.METRICS.getType();
     }
+
+
 }

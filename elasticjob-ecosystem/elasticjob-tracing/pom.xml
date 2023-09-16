@@ -30,5 +30,6 @@
     <modules>
         <module>elasticjob-tracing-api</module>
         <module>elasticjob-tracing-rdb</module>
+        <module>elasticjob-tracing-observability</module>
     </modules>
 </project>

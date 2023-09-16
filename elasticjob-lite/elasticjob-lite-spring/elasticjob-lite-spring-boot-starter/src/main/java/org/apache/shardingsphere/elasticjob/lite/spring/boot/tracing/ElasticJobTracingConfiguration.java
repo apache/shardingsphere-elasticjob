@@ -19,6 +19,8 @@ package org.apache.shardingsphere.elasticjob.lite.spring.boot.tracing;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.listener.TracingType;
+import org.apache.shardingsphere.elasticjob.tracing.metrics.config.MetricConfig;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.lang.Nullable;
 
 import javax.sql.DataSource;
+
+import static org.apache.shardingsphere.elasticjob.tracing.listener.TracingType.*;
 
 /**
  * ElasticJob tracing auto configuration.
@@ -56,18 +60,35 @@ public class ElasticJobTracingConfiguration {
     /**
      * Create a bean of tracing configuration.
      *
-     * @param dataSource required by constructor
+     * @param dataSource        required by constructor
      * @param tracingDataSource tracing ataSource
      * @return a bean of tracing configuration
      */
     @Bean
     @ConditionalOnBean(DataSource.class)
-    @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = "RDB")
+    @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = RDB)
     public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, @Nullable final DataSource tracingDataSource) {
         DataSource ds = tracingDataSource;
         if (ds == null) {
             ds = dataSource;
         }
-        return new TracingConfiguration<>("RDB", ds);
+        return new TracingConfiguration<>(RDB, ds);
+    }
+
+    /**
+     * Create a bean of tracing configuration.
+     *
+     * @param dataSource        required by constructor
+     * @param tracingDataSource tracing ataSource
+     * @return a bean of tracing configuration
+     */
+    @Bean
+    @ConditionalOnBean(MetricConfig.class)
+    @ConditionalOnProperty(name = "elasticjob.tracing.type", havingValue = TracingType.METRICS)
+    public TracingConfiguration<MetricConfig> tracingConfigurationMetrics(MetricConfig metricConfig) {
+        if (metricConfig == null) {
+            metricConfig = new MetricConfig();
+        }
+        return new TracingConfiguration<>(TracingType.METRICS, metricConfig);
     }
 }

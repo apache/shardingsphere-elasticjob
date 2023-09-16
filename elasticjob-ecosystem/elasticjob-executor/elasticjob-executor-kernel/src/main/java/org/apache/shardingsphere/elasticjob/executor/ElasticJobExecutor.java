@@ -69,6 +69,9 @@ public final class ElasticJobExecutor {
         executorContext = new ExecutorContext(jobFacade.loadJobConfiguration(true));
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
+    public void init(String jobName){
+        jobFacade.postJobStatusTraceEvent("0", State.TASK_INIT, String.format("Job '%s' init success.", jobName));
+    }
     
     /**
      * Execute job.
