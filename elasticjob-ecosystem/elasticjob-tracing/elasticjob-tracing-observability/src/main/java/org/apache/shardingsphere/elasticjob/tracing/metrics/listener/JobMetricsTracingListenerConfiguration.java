@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.tracing.metrics.listener;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.listener.TracingType;
 import org.apache.shardingsphere.elasticjob.tracing.metrics.config.MetricConfig;
 
 
@@ -35,7 +36,7 @@ public final class JobMetricsTracingListenerConfiguration implements TracingList
 
     @Override
     public String getType() {
-        return TracingTypeEnum.METRICS.getType();
+        return TracingType.METRICS;
     }
 
 

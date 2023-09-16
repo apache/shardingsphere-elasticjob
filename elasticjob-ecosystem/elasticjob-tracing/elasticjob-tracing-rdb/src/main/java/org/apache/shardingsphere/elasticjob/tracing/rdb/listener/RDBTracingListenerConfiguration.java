@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.listener.TracingType;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -40,6 +41,6 @@ public final class RDBTracingListenerConfiguration implements TracingListenerCon
     
     @Override
     public String getType() {
-        return TracingTypeEnum.RDB.getType();
+        return TracingType.RDB;
     }
 }
