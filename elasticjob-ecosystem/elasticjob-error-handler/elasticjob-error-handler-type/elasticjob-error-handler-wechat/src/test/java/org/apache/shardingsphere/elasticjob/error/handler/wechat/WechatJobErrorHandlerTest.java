@@ -26,10 +26,10 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationExce
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public final class WechatJobErrorHandlerTest {
     private static List<LoggingEvent> appenderList;
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
@@ -61,12 +61,12 @@ public final class WechatJobErrorHandlerTest {
         appenderList = appender.list;
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         appenderList.clear();
     }
     
-    @AfterClass
+    @AfterAll
     public static void close() {
         if (null != restfulService) {
             restfulService.shutdown();

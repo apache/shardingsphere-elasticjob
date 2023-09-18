@@ -34,16 +34,18 @@ import org.apache.shardingsphere.elasticjob.restful.controller.IndexController;
 import org.apache.shardingsphere.elasticjob.restful.controller.JobController;
 import org.apache.shardingsphere.elasticjob.restful.handler.CustomIllegalStateExceptionHandler;
 import org.apache.shardingsphere.elasticjob.restful.pojo.JobPojo;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class NettyRestfulServiceTest {
     
@@ -55,7 +57,7 @@ public final class NettyRestfulServiceTest {
     
     private static RestfulService restfulService;
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
@@ -66,7 +68,8 @@ public final class NettyRestfulServiceTest {
     }
     
     @SneakyThrows
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertRequestWithParameters() {
         String cron = "0 * * * * ?";
         String uri = String.format("/job/myGroup/myJob?cron=%s", URLEncoder.encode(cron, "UTF-8"));
@@ -88,7 +91,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertCustomExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalState");
         request.headers().set("Exception-Message", "An illegal state exception message.");
@@ -98,7 +102,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertUsingDefaultExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalArgument");
         request.headers().set("Exception-Message", "An illegal argument exception message.");
@@ -108,7 +113,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertReturnStatusCode() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/code/204");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -116,7 +122,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertHandlerNotFound() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/not/found");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -124,7 +131,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertRequestIndexWithSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/");
         HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
@@ -132,7 +140,8 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertRequestIndexWithoutSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "");
         HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
@@ -140,7 +149,7 @@ public final class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         if (null != restfulService) {
             restfulService.shutdown();

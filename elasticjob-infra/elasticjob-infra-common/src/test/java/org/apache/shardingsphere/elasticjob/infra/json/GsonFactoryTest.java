@@ -22,11 +22,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class GsonFactoryTest {
     
@@ -66,10 +68,12 @@ public final class GsonFactoryTest {
         assertThat(GsonFactory.getJsonParser().parse(json).getAsJsonObject().get("name").getAsString(), is("test"));
     }
     
-    @Test(expected = JsonParseException.class)
+    @Test
     public void assertParserWithException() {
-        String json = "{\"name\":\"test\"";
-        assertThat(GsonFactory.getJsonParser().parse(json).getAsJsonObject().get("name").getAsString(), is("test"));
+        assertThrows(JsonParseException.class, () -> {
+            String json = "{\"name\":\"test\"";
+            assertThat(GsonFactory.getJsonParser().parse(json).getAsJsonObject().get("name").getAsString(), is("test"));
+        });
     }
 }
 

@@ -22,9 +22,9 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -38,14 +38,14 @@ public final class LogJobErrorHandlerTest {
     private static List<LoggingEvent> appenderList;
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @BeforeClass
+    @BeforeAll
     public static void setupLogger() {
         ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LogJobErrorHandler.class);
         ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("LogJobErrorHandlerTestAppender");
         appenderList = appender.list;
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         appenderList.clear();
     }

@@ -17,16 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.annotation;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.apache.shardingsphere.elasticjob.annotation.job.impl.SimpleTestJob;
+import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import org.apache.shardingsphere.elasticjob.annotation.job.impl.SimpleTestJob;
-import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
-import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public final class ElasticJobConfigurationTest {
     

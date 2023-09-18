@@ -19,12 +19,12 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.lite.spring.namespace.fixture.job.ref.RefFooSimpleElasticJob;
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -32,23 +32,23 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobRef.xml")
-public final class JobSpringNamespaceWithRefTest extends AbstractZookeeperJUnit4SpringContextTests {
+public final class JobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String simpleJobName = "simpleElasticJob_job_ref";
     
     @Autowired
     private CoordinatorRegistryCenter regCenter;
     
-    @Before
-    @After
+    @BeforeEach
+    @AfterEach
     public void reset() {
         RefFooSimpleElasticJob.reset();
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
         JobRegistry.getInstance().shutdown(simpleJobName);
     }

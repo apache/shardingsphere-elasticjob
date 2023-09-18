@@ -19,16 +19,18 @@ package org.apache.shardingsphere.elasticjob.infra.listener;
 
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.listener.fixture.FooElasticJobListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ElasticJobListenerFactoryTest {
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertCreateInvalidJobListener() {
-        ElasticJobListenerFactory.createListener("INVALID").orElseThrow(() -> new JobConfigurationException("Invalid elastic job listener!"));
+        assertThrows(JobConfigurationException.class, () ->
+                ElasticJobListenerFactory.createListener("INVALID").orElseThrow(() -> new JobConfigurationException("Invalid elastic job listener!")));
     }
     
     @Test

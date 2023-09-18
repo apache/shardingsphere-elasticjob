@@ -28,21 +28,22 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionExceptio
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class HttpJobExecutorTest {
     
     private static final int PORT = 9876;
@@ -68,7 +69,7 @@ public final class HttpJobExecutorTest {
     
     private HttpJobExecutor jobExecutor;
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
@@ -77,30 +78,34 @@ public final class HttpJobExecutorTest {
         restfulService.startup();
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         when(jobConfig.getProps()).thenReturn(properties);
         jobExecutor = new HttpJobExecutor();
     }
     
-    @AfterClass
+    @AfterAll
     public static void close() {
         if (null != restfulService) {
             restfulService.shutdown();
         }
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertUrlEmpty() {
-        when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn("");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn("");
+            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        });
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertMethodEmpty() {
-        when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
-        when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
+            when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("");
+            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        });
     }
     
     @Test
@@ -143,14 +148,16 @@ public final class HttpJobExecutorTest {
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
     
-    @Test(expected = JobExecutionException.class)
+    @Test
     public void assertProcessWithIOException() {
-        when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/postWithTimeout"));
-        when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("POST");
-        when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("name=elasticjob");
-        when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("1");
-        when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("1");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        assertThrows(JobExecutionException.class, () -> {
+            when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/postWithTimeout"));
+            when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("POST");
+            when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("name=elasticjob");
+            when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("1");
+            when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("1");
+            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        });
     }
     
     @Test

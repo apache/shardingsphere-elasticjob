@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
-public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit4SpringContextTests {
+public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String scriptJobName = "scriptElasticJob_job_type";
     
@@ -45,7 +45,7 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     
     private Scheduler scheduler;
 
-    @After
+    @AfterEach
     public void tearDown() {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
                 assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true))

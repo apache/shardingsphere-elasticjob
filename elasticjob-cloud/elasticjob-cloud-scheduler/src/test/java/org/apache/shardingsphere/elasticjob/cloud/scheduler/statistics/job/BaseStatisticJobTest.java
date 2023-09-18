@@ -17,21 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.StatisticTimeUtils;
-import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BaseStatisticJobTest {
     
     private TestStatisticJob testStatisticJob;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         testStatisticJob = new TestStatisticJob();
     }

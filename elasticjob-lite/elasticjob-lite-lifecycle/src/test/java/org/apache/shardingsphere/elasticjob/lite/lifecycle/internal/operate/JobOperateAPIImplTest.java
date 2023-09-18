@@ -19,21 +19,21 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle.internal.operate;
 
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class JobOperateAPIImplTest {
 
     static final int DUMP_PORT = 9000;
@@ -43,7 +43,7 @@ public final class JobOperateAPIImplTest {
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
     }

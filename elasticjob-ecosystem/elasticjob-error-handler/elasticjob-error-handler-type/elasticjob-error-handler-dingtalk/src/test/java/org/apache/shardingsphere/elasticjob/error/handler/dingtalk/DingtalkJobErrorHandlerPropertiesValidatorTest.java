@@ -19,17 +19,18 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DingtalkJobErrorHandlerPropertiesValidatorTest {
     
-    @Before
+    @BeforeEach
     public void startup() {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
@@ -44,10 +45,12 @@ public final class DingtalkJobErrorHandlerPropertiesValidatorTest {
         actual.validate(properties);
     }
     
-    @Test(expected = NullPointerException.class)
+    @Test
     public void assertValidateWithPropsIsNull() {
-        DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
-        actual.validate(null);
+        assertThrows(NullPointerException.class, () -> {
+            DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
+            actual.validate(null);
+        });
     }
     
     @Test

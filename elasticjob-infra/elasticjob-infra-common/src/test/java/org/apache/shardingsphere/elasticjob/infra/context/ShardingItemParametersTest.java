@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.infra.context;
 
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,17 +26,18 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ShardingItemParametersTest {
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertNewWhenPairFormatInvalid() {
-        new ShardingItemParameters("xxx-xxx");
+        assertThrows(JobConfigurationException.class, () -> new ShardingItemParameters("xxx-xxx"));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertNewWhenItemIsNotNumber() {
-        new ShardingItemParameters("xxx=xxx");
+        assertThrows(JobConfigurationException.class, () -> new ShardingItemParameters("xxx=xxx"));
     }
     
     @Test

@@ -33,7 +33,11 @@ public class SimpleAspect {
     @Pointcut("execution(* org.apache.shardingsphere.elasticjob.lite.spring.fixture..*(..))")
     public void aspect() {
     }
-    
+
+    /**
+     * Before operator.
+     * @param joinPoint joinPoint
+     */
     @Before("aspect()")
     public void before(final JoinPoint joinPoint) {
     }

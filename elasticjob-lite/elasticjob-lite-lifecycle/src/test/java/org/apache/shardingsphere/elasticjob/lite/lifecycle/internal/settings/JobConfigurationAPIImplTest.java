@@ -23,21 +23,22 @@ import org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationA
 import org.apache.shardingsphere.elasticjob.lite.lifecycle.fixture.LifecycleYamlConstants;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class JobConfigurationAPIImplTest {
     
     private JobConfigurationAPI jobConfigAPI;
@@ -45,7 +46,7 @@ public final class JobConfigurationAPIImplTest {
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         jobConfigAPI = new JobConfigurationAPIImpl(regCenter);
     }
@@ -109,28 +110,34 @@ public final class JobConfigurationAPIImplTest {
         verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertUpdateJobConfigIfJobNameIsEmpty() {
-        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-        jobConfiguration.setJobName("");
-        jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
+            jobConfiguration.setJobName("");
+            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertUpdateJobConfigIfCronIsEmpty() {
-        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-        jobConfiguration.setJobName("test_job");
-        jobConfiguration.setCron("");
-        jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
+            jobConfiguration.setJobName("test_job");
+            jobConfiguration.setCron("");
+            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        });
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
-        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-        jobConfiguration.setJobName("test_job");
-        jobConfiguration.setCron("0/1 * * * * ?");
-        jobConfiguration.setShardingTotalCount(0);
-        jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
+            jobConfiguration.setJobName("test_job");
+            jobConfiguration.setCron("0/1 * * * * ?");
+            jobConfiguration.setShardingTotalCount(0);
+            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        });
     }
     
     @Test

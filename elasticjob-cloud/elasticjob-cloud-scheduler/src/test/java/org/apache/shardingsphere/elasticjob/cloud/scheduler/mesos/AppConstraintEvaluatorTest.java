@@ -31,10 +31,10 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConf
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
 import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,19 +63,19 @@ public final class AppConstraintEvaluatorTest {
     
     private TaskScheduler taskScheduler;
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         facadeService = mock(FacadeService.class);
         AppConstraintEvaluator.init(facadeService);
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         taskScheduler = new TaskScheduler.Builder().withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(virtualMachineLease -> {
         }).build();
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
         AppConstraintEvaluator.getInstance().clearAppRunningState();
     }

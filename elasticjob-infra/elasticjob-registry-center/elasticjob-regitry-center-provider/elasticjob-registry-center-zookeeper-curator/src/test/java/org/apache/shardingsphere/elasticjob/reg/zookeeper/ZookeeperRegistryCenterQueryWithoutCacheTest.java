@@ -19,18 +19,18 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
@@ -39,7 +39,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
@@ -49,7 +49,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
         zkRegCenter.addCacheData("/other");
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         zkRegCenter.close();
     }

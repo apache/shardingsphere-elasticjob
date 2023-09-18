@@ -18,14 +18,14 @@
 package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     
@@ -33,12 +33,12 @@ public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
         super(new DetailedFooJob());
     }
     
-    @Before
+    @BeforeEach
     public void listenMonitor() {
         getSnapshotService().listen();
     }
     
-    @After
+    @AfterEach
     public void closeMonitor() {
         getSnapshotService().close();
     }
@@ -50,7 +50,7 @@ public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     }
 
     @Test
-    public void assertDumpJobDirectly() throws IOException {
+    public void assertDumpJobDirectly() {
         assertNotNull(getSnapshotService().dumpJobDirectly(getJobName()));
     }
 

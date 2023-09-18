@@ -20,13 +20,15 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class ZookeeperRegistryCenterExecuteInLeaderTest {
@@ -36,7 +38,7 @@ public final class ZookeeperRegistryCenterExecuteInLeaderTest {
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
@@ -44,12 +46,13 @@ public final class ZookeeperRegistryCenterExecuteInLeaderTest {
         zkRegCenter.init();
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         zkRegCenter.close();
     }
     
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(value = 10000L, unit = TimeUnit.MILLISECONDS)
     public void assertExecuteInLeader() throws InterruptedException {
         final int threads = 10;
         CountDownLatch countDownLatch = new CountDownLatch(threads);

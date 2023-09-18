@@ -19,8 +19,9 @@ package org.apache.shardingsphere.elasticjob.infra.spi;
 
 import org.apache.shardingsphere.elasticjob.infra.spi.fixture.TypedFooService;
 import org.apache.shardingsphere.elasticjob.infra.spi.fixture.UnRegisteredTypedFooService;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
@@ -29,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class ElasticJobServiceLoaderTest {
     
-    @BeforeClass
+    @BeforeAll
     public static void register() {
         ElasticJobServiceLoader.registerTypedService(TypedFooService.class);
     }
@@ -44,23 +45,27 @@ public final class ElasticJobServiceLoaderTest {
         assertThat(ElasticJobServiceLoader.getCachedTypedServiceInstance(TypedFooService.class, "typedFooServiceImpl").orElse(null), instanceOf(TypedFooService.class));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertGetCacheTypedServiceFailureWithUnRegisteredServiceInterface() {
-        ElasticJobServiceLoader.getCachedTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl").orElseThrow(IllegalArgumentException::new);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                ElasticJobServiceLoader.getCachedTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl").orElseThrow(IllegalArgumentException::new));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertGetCacheTypedServiceFailureWithInvalidType() {
-        ElasticJobServiceLoader.getCachedTypedServiceInstance(TypedFooService.class, "INVALID").orElseThrow(IllegalArgumentException::new);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                ElasticJobServiceLoader.getCachedTypedServiceInstance(TypedFooService.class, "INVALID").orElseThrow(IllegalArgumentException::new));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertNewTypedServiceInstanceFailureWithUnRegisteredServiceInterface() {
-        ElasticJobServiceLoader.newTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl", new Properties()).orElseThrow(IllegalArgumentException::new);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                ElasticJobServiceLoader.newTypedServiceInstance(UnRegisteredTypedFooService.class, "unRegisteredTypedFooServiceImpl", new Properties()).orElseThrow(IllegalArgumentException::new));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertNewTypedServiceInstanceFailureWithInvalidType() {
-        ElasticJobServiceLoader.newTypedServiceInstance(TypedFooService.class, "INVALID", new Properties()).orElseThrow(IllegalArgumentException::new);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                ElasticJobServiceLoader.newTypedServiceInstance(TypedFooService.class, "INVALID", new Properties()).orElseThrow(IllegalArgumentException::new));
     }
 }

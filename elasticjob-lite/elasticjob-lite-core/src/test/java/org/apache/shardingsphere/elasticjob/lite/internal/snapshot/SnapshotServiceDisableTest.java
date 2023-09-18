@@ -19,13 +19,14 @@ package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class SnapshotServiceDisableTest extends BaseSnapshotServiceTest {
     
@@ -33,15 +34,17 @@ public final class SnapshotServiceDisableTest extends BaseSnapshotServiceTest {
         super(new DetailedFooJob());
     }
     
-    @Test(expected = IOException.class)
-    public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND, DUMP_PORT - 1);
+    @Test
+    public void assertMonitorWithDumpCommand() {
+        assertThrows(IOException.class, () -> SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND, DUMP_PORT - 1));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertPortInvalid() {
-        SnapshotService snapshotService = new SnapshotService(getREG_CENTER(), -1);
-        snapshotService.listen();
+        assertThrows(IllegalArgumentException.class, () -> {
+            SnapshotService snapshotService = new SnapshotService(getREG_CENTER(), -1);
+            snapshotService.listen();
+        });
     }
     
     @Test

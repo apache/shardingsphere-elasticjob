@@ -22,18 +22,18 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ZookeeperRegistryCenterModifyTest {
     
@@ -41,7 +41,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
@@ -50,7 +50,7 @@ public final class ZookeeperRegistryCenterModifyTest {
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         zkRegCenter.close();
     }

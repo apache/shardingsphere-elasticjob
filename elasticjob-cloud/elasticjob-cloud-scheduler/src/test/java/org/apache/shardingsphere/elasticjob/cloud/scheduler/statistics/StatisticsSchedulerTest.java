@@ -20,18 +20,18 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.StatisticJob;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.job.TestStatisticJob;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StatisticsSchedulerTest {
     
     private StatisticsScheduler statisticsScheduler;
@@ -39,7 +39,7 @@ public class StatisticsSchedulerTest {
     @Mock
     private Scheduler scheduler;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         statisticsScheduler = new StatisticsScheduler();
         ReflectionUtils.setFieldValue(statisticsScheduler, "scheduler", scheduler);

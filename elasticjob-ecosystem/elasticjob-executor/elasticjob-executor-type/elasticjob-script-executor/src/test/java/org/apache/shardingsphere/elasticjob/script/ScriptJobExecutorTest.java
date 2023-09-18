@@ -26,19 +26,20 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationExce
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.script.executor.ScriptJobExecutor;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ScriptJobExecutorTest {
     
     @Mock
@@ -58,22 +59,26 @@ public final class ScriptJobExecutorTest {
     
     private ScriptJobExecutor jobExecutor;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         jobExecutor = new ScriptJobExecutor();
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertProcessWithJobConfigurationException() {
-        when(jobConfig.getProps()).thenReturn(properties);
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(jobConfig.getProps()).thenReturn(properties);
+            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        });
     }
     
-    @Test(expected = JobSystemException.class)
+    @Test
     public void assertProcessWithJobSystemException() {
-        when(jobConfig.getProps()).thenReturn(properties);
-        when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("demo.sh");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        assertThrows(JobSystemException.class, () -> {
+            when(jobConfig.getProps()).thenReturn(properties);
+            when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("demo.sh");
+            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        });
     }
     
     @Test

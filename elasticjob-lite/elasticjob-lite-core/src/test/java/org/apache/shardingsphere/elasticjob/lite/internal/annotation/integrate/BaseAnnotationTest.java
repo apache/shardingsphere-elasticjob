@@ -32,9 +32,9 @@ import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 @Getter(AccessLevel.PROTECTED)
 public abstract class BaseAnnotationTest {
@@ -73,14 +73,14 @@ public abstract class BaseAnnotationTest {
         }
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
         REGISTRY_CENTER.init();
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         if (jobBootstrap instanceof ScheduleJobBootstrap) {
             ((ScheduleJobBootstrap) jobBootstrap).schedule();
@@ -89,7 +89,7 @@ public abstract class BaseAnnotationTest {
         }
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
         jobBootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);

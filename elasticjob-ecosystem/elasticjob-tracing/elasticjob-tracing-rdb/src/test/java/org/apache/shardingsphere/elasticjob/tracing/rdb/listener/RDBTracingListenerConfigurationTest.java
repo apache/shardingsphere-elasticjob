@@ -19,10 +19,11 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class RDBTracingListenerConfigurationTest {
     
@@ -36,8 +37,9 @@ public final class RDBTracingListenerConfigurationTest {
         assertThat(new RDBTracingListenerConfiguration().createTracingListener(dataSource), instanceOf(RDBTracingListener.class));
     }
     
-    @Test(expected = TracingConfigurationException.class)
-    public void assertCreateTracingListenerFailure() throws TracingConfigurationException {
-        new RDBTracingListenerConfiguration().createTracingListener(new BasicDataSource());
+    @Test
+    public void assertCreateTracingListenerFailure() {
+        assertThrows(TracingConfigurationException.class, () ->
+                new RDBTracingListenerConfiguration().createTracingListener(new BasicDataSource()));
     }
 }

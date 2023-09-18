@@ -17,9 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.test;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 @TestExecutionListeners(EmbedZookeeperTestExecutionListener.class)
-public abstract class AbstractZookeeperJUnit4SpringContextTests extends AbstractJUnit4SpringContextTests {
+public abstract class AbstractZookeeperJUnitJupiterSpringContextTests {
 }

@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StatisticTimeUtilsTest {
     

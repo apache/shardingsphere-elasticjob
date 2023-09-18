@@ -17,13 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.reg.exception;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class RegExceptionHandlerTest {
     
     @Test
-    @Ignore
+    @Disabled
     // TODO throw InterruptedException will cause zookeeper TestingServer break. Ignore first, fix it later.
     public void assertHandleExceptionWithInterruptedException() {
         RegExceptionHandler.handleException(new InterruptedException());
@@ -34,8 +36,8 @@ public final class RegExceptionHandlerTest {
         RegExceptionHandler.handleException(null);
     }
     
-    @Test(expected = RegException.class)
+    @Test
     public void assertHandleExceptionWithOtherException() {
-        RegExceptionHandler.handleException(new RuntimeException());
+        assertThrows(RegException.class, () -> RegExceptionHandler.handleException(new RuntimeException()));
     }
 }

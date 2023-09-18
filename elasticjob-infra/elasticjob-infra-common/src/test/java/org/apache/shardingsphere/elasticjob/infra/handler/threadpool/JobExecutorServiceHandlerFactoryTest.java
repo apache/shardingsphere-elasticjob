@@ -20,10 +20,11 @@ package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl.CPUUsageJobExecutorServiceHandler;
 import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl.SingleThreadJobExecutorServiceHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class JobExecutorServiceHandlerFactoryTest {
     
@@ -32,9 +33,10 @@ public final class JobExecutorServiceHandlerFactoryTest {
         assertThat(JobExecutorServiceHandlerFactory.getHandler(""), instanceOf(CPUUsageJobExecutorServiceHandler.class));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertGetInvalidHandler() {
-        JobExecutorServiceHandlerFactory.getHandler("INVALID");
+        assertThrows(JobConfigurationException.class, () ->
+                JobExecutorServiceHandlerFactory.getHandler("INVALID"));
     }
     
     @Test

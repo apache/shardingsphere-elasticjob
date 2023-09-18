@@ -32,16 +32,16 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public abstract class AbstractCloudControllerTest {
     
     @Getter(AccessLevel.PROTECTED)
@@ -56,7 +56,7 @@ public abstract class AbstractCloudControllerTest {
     
     private static RestfulService slaveServer;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         initRestfulServer();
         initMesosServer();
@@ -85,7 +85,7 @@ public abstract class AbstractCloudControllerTest {
         slaveServer.startup();
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         consoleBootstrap.stop();
         masterServer.shutdown();
@@ -93,7 +93,7 @@ public abstract class AbstractCloudControllerTest {
         MesosStateService.deregister();
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         reset(regCenter);
         reset(jobEventRdbSearch);

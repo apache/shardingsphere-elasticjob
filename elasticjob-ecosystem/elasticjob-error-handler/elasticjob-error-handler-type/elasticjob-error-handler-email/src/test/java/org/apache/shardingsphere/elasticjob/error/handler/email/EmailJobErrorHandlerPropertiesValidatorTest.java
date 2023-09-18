@@ -19,17 +19,18 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
 import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class EmailJobErrorHandlerPropertiesValidatorTest {
     
-    @Before
+    @BeforeEach
     public void startup() {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
@@ -48,10 +49,12 @@ public final class EmailJobErrorHandlerPropertiesValidatorTest {
         actual.validate(properties);
     }
     
-    @Test(expected = NullPointerException.class)
+    @Test
     public void assertValidateWithPropsIsNull() {
-        EmailJobErrorHandlerPropertiesValidator actual = getValidator();
-        actual.validate(null);
+        assertThrows(NullPointerException.class, () -> {
+            EmailJobErrorHandlerPropertiesValidator actual = getValidator();
+            actual.validate(null);
+        });
     }
     
     @Test

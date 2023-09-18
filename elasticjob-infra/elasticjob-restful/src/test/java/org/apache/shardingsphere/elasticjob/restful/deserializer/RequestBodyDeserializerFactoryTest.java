@@ -18,9 +18,10 @@
 package org.apache.shardingsphere.elasticjob.restful.deserializer;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class RequestBodyDeserializerFactoryTest {
     
@@ -30,8 +31,9 @@ public final class RequestBodyDeserializerFactoryTest {
         assertNotNull(deserializer);
     }
     
-    @Test(expected = RequestBodyDeserializerNotFoundException.class)
+    @Test
     public void assertDeserializerNotFound() {
-        RequestBodyDeserializerFactory.getRequestBodyDeserializer("Unknown");
+        assertThrows(RequestBodyDeserializerNotFoundException.class, () ->
+                RequestBodyDeserializerFactory.getRequestBodyDeserializer("Unknown"));
     }
 }

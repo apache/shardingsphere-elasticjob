@@ -22,19 +22,19 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class RDBJobEventStorageTest {
     
@@ -42,7 +42,7 @@ public final class RDBJobEventStorageTest {
 
     private BasicDataSource dataSource;
     
-    @Before
+    @BeforeEach
     public void setup() throws SQLException {
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
@@ -52,7 +52,7 @@ public final class RDBJobEventStorageTest {
         storage = RDBJobEventStorage.getInstance(dataSource);
     }
     
-    @After
+    @AfterEach
     public void teardown() throws SQLException {
         dataSource.close();
     }

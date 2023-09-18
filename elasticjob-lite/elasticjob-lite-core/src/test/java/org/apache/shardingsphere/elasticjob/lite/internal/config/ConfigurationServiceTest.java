@@ -21,24 +21,25 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.lite.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.lite.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ConfigurationServiceTest {
     
     @Mock
@@ -46,7 +47,7 @@ public final class ConfigurationServiceTest {
     
     private final ConfigurationService configService = new ConfigurationService(null, "test_job");
     
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionUtils.setFieldValue(configService, "jobNodeStorage", jobNodeStorage);
     }
@@ -79,16 +80,18 @@ public final class ConfigurationServiceTest {
         assertThat(actual.getShardingTotalCount(), is(3));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertSetUpJobConfigurationJobConfigurationForJobConflict() {
-        when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
-        when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
-        try {
-            configService.setUpJobConfiguration(null, JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
-        } finally {
-            verify(jobNodeStorage).isJobRootNodeExisted();
-            verify(jobNodeStorage).getJobRootNodeData();
-        }
+        assertThrows(JobConfigurationException.class, () -> {
+            when(jobNodeStorage.isJobRootNodeExisted()).thenReturn(true);
+            when(jobNodeStorage.getJobRootNodeData()).thenReturn("org.apache.shardingsphere.elasticjob.lite.api.script.api.ScriptJob");
+            try {
+                configService.setUpJobConfiguration(null, JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
+            } finally {
+                verify(jobNodeStorage).isJobRootNodeExisted();
+                verify(jobNodeStorage).getJobRootNodeData();
+            }
+        });
     }
     
     @Test
@@ -130,14 +133,16 @@ public final class ConfigurationServiceTest {
         verify(jobNodeStorage).getRegistryCenterTime();
     }
     
-    @Test(expected = JobExecutionEnvironmentException.class)
-    public void assertIsNotMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
-        when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
-        try {
-            configService.checkMaxTimeDiffSecondsTolerable();
-        } finally {
-            verify(jobNodeStorage).getRegistryCenterTime();
-        }
+    @Test
+    public void assertIsNotMaxTimeDiffSecondsTolerable() {
+        assertThrows(JobExecutionEnvironmentException.class, () -> {
+            when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteYamlConstants.getJobYaml());
+            when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
+            try {
+                configService.checkMaxTimeDiffSecondsTolerable();
+            } finally {
+                verify(jobNodeStorage).getRegistryCenterTime();
+            }
+        });
     }
 }

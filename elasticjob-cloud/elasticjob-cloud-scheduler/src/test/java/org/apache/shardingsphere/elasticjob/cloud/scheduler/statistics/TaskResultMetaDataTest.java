@@ -17,17 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class TaskResultMetaDataTest {
     
     private TaskResultMetaData metaData;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         metaData = new TaskResultMetaData();
     }

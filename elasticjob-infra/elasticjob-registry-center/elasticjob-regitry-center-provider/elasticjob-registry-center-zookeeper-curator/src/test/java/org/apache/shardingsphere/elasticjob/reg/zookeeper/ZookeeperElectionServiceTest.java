@@ -25,11 +25,11 @@ import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ZookeeperElectionServiceTest {
     
     private static final String HOST_AND_PORT = "localhost:8899";
@@ -49,7 +49,7 @@ public class ZookeeperElectionServiceTest {
     @Mock
     private ElectionCandidate electionCandidate;
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
     }

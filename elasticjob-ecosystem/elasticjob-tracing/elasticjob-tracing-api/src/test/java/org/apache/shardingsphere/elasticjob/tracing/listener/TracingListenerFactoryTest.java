@@ -21,21 +21,24 @@ import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCallerConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.fixture.TestTracingListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class TracingListenerFactoryTest {
     
-    @Test(expected = TracingConfigurationException.class)
-    public void assertGetListenerWithNullType() throws TracingConfigurationException {
-        TracingListenerFactory.getListener(new TracingConfiguration<>("", null));
+    @Test
+    public void assertGetListenerWithNullType() {
+        assertThrows(TracingConfigurationException.class, () ->
+                TracingListenerFactory.getListener(new TracingConfiguration<>("", null)));
     }
-    
-    @Test(expected = TracingConfigurationException.class)
-    public void assertGetInvalidListener() throws TracingConfigurationException {
-        TracingListenerFactory.getListener(new TracingConfiguration<>("INVALID", null));
+
+    @Test
+    public void assertGetInvalidListener() {
+        assertThrows(TracingConfigurationException.class, () ->
+                TracingListenerFactory.getListener(new TracingConfiguration<>("INVALID", null)));
     }
     
     @Test

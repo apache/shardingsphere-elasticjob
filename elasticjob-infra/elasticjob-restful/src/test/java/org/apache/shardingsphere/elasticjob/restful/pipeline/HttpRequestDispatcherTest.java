@@ -26,14 +26,18 @@ import io.netty.handler.codec.http.HttpVersion;
 import org.apache.shardingsphere.elasticjob.restful.controller.JobController;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandlerNotFoundException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class HttpRequestDispatcherTest {
     
-    @Test(expected = HandlerNotFoundException.class)
+    @Test
     public void assertDispatcherHandlerNotFound() {
-        EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDispatcher(Lists.newArrayList(new JobController()), false));
-        FullHttpRequest fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/hello/myJob/myCron");
-        channel.writeInbound(new HandleContext<>(fullHttpRequest, null));
+        assertThrows(HandlerNotFoundException.class, () -> {
+            EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDispatcher(Lists.newArrayList(new JobController()), false));
+            FullHttpRequest fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/hello/myJob/myCron");
+            channel.writeInbound(new HandleContext<>(fullHttpRequest, null));
+        });
     }
 }

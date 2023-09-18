@@ -20,11 +20,11 @@ package org.apache.shardingsphere.elasticjob.cloud.console.controller.search;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -40,7 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class JobEventRdbSearchTest {
     
     @Mock
@@ -59,7 +59,7 @@ public final class JobEventRdbSearchTest {
     
     private JobEventRdbSearch jobEventRdbSearch;
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         jobEventRdbSearch = new JobEventRdbSearch(dataSource);
         when(dataSource.getConnection()).thenReturn(conn);

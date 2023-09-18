@@ -25,10 +25,10 @@ import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
@@ -37,7 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class OneOffJobBootstrapTest {
 
@@ -47,26 +48,27 @@ public final class OneOffJobBootstrapTest {
 
     private ZookeeperRegistryCenter zkRegCenter;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         zkRegCenter.close();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertConfigFailedWithCron() {
-        new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
-        }, JobConfiguration.newBuilder("test_one_off_job_execute_with_config_cron", SHARDING_TOTAL_COUNT).cron("0/5 * * * * ?").build());
+        assertThrows(IllegalArgumentException.class, () ->
+                new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
+                }, JobConfiguration.newBuilder("test_one_off_job_execute_with_config_cron", SHARDING_TOTAL_COUNT).cron("0/5 * * * * ?").build()));
     }
 
     @Test
