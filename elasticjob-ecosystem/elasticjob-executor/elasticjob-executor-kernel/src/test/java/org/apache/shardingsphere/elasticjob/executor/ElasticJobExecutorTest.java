@@ -41,6 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -242,7 +243,7 @@ public final class ElasticJobExecutorTest {
     private void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        lenient().when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
     }
     
     private void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {

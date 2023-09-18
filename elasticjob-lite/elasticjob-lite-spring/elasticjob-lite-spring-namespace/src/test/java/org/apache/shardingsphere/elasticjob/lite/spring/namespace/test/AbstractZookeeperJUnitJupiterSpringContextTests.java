@@ -21,7 +21,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+/**
+ * Background reference AbstractJUnit4SpringContextTests
+ * and <a href="https://github.com/spring-projects/spring-framework/issues/29149">spring-projects/spring-framework#29149</a>.
+ *
+ * @see org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests
+ */
 @ExtendWith(SpringExtension.class)
-@TestExecutionListeners(EmbedZookeeperTestExecutionListener.class)
+@TestExecutionListeners(listeners = {EmbedZookeeperTestExecutionListener.class},
+        inheritListeners = false,
+        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public abstract class AbstractZookeeperJUnitJupiterSpringContextTests {
 }

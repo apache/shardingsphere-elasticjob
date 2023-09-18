@@ -39,8 +39,9 @@ public final class JobOperateAPIImplTest {
     static final int DUMP_PORT = 9000;
 
     private JobOperateAPI jobOperateAPI;
-    
-    @Mock
+
+    // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach

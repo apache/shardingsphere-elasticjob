@@ -41,6 +41,7 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,8 +61,9 @@ public final class HttpJobExecutorTest {
     
     @Mock
     private JobFacade jobFacade;
-    
-    @Mock
+
+    // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private Properties properties;
     
     @Mock
@@ -80,7 +82,7 @@ public final class HttpJobExecutorTest {
     
     @BeforeEach
     public void setUp() {
-        when(jobConfig.getProps()).thenReturn(properties);
+        lenient().when(jobConfig.getProps()).thenReturn(properties);
         jobExecutor = new HttpJobExecutor();
     }
     

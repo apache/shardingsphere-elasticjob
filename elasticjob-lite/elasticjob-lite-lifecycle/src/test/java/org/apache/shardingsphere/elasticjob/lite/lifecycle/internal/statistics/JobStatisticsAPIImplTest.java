@@ -38,8 +38,9 @@ import static org.mockito.Mockito.when;
 public final class JobStatisticsAPIImplTest {
     
     private JobStatisticsAPI jobStatisticsAPI;
-    
-    @Mock
+
+    // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach

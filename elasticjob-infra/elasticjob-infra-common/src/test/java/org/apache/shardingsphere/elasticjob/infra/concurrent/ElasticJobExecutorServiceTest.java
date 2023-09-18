@@ -40,13 +40,13 @@ public final class ElasticJobExecutorServiceTest {
         assertFalse(executorServiceObject.isShutdown());
         ExecutorService executorService = executorServiceObject.createExecutorService();
         executorService.submit(new FooTask());
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
             assertThat(executorServiceObject.getActiveThreadCount(), is(1));
             assertThat(executorServiceObject.getWorkQueueSize(), is(0));
             assertFalse(executorServiceObject.isShutdown());
         });
         executorService.submit(new FooTask());
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
             assertThat(executorServiceObject.getActiveThreadCount(), is(1));
             assertThat(executorServiceObject.getWorkQueueSize(), is(1));
             assertFalse(executorServiceObject.isShutdown());

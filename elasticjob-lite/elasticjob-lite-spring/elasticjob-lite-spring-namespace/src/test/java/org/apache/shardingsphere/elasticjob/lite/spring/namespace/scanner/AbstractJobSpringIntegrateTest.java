@@ -52,14 +52,14 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     public void tearDown() {
         JobRegistry.getInstance().shutdown(simpleJobName);
     }
-    
+
     @Test
     public void assertSpringJobBean() {
         assertSimpleElasticJobBean();
     }
     
     private void assertSimpleElasticJobBean() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
+        Awaitility.await().atMost(5L, TimeUnit.SECONDS).untilAsserted(() ->
                 assertThat(AnnotationSimpleJob.isCompleted(), is(true))
         );
         assertTrue(AnnotationSimpleJob.isCompleted());

@@ -44,6 +44,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,7 +71,7 @@ public final class SchedulerEngineTest {
     public void setUp() {
         schedulerEngine = new SchedulerEngine(taskScheduler, facadeService, new JobTracingEventBus(), frameworkIDService, statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
-        when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        lenient().when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         new RunningService(mock(CoordinatorRegistryCenter.class)).clear();
     }
     

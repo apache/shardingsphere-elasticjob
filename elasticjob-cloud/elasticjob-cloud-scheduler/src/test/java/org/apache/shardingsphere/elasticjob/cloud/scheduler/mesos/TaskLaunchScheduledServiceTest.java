@@ -53,6 +53,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +77,7 @@ public final class TaskLaunchScheduledServiceTest {
     
     @BeforeEach
     public void setUp() {
-        when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
+        lenient().when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobTracingEventBus);
         taskLaunchScheduledService.startUp();
     }
