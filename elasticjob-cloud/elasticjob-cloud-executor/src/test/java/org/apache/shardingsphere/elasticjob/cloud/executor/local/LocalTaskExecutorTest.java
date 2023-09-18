@@ -23,13 +23,14 @@ import org.apache.shardingsphere.elasticjob.cloud.executor.fixture.TestSimpleJob
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class LocalTaskExecutorTest {
     
@@ -56,8 +57,9 @@ public final class LocalTaskExecutorTest {
                 .cron("*/2 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build(), 1).execute();
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertNotExistsJobType() {
-        new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute();
+        assertThrows(JobConfigurationException.class, () ->
+                new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute());
     }
 }

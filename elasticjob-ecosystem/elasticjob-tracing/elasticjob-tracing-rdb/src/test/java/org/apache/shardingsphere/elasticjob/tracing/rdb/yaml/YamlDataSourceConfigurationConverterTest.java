@@ -19,14 +19,14 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.yaml;
 
 import org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.yaml.YamlTracingStorageConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class YamlDataSourceConfigurationConverterTest {
     

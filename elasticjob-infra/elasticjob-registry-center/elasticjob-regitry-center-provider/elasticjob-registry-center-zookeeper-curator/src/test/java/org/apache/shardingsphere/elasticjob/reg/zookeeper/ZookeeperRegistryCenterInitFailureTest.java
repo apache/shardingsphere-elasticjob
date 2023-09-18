@@ -18,13 +18,17 @@
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ZookeeperRegistryCenterInitFailureTest {
-    
-    @Test(expected = RegException.class)
+
+    @Test
     public void assertInitFailure() {
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName()));
-        zkRegCenter.init();
+        assertThrows(RegException.class, () -> {
+            ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName()));
+            zkRegCenter.init();
+        });
     }
 }

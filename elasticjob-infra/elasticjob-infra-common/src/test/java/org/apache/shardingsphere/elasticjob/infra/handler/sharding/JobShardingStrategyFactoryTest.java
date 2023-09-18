@@ -20,10 +20,11 @@ package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl.AverageAllocationJobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl.OdevitySortByNameJobShardingStrategy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class JobShardingStrategyFactoryTest {
     
@@ -32,9 +33,10 @@ public final class JobShardingStrategyFactoryTest {
         assertThat(JobShardingStrategyFactory.getStrategy(null), instanceOf(AverageAllocationJobShardingStrategy.class));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertGetInvalidStrategy() {
-        JobShardingStrategyFactory.getStrategy("INVALID");
+        assertThrows(JobConfigurationException.class, () ->
+                JobShardingStrategyFactory.getStrategy("INVALID"));
     }
     
     @Test

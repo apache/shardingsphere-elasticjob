@@ -17,23 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.reg.snapshot;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.shardingsphere.elasticjob.lite.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.EmbedTestingServer;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @SpringBootApplication
 @ActiveProfiles("snapshot")
-public class ElasticJobSnapshotServiceConfigurationTest extends AbstractJUnit4SpringContextTests {
+public class ElasticJobSnapshotServiceConfigurationTest {
 
-    @BeforeClass
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
     }

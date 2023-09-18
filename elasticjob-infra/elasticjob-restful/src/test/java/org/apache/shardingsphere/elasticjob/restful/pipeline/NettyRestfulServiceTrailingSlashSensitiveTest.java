@@ -25,11 +25,13 @@ import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.restful.controller.TrailingSlashTestController;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +46,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     private static RestfulService restfulService;
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
@@ -54,7 +56,8 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
         restfulService.startup();
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertWithoutTrailingSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash");
         HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
@@ -65,7 +68,8 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @Test(timeout = TESTCASE_TIMEOUT)
+    @Test
+    @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void assertWithTrailingSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash/");
         HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
@@ -76,7 +80,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         if (null != restfulService) {
             restfulService.shutdown();

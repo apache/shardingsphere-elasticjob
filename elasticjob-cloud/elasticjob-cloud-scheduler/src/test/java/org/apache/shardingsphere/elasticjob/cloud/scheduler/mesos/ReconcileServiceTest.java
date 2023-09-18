@@ -17,17 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import com.google.common.collect.Sets;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ReconcileServiceTest {
     
     @Mock
@@ -54,7 +54,7 @@ public final class ReconcileServiceTest {
     @Captor
     private ArgumentCaptor<Collection<Protos.TaskStatus>> taskStatusCaptor;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         reconcileService = new ReconcileService(schedulerDriver, facadeService);
     }

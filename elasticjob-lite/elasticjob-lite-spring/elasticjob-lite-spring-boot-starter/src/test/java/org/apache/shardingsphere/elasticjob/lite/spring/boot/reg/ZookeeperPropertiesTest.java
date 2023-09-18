@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class ZookeeperPropertiesTest {
 

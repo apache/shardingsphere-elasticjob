@@ -23,16 +23,18 @@ import org.apache.shardingsphere.elasticjob.executor.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FailedJob;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class JobItemExecutorFactoryTest {
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertGetExecutorByClassFailureWithInvalidType() {
-        JobItemExecutorFactory.getExecutor(FailedJob.class);
+        assertThrows(JobConfigurationException.class, () ->
+                JobItemExecutorFactory.getExecutor(FailedJob.class));
     }
     
     @Test
@@ -45,9 +47,10 @@ public final class JobItemExecutorFactoryTest {
         assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(ClassedFooJobExecutor.class));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertGetExecutorByTypeFailureWithInvalidType() {
-        JobItemExecutorFactory.getExecutor("FAIL");
+        assertThrows(JobConfigurationException.class, () ->
+                JobItemExecutorFactory.getExecutor("FAIL"));
     }
     
     @Test

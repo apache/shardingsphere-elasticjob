@@ -19,18 +19,18 @@ package org.apache.shardingsphere.elasticjob.lite.internal.snapshot;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.lite.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.lite.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.apache.shardingsphere.elasticjob.lite.util.ReflectionUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class BaseSnapshotServiceTest {
     
@@ -53,20 +53,20 @@ public abstract class BaseSnapshotServiceTest {
         bootstrap = new ScheduleJobBootstrap(REG_CENTER, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
         REG_CENTER.init();
     }
     
-    @Before
+    @BeforeEach
     public final void setUp() {
         REG_CENTER.init();
         bootstrap.schedule();
     }
     
-    @After
+    @AfterEach
     public final void tearDown() {
         bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);

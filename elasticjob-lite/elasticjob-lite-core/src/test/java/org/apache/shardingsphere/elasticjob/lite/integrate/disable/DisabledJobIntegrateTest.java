@@ -32,7 +32,7 @@ import org.hamcrest.core.IsNull;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {

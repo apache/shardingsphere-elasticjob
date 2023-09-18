@@ -24,25 +24,26 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.restful.Filter;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class DefaultFilterChainTest {
     
     @Mock
@@ -56,7 +57,7 @@ public final class DefaultFilterChainTest {
     
     private HandleContext<Handler> handleContext;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         handleContext = new HandleContext<>(httpRequest, httpResponse);
     }
@@ -127,23 +128,27 @@ public final class DefaultFilterChainTest {
         verify(ctx).writeAndFlush(httpResponse);
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void assertInvokeFinishedFilterChainWithoutFilter() {
-        DefaultFilterChain filterChain = new DefaultFilterChain(Collections.emptyList(), ctx, handleContext);
-        filterChain.next(httpRequest);
-        filterChain.next(httpRequest);
+        assertThrows(IllegalStateException.class, () -> {
+            DefaultFilterChain filterChain = new DefaultFilterChain(Collections.emptyList(), ctx, handleContext);
+            filterChain.next(httpRequest);
+            filterChain.next(httpRequest);
+        });
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void assertInvokePassedThroughFilterChainWithTwoFilters() {
-        Filter firstFilter = spy(new PassableFilter());
-        Filter secondFilter = spy(new PassableFilter());
-        DefaultFilterChain filterChain = new DefaultFilterChain(Arrays.asList(firstFilter, secondFilter), ctx, handleContext);
-        filterChain.next(httpRequest);
-        verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
-        verify(secondFilter).doFilter(httpRequest, httpResponse, filterChain);
-        verify(ctx).fireChannelRead(handleContext);
-        filterChain.next(httpRequest);
+        assertThrows(IllegalStateException.class, () -> {
+            Filter firstFilter = spy(new PassableFilter());
+            Filter secondFilter = spy(new PassableFilter());
+            DefaultFilterChain filterChain = new DefaultFilterChain(Arrays.asList(firstFilter, secondFilter), ctx, handleContext);
+            filterChain.next(httpRequest);
+            verify(firstFilter).doFilter(httpRequest, httpResponse, filterChain);
+            verify(secondFilter).doFilter(httpRequest, httpResponse, filterChain);
+            verify(ctx).fireChannelRead(handleContext);
+            filterChain.next(httpRequest);
+        });
     }
     
     private boolean isPassedThrough(final DefaultFilterChain filterChain) {

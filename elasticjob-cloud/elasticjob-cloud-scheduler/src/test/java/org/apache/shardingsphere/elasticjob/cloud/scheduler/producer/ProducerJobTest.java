@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.producer;
 
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.ready.ReadyService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobBuilder;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
@@ -30,7 +30,7 @@ import org.quartz.JobKey;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ProducerJobTest {
     
     @Mock
@@ -43,7 +43,7 @@ public final class ProducerJobTest {
     
     private TransientProducerScheduler.ProducerJob producerJob;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         producerJob = new TransientProducerScheduler.ProducerJob();
         producerJob.setRepository(repository);

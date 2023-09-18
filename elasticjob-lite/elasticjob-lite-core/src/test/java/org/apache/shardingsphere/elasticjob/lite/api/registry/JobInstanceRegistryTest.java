@@ -24,15 +24,16 @@ import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class JobInstanceRegistryTest {
     
     @Mock
@@ -53,18 +54,22 @@ public final class JobInstanceRegistryTest {
         verify(regCenter, times(0)).get("/jobName");
     }
     
-    @Test(expected = RuntimeException.class)
+    @Test
     public void assertListenScheduleJob() {
-        JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
-        String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).cron("0/1 * * * * ?").label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+        assertThrows(RuntimeException.class, () -> {
+            JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
+            String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).cron("0/1 * * * * ?").label("label").build());
+            jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+        });
     }
     
-    @Test(expected = RuntimeException.class)
+    @Test
     public void assertListenOneOffJob() {
-        JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label"));
-        String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+        assertThrows(RuntimeException.class, () -> {
+            JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label"));
+            String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
+            jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+        });
     }
     
     private String toYaml(final JobConfiguration build) {

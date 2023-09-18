@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Collections;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class ElasticJobConfigurationPropertiesTest {
 

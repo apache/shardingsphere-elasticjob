@@ -22,10 +22,10 @@ import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfigurat
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingStorageUnavailableException;
 import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverter;
 import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverterFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,12 +33,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class DataSourceTracingStorageConverterTest {
     
     @Mock
@@ -60,11 +61,13 @@ public final class DataSourceTracingStorageConverterTest {
         assertNotNull(configuration);
     }
     
-    @Test(expected = TracingStorageUnavailableException.class)
-    public void assertConvertFailed() throws SQLException {
-        DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
-        doThrow(SQLException.class).when(dataSource).getConnection();
-        converter.convertObjectToConfiguration(dataSource);
+    @Test
+    public void assertConvertFailed() {
+        assertThrows(TracingStorageUnavailableException.class, () -> {
+            DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
+            doThrow(SQLException.class).when(dataSource).getConnection();
+            converter.convertObjectToConfiguration(dataSource);
+        });
     }
     
     @Test

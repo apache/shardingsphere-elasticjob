@@ -20,12 +20,13 @@ package org.apache.shardingsphere.elasticjob.error.handler;
 import org.apache.shardingsphere.elasticjob.error.handler.general.LogJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.general.ThrowJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class JobErrorHandlerFactoryTest {
     
@@ -34,9 +35,10 @@ public final class JobErrorHandlerFactoryTest {
         assertThat(JobErrorHandlerFactory.createHandler("", new Properties()).orElse(null), instanceOf(LogJobErrorHandler.class));
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertGetInvalidHandler() {
-        JobErrorHandlerFactory.createHandler("INVALID", new Properties()).orElseThrow(() -> new JobConfigurationException(""));
+        assertThrows(JobConfigurationException.class, () ->
+                JobErrorHandlerFactory.createHandler("INVALID", new Properties()).orElseThrow(() -> new JobConfigurationException("")));
     }
     
     @Test

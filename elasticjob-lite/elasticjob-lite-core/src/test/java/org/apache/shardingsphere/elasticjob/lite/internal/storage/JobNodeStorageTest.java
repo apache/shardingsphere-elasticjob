@@ -24,11 +24,11 @@ import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOper
 import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +37,8 @@ import java.util.concurrent.Executor;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -45,7 +46,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class JobNodeStorageTest {
     
     @Mock
@@ -53,7 +54,7 @@ public final class JobNodeStorageTest {
     
     private JobNodeStorage jobNodeStorage;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         jobNodeStorage = new JobNodeStorage(regCenter, "test_job");
         ReflectionUtils.setFieldValue(jobNodeStorage, "regCenter", regCenter);
@@ -162,10 +163,12 @@ public final class JobNodeStorageTest {
         verify(regCenter).executeInTransaction(any(List.class));
     }
     
-    @Test(expected = RegException.class)
-    public void assertExecuteInTransactionFailure() throws Exception {
-        doThrow(RuntimeException.class).when(regCenter).executeInTransaction(any(List.class));
-        jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
+    @Test
+    public void assertExecuteInTransactionFailure() {
+        assertThrows(RegException.class, () -> {
+            doThrow(RuntimeException.class).when(regCenter).executeInTransaction(any(List.class));
+            jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
+        });
     }
     
     @Test

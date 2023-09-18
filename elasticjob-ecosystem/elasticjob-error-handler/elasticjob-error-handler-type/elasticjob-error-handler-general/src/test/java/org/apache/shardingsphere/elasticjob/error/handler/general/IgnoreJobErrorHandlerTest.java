@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 

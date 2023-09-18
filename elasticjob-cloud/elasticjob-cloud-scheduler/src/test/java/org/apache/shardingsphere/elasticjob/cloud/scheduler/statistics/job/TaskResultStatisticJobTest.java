@@ -22,11 +22,11 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util.Stat
 import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.rdb.StatisticRdbRepository;
 import org.apache.shardingsphere.elasticjob.cloud.statistics.type.task.TaskResultStatistics;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.Trigger;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TaskResultStatisticJobTest {
     
     private final StatisticInterval statisticInterval = StatisticInterval.MINUTE;
@@ -50,7 +50,7 @@ public class TaskResultStatisticJobTest {
     
     private TaskResultStatisticJob taskResultStatisticJob;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         taskResultStatisticJob = new TaskResultStatisticJob();
         sharedData = new TaskResultMetaData();

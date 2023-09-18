@@ -25,9 +25,9 @@ import org.apache.shardingsphere.elasticjob.cloud.console.HttpTestUtil;
 import org.apache.shardingsphere.elasticjob.cloud.console.security.AuthenticationConstants;
 import org.apache.shardingsphere.elasticjob.cloud.console.security.AuthenticationService;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CloudLoginTest extends AbstractCloudControllerTest {
     
     @Test

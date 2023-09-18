@@ -23,12 +23,12 @@ import ch.qos.logback.core.read.ListAppender;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.Address;
@@ -45,7 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class EmailJobErrorHandlerTest {
     
     private static List<LoggingEvent> appenderList;
@@ -57,14 +57,14 @@ public final class EmailJobErrorHandlerTest {
     private Transport transport;
     
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(EmailJobErrorHandler.class);
         ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("EmailJobErrorHandlerTestAppender");
         appenderList = appender.list;
     }
     
-    @Before
+    @BeforeEach
     public void setUp() {
         appenderList.clear();
     }

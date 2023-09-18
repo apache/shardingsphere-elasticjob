@@ -35,8 +35,8 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Param;
 import org.apache.shardingsphere.elasticjob.restful.annotation.ParamSource;
 import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
@@ -47,7 +47,7 @@ public final class HandlerParameterDecoderTest {
     
     private EmbeddedChannel channel;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         ContextInitializationInboundHandler contextInitializationInboundHandler = new ContextInitializationInboundHandler();
         HttpRequestDispatcher httpRequestDispatcher = new HttpRequestDispatcher(Collections.singletonList(new DecoderTestController()), false);

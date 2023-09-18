@@ -23,25 +23,25 @@ import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ZookeeperRegistryCenterListenerTest {
 
     @Mock
@@ -63,7 +63,7 @@ public class ZookeeperRegistryCenterListenerTest {
 
     private final String jobPath = "/test_job";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         regCenter = new ZookeeperRegistryCenter(null);
         ZookeeperRegistryCenterTestUtil.setFieldValue(regCenter, "caches", caches);
@@ -79,7 +79,7 @@ public class ZookeeperRegistryCenterListenerTest {
     }
 
     @Test
-    public void testWatch() throws Exception {
+    public void testWatch() {
         when(caches.get(jobPath + "/")).thenReturn(cache);
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.watch(jobPath, null, null);
@@ -88,7 +88,7 @@ public class ZookeeperRegistryCenterListenerTest {
     }
 
     @Test
-    public void testRemoveDataListenersNonCache() throws Exception {
+    public void testRemoveDataListenersNonCache() {
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.removeDataListeners(jobPath);
         verify(cache.listenable(), never()).removeListener(any());
@@ -96,7 +96,7 @@ public class ZookeeperRegistryCenterListenerTest {
     }
 
     @Test
-    public void testRemoveDataListenersHasCache() throws Exception {
+    public void testRemoveDataListenersHasCache() {
         when(caches.get(jobPath + "/")).thenReturn(cache);
         when(cache.listenable()).thenReturn(dataListenable);
         List<CuratorCacheListener> list = new ArrayList<>();
@@ -118,7 +118,7 @@ public class ZookeeperRegistryCenterListenerTest {
     }
 
     @Test
-    public void testRemoveConnStateListener() throws Exception {
+    public void testRemoveConnStateListener() {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
         List<ConnectionStateListener> list = new ArrayList<>();
         list.add(null);

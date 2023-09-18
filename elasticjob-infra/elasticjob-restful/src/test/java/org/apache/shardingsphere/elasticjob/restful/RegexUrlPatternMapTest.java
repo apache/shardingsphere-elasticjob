@@ -19,12 +19,13 @@ package org.apache.shardingsphere.elasticjob.restful;
 
 import org.apache.shardingsphere.elasticjob.restful.mapping.MappingContext;
 import org.apache.shardingsphere.elasticjob.restful.mapping.RegexUrlPatternMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class RegexUrlPatternMapTest {
     
@@ -58,11 +59,13 @@ public final class RegexUrlPatternMapTest {
         assertThat(mappingContext.payload(), is(11));
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertDuplicate() {
-        RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
-        urlPatternMap.put("/app/{jobName}/enable", 0);
-        urlPatternMap.put("/app/{jobName}", 1);
-        urlPatternMap.put("/app/{appName}", 2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
+            urlPatternMap.put("/app/{jobName}/enable", 0);
+            urlPatternMap.put("/app/{jobName}", 1);
+            urlPatternMap.put("/app/{appName}", 2);
+        });
     }
 }

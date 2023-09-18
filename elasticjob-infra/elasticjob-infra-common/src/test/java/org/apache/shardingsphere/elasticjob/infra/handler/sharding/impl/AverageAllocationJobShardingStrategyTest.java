@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl;
 
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;

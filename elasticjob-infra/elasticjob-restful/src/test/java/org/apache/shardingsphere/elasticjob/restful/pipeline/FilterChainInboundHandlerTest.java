@@ -22,11 +22,11 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.restful.Filter;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class FilterChainInboundHandlerTest {
     
     @Mock
@@ -46,7 +46,7 @@ public final class FilterChainInboundHandlerTest {
     
     private EmbeddedChannel channel;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         channel = new EmbeddedChannel(new FilterChainInboundHandler(filterInstances));
     }

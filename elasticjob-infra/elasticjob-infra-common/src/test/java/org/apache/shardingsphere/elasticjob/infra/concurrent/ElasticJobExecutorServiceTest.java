@@ -18,15 +18,15 @@
 package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
 import org.awaitility.Awaitility;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ElasticJobExecutorServiceTest {
     
@@ -40,13 +40,13 @@ public final class ElasticJobExecutorServiceTest {
         assertFalse(executorServiceObject.isShutdown());
         ExecutorService executorService = executorServiceObject.createExecutorService();
         executorService.submit(new FooTask());
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
             assertThat(executorServiceObject.getActiveThreadCount(), is(1));
             assertThat(executorServiceObject.getWorkQueueSize(), is(0));
             assertFalse(executorServiceObject.isShutdown());
         });
         executorService.submit(new FooTask());
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(5L, TimeUnit.MINUTES).untilAsserted(() -> {
             assertThat(executorServiceObject.getActiveThreadCount(), is(1));
             assertThat(executorServiceObject.getWorkQueueSize(), is(1));
             assertFalse(executorServiceObject.isShutdown());

@@ -22,10 +22,10 @@ import org.apache.mesos.SchedulerDriver;
 import org.apache.shardingsphere.elasticjob.cloud.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.cloud.config.CloudJobExecutionType;
 import org.apache.shardingsphere.elasticjob.cloud.config.pojo.CloudJobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.CloudAppConfigurationService;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.CloudAppConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.job.CloudJobConfigurationService;
+import org.apache.shardingsphere.elasticjob.cloud.scheduler.exception.AppConfigurationException;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.disable.job.DisableJobService;
@@ -34,22 +34,23 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.state.running.Runnin
 import org.apache.shardingsphere.elasticjob.infra.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ProducerManagerTest {
     
     @Mock
@@ -84,7 +85,7 @@ public final class ProducerManagerTest {
     
     private final CloudJobConfigurationPOJO daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("daemon_test_job", CloudJobExecutionType.DAEMON);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         ReflectionUtils.setFieldValue(producerManager, "appConfigService", appConfigService);
@@ -104,23 +105,29 @@ public final class ProducerManagerTest {
         verify(readyService).addDaemon("daemon_test_job");
     }
 
-    @Test(expected = AppConfigurationException.class)
+    @Test
     public void assertRegisterJobWithoutApp() {
-        when(appConfigService.load("test_app")).thenReturn(Optional.empty());
-        producerManager.register(transientJobConfig);
+        assertThrows(AppConfigurationException.class, () -> {
+            when(appConfigService.load("test_app")).thenReturn(Optional.empty());
+            producerManager.register(transientJobConfig);
+        });
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertRegisterExistedJob() {
-        when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
-        when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
-        producerManager.register(transientJobConfig);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
+            when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
+            producerManager.register(transientJobConfig);
+        });
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertRegisterDisabledJob() {
-        when(disableJobService.isDisabled("transient_test_job")).thenReturn(true);
-        producerManager.register(transientJobConfig);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(disableJobService.isDisabled("transient_test_job")).thenReturn(true);
+            producerManager.register(transientJobConfig);
+        });
     }
     
     @Test
@@ -141,10 +148,12 @@ public final class ProducerManagerTest {
         verify(readyService).addDaemon("daemon_test_job");
     }
     
-    @Test(expected = JobConfigurationException.class)
+    @Test
     public void assertUpdateNotExisted() {
-        when(configService.load("transient_test_job")).thenReturn(Optional.empty());
-        producerManager.update(transientJobConfig);
+        assertThrows(JobConfigurationException.class, () -> {
+            when(configService.load("transient_test_job")).thenReturn(Optional.empty());
+            producerManager.update(transientJobConfig);
+        });
     }
     
     @Test

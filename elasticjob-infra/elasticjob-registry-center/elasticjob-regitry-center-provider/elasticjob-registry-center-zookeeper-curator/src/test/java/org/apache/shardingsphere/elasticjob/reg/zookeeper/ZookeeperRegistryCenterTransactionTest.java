@@ -21,37 +21,37 @@ import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOper
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.zookeeper.KeeperException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class ZookeeperRegistryCenterTransactionTest {
-    
+
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
             new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterTransactionTest.class.getName());
-    
+
     private static ZookeeperRegistryCenter zkRegCenter;
-    
-    @BeforeClass
+
+    @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();
     }
-    
-    @Before
+
+    @BeforeEach
     public void setup() {
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
-    
+
     @Test
     public void assertExecuteInTransactionSucceeded() throws Exception {
         List<TransactionOperation> operations = new ArrayList<>(3);
@@ -62,7 +62,7 @@ public final class ZookeeperRegistryCenterTransactionTest {
         zkRegCenter.executeInTransaction(operations);
         assertThat(zkRegCenter.getDirectly("/test/transaction"), is("transaction"));
     }
-    
+
     @Test
     public void assertExecuteInTransactionFailed() throws Exception {
         List<TransactionOperation> operations = new ArrayList<>(3);

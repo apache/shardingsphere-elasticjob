@@ -23,12 +23,13 @@ import org.apache.curator.retry.RetryOneTime;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.zookeeper.KeeperException.NoAuthException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ZookeeperRegistryCenterForAuthTest {
     
@@ -38,7 +39,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIGURATION.setDigest("digest:password");
@@ -49,7 +50,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         zkRegCenter.close();
     }
@@ -65,11 +66,13 @@ public final class ZookeeperRegistryCenterForAuthTest {
         assertThat(client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested"), is("deepNested".getBytes()));
     }
     
-    @Test(expected = NoAuthException.class)
-    public void assertInitWithDigestFailure() throws Exception {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
-        client.start();
-        client.blockUntilConnected();
-        client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested");
+    @Test
+    public void assertInitWithDigestFailure() {
+        assertThrows(NoAuthException.class, () -> {
+            CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+            client.start();
+            client.blockUntilConnected();
+            client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested");
+        });
     }
 }

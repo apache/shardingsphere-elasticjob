@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class JobClassNameProviderFactoryTest {
     

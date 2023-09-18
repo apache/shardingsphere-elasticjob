@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.exception;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;

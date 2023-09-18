@@ -17,13 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class JobConfigurationTest {
     
@@ -81,13 +82,15 @@ public final class JobConfigurationTest {
         assertFalse(actual.isOverwrite());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertBuildWithEmptyJobName() {
-        JobConfiguration.newBuilder("", 3).cron("0/1 * * * * ?").build();
+        assertThrows(IllegalArgumentException.class, () ->
+                JobConfiguration.newBuilder("", 3).cron("0/1 * * * * ?").build());
     }
-    
-    @Test(expected = IllegalArgumentException.class)
+
+    @Test
     public void assertBuildWithInvalidShardingTotalCount() {
-        JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build();
+        assertThrows(IllegalArgumentException.class, () ->
+                JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build());
     }
 }

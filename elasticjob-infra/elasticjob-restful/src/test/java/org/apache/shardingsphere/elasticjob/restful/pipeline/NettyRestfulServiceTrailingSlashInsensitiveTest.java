@@ -21,7 +21,9 @@ import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
 import org.apache.shardingsphere.elasticjob.restful.controller.TrailingSlashTestController;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class NettyRestfulServiceTrailingSlashInsensitiveTest {
     
@@ -29,12 +31,14 @@ public final class NettyRestfulServiceTrailingSlashInsensitiveTest {
     
     private static final int PORT = 18082;
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void assertPathDuplicateWhenTrailingSlashInsensitive() {
-        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-        configuration.setHost(HOST);
-        configuration.addControllerInstances(new TrailingSlashTestController());
-        RestfulService restfulService = new NettyRestfulService(configuration);
-        restfulService.startup();
+        assertThrows(IllegalArgumentException.class, () -> {
+            NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
+            configuration.setHost(HOST);
+            configuration.addControllerInstances(new TrailingSlashTestController());
+            RestfulService restfulService = new NettyRestfulService(configuration);
+            restfulService.startup();
+        });
     }
 }

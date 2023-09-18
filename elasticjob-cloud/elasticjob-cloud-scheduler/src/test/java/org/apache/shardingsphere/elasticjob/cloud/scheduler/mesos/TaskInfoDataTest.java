@@ -20,14 +20,14 @@ package org.apache.shardingsphere.elasticjob.cloud.scheduler.mesos;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shardingsphere.elasticjob.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class TaskInfoDataTest {
     

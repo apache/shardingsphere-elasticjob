@@ -17,16 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.namespace.snapshot;
 
-import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnit4SpringContextTests;
-import org.junit.Test;
+import org.apache.shardingsphere.elasticjob.lite.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotEnabled.xml")
-public final class SnapshotSpringNamespaceEnableTest extends AbstractZookeeperJUnit4SpringContextTests {
+public final class SnapshotSpringNamespaceEnableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     @Test
     public void assertSnapshotEnable() throws IOException {

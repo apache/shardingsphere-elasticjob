@@ -20,15 +20,18 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public final class ThrowJobErrorHandlerTest {
-    
-    @Test(expected = JobSystemException.class)
+
+    @Test
     public void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElseThrow(
-            () -> new JobConfigurationException("THROW error handler not found.")).handleException("test_job", new RuntimeException("test"));
+        assertThrows(JobSystemException.class, () ->
+                JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElseThrow(() ->
+                        new JobConfigurationException("THROW error handler not found.")).handleException("test_job", new RuntimeException("test")));
     }
 }

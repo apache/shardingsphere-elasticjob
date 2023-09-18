@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lite.lifecycle;
 
 import org.apache.curator.test.TestingServer;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public abstract class AbstractEmbedZookeeperBaseTest {
     
     private static volatile TestingServer testingServer;
     
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         startEmbedTestingServer();
     }
