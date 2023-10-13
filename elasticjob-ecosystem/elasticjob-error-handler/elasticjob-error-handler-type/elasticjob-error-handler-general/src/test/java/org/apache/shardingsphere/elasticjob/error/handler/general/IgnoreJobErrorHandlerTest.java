@@ -27,7 +27,7 @@ public final class IgnoreJobErrorHandlerTest {
     
     @Test
     public void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("IGNORE", new Properties()).orElseThrow(
-                () -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
+        JobErrorHandlerFactory.createHandler("IGNORE", new Properties())
+                .orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
     }
 }
