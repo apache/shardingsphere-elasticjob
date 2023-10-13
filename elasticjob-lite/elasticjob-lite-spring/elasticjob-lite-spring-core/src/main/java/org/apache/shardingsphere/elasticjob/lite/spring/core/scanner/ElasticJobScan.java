@@ -41,7 +41,7 @@ public @interface ElasticJobScan {
      * @return Base packages name
      */
     String[] value() default "";
-
+    
     /**
      * Base packages to scan for Elastic job.
      *

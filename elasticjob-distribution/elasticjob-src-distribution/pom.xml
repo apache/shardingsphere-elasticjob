@@ -37,10 +37,10 @@
                         <executions>
                             <execution>
                                 <id>src</id>
-                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                                <phase>package</phase>
                                 <configuration>
                                     <descriptors>
                                         <descriptor>src/main/assembly/source-distribution.xml</descriptor>

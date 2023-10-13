@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String simpleJobName;
-
+    
     @Autowired
     private CoordinatorRegistryCenter regCenter;
     
@@ -52,16 +52,14 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     public void tearDown() {
         JobRegistry.getInstance().shutdown(simpleJobName);
     }
-
+    
     @Test
     public void assertSpringJobBean() {
         assertSimpleElasticJobBean();
     }
     
     private void assertSimpleElasticJobBean() {
-        Awaitility.await().atMost(5L, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(AnnotationSimpleJob.isCompleted(), is(true))
-        );
+        Awaitility.await().atMost(5L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(AnnotationSimpleJob.isCompleted(), is(true)));
         assertTrue(AnnotationSimpleJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
     }

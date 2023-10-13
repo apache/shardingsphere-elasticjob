@@ -33,7 +33,6 @@ public final class ResponseBodySerializerFactoryTest {
     
     @Test
     public void assertSerializerNotFound() {
-        assertThrows(ResponseBodySerializerNotFoundException.class, () ->
-                ResponseBodySerializerFactory.getResponseBodySerializer("Unknown"));
+        assertThrows(ResponseBodySerializerNotFoundException.class, () -> ResponseBodySerializerFactory.getResponseBodySerializer("Unknown"));
     }
 }

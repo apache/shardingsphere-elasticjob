@@ -32,11 +32,11 @@ import org.springframework.aop.support.AopUtils;
  */
 @Slf4j
 public final class SpringProxyJobClassNameProvider implements JobClassNameProvider {
-
+    
     public SpringProxyJobClassNameProvider() {
         log.info("create SpringProxyJobClassNameProvider");
     }
-
+    
     @Override
     public String getJobClassName(final ElasticJob elasticJob) {
         return AopUtils.isAopProxy(elasticJob) ? AopTargetUtils.getTarget(elasticJob).getClass().getName() : elasticJob.getClass().getName();

@@ -48,7 +48,7 @@ public final class JobEventRdbSearchTest {
     
     @Mock
     private PreparedStatement preparedStatement;
-
+    
     // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
     @Mock(strictness = Mock.Strictness.LENIENT)
     private ResultSet resultSet;

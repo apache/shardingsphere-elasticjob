@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,11 +36,11 @@ import java.util.concurrent.TimeUnit;
 public final class EmbedTestingServer {
     
     private static final int PORT = 9181;
-
+    
     private static volatile TestingServer testingServer;
-
+    
     private static final Object INIT_LOCK = new Object();
-
+    
     /**
      * Start embed zookeeper server.
      */
@@ -59,7 +59,7 @@ public final class EmbedTestingServer {
             waitTestingServerReady();
         }
     }
-
+    
     private static void start0() {
         try {
             testingServer = new TestingServer(PORT, true);
@@ -81,7 +81,7 @@ public final class EmbedTestingServer {
             }));
         }
     }
-
+    
     private static void waitTestingServerReady() {
         int maxRetries = 60;
         try (CuratorFramework client = buildCuratorClient()) {
@@ -107,7 +107,7 @@ public final class EmbedTestingServer {
             }
         }
     }
-
+    
     private static CuratorFramework buildCuratorClient() {
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
         int retryIntervalMilliseconds = 500;
@@ -119,11 +119,11 @@ public final class EmbedTestingServer {
         builder.connectionTimeoutMs(500);
         return builder.build();
     }
-
+    
     private static boolean isIgnoredException(final Throwable cause) {
         return cause instanceof KeeperException.ConnectionLossException || cause instanceof KeeperException.NoNodeException || cause instanceof KeeperException.NodeExistsException;
     }
-
+    
     /**
      * Get the connection string.
      *
@@ -133,4 +133,3 @@ public final class EmbedTestingServer {
         return "localhost:" + PORT;
     }
 }
-

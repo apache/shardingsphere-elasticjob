@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 import org.junit.jupiter.api.Test;
 
 public final class ZookeeperPropertiesTest {
-
+    
     @Test
     public void assertToZookeeperConfiguration() {
         ZookeeperProperties properties = new ZookeeperProperties();

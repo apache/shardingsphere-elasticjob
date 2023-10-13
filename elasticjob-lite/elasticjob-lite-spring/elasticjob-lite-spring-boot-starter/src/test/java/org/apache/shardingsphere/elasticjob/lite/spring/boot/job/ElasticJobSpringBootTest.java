@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,10 +60,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootApplication
 @ActiveProfiles("elasticjob")
 public class ElasticJobSpringBootTest {
-
+    
     @Autowired
     private ApplicationContext applicationContext;
-
+    
     @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
@@ -96,7 +96,7 @@ public class ElasticJobSpringBootTest {
         DataSource dataSource = (DataSource) tracingConfig.getTracingStorageConfiguration().getStorage();
         assertNotNull(dataSource.getConnection());
     }
-
+    
     @Test
     public void assertTracingProperties() {
         assertNotNull(applicationContext);
@@ -107,7 +107,7 @@ public class ElasticJobSpringBootTest {
         excludeJobNames.add("customTestJob");
         assertThat(tracingProperties.getExcludeJobNames(), is(excludeJobNames));
     }
-
+    
     @Test
     public void assertElasticJobProperties() {
         assertNotNull(applicationContext);
@@ -146,8 +146,7 @@ public class ElasticJobSpringBootTest {
     }
     
     @Test
-    public void assertOneOffJobBootstrapBeanName()
-            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void assertOneOffJobBootstrapBeanName() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         assertNotNull(applicationContext);
         OneOffJobBootstrap customTestJobBootstrap =
                 applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class);
@@ -165,18 +164,18 @@ public class ElasticJobSpringBootTest {
                 ((JobScheduler) jobSchedulerField.get(printTestJobBootstrap)).getJobConfig().getExtraConfigurations();
         assertThat(extraConfigurations.size(), is(1));
     }
-
+    
     @Test
     public void assertDefaultBeanNameWithClassJob() {
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("defaultBeanNameClassJobScheduleJobBootstrap",
-            ScheduleJobBootstrap.class));
+                ScheduleJobBootstrap.class));
     }
-
+    
     @Test
     public void assertDefaultBeanNameWithTypeJob() {
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("defaultBeanNameTypeJobScheduleJobBootstrap",
-            ScheduleJobBootstrap.class));
+                ScheduleJobBootstrap.class));
     }
 }

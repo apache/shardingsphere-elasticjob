@@ -125,7 +125,7 @@ public final class TaskLaunchScheduledServiceTest {
     private TaskAssignmentResult mockTaskAssignmentResult(final String taskName, final ExecutionType executionType) {
         TaskAssignmentResult result = mock(TaskAssignmentResult.class);
         when(result.getTaskId()).thenReturn(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", taskName, executionType.name()));
-        return result; 
+        return result;
     }
     
     @Test

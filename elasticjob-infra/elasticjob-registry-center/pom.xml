@@ -24,12 +24,12 @@
         <version>3.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-registry-center</artifactId>
-    <name>${project.artifactId}</name>
     <packaging>pom</packaging>
-
+    <name>${project.artifactId}</name>
+    
     <modules>
         <module>elasticjob-registry-center-api</module>
         <module>elasticjob-regitry-center-provider</module>
     </modules>
-
+    
 </project>

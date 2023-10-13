@@ -68,7 +68,7 @@ public final class FailoverService {
             jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(item));
         }
     }
-
+    
     /**
      * set crashed failover flag directly.
      *
@@ -77,7 +77,7 @@ public final class FailoverService {
     public void setCrashedFailoverFlagDirectly(final int item) {
         jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
     }
-
+    
     private boolean isFailoverAssigned(final Integer item) {
         return jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(item));
     }
@@ -127,7 +127,7 @@ public final class FailoverService {
         Collections.sort(result);
         return result;
     }
-
+    
     /**
      * Get failovering items.
      *

@@ -21,7 +21,7 @@ package org.apache.shardingsphere.elasticjob.reg.listener;
  * Data changed listener.
  */
 public interface DataChangedEventListener {
-
+    
     /**
      * Fire when data changed.
      *

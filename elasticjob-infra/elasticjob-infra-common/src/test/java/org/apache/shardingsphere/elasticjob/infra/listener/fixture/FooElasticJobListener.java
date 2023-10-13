@@ -25,7 +25,7 @@ public final class FooElasticJobListener implements ElasticJobListener {
     @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }
-
+    
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
     }

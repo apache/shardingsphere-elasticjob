@@ -139,7 +139,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             }
         }
     }
-
+    
     @Override
     public String dump(final String jobName, final String instanceIp, final int dumpPort) throws IOException {
         return SnapshotService.dumpJob(instanceIp, dumpPort, jobName);

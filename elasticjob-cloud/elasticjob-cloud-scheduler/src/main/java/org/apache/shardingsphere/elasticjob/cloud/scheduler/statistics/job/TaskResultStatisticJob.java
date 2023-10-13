@@ -66,7 +66,8 @@ public final class TaskResultStatisticJob extends AbstractStatisticJob {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName() + "_" + statisticInterval)
                 .withSchedule(CronScheduleBuilder.cronSchedule(statisticInterval.getCron())
-                .withMisfireHandlingInstructionDoNothing()).build();
+                        .withMisfireHandlingInstructionDoNothing())
+                .build();
     }
     
     @Override
@@ -85,7 +86,7 @@ public final class TaskResultStatisticJob extends AbstractStatisticJob {
         TaskResultStatistics taskResultStatistics = new TaskResultStatistics(
                 sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticInterval,
                 StatisticTimeUtils.getCurrentStatisticTime(statisticInterval));
-        log.debug("Add taskResultStatistics, statisticInterval is:{}, successCount is:{}, failedCount is:{}", 
+        log.debug("Add taskResultStatistics, statisticInterval is:{}, successCount is:{}, failedCount is:{}",
                 statisticInterval, sharedData.getSuccessCount(), sharedData.getFailedCount());
         repository.add(taskResultStatistics);
         sharedData.reset();

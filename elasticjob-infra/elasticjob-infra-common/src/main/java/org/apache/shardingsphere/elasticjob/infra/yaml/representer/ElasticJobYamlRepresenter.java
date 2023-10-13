@@ -27,6 +27,7 @@ import org.yaml.snakeyaml.representer.Representer;
  * ElasticJob YAML representer.
  */
 public final class ElasticJobYamlRepresenter extends Representer {
+    
     public ElasticJobYamlRepresenter(final DumperOptions options) {
         super(options);
     }

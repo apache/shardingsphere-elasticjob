@@ -41,48 +41,46 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class OneOffJobBootstrapTest {
-
+    
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), OneOffJobBootstrapTest.class.getSimpleName());
-
+    
     private static final int SHARDING_TOTAL_COUNT = 3;
-
+    
     private ZookeeperRegistryCenter zkRegCenter;
-
+    
     @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
     }
-
+    
     @BeforeEach
     public void setUp() {
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
     }
-
+    
     @AfterEach
     public void teardown() {
         zkRegCenter.close();
     }
-
+    
     @Test
     public void assertConfigFailedWithCron() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
-                }, JobConfiguration.newBuilder("test_one_off_job_execute_with_config_cron", SHARDING_TOTAL_COUNT).cron("0/5 * * * * ?").build()));
+        assertThrows(IllegalArgumentException.class, () -> new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
+        }, JobConfiguration.newBuilder("test_one_off_job_execute_with_config_cron", SHARDING_TOTAL_COUNT).cron("0/5 * * * * ?").build()));
     }
-
+    
     @Test
     public void assertExecute() {
         AtomicInteger counter = new AtomicInteger(0);
-        final OneOffJobBootstrap oneOffJobBootstrap = new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
-            counter.incrementAndGet();
-        }, JobConfiguration.newBuilder("test_one_off_job_execute", SHARDING_TOTAL_COUNT).build());
+        final OneOffJobBootstrap oneOffJobBootstrap = new OneOffJobBootstrap(zkRegCenter,
+                (SimpleJob) shardingContext -> counter.incrementAndGet(), JobConfiguration.newBuilder("test_one_off_job_execute", SHARDING_TOTAL_COUNT).build());
         oneOffJobBootstrap.execute();
         blockUtilFinish(oneOffJobBootstrap, counter);
         assertThat(counter.get(), is(SHARDING_TOTAL_COUNT));
         getJobScheduler(oneOffJobBootstrap).shutdown();
     }
-
+    
     @Test
     public void assertShutdown() throws SchedulerException {
         OneOffJobBootstrap oneOffJobBootstrap = new OneOffJobBootstrap(zkRegCenter, (SimpleJob) shardingContext -> {
@@ -90,14 +88,14 @@ public final class OneOffJobBootstrapTest {
         oneOffJobBootstrap.shutdown();
         assertTrue(getScheduler(oneOffJobBootstrap).isShutdown());
     }
-
+    
     @SneakyThrows
     private JobScheduler getJobScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
         Field field = OneOffJobBootstrap.class.getDeclaredField("jobScheduler");
         field.setAccessible(true);
         return (JobScheduler) field.get(oneOffJobBootstrap);
     }
-
+    
     @SneakyThrows
     private Scheduler getScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
         JobScheduler jobScheduler = getJobScheduler(oneOffJobBootstrap);
@@ -105,7 +103,7 @@ public final class OneOffJobBootstrapTest {
         schedulerField.setAccessible(true);
         return (Scheduler) schedulerField.get(jobScheduler.getJobScheduleController());
     }
-
+    
     @SneakyThrows
     private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
         Scheduler scheduler = getScheduler(oneOffJobBootstrap);

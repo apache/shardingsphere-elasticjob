@@ -29,9 +29,9 @@ public final class GuaranteeNode {
     static final String STARTED_ROOT = ROOT + "/started";
     
     static final String COMPLETED_ROOT = ROOT + "/completed";
-
+    
     static final String STARTED_LATCH_ROOT = ROOT + "/started-latch";
-
+    
     static final String COMPLETED_LATCH_ROOT = ROOT + "/completed-latch";
     
     private final JobNodePath jobNodePath;
@@ -41,11 +41,11 @@ public final class GuaranteeNode {
     }
     
     static String getStartedNode(final int shardingItem) {
-        return String.join("/", STARTED_ROOT, shardingItem + "");
+        return String.join("/", STARTED_ROOT, String.valueOf(shardingItem));
     }
     
     static String getCompletedNode(final int shardingItem) {
-        return String.join("/", COMPLETED_ROOT, shardingItem + "");
+        return String.join("/", COMPLETED_ROOT, String.valueOf(shardingItem));
     }
     
     boolean isStartedRootNode(final String path) {

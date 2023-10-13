@@ -59,7 +59,7 @@ public final class ReadyServiceTest {
     private RunningService runningService;
     
     private ReadyService readyService;
-        
+    
     @BeforeEach
     public void setUp() {
         readyService = new ReadyService(regCenter);

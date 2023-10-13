@@ -42,8 +42,7 @@ public final class SocketUtils {
         try (
                 Socket socket = new Socket("127.0.0.1", dumpPort);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-            ) {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
             writer.write(command);
             writer.newLine();
             writer.flush();

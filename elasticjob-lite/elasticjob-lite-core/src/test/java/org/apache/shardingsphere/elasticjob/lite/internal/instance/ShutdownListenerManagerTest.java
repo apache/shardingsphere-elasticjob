@@ -66,7 +66,7 @@ public final class ShutdownListenerManagerTest {
         ReflectionUtils.setFieldValue(shutdownListenerManager, "schedulerFacade", schedulerFacade);
         ReflectionUtils.setSuperclassFieldValue(shutdownListenerManager, "jobNodeStorage", jobNodeStorage);
     }
-
+    
     @AfterEach
     public void tearDown() {
         JobRegistry.getInstance().shutdown("test_job");

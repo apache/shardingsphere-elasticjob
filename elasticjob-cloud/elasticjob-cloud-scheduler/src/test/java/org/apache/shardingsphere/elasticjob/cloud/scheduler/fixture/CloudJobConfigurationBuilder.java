@@ -61,7 +61,7 @@ public final class CloudJobConfigurationBuilder {
      * @return cloud job configuration
      */
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final CloudJobExecutionType jobExecutionType, final int shardingTotalCount) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, jobExecutionType, 
+        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, jobExecutionType,
                 JobConfiguration.newBuilder(jobName, shardingTotalCount).cron("0/30 * * * * ?").failover(true).misfire(true).build());
     }
     
@@ -107,7 +107,7 @@ public final class CloudJobConfigurationBuilder {
      * @return cloud job configuration
      */
     public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT, 
+        return new CloudJobConfiguration("test_app", 1.0d, 128.0d, CloudJobExecutionType.TRANSIENT,
                 JobConfiguration.newBuilder(jobName, 3).cron("0/30 * * * * ?").failover(false).misfire(false).setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.TRUE.toString()).build());
     }
     

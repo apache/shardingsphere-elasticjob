@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -123,7 +123,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
      * @param listener connection state changed event listener
      */
     void addConnectionStateChangedEventListener(String key, ConnectionStateChangedEventListener listener);
-
+    
     /**
      * Execute operations in transaction.
      *
@@ -131,13 +131,13 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
      * @throws Exception exception
      */
     void executeInTransaction(List<TransactionOperation> transactionOperations) throws Exception;
-
+    
     /**
      * Remove all data listeners that have been bound to the current key.
      * @param key key to be watched
      */
     void removeDataListeners(String key);
-
+    
     /**
      * Remove conn state listener that have been bound to the current key.
      * @param key key to be watched

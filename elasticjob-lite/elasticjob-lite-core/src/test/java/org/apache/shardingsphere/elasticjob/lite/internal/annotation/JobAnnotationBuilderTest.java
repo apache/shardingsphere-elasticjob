@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class JobAnnotationBuilderTest {
-   
+    
     @Test
     public void assertGenerateJobConfiguration() {
         JobConfiguration jobConfiguration = JobAnnotationBuilder.generateJobConfiguration(AnnotationSimpleJob.class);
@@ -50,5 +50,5 @@ public final class JobAnnotationBuilderTest {
         assertFalse(jobConfiguration.isDisabled());
         assertFalse(jobConfiguration.isOverwrite());
     }
-
+    
 }

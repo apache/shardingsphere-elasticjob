@@ -93,16 +93,15 @@ public final class HandlerParameterDecoderTest {
          */
         @Mapping(method = Http.GET, path = "/{appName}/{ch}")
         public String handle(
-                final @Param(source = ParamSource.PATH, name = "appName") String appName,
-                final @Param(source = ParamSource.PATH, name = "ch") char ch,
-                final @Param(source = ParamSource.QUERY, name = "cron") String cron,
-                final @Param(source = ParamSource.HEADER, name = "Message") String message,
-                final @RequestBody String body,
-                final @Param(source = ParamSource.QUERY, name = "integer") int integer,
-                final @Param(source = ParamSource.QUERY, name = "bool") Boolean bool,
-                final @Param(source = ParamSource.QUERY, name = "long") Long longValue,
-                final @Param(source = ParamSource.QUERY, name = "double") double doubleValue
-        ) {
+                             final @Param(source = ParamSource.PATH, name = "appName") String appName,
+                             final @Param(source = ParamSource.PATH, name = "ch") char ch,
+                             final @Param(source = ParamSource.QUERY, name = "cron") String cron,
+                             final @Param(source = ParamSource.HEADER, name = "Message") String message,
+                             final @RequestBody String body,
+                             final @Param(source = ParamSource.QUERY, name = "integer") int integer,
+                             final @Param(source = ParamSource.QUERY, name = "bool") Boolean bool,
+                             final @Param(source = ParamSource.QUERY, name = "long") Long longValue,
+                             final @Param(source = ParamSource.QUERY, name = "double") double doubleValue) {
             assertThat(appName, is("myApp"));
             assertThat(ch, is('C'));
             assertThat(cron, is("0 * * * * ?"));

@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.cloud.scheduler.config.app.pojo.Clou
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudAppConfigurationBuilder {
-
+    
     /**
      * Create cloud app configuration.
      * @param appName app name

@@ -40,13 +40,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String oneOffSimpleJobName = "oneOffSimpleElasticJobRef";
-
+    
     @Autowired
     private ApplicationContext applicationContext;
-
+    
     @Autowired
     private CoordinatorRegistryCenter regCenter;
-
+    
     @BeforeEach
     @AfterEach
     public void reset() {
@@ -64,11 +64,9 @@ public final class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeper
         bootstrap.execute();
         assertOneOffSimpleElasticJobBean();
     }
-
+    
     private void assertOneOffSimpleElasticJobBean() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
-                assertThat(RefFooSimpleElasticJob.isCompleted(), is(true))
-        );
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(RefFooSimpleElasticJob.isCompleted(), is(true)));
         assertTrue(RefFooSimpleElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + oneOffSimpleJobName + "/sharding"));
     }

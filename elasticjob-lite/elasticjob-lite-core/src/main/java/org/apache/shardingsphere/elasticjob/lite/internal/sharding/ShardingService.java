@@ -64,7 +64,7 @@ public final class ShardingService {
     private final ServerService serverService;
     
     private final ExecutionService executionService;
-
+    
     private final JobNodePath jobNodePath;
     
     public ShardingService(final CoordinatorRegistryCenter regCenter, final String jobName) {
@@ -187,7 +187,7 @@ public final class ShardingService {
         }
         return result;
     }
-
+    
     /**
      * Get crashed sharding items.
      *

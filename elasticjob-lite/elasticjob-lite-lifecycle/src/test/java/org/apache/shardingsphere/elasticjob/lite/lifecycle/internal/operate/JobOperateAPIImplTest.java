@@ -35,11 +35,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public final class JobOperateAPIImplTest {
-
+    
     static final int DUMP_PORT = 9000;
-
+    
     private JobOperateAPI jobOperateAPI;
-
+    
     // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
     @Mock(strictness = Mock.Strictness.LENIENT)
     private CoordinatorRegistryCenter regCenter;
@@ -169,5 +169,5 @@ public final class JobOperateAPIImplTest {
         assertFalse(regCenter.isExisted("/test_job1/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job2/servers/ip1"));
     }
-
+    
 }

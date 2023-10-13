@@ -31,16 +31,16 @@ import java.util.Collection;
  * Guarantee service.
  */
 public final class GuaranteeService {
-
+    
     private final JobNodeStorage jobNodeStorage;
-
+    
     private final ConfigurationService configService;
-
+    
     public GuaranteeService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
     }
-
+    
     /**
      * Register start.
      *
@@ -51,7 +51,7 @@ public final class GuaranteeService {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getStartedNode(each));
         }
     }
-
+    
     /**
      * Judge whether current sharding items are all register start success.
      *
@@ -66,7 +66,7 @@ public final class GuaranteeService {
         }
         return true;
     }
-
+    
     /**
      * Judge whether job's sharding items are all started.
      *
@@ -76,14 +76,14 @@ public final class GuaranteeService {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
                 && configService.load(false).getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
     }
-
+    
     /**
      * Clear all started job's info.
      */
     public void clearAllStartedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.STARTED_ROOT);
     }
-
+    
     /**
      * Register complete.
      *
@@ -94,7 +94,7 @@ public final class GuaranteeService {
             jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getCompletedNode(each));
         }
     }
-
+    
     /**
      * Judge whether sharding items are register complete success.
      *
@@ -109,7 +109,7 @@ public final class GuaranteeService {
         }
         return true;
     }
-
+    
     /**
      * Judge whether job's sharding items are all completed.
      *
@@ -119,14 +119,14 @@ public final class GuaranteeService {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
                 && configService.load(false).getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
-
+    
     /**
      * Clear all completed job's info.
      */
     public void clearAllCompletedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.COMPLETED_ROOT);
     }
-
+    
     /**
      * Invoke doBeforeJobExecutedAtLastStarted method once after last started.
      *
@@ -138,7 +138,7 @@ public final class GuaranteeService {
         jobNodeStorage.executeInLeader(GuaranteeNode.STARTED_LATCH_ROOT,
                 new LeaderExecutionCallbackForLastStarted(listener, shardingContexts));
     }
-
+    
     /**
      * Invoke doAfterJobExecutedAtLastCompleted method once after last completed.
      *
@@ -150,16 +150,17 @@ public final class GuaranteeService {
         jobNodeStorage.executeInLeader(GuaranteeNode.COMPLETED_LATCH_ROOT,
                 new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts));
     }
-
+    
     /**
      * Inner class for last started callback.
      */
     @RequiredArgsConstructor
     class LeaderExecutionCallbackForLastStarted implements LeaderExecutionCallback {
+        
         private final AbstractDistributeOnceElasticJobListener listener;
-
+        
         private final ShardingContexts shardingContexts;
-
+        
         @Override
         public void execute() {
             try {
@@ -172,16 +173,17 @@ public final class GuaranteeService {
             }
         }
     }
-
+    
     /**
      * Inner class for last completed callback.
      */
     @RequiredArgsConstructor
     class LeaderExecutionCallbackForLastCompleted implements LeaderExecutionCallback {
+        
         private final AbstractDistributeOnceElasticJobListener listener;
-
+        
         private final ShardingContexts shardingContexts;
-
+        
         @Override
         public void execute() {
             try {

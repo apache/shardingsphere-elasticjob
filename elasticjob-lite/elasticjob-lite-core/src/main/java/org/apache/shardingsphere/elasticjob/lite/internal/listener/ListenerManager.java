@@ -51,7 +51,7 @@ public final class ListenerManager {
     private final TriggerListenerManager triggerListenerManager;
     
     private final RescheduleListenerManager rescheduleListenerManager;
-
+    
     private final GuaranteeListenerManager guaranteeListenerManager;
     
     private final RegistryCenterConnectionStateListener regCenterConnectionStateListener;

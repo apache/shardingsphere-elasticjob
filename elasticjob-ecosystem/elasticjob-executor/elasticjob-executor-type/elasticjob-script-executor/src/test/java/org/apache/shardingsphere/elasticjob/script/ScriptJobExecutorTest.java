@@ -87,15 +87,15 @@ public final class ScriptJobExecutorTest {
         when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn(determineCommandByPlatform());
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
     }
-
+    
     private String determineCommandByPlatform() {
         return OS.isFamilyWindows() ? getWindowsEcho() : getEcho();
     }
-
+    
     private String getWindowsEcho() {
         return "cmd /c echo script-job";
     }
-
+    
     private String getEcho() {
         return "echo script-job";
     }

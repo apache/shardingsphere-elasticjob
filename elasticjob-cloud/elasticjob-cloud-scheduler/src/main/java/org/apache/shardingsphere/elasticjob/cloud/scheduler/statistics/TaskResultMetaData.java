@@ -27,7 +27,7 @@ public final class TaskResultMetaData {
     private final AtomicInteger successCount;
     
     private final AtomicInteger failedCount;
-
+    
     public TaskResultMetaData() {
         successCount = new AtomicInteger(0);
         failedCount = new AtomicInteger(0);

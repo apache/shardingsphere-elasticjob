@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -109,7 +109,7 @@ public final class CloudJobFacade implements JobFacade {
     @Override
     public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
-        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                 Source.CLOUD_EXECUTOR, taskContext.getType().toString(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }

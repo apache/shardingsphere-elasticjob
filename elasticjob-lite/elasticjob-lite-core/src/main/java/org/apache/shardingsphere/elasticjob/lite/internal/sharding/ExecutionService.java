@@ -48,7 +48,7 @@ public final class ExecutionService {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
     }
-        
+    
     /**
      * Register job begin.
      * 

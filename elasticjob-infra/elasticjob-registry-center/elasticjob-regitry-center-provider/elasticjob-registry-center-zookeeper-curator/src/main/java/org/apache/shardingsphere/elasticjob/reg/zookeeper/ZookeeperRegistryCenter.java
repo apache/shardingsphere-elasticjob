@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -74,17 +74,17 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     private final ZookeeperConfiguration zkConfig;
     
     private final Map<String, CuratorCache> caches = new ConcurrentHashMap<>();
-
+    
     /**
      * Data listener list.
      */
     private final Map<String, List<CuratorCacheListener>> dataListeners = new ConcurrentHashMap<>();
-
+    
     /**
      * Connections state listener list.
      */
     private final Map<String, List<ConnectionStateListener>> connStateListeners = new ConcurrentHashMap<>();
-
+    
     @Getter
     private CuratorFramework client;
     
@@ -108,12 +108,12 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         if (!Strings.isNullOrEmpty(zkConfig.getDigest())) {
             builder.authorization("digest", zkConfig.getDigest().getBytes(StandardCharsets.UTF_8))
                     .aclProvider(new ACLProvider() {
-                    
+                        
                         @Override
                         public List<ACL> getDefaultAcl() {
                             return ZooDefs.Ids.CREATOR_ALL_ACL;
                         }
-                    
+                        
                         @Override
                         public List<ACL> getAclForPath(final String path) {
                             return ZooDefs.Ids.CREATOR_ALL_ACL;
@@ -127,9 +127,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
                 client.close();
                 throw new KeeperException.OperationTimeoutException();
             }
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -144,9 +144,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     }
     
     /*
-     *  // TODO
-     * sleep 500ms, let cache client close first and then client, otherwise will throw exception
-     * reference：https://issues.apache.org/jira/browse/CURATOR-157
+     * // TODO sleep 500ms, let cache client close first and then client, otherwise will throw exception reference：https://issues.apache.org/jira/browse/CURATOR-157
      */
     private void waitForCacheClose() {
         try {
@@ -179,9 +177,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public String getDirectly(final String key) {
         try {
             return new String(client.getData().forPath(key), StandardCharsets.UTF_8);
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
             return null;
         }
@@ -193,9 +191,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             List<String> result = client.getChildren().forPath(key);
             result.sort(Comparator.reverseOrder());
             return result;
-         //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
             return Collections.emptyList();
         }
@@ -208,21 +206,21 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             if (null != stat) {
                 return stat.getNumChildren();
             }
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         return 0;
     }
-
+    
     @Override
     public boolean isExisted(final String key) {
         try {
             return null != client.checkExists().forPath(key);
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
             return false;
         }
@@ -236,9 +234,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             } else {
                 update(key, value);
             }
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -248,9 +246,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         try {
             TransactionOp transactionOp = client.transactionOp();
             client.transaction().forOperations(transactionOp.check().forPath(key), transactionOp.setData().forPath(key, value.getBytes(StandardCharsets.UTF_8)));
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -262,9 +260,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
                 client.delete().deletingChildrenIfNeeded().forPath(key);
             }
             client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -273,9 +271,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public String persistSequential(final String key, final String value) {
         try {
             return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(StandardCharsets.UTF_8));
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         return null;
@@ -285,9 +283,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public void persistEphemeralSequential(final String key) {
         try {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(key);
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -296,9 +294,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public void remove(final String key) {
         try {
             client.delete().deletingChildrenIfNeeded().forPath(key);
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
@@ -309,9 +307,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         try {
             persist(key, "");
             result = client.checkExists().forPath(key).getMtime();
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         Preconditions.checkState(0L != result, "Cannot get registry center time.");
@@ -378,9 +376,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
                 default:
                     throw new UnsupportedOperationException(each.toString());
             }
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             throw new RegException(ex);
         }
     }
@@ -390,9 +388,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         CuratorCache cache = CuratorCache.build(client, cachePath);
         try {
             cache.start();
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         caches.put(cachePath + "/", cache);
@@ -417,9 +415,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             latch.start();
             latch.await();
             callback.execute();
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             handleException(ex);
         }
     }
@@ -446,7 +444,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         }
         dataListeners.computeIfAbsent(key, k -> new LinkedList<>()).add(cacheListener);
     }
-
+    
     @Override
     public void removeDataListeners(final String key) {
         final CuratorCache cache = caches.get(key + "/");
@@ -460,7 +458,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         }
         cacheListenerList.forEach(listener -> cache.listenable().removeListener(listener));
     }
-
+    
     @Override
     public void removeConnStateListener(final String key) {
         final List<ConnectionStateListener> listenerList = connStateListeners.remove(key);

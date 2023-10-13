@@ -65,7 +65,7 @@ public final class GsonFactory {
     public static JsonParser getJsonParser() {
         return JSON_PARSER;
     }
-
+    
     /**
      * Re-initialize the GsonBuilder.
      */

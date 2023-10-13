@@ -160,4 +160,3 @@ public class SchedulerServiceTest {
         when(env.getFrameworkConfiguration()).thenReturn(frameworkConfiguration);
     }
 }
-    

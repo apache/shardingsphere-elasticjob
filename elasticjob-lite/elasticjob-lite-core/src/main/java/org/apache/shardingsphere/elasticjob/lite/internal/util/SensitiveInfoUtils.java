@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public final class SensitiveInfoUtils {
     
     private static final String FAKE_IP_SAMPLE = "ip";
-
+    
     private static final Pattern IP_PATTERN = Pattern.compile(IpUtils.IP_REGEX);
     
     /**

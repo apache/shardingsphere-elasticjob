@@ -40,7 +40,7 @@ public final class SchedulerElectionCandidate implements ElectionCandidate {
         try {
             schedulerService = new SchedulerService(regCenter);
             schedulerService.start();
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Throwable throwable) {
             throw new JobSystemException(throwable);
         }

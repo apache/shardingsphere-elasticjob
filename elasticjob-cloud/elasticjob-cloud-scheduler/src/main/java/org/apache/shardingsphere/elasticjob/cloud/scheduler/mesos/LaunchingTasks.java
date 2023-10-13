@@ -80,8 +80,8 @@ public final class LaunchingTasks {
     
     private Map<String, Integer> getAssignedJobShardingTotalCountMap(final Collection<VMAssignmentResult> vmAssignmentResults) {
         Map<String, Integer> result = new HashMap<>(eligibleJobContextsMap.size(), 1);
-        for (VMAssignmentResult vmAssignmentResult: vmAssignmentResults) {
-            for (TaskAssignmentResult tasksAssigned: vmAssignmentResult.getTasksAssigned()) {
+        for (VMAssignmentResult vmAssignmentResult : vmAssignmentResults) {
+            for (TaskAssignmentResult tasksAssigned : vmAssignmentResult.getTasksAssigned()) {
                 String jobName = TaskContext.from(tasksAssigned.getTaskId()).getMetaInfo().getJobName();
                 if (result.containsKey(jobName)) {
                     result.put(jobName, result.get(jobName) + 1);

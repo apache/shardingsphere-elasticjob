@@ -36,11 +36,11 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class ZookeeperRegistryCenterWatchTest {
-
+    
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterWatchTest.class.getName());
-
+    
     private static ZookeeperRegistryCenter zkRegCenter;
-
+    
     @BeforeAll
     public static void setUp() {
         EmbedTestingServer.start();
@@ -49,12 +49,12 @@ public final class ZookeeperRegistryCenterWatchTest {
         zkRegCenter.init();
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
-
+    
     @AfterAll
     public static void tearDown() {
         zkRegCenter.close();
     }
-
+    
     @Test
     @Timeout(value = 10000L, unit = TimeUnit.MILLISECONDS)
     public void assertWatchWithoutExecutor() throws InterruptedException {
@@ -73,7 +73,7 @@ public final class ZookeeperRegistryCenterWatchTest {
         zkRegCenter.update(key, "countDown");
         waitingForCountDownValue.await();
     }
-
+    
     @Test
     @Timeout(value = 10000L, unit = TimeUnit.MILLISECONDS)
     public void assertWatchWithExecutor() throws InterruptedException {

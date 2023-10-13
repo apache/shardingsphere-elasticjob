@@ -48,7 +48,7 @@ public final class ProducerManager {
     private final CloudAppConfigurationService appConfigService;
     
     private final CloudJobConfigurationService configService;
-            
+    
     private final ReadyService readyService;
     
     private final RunningService runningService;

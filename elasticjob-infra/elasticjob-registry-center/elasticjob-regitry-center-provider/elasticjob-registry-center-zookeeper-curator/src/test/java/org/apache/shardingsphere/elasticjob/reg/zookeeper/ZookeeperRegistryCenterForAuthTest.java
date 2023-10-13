@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,9 +58,9 @@ public final class ZookeeperRegistryCenterForAuthTest {
     @Test
     public void assertInitWithDigestSuccess() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.builder()
-            .connectString(EmbedTestingServer.getConnectionString())
-            .retryPolicy(new RetryOneTime(2000))
-            .authorization("digest", "digest:password".getBytes()).build();
+                .connectString(EmbedTestingServer.getConnectionString())
+                .retryPolicy(new RetryOneTime(2000))
+                .authorization("digest", "digest:password".getBytes()).build();
         client.start();
         client.blockUntilConnected();
         assertThat(client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested"), is("deepNested".getBytes()));

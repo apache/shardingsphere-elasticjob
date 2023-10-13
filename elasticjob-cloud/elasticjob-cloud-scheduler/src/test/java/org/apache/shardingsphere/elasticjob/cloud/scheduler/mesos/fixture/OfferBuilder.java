@@ -23,7 +23,7 @@ import org.apache.mesos.Protos;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class OfferBuilder {
-
+    
     /**
      * Create offer.
      * @param offerId offer id

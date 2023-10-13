@@ -27,14 +27,14 @@
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-    </properties>
-    
     <modules>
         <module>elasticjob-src-distribution</module>
         <module>elasticjob-lite-distribution</module>
         <module>elasticjob-cloud-executor-distribution</module>
         <module>elasticjob-cloud-scheduler-distribution</module>
     </modules>
+    
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 </project>

@@ -85,7 +85,7 @@ public final class InstanceService {
     boolean isLocalJobInstanceExisted() {
         return jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstancePath());
     }
-
+    
     /**
      * Trigger all instances.
      */

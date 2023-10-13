@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -122,9 +122,9 @@ public final class JobConfiguration {
         private String jobExecutorServiceHandlerType;
         
         private String jobErrorHandlerType;
-    
+        
         private final Collection<String> jobListenerTypes = new ArrayList<>();
-
+        
         private final Collection<JobExtraConfiguration> extraConfigurations = new LinkedList<>();
         
         private String description = "";
@@ -134,11 +134,11 @@ public final class JobConfiguration {
         private boolean disabled;
         
         private boolean overwrite;
-    
+        
         private String label;
         
         private boolean staticSharding;
-    
+        
         /**
          * Cron expression.
          *
@@ -151,7 +151,7 @@ public final class JobConfiguration {
             }
             return this;
         }
-    
+        
         /**
          * time zone.
          *
@@ -171,7 +171,6 @@ public final class JobConfiguration {
          * <p>
          * sharding item and sharding parameter split by =, multiple sharding items and sharding parameters split by comma, just like map.
          * Sharding item start from zero, cannot equal to great than sharding total count.
-         *
          * For example:
          * 0=a,1=b,2=c
          * </p>
@@ -206,7 +205,6 @@ public final class JobConfiguration {
          * <p>
          * For short interval job, it is better to disable monitor execution to improve performance. 
          * It can't guarantee repeated data fetch and can't failover if disable monitor execution, please keep idempotence in job.
-         *
          * For long interval job, it is better to enable monitor execution to guarantee fetch data exactly once.
          * </p>
          *

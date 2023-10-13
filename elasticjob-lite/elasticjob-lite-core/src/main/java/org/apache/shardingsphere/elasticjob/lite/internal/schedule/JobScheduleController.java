@@ -96,10 +96,9 @@ public final class JobScheduleController {
     
     private Trigger createCronTrigger(final String cron, final String timeZoneString) {
         return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(
-                CronScheduleBuilder.cronSchedule(cron).inTimeZone(parseTimeZoneString(timeZoneString)).withMisfireHandlingInstructionDoNothing()
-        ).build();
+                CronScheduleBuilder.cronSchedule(cron).inTimeZone(parseTimeZoneString(timeZoneString)).withMisfireHandlingInstructionDoNothing()).build();
     }
-
+    
     /**
      * Get the TimeZone for the time zone specification.
      *

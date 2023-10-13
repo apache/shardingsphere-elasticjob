@@ -29,15 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
 
-
 /**
  * Create an instance of {@link FullHttpResponse} and initialize {@link HandleContext}.
  */
-@Slf4j
 @Sharable
+@Slf4j
 public final class ContextInitializationInboundHandler extends ChannelInboundHandlerAdapter {
     
-    @SuppressWarnings("NullableProblems")
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         log.debug("{}", msg);

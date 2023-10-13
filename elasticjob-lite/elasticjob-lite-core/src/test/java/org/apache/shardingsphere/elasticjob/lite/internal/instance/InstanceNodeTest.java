@@ -66,7 +66,7 @@ public final class InstanceNodeTest {
     public void assertGetLocalInstancePath() {
         assertThat(instanceNode.getLocalInstancePath(), is("instances/127.0.0.1@-@0"));
     }
-
+    
     @Test
     public void assertGetInstancePath() {
         assertThat(instanceNode.getInstancePath("127.0.0.1@-@0"), is("instances/127.0.0.1@-@0"));

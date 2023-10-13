@@ -49,14 +49,13 @@ public @interface ElasticJobConfiguration {
      * @return timeZone
      */
     String timeZone() default "";
-
-
+    
     /**
      * registry center name.
      * @return registryCenter
      */
     String registryCenter() default "";
-
+    
     /**
      * Sharding total count.
      * @return shardingTotalCount

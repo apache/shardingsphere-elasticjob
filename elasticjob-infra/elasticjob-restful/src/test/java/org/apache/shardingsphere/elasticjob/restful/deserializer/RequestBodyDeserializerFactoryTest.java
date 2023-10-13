@@ -33,7 +33,6 @@ public final class RequestBodyDeserializerFactoryTest {
     
     @Test
     public void assertDeserializerNotFound() {
-        assertThrows(RequestBodyDeserializerNotFoundException.class, () ->
-                RequestBodyDeserializerFactory.getRequestBodyDeserializer("Unknown"));
+        assertThrows(RequestBodyDeserializerNotFoundException.class, () -> RequestBodyDeserializerFactory.getRequestBodyDeserializer("Unknown"));
     }
 }

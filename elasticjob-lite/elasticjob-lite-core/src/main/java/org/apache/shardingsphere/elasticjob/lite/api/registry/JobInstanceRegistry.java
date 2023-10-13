@@ -89,9 +89,9 @@ public final class JobInstanceRegistry {
             String clazz = regCenter.get(String.format("/%s", jobConfig.getJobName()));
             try {
                 return (ElasticJob) Class.forName(clazz).newInstance();
-                //CHECKSTYLE:OFF
+                // CHECKSTYLE:OFF
             } catch (final Exception ex) {
-                //CHECKSTYLE:ON
+                // CHECKSTYLE:ON
                 throw new RuntimeException(String.format("new elastic job instance by class '%s' failure", clazz), ex);
             }
         }

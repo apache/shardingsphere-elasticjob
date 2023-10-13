@@ -43,41 +43,41 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ZookeeperRegistryCenterListenerTest {
-
+    
     @Mock
     private Map<String, CuratorCache> caches;
-
+    
     @Mock
     private CuratorFramework client;
-
+    
     @Mock
     private CuratorCache cache;
-
+    
     @Mock
     private Listenable<ConnectionStateListener> connStateListenable;
-
+    
     @Mock
     private Listenable<CuratorCacheListener> dataListenable;
-
+    
     private ZookeeperRegistryCenter regCenter;
-
+    
     private final String jobPath = "/test_job";
-
+    
     @BeforeEach
     public void setUp() {
         regCenter = new ZookeeperRegistryCenter(null);
         ZookeeperRegistryCenterTestUtil.setFieldValue(regCenter, "caches", caches);
         ZookeeperRegistryCenterTestUtil.setFieldValue(regCenter, "client", client);
     }
-
+    
     @Test
-    public void testAddConnectionStateChangedEventListener() throws Exception {
+    public void testAddConnectionStateChangedEventListener() {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
         regCenter.addConnectionStateChangedEventListener(jobPath, null);
         verify(client.getConnectionStateListenable()).addListener(any());
         assertEquals(1, getConnStateListeners().get(jobPath).size());
     }
-
+    
     @Test
     public void testWatch() {
         when(caches.get(jobPath + "/")).thenReturn(cache);
@@ -86,7 +86,7 @@ public class ZookeeperRegistryCenterListenerTest {
         verify(cache.listenable()).addListener(any());
         assertEquals(1, getDataListeners().get(jobPath).size());
     }
-
+    
     @Test
     public void testRemoveDataListenersNonCache() {
         when(cache.listenable()).thenReturn(dataListenable);
@@ -94,7 +94,7 @@ public class ZookeeperRegistryCenterListenerTest {
         verify(cache.listenable(), never()).removeListener(any());
         assertNull(getDataListeners().get(jobPath));
     }
-
+    
     @Test
     public void testRemoveDataListenersHasCache() {
         when(caches.get(jobPath + "/")).thenReturn(cache);
@@ -107,16 +107,16 @@ public class ZookeeperRegistryCenterListenerTest {
         assertNull(getDataListeners().get(jobPath));
         verify(cache.listenable(), times(2)).removeListener(null);
     }
-
+    
     @Test
-    public void testRemoveDataListenersHasCacheEmptyListeners() throws Exception {
+    public void testRemoveDataListenersHasCacheEmptyListeners() {
         when(caches.get(jobPath + "/")).thenReturn(cache);
         when(cache.listenable()).thenReturn(dataListenable);
         regCenter.removeDataListeners(jobPath);
         assertNull(getDataListeners().get(jobPath));
         verify(cache.listenable(), never()).removeListener(null);
     }
-
+    
     @Test
     public void testRemoveConnStateListener() {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
@@ -129,21 +129,21 @@ public class ZookeeperRegistryCenterListenerTest {
         assertNull(getConnStateListeners().get(jobPath));
         verify(client.getConnectionStateListenable(), times(2)).removeListener(null);
     }
-
+    
     @Test
-    public void testRemoveConnStateListenerEmptyListeners() throws Exception {
+    public void testRemoveConnStateListenerEmptyListeners() {
         when(client.getConnectionStateListenable()).thenReturn(connStateListenable);
         regCenter.removeConnStateListener(jobPath);
         assertNull(getConnStateListeners().get(jobPath));
         verify(client.getConnectionStateListenable(), never()).removeListener(null);
     }
-
+    
     @SuppressWarnings("unchecked")
     private Map<String, List<ConnectionStateListener>> getConnStateListeners() {
         return (Map<String, List<ConnectionStateListener>>) ZookeeperRegistryCenterTestUtil
                 .getFieldValue(regCenter, "connStateListeners");
     }
-
+    
     @SuppressWarnings("unchecked")
     private Map<String, List<CuratorCacheListener>> getDataListeners() {
         return (Map<String, List<CuratorCacheListener>>) ZookeeperRegistryCenterTestUtil

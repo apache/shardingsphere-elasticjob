@@ -44,20 +44,16 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     private CoordinatorRegistryCenter regCenter;
     
     private Scheduler scheduler;
-
+    
     @AfterEach
     public void tearDown() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
-                assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true))
-        );
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true)));
         JobRegistry.getInstance().getJobScheduleController(scriptJobName).shutdown();
     }
     
     @Test
     public void jobScriptWithJobTypeTest() throws SchedulerException {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
-                assertThat(regCenter.isExisted("/" + scriptJobName + "/sharding"), is(true))
-        );
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(regCenter.isExisted("/" + scriptJobName + "/sharding"), is(true)));
         scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
         assertTrue(scheduler.isStarted());
     }

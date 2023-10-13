@@ -41,9 +41,9 @@ public final class TaskNode {
      * @return task node path
      */
     public String getTaskNodePath() {
-        return String.join(DELIMITER, null == jobName ? "test_job" : jobName, "" + shardingItem);
+        return String.join(DELIMITER, null == jobName ? "test_job" : jobName, String.valueOf(shardingItem));
     }
-
+    
     /**
      * Get task node value.
      * @return task node value
@@ -51,7 +51,7 @@ public final class TaskNode {
     public String getTaskNodeValue() {
         return String.join(DELIMITER, getTaskNodePath(), null == type ? ExecutionType.READY.toString() : type.toString(), null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
     }
-
+    
     /**
      * Get task meta info.
      * @return meta info

@@ -36,7 +36,7 @@ final class StatisticsScheduler {
     private final StdSchedulerFactory factory;
     
     private Scheduler scheduler;
-
+    
     StatisticsScheduler() {
         factory = new StdSchedulerFactory();
         try {

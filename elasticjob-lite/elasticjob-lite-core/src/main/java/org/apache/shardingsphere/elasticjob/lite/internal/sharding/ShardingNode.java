@@ -50,7 +50,7 @@ public final class ShardingNode {
     public ShardingNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
-
+    
     /**
      * Get the path of instance node.
      *

@@ -38,11 +38,11 @@ import java.util.Set;
  * @see ScheduleJobBootstrap
  */
 public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
-
+    
     public ClassPathJobScanner(final BeanDefinitionRegistry registry) {
         super(registry, false);
     }
-
+    
     /**
      * Calls the parent search that will search and register all the candidates by {@code ElasticJobConfiguration}.
      *
@@ -57,7 +57,7 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
         }
         return beanDefinitions;
     }
-
+    
     private void processBeanDefinitions(final Set<BeanDefinitionHolder> beanDefinitions) {
         BeanDefinitionRegistry registry = getRegistry();
         for (BeanDefinitionHolder holder : beanDefinitions) {
@@ -66,7 +66,7 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
             try {
                 jobClass = Class.forName(definition.getMetadata().getClassName());
             } catch (ClassNotFoundException ex) {
-                //TODO： log
+                // TODO： log
                 continue;
             }
             ElasticJobConfiguration jobAnnotation = jobClass.getAnnotation(ElasticJobConfiguration.class);

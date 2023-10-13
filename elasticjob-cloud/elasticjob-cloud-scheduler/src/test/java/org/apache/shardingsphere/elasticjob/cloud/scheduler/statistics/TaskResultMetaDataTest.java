@@ -52,5 +52,5 @@ public class TaskResultMetaDataTest {
         assertThat(metaData.getSuccessCount(), is(0));
         assertThat(metaData.getFailedCount(), is(0));
     }
-
+    
 }

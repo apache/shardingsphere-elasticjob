@@ -34,13 +34,14 @@ public final class DefaultJobClassNameProviderTest {
         String result = jobClassNameProvider.getJobClassName(new DetailedFooJob());
         assertThat(result, is("org.apache.shardingsphere.elasticjob.lite.fixture.job.DetailedFooJob"));
     }
-
+    
     // TODO OpenJDK 21 breaks this unit test.
     @Test
     @DisabledForJreRange(min = JRE.JAVA_21, max = JRE.OTHER)
     public void assertGetLambdaJobName() {
         JobClassNameProvider jobClassNameProvider = new DefaultJobClassNameProvider();
-        FooJob lambdaFooJob = shardingContext -> { };
+        FooJob lambdaFooJob = shardingContext -> {
+        };
         String result = jobClassNameProvider.getJobClassName(lambdaFooJob);
         assertThat(result, is("org.apache.shardingsphere.elasticjob.lite.internal.setup.DefaultJobClassNameProviderTest$$Lambda$"));
     }

@@ -32,13 +32,14 @@ import java.util.concurrent.ThreadFactory;
  * each job has its own listener notify executor.
  */
 public final class ListenerNotifierManager {
-
+    
     private static volatile ListenerNotifierManager instance;
-
+    
     private final Map<String, ExecutorService> listenerNotifyExecutors = new ConcurrentHashMap<>();
-
-    private ListenerNotifierManager() { }
-
+    
+    private ListenerNotifierManager() {
+    }
+    
     /**
      * Get singleton instance of ListenerNotifierManager.
      * @return singleton instance of ListenerNotifierManager.
@@ -53,7 +54,7 @@ public final class ListenerNotifierManager {
         }
         return instance;
     }
-
+    
     /**
      * Register a listener notify executor for the job specified.
      * @param jobName The job's name.
@@ -69,7 +70,7 @@ public final class ListenerNotifierManager {
             }
         }
     }
-
+    
     /**
      * Get the listener notify executor for the specified job.
      * @param jobName The job's name.
@@ -78,7 +79,7 @@ public final class ListenerNotifierManager {
     public Executor getJobNotifyExecutor(final String jobName) {
         return listenerNotifyExecutors.get(jobName);
     }
-
+    
     /**
      * Remove and shutdown the listener notify executor from listenerNotifyExecutors.
      * @param jobName The job's name.

@@ -39,15 +39,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootApplication
 @ActiveProfiles("tracing")
 public class TracingConfigurationTest {
-
+    
     @Autowired
     private ApplicationContext applicationContext;
-
+    
     @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
     }
-
+    
     @Test
     public void assertNotRDBConfiguration() {
         assertNotNull(applicationContext);
