@@ -65,14 +65,13 @@ public final class RunningService {
      */
     public void start() {
         clear();
-        List<String> jobKeys = regCenter.getChildrenKeys(RunningNode.ROOT);
-        for (String each : jobKeys) {
+        for (String each : regCenter.getChildrenKeys(RunningNode.ROOT)) {
             if (!configurationService.load(each).isPresent()) {
                 remove(each);
                 continue;
             }
-            RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)).stream().map(
-                    input -> TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(MetaInfo.from(input).toString())))).collect(Collectors.toList())));
+            RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)).stream()
+                    .map(input -> TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(MetaInfo.from(input).toString())))).collect(Collectors.toList())));
         }
     }
     
