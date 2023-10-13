@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,28 +58,28 @@ public final class RDBJobEventStorage {
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
     private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
-
+    
     private static final Map<DataSource, RDBJobEventStorage> STORAGE_MAP = new ConcurrentHashMap<>();
-
+    
     private final DataSource dataSource;
-
+    
     private final DatabaseType databaseType;
-
+    
     private final RDBStorageSQLMapper sqlMapper;
-
+    
     static {
         for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
             DATABASE_TYPES.put(each.getType(), each);
         }
     }
-
+    
     private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         databaseType = getDatabaseType(dataSource);
         sqlMapper = new RDBStorageSQLMapper(databaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
-
+    
     /**
      * The same dataSource always return the same RDBJobEventStorage instance.
      *
@@ -96,7 +96,7 @@ public final class RDBJobEventStorage {
             }
         }));
     }
-
+    
     /**
      * WrapException util method.
      *
@@ -114,7 +114,7 @@ public final class RDBJobEventStorage {
             throw e;
         }
     }
-
+    
     private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();

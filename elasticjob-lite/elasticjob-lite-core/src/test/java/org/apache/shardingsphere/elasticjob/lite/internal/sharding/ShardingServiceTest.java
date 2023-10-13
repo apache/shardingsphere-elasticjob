@@ -243,7 +243,7 @@ public final class ShardingServiceTest {
     public void assertGetCrashedShardingItemsWithNotEnableServer() {
         assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
     }
-
+    
     @Test
     public void assertGetCrashedShardingItemsWithEnabledServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);

@@ -72,7 +72,7 @@ public final class RunningService {
                 continue;
             }
             RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)).stream().map(
-                input -> TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(MetaInfo.from(input).toString())))).collect(Collectors.toList())));
+                    input -> TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(MetaInfo.from(input).toString())))).collect(Collectors.toList())));
         }
     }
     
@@ -133,7 +133,7 @@ public final class RunningService {
         }
         regCenter.remove(RunningNode.getRunningJobNodePath(jobName));
     }
-        
+    
     /**
      *  Remove task from running queue.
      *

@@ -61,7 +61,7 @@ public final class HttpJobExecutorTest {
     
     @Mock
     private JobFacade jobFacade;
-
+    
     // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
     @Mock(strictness = Mock.Strictness.LENIENT)
     private Properties properties;

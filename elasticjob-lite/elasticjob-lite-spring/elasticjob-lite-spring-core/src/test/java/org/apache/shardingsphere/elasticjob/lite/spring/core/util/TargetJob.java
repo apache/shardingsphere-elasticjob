@@ -28,6 +28,6 @@ public class TargetJob implements ElasticJob {
      * @param shardingContext shardingContext
      */
     public void execute(final ShardingContext shardingContext) {
-    
+        
     }
 }

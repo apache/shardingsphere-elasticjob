@@ -28,14 +28,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ListenerNotifierManagerTest {
-
+    
     @Test
     public void assertRegisterAndGetJobNotifyExecutor() {
         String jobName = "test_job";
         ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
         assertThat(ListenerNotifierManager.getInstance().getJobNotifyExecutor(jobName), notNullValue(Executor.class));
     }
-
+    
     @Test
     public void assertRemoveAndShutDownJobNotifyExecutor() {
         String jobName = "test_job";

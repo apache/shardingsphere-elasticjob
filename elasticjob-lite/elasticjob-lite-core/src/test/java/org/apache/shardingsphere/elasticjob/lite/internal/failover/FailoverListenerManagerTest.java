@@ -55,9 +55,9 @@ public final class FailoverListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
-
+    
     @Mock
-    private JobScheduleController jobScheduleController;  
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private ConfigurationService configService;

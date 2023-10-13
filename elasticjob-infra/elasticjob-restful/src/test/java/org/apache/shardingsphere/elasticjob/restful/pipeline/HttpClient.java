@@ -58,14 +58,16 @@ public final class HttpClient {
                 .channel(NioSocketChannel.class)
                 .remoteAddress(host, port)
                 .handler(new ChannelInitializer<Channel>() {
+                    
                     @Override
                     protected void initChannel(final Channel ch) {
                         ch.pipeline()
                                 .addLast(new HttpClientCodec())
                                 .addLast(new HttpObjectAggregator(1024 * 1024))
                                 .addLast(new SimpleChannelInboundHandler<FullHttpResponse>() {
+                                    
                                     @Override
-                                    protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpResponse httpResponse) throws Exception {
+                                    protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpResponse httpResponse) {
                                         try {
                                             consumer.accept(httpResponse);
                                         } finally {

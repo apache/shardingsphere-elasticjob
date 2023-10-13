@@ -64,7 +64,7 @@ public final class ProducerManagerTest {
     
     @Mock
     private CloudJobConfigurationService configService;
-   
+    
     @Mock
     private ReadyService readyService;
     
@@ -84,7 +84,7 @@ public final class ProducerManagerTest {
     private final CloudJobConfigurationPOJO transientJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("transient_test_job");
     
     private final CloudJobConfigurationPOJO daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("daemon_test_job", CloudJobExecutionType.DAEMON);
-
+    
     @BeforeEach
     public void setUp() {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
@@ -104,7 +104,7 @@ public final class ProducerManagerTest {
         verify(transientProducerScheduler).register(transientJobConfig);
         verify(readyService).addDaemon("daemon_test_job");
     }
-
+    
     @Test
     public void assertRegisterJobWithoutApp() {
         assertThrows(AppConfigurationException.class, () -> {

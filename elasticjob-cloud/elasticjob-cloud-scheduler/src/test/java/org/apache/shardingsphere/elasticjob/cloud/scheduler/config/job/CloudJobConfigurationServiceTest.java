@@ -58,7 +58,7 @@ public final class CloudJobConfigurationServiceTest {
             + "reconcileIntervalMinutes: 10\n"
             + "shardingItemParameters: ''\n"
             + "shardingTotalCount: 10\n";
-        
+    
     @Mock
     private CoordinatorRegistryCenter regCenter;
     

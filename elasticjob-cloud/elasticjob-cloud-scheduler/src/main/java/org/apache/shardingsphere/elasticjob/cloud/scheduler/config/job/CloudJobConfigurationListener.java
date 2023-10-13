@@ -79,7 +79,7 @@ public final class CloudJobConfigurationListener implements CuratorCacheListener
     private boolean isJobConfigNode(final String path) {
         return path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
     }
-
+    
     private CloudJobConfigurationPOJO getCloudJobConfiguration(final ChildData data) {
         try {
             return YamlEngine.unmarshal(new String(data.getData()), CloudJobConfigurationPOJO.class);

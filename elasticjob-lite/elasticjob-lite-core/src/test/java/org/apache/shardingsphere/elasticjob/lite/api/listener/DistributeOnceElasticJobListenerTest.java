@@ -45,7 +45,7 @@ public final class DistributeOnceElasticJobListenerTest {
     
     @Mock
     private GuaranteeService guaranteeService;
-
+    
     @Mock
     private TimeService timeService;
     

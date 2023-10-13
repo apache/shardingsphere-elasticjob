@@ -34,9 +34,9 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     private int item;
     
     private String serverIp;
-
+    
     private String instanceId;
-
+    
     private ShardingStatus status;
     
     private boolean failover;
@@ -51,11 +51,11 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
      */
     public enum ShardingStatus {
         
-        DISABLED, 
+        DISABLED,
         RUNNING,
         SHARDING_FLAG,
         PENDING;
-    
+        
         /**
          * Get sharding status.
          * 

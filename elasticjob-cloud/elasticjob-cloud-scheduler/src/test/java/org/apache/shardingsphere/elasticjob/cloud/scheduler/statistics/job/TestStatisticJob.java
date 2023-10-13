@@ -40,7 +40,8 @@ public class TestStatisticJob extends AbstractStatisticJob {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
                 .withSchedule(CronScheduleBuilder.cronSchedule(StatisticInterval.MINUTE.getCron())
-                .withMisfireHandlingInstructionDoNothing()).build();
+                        .withMisfireHandlingInstructionDoNothing())
+                .build();
     }
     
     @Override

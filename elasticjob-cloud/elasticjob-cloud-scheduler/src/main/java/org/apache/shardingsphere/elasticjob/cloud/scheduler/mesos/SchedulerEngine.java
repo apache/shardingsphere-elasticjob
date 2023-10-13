@@ -65,7 +65,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        for (Protos.Offer offer: offers) {
+        for (Protos.Offer offer : offers) {
             log.trace("Adding offer {} from host {}", offer.getId(), offer.getHostname());
             LeasesQueue.getInstance().offer(offer);
         }
@@ -83,7 +83,7 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         String jobName = taskContext.getMetaInfo().getJobName();
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        jobTracingEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType().toString(), 
+        jobTracingEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType().toString(),
                 String.valueOf(taskContext.getMetaInfo().getShardingItems()), JobStatusTraceEvent.State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:

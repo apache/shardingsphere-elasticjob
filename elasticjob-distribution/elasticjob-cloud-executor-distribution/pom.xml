@@ -60,10 +60,10 @@
                         <executions>
                             <execution>
                                 <id>cloud-bin</id>
-                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                                <phase>package</phase>
                                 <configuration>
                                     <descriptors>
                                         <descriptor>src/main/assembly/elasticjob-cloud-binary-distribution.xml</descriptor>

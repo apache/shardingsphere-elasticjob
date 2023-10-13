@@ -55,7 +55,7 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
     private RunningService runningService;
     
     private StatisticRdbRepository repository;
-
+    
     public JobRunningStatisticJob(final CoordinatorRegistryCenter registryCenter, final StatisticRdbRepository rdbRepository) {
         runningService = new RunningService(registryCenter);
         this.repository = rdbRepository;
@@ -71,7 +71,8 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
                 .withSchedule(CronScheduleBuilder.cronSchedule(EXECUTE_INTERVAL.getCron())
-                .withMisfireHandlingInstructionDoNothing()).build();
+                        .withMisfireHandlingInstructionDoNothing())
+                .build();
     }
     
     @Override

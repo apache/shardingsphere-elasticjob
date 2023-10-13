@@ -29,7 +29,7 @@ import java.util.Collection;
  * Zookeeper curator ignored exception provider.
  */
 public final class ZookeeperCuratorIgnoredExceptionProvider implements IgnoredExceptionProvider {
-
+    
     @Override
     public Collection<Class<? extends Throwable>> getIgnoredExceptions() {
         return Arrays.asList(ConnectionLossException.class, NoNodeException.class, NodeExistsException.class);

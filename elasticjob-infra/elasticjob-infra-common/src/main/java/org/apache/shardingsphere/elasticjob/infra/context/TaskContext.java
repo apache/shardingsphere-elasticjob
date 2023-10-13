@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -133,7 +133,7 @@ public final class TaskContext {
         private final String jobName;
         
         private final List<Integer> shardingItems;
-
+        
         /**
          * Get task meta data info via string.
          *
@@ -144,7 +144,8 @@ public final class TaskContext {
             String[] result = value.split(DELIMITER);
             Preconditions.checkState(1 == result.length || 2 == result.length || 5 == result.length);
             return new MetaInfo(result[0], 1 == result.length || "".equals(result[1])
-                    ? Collections.emptyList() : Splitter.on(",").splitToList(result[1]).stream().map(Integer::parseInt).collect(Collectors.toList()));
+                    ? Collections.emptyList()
+                    : Splitter.on(",").splitToList(result[1]).stream().map(Integer::parseInt).collect(Collectors.toList()));
         }
         
         @Override

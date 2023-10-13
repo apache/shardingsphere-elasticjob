@@ -72,10 +72,9 @@ public class ReconcileService extends AbstractScheduledService {
                 return;
             }
             log.info("Requesting {} tasks reconciliation with the Mesos master", runningTask.size());
-            schedulerDriver.reconcileTasks(runningTask.stream().map(each -> 
-                TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(each.getId()).build())
-                        .setSlaveId(Protos.SlaveID.newBuilder().setValue(each.getSlaveId()).build())
-                        .setState(Protos.TaskState.TASK_RUNNING).build()).collect(Collectors.toList()));
+            schedulerDriver.reconcileTasks(runningTask.stream().map(each -> TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(each.getId()).build())
+                    .setSlaveId(Protos.SlaveID.newBuilder().setValue(each.getSlaveId()).build())
+                    .setState(Protos.TaskState.TASK_RUNNING).build()).collect(Collectors.toList()));
         } finally {
             lock.unlock();
         }

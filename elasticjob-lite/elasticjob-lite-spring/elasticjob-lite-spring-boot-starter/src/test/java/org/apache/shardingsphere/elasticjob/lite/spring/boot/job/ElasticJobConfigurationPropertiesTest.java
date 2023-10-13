@@ -26,7 +26,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.junit.jupiter.api.Test;
 
 public final class ElasticJobConfigurationPropertiesTest {
-
+    
     @Test
     public void assertToJobConfiguration() {
         ElasticJobConfigurationProperties properties = new ElasticJobConfigurationProperties();

@@ -57,11 +57,9 @@ public final class JobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJ
     public void assertSpringJobBean() {
         assertSimpleElasticJobBean();
     }
-
+    
     private void assertSimpleElasticJobBean() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
-                assertThat(RefFooSimpleElasticJob.isCompleted(), is(true))
-        );
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(RefFooSimpleElasticJob.isCompleted(), is(true)));
         assertTrue(RefFooSimpleElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
     }

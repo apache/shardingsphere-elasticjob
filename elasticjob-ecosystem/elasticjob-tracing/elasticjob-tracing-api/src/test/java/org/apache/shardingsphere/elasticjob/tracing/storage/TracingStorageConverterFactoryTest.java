@@ -36,6 +36,6 @@ public final class TracingStorageConverterFactoryTest {
     }
     
     private static class AClassWithoutCorrespondingConverter {
-    
+        
     }
 }

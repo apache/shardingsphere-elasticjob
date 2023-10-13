@@ -90,7 +90,7 @@ public final class JobScheduler {
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
-
+    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final String elasticJobType, final JobConfiguration jobConfig) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(elasticJobType), "Elastic job type cannot be null or empty.");
         this.regCenter = regCenter;
@@ -104,12 +104,12 @@ public final class JobScheduler {
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
         jobScheduleController = createJobScheduleController();
     }
-
+    
     private JobConfiguration setUpJobConfiguration(final CoordinatorRegistryCenter regCenter, final String jobClassName, final JobConfiguration jobConfig) {
         ConfigurationService configService = new ConfigurationService(regCenter, jobConfig.getJobName());
         return configService.setUpJobConfiguration(jobClassName, jobConfig);
     }
-
+    
     private Collection<ElasticJobListener> getElasticJobListeners(final JobConfiguration jobConfig) {
         return jobConfig.getJobListenerTypes().stream()
                 .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))

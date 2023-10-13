@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-    
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -142,17 +142,15 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <configuration>
                             <descriptors>
-                                <descriptor>
-                                    src/main/assembly/elasticjob-cloud-scheduler-binary-distribution.xml
-                                </descriptor>
+                                <descriptor>src/main/assembly/elasticjob-cloud-scheduler-binary-distribution.xml</descriptor>
                             </descriptors>
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                                <phase>package</phase>
                             </execution>
                         </executions>
                     </plugin>
@@ -170,6 +168,13 @@
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>dockerfile-maven-plugin</artifactId>
+                        <configuration>
+                            <repository>apache/shardingsphere-elasticjob-cloud-scheduler</repository>
+                            <tag>${project.version}</tag>
+                            <buildArgs>
+                                <APP_NAME>${project.build.finalName}-cloud-scheduler-bin</APP_NAME>
+                            </buildArgs>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>cloud-scheduler-bin</id>
@@ -178,13 +183,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <repository>apache/shardingsphere-elasticjob-cloud-scheduler</repository>
-                            <tag>${project.version}</tag>
-                            <buildArgs>
-                                <APP_NAME>${project.build.finalName}-cloud-scheduler-bin</APP_NAME>
-                            </buildArgs>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

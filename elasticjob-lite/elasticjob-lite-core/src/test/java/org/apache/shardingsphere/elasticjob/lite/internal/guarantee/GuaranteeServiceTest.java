@@ -45,10 +45,10 @@ public final class GuaranteeServiceTest {
     
     @Mock
     private ConfigurationService configService;
-
+    
     @Mock
     private AbstractDistributeOnceElasticJobListener listener;
-
+    
     @Mock
     private ShardingContexts shardingContexts;
     
@@ -152,7 +152,7 @@ public final class GuaranteeServiceTest {
         guaranteeService.clearAllCompletedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
     }
-
+    
     @Test
     public void assertExecuteInLeaderForLastCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
@@ -161,14 +161,14 @@ public final class GuaranteeServiceTest {
         guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
         verify(listener).doAfterJobExecutedAtLastCompleted(shardingContexts);
     }
-
+    
     @Test
     public void assertExecuteInLeaderForNotLastCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
         guaranteeService.new LeaderExecutionCallbackForLastCompleted(listener, shardingContexts).execute();
         verify(listener, never()).doAfterJobExecutedAtLastCompleted(shardingContexts);
     }
-
+    
     @Test
     public void assertExecuteInLeaderForLastStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
@@ -177,7 +177,7 @@ public final class GuaranteeServiceTest {
         guaranteeService.new LeaderExecutionCallbackForLastStarted(listener, shardingContexts).execute();
         verify(listener).doBeforeJobExecutedAtLastStarted(shardingContexts);
     }
-
+    
     @Test
     public void assertExecuteInLeaderForNotLastStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);

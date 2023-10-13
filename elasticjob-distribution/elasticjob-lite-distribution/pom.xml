@@ -70,10 +70,10 @@
                         <executions>
                             <execution>
                                 <id>lite-bin</id>
-                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                                <phase>package</phase>
                                 <configuration>
                                     <descriptors>
                                         <descriptor>src/main/assembly/elasticjob-lite-binary-distribution.xml</descriptor>

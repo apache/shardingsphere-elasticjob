@@ -46,13 +46,13 @@ public class StatisticRdbRepository {
     private static final String TABLE_TASK_RESULT_STATISTICS = "TASK_RESULT_STATISTICS";
     
     private static final String TABLE_TASK_RUNNING_STATISTICS = "TASK_RUNNING_STATISTICS";
-
+    
     private static final String TABLE_JOB_RUNNING_STATISTICS = "JOB_RUNNING_STATISTICS";
     
     private static final String TABLE_JOB_REGISTER_STATISTICS = "JOB_REGISTER_STATISTICS";
     
     private final DataSource dataSource;
-
+    
     public StatisticRdbRepository(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         initTables();
@@ -153,7 +153,7 @@ public class StatisticRdbRepository {
             preparedStatement.execute();
         }
     }
-
+    
     /**
      * Add task result statistics.
      *
@@ -179,7 +179,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Add task running statistics.
      *
@@ -203,7 +203,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Add job running statistics.
      *
@@ -227,7 +227,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Add job register statistics.
      *
@@ -251,7 +251,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Find task result statistics.
      *
@@ -262,15 +262,14 @@ public class StatisticRdbRepository {
     public List<TaskResultStatistics> findTaskResultStatistics(final Date from, final StatisticInterval statisticInterval) {
         List<TaskResultStatistics> result = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
+        String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC",
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                TaskResultStatistics taskResultStatistics = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
+                TaskResultStatistics taskResultStatistics = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3),
                         statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
                 result.add(taskResultStatistics);
             }
@@ -280,7 +279,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Get summed task result statistics.
      *
@@ -291,13 +290,12 @@ public class StatisticRdbRepository {
     public TaskResultStatistics getSummedTaskResultStatistics(final Date from, final StatisticInterval statisticInterval) {
         TaskResultStatistics result = new TaskResultStatistics(0, 0, statisticInterval, new Date());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = String.format("SELECT sum(success_count), sum(failed_count) FROM %s WHERE statistics_time >= '%s'", 
+        String sql = String.format("SELECT sum(success_count), sum(failed_count) FROM %s WHERE statistics_time >= '%s'",
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 result = new TaskResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticInterval, new Date());
             }
@@ -307,7 +305,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Find latest task result statistics.
      *
@@ -316,15 +314,14 @@ public class StatisticRdbRepository {
      */
     public Optional<TaskResultStatistics> findLatestTaskResultStatistics(final StatisticInterval statisticInterval) {
         TaskResultStatistics result = null;
-        String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
+        String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1",
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval);
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                result = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
+                result = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3),
                         statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
             }
         } catch (final SQLException ex) {
@@ -333,7 +330,7 @@ public class StatisticRdbRepository {
         }
         return Optional.ofNullable(result);
     }
-
+    
     /**
      * Find task running statistics.
      *
@@ -343,15 +340,14 @@ public class StatisticRdbRepository {
     public List<TaskRunningStatistics> findTaskRunningStatistics(final Date from) {
         List<TaskRunningStatistics> result = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC",
                 TABLE_TASK_RUNNING_STATISTICS, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
                 result.add(taskRunningStatistics);
             }
@@ -361,7 +357,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Find job running statistics.
      *
@@ -371,15 +367,14 @@ public class StatisticRdbRepository {
     public List<JobRunningStatistics> findJobRunningStatistics(final Date from) {
         List<JobRunningStatistics> result = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC",
                 TABLE_JOB_RUNNING_STATISTICS, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
                 result.add(jobRunningStatistics);
             }
@@ -389,7 +384,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Find latest task running statistics.
      *
@@ -397,15 +392,14 @@ public class StatisticRdbRepository {
      */
     public Optional<TaskRunningStatistics> findLatestTaskRunningStatistics() {
         TaskRunningStatistics result = null;
-        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1",
                 TABLE_TASK_RUNNING_STATISTICS);
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                result = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                result = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
@@ -414,7 +408,7 @@ public class StatisticRdbRepository {
         }
         return Optional.ofNullable(result);
     }
-
+    
     /**
      * Find latest job running statistics.
      *
@@ -426,10 +420,9 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                result = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                result = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {
@@ -438,7 +431,7 @@ public class StatisticRdbRepository {
         }
         return Optional.ofNullable(result);
     }
-
+    
     /**
      * Find job register statistics.
      *
@@ -448,15 +441,14 @@ public class StatisticRdbRepository {
     public List<JobRegisterStatistics> findJobRegisterStatistics(final Date from) {
         List<JobRegisterStatistics> result = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
+        String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC",
                 TABLE_JOB_REGISTER_STATISTICS, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
                 result.add(jobRegisterStatistics);
             }
@@ -466,7 +458,7 @@ public class StatisticRdbRepository {
         }
         return result;
     }
-
+    
     /**
      * Find latest job register statistics.
      *
@@ -474,15 +466,14 @@ public class StatisticRdbRepository {
      */
     public Optional<JobRegisterStatistics> findLatestJobRegisterStatistics() {
         JobRegisterStatistics result = null;
-        String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
+        String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1",
                 TABLE_JOB_REGISTER_STATISTICS);
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2),
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
             }
         } catch (final SQLException ex) {

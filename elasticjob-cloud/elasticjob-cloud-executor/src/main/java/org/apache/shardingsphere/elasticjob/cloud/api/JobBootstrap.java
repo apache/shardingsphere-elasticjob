@@ -51,5 +51,5 @@ public final class JobBootstrap {
     private static void execute(final TaskExecutor taskExecutor) {
         MesosExecutorDriver driver = new MesosExecutorDriver(taskExecutor);
         System.exit(Protos.Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
-    } 
+    }
 }

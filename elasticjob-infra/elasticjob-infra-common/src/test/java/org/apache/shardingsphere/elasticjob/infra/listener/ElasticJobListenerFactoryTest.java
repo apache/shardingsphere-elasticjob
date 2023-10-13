@@ -29,8 +29,7 @@ public final class ElasticJobListenerFactoryTest {
     
     @Test
     public void assertCreateInvalidJobListener() {
-        assertThrows(JobConfigurationException.class, () ->
-                ElasticJobListenerFactory.createListener("INVALID").orElseThrow(() -> new JobConfigurationException("Invalid elastic job listener!")));
+        assertThrows(JobConfigurationException.class, () -> ElasticJobListenerFactory.createListener("INVALID").orElseThrow(() -> new JobConfigurationException("Invalid elastic job listener!")));
     }
     
     @Test

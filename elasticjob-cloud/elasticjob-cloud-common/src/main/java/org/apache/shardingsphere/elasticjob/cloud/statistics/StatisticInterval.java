@@ -29,7 +29,7 @@ public enum StatisticInterval {
     
     MINUTE("0 * * * * ?"),
     
-    HOUR("0 0 * * * ?"), 
+    HOUR("0 0 * * * ?"),
     
     DAY("0 0 0 * * ?");
     

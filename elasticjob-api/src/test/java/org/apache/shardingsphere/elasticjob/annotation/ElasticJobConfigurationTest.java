@@ -38,13 +38,13 @@ public final class ElasticJobConfigurationTest {
         assertThat(annotation.cron(), is("0/5 * * * * ?"));
         assertThat(annotation.shardingTotalCount(), is(3));
         assertThat(annotation.shardingItemParameters(), is("0=Beijing,1=Shanghai,2=Guangzhou"));
-        for (Class<? extends JobExtraConfigurationFactory> factory :annotation.extraConfigurations()) {
+        for (Class<? extends JobExtraConfigurationFactory> factory : annotation.extraConfigurations()) {
             assertThat(factory, is(SimpleTracingConfigurationFactory.class));
         }
-        assertArrayEquals(annotation.jobListenerTypes(), new String[] {"NOOP", "LOG"});
+        assertArrayEquals(annotation.jobListenerTypes(), new String[]{"NOOP", "LOG"});
         Queue<String> propsKey = new LinkedList<>(Arrays.asList("print.title", "print.content"));
         Queue<String> propsValue = new LinkedList<>(Arrays.asList("test title", "test content"));
-        for (ElasticJobProp prop :annotation.props()) {
+        for (ElasticJobProp prop : annotation.props()) {
             assertThat(prop.key(), is(propsKey.poll()));
             assertThat(prop.value(), is(propsValue.poll()));
         }

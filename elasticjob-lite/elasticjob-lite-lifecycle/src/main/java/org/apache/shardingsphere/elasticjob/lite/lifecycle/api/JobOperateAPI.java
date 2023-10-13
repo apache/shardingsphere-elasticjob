@@ -66,7 +66,7 @@ public interface JobOperateAPI {
      * @param serverIp server IP address
      */
     void remove(String jobName, String serverIp);
-
+    
     /**
      * Dump job.
      *

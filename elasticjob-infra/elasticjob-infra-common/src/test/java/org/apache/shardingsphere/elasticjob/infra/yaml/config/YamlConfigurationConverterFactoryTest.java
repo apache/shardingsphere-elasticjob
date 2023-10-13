@@ -29,6 +29,6 @@ public final class YamlConfigurationConverterFactoryTest {
     }
     
     private static class AClassWithoutCorrespondingConverter {
-    
+        
     }
 }

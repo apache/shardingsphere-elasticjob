@@ -25,19 +25,18 @@ import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 @Getter
 @ElasticJobConfiguration(
-    jobName = "simpleJob",
-    registryCenter = "regCenter",
-    description = "desc",
-    shardingTotalCount = 3,
-    shardingItemParameters = "0=a,1=b,2=c",
-    cron = "*/1 * * * * ?",
-    props = {
-        @ElasticJobProp(key = "print.title", value = "test title"),
-        @ElasticJobProp(key = "print.content", value = "test content")
-    }
-)
+        jobName = "simpleJob",
+        registryCenter = "regCenter",
+        description = "desc",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=a,1=b,2=c",
+        cron = "*/1 * * * * ?",
+        props = {
+                @ElasticJobProp(key = "print.title", value = "test title"),
+                @ElasticJobProp(key = "print.content", value = "test content")
+        })
 public final class AnnotationSimpleJob implements SimpleJob {
-
+    
     @Getter
     private static volatile boolean completed;
     
@@ -45,7 +44,7 @@ public final class AnnotationSimpleJob implements SimpleJob {
     public void execute(final ShardingContext shardingContext) {
         completed = true;
     }
-
+    
     /**
      * Set completed to false.
      */

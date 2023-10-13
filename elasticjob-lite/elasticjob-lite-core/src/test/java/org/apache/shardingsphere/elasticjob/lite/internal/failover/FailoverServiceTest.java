@@ -89,7 +89,7 @@ public final class FailoverServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/failover");
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
     }
-
+    
     @Test
     public void assertSetCrashedFailoverFlagDirectly() {
         failoverService.setCrashedFailoverFlagDirectly(0);
@@ -166,7 +166,7 @@ public final class FailoverServiceTest {
         JobRegistry.getInstance().setJobRunning("test_job", false);
         JobRegistry.getInstance().shutdown("test_job");
     }
-
+    
     @Test
     public void assertGetFailoveringItems() {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);

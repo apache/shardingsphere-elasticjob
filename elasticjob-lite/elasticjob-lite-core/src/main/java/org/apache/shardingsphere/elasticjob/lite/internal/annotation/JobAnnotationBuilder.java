@@ -66,7 +66,7 @@ public final class JobAnnotationBuilder {
                 throw (JobConfigurationException) new JobConfigurationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
             }
         }
-        for (ElasticJobProp prop :annotation.props()) {
+        for (ElasticJobProp prop : annotation.props()) {
             jobConfigurationBuilder.setProperty(prop.key(), prop.value());
         }
         return jobConfigurationBuilder.build();

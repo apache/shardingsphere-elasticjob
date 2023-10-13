@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,10 +40,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("elasticjob")
 @ElasticJobScan(basePackages = "org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl")
 public class ElasticJobSpringBootScannerTest {
-
+    
     @Autowired
     private ApplicationContext applicationContext;
-
+    
     @BeforeAll
     public static void init() {
         EmbedTestingServer.start();
@@ -52,9 +52,7 @@ public class ElasticJobSpringBootScannerTest {
     
     @Test
     public void assertDefaultBeanNameWithTypeJob() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() ->
-                assertThat(AnnotationCustomJob.isCompleted(), is(true))
-        );
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(AnnotationCustomJob.isCompleted(), is(true)));
         assertTrue(AnnotationCustomJob.isCompleted());
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean("annotationCustomJobSchedule", ScheduleJobBootstrap.class));

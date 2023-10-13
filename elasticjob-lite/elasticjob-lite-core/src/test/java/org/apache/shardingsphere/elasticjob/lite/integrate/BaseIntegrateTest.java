@@ -44,7 +44,7 @@ public abstract class BaseIntegrateTest {
     private static final CoordinatorRegistryCenter REGISTRY_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
     
     private final ElasticJob elasticJob;
-            
+    
     private final JobConfiguration jobConfiguration;
     
     private final JobBootstrap jobBootstrap;

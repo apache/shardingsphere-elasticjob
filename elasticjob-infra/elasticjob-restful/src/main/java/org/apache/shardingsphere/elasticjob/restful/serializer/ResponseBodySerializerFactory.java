@@ -37,6 +37,7 @@ public final class ResponseBodySerializerFactory {
     private static final Map<String, SerializerFactory> RESPONSE_BODY_SERIALIZER_FACTORIES = new ConcurrentHashMap<>();
     
     private static final ResponseBodySerializer MISSING_SERIALIZER = new ResponseBodySerializer() {
+        
         @Override
         public String mimeType() {
             throw new UnsupportedOperationException();

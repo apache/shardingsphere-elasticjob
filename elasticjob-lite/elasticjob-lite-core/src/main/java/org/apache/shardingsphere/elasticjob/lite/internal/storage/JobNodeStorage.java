@@ -127,7 +127,7 @@ public final class JobNodeStorage {
             regCenter.remove(jobNodePath.getFullPath(node));
         }
     }
-        
+    
     /**
      * Fill job node.
      *
@@ -188,9 +188,9 @@ public final class JobNodeStorage {
         result.addAll(transactionOperations);
         try {
             regCenter.executeInTransaction(result);
-        //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }

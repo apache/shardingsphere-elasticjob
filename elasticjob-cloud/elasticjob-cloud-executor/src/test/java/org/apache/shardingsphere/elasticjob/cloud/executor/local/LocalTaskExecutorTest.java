@@ -59,7 +59,6 @@ public final class LocalTaskExecutorTest {
     
     @Test
     public void assertNotExistsJobType() {
-        assertThrows(JobConfigurationException.class, () ->
-                new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute());
+        assertThrows(JobConfigurationException.class, () -> new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute());
     }
 }

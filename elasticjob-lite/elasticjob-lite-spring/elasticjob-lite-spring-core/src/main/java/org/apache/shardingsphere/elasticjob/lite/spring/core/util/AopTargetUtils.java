@@ -66,14 +66,14 @@ public final class AopTargetUtils {
         Field h;
         try {
             h = proxy.getClass().getDeclaredField("CGLIB$CALLBACK_0");
-            h.setAccessible(true);  
+            h.setAccessible(true);
             Object dynamicAdvisedInterceptor = h.get(proxy);
             Field advised = dynamicAdvisedInterceptor.getClass().getDeclaredField("advised");
             advised.setAccessible(true);
             return ((AdvisedSupport) advised.get(dynamicAdvisedInterceptor)).getTargetSource().getTarget();
-        // CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        // CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             throw new JobSystemException(ex);
         }
     }
@@ -83,9 +83,9 @@ public final class AopTargetUtils {
             Field advised = object.getClass().getDeclaredField("advised");
             advised.setAccessible(true);
             return ((AdvisedSupport) advised.get(object)).getTargetSource().getTarget();
-        // CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        // CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             throw new JobSystemException(ex);
         }
     }

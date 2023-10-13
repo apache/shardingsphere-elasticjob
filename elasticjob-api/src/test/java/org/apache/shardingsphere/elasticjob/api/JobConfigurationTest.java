@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,13 +84,11 @@ public final class JobConfigurationTest {
     
     @Test
     public void assertBuildWithEmptyJobName() {
-        assertThrows(IllegalArgumentException.class, () ->
-                JobConfiguration.newBuilder("", 3).cron("0/1 * * * * ?").build());
+        assertThrows(IllegalArgumentException.class, () -> JobConfiguration.newBuilder("", 3).cron("0/1 * * * * ?").build());
     }
-
+    
     @Test
     public void assertBuildWithInvalidShardingTotalCount() {
-        assertThrows(IllegalArgumentException.class, () ->
-                JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build());
+        assertThrows(IllegalArgumentException.class, () -> JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build());
     }
 }

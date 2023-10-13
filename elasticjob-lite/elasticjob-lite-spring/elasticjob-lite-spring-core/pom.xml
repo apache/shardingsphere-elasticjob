@@ -47,8 +47,8 @@
             <artifactId>spring-context-support</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-context</artifactId>
                     <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

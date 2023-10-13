@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,13 +37,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public final class JobTracingEventBus {
-
+    
     private static final ExecutorService EXECUTOR_SERVICE;
     
     private final EventBus eventBus;
     
     private volatile boolean isRegistered;
-
+    
     static {
         EXECUTOR_SERVICE = createExecutorService(Runtime.getRuntime().availableProcessors() * 2);
     }
@@ -58,7 +58,7 @@ public final class JobTracingEventBus {
     }
     
     private static ExecutorService createExecutorService(final int threadSize) {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, 
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES,
                 new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern(String.join("-", "job-event", "%s")).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));

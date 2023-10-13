@@ -32,12 +32,12 @@
         <module>elasticjob-lite-spring-boot-starter</module>
         <module>elasticjob-lite-spring-namespace</module>
     </modules>
-
+    
     <properties>
         <springboot.version>2.7.10</springboot.version>
         <springframework.version>5.3.26</springframework.version>
     </properties>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>

@@ -60,11 +60,11 @@ public final class ExecutionContextService {
         JobConfiguration jobConfig = configService.load(false);
         removeRunningIfMonitorExecution(jobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getShardingTotalCount(), 
+            return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getShardingTotalCount(),
                     jobConfig.getJobParameter(), Collections.emptyMap());
         }
         Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(jobConfig.getShardingItemParameters()).getMap();
-        return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getShardingTotalCount(), 
+        return new ShardingContexts(buildTaskId(jobConfig, shardingItems), jobConfig.getJobName(), jobConfig.getShardingTotalCount(),
                 jobConfig.getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
     }
     
@@ -72,7 +72,7 @@ public final class ExecutionContextService {
         JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
         String shardingItemsString = shardingItems.stream().map(Object::toString).collect(Collectors.joining(","));
         String jobInstanceId = null == jobInstance || null == jobInstance.getJobInstanceId() ? "127.0.0.1@-@1" : jobInstance.getJobInstanceId();
-        return String.join("@-@", jobConfig.getJobName(), shardingItemsString, "READY", jobInstanceId); 
+        return String.join("@-@", jobConfig.getJobName(), shardingItemsString, "READY", jobInstanceId);
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {

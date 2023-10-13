@@ -107,7 +107,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(taskRequests, LeasesQueue.getInstance().drainTo()).getResultMap().values();
             List<TaskContext> taskContextsList = new LinkedList<>();
             Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
-            for (VMAssignmentResult each: vmAssignmentResults) {
+            for (VMAssignmentResult each : vmAssignmentResults) {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
                 taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer()));
@@ -124,9 +124,9 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {
                 schedulerDriver.launchTasks(each.getKey(), each.getValue());
             }
-            //CHECKSTYLE:OFF
+            // CHECKSTYLE:OFF
         } catch (Throwable throwable) {
-            //CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             log.error("Launch task error", throwable);
         } finally {
             AppConstraintEvaluator.getInstance().clearAppRunningState();
@@ -135,7 +135,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private List<Protos.TaskInfo> getTaskInfoList(final Collection<String> integrityViolationJobs, final VMAssignmentResult vmAssignmentResult, final String hostname, final Protos.Offer offer) {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
-        for (TaskAssignmentResult each: vmAssignmentResult.getTasksAssigned()) {
+        for (TaskAssignmentResult each : vmAssignmentResult.getTasksAssigned()) {
             TaskContext taskContext = TaskContext.from(each.getTaskId());
             String jobName = taskContext.getMetaInfo().getJobName();
             if (!integrityViolationJobs.contains(jobName) && !facadeService.isRunning(taskContext) && !facadeService.isJobDisabled(jobName)) {
@@ -257,7 +257,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private List<Protos.OfferID> getOfferIDs(final List<VirtualMachineLease> leasesUsed) {
         List<Protos.OfferID> result = new ArrayList<>();
-        for (VirtualMachineLease virtualMachineLease: leasesUsed) {
+        for (VirtualMachineLease virtualMachineLease : leasesUsed) {
             result.add(virtualMachineLease.getOffer().getId());
         }
         return result;

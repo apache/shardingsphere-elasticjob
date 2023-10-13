@@ -36,7 +36,7 @@ public final class DisableAppServiceTest {
     private CoordinatorRegistryCenter regCenter;
     
     private DisableAppService disableAppService;
-        
+    
     @BeforeEach
     public void setUp() {
         disableAppService = new DisableAppService(regCenter);

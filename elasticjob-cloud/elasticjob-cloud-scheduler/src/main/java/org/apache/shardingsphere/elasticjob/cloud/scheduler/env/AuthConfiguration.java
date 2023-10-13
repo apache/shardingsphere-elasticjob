@@ -26,9 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class AuthConfiguration {
-
+    
     private final String authUsername;
-
+    
     private final String authPassword;
-
+    
 }

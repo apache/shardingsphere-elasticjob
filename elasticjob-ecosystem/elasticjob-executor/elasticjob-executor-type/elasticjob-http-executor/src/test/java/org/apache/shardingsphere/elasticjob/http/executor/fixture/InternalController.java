@@ -75,9 +75,7 @@ public final class InternalController implements RestfulController {
      */
     @Mapping(method = Http.POST, path = "/postWithTimeout")
     public String postWithTimeout() {
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(Boolean.TRUE, is(Boolean.TRUE))
-        );
+        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(Boolean.TRUE, is(Boolean.TRUE)));
         return "ejob";
     }
 }

@@ -70,7 +70,7 @@ public final class LiteJobFacadeTest {
     private ElasticJobListenerCaller caller;
     
     private LiteJobFacade liteJobFacade;
-
+    
     private StringBuilder orderResult;
     
     @BeforeEach

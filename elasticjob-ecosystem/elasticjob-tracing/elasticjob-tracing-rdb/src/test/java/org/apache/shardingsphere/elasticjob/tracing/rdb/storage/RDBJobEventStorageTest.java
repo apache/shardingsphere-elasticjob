@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class RDBJobEventStorageTest {
     
     private RDBJobEventStorage storage;
-
+    
     private BasicDataSource dataSource;
     
     @BeforeEach
@@ -56,7 +56,7 @@ public final class RDBJobEventStorageTest {
     public void teardown() throws SQLException {
         dataSource.close();
     }
-
+    
     @Test
     public void assertAddJobExecutionEvent() {
         assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0)));
@@ -137,7 +137,7 @@ public final class RDBJobEventStorageTest {
         for (int i = 0; i < 600; i++) {
             failureMsg.append(i);
         }
-        JobExecutionEvent failEvent = startEvent.executionFailure("java.lang.RuntimeException: failure" + failureMsg.toString());
+        JobExecutionEvent failEvent = startEvent.executionFailure("java.lang.RuntimeException: failure" + failureMsg);
         assertTrue(storage.addJobExecutionEvent(failEvent));
         assertThat(failEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }

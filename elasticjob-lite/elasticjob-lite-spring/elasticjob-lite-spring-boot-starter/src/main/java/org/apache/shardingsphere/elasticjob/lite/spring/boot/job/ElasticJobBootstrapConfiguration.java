@@ -42,7 +42,7 @@ import java.util.Map;
  */
 @Slf4j
 public class ElasticJobBootstrapConfiguration implements SmartInitializingSingleton, ApplicationContextAware {
-
+    
     @Setter
     private ApplicationContext applicationContext;
     
@@ -52,7 +52,7 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
         createJobBootstrapBeans();
         log.info("Job Bootstrap Beans created.");
     }
-
+    
     /**
      * Create job bootstrap instances and register them into container.
      */
@@ -82,10 +82,10 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
         for (Map.Entry<String, ElasticJobConfigurationProperties> entry : elasticJobProperties.getJobs().entrySet()) {
             ElasticJobConfigurationProperties jobConfigurationProperties = entry.getValue();
             Preconditions.checkArgument(null != jobConfigurationProperties.getElasticJobClass()
-                            || !Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType()),
+                    || !Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType()),
                     "Please specific [elasticJobClass] or [elasticJobType] under job configuration.");
             Preconditions.checkArgument(null == jobConfigurationProperties.getElasticJobClass()
-                            || Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType()),
+                    || Strings.isNullOrEmpty(jobConfigurationProperties.getElasticJobType()),
                     "[elasticJobClass] and [elasticJobType] are mutually exclusive.");
             if (null != jobConfigurationProperties.getElasticJobClass()) {
                 registerClassedJob(entry.getKey(), entry.getValue().getJobBootstrapBeanName(), singletonBeanRegistry, registryCenter, tracingConfig, jobConfigurationProperties);

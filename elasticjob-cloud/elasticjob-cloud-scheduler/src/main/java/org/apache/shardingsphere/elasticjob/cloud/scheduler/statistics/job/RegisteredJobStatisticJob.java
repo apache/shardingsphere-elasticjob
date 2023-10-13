@@ -64,7 +64,8 @@ public final class RegisteredJobStatisticJob extends AbstractStatisticJob {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
                 .withSchedule(CronScheduleBuilder.cronSchedule(execInterval.getCron())
-                .withMisfireHandlingInstructionDoNothing()).build();
+                        .withMisfireHandlingInstructionDoNothing())
+                .build();
     }
     
     @Override

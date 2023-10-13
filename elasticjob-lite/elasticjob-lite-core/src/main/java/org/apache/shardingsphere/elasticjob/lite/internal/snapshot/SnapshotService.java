@@ -43,7 +43,7 @@ import java.util.Optional;
 public final class SnapshotService {
     
     public static final String DUMP_COMMAND = "dump@";
-
+    
     private final int port;
     
     private final CoordinatorRegistryCenter regCenter;
@@ -130,7 +130,7 @@ public final class SnapshotService {
             dumpDirectly(zkPath, jobName, result);
         }
     }
-
+    
     /**
      * Dump job.
      * @param jobName job's name
@@ -142,7 +142,7 @@ public final class SnapshotService {
         dumpDirectly(path, jobName, result);
         return String.join("\n", SensitiveInfoUtils.filterSensitiveIps(result)) + "\n";
     }
-
+    
     /**
      * Dump job.
      * @param instanceIp job instance ip addr
@@ -155,8 +155,7 @@ public final class SnapshotService {
         try (
                 Socket socket = new Socket(instanceIp, dumpPort);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-        ) {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
             writer.write(DUMP_COMMAND + jobName);
             writer.newLine();
             writer.flush();
@@ -168,7 +167,7 @@ public final class SnapshotService {
             return sb.toString();
         }
     }
-
+    
     private void outputMessage(final BufferedWriter outputWriter, final String msg) throws IOException {
         outputWriter.append(msg);
         outputWriter.flush();

@@ -93,7 +93,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     
     private Authenticator getSessionAuthenticator(final String username, final String password) {
         return new Authenticator() {
-
+            
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -116,7 +116,7 @@ public final class EmailJobErrorHandler implements JobErrorHandler {
     private String getErrorMessage(final String jobName, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
-        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
+        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer);
     }
     
     private Message createMessage(final String content) throws MessagingException {

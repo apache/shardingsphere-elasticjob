@@ -7,7 +7,7 @@
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,12 +39,10 @@ public final class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTe
         return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C")
                 .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").overwrite(true).build();
     }
-
+    
     @Test
     public void assertJobInit() {
-        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true))
-        );
+        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }
