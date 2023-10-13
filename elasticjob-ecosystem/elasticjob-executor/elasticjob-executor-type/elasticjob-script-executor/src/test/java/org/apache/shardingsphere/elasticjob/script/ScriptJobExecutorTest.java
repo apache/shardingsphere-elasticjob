@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ScriptJobExecutorTest {
+class ScriptJobExecutorTest {
     
     @Mock
     private ElasticJob elasticJob;
@@ -60,12 +60,12 @@ public final class ScriptJobExecutorTest {
     private ScriptJobExecutor jobExecutor;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobExecutor = new ScriptJobExecutor();
     }
     
     @Test
-    public void assertProcessWithJobConfigurationException() {
+    void assertProcessWithJobConfigurationException() {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps()).thenReturn(properties);
             jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
@@ -73,7 +73,7 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test
-    public void assertProcessWithJobSystemException() {
+    void assertProcessWithJobSystemException() {
         assertThrows(JobSystemException.class, () -> {
             when(jobConfig.getProps()).thenReturn(properties);
             when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("demo.sh");
@@ -82,7 +82,7 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test
-    public void assertProcess() {
+    void assertProcess() {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn(determineCommandByPlatform());
         jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
@@ -101,7 +101,7 @@ public final class ScriptJobExecutorTest {
     }
     
     @Test
-    public void assertGetType() {
+    void assertGetType() {
         assertThat(jobExecutor.getType(), is("SCRIPT"));
     }
 }

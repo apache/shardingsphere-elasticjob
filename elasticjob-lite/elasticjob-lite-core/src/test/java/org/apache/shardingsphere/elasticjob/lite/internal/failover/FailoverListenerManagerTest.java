@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class FailoverListenerManagerTest {
+class FailoverListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -80,7 +80,7 @@ public final class FailoverListenerManagerTest {
     private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, "test_job");
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setSuperclassFieldValue(failoverListenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(failoverListenerManager, "configService", configService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "shardingService", shardingService);
@@ -91,19 +91,19 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertStart() {
+    void assertStart() {
         failoverListenerManager.start();
         verify(jobNodeStorage, times(3)).addDataListener(ArgumentMatchers.any(DataChangedEventListener.class));
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenFailoverDisabled() {
+    void assertJobCrashedJobListenerWhenFailoverDisabled() {
         failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@0", ""));
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsNotNodeRemoved() {
+    void assertJobCrashedJobListenerWhenIsNotNodeRemoved() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
@@ -113,7 +113,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsNotInstancesPath() {
+    void assertJobCrashedJobListenerWhenIsNotInstancesPath() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
@@ -123,7 +123,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsSameInstance() {
+    void assertJobCrashedJobListenerWhenIsSameInstance() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
@@ -133,7 +133,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsOtherInstanceCrashed() {
+    void assertJobCrashedJobListenerWhenIsOtherInstanceCrashed() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
@@ -148,7 +148,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsOtherFailoverInstanceCrashed() {
+    void assertJobCrashedJobListenerWhenIsOtherFailoverInstanceCrashed() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).build());
@@ -162,31 +162,31 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
+    void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
         failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/other", LiteYamlConstants.getJobYaml()));
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
-    public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
+    void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
         failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/config", ""));
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
-    public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
+    void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
         failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYaml()));
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
-    public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
+    void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
         failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYamlWithFailover(false)));
         verify(failoverService).removeFailoverInfo();
     }
     
     @Test
-    public void assertLegacyCrashedRunningItemListenerWhenRunningItemsArePresent() {
+    void assertLegacyCrashedRunningItemListenerWhenRunningItemsArePresent() {
         JobInstance jobInstance = new JobInstance("127.0.0.1@-@1");
         JobRegistry.getInstance().registerJob("test_job", mock(JobScheduleController.class));
         JobRegistry.getInstance().addJobInstance("test_job", jobInstance);
@@ -208,7 +208,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertLegacyCrashedRunningItemListenerWhenJobInstanceAbsent() {
+    void assertLegacyCrashedRunningItemListenerWhenJobInstanceAbsent() {
         failoverListenerManager.new LegacyCrashedRunningItemListener().onChange(new DataChangedEvent(Type.ADDED, "", ""));
         verifyNoInteractions(instanceNode);
     }

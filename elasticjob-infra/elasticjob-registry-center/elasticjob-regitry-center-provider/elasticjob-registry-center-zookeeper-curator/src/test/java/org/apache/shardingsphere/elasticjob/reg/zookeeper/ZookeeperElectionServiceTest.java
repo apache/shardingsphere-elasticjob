@@ -40,7 +40,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ZookeeperElectionServiceTest {
+class ZookeeperElectionServiceTest {
     
     private static final String HOST_AND_PORT = "localhost:8899";
     
@@ -50,12 +50,12 @@ public class ZookeeperElectionServiceTest {
     private ElectionCandidate electionCandidate;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         EmbedTestingServer.start();
     }
     
     @Test
-    public void assertContend() throws Exception {
+    void assertContend() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();

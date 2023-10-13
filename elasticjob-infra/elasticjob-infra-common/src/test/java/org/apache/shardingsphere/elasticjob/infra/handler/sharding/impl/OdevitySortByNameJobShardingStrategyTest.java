@@ -29,12 +29,12 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class OdevitySortByNameJobShardingStrategyTest {
+class OdevitySortByNameJobShardingStrategyTest {
     
     private final OdevitySortByNameJobShardingStrategy odevitySortByNameJobShardingStrategy = new OdevitySortByNameJobShardingStrategy();
     
     @Test
-    public void assertShardingByAsc() {
+    void assertShardingByAsc() {
         Map<JobInstance, List<Integer>> expected = new HashMap<>();
         expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
@@ -43,7 +43,7 @@ public final class OdevitySortByNameJobShardingStrategyTest {
     }
     
     @Test
-    public void assertShardingByDesc() {
+    void assertShardingByDesc() {
         Map<JobInstance, List<Integer>> expected = new HashMap<>();
         expected.put(new JobInstance("host2@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));

@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class HttpRequestDispatcherTest {
+class HttpRequestDispatcherTest {
     
     @Test
-    public void assertDispatcherHandlerNotFound() {
+    void assertDispatcherHandlerNotFound() {
         assertThrows(HandlerNotFoundException.class, () -> {
             EmbeddedChannel channel = new EmbeddedChannel(new HttpRequestDispatcher(Lists.newArrayList(new JobController()), false));
             FullHttpRequest fullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/hello/myJob/myCron");

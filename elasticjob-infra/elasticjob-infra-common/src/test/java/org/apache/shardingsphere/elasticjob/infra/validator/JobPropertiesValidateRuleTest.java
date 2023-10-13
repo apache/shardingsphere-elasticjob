@@ -24,10 +24,10 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobPropertiesValidateRuleTest {
+class JobPropertiesValidateRuleTest {
     
     @Test
-    public void assertValidateIsRequiredWithValidateError() {
+    void assertValidateIsRequiredWithValidateError() {
         try {
             JobPropertiesValidateRule.validateIsRequired(new Properties(), "key");
         } catch (NullPointerException ex) {
@@ -36,26 +36,26 @@ public final class JobPropertiesValidateRuleTest {
     }
     
     @Test
-    public void assertValidateIsRequiredWithNormal() {
+    void assertValidateIsRequiredWithNormal() {
         Properties properties = new Properties();
         properties.setProperty("key", "value");
         JobPropertiesValidateRule.validateIsRequired(properties, "key");
     }
     
     @Test
-    public void assertValidateIsPositiveIntegerWithValueNoExist() {
+    void assertValidateIsPositiveIntegerWithValueNoExist() {
         JobPropertiesValidateRule.validateIsPositiveInteger(new Properties(), "key");
     }
     
     @Test
-    public void assertValidateIsPositiveIntegerWithNormal() {
+    void assertValidateIsPositiveIntegerWithNormal() {
         Properties properties = new Properties();
         properties.setProperty("key", "1");
         JobPropertiesValidateRule.validateIsPositiveInteger(new Properties(), "key");
     }
     
     @Test
-    public void assertValidateIsPositiveIntegerWithWrongString() {
+    void assertValidateIsPositiveIntegerWithWrongString() {
         Properties properties = new Properties();
         properties.setProperty("key", "wrong_value");
         try {
@@ -66,7 +66,7 @@ public final class JobPropertiesValidateRuleTest {
     }
     
     @Test
-    public void assertValidateIsPositiveIntegerWithNegativeNumber() {
+    void assertValidateIsPositiveIntegerWithNegativeNumber() {
         Properties properties = new Properties();
         properties.setProperty("key", "-1");
         try {

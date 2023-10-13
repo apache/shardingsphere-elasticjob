@@ -35,14 +35,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class OneOffEnabledJobTest extends BaseAnnotationTest {
+class OneOffEnabledJobTest extends BaseAnnotationTest {
     
-    public OneOffEnabledJobTest() {
+    OneOffEnabledJobTest() {
         super(TestType.ONE_OFF, new AnnotationUnShardingJob());
     }
     
     @BeforeEach
-    public void assertEnabledRegCenterInfo() {
+    void assertEnabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(1));
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
@@ -56,7 +56,7 @@ public final class OneOffEnabledJobTest extends BaseAnnotationTest {
     }
     
     @Test
-    public void assertJobInit() {
+    void assertJobInit() {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((AnnotationUnShardingJob) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }

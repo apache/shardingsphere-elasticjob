@@ -17,16 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.reg;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.jupiter.api.Test;
 
-public final class ZookeeperPropertiesTest {
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+class ZookeeperPropertiesTest {
     
     @Test
-    public void assertToZookeeperConfiguration() {
+    void assertToZookeeperConfiguration() {
         ZookeeperProperties properties = new ZookeeperProperties();
         properties.setServerLists("localhost:18181");
         properties.setNamespace("test");

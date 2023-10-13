@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobContextTest {
+class JobContextTest {
     
     @Test
-    public void assertFrom() {
+    void assertFrom() {
         CloudJobConfiguration cloudJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job").toCloudJobConfiguration();
         JobContext actual = JobContext.from(cloudJobConfig, ExecutionType.READY);
         assertThat(actual.getAssignedShardingItems().size(), is(10));

@@ -28,9 +28,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
+class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
     
-    public ScheduleEnabledJobIntegrateTest() {
+    ScheduleEnabledJobIntegrateTest() {
         super(TestType.SCHEDULE, new DetailedFooJob());
     }
     
@@ -41,7 +41,7 @@ public final class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTe
     }
     
     @Test
-    public void assertJobInit() {
+    void assertJobInit() {
         Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }

@@ -38,7 +38,7 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class WechatJobErrorHandlerTest {
+class WechatJobErrorHandlerTest {
     
     private static final int PORT = 9872;
     
@@ -50,7 +50,7 @@ public final class WechatJobErrorHandlerTest {
     
     @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeAll
-    public static void init() {
+    static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
         configuration.addControllerInstances(new WechatInternalController());
@@ -62,19 +62,19 @@ public final class WechatJobErrorHandlerTest {
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         appenderList.clear();
     }
     
     @AfterAll
-    public static void close() {
+    static void close() {
         if (null != restfulService) {
             restfulService.shutdown();
         }
     }
     
     @Test
-    public void assertHandleExceptionWithNotifySuccessful() {
+    void assertHandleExceptionWithNotifySuccessful() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=mocked_key"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -84,7 +84,7 @@ public final class WechatJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithWrongToken() {
+    void assertHandleExceptionWithWrongToken() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=wrong_key"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -94,7 +94,7 @@ public final class WechatJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithWrongUrl() {
+    void assertHandleExceptionWithWrongUrl() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://wrongUrl"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -104,7 +104,7 @@ public final class WechatJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithUrlIsNotFound() {
+    void assertHandleExceptionWithUrlIsNotFound() {
         WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/404"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);

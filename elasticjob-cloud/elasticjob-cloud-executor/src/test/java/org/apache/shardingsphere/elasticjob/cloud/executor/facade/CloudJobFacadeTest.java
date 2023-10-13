@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class CloudJobFacadeTest {
+class CloudJobFacadeTest {
     
     private ShardingContexts shardingContexts;
     
@@ -52,7 +52,7 @@ public final class CloudJobFacadeTest {
     private JobFacade jobFacade;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         shardingContexts = getShardingContexts();
         jobFacade = new CloudJobFacade(shardingContexts, getJobConfiguration(), jobTracingEventBus);
     }
@@ -68,69 +68,69 @@ public final class CloudJobFacadeTest {
     }
     
     @Test
-    public void assertCheckJobExecutionEnvironment() throws JobExecutionEnvironmentException {
+    void assertCheckJobExecutionEnvironment() throws JobExecutionEnvironmentException {
         jobFacade.checkJobExecutionEnvironment();
     }
     
     @Test
-    public void assertFailoverIfNecessary() {
+    void assertFailoverIfNecessary() {
         jobFacade.failoverIfNecessary();
     }
     
     @Test
-    public void assertRegisterJobBegin() {
+    void assertRegisterJobBegin() {
         jobFacade.registerJobBegin(null);
     }
     
     @Test
-    public void assertRegisterJobCompleted() {
+    void assertRegisterJobCompleted() {
         jobFacade.registerJobCompleted(null);
     }
     
     @Test
-    public void assertGetShardingContext() {
+    void assertGetShardingContext() {
         assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
     }
     
     @Test
-    public void assertMisfireIfNecessary() {
+    void assertMisfireIfNecessary() {
         jobFacade.misfireIfRunning(null);
     }
     
     @Test
-    public void assertClearMisfire() {
+    void assertClearMisfire() {
         jobFacade.clearMisfire(null);
     }
     
     @Test
-    public void assertIsExecuteMisfired() {
+    void assertIsExecuteMisfired() {
         assertFalse(jobFacade.isExecuteMisfired(null));
     }
     
     @Test
-    public void assertIsNeedSharding() {
+    void assertIsNeedSharding() {
         assertFalse(jobFacade.isNeedSharding());
     }
     
     @Test
-    public void assertBeforeJobExecuted() {
+    void assertBeforeJobExecuted() {
         jobFacade.beforeJobExecuted(null);
     }
     
     @Test
-    public void assertAfterJobExecuted() {
+    void assertAfterJobExecuted() {
         jobFacade.afterJobExecuted(null);
     }
     
     @Test
-    public void assertPostJobExecutionEvent() {
+    void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
         verify(jobTracingEventBus).post(jobExecutionEvent);
     }
     
     @Test
-    public void assertPostJobStatusTraceEvent() {
+    void assertPostJobStatusTraceEvent() {
         jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.");
     }
 }

@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class InstanceServiceTest {
+class InstanceServiceTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -49,7 +49,7 @@ public final class InstanceServiceTest {
     private InstanceService instanceService;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
         instanceService = new InstanceService(null, "test_job");
         InstanceNode instanceNode = new InstanceNode("test_job");
@@ -59,19 +59,19 @@ public final class InstanceServiceTest {
     }
     
     @Test
-    public void assertPersistOnline() {
+    void assertPersistOnline() {
         instanceService.persistOnline();
         verify(jobNodeStorage).fillEphemeralJobNode("instances/127.0.0.1@-@0", "jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
     }
     
     @Test
-    public void assertRemoveInstance() {
+    void assertRemoveInstance() {
         instanceService.removeInstance();
         verify(jobNodeStorage).removeJobNodeIfExisted("instances/127.0.0.1@-@0");
     }
     
     @Test
-    public void assertGetAvailableJobInstances() {
+    void assertGetAvailableJobInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nlabels: labels\nserverIp: 127.0.0.1\n");
         when(jobNodeStorage.getJobNodeData("instances/127.0.0.2@-@0")).thenReturn("jobInstanceId: 127.0.0.2@-@0\nlabels: labels\nserverIp: 127.0.0.2\n");
@@ -80,7 +80,7 @@ public final class InstanceServiceTest {
     }
     
     @Test
-    public void assertGetAvailableJobInstancesWhenInstanceRemoving() {
+    void assertGetAvailableJobInstancesWhenInstanceRemoving() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nlabels: labels\nserverIp: 127.0.0.1\n");
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
@@ -88,13 +88,13 @@ public final class InstanceServiceTest {
     }
     
     @Test
-    public void assertIsLocalJobInstanceExisted() {
+    void assertIsLocalJobInstanceExisted() {
         when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
         assertTrue(instanceService.isLocalJobInstanceExisted());
     }
     
     @Test
-    public void assertTriggerAllInstances() {
+    void assertTriggerAllInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         instanceService.triggerAllInstances();
         verify(jobNodeStorage).createJobNodeIfNeeded("trigger/127.0.0.1@-@0");

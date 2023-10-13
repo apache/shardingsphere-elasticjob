@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithListenerAndJdkDynamicProxy.xml")
-public final class OneOffJobSpringNamespaceWithListenerAndJdkDynamicProxyTest extends AbstractOneOffJobSpringIntegrateTest {
+class OneOffJobSpringNamespaceWithListenerAndJdkDynamicProxyTest extends AbstractOneOffJobSpringIntegrateTest {
     
-    public OneOffJobSpringNamespaceWithListenerAndJdkDynamicProxyTest() {
+    OneOffJobSpringNamespaceWithListenerAndJdkDynamicProxyTest() {
         super("simpleElasticJob_namespace_listener_jdk_proxy", "dataflowElasticJob_namespace_listener_jdk_proxy");
     }
 }

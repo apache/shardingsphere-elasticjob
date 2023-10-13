@@ -41,7 +41,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SchedulerServiceTest {
+class SchedulerServiceTest {
     
     @Mock
     private BootstrapEnvironment env;
@@ -82,7 +82,7 @@ public class SchedulerServiceTest {
     private SchedulerService schedulerService;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,
                 producerManager, statisticManager, cloudJobConfigurationListener,
                 taskLaunchScheduledService, consoleBootstrap, reconcileService, cloudJobDisableListener,
@@ -90,7 +90,7 @@ public class SchedulerServiceTest {
     }
     
     @Test
-    public void assertStart() {
+    void assertStart() {
         setReconcileEnabled(true);
         schedulerService.start();
         InOrder inOrder = getInOrder();
@@ -105,7 +105,7 @@ public class SchedulerServiceTest {
     }
     
     @Test
-    public void assertStartWithoutReconcile() {
+    void assertStartWithoutReconcile() {
         setReconcileEnabled(false);
         schedulerService.start();
         InOrder inOrder = getInOrder();
@@ -120,7 +120,7 @@ public class SchedulerServiceTest {
     }
     
     @Test
-    public void assertStop() {
+    void assertStop() {
         setReconcileEnabled(true);
         schedulerService.stop();
         InOrder inOrder = getInOrder();
@@ -135,7 +135,7 @@ public class SchedulerServiceTest {
     }
     
     @Test
-    public void assertStopWithoutReconcile() {
+    void assertStopWithoutReconcile() {
         setReconcileEnabled(false);
         schedulerService.stop();
         InOrder inOrder = getInOrder();

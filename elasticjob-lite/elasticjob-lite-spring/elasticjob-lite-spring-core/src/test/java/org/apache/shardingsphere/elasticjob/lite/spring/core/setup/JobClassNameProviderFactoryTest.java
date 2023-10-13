@@ -17,16 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.core.setup;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.apache.shardingsphere.elasticjob.lite.internal.setup.JobClassNameProviderFactory;
 import org.junit.jupiter.api.Test;
 
-public final class JobClassNameProviderFactoryTest {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+class JobClassNameProviderFactoryTest {
     
     @Test
-    public void assertGetStrategy() {
+    void assertGetStrategy() {
         assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(SpringProxyJobClassNameProvider.class));
     }
 }

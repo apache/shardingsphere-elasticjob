@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCente
 import java.lang.reflect.Field;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ZookeeperRegistryCenterTestUtil {
+public final class ZookeeperRegistryCenterTestUtil {
     
     /**
      * Persist the data to registry center.

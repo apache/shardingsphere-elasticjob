@@ -57,7 +57,7 @@ public abstract class AbstractCloudControllerTest {
     private static RestfulService slaveServer;
     
     @BeforeAll
-    public static void setUpClass() {
+    static void setUpClass() {
         initRestfulServer();
         initMesosServer();
     }
@@ -86,7 +86,7 @@ public abstract class AbstractCloudControllerTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         consoleBootstrap.stop();
         masterServer.shutdown();
         slaveServer.shutdown();
@@ -94,7 +94,7 @@ public abstract class AbstractCloudControllerTest {
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         reset(regCenter);
         reset(jobEventRdbSearch);
     }

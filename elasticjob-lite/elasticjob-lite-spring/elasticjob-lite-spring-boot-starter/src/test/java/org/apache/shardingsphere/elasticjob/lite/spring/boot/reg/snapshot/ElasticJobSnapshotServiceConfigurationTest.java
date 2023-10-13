@@ -32,18 +32,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @SpringBootApplication
 @ActiveProfiles("snapshot")
-public class ElasticJobSnapshotServiceConfigurationTest {
+class ElasticJobSnapshotServiceConfigurationTest {
     
     @Autowired
     private ApplicationContext applicationContext;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         EmbedTestingServer.start();
     }
     
     @Test
-    public void assertSnapshotServiceConfiguration() {
+    void assertSnapshotServiceConfiguration() {
         assertNotNull(applicationContext);
         assertNotNull(applicationContext.getBean(SnapshotService.class));
     }

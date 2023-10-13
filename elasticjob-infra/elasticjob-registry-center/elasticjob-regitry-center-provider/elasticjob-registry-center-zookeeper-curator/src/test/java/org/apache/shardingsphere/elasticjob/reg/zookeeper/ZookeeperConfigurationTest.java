@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ZookeeperConfigurationTest {
+class ZookeeperConfigurationTest {
     
     @Test
-    public void assertNewZookeeperConfigurationForServerListsAndNamespace() {
+    void assertNewZookeeperConfigurationForServerListsAndNamespace() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "myNamespace");
         assertThat(zkConfig.getServerLists(), is("localhost:2181"));
         assertThat(zkConfig.getNamespace(), is("myNamespace"));

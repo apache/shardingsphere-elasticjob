@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class SetUpFacadeTest {
+class SetUpFacadeTest {
     
     @Mock
     private LeaderService leaderService;
@@ -61,7 +61,7 @@ public final class SetUpFacadeTest {
     private SetUpFacade setUpFacade;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         setUpFacade = new SetUpFacade(regCenter, "test_job", Collections.emptyList());
         ReflectionUtils.setFieldValue(setUpFacade, "leaderService", leaderService);
@@ -72,7 +72,7 @@ public final class SetUpFacadeTest {
     }
     
     @Test
-    public void assertRegisterStartUpInfo() {
+    void assertRegisterStartUpInfo() {
         setUpFacade.registerStartUpInfo(true);
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
@@ -80,7 +80,7 @@ public final class SetUpFacadeTest {
     }
     
     @Test
-    public void assertTearDown() {
+    void assertTearDown() {
         when(reconcileService.isRunning()).thenReturn(true);
         setUpFacade.tearDown();
         verify(reconcileService).stopAsync();

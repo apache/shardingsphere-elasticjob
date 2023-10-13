@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ShardingStatisticsAPIImplTest {
+class ShardingStatisticsAPIImplTest {
     
     private ShardingStatisticsAPI shardingStatisticsAPI;
     
@@ -43,12 +43,12 @@ public final class ShardingStatisticsAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         shardingStatisticsAPI = new ShardingStatisticsAPIImpl(regCenter);
     }
     
     @Test
-    public void assertGetShardingInfo() {
+    void assertGetShardingInfo() {
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2", "3"));
         when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@1234");
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@2341");

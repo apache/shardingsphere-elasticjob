@@ -26,20 +26,20 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class JobShardingStrategyFactoryTest {
+class JobShardingStrategyFactoryTest {
     
     @Test
-    public void assertGetDefaultStrategy() {
+    void assertGetDefaultStrategy() {
         assertThat(JobShardingStrategyFactory.getStrategy(null), instanceOf(AverageAllocationJobShardingStrategy.class));
     }
     
     @Test
-    public void assertGetInvalidStrategy() {
+    void assertGetInvalidStrategy() {
         assertThrows(JobConfigurationException.class, () -> JobShardingStrategyFactory.getStrategy("INVALID"));
     }
     
     @Test
-    public void assertGetStrategy() {
+    void assertGetStrategy() {
         assertThat(JobShardingStrategyFactory.getStrategy("ODEVITY"), instanceOf(OdevitySortByNameJobShardingStrategy.class));
     }
 }

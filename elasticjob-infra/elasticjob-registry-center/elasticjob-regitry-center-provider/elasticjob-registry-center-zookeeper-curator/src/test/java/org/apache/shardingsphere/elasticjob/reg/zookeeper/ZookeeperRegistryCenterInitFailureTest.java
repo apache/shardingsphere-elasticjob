@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ZookeeperRegistryCenterInitFailureTest {
+class ZookeeperRegistryCenterInitFailureTest {
     
     @Test
-    public void assertInitFailure() {
+    void assertInitFailure() {
         assertThrows(RegException.class, () -> {
             ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName()));
             zkRegCenter.init();

@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class SupportedExtractionTypeTest {
+class SupportedExtractionTypeTest {
     
     @Test
-    public void assertIsExtraction() {
+    void assertIsExtraction() {
         assertTrue(SupportedExtractionType.isExtraction("http://localhost:8080/test.tar"));
         assertTrue(SupportedExtractionType.isExtraction("http://localhost:8080/test.tar.gz"));
         assertTrue(SupportedExtractionType.isExtraction("http://localhost:8080/test.tar.bz2"));

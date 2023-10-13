@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ProducerJobTest {
+class ProducerJobTest {
     
     @Mock
     private JobExecutionContext jobExecutionContext;
@@ -44,14 +44,14 @@ public final class ProducerJobTest {
     private TransientProducerScheduler.ProducerJob producerJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         producerJob = new TransientProducerScheduler.ProducerJob();
         producerJob.setRepository(repository);
         producerJob.setReadyService(readyService);
     }
     
     @Test
-    public void assertExecute() {
+    void assertExecute() {
         when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity("0/30 * * * * ?").build());
         repository.put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
         producerJob.execute(jobExecutionContext);

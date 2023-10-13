@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class JobRunningStatisticJobTest {
+class JobRunningStatisticJobTest {
     
     @Mock
     private RunningService runningService;
@@ -58,31 +58,31 @@ public class JobRunningStatisticJobTest {
     private JobRunningStatisticJob jobRunningStatisticJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobRunningStatisticJob = new JobRunningStatisticJob();
         jobRunningStatisticJob.setRunningService(runningService);
         jobRunningStatisticJob.setRepository(repository);
     }
     
     @Test
-    public void assertBuildJobDetail() {
+    void assertBuildJobDetail() {
         assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
     }
     
     @Test
-    public void assertBuildTrigger() {
+    void assertBuildTrigger() {
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
         assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
-    public void assertGetDataMap() {
+    void assertGetDataMap() {
         assertThat(jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
         assertThat(jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() {
+    void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.empty();
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.empty();
         when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
@@ -98,7 +98,7 @@ public class JobRunningStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() {
+    void assertExecute() {
         Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.of(new JobRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
         Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.of(new TaskRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
         when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);

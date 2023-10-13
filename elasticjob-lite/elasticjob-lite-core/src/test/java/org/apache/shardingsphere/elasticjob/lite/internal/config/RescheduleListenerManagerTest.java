@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class RescheduleListenerManagerTest {
+class RescheduleListenerManagerTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -51,36 +51,36 @@ public final class RescheduleListenerManagerTest {
     private final RescheduleListenerManager rescheduleListenerManager = new RescheduleListenerManager(null, "test_job");
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setSuperclassFieldValue(rescheduleListenerManager, "jobNodeStorage", jobNodeStorage);
     }
     
     @Test
-    public void assertStart() {
+    void assertStart() {
         rescheduleListenerManager.start();
         verify(jobNodeStorage).addDataListener(ArgumentMatchers.<RescheduleListenerManager.CronSettingAndJobEventChangedJobListener>any());
     }
     
     @Test
-    public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
+    void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/config/other", LiteYamlConstants.getJobYaml()));
         verify(jobScheduleController, times(0)).rescheduleJob(any(), any());
     }
     
     @Test
-    public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
+    void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/config", LiteYamlConstants.getJobYaml()));
         verify(jobScheduleController, times(0)).rescheduleJob(any(), any());
     }
     
     @Test
-    public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
+    void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYaml()));
         verify(jobScheduleController, times(0)).rescheduleJob(any(), any());
     }
     
     @Test
-    public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
+    void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);

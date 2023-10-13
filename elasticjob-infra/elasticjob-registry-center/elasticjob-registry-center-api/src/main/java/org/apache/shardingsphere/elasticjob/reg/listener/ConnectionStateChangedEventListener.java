@@ -30,7 +30,7 @@ public interface ConnectionStateChangedEventListener {
         
         RECONNECTED,
         
-        UNAVAILABLE,
+        UNAVAILABLE
     }
     
     /**

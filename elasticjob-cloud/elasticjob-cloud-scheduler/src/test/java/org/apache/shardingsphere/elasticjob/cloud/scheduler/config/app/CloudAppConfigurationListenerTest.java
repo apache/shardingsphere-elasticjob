@@ -40,7 +40,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class CloudAppConfigurationListenerTest {
+class CloudAppConfigurationListenerTest {
     
     private static ZookeeperRegistryCenter regCenter;
     
@@ -54,7 +54,7 @@ public final class CloudAppConfigurationListenerTest {
     private CloudAppConfigurationListener cloudAppConfigurationListener;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(cloudAppConfigurationListener, "producerManager", producerManager);
         ReflectionUtils.setFieldValue(cloudAppConfigurationListener, "mesosStateService", mesosStateService);
         initRegistryCenter();
@@ -72,7 +72,7 @@ public final class CloudAppConfigurationListenerTest {
     }
     
     @Test
-    public void assertRemoveWithInvalidPath() {
+    void assertRemoveWithInvalidPath() {
         cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/other/test_app", null, "".getBytes()),
                 new ChildData("/other/test_app", null, "".getBytes()));
         verify(mesosStateService, times(0)).executors(ArgumentMatchers.any());
@@ -80,7 +80,7 @@ public final class CloudAppConfigurationListenerTest {
     }
     
     @Test
-    public void assertRemoveWithNoAppNamePath() {
+    void assertRemoveWithNoAppNamePath() {
         cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/config/app", null, "".getBytes()),
                 new ChildData("/config/app", null, "".getBytes()));
         verify(mesosStateService, times(0)).executors(ArgumentMatchers.any());
@@ -88,19 +88,19 @@ public final class CloudAppConfigurationListenerTest {
     }
     
     @Test
-    public void assertRemoveApp() {
+    void assertRemoveApp() {
         cloudAppConfigurationListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/config/app/test_app", null, "".getBytes()),
                 new ChildData("/config/app/test_app", null, "".getBytes()));
         verify(mesosStateService).executors("test_app");
     }
     
     @Test
-    public void start() {
+    void start() {
         cloudAppConfigurationListener.start();
     }
     
     @Test
-    public void stop() {
+    void stop() {
         regCenter.addCacheData(CloudAppConfigurationNode.ROOT);
         ReflectionUtils.setFieldValue(cloudAppConfigurationListener, "regCenter", regCenter);
         cloudAppConfigurationListener.stop();

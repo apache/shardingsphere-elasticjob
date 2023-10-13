@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class EmailJobErrorHandlerTest {
+class EmailJobErrorHandlerTest {
     
     private static List<LoggingEvent> appenderList;
     
@@ -58,19 +58,19 @@ public final class EmailJobErrorHandlerTest {
     
     @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeAll
-    public static void init() {
+    static void init() {
         ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(EmailJobErrorHandler.class);
         ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("EmailJobErrorHandlerTestAppender");
         appenderList = appender.list;
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         appenderList.clear();
     }
     
     @Test
-    public void assertHandleExceptionWithMessagingException() {
+    void assertHandleExceptionWithMessagingException() {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         Throwable cause = new RuntimeException("test");
         String jobName = "test_job";
@@ -82,7 +82,7 @@ public final class EmailJobErrorHandlerTest {
     
     @Test
     @SneakyThrows
-    public void assertHandleExceptionSucceedInSendingEmail() {
+    void assertHandleExceptionSucceedInSendingEmail() {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         setUpMockSession(session);
         setFieldValue(emailJobErrorHandler, "session", session);

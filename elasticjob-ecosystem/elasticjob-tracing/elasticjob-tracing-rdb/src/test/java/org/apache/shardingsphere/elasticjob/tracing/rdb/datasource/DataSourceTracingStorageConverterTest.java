@@ -40,7 +40,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DataSourceTracingStorageConverterTest {
+class DataSourceTracingStorageConverterTest {
     
     @Mock
     private DataSource dataSource;
@@ -52,7 +52,7 @@ public final class DataSourceTracingStorageConverterTest {
     private DatabaseMetaData databaseMetaData;
     
     @Test
-    public void assertConvert() throws SQLException {
+    void assertConvert() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getURL()).thenReturn("jdbc:url");
@@ -62,7 +62,7 @@ public final class DataSourceTracingStorageConverterTest {
     }
     
     @Test
-    public void assertConvertFailed() {
+    void assertConvertFailed() {
         assertThrows(TracingStorageUnavailableException.class, () -> {
             DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
             doThrow(SQLException.class).when(dataSource).getConnection();
@@ -71,7 +71,7 @@ public final class DataSourceTracingStorageConverterTest {
     }
     
     @Test
-    public void assertStorageType() {
+    void assertStorageType() {
         TracingStorageConverter<HikariDataSource> converter = TracingStorageConverterFactory.findConverter(HikariDataSource.class).orElse(null);
         assertNotNull(converter);
         assertThat(converter.storageType(), is(DataSource.class));

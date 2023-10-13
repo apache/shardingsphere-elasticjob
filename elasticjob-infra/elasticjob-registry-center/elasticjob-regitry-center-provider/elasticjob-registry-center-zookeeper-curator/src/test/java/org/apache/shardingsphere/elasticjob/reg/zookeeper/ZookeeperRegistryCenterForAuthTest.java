@@ -31,7 +31,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ZookeeperRegistryCenterForAuthTest {
+class ZookeeperRegistryCenterForAuthTest {
     
     private static final String NAME_SPACE = ZookeeperRegistryCenterForAuthTest.class.getName();
     
@@ -40,7 +40,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIGURATION.setDigest("digest:password");
         ZOOKEEPER_CONFIGURATION.setSessionTimeoutMilliseconds(5000);
@@ -51,12 +51,12 @@ public final class ZookeeperRegistryCenterForAuthTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         zkRegCenter.close();
     }
     
     @Test
-    public void assertInitWithDigestSuccess() throws Exception {
+    void assertInitWithDigestSuccess() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.builder()
                 .connectString(EmbedTestingServer.getConnectionString())
                 .retryPolicy(new RetryOneTime(2000))
@@ -67,7 +67,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
     }
     
     @Test
-    public void assertInitWithDigestFailure() {
+    void assertInitWithDigestFailure() {
         assertThrows(NoAuthException.class, () -> {
             CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
             client.start();

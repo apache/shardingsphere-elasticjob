@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ExecutionContextServiceTest {
+class ExecutionContextServiceTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -53,14 +53,14 @@ public final class ExecutionContextServiceTest {
     private final ExecutionContextService executionContextService = new ExecutionContextService(null, "test_job");
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(executionContextService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionContextService, "configService", configService);
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test
-    public void assertGetShardingContextWhenNotAssignShardingItem() {
+    void assertGetShardingContextWhenNotAssignShardingItem() {
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").setProperty("streaming.process", Boolean.TRUE.toString()).monitorExecution(false).build());
         ShardingContexts shardingContexts = executionContextService.getJobShardingContext(Collections.emptyList());
@@ -69,7 +69,7 @@ public final class ExecutionContextServiceTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenAssignShardingItems() {
+    void assertGetShardingContextWhenAssignShardingItems() {
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").setProperty("streaming.process", Boolean.TRUE.toString()).monitorExecution(false).build());
         Map<Integer, String> map = new HashMap<>(3);
@@ -80,7 +80,7 @@ public final class ExecutionContextServiceTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenHasRunningItems() {
+    void assertGetShardingContextWhenHasRunningItems() {
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").setProperty("streaming.process", Boolean.TRUE.toString()).monitorExecution(true).build());
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);

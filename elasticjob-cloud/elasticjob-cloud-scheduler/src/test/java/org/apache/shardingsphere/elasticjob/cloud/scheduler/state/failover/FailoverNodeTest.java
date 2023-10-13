@@ -24,15 +24,15 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class FailoverNodeTest {
+class FailoverNodeTest {
     
     @Test
-    public void assertGetFailoverJobNodePath() {
+    void assertGetFailoverJobNodePath() {
         assertThat(FailoverNode.getFailoverJobNodePath("test_job"), is("/state/failover/test_job"));
     }
     
     @Test
-    public void assertGetFailoverTaskNodePath() {
+    void assertGetFailoverTaskNodePath() {
         String jobNodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
         assertThat(FailoverNode.getFailoverTaskNodePath(jobNodePath), is("/state/failover/test_job/" + jobNodePath));
     }

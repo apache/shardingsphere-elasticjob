@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class CloudAppConfigurationNodeTest {
+class CloudAppConfigurationNodeTest {
     
     @Test
-    public void assertGetRootNodePath() {
+    void assertGetRootNodePath() {
         assertThat(CloudAppConfigurationNode.getRootNodePath("test_job_app"), is("/config/app/test_job_app"));
     }
 }

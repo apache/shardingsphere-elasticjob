@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ServerStatisticsAPIImplTest {
+class ServerStatisticsAPIImplTest {
     
     private ServerStatisticsAPI serverStatisticsAPI;
     
@@ -43,12 +43,12 @@ public final class ServerStatisticsAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         serverStatisticsAPI = new ServerStatisticsAPIImpl(regCenter);
     }
     
     @Test
-    public void assertGetJobsTotalCount() {
+    void assertGetJobsTotalCount() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip2", "ip3"));
@@ -56,7 +56,7 @@ public final class ServerStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetAllServersBriefInfo() {
+    void assertGetAllServersBriefInfo() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip1", "ip2"));

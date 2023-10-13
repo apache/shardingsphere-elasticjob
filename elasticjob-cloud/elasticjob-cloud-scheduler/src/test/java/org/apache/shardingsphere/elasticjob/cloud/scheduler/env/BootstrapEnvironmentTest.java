@@ -31,12 +31,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public final class BootstrapEnvironmentTest {
+class BootstrapEnvironmentTest {
     
     private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getINSTANCE();
     
     @Test
-    public void assertGetMesosConfiguration() {
+    void assertGetMesosConfiguration() {
         MesosConfiguration mesosConfig = bootstrapEnvironment.getMesosConfiguration();
         assertThat(mesosConfig.getHostname(), is("localhost"));
         assertThat(mesosConfig.getUser(), is(""));
@@ -44,7 +44,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetZookeeperConfiguration() {
+    void assertGetZookeeperConfiguration() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.ZOOKEEPER_DIGEST.getKey(), "test");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
@@ -55,19 +55,19 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetRestfulServerConfiguration() {
+    void assertGetRestfulServerConfiguration() {
         RestfulServerConfiguration restfulServerConfig = bootstrapEnvironment.getRestfulServerConfiguration();
         assertThat(restfulServerConfig.getPort(), is(8899));
     }
     
     @Test
-    public void assertGetFrameworkConfiguration() {
+    void assertGetFrameworkConfiguration() {
         FrameworkConfiguration frameworkConfig = bootstrapEnvironment.getFrameworkConfiguration();
         assertThat(frameworkConfig.getJobStateQueueSize(), is(10000));
     }
     
     @Test
-    public void assertGetEventTraceRdbConfiguration() {
+    void assertGetEventTraceRdbConfiguration() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
@@ -78,12 +78,12 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertWithoutEventTraceRdbConfiguration() {
+    void assertWithoutEventTraceRdbConfiguration() {
         assertFalse(bootstrapEnvironment.getTracingConfiguration().isPresent());
     }
     
     @Test
-    public void assertGetEventTraceRdbConfigurationMap() {
+    void assertGetEventTraceRdbConfigurationMap() {
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
@@ -98,7 +98,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertReconcileConfiguration() {
+    void assertReconcileConfiguration() {
         FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
         assertThat(configuration.getReconcileIntervalMinutes(), is(-1));
         assertFalse(configuration.isEnabledReconcile());
@@ -111,7 +111,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetMesosRole() {
+    void assertGetMesosRole() {
         assertThat(bootstrapEnvironment.getMesosRole(), is(Optional.empty()));
         Properties properties = new Properties();
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.MESOS_ROLE.getKey(), "0");
@@ -120,7 +120,7 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetFrameworkHostPort() {
+    void assertGetFrameworkHostPort() {
         Properties properties = new Properties();
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         assertThat(bootstrapEnvironment.getFrameworkHostPort(), is("localhost:8899"));

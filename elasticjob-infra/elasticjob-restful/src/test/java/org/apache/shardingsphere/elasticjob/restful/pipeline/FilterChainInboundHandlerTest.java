@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class FilterChainInboundHandlerTest {
+class FilterChainInboundHandlerTest {
     
     @Mock
     private List<Filter> filterInstances;
@@ -47,20 +47,20 @@ public final class FilterChainInboundHandlerTest {
     private EmbeddedChannel channel;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         channel = new EmbeddedChannel(new FilterChainInboundHandler(filterInstances));
     }
     
     @Test
     @SneakyThrows
-    public void assertNoFilter() {
+    void assertNoFilter() {
         when(filterInstances.isEmpty()).thenReturn(true);
         channel.writeOneInbound(handleContext);
         verify(handleContext, never()).getHttpRequest();
     }
     
     @Test
-    public void assertFilterExists() {
+    void assertFilterExists() {
         when(filterInstances.isEmpty()).thenReturn(false);
         channel.writeOneInbound(handleContext);
         verify(handleContext, atLeastOnce()).getHttpRequest();

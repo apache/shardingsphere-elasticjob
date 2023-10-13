@@ -26,20 +26,20 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class JobExecutorServiceHandlerFactoryTest {
+class JobExecutorServiceHandlerFactoryTest {
     
     @Test
-    public void assertGetDefaultHandler() {
+    void assertGetDefaultHandler() {
         assertThat(JobExecutorServiceHandlerFactory.getHandler(""), instanceOf(CPUUsageJobExecutorServiceHandler.class));
     }
     
     @Test
-    public void assertGetInvalidHandler() {
+    void assertGetInvalidHandler() {
         assertThrows(JobConfigurationException.class, () -> JobExecutorServiceHandlerFactory.getHandler("INVALID"));
     }
     
     @Test
-    public void assertGetHandler() {
+    void assertGetHandler() {
         assertThat(JobExecutorServiceHandlerFactory.getHandler("SINGLE_THREAD"), instanceOf(SingleThreadJobExecutorServiceHandler.class));
     }
 }

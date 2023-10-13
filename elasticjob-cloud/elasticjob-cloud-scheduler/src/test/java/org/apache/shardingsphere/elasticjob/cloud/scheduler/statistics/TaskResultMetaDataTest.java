@@ -23,17 +23,17 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TaskResultMetaDataTest {
+class TaskResultMetaDataTest {
     
     private TaskResultMetaData metaData;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         metaData = new TaskResultMetaData();
     }
     
     @Test
-    public void assertIncrementAndGet() {
+    void assertIncrementAndGet() {
         for (int i = 0; i < 100; i++) {
             assertThat(metaData.incrementAndGetSuccessCount(), is(i + 1));
             assertThat(metaData.incrementAndGetFailedCount(), is(i + 1));
@@ -43,7 +43,7 @@ public class TaskResultMetaDataTest {
     }
     
     @Test
-    public void assertReset() {
+    void assertReset() {
         for (int i = 0; i < 100; i++) {
             metaData.incrementAndGetSuccessCount();
             metaData.incrementAndGetFailedCount();

@@ -29,10 +29,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public final class ElasticJobConfigurationTest {
+class ElasticJobConfigurationTest {
     
     @Test
-    public void assertAnnotationJob() {
+    void assertAnnotationJob() {
         ElasticJobConfiguration annotation = SimpleTestJob.class.getAnnotation(ElasticJobConfiguration.class);
         assertThat(annotation.jobName(), is("SimpleTestJob"));
         assertThat(annotation.cron(), is("0/5 * * * * ?"));

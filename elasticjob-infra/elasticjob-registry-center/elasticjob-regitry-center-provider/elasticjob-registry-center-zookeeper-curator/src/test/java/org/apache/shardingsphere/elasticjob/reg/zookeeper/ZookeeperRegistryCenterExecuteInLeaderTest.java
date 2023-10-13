@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class ZookeeperRegistryCenterExecuteInLeaderTest {
+class ZookeeperRegistryCenterExecuteInLeaderTest {
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
             new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterExecuteInLeaderTest.class.getName());
@@ -39,7 +39,7 @@ public final class ZookeeperRegistryCenterExecuteInLeaderTest {
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
@@ -47,13 +47,13 @@ public final class ZookeeperRegistryCenterExecuteInLeaderTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         zkRegCenter.close();
     }
     
     @Test
     @Timeout(value = 10000L, unit = TimeUnit.MILLISECONDS)
-    public void assertExecuteInLeader() throws InterruptedException {
+    void assertExecuteInLeader() throws InterruptedException {
         final int threads = 10;
         CountDownLatch countDownLatch = new CountDownLatch(threads);
         SerialOnlyExecutionCallback serialOnlyExecutionCallback = new SerialOnlyExecutionCallback(countDownLatch, Thread.currentThread());

@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DaemonTaskSchedulerTest {
+class DaemonTaskSchedulerTest {
     
     @Mock
     private CloudJobFacade jobFacade;
@@ -70,7 +70,7 @@ public final class DaemonTaskSchedulerTest {
     private DaemonJob daemonJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         daemonJob = new DaemonJob();
         daemonJob.setJobFacade(jobFacade);
         daemonJob.setElasticJobType("SCRIPT");
@@ -79,7 +79,7 @@ public final class DaemonTaskSchedulerTest {
     }
     
     @Test
-    public void assertJobRun() {
+    void assertJobRun() {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration());
         daemonJob.execute(jobExecutionContext);
@@ -90,7 +90,7 @@ public final class DaemonTaskSchedulerTest {
     }
     
     @Test
-    public void assertJobRunWithEventSampling() {
+    void assertJobRunWithEventSampling() {
         when(shardingContexts.getJobEventSamplingCount()).thenReturn(2);
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.loadJobConfiguration(true)).thenReturn(createJobConfiguration());
@@ -111,7 +111,7 @@ public final class DaemonTaskSchedulerTest {
     
     @Test
     @SneakyThrows
-    public void assertInit() {
+    void assertInit() {
         DaemonTaskScheduler scheduler = createScheduler();
         scheduler.init();
         Field field = DaemonTaskScheduler.class.getDeclaredField("RUNNING_SCHEDULERS");
@@ -122,7 +122,7 @@ public final class DaemonTaskSchedulerTest {
     
     @Test
     @SneakyThrows
-    public void assertShutdown() {
+    void assertShutdown() {
         DaemonTaskScheduler scheduler = createScheduler();
         scheduler.init();
         DaemonTaskScheduler.shutdown(taskId);

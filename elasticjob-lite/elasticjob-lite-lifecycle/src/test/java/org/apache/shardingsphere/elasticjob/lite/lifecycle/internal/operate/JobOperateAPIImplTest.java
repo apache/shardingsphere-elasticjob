@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobOperateAPIImplTest {
+class JobOperateAPIImplTest {
     
     static final int DUMP_PORT = 9000;
     
@@ -45,12 +45,12 @@ public final class JobOperateAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
     }
     
     @Test
-    public void assertTriggerWithJobName() {
+    void assertTriggerWithJobName() {
         when(regCenter.isExisted("/test_job")).thenReturn(true);
         when(regCenter.isExisted("/test_job/trigger/ip1@-@defaultInstance")).thenReturn(false);
         when(regCenter.isExisted("/test_job/trigger/ip2@-@defaultInstance")).thenReturn(false);
@@ -62,13 +62,13 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertDisableWithJobNameAndServerIp() {
+    void assertDisableWithJobNameAndServerIp() {
         jobOperateAPI.disable("test_job", "localhost");
         verify(regCenter).persist("/test_job/servers/localhost", "DISABLED");
     }
     
     @Test
-    public void assertDisableWithJobName() {
+    void assertDisableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.disable("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/servers");
@@ -77,7 +77,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertDisableWithServerIp() {
+    void assertDisableWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
@@ -88,13 +88,13 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertEnableWithJobNameAndServerIp() {
+    void assertEnableWithJobNameAndServerIp() {
         jobOperateAPI.enable("test_job", "localhost");
         verify(regCenter).persist("/test_job/servers/localhost", "ENABLED");
     }
     
     @Test
-    public void assertEnableWithJobName() {
+    void assertEnableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.enable("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/servers");
@@ -103,7 +103,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertEnableWithServerIp() {
+    void assertEnableWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
@@ -114,7 +114,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertShutdownWithJobNameAndServerIp() {
+    void assertShutdownWithJobNameAndServerIp() {
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         when(regCenter.get("/test_job/instances/localhost@-@defaultInstance")).thenReturn("jobInstanceId: localhost@-@defaultInstance\nserverIp: localhost\n");
         jobOperateAPI.shutdown("test_job", "localhost");
@@ -122,7 +122,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertShutdownWithJobName() {
+    void assertShutdownWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         jobOperateAPI.shutdown("test_job", null);
         verify(regCenter).getChildrenKeys("/test_job/instances");
@@ -130,7 +130,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertShutdownWithServerIp() {
+    void assertShutdownWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job2/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
@@ -143,14 +143,14 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertRemoveWithJobNameAndServerIp() {
+    void assertRemoveWithJobNameAndServerIp() {
         jobOperateAPI.remove("test_job", "ip1");
         verify(regCenter).remove("/test_job/servers/ip1");
         assertFalse(regCenter.isExisted("/test_job/servers/ip1"));
     }
     
     @Test
-    public void assertRemoveWithJobName() {
+    void assertRemoveWithJobName() {
         when(regCenter.isExisted("/test_job")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.remove("test_job", null);
@@ -163,7 +163,7 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
-    public void assertRemoveWithServerIp() {
+    void assertRemoveWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         jobOperateAPI.remove(null, "ip1");
         assertFalse(regCenter.isExisted("/test_job1/servers/ip1"));

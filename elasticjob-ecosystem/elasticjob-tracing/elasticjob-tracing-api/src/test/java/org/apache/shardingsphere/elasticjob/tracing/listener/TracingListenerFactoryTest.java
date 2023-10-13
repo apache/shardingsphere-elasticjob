@@ -27,20 +27,20 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class TracingListenerFactoryTest {
+class TracingListenerFactoryTest {
     
     @Test
-    public void assertGetListenerWithNullType() {
+    void assertGetListenerWithNullType() {
         assertThrows(TracingConfigurationException.class, () -> TracingListenerFactory.getListener(new TracingConfiguration<>("", null)));
     }
     
     @Test
-    public void assertGetInvalidListener() {
+    void assertGetInvalidListener() {
         assertThrows(TracingConfigurationException.class, () -> TracingListenerFactory.getListener(new TracingConfiguration<>("INVALID", null)));
     }
     
     @Test
-    public void assertGetListener() throws TracingConfigurationException {
+    void assertGetListener() throws TracingConfigurationException {
         assertThat(TracingListenerFactory.getListener(new TracingConfiguration<>("TEST", new JobEventCallerConfiguration(() -> {
         }))), instanceOf(TestTracingListener.class));
     }

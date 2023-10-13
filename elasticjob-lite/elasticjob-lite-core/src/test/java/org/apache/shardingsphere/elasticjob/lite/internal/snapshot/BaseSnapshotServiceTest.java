@@ -54,20 +54,20 @@ public abstract class BaseSnapshotServiceTest {
     }
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
         REG_CENTER.init();
     }
     
     @BeforeEach
-    public final void setUp() {
+    void setUp() {
         REG_CENTER.init();
         bootstrap.schedule();
     }
     
     @AfterEach
-    public final void tearDown() {
+    void tearDown() {
         bootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }

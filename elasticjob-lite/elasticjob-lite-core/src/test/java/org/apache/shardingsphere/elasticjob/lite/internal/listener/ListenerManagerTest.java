@@ -38,7 +38,7 @@ import java.util.Collections;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class ListenerManagerTest {
+class ListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -73,7 +73,7 @@ public final class ListenerManagerTest {
     private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.emptyList());
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
@@ -87,7 +87,7 @@ public final class ListenerManagerTest {
     }
     
     @Test
-    public void assertStartAllListeners() {
+    void assertStartAllListeners() {
         listenerManager.startAllListeners();
         verify(electionListenerManager).start();
         verify(shardingListenerManager).start();

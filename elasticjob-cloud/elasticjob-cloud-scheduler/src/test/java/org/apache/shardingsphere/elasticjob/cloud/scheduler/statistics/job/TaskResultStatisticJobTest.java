@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TaskResultStatisticJobTest {
+class TaskResultStatisticJobTest {
     
     private final StatisticInterval statisticInterval = StatisticInterval.MINUTE;
     
@@ -51,7 +51,7 @@ public class TaskResultStatisticJobTest {
     private TaskResultStatisticJob taskResultStatisticJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         taskResultStatisticJob = new TaskResultStatisticJob();
         sharedData = new TaskResultMetaData();
         taskResultStatisticJob.setStatisticInterval(statisticInterval);
@@ -60,12 +60,12 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertBuildJobDetail() {
+    void assertBuildJobDetail() {
         assertThat(taskResultStatisticJob.buildJobDetail().getKey().getName(), is(TaskResultStatisticJob.class.getSimpleName() + "_" + statisticInterval));
     }
     
     @Test
-    public void assertBuildTrigger() {
+    void assertBuildTrigger() {
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
             Trigger trigger = taskResultStatisticJob.buildTrigger();
@@ -74,14 +74,14 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertGetDataMap() {
+    void assertGetDataMap() {
         assertThat(taskResultStatisticJob.getDataMap().get("statisticInterval"), is(statisticInterval));
         assertThat(taskResultStatisticJob.getDataMap().get("sharedData"), is(sharedData));
         assertThat(taskResultStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() {
+    void assertExecuteWhenRepositoryIsEmpty() {
         Optional<TaskResultStatistics> latestOne = Optional.empty();
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
@@ -94,7 +94,7 @@ public class TaskResultStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() {
+    void assertExecute() {
         for (StatisticInterval each : StatisticInterval.values()) {
             taskResultStatisticJob.setStatisticInterval(each);
             Optional<TaskResultStatistics> latestOne = Optional.of(new TaskResultStatistics(0, 0, each, StatisticTimeUtils.getStatisticTime(each, -3)));

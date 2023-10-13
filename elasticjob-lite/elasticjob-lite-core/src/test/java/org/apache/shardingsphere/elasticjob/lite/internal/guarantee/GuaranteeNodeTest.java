@@ -24,37 +24,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class GuaranteeNodeTest {
+class GuaranteeNodeTest {
     
     private final GuaranteeNode guaranteeNode = new GuaranteeNode("test_job");
     
     @Test
-    public void assertGetStartedNode() {
+    void assertGetStartedNode() {
         assertThat(GuaranteeNode.getStartedNode(1), is("guarantee/started/1"));
     }
     
     @Test
-    public void assertGetCompletedNode() {
+    void assertGetCompletedNode() {
         assertThat(GuaranteeNode.getCompletedNode(1), is("guarantee/completed/1"));
     }
     
     @Test
-    public void assertIsStartedRootNode() {
+    void assertIsStartedRootNode() {
         assertTrue(guaranteeNode.isStartedRootNode("/test_job/guarantee/started"));
     }
     
     @Test
-    public void assertIsNotStartedRootNode() {
+    void assertIsNotStartedRootNode() {
         assertFalse(guaranteeNode.isStartedRootNode("/otherJob/guarantee/started"));
     }
     
     @Test
-    public void assertIsCompletedRootNode() {
+    void assertIsCompletedRootNode() {
         assertTrue(guaranteeNode.isCompletedRootNode("/test_job/guarantee/completed"));
     }
     
     @Test
-    public void assertIsNotCompletedRootNode() {
+    void assertIsNotCompletedRootNode() {
         assertFalse(guaranteeNode.isCompletedRootNode("/otherJob/guarantee/completed"));
     }
 }

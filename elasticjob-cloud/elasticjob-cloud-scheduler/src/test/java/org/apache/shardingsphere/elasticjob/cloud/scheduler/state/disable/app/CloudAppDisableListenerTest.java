@@ -38,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class CloudAppDisableListenerTest {
+public class CloudAppDisableListenerTest {
     
     private static ZookeeperRegistryCenter regCenter;
     
@@ -52,7 +52,7 @@ public final class CloudAppDisableListenerTest {
     private CloudAppDisableListener cloudAppDisableListener;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(cloudAppDisableListener, "producerManager", producerManager);
         initRegistryCenter();
         ReflectionUtils.setFieldValue(cloudAppDisableListener, "regCenter", regCenter);
@@ -70,27 +70,27 @@ public final class CloudAppDisableListenerTest {
     }
     
     @Test
-    public void assertDisableWithInvalidPath() {
+    void assertDisableWithInvalidPath() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_CREATED, null, new ChildData("/other/test_app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
     }
     
     @Test
-    public void assertDisableWithNoAppNamePath() {
+    void assertDisableWithNoAppNamePath() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_CREATED, null, new ChildData("/state/disable/app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
         verify(producerManager, times(0)).unschedule(ArgumentMatchers.any());
     }
     
     @Test
-    public void assertDisable() {
+    void assertDisable() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_CREATED, null, new ChildData("/state/disable/app/app_test", null, "".getBytes()));
         verify(jobConfigService).loadAll();
     }
     
     @Test
-    public void assertEnableWithInvalidPath() {
+    void assertEnableWithInvalidPath() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/other/test_app", null, "".getBytes()),
                 new ChildData("/other/test_app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
@@ -98,7 +98,7 @@ public final class CloudAppDisableListenerTest {
     }
     
     @Test
-    public void assertEnableWithNoAppNamePath() {
+    void assertEnableWithNoAppNamePath() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/app", null, "".getBytes()),
                 new ChildData("/state/disable/app", null, "".getBytes()));
         verify(jobConfigService, times(0)).loadAll();
@@ -106,19 +106,19 @@ public final class CloudAppDisableListenerTest {
     }
     
     @Test
-    public void assertEnable() {
+    void assertEnable() {
         cloudAppDisableListener.event(CuratorCacheListener.Type.NODE_DELETED, new ChildData("/state/disable/app/app_test", null, "".getBytes()),
                 new ChildData("/state/disable/app/app_test", null, "".getBytes()));
         verify(jobConfigService).loadAll();
     }
     
     @Test
-    public void start() {
+    void start() {
         cloudAppDisableListener.start();
     }
     
     @Test
-    public void stop() {
+    void stop() {
         regCenter.addCacheData("/state/disable/app");
         ReflectionUtils.setFieldValue(cloudAppDisableListener, "regCenter", regCenter);
         cloudAppDisableListener.stop();

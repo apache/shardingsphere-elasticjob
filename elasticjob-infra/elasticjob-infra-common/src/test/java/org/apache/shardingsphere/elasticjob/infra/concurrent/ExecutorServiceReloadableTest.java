@@ -35,13 +35,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class ExecutorServiceReloadableTest {
+class ExecutorServiceReloadableTest {
     
     @Mock
     private ExecutorService mockExecutorService;
     
     @Test
-    public void assertInitialize() {
+    void assertInitialize() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
         String jobExecutorServiceHandlerType = "SINGLE_THREAD";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).build();
@@ -55,7 +55,7 @@ public final class ExecutorServiceReloadableTest {
     }
     
     @Test
-    public void assertReload() {
+    void assertReload() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
         setField(executorServiceReloadable, "jobExecutorServiceHandlerType", "mock");
         setField(executorServiceReloadable, "executorService", mockExecutorService);
@@ -69,7 +69,7 @@ public final class ExecutorServiceReloadableTest {
     }
     
     @Test
-    public void assertUnnecessaryToReload() {
+    void assertUnnecessaryToReload() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
         executorServiceReloadable.init(jobConfig);
@@ -81,7 +81,7 @@ public final class ExecutorServiceReloadableTest {
     }
     
     @Test
-    public void assertShutdown() {
+    void assertShutdown() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
         setField(executorServiceReloadable, "executorService", mockExecutorService);
         executorServiceReloadable.close();

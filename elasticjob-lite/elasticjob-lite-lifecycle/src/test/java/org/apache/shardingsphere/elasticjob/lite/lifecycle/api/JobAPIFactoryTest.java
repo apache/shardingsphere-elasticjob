@@ -23,35 +23,35 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
+class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
-    public void assertCreateJobConfigAPI() {
+    void assertCreateJobConfigAPI() {
         assertThat(JobAPIFactory.createJobConfigurationAPI(getConnectionString(), "namespace", null), instanceOf(JobConfigurationAPI.class));
     }
     
     @Test
-    public void assertCreateJobOperateAPI() {
+    void assertCreateJobOperateAPI() {
         assertThat(JobAPIFactory.createJobOperateAPI(getConnectionString(), "namespace", null), instanceOf(JobOperateAPI.class));
     }
     
     @Test
-    public void assertCreateServerOperateAPI() {
+    void assertCreateServerOperateAPI() {
         assertThat(JobAPIFactory.createShardingOperateAPI(getConnectionString(), "namespace", null), instanceOf(ShardingOperateAPI.class));
     }
     
     @Test
-    public void assertCreateJobStatisticsAPI() {
+    void assertCreateJobStatisticsAPI() {
         assertThat(JobAPIFactory.createJobStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(JobStatisticsAPI.class));
     }
     
     @Test
-    public void assertCreateServerStatisticsAPI() {
+    void assertCreateServerStatisticsAPI() {
         assertThat(JobAPIFactory.createServerStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(ServerStatisticsAPI.class));
     }
     
     @Test
-    public void assertCreateShardingStatisticsAPI() {
+    void assertCreateShardingStatisticsAPI() {
         assertThat(JobAPIFactory.createShardingStatisticsAPI(getConnectionString(), "namespace", null), instanceOf(ShardingStatisticsAPI.class));
     }
 }

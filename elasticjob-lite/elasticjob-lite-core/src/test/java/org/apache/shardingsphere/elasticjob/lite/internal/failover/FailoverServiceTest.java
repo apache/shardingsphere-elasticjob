@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class FailoverServiceTest {
+class FailoverServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -66,7 +66,7 @@ public final class FailoverServiceTest {
     private final FailoverService failoverService = new FailoverService(null, "test_job");
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(failoverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(failoverService, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverService, "jobName", "test_job");
@@ -75,7 +75,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertSetCrashedFailoverFlagWhenItemIsNotAssigned() {
+    void assertSetCrashedFailoverFlagWhenItemIsNotAssigned() {
         when(jobNodeStorage.isJobNodeExisted("sharding/0/failover")).thenReturn(true);
         failoverService.setCrashedFailoverFlag(0);
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/failover");
@@ -83,7 +83,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertSetCrashedFailoverFlagWhenItemIsAssigned() {
+    void assertSetCrashedFailoverFlagWhenItemIsAssigned() {
         when(jobNodeStorage.isJobNodeExisted("sharding/0/failover")).thenReturn(false);
         failoverService.setCrashedFailoverFlag(0);
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/failover");
@@ -91,13 +91,13 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertSetCrashedFailoverFlagDirectly() {
+    void assertSetCrashedFailoverFlagDirectly() {
         failoverService.setCrashedFailoverFlagDirectly(0);
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
     }
     
     @Test
-    public void assertFailoverIfUnnecessaryWhenItemsRootNodeNotExisted() {
+    void assertFailoverIfUnnecessaryWhenItemsRootNodeNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(false);
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
@@ -105,7 +105,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertFailoverIfUnnecessaryWhenItemsRootNodeIsEmpty() {
+    void assertFailoverIfUnnecessaryWhenItemsRootNodeIsEmpty() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Collections.emptyList());
         failoverService.failoverIfNecessary();
@@ -115,7 +115,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertFailoverIfUnnecessaryWhenServerIsNotReady() {
+    void assertFailoverIfUnnecessaryWhenServerIsNotReady() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -126,7 +126,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertFailoverIfNecessary() {
+    void assertFailoverIfNecessary() {
         JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -138,7 +138,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertFailoverLeaderExecutionCallbackIfNotNecessary() {
+    void assertFailoverLeaderExecutionCallbackIfNotNecessary() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", false);
@@ -150,7 +150,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertFailoverLeaderExecutionCallbackIfNecessary() {
+    void assertFailoverLeaderExecutionCallbackIfNecessary() {
         JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -168,7 +168,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertGetFailoveringItems() {
+    void assertGetFailoveringItems() {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("sharding/0/failovering")).thenReturn(true);
@@ -186,14 +186,14 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertUpdateFailoverComplete() {
+    void assertUpdateFailoverComplete() {
         failoverService.updateFailoverComplete(Arrays.asList(0, 1));
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/failover");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/failover");
     }
     
     @Test
-    public void assertGetFailoverItems() {
+    void assertGetFailoverItems() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -212,13 +212,13 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertGetLocalFailoverItemsIfShutdown() {
+    void assertGetLocalFailoverItemsIfShutdown() {
         assertThat(failoverService.getLocalFailoverItems(), is(Collections.<Integer>emptyList()));
         verify(jobNodeStorage, times(0)).getJobNodeChildrenKeys("sharding");
     }
     
     @Test
-    public void assertGetLocalFailoverItems() {
+    void assertGetLocalFailoverItems() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -237,7 +237,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertGetLocalTakeOffItems() {
+    void assertGetLocalTakeOffItems() {
         when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1, 2));
         when(jobNodeStorage.isJobNodeExisted("sharding/0/failover")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("sharding/1/failover")).thenReturn(true);
@@ -250,7 +250,7 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertGetAllFailoveringItems() {
+    void assertGetAllFailoveringItems() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).build());
         String jobInstanceId = "127.0.0.1@-@1";
         when(jobNodeStorage.getJobNodeData("sharding/0/failovering")).thenReturn(jobInstanceId);
@@ -262,13 +262,13 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertClearFailoveringItem() {
+    void assertClearFailoveringItem() {
         failoverService.clearFailoveringItem(0);
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/failovering");
     }
     
     @Test
-    public void assertRemoveFailoverInfo() {
+    void assertRemoveFailoverInfo() {
         when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         failoverService.removeFailoverInfo();
         verify(jobNodeStorage).getJobNodeChildrenKeys("sharding");

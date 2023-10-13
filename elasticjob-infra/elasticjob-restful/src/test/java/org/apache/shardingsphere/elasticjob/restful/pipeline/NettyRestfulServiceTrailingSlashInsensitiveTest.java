@@ -25,14 +25,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class NettyRestfulServiceTrailingSlashInsensitiveTest {
+class NettyRestfulServiceTrailingSlashInsensitiveTest {
     
     private static final String HOST = "localhost";
     
     private static final int PORT = 18082;
     
     @Test
-    public void assertPathDuplicateWhenTrailingSlashInsensitive() {
+    void assertPathDuplicateWhenTrailingSlashInsensitive() {
         assertThrows(IllegalArgumentException.class, () -> {
             NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
             configuration.setHost(HOST);
