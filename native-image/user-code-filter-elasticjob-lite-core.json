@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {"excludeClasses": "**"},
+    {"includeClasses": "org.apache.shardingsphere.elasticjob.**"},
+    {"excludeClasses": "org.apache.shardingsphere.elasticjob.lite.spring.core.**"},
+    {"excludeClasses": "org.apache.shardingsphere.elasticjob.lite.spring.boot.**"},
+    {"excludeClasses": "org.apache.shardingsphere.elasticjob.lite.spring.namespace.**"}
+  ]
+}

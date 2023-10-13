@@ -31,5 +31,6 @@
         <module>elasticjob-infra-common</module>
         <module>elasticjob-registry-center</module>
         <module>elasticjob-restful</module>
+        <module>elasticjob-infra-reachability-metadata</module>
     </modules>
 </project>
