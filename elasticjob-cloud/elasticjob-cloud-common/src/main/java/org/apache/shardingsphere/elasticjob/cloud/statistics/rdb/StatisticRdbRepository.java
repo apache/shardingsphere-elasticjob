@@ -81,8 +81,8 @@ public class StatisticRdbRepository {
     private void createTaskResultTable(final Connection conn, final StatisticInterval statisticInterval) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
-                + "`success_count` INT(11),"
-                + "`failed_count` INT(11),"
+                + "`success_count` INT,"
+                + "`failed_count` INT,"
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
@@ -103,7 +103,7 @@ public class StatisticRdbRepository {
     private void createTaskRunningTable(final Connection conn) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_TASK_RUNNING_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
-                + "`running_count` INT(11),"
+                + "`running_count` INT,"
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
@@ -124,7 +124,7 @@ public class StatisticRdbRepository {
     private void createJobRunningTable(final Connection conn) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_RUNNING_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
-                + "`running_count` INT(11),"
+                + "`running_count` INT,"
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
@@ -145,7 +145,7 @@ public class StatisticRdbRepository {
     private void createJobRegisterTable(final Connection conn) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_REGISTER_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
-                + "`registered_count` INT(11),"
+                + "`registered_count` INT,"
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
