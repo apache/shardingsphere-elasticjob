@@ -23,9 +23,6 @@ import org.apache.shardingsphere.elasticjob.infra.yaml.representer.ElasticJobYam
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
-
-import java.util.Collections;
 
 /**
  * YAML engine.
@@ -53,7 +50,7 @@ public final class YamlEngine {
      */
     public static <T> T unmarshal(final String yamlContent, final Class<T> classType) {
         LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setTagInspector(new TrustedPrefixesTagInspector(Collections.singletonList("org.apache.shardingsphere.elasticjob")));
+        loaderOptions.setTagInspector(tagInspector -> tagInspector.getClassName().startsWith("org.apache.shardingsphere.elasticjob"));
         return new Yaml(loaderOptions).loadAs(yamlContent, classType);
     }
 }
