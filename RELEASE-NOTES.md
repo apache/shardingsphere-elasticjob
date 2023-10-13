@@ -1,3 +1,18 @@
+## 3.0.4
+
+## Dependencies Upgrade
+1. Update dependencies to avoid CVE
+
+## Enhancements
+1. Support for building with OpenJDK 21
+2. Accelerate the startup speed of ElasticJob
+3. Migrate from Junit Vintage to Junit Jupiter
+
+### Change Logs
+
+1. [MILESTONE 3.0.4](https://github.com/apache/shardingsphere-elasticjob/milestone/9)
+
+
 ## 3.0.3
 
 ### Bug Fixes
