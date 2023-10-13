@@ -21,7 +21,7 @@ notifications:
   pullrequests: notifications@shardingsphere.apache.org
 
 github:
-  description: Distributed scheduled job framework
+  description: Distributed scheduled job
   labels:
     - elasticjob
     - database
