@@ -1,4 +1,4 @@
-# [ElasticJob - distributed scheduled job solution](http://shardingsphere.apache.org/elasticjob/)
+# [ElasticJob - Distributed scheduled job](http://shardingsphere.apache.org/elasticjob/)
 
 **Official website: https://shardingsphere.apache.org/elasticjob/**
 
