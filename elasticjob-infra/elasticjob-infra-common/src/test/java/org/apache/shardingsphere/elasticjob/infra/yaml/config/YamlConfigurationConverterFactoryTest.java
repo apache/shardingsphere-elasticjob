@@ -21,14 +21,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public final class YamlConfigurationConverterFactoryTest {
+class YamlConfigurationConverterFactoryTest {
     
     @Test
-    public void assertConverterNotFound() {
+    void assertConverterNotFound() {
         assertFalse(YamlConfigurationConverterFactory.findConverter(AClassWithoutCorrespondingConverter.class).isPresent());
     }
     
     private static class AClassWithoutCorrespondingConverter {
-        
     }
 }

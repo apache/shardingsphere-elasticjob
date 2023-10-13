@@ -35,7 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class TriggerListenerManagerTest {
+class TriggerListenerManagerTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -52,7 +52,7 @@ public final class TriggerListenerManagerTest {
     private TriggerListenerManager triggerListenerManager;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         triggerListenerManager = new TriggerListenerManager(null, "test_job");
         ReflectionUtils.setFieldValue(triggerListenerManager, "triggerService", triggerService);
@@ -60,32 +60,32 @@ public final class TriggerListenerManagerTest {
     }
     
     @Test
-    public void assertStart() {
+    void assertStart() {
         triggerListenerManager.start();
         verify(jobNodeStorage).addDataListener(ArgumentMatchers.any());
     }
     
     @Test
-    public void assertNotTriggerWhenIsNotLocalInstancePath() {
+    void assertNotTriggerWhenIsNotLocalInstancePath() {
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.2@-@0", ""));
         verify(triggerService, times(0)).removeTriggerFlag();
     }
     
     @Test
-    public void assertNotTriggerWhenIsNotCreate() {
+    void assertNotTriggerWhenIsNotCreate() {
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.UPDATED, "/test_job/trigger/127.0.0.1@-@0", ""));
         verify(triggerService, times(0)).removeTriggerFlag();
     }
     
     @Test
-    public void assertTriggerWhenJobScheduleControllerIsNull() {
+    void assertTriggerWhenJobScheduleControllerIsNull() {
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.1@-@0", ""));
         verify(triggerService).removeTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
     }
     
     @Test
-    public void assertTriggerWhenJobIsRunning() {
+    void assertTriggerWhenJobIsRunning() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", true);
@@ -97,7 +97,7 @@ public final class TriggerListenerManagerTest {
     }
     
     @Test
-    public void assertTriggerWhenJobIsNotRunning() {
+    void assertTriggerWhenJobIsNotRunning() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.1@-@0", ""));

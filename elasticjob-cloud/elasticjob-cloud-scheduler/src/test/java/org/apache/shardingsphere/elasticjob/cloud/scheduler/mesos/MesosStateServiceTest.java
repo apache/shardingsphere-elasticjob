@@ -34,13 +34,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MesosStateServiceTest extends AbstractCloudControllerTest {
+class MesosStateServiceTest extends AbstractCloudControllerTest {
     
     @Mock
     private CoordinatorRegistryCenter registryCenter;
     
     @Test
-    public void assertSandbox() {
+    void assertSandbox() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<Map<String, String>> sandbox = service.sandbox("foo_app");
@@ -51,7 +51,7 @@ public class MesosStateServiceTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertExecutors() {
+    void assertExecutors() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
@@ -62,7 +62,7 @@ public class MesosStateServiceTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertAllExecutors() {
+    void assertAllExecutors() {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
         Collection<ExecutorStateInfo> executorStateInfo = service.executors();

@@ -38,13 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobErrorHandlerReloadableTest {
+class JobErrorHandlerReloadableTest {
     
     @Mock
     private JobErrorHandler mockJobErrorHandler;
     
     @Test
-    public void assertInitialize() {
+    void assertInitialize() {
         JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable();
         String jobErrorHandlerType = "IGNORE";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(jobErrorHandlerType).build();
@@ -57,7 +57,7 @@ public final class JobErrorHandlerReloadableTest {
     }
     
     @Test
-    public void assertReload() {
+    void assertReload() {
         JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable();
         setField(jobErrorHandlerReloadable, "jobErrorHandler", mockJobErrorHandler);
         setField(jobErrorHandlerReloadable, "jobErrorHandlerType", "mock");
@@ -72,7 +72,7 @@ public final class JobErrorHandlerReloadableTest {
     }
     
     @Test
-    public void assertUnnecessaryToReload() {
+    void assertUnnecessaryToReload() {
         JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable();
         String jobErrorHandlerType = "IGNORE";
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(jobErrorHandlerType).build();
@@ -84,7 +84,7 @@ public final class JobErrorHandlerReloadableTest {
     }
     
     @Test
-    public void assertShutdown() {
+    void assertShutdown() {
         JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable();
         setField(jobErrorHandlerReloadable, "jobErrorHandler", mockJobErrorHandler);
         jobErrorHandlerReloadable.close();

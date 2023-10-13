@@ -27,27 +27,27 @@ import java.util.Date;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BaseStatisticJobTest {
+class BaseStatisticJobTest {
     
     private TestStatisticJob testStatisticJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         testStatisticJob = new TestStatisticJob();
     }
     
     @Test
-    public void assertGetTriggerName() {
+    void assertGetTriggerName() {
         assertThat(testStatisticJob.getTriggerName(), is(TestStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
-    public void assertGetJobName() {
+    void assertGetJobName() {
         assertThat(testStatisticJob.getJobName(), is(TestStatisticJob.class.getSimpleName()));
     }
     
     @Test
-    public void assertFindBlankStatisticTimes() {
+    void assertFindBlankStatisticTimes() {
         for (StatisticInterval each : StatisticInterval.values()) {
             int num = -2;
             for (Date eachTime : testStatisticJob.findBlankStatisticTimes(StatisticTimeUtils.getStatisticTime(each, num - 1), each)) {

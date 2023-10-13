@@ -26,11 +26,11 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ThrowJobErrorHandlerTest {
+class ThrowJobErrorHandlerTest {
     
     @Test
-    public void assertHandleException() {
-        assertThrows(JobSystemException.class, () -> JobErrorHandlerFactory.createHandler("THROW", new Properties()).orElseThrow(() -> new JobConfigurationException("THROW error handler not found."))
-                .handleException("test_job", new RuntimeException("test")));
+    void assertHandleException() {
+        assertThrows(JobSystemException.class, () -> JobErrorHandlerFactory.createHandler("THROW", new Properties())
+                .orElseThrow(() -> new JobConfigurationException("THROW error handler not found.")).handleException("test_job", new RuntimeException("test")));
     }
 }

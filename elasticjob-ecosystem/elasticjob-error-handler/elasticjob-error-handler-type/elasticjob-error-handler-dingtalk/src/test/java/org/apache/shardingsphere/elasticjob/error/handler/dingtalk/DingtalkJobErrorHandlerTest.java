@@ -38,7 +38,7 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class DingtalkJobErrorHandlerTest {
+class DingtalkJobErrorHandlerTest {
     
     private static final int PORT = 9875;
     
@@ -50,7 +50,7 @@ public final class DingtalkJobErrorHandlerTest {
     
     @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeAll
-    public static void init() {
+    static void init() {
         NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
         config.setHost(HOST);
         config.addControllerInstances(new DingtalkInternalController());
@@ -62,19 +62,19 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         appenderList.clear();
     }
     
     @AfterAll
-    public static void close() {
+    static void close() {
         if (null != restfulService) {
             restfulService.shutdown();
         }
     }
     
     @Test
-    public void assertHandleExceptionWithNotifySuccessful() {
+    void assertHandleExceptionWithNotifySuccessful() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -84,7 +84,7 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithWrongToken() {
+    void assertHandleExceptionWithWrongToken() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=wrong_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -94,7 +94,7 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithUrlIsNotFound() {
+    void assertHandleExceptionWithUrlIsNotFound() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/404"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -104,7 +104,7 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithWrongUrl() {
+    void assertHandleExceptionWithWrongUrl() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://wrongUrl"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
@@ -114,7 +114,7 @@ public final class DingtalkJobErrorHandlerTest {
     }
     
     @Test
-    public void assertHandleExceptionWithNoSign() {
+    void assertHandleExceptionWithNoSign() {
         DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);

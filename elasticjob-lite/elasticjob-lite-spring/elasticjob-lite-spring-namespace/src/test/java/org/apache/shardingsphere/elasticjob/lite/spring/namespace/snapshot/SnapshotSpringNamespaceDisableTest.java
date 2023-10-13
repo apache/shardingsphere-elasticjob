@@ -27,10 +27,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotDisabled.xml")
-public final class SnapshotSpringNamespaceDisableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class SnapshotSpringNamespaceDisableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     @Test
-    public void assertSnapshotDisable() {
+    void assertSnapshotDisable() {
         assertThrows(IOException.class, () -> SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND, 9998));
     }
 }

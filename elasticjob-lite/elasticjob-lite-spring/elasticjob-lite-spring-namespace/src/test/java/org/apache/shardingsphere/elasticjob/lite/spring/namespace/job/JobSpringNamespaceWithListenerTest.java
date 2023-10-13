@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withListener.xml")
-public final class JobSpringNamespaceWithListenerTest extends AbstractJobSpringIntegrateTest {
+class JobSpringNamespaceWithListenerTest extends AbstractJobSpringIntegrateTest {
     
-    public JobSpringNamespaceWithListenerTest() {
+    JobSpringNamespaceWithListenerTest() {
         super("simpleElasticJob_namespace_listener", "dataflowElasticJob_namespace_listener");
     }
 }

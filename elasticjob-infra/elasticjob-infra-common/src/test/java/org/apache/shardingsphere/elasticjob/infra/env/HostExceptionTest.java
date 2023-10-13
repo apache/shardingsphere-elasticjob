@@ -24,10 +24,10 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class HostExceptionTest {
+class HostExceptionTest {
     
     @Test
-    public void assertGetCause() {
+    void assertGetCause() {
         IOException cause = new IOException();
         assertThat(new HostException(cause).getCause(), is(cause));
     }

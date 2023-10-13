@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class JobConfigurationPOJOTest {
+class JobConfigurationPOJOTest {
     
     private static final String YAML = "cron: 0/1 * * * * ?\n"
             + "description: Job description\n"
@@ -65,7 +65,7 @@ public final class JobConfigurationPOJOTest {
             + "staticSharding: false\n";
     
     @Test
-    public void assertToJobConfiguration() {
+    void assertToJobConfiguration() {
         JobConfigurationPOJO pojo = new JobConfigurationPOJO();
         pojo.setJobName("test_job");
         pojo.setCron("0/1 * * * * ?");
@@ -103,7 +103,7 @@ public final class JobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertFromJobConfiguration() {
+    void assertFromJobConfiguration() {
         JobConfiguration jobConfiguration = JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?")
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
@@ -131,7 +131,7 @@ public final class JobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertMarshal() {
+    void assertMarshal() {
         JobConfigurationPOJO actual = new JobConfigurationPOJO();
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
@@ -148,7 +148,7 @@ public final class JobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertMarshalWithNullValue() {
+    void assertMarshalWithNullValue() {
         JobConfigurationPOJO actual = new JobConfigurationPOJO();
         actual.setJobName("test_job");
         actual.setCron("0/1 * * * * ?");
@@ -158,7 +158,7 @@ public final class JobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertUnmarshal() {
+    void assertUnmarshal() {
         JobConfigurationPOJO actual = YamlEngine.unmarshal(YAML, JobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -176,7 +176,7 @@ public final class JobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertUnmarshalWithNullValue() {
+    void assertUnmarshalWithNullValue() {
         JobConfigurationPOJO actual = YamlEngine.unmarshal(YAML_WITH_NULL, JobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));

@@ -23,16 +23,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ResponseBodySerializerFactoryTest {
+class ResponseBodySerializerFactoryTest {
     
     @Test
-    public void assertGetJsonDefaultSerializer() {
+    void assertGetJsonDefaultSerializer() {
         ResponseBodySerializer serializer = ResponseBodySerializerFactory.getResponseBodySerializer(HttpHeaderValues.APPLICATION_JSON.toString());
         assertNotNull(serializer);
     }
     
     @Test
-    public void assertSerializerNotFound() {
+    void assertSerializerNotFound() {
         assertThrows(ResponseBodySerializerNotFoundException.class, () -> ResponseBodySerializerFactory.getResponseBodySerializer("Unknown"));
     }
 }

@@ -27,10 +27,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class AopTargetUtilsTest {
+class AopTargetUtilsTest {
     
     @Test
-    public void assertJdkDynamicProxyForGetTarget() {
+    void assertJdkDynamicProxyForGetTarget() {
         ElasticJob target = new TargetJob();
         ProxyFactory pf = new ProxyFactory(target);
         pf.addInterface(ElasticJob.class);
@@ -40,7 +40,7 @@ public final class AopTargetUtilsTest {
     }
     
     @Test
-    public void assertCglibProxyForGetTarget() {
+    void assertCglibProxyForGetTarget() {
         ElasticJob target = new TargetJob();
         ProxyFactory pf = new ProxyFactory(target);
         pf.setProxyTargetClass(true);
@@ -50,7 +50,7 @@ public final class AopTargetUtilsTest {
     }
     
     @Test
-    public void assertNoneProxyForGetTarget() {
+    void assertNoneProxyForGetTarget() {
         ElasticJob proxy = new TargetJob();
         assertFalse(AopUtils.isAopProxy(proxy));
         assertThat(AopTargetUtils.getTarget(proxy), is(proxy));

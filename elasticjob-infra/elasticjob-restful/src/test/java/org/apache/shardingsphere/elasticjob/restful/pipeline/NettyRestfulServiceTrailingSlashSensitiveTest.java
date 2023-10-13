@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class NettyRestfulServiceTrailingSlashSensitiveTest {
+class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     private static final long TESTCASE_TIMEOUT = 10000L;
     
@@ -47,7 +47,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     private static RestfulService restfulService;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
         configuration.setTrailingSlashSensitive(true);
@@ -58,7 +58,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertWithoutTrailingSlash() {
+    void assertWithoutTrailingSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash");
         HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));
@@ -70,7 +70,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertWithTrailingSlash() {
+    void assertWithTrailingSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/trailing/slash/");
         HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
             assertThat(httpResponse.status().code(), is(200));
@@ -81,7 +81,7 @@ public final class NettyRestfulServiceTrailingSlashSensitiveTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (null != restfulService) {
             restfulService.shutdown();
         }

@@ -35,14 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ZookeeperRegistryCenterModifyTest {
+class ZookeeperRegistryCenterModifyTest {
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterModifyTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
@@ -51,12 +51,12 @@ public final class ZookeeperRegistryCenterModifyTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         zkRegCenter.close();
     }
     
     @Test
-    public void assertPersist() {
+    void assertPersist() {
         zkRegCenter.persist("/test", "test_update");
         zkRegCenter.persist("/persist/new", "new_value");
         assertThat(zkRegCenter.get("/test"), is("test_update"));
@@ -64,14 +64,14 @@ public final class ZookeeperRegistryCenterModifyTest {
     }
     
     @Test
-    public void assertUpdate() {
+    void assertUpdate() {
         zkRegCenter.persist("/update", "before_update");
         zkRegCenter.update("/update", "after_update");
         assertThat(zkRegCenter.getDirectly("/update"), is("after_update"));
     }
     
     @Test
-    public void assertPersistEphemeral() throws Exception {
+    void assertPersistEphemeral() throws Exception {
         zkRegCenter.persist("/persist", "persist_value");
         zkRegCenter.persistEphemeral("/ephemeral", "ephemeral_value");
         assertThat(zkRegCenter.get("/persist"), is("persist_value"));
@@ -86,7 +86,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     }
     
     @Test
-    public void assertPersistSequential() throws Exception {
+    void assertPersistSequential() throws Exception {
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
@@ -103,7 +103,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     }
     
     @Test
-    public void assertPersistEphemeralSequential() throws Exception {
+    void assertPersistEphemeralSequential() throws Exception {
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
@@ -121,7 +121,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     }
     
     @Test
-    public void assertRemove() {
+    void assertRemove() {
         zkRegCenter.remove("/test");
         assertFalse(zkRegCenter.isExisted("/test"));
     }

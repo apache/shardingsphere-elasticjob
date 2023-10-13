@@ -44,17 +44,17 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     @BeforeEach
     @AfterEach
-    public void reset() {
+    void reset() {
         AnnotationSimpleJob.reset();
     }
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         JobRegistry.getInstance().shutdown(simpleJobName);
     }
     
     @Test
-    public void assertSpringJobBean() {
+    void assertSpringJobBean() {
         assertSimpleElasticJobBean();
     }
     
@@ -63,5 +63,4 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
         assertTrue(AnnotationSimpleJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/sharding"));
     }
-    
 }

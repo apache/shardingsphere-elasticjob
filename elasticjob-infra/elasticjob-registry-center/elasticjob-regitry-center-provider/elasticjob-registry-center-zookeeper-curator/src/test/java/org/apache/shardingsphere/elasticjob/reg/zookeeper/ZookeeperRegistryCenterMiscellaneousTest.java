@@ -28,7 +28,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ZookeeperRegistryCenterMiscellaneousTest {
+class ZookeeperRegistryCenterMiscellaneousTest {
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
             new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
@@ -36,7 +36,7 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
@@ -45,23 +45,23 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         zkRegCenter.close();
     }
     
     @Test
-    public void assertGetRawClient() {
+    void assertGetRawClient() {
         assertThat(zkRegCenter.getRawClient(), instanceOf(CuratorFramework.class));
         assertThat(((CuratorFramework) zkRegCenter.getRawClient()).getNamespace(), is(ZookeeperRegistryCenterMiscellaneousTest.class.getName()));
     }
     
     @Test
-    public void assertGetRawCache() {
+    void assertGetRawCache() {
         assertThat(zkRegCenter.getRawCache("/test"), instanceOf(CuratorCache.class));
     }
     
     @Test
-    public void assertGetZkConfig() {
+    void assertGetZkConfig() {
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         assertThat(zkRegCenter.getZkConfig(), is(ZOOKEEPER_CONFIGURATION));
     }

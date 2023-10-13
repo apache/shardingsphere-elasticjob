@@ -29,24 +29,24 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class RegistryCenterFactoryTest extends AbstractEmbedZookeeperBaseTest {
+class RegistryCenterFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
-    public void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {
+    void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {
         ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", null));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertNull(zkConfig.getDigest());
     }
     
     @Test
-    public void assertCreateCoordinatorRegistryCenterWithDigest() throws ReflectiveOperationException {
+    void assertCreateCoordinatorRegistryCenterWithDigest() throws ReflectiveOperationException {
         ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", "digest"));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertThat(zkConfig.getDigest(), is("digest"));
     }
     
     @Test
-    public void assertCreateCoordinatorRegistryCenterFromCache() throws ReflectiveOperationException {
+    void assertCreateCoordinatorRegistryCenterFromCache() throws ReflectiveOperationException {
         RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null);
         ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null));
         assertThat(zkConfig.getNamespace(), is("otherNamespace"));

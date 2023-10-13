@@ -27,35 +27,35 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public final class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
+class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
     
-    public SnapshotServiceEnableTest() {
+    SnapshotServiceEnableTest() {
         super(new DetailedFooJob());
     }
     
     @BeforeEach
-    public void listenMonitor() {
+    void listenMonitor() {
         getSnapshotService().listen();
     }
     
     @AfterEach
-    public void closeMonitor() {
+    void closeMonitor() {
         getSnapshotService().close();
     }
     
     @Test
-    public void assertMonitorWithCommand() throws IOException {
+    void assertMonitorWithCommand() throws IOException {
         assertNotNull(SocketUtils.sendCommand(SnapshotService.DUMP_COMMAND + getJobName(), DUMP_PORT));
         assertEquals(SocketUtils.sendCommand("unknown_command", DUMP_PORT), "");
     }
     
     @Test
-    public void assertDumpJobDirectly() {
+    void assertDumpJobDirectly() {
         assertNotNull(getSnapshotService().dumpJobDirectly(getJobName()));
     }
     
     @Test
-    public void assertDumpJob() throws IOException {
+    void assertDumpJob() throws IOException {
         assertNotNull(SnapshotService.dumpJob("127.0.0.1", DUMP_PORT, getJobName()));
     }
 }

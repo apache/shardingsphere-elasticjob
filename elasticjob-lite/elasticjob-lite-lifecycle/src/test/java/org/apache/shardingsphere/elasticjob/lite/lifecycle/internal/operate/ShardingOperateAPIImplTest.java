@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class ShardingOperateAPIImplTest {
+class ShardingOperateAPIImplTest {
     
     private ShardingOperateAPI shardingOperateAPI;
     
@@ -36,18 +36,18 @@ public final class ShardingOperateAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         shardingOperateAPI = new ShardingOperateAPIImpl(regCenter);
     }
     
     @Test
-    public void assertDisableSharding() {
+    void assertDisableSharding() {
         shardingOperateAPI.disable("test_job", "0");
         verify(regCenter).persist("/test_job/sharding/0/disabled", "");
     }
     
     @Test
-    public void assertEnableSharding() {
+    void assertEnableSharding() {
         shardingOperateAPI.enable("test_job", "0");
         verify(regCenter).remove("/test_job/sharding/0/disabled");
     }

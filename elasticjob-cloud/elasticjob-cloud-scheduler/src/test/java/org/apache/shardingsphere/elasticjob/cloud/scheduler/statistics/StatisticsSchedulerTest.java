@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class StatisticsSchedulerTest {
+class StatisticsSchedulerTest {
     
     private StatisticsScheduler statisticsScheduler;
     
@@ -40,20 +40,20 @@ public class StatisticsSchedulerTest {
     private Scheduler scheduler;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         statisticsScheduler = new StatisticsScheduler();
         ReflectionUtils.setFieldValue(statisticsScheduler, "scheduler", scheduler);
     }
     
     @Test
-    public void assertRegister() throws SchedulerException {
+    void assertRegister() throws SchedulerException {
         StatisticJob job = new TestStatisticJob();
         statisticsScheduler.register(job);
         verify(scheduler).scheduleJob(job.buildJobDetail(), job.buildTrigger());
     }
     
     @Test
-    public void assertShutdown() throws SchedulerException {
+    void assertShutdown() throws SchedulerException {
         when(scheduler.isShutdown()).thenReturn(false);
         statisticsScheduler.shutdown();
         when(scheduler.isShutdown()).thenReturn(true);

@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class RegexPathMatcherTest {
+class RegexPathMatcherTest {
     
     @Test
-    public void assertCaptureTemplate() {
+    void assertCaptureTemplate() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         Map<String, String> variables = pathMatcher.captureVariables("/app/{jobName}/disable/{until}/done", "/app/myJob/disable/20201231/done?name=some_name&value=some_value");
         assertFalse(variables.isEmpty());
@@ -43,20 +43,20 @@ public final class RegexPathMatcherTest {
     }
     
     @Test
-    public void assertCapturePatternWithoutTemplate() {
+    void assertCapturePatternWithoutTemplate() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         Map<String, String> variables = pathMatcher.captureVariables("/app", "/app");
         assertTrue(variables.isEmpty());
     }
     
     @Test
-    public void assertPathMatch() {
+    void assertPathMatch() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         assertTrue(pathMatcher.matches("/app/{jobName}", "/app/myJob"));
     }
     
     @Test
-    public void assertValidatePathPattern() {
+    void assertValidatePathPattern() {
         PathMatcher pathMatcher = new RegexPathMatcher();
         assertTrue(pathMatcher.isValidPathPattern("/"));
         assertTrue(pathMatcher.isValidPathPattern("/app"));

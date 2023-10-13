@@ -17,26 +17,26 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.scheduler.statistics.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.shardingsphere.elasticjob.cloud.statistics.StatisticInterval;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class StatisticTimeUtilsTest {
+class StatisticTimeUtilsTest {
     
     @Test
-    public void assertGetCurrentStatisticTime() {
+    void assertGetCurrentStatisticTime() {
         assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.MINUTE), StatisticInterval.MINUTE), is(getTimeStr(getNow(), StatisticInterval.MINUTE)));
         assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.HOUR), StatisticInterval.HOUR), is(getTimeStr(getNow(), StatisticInterval.HOUR)));
         assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.DAY), StatisticInterval.DAY), is(getTimeStr(getNow(), StatisticInterval.DAY)));
     }
     
     @Test
-    public void assertGetStatisticTime() {
+    void assertGetStatisticTime() {
         assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -1), StatisticInterval.MINUTE), is(getTimeStr(getLastMinute(), StatisticInterval.MINUTE)));
         assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.HOUR, -1), StatisticInterval.HOUR), is(getTimeStr(getLastHour(), StatisticInterval.HOUR)));
         assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -1), StatisticInterval.DAY), is(getTimeStr(getYesterday(), StatisticInterval.DAY)));

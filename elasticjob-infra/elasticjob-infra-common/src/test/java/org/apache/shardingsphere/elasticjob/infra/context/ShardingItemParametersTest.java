@@ -28,25 +28,25 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ShardingItemParametersTest {
+class ShardingItemParametersTest {
     
     @Test
-    public void assertNewWhenPairFormatInvalid() {
+    void assertNewWhenPairFormatInvalid() {
         assertThrows(JobConfigurationException.class, () -> new ShardingItemParameters("xxx-xxx"));
     }
     
     @Test
-    public void assertNewWhenItemIsNotNumber() {
+    void assertNewWhenItemIsNotNumber() {
         assertThrows(JobConfigurationException.class, () -> new ShardingItemParameters("xxx=xxx"));
     }
     
     @Test
-    public void assertGetMapWhenIsEmpty() {
+    void assertGetMapWhenIsEmpty() {
         assertThat(new ShardingItemParameters("").getMap(), is(Collections.EMPTY_MAP));
     }
     
     @Test
-    public void assertGetMap() {
+    void assertGetMap() {
         Map<Integer, String> expected = new HashMap<>(3);
         expected.put(0, "A");
         expected.put(1, "B");

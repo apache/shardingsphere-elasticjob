@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class JobExecutionEventTest {
+class JobExecutionEventTest {
     
     @Test
-    public void assertNewJobExecutionEvent() {
+    void assertNewJobExecutionEvent() {
         JobExecutionEvent actual = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getSource(), is(JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER));
@@ -42,7 +42,7 @@ public final class JobExecutionEventTest {
     }
     
     @Test
-    public void assertExecutionSuccess() {
+    void assertExecutionSuccess() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent successEvent = startEvent.executionSuccess();
         assertNotNull(successEvent.getCompleteTime());
@@ -50,7 +50,7 @@ public final class JobExecutionEventTest {
     }
     
     @Test
-    public void assertExecutionFailure() {
+    void assertExecutionFailure() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
         assertNotNull(failureEvent.getCompleteTime());

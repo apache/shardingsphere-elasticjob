@@ -37,7 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobRef.xml")
-public final class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String oneOffSimpleJobName = "oneOffSimpleElasticJobRef";
     
@@ -49,17 +49,17 @@ public final class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeper
     
     @BeforeEach
     @AfterEach
-    public void reset() {
+    void reset() {
         RefFooSimpleElasticJob.reset();
     }
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         JobRegistry.getInstance().shutdown(oneOffSimpleJobName);
     }
     
     @Test
-    public void assertSpringJobBean() {
+    void assertSpringJobBean() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(oneOffSimpleJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
         assertOneOffSimpleElasticJobBean();

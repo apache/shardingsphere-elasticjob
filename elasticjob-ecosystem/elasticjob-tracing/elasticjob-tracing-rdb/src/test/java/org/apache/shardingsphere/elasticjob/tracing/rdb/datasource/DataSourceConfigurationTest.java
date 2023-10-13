@@ -35,10 +35,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class DataSourceConfigurationTest {
+class DataSourceConfigurationTest {
     
     @Test
-    public void assertGetDataSourceConfiguration() throws SQLException {
+    void assertGetDataSourceConfiguration() throws SQLException {
         HikariDataSource actualDataSource = new HikariDataSource();
         actualDataSource.setDriverClassName("org.h2.Driver");
         actualDataSource.setJdbcUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL");
@@ -55,7 +55,7 @@ public final class DataSourceConfigurationTest {
     }
     
     @Test
-    public void assertCreateDataSource() {
+    void assertCreateDataSource() {
         Map<String, Object> props = new HashMap<>(16, 1);
         props.put("driverClassName", "org.h2.Driver");
         props.put("jdbcUrl", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL");
@@ -73,7 +73,7 @@ public final class DataSourceConfigurationTest {
     }
     
     @Test
-    public void assertEquals() {
+    void assertEquals() {
         DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         assertThat(originalDataSourceConfig, is(originalDataSourceConfig));
@@ -84,7 +84,7 @@ public final class DataSourceConfigurationTest {
     }
     
     @Test
-    public void assertNotEquals() {
+    void assertNotEquals() {
         DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         originalDataSourceConfig.getProps().put("username", "root");
@@ -93,12 +93,12 @@ public final class DataSourceConfigurationTest {
     }
     
     @Test
-    public void assertEqualsWithNull() {
+    void assertEqualsWithNull() {
         assertFalse(new DataSourceConfiguration(HikariDataSource.class.getName()).equals(null));
     }
     
     @Test
-    public void assertSameHashCode() {
+    void assertSameHashCode() {
         DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         assertThat(originalDataSourceConfig.hashCode(), is(targetDataSourceConfig.hashCode()));
@@ -111,7 +111,7 @@ public final class DataSourceConfigurationTest {
     }
     
     @Test
-    public void assertDifferentHashCode() {
+    void assertDifferentHashCode() {
         DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
         originalDataSourceConfig.getProps().put("username", "root");
@@ -125,7 +125,7 @@ public final class DataSourceConfigurationTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void assertGetDataSourceConfigurationWithConnectionInitSqls() {
+    void assertGetDataSourceConfigurationWithConnectionInitSqls() {
         BasicDataSource actualDataSource = new BasicDataSource();
         actualDataSource.setDriverClassName("org.h2.Driver");
         actualDataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL");

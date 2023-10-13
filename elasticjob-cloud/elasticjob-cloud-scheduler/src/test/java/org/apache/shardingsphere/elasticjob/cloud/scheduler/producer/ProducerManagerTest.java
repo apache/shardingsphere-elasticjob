@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ProducerManagerTest {
+class ProducerManagerTest {
     
     @Mock
     private SchedulerDriver schedulerDriver;
@@ -86,7 +86,7 @@ public final class ProducerManagerTest {
     private final CloudJobConfigurationPOJO daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("daemon_test_job", CloudJobExecutionType.DAEMON);
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         ReflectionUtils.setFieldValue(producerManager, "appConfigService", appConfigService);
         ReflectionUtils.setFieldValue(producerManager, "configService", configService);
@@ -97,7 +97,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertStartup() {
+    void assertStartup() {
         when(configService.loadAll()).thenReturn(Arrays.asList(transientJobConfig, daemonJobConfig));
         producerManager.startup();
         verify(configService).loadAll();
@@ -106,7 +106,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertRegisterJobWithoutApp() {
+    void assertRegisterJobWithoutApp() {
         assertThrows(AppConfigurationException.class, () -> {
             when(appConfigService.load("test_app")).thenReturn(Optional.empty());
             producerManager.register(transientJobConfig);
@@ -114,7 +114,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertRegisterExistedJob() {
+    void assertRegisterExistedJob() {
         assertThrows(JobConfigurationException.class, () -> {
             when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
             when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
@@ -123,7 +123,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertRegisterDisabledJob() {
+    void assertRegisterDisabledJob() {
         assertThrows(JobConfigurationException.class, () -> {
             when(disableJobService.isDisabled("transient_test_job")).thenReturn(true);
             producerManager.register(transientJobConfig);
@@ -131,7 +131,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertRegisterTransientJob() {
+    void assertRegisterTransientJob() {
         when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("transient_test_job")).thenReturn(Optional.empty());
         producerManager.register(transientJobConfig);
@@ -140,7 +140,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertRegisterDaemonJob() {
+    void assertRegisterDaemonJob() {
         when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("daemon_test_job")).thenReturn(Optional.empty());
         producerManager.register(daemonJobConfig);
@@ -149,7 +149,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertUpdateNotExisted() {
+    void assertUpdateNotExisted() {
         assertThrows(JobConfigurationException.class, () -> {
             when(configService.load("transient_test_job")).thenReturn(Optional.empty());
             producerManager.update(transientJobConfig);
@@ -157,7 +157,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertUpdateExisted() {
+    void assertUpdateExisted() {
         when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
         List<TaskContext> taskContexts = Arrays.asList(
                 TaskContext.from("transient_test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("transient_test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"));
@@ -172,14 +172,14 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertDeregisterNotExisted() {
+    void assertDeregisterNotExisted() {
         when(configService.load("transient_test_job")).thenReturn(Optional.empty());
         producerManager.deregister("transient_test_job");
         verify(configService, times(0)).remove("transient_test_job");
     }
     
     @Test
-    public void assertDeregisterExisted() {
+    void assertDeregisterExisted() {
         when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
         List<TaskContext> taskContexts = Arrays.asList(
                 TaskContext.from("transient_test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("transient_test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"));
@@ -195,7 +195,7 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertShutdown() {
+    void assertShutdown() {
         producerManager.shutdown();
         verify(transientProducerScheduler).shutdown();
     }

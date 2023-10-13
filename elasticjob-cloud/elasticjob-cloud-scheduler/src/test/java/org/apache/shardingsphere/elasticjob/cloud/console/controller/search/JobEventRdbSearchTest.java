@@ -41,7 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobEventRdbSearchTest {
+class JobEventRdbSearchTest {
     
     @Mock
     private DataSource dataSource;
@@ -61,7 +61,7 @@ public final class JobEventRdbSearchTest {
     private JobEventRdbSearch jobEventRdbSearch;
     
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         jobEventRdbSearch = new JobEventRdbSearch(dataSource);
         when(dataSource.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(any())).thenReturn(preparedStatement);
@@ -72,7 +72,7 @@ public final class JobEventRdbSearchTest {
     
     @Test
     @SneakyThrows
-    public void assertFindJobExecutionEvents() {
+    void assertFindJobExecutionEvents() {
         when(resultSet.getString(5)).thenReturn("TestJobName");
         when(resultSet.getString(6)).thenReturn("FAILOVER");
         when(resultSet.getString(7)).thenReturn("1");
@@ -90,7 +90,7 @@ public final class JobEventRdbSearchTest {
     
     @Test
     @SneakyThrows
-    public void assertFindJobStatusTraceEvents() {
+    void assertFindJobStatusTraceEvents() {
         when(resultSet.getString(2)).thenReturn("TestJobName");
         when(resultSet.getString(6)).thenReturn("LITE_EXECUTOR");
         when(resultSet.getString(9)).thenReturn("TASK_RUNNING");

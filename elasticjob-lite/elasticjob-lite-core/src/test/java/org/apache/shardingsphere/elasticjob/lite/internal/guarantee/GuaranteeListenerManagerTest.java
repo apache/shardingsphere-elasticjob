@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class GuaranteeListenerManagerTest {
+class GuaranteeListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -51,49 +51,49 @@ public final class GuaranteeListenerManagerTest {
     private GuaranteeListenerManager guaranteeListenerManager;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         guaranteeListenerManager = new GuaranteeListenerManager(null, "test_job", Arrays.asList(elasticJobListener, distributeOnceElasticJobListener));
         ReflectionUtils.setSuperclassFieldValue(guaranteeListenerManager, "jobNodeStorage", jobNodeStorage);
     }
     
     @Test
-    public void assertStart() {
+    void assertStart() {
         guaranteeListenerManager.start();
         verify(jobNodeStorage, times(2)).addDataListener(any(DataChangedEventListener.class));
     }
     
     @Test
-    public void assertStartedNodeRemovedJobListenerWhenIsNotRemoved() {
+    void assertStartedNodeRemovedJobListenerWhenIsNotRemoved() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.UPDATED, "/test_job/guarantee/started", ""));
         verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
-    public void assertStartedNodeRemovedJobListenerWhenIsNotStartedNode() {
+    void assertStartedNodeRemovedJobListenerWhenIsNotStartedNode() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/other_job/guarantee/started", ""));
         verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
-    public void assertStartedNodeRemovedJobListenerWhenIsRemovedAndStartedNode() {
+    void assertStartedNodeRemovedJobListenerWhenIsRemovedAndStartedNode() {
         guaranteeListenerManager.new StartedNodeRemovedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/guarantee/started", ""));
         verify(distributeOnceElasticJobListener).notifyWaitingTaskStart();
     }
     
     @Test
-    public void assertCompletedNodeRemovedJobListenerWhenIsNotRemoved() {
+    void assertCompletedNodeRemovedJobListenerWhenIsNotRemoved() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/guarantee/completed", ""));
         verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
-    public void assertCompletedNodeRemovedJobListenerWhenIsNotCompletedNode() {
+    void assertCompletedNodeRemovedJobListenerWhenIsNotCompletedNode() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/other_job/guarantee/completed", ""));
         verify(distributeOnceElasticJobListener, times(0)).notifyWaitingTaskStart();
     }
     
     @Test
-    public void assertCompletedNodeRemovedJobListenerWhenIsRemovedAndCompletedNode() {
+    void assertCompletedNodeRemovedJobListenerWhenIsRemovedAndCompletedNode() {
         guaranteeListenerManager.new CompletedNodeRemovedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/guarantee/completed", ""));
         verify(distributeOnceElasticJobListener).notifyWaitingTaskComplete();
     }

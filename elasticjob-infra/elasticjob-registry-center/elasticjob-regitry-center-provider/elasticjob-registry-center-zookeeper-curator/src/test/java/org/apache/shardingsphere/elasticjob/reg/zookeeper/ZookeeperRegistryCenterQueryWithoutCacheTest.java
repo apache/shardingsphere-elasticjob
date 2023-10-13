@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
+class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
             new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
@@ -40,7 +40,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         EmbedTestingServer.start();
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
@@ -50,18 +50,18 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         zkRegCenter.close();
     }
     
     @Test
-    public void assertGetFromServer() {
+    void assertGetFromServer() {
         assertThat(zkRegCenter.get("/test"), is("test"));
         assertThat(zkRegCenter.get("/test/deep/nested"), is("deepNested"));
     }
     
     @Test
-    public void assertGetChildrenKeys() {
+    void assertGetChildrenKeys() {
         assertThat(zkRegCenter.getChildrenKeys("/test"), is(Arrays.asList("deep", "child")));
         assertThat(zkRegCenter.getChildrenKeys("/test/deep"), is(Collections.singletonList("nested")));
         assertThat(zkRegCenter.getChildrenKeys("/test/child"), is(Collections.<String>emptyList()));
@@ -69,7 +69,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     }
     
     @Test
-    public void assertGetNumChildren() {
+    void assertGetNumChildren() {
         assertThat(zkRegCenter.getNumChildren("/test"), is(2));
         assertThat(zkRegCenter.getNumChildren("/test/deep"), is(1));
         assertThat(zkRegCenter.getNumChildren("/test/child"), is(0));
@@ -77,14 +77,14 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     }
     
     @Test
-    public void assertIsExisted() {
+    void assertIsExisted() {
         assertTrue(zkRegCenter.isExisted("/test"));
         assertTrue(zkRegCenter.isExisted("/test/deep/nested"));
         assertFalse(zkRegCenter.isExisted("/notExisted"));
     }
     
     @Test
-    public void assertGetRegistryCenterTime() {
+    void assertGetRegistryCenterTime() {
         long regCenterTime = zkRegCenter.getRegistryCenterTime("/_systemTime/current");
         assertTrue(regCenterTime <= System.currentTimeMillis());
         long updatedRegCenterTime = zkRegCenter.getRegistryCenterTime("/_systemTime/current");
@@ -92,7 +92,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     }
     
     @Test
-    public void assertGetWithoutNode() {
+    void assertGetWithoutNode() {
         assertNull(zkRegCenter.get("/notExisted"));
     }
 }

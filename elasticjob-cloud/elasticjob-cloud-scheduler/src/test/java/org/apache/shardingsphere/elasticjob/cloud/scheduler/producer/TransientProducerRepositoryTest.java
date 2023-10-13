@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public final class TransientProducerRepositoryTest {
+class TransientProducerRepositoryTest {
     
     private final JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
     
@@ -37,14 +37,14 @@ public final class TransientProducerRepositoryTest {
     private final TransientProducerRepository transientProducerRepository = new TransientProducerRepository();
     
     @Test
-    public void assertPutJobKey() {
+    void assertPutJobKey() {
         transientProducerRepository.put(jobKey, jobName);
         assertThat(transientProducerRepository.get(jobKey).get(0), is(jobName));
         transientProducerRepository.remove(jobName);
     }
     
     @Test
-    public void assertPutJobWithChangedCron() {
+    void assertPutJobWithChangedCron() {
         transientProducerRepository.put(jobKey, jobName);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");
         transientProducerRepository.put(newJobKey, jobName);
@@ -54,7 +54,7 @@ public final class TransientProducerRepositoryTest {
     }
     
     @Test
-    public void assertPutMoreJobWithChangedCron() {
+    void assertPutMoreJobWithChangedCron() {
         String jobName2 = "other_test_job";
         transientProducerRepository.put(jobKey, jobName);
         transientProducerRepository.put(jobKey, jobName2);
@@ -67,14 +67,14 @@ public final class TransientProducerRepositoryTest {
     }
     
     @Test
-    public void assertRemoveJobKey() {
+    void assertRemoveJobKey() {
         transientProducerRepository.put(jobKey, jobName);
         transientProducerRepository.remove(jobName);
         assertTrue(transientProducerRepository.get(jobKey).isEmpty());
     }
     
     @Test
-    public void assertContainsKey() {
+    void assertContainsKey() {
         transientProducerRepository.put(jobKey, jobName);
         assertTrue(transientProducerRepository.containsKey(jobKey));
         transientProducerRepository.remove(jobName);

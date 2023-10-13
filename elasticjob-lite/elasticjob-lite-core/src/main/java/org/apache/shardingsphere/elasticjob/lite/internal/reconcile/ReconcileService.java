@@ -53,7 +53,7 @@ public final class ReconcileService extends AbstractScheduledService {
     @Override
     protected void runOneIteration() {
         int reconcileIntervalMinutes = configService.load(true).getReconcileIntervalMinutes();
-        if (reconcileIntervalMinutes > 0 && (System.currentTimeMillis() - lastReconcileTime >= reconcileIntervalMinutes * 60 * 1000)) {
+        if (reconcileIntervalMinutes > 0 && System.currentTimeMillis() - lastReconcileTime >= (long) reconcileIntervalMinutes * 60 * 1000) {
             lastReconcileTime = System.currentTimeMillis();
             if (!shardingService.isNeedSharding() && shardingService.hasShardingInfoInOfflineServers() && !(isStaticSharding() && hasShardingInfo())) {
                 log.warn("Elastic Job: job status node has inconsistent value,start reconciling...");

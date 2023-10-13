@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class CPUUsageJobExecutorServiceHandlerTest {
+class CPUUsageJobExecutorServiceHandlerTest {
     
     @Test
-    public void assertGetPoolSizeAndType() {
+    void assertGetPoolSizeAndType() {
         CPUUsageJobExecutorServiceHandler cpuUsageJobExecutorServiceHandler = (CPUUsageJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("CPU");
         assertThat(cpuUsageJobExecutorServiceHandler.getPoolSize(), is(Runtime.getRuntime().availableProcessors() * 2));
         assertThat(cpuUsageJobExecutorServiceHandler.getType(), is("CPU"));

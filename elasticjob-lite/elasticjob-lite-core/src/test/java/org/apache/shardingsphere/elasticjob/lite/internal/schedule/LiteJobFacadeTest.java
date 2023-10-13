@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class LiteJobFacadeTest {
+class LiteJobFacadeTest {
     
     @Mock
     private ConfigurationService configService;
@@ -74,7 +74,7 @@ public final class LiteJobFacadeTest {
     private StringBuilder orderResult;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         orderResult = new StringBuilder();
         TestElasticJobListener l1 = new TestElasticJobListener(caller, "l1", 2, orderResult);
         TestElasticJobListener l2 = new TestElasticJobListener(caller, "l2", 1, orderResult);
@@ -88,41 +88,41 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertLoad() {
+    void assertLoad() {
         JobConfiguration expected = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build();
         when(configService.load(true)).thenReturn(expected);
         assertThat(liteJobFacade.loadJobConfiguration(true), is(expected));
     }
     
     @Test
-    public void assertCheckMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
+    void assertCheckMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         liteJobFacade.checkJobExecutionEnvironment();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test
-    public void assertFailoverIfUnnecessary() {
+    void assertFailoverIfUnnecessary() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         liteJobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
-    public void assertFailoverIfNecessary() {
+    void assertFailoverIfNecessary() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
         liteJobFacade.failoverIfNecessary();
         verify(failoverService).failoverIfNecessary();
     }
     
     @Test
-    public void assertRegisterJobBegin() {
+    void assertRegisterJobBegin() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         liteJobFacade.registerJobBegin(shardingContexts);
         verify(executionService).registerJobBegin(shardingContexts);
     }
     
     @Test
-    public void assertRegisterJobCompletedWhenFailoverDisabled() {
+    void assertRegisterJobCompletedWhenFailoverDisabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         liteJobFacade.registerJobCompleted(shardingContexts);
@@ -131,7 +131,7 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertRegisterJobCompletedWhenFailoverEnabled() {
+    void assertRegisterJobCompletedWhenFailoverEnabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
         liteJobFacade.registerJobCompleted(shardingContexts);
@@ -140,7 +140,7 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
+    void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
         when(failoverService.getLocalFailoverItems()).thenReturn(Collections.singletonList(1));
@@ -150,7 +150,7 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
+    void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
         when(failoverService.getLocalFailoverItems()).thenReturn(Collections.emptyList());
@@ -162,7 +162,7 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenIsFailoverDisable() {
+    void assertGetShardingContextWhenIsFailoverDisable() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
@@ -172,7 +172,7 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertGetShardingContextWhenHasDisabledItems() {
+    void assertGetShardingContextWhenHasDisabledItems() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
@@ -183,39 +183,39 @@ public final class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertMisfireIfRunning() {
+    void assertMisfireIfRunning() {
         when(executionService.misfireIfHasRunningItems(Arrays.asList(0, 1))).thenReturn(true);
         assertThat(liteJobFacade.misfireIfRunning(Arrays.asList(0, 1)), is(true));
     }
     
     @Test
-    public void assertClearMisfire() {
+    void assertClearMisfire() {
         liteJobFacade.clearMisfire(Arrays.asList(0, 1));
         verify(executionService).clearMisfire(Arrays.asList(0, 1));
     }
     
     @Test
-    public void assertIsNeedSharding() {
+    void assertIsNeedSharding() {
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(liteJobFacade.isNeedSharding(), is(true));
     }
     
     @Test
-    public void assertBeforeJobExecuted() {
+    void assertBeforeJobExecuted() {
         liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
         verify(caller, times(2)).before();
         assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
-    public void assertAfterJobExecuted() {
+    void assertAfterJobExecuted() {
         liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
         verify(caller, times(2)).after();
         assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
-    public void assertPostJobExecutionEvent() {
+    void assertPostJobExecutionEvent() {
         liteJobFacade.postJobExecutionEvent(null);
         verify(jobTracingEventBus).post(null);
     }

@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobType.xml")
-public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String scriptJobName = "oneOffScriptElasticJob_job_type";
     
@@ -44,12 +44,12 @@ public final class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeepe
     private CoordinatorRegistryCenter regCenter;
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         JobRegistry.getInstance().shutdown(scriptJobName);
     }
     
     @Test
-    public void jobScriptWithJobTypeTest() {
+    void jobScriptWithJobTypeTest() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(scriptJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
         Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding")));

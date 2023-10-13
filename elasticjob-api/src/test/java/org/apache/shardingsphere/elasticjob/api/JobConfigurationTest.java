@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class JobConfigurationTest {
+class JobConfigurationTest {
     
     @Test
-    public void assertBuildAllProperties() {
+    void assertBuildAllProperties() {
         JobConfiguration actual = JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?")
                 .timeZone("GMT+8")
@@ -83,12 +83,12 @@ public final class JobConfigurationTest {
     }
     
     @Test
-    public void assertBuildWithEmptyJobName() {
+    void assertBuildWithEmptyJobName() {
         assertThrows(IllegalArgumentException.class, () -> JobConfiguration.newBuilder("", 3).cron("0/1 * * * * ?").build());
     }
     
     @Test
-    public void assertBuildWithInvalidShardingTotalCount() {
+    void assertBuildWithInvalidShardingTotalCount() {
         assertThrows(IllegalArgumentException.class, () -> JobConfiguration.newBuilder("test_job", -1).cron("0/1 * * * * ?").build());
     }
 }

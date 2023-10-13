@@ -47,7 +47,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class NettyRestfulServiceTest {
+class NettyRestfulServiceTest {
     
     private static final long TESTCASE_TIMEOUT = 10000L;
     
@@ -58,7 +58,7 @@ public final class NettyRestfulServiceTest {
     private static RestfulService restfulService;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
         configuration.addControllerInstances(new JobController(), new IndexController());
@@ -70,7 +70,7 @@ public final class NettyRestfulServiceTest {
     @SneakyThrows
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertRequestWithParameters() {
+    void assertRequestWithParameters() {
         String cron = "0 * * * * ?";
         String uri = String.format("/job/myGroup/myJob?cron=%s", URLEncoder.encode(cron, "UTF-8"));
         String description = "Descriptions about this job.";
@@ -93,7 +93,7 @@ public final class NettyRestfulServiceTest {
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertCustomExceptionHandler() {
+    void assertCustomExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalState");
         request.headers().set("Exception-Message", "An illegal state exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -104,7 +104,7 @@ public final class NettyRestfulServiceTest {
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertUsingDefaultExceptionHandler() {
+    void assertUsingDefaultExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalArgument");
         request.headers().set("Exception-Message", "An illegal argument exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
@@ -115,42 +115,34 @@ public final class NettyRestfulServiceTest {
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertReturnStatusCode() {
+    void assertReturnStatusCode() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/code/204");
-        HttpClient.request(HOST, PORT, request, httpResponse -> {
-            assertThat(httpResponse.status().code(), is(204));
-        }, TESTCASE_TIMEOUT);
+        HttpClient.request(HOST, PORT, request, httpResponse -> assertThat(httpResponse.status().code(), is(204)), TESTCASE_TIMEOUT);
     }
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertHandlerNotFound() {
+    void assertHandlerNotFound() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/not/found");
-        HttpClient.request(HOST, PORT, request, httpResponse -> {
-            assertThat(httpResponse.status().code(), is(404));
-        }, TESTCASE_TIMEOUT);
+        HttpClient.request(HOST, PORT, request, httpResponse -> assertThat(httpResponse.status().code(), is(404)), TESTCASE_TIMEOUT);
     }
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertRequestIndexWithSlash() {
+    void assertRequestIndexWithSlash() {
         DefaultFullHttpRequest requestWithSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/");
-        HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> {
-            assertThat(httpResponse.status().code(), is(200));
-        }, TESTCASE_TIMEOUT);
+        HttpClient.request(HOST, PORT, requestWithSlash, httpResponse -> assertThat(httpResponse.status().code(), is(200)), TESTCASE_TIMEOUT);
     }
     
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    public void assertRequestIndexWithoutSlash() {
+    void assertRequestIndexWithoutSlash() {
         DefaultFullHttpRequest requestWithoutSlash = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "");
-        HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> {
-            assertThat(httpResponse.status().code(), is(200));
-        }, TESTCASE_TIMEOUT);
+        HttpClient.request(HOST, PORT, requestWithoutSlash, httpResponse -> assertThat(httpResponse.status().code(), is(200)), TESTCASE_TIMEOUT);
     }
     
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (null != restfulService) {
             restfulService.shutdown();
         }

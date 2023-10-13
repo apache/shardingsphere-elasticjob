@@ -30,24 +30,24 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class AverageAllocationJobShardingStrategyTest {
+class AverageAllocationJobShardingStrategyTest {
     
     private final JobShardingStrategy jobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Test
-    public void shardingForZeroServer() {
+    void shardingForZeroServer() {
         assertThat(jobShardingStrategy.sharding(Collections.emptyList(), "test_job", 3), is(Collections.<JobInstance, List<Integer>>emptyMap()));
     }
     
     @Test
-    public void shardingForOneServer() {
+    void shardingForOneServer() {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(1, 1);
         expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2));
         assertThat(jobShardingStrategy.sharding(Collections.singletonList(new JobInstance("host0@-@0")), "test_job", 3), is(expected));
     }
     
     @Test
-    public void shardingForServersMoreThanShardingCount() {
+    void shardingForServersMoreThanShardingCount() {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
         expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
@@ -56,7 +56,7 @@ public final class AverageAllocationJobShardingStrategyTest {
     }
     
     @Test
-    public void shardingForServersLessThanShardingCountAliquot() {
+    void shardingForServersLessThanShardingCountAliquot() {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
         expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2));
         expected.put(new JobInstance("host1@-@0"), Arrays.asList(3, 4, 5));
@@ -65,7 +65,7 @@ public final class AverageAllocationJobShardingStrategyTest {
     }
     
     @Test
-    public void shardingForServersLessThanShardingCountAliquantFor8ShardingCountAnd3Servers() {
+    void shardingForServersLessThanShardingCountAliquantFor8ShardingCountAnd3Servers() {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
         expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 6));
         expected.put(new JobInstance("host1@-@0"), Arrays.asList(2, 3, 7));
@@ -74,7 +74,7 @@ public final class AverageAllocationJobShardingStrategyTest {
     }
     
     @Test
-    public void shardingForServersLessThanShardingCountAliquantFor10ShardingCountAnd3Servers() {
+    void shardingForServersLessThanShardingCountAliquantFor10ShardingCountAnd3Servers() {
         Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
         expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2, 9));
         expected.put(new JobInstance("host1@-@0"), Arrays.asList(3, 4, 5));

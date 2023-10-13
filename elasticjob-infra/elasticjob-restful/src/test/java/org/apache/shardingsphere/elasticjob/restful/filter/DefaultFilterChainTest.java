@@ -44,7 +44,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class DefaultFilterChainTest {
+class DefaultFilterChainTest {
     
     @Mock
     private ChannelHandlerContext ctx;
@@ -58,12 +58,12 @@ public final class DefaultFilterChainTest {
     private HandleContext<Handler> handleContext;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         handleContext = new HandleContext<>(httpRequest, httpResponse);
     }
     
     @Test
-    public void assertNoFilter() {
+    void assertNoFilter() {
         DefaultFilterChain filterChain = new DefaultFilterChain(Collections.emptyList(), ctx, handleContext);
         filterChain.next(httpRequest);
         verify(ctx, never()).writeAndFlush(httpResponse);
@@ -73,7 +73,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertWithSingleFilterPassed() {
+    void assertWithSingleFilterPassed() {
         Filter passableFilter = spy(new PassableFilter());
         DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(passableFilter), ctx, handleContext);
         filterChain.next(httpRequest);
@@ -85,7 +85,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertWithSingleFilterDoResponse() {
+    void assertWithSingleFilterDoResponse() {
         Filter impassableFilter = mock(Filter.class);
         DefaultFilterChain filterChain = new DefaultFilterChain(Collections.singletonList(impassableFilter), ctx, handleContext);
         filterChain.next(httpRequest);
@@ -97,7 +97,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertWithThreeFiltersPassed() {
+    void assertWithThreeFiltersPassed() {
         Filter firstFilter = spy(new PassableFilter());
         Filter secondFilter = spy(new PassableFilter());
         Filter thirdFilter = spy(new PassableFilter());
@@ -113,7 +113,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertWithThreeFiltersDoResponseByTheSecond() {
+    void assertWithThreeFiltersDoResponseByTheSecond() {
         Filter firstFilter = spy(new PassableFilter());
         Filter secondFilter = mock(Filter.class);
         Filter thirdFilter = spy(new PassableFilter());
@@ -129,7 +129,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertInvokeFinishedFilterChainWithoutFilter() {
+    void assertInvokeFinishedFilterChainWithoutFilter() {
         assertThrows(IllegalStateException.class, () -> {
             DefaultFilterChain filterChain = new DefaultFilterChain(Collections.emptyList(), ctx, handleContext);
             filterChain.next(httpRequest);
@@ -138,7 +138,7 @@ public final class DefaultFilterChainTest {
     }
     
     @Test
-    public void assertInvokePassedThroughFilterChainWithTwoFilters() {
+    void assertInvokePassedThroughFilterChainWithTwoFilters() {
         assertThrows(IllegalStateException.class, () -> {
             Filter firstFilter = spy(new PassableFilter());
             Filter secondFilter = spy(new PassableFilter());

@@ -30,10 +30,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public final class QueryParameterMapTest {
+class QueryParameterMapTest {
     
     @Test
-    public void assertGetFirst() {
+    void assertGetFirst() {
         QueryParameterMap queryParameterMap = new QueryParameterMap();
         queryParameterMap.add("name", "foo");
         assertThat(queryParameterMap.getFirst("name"), is("foo"));
@@ -41,7 +41,7 @@ public final class QueryParameterMapTest {
     }
     
     @Test
-    public void assertConvertToSingleValueMap() {
+    void assertConvertToSingleValueMap() {
         Map<String, List<String>> queries = new LinkedHashMap<>(1 << 2);
         queries.put("foo", new LinkedList<>(Arrays.asList("first_foo", "second_foo")));
         queries.put("bar", new LinkedList<>(Arrays.asList("first_bar", "second_bar")));
@@ -52,7 +52,7 @@ public final class QueryParameterMapTest {
     }
     
     @Test
-    public void assertGetEntrySet() {
+    void assertGetEntrySet() {
         QueryParameterMap queryParameterMap = new QueryParameterMap();
         queryParameterMap.put("foo", new LinkedList<>(Arrays.asList("first_foo", "second_foo")));
         queryParameterMap.put("bar", new LinkedList<>(Arrays.asList("first_bar", "second_bar")));

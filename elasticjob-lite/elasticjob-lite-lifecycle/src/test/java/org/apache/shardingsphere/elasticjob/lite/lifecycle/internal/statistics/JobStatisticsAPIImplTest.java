@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobStatisticsAPIImplTest {
+class JobStatisticsAPIImplTest {
     
     private JobStatisticsAPI jobStatisticsAPI;
     
@@ -44,18 +44,18 @@ public final class JobStatisticsAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobStatisticsAPI = new JobStatisticsAPIImpl(regCenter);
     }
     
     @Test
-    public void assertGetJobsTotalCount() {
+    void assertGetJobsTotalCount() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         assertThat(jobStatisticsAPI.getJobsTotalCount(), is(2));
     }
     
     @Test
-    public void assertGetOKJobBriefInfo() {
+    void assertGetOKJobBriefInfo() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
@@ -74,7 +74,7 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetOKJobBriefInfoWithPartialDisabledServer() {
+    void assertGetOKJobBriefInfoWithPartialDisabledServer() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
@@ -87,7 +87,7 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetDisabledJobBriefInfo() {
+    void assertGetDisabledJobBriefInfo() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
@@ -98,7 +98,7 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetShardingErrorJobBriefInfo() {
+    void assertGetShardingErrorJobBriefInfo() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
@@ -111,20 +111,20 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetCrashedJobBriefInfo() {
+    void assertGetCrashedJobBriefInfo() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.CRASHED));
     }
     
     @Test
-    public void assertGetAllJobsBriefInfoWithoutNamespace() {
+    void assertGetAllJobsBriefInfoWithoutNamespace() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         assertThat(jobStatisticsAPI.getAllJobsBriefInfo().size(), is(0));
     }
     
     @Test
-    public void assertGetAllJobsBriefInfo() {
+    void assertGetAllJobsBriefInfo() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.get("/test_job_1/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job_1", "desc1"));
         when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job_2", "desc2"));
@@ -151,7 +151,7 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
-    public void assertGetJobsBriefInfoByIp() {
+    void assertGetJobsBriefInfoByIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2", "test_job_3"));
         when(regCenter.isExisted("/test_job_1/servers/ip1")).thenReturn(true);
         when(regCenter.isExisted("/test_job_2/servers/ip1")).thenReturn(true);

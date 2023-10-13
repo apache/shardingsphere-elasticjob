@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class AppConstraintEvaluatorTest {
+class AppConstraintEvaluatorTest {
     
     private static final double SUFFICIENT_CPU = 1.0 * 13;
     
@@ -64,24 +64,24 @@ public final class AppConstraintEvaluatorTest {
     private TaskScheduler taskScheduler;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         facadeService = mock(FacadeService.class);
         AppConstraintEvaluator.init(facadeService);
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         taskScheduler = new TaskScheduler.Builder().withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(virtualMachineLease -> {
         }).build();
     }
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         AppConstraintEvaluator.getInstance().clearAppRunningState();
     }
     
     @Test
-    public void assertFirstLaunch() {
+    void assertFirstLaunch() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, SUFFICIENT_CPU, SUFFICIENT_MEM), getLease(1, SUFFICIENT_CPU, SUFFICIENT_MEM)));
         assertThat(result.getResultMap().size(), is(2));
         assertThat(result.getFailures().size(), is(0));
@@ -89,21 +89,21 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertFirstLaunchLackCpu() {
+    void assertFirstLaunchLackCpu() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, SUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, SUFFICIENT_MEM)));
         assertThat(result.getResultMap().size(), is(2));
         assertThat(getAssignedTaskNumber(result), is(18));
     }
     
     @Test
-    public void assertFirstLaunchLackMem() {
+    void assertFirstLaunchLackMem() {
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, SUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, SUFFICIENT_CPU, INSUFFICIENT_MEM)));
         assertThat(result.getResultMap().size(), is(2));
         assertThat(getAssignedTaskNumber(result), is(18));
     }
     
     @Test
-    public void assertExistExecutorOnS0() {
+    void assertExistExecutorOnS0() {
         when(facadeService.loadExecutorInfo()).thenReturn(Collections.singletonList(new ExecutorStateInfo("foo-app@-@S0", "S0")));
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
@@ -112,7 +112,7 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertGetExecutorError() {
+    void assertGetExecutorError() {
         when(facadeService.loadExecutorInfo()).thenThrow(JsonParseException.class);
         AppConstraintEvaluator.getInstance().loadAppRunningState();
         SchedulingResult result = taskScheduler.scheduleOnce(getTasks(), Arrays.asList(getLease(0, INSUFFICIENT_CPU, INSUFFICIENT_MEM), getLease(1, INSUFFICIENT_CPU, INSUFFICIENT_MEM)));
@@ -121,7 +121,7 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertLackJobConfig() {
+    void assertLackJobConfig() {
         when(facadeService.load("test")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));
         assertThat(result.getResultMap().size(), is(1));
@@ -129,7 +129,7 @@ public final class AppConstraintEvaluatorTest {
     }
     
     @Test
-    public void assertLackAppConfig() {
+    void assertLackAppConfig() {
         when(facadeService.load("test")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test")));
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.empty());
         SchedulingResult result = taskScheduler.scheduleOnce(Collections.singletonList(getTask("test")), Collections.singletonList(getLease(0, 1.5, 192)));

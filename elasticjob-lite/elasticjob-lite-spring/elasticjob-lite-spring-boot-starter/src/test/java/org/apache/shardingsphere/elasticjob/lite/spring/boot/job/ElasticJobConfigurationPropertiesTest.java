@@ -17,18 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.lite.spring.boot.job;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.Collections;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.junit.jupiter.api.Test;
 
-public final class ElasticJobConfigurationPropertiesTest {
+import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+class ElasticJobConfigurationPropertiesTest {
     
     @Test
-    public void assertToJobConfiguration() {
+    void assertToJobConfiguration() {
         ElasticJobConfigurationProperties properties = new ElasticJobConfigurationProperties();
         properties.setElasticJobClass(ElasticJob.class);
         properties.setElasticJobType("jobType");

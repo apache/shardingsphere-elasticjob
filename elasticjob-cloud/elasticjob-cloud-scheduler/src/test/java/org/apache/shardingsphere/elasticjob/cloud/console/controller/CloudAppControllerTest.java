@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CloudAppControllerTest extends AbstractCloudControllerTest {
+class CloudAppControllerTest extends AbstractCloudControllerTest {
     
     private static final String YAML = "appCacheEnable: true\n"
             + "appName: test_app\n"
@@ -46,14 +46,14 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
             + "memoryMB: 128.0\n";
     
     @Test
-    public void assertRegister() {
+    void assertRegister() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
         verify(getRegCenter()).persist("/config/app/test_app", YAML);
     }
     
     @Test
-    public void assertRegisterWithExistedName() {
+    void assertRegisterWithExistedName() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -61,12 +61,12 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertRegisterWithBadRequest() {
+    void assertRegisterWithBadRequest() {
         assertThat(HttpTestUtil.post("http://127.0.0.1:19000/api/app", "\"{\"appName\":\"wrong_job\"}"), is(500));
     }
     
     @Test
-    public void assertUpdate() {
+    void assertUpdate() {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(true);
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.put("http://127.0.0.1:19000/api/app", CloudAppJsonConstants.getAppJson("test_app")), is(200));
@@ -74,21 +74,21 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertDetail() {
+    void assertDetail() {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/test_app"), is(CloudAppJsonConstants.getAppJson("test_app")));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
-    public void assertDetailWithNotExistedJob() {
+    void assertDetailWithNotExistedJob() {
         Map<String, String> content = new HashMap<>(1);
         content.put("appName", "");
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/notExistedJobName", content), is(""));
     }
     
     @Test
-    public void assertFindAllJobs() {
+    void assertFindAllJobs() {
         when(getRegCenter().isExisted("/config/app")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Collections.singletonList("test_app"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -99,20 +99,20 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertDeregister() {
+    void assertDeregister() {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(HttpTestUtil.delete("http://127.0.0.1:19000/api/app/test_app"), is(200));
         verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
-    public void assertIsDisabled() {
+    void assertIsDisabled() {
         when(getRegCenter().isExisted("/state/disable/app/test_app")).thenReturn(true);
         assertThat(HttpTestUtil.get("http://127.0.0.1:19000/api/app/test_app/disable"), is("true"));
     }
     
     @Test
-    public void assertDisable() {
+    void assertDisable() {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
@@ -123,7 +123,7 @@ public class CloudAppControllerTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertEnable() {
+    void assertEnable() {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Collections.singletonList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));

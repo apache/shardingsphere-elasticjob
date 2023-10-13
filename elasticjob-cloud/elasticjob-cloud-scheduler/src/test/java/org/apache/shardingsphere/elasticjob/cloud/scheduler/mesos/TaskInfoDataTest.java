@@ -29,24 +29,24 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public final class TaskInfoDataTest {
+class TaskInfoDataTest {
     
     private final ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "test_param", Collections.emptyMap());
     
     @Test
-    public void assertSerializeSimpleJob() {
+    void assertSerializeSimpleJob() {
         TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job").toCloudJobConfiguration());
         assertSerialize(SerializationUtils.deserialize(actual.serialize()));
     }
     
     @Test
-    public void assertSerializeDataflowJob() {
+    void assertSerializeDataflowJob() {
         TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createDataflowCloudJobConfiguration("test_job"));
         assertSerialize(SerializationUtils.deserialize(actual.serialize()));
     }
     
     @Test
-    public void assertSerializeScriptJob() {
+    void assertSerializeScriptJob() {
         TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("test_job").toCloudJobConfiguration());
         assertSerialize(SerializationUtils.deserialize(actual.serialize()));
     }

@@ -26,10 +26,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotEnabled.xml")
-public final class SnapshotSpringNamespaceEnableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class SnapshotSpringNamespaceEnableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     @Test
-    public void assertSnapshotEnable() throws IOException {
+    void assertSnapshotEnable() throws IOException {
         assertNull(SocketUtils.sendCommand("unknown_command", 9988));
     }
 }

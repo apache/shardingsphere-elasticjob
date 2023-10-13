@@ -21,12 +21,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TimeServiceTest {
+class TimeServiceTest {
     
     private final TimeService timeService = new TimeService();
     
     @Test
-    public void assertGetCurrentMillis() {
+    void assertGetCurrentMillis() {
         assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

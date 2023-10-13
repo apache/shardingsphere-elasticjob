@@ -37,10 +37,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class CloudLoginTest extends AbstractCloudControllerTest {
+class CloudLoginTest extends AbstractCloudControllerTest {
     
     @Test
-    public void assertLoginSuccess() throws IOException {
+    void assertLoginSuccess() throws IOException {
         Map<String, String> authInfo = new HashMap<>();
         authInfo.put("username", "root");
         authInfo.put("password", "pwd");
@@ -53,7 +53,7 @@ public class CloudLoginTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertLoginFail() {
+    void assertLoginFail() {
         Map<String, String> authInfo = new HashMap<>();
         authInfo.put("username", "root");
         authInfo.put("password", "");
@@ -62,7 +62,7 @@ public class CloudLoginTest extends AbstractCloudControllerTest {
     }
     
     @Test
-    public void assertUnauthorized() {
+    void assertUnauthorized() {
         assertThat(HttpTestUtil.unauthorizedGet("http://127.0.0.1:19000/api/unauthorized"), is(401));
     }
 }

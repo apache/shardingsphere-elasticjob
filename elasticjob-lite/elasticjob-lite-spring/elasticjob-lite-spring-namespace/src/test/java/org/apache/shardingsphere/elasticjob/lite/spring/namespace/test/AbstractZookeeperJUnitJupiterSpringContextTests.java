@@ -28,8 +28,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * @see org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests
  */
 @ExtendWith(SpringExtension.class)
-@TestExecutionListeners(listeners = {EmbedZookeeperTestExecutionListener.class},
-        inheritListeners = false,
-        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@TestExecutionListeners(listeners = EmbedZookeeperTestExecutionListener.class, inheritListeners = false, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public abstract class AbstractZookeeperJUnitJupiterSpringContextTests {
 }

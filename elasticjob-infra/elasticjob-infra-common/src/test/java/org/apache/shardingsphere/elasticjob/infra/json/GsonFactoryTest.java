@@ -30,15 +30,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class GsonFactoryTest {
+class GsonFactoryTest {
     
     @Test
-    public void assertGetGson() {
+    void assertGetGson() {
         assertThat(GsonFactory.getGson(), is(GsonFactory.getGson()));
     }
     
     @Test
-    public void assertRegisterTypeAdapter() {
+    void assertRegisterTypeAdapter() {
         Gson beforeRegisterGson = GsonFactory.getGson();
         GsonFactory.registerTypeAdapter(GsonFactoryTest.class, new TypeAdapter() {
             
@@ -58,18 +58,18 @@ public final class GsonFactoryTest {
     }
     
     @Test
-    public void assertGetJsonParser() {
+    void assertGetJsonParser() {
         assertThat(GsonFactory.getJsonParser(), is(GsonFactory.getJsonParser()));
     }
     
     @Test
-    public void assertParser() {
+    void assertParser() {
         String json = "{\"name\":\"test\"}";
         assertThat(GsonFactory.getJsonParser().parse(json).getAsJsonObject().get("name").getAsString(), is("test"));
     }
     
     @Test
-    public void assertParserWithException() {
+    void assertParserWithException() {
         assertThrows(JsonParseException.class, () -> {
             String json = "{\"name\":\"test\"";
             assertThat(GsonFactory.getJsonParser().parse(json).getAsJsonObject().get("name").getAsString(), is("test"));

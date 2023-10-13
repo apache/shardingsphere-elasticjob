@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobConfigurationAPIImplTest {
+class JobConfigurationAPIImplTest {
     
     private JobConfigurationAPI jobConfigAPI;
     
@@ -47,12 +47,12 @@ public final class JobConfigurationAPIImplTest {
     private CoordinatorRegistryCenter regCenter;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobConfigAPI = new JobConfigurationAPIImpl(regCenter);
     }
     
     @Test
-    public void assertGetJobConfigNull() {
+    void assertGetJobConfigNull() {
         when(regCenter.get("/test_job/config")).thenReturn(null);
         JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
         assertNull(actual);
@@ -60,7 +60,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertGetDataflowJobConfig() {
+    void assertGetDataflowJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getDataflowJobYaml());
         JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
@@ -69,7 +69,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertGetScriptJobConfig() {
+    void assertGetScriptJobConfig() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleYamlConstants.getScriptJobYaml());
         JobConfigurationPOJO actual = jobConfigAPI.getJobConfiguration("test_job");
         assertJobConfig(actual);
@@ -93,7 +93,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertUpdateJobConfig() {
+    void assertUpdateJobConfig() {
         JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
         jobConfiguration.setJobName("test_job");
         jobConfiguration.setCron("0/1 * * * * ?");
@@ -111,7 +111,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertUpdateJobConfigIfJobNameIsEmpty() {
+    void assertUpdateJobConfigIfJobNameIsEmpty() {
         assertThrows(IllegalArgumentException.class, () -> {
             JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
             jobConfiguration.setJobName("");
@@ -120,7 +120,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertUpdateJobConfigIfCronIsEmpty() {
+    void assertUpdateJobConfigIfCronIsEmpty() {
         assertThrows(IllegalArgumentException.class, () -> {
             JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
             jobConfiguration.setJobName("test_job");
@@ -130,7 +130,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
+    void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
         assertThrows(IllegalArgumentException.class, () -> {
             JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
             jobConfiguration.setJobName("test_job");
@@ -141,7 +141,7 @@ public final class JobConfigurationAPIImplTest {
     }
     
     @Test
-    public void assertRemoveJobConfiguration() {
+    void assertRemoveJobConfiguration() {
         jobConfigAPI.removeJobConfiguration("test_job");
         verify(regCenter).remove("/test_job");
     }

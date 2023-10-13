@@ -50,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ShardingServiceTest {
+class ShardingServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -79,7 +79,7 @@ public final class ShardingServiceTest {
     private final ShardingService shardingService = new ShardingService(null, "test_job");
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingService, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(shardingService, "configService", configService);
@@ -90,40 +90,40 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertSetReshardingFlagOnLeader() {
+    void assertSetReshardingFlagOnLeader() {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         shardingService.setReshardingFlag();
         verify(jobNodeStorage).createJobNodeIfNeeded("leader/sharding/necessary");
     }
     
     @Test
-    public void assertSetReshardingFlagOnNonLeader() {
+    void assertSetReshardingFlagOnNonLeader() {
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
         shardingService.setReshardingFlag();
         verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("leader/sharding/necessary");
     }
     
     @Test
-    public void assertIsNeedSharding() {
+    void assertIsNeedSharding() {
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         assertTrue(shardingService.isNeedSharding());
     }
     
     @Test
-    public void assertShardingWhenUnnecessary() {
+    void assertShardingWhenUnnecessary() {
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode(ShardingNode.PROCESSING, "");
     }
     
     @Test
-    public void assertShardingWithoutAvailableJobInstances() {
+    void assertShardingWithoutAvailableJobInstances() {
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode(ShardingNode.PROCESSING, "");
     }
     
     @Test
-    public void assertShardingWhenIsNotLeader() {
+    void assertShardingWhenIsNotLeader() {
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true, false);
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
@@ -133,7 +133,7 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertShardingNecessaryWhenMonitorExecutionEnabledAndIncreaseShardingTotalCount() {
+    void assertShardingNecessaryWhenMonitorExecutionEnabledAndIncreaseShardingTotalCount() {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
@@ -153,7 +153,7 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertShardingNecessaryWhenMonitorExecutionDisabledAndDecreaseShardingTotalCount() {
+    void assertShardingNecessaryWhenMonitorExecutionDisabledAndDecreaseShardingTotalCount() {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
@@ -173,13 +173,13 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetShardingItemsWithNotAvailableServer() {
+    void assertGetShardingItemsWithNotAvailableServer() {
         when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn("jobInstanceId: 127.0.0.1@-@0\nserverIp: 127.0.0.1\n");
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
     }
     
     @Test
-    public void assertGetShardingItemsWithAvailableServer() {
+    void assertGetShardingItemsWithAvailableServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
@@ -193,12 +193,12 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetLocalShardingItemsWithInstanceShutdown() {
+    void assertGetLocalShardingItemsWithInstanceShutdown() {
         assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
     }
     
     @Test
-    public void assertGetLocalShardingItemsWithDisabledServer() {
+    void assertGetLocalShardingItemsWithDisabledServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
@@ -206,7 +206,7 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetLocalShardingItemsWithEnabledServer() {
+    void assertGetLocalShardingItemsWithEnabledServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
@@ -220,7 +220,7 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertHasShardingInfoInOfflineServers() {
+    void assertHasShardingInfoInOfflineServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(0))).thenReturn("host0@-@0");
@@ -230,7 +230,7 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertHasNotShardingInfoInOfflineServers() {
+    void assertHasNotShardingInfoInOfflineServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         when(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(0))).thenReturn("host0@-@0");
@@ -240,12 +240,12 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetCrashedShardingItemsWithNotEnableServer() {
+    void assertGetCrashedShardingItemsWithNotEnableServer() {
         assertThat(shardingService.getCrashedShardingItems("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
     }
     
     @Test
-    public void assertGetCrashedShardingItemsWithEnabledServer() {
+    void assertGetCrashedShardingItemsWithEnabledServer() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);

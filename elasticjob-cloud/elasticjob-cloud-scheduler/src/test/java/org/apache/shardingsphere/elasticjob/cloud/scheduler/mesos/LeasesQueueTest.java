@@ -24,12 +24,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class LeasesQueueTest {
+class LeasesQueueTest {
     
     private final LeasesQueue leasesQueue = LeasesQueue.getInstance();
     
     @Test
-    public void assertOperate() {
+    void assertOperate() {
         assertTrue(leasesQueue.drainTo().isEmpty());
         leasesQueue.offer(OfferBuilder.createOffer("offer_1"));
         leasesQueue.offer(OfferBuilder.createOffer("offer_2"));

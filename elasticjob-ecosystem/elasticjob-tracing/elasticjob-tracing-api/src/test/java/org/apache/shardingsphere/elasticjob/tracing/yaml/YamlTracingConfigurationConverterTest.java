@@ -26,10 +26,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class YamlTracingConfigurationConverterTest {
+class YamlTracingConfigurationConverterTest {
     
     @Test
-    public void assertConvertTracingConfiguration() {
+    void assertConvertTracingConfiguration() {
         JobEventCaller expectedStorage = () -> {
         };
         TracingConfiguration<JobEventCaller> tracingConfiguration = new TracingConfiguration<>("TEST", expectedStorage);

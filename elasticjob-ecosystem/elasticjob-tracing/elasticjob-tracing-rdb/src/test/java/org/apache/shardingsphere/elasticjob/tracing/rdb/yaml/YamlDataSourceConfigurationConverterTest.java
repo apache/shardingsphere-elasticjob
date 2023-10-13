@@ -28,10 +28,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class YamlDataSourceConfigurationConverterTest {
+class YamlDataSourceConfigurationConverterTest {
     
     @Test
-    public void assertConvertDataSourceConfiguration() {
+    void assertConvertDataSourceConfiguration() {
         DataSourceConfiguration dataSourceConfiguration = new DataSourceConfiguration("org.h2.Driver");
         dataSourceConfiguration.getProps().put("foo", "bar");
         YamlDataSourceConfigurationConverter converter = new YamlDataSourceConfigurationConverter();

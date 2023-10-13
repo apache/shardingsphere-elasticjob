@@ -28,15 +28,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class EmailJobErrorHandlerPropertiesValidatorTest {
+class EmailJobErrorHandlerPropertiesValidatorTest {
     
     @BeforeEach
-    public void startup() {
+    void startup() {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
     
     @Test
-    public void assertValidateWithNormal() {
+    void assertValidateWithNormal() {
         Properties properties = new Properties();
         properties.setProperty(EmailPropertiesConstants.HOST, "host");
         properties.setProperty(EmailPropertiesConstants.SSL_TRUST, "*");
@@ -50,7 +50,7 @@ public final class EmailJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithPropsIsNull() {
+    void assertValidateWithPropsIsNull() {
         assertThrows(NullPointerException.class, () -> {
             EmailJobErrorHandlerPropertiesValidator actual = getValidator();
             actual.validate(null);
@@ -58,7 +58,7 @@ public final class EmailJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithHostIsNull() {
+    void assertValidateWithHostIsNull() {
         EmailJobErrorHandlerPropertiesValidator actual = getValidator();
         try {
             actual.validate(new Properties());

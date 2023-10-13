@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobExecutionEnvironmentExceptionTest {
+class JobExecutionEnvironmentExceptionTest {
     
     @Test
-    public void assertGetMessage() {
+    void assertGetMessage() {
         assertThat(new JobExecutionEnvironmentException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
 }
