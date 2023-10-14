@@ -17,9 +17,9 @@ ElasticJob 使用 lombok 实现极简代码。关于更多使用和安装细节�
 
 动态添加作业这个概念每个人理解不尽相同。
 
-ElasticJob-Lite 为 jar 包，由开发或运维人员负责启动。启动时自动向注册中心注册作业信息并进行分布式协调，因此并不需要手工在注册中心填写作业信息。
+ElasticJob 为 jar 包，由开发或运维人员负责启动。启动时自动向注册中心注册作业信息并进行分布式协调，因此并不需要手工在注册中心填写作业信息。
 但注册中心与作业部署机无从属关系，注册中心并不能控制将单点的作业分发至其他作业机，也无法将远程服务器未启动的作业启动。
-ElasticJob-Lite 并不会包含 ssh 免密管理等功能。
+ElasticJob 并不会包含 ssh 免密管理等功能。
 
 综上所述，ElasticJob 已做了基本动态添加功能，但无法做到真正意义的完全自动化添加。
 
@@ -27,9 +27,9 @@ ElasticJob-Lite 并不会包含 ssh 免密管理等功能。
 
 回答：
 
-ElasticJob-Lite 采用无中心化设计，若每个客户端的配置不一致，不做控制的话，最后一个启动的客户端配置将会成为注册中心的最终配置。
+ElasticJob 采用无中心化设计，若每个客户端的配置不一致，不做控制的话，最后一个启动的客户端配置将会成为注册中心的最终配置。
 
-ElasticJob-Lite 提出了 overwrite 概念，可通过 JobConfiguration 或 Spring 命名空间配置。
+ElasticJob 提出了 overwrite 概念，可通过 JobConfiguration 或 Spring 命名空间配置。
 `overwrite=true` 即允许客户端配置覆盖注册中心，反之则不允许。
 如果注册中心无相关作业的配置，则无论 overwrite 是否配置，客户端配置都将写入注册中心。
 
@@ -41,7 +41,7 @@ ElasticJob-Lite 提出了 overwrite 概念，可通过 JobConfiguration 或 Spri
 这样做的目的是为了防止作业重分片时，将与注册中心失去联系的节点执行的分片分配给另外节点，导致同一分片在两个节点中同时执行。
 当作业节点恢复与注册中心联系时，将重新参与分片并恢复执行新的分配到的分片。
 
-## 5. ElasticJob-Lite 有何使用限制?
+## 5. ElasticJob 有何使用限制?
 
 回答：
 
@@ -51,13 +51,13 @@ ElasticJob-Lite 提出了 overwrite 概念，可通过 JobConfiguration 或 Spri
 
 * 开启 monitorExecution 才能实现分布式作业幂等性（即不会在多个作业服务器运行同一个分片）的功能，但 monitorExecution 对短时间内执行的作业（如秒级触发）性能影响较大，建议关闭并自行实现幂等性。
 
-## 6. 怀疑 ElasticJob-Lite 在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
+## 6. 怀疑 ElasticJob 在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
 
 回答：
 
-分布式问题非常难于调试和重现，为此 ElasticJob-Lite 提供了 dump 命令。
+分布式问题非常难于调试和重现，为此 ElasticJob 提供了 dump 命令。
 
-如果您怀疑某些场景出现问题，可参照[作业信息导出](/cn/user-manual/elasticjob-lite/operation/dump/)将作业运行时信息提交至社区。
+如果您怀疑某些场景出现问题，可参照[作业信息导出](/cn/user-manual/elasticjob/operation/dump/)将作业运行时信息提交至社区。
 ElasticJob 已将 IP 地址等敏感信息过滤，导出的信息可在公网安全传输。
 
 ## 7. 控制台界面无法正常显示?

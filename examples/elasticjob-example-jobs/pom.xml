@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-core</artifactId>
+            <artifactId>elasticjob-engine-core</artifactId>
         </dependency>
         
         <dependency>

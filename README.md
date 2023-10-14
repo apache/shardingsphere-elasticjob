@@ -29,11 +29,9 @@ You are welcome to communicate with the community via the [mailing list](mailto:
 Using ElasticJob developers can no longer worry about the non functional requirements such as job scale out, so that they can focus more on business coding.
 At the same time, it can release operators too, so that they do not have to worry about high availability and management, and can automatically operate by simply adding servers.
 
-### ElasticJob-Lite
+It is a lightweight, decentralized solution that provides distributed task sharding services.
 
-A lightweight, decentralized solution that provides distributed task sharding services.
-
-![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
+![ElasticJob Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
 ## Features
 

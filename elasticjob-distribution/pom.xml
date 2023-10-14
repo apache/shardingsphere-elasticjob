@@ -29,7 +29,7 @@
     
     <modules>
         <module>elasticjob-src-distribution</module>
-        <module>elasticjob-lite-distribution</module>
+        <module>elasticjob-bin-distribution</module>
     </modules>
     
     <properties>

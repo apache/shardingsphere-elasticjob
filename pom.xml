@@ -33,8 +33,7 @@
     <modules>
         <module>elasticjob-api</module>
         <module>elasticjob-infra</module>
-        
-        <module>elasticjob-lite</module>
+        <module>elasticjob-engine</module>
         
         <module>elasticjob-distribution</module>
         <module>elasticjob-ecosystem</module>

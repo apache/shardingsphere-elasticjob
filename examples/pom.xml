@@ -53,7 +53,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-lite-core</artifactId>
+                <artifactId>elasticjob-engine-core</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -63,7 +63,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-lite-spring-namespace</artifactId>
+                <artifactId>elasticjob-engine-spring-namespace</artifactId>
                 <version>${revision}</version>
             </dependency>
             

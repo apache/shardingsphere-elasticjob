@@ -24,12 +24,9 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 使用 ElasticJob 能够让开发工程师不再担心任务的线性吞吐量提升等非功能需求，使他们能够更加专注于面向业务编码设计；
 同时，它也能够解放运维工程师，使他们不必再担心任务的可用性和相关管理需求，只通过轻松的增加服务节点即可达到自动化运维的目的。
+它定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务。
 
-### ElasticJob-Lite
-
-定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务。
-
-![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
+![ElasticJob Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
 
 ## 功能列表
 

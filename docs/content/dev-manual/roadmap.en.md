@@ -5,8 +5,6 @@ weight = 5
 chapter = true
 +++
 
-## Kernel
-
 - [x] Unified Job Config API
     - [x] Core Config
     - [x] Type Config
@@ -22,9 +20,6 @@ chapter = true
     - [ ] Other Event Listener
 - [ ] Unified Schedule API
 - [ ] Unified Resource API
-
-## ElasticJob-Lite
-
 - [x] Distributed Features
     - [x] High Availability
     - [x] Elastic scale in/out
