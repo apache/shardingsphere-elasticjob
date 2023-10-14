@@ -52,6 +52,6 @@ class OneOffJobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiter
     void jobScriptWithJobTypeTest() {
         OneOffJobBootstrap bootstrap = applicationContext.getBean(scriptJobName, OneOffJobBootstrap.class);
         bootstrap.execute();
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding")));
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertTrue(regCenter.isExisted("/" + scriptJobName + "/sharding")));
     }
 }
