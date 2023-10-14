@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.listener.NoopElasticJobListener
-org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.listener.LogElasticJobListener
+org.apache.shardingsphere.elasticjob.engine.spring.boot.job.fixture.listener.NoopElasticJobListener
+org.apache.shardingsphere.elasticjob.engine.spring.boot.job.fixture.listener.LogElasticJobListener

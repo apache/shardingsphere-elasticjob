@@ -79,7 +79,7 @@ Answer:
 ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set `-Djava.net.preferIPv4Stack=true`.
 
 
-## 10. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
+## 10. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.engine.ui.Bootstrap. Why?
 
 Answer:
 

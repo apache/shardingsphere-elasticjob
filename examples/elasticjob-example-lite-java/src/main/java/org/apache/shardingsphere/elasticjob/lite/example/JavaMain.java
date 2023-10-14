@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example;
+package org.apache.shardingsphere.elasticjob.engine.example;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -24,11 +24,11 @@ import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPrope
 import org.apache.shardingsphere.elasticjob.error.handler.email.EmailPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.JavaDataflowJob;
-import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob;
-import org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.engine.example.job.dataflow.JavaDataflowJob;
+import org.apache.shardingsphere.elasticjob.engine.example.job.simple.JavaOccurErrorJob;
+import org.apache.shardingsphere.elasticjob.engine.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;

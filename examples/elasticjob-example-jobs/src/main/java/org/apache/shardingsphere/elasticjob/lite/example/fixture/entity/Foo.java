@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.fixture.entity;
+package org.apache.shardingsphere.elasticjob.engine.example.fixture.entity;
 
 import java.io.Serializable;
 

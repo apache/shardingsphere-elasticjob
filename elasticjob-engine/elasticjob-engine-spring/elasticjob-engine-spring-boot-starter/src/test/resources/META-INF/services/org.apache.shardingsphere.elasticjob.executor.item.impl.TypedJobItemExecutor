@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.lite.spring.boot.job.executor.PrintJobExecutor
+org.apache.shardingsphere.elasticjob.engine.spring.boot.job.executor.PrintJobExecutor

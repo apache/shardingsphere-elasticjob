@@ -89,7 +89,7 @@ elasticjob.reg-center.server-lists=localhost:6181
 elasticjob:
   jobs:
     simpleJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootSimpleJob
       cron: 0/5 * * * * ?
       timeZone: GMT+08:00
       shardingTotalCount: 3
@@ -110,7 +110,7 @@ elasticjob:
 
 **Properties**
 ```
-elasticjob.jobs.simpleJob.elastic-job-class=org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
+elasticjob.jobs.simpleJob.elastic-job-class=org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootSimpleJob
 elasticjob.jobs.simpleJob.cron=0/5 * * * * ?
 elasticjob.jobs.simpleJob.timeZone=GMT+08:00
 elasticjob.jobs.simpleJob.sharding-total-count=3
@@ -129,11 +129,11 @@ elasticjob.jobs.manualScriptJob.props.script.command.line=echo Manual SCRIPT Job
 
 配置前缀：`elasticjob.tracing`
 
-| 属性名            | 可选值    | 是否必填  |描述       |
-| -----------------|:-------- |:------- |:--------- |
-| type             | RDB      | 否       |          |
-| includeJobNames  |          | 否       | 作业白名单 |
-| excludeJobNames  |          | 否       | 作业黑名单 |
+| 属性名             | 可选值 | 是否必填 | 描述    |
+|-----------------|:----|:-----|:------|
+| type            | RDB | 否    |       |
+| includeJobNames |     | 否    | 作业白名单 |
+| excludeJobNames |     | 否    | 作业黑名单 |
 
 **includeJobNames 与 excludeJobNames 互斥，事件追踪配置只能有一种属性**
 

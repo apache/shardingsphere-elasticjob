@@ -31,7 +31,7 @@ elasticjob:
     namespace: elasticjob-engine-spring-boot-starter
   jobs:
     customTestJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.spring.boot.job.fixture.job.impl.CustomTestJob
       jobBootstrapBeanName: customTestJobBean
       shardingTotalCount: 3
       jobListenerTypes:
@@ -46,7 +46,7 @@ elasticjob:
     defaultBeanNameClassJob:
       cron: 0/5 * * * * ?
       timeZome: GMT+08:00
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.spring.boot.job.fixture.job.impl.CustomTestJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.spring.boot.job.fixture.job.impl.CustomTestJob
       shardingTotalCount: 3
     defaultBeanNameTypeJob:
       cron: 0/5 * * * * ?

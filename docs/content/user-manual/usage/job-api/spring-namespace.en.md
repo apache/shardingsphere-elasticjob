@@ -52,8 +52,9 @@ Developers can inject the `OneOffJobBootstrap` bean into where they plan to invo
 Trigger the job by invoking `execute()` method manually.
 
 ```xml
-    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
-    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
+
+<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob"/>
+<elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
 ```
 ```java
 public final class SpringMain {

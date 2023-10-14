@@ -27,7 +27,7 @@
                         http://shardingsphere.apache.org/schema/elasticjob
                         http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                         ">
-    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.lite.example" />
+    <context:component-scan base-package="org.apache.shardingsphere.elasticjob.engine.example" />
     <context:property-placeholder location="classpath:conf/*.properties"/>
     
     <elasticjob:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}"
@@ -45,8 +45,8 @@
 
     <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
 
-    <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
-    <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.dataflow.SpringDataflowJob" />
+    <bean id="simpleJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob" />
+    <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.dataflow.SpringDataflowJob" />
 
     <elasticjob:job id="${simple.id}" job-ref="simpleJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"
                     sharding-total-count="${simple.shardingTotalCount}" cron="${simple.cron}"
@@ -68,7 +68,7 @@
 
 
     <!-- use One-off job-->
-<!--    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />-->
+<!--    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob" />-->
 <!--    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
 <!--      sharding-total-count="${simple.shardingTotalCount}"-->
 <!--      sharding-item-parameters="${simple.shardingItemParameters}"-->
@@ -87,7 +87,7 @@
     <!--</elasticjob:job>-->
     
     <!-- use email error handler -->
-<!--    <bean id="occurErrorNoticeEmailJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
+<!--    <bean id="occurErrorNoticeEmailJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.JavaOccurErrorJob" />-->
 <!--    <elasticjob:job id="${occurErrorNoticeEmailJob.id}" job-ref="occurErrorNoticeEmailJob"-->
 <!--                    registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
 <!--                    sharding-total-count="${occurErrorNoticeEmailJob.shardingTotalCount}"-->
@@ -109,7 +109,7 @@
 <!--    </elasticjob:job>-->
     
     <!-- use dingtalk error handler -->
-<!--    <bean id="occurErrorNoticeDingtalkJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
+<!--    <bean id="occurErrorNoticeDingtalkJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.JavaOccurErrorJob" />-->
 <!--    <elasticjob:job id="${occurErrorNoticeDingtalkJob.id}" job-ref="occurErrorNoticeDingtalkJob"-->
 <!--                    registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
 <!--                    sharding-total-count="${occurErrorNoticeDingtalkJob.shardingTotalCount}"-->
@@ -131,7 +131,7 @@
 <!--    </elasticjob:job>-->
     
     <!-- use wechat error handler -->
-<!--    <bean id="occurErrorNoticeWechatJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.JavaOccurErrorJob" />-->
+<!--    <bean id="occurErrorNoticeWechatJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.JavaOccurErrorJob" />-->
 <!--    <elasticjob:job id="${occurErrorNoticeWechatJob.id}" job-ref="occurErrorNoticeWechatJob"-->
 <!--                    registry-center-ref="regCenter" tracing-ref="elasticJobTrace"-->
 <!--                    sharding-total-count="${occurErrorNoticeWechatJob.shardingTotalCount}"-->

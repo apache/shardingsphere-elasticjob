@@ -10,7 +10,7 @@ The module is still in incubation.
 
 ## Configuration API
 
-Class name: `org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobConfigurationAPI`
+Class name: `org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobConfigurationAPI`
 
 ### Get job configuration
 
@@ -37,7 +37,7 @@ Method signature：void removeJobConfiguration(String jobName)
 
 ## Operation API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobOperateAPI`
+Class name：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobOperateAPI`
 
 ### Trigger job execution
 
@@ -85,7 +85,7 @@ Method signature：void remove(Optional<String> jobName, Optional<String> server
 
 ## Operate sharding API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingOperateAPI`
+Class name：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ShardingOperateAPI`
 
 ### Disable job sharding
 
@@ -105,7 +105,7 @@ Method signature：void enable(String jobName, String item)
 
 ## Job statistics API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.JobStatisticsAPI`
+Class name：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobStatisticsAPI`
 
 ### Get the total count of jobs
 
@@ -139,7 +139,7 @@ Method signature：Collection<JobBriefInfo> getJobsBriefInfo(String ip)
 
 ## Job server status display API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ServerStatisticsAPI`
+Class name：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ServerStatisticsAPI`
 
 ### Total count of job servers
 
@@ -155,7 +155,7 @@ Method signature：Collection<ServerBriefInfo> getAllServersBriefInfo()
 
 ## Job sharding status display API
 
-Class name：`org.apache.shardingsphere.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI`
+Class name：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ShardingStatisticsAPI`
 
 ### Get job sharding information collection
 

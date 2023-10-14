@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example;
+package org.apache.shardingsphere.elasticjob.engine.example;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

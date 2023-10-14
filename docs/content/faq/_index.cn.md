@@ -78,7 +78,7 @@ ElasticJob 已将 IP 地址等敏感信息过滤，导出的信息可在公网�
 ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的情况。尝试设置 `-Djava.net.preferIPv4Stack=true`.
 
 
-## 10. Windows环境下，运行ShardingSphere-ElasticJob-UI，找不到或无法加载主类 org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap，如何解决？
+## 10. Windows环境下，运行ShardingSphere-ElasticJob-UI，找不到或无法加载主类 org.apache.shardingsphere.elasticjob.engine.ui.Bootstrap，如何解决？
 
 回答：
 

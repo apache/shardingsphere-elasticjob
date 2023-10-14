@@ -51,8 +51,9 @@ ElasticJob 提供自定义的 Spring 命名空间，可以与 Spring 容器配�
 通过 `execute()` 方法执行作业。
 
 ```xml
-    <bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.lite.example.job.simple.SpringSimpleJob" />
-    <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
+
+<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob"/>
+<elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
 ```
 ```java
 public final class SpringMain {

@@ -90,7 +90,7 @@ Reference:
 elasticjob:
   jobs:
     simpleJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootSimpleJob
       cron: 0/5 * * * * ?
       timeZone: GMT+08:00
       shardingTotalCount: 3
@@ -111,7 +111,7 @@ elasticjob:
 
 **Properties**
 ```
-elasticjob.jobs.simpleJob.elastic-job-class=org.apache.shardingsphere.elasticjob.lite.example.job.SpringBootSimpleJob
+elasticjob.jobs.simpleJob.elastic-job-class=org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootSimpleJob
 elasticjob.jobs.simpleJob.cron=0/5 * * * * ?
 elasticjob.jobs.simpleJob.timeZone=GMT+08:00
 elasticjob.jobs.simpleJob.sharding-total-count=3
