@@ -11,8 +11,7 @@ chapter = true
 [![GitHub watchers](https://img.shields.io/github/watchers/apache/shardingsphere-elasticjob.svg?style=social&label=Watch)](https://github.com/apache/shardingsphere-elasticjob/watchers)
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob 是面向互联网生态和海量任务的分布式调度解决方案，由两个相互独立的子项目 ElasticJob-Lite 和 ElasticJob-Cloud 组成。
-它通过弹性调度、资源管控、以及作业治理的功能，打造一个适用于互联网场景的分布式调度解决方案，并通过开放的架构设计，提供多元化的作业生态。
+ElasticJob 通过弹性调度、资源管控、以及作业治理的功能，打造一个适用于互联网场景的分布式调度解决方案，并通过开放的架构设计，提供多元化的作业生态。
 它的各个产品使用统一的作业 API，开发者仅需一次开发，即可随意部署。
 
 ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://shardingsphere.apache.org/) 的子项目。
@@ -36,19 +35,6 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 定位为轻量级无中心化解决方案，使用 jar 的形式提供分布式任务的协调服务。
 
 ![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
-
-### ElasticJob-Cloud
-
-采用自研 Mesos Framework 的解决方案，额外提供资源治理、应用分发以及进程隔离等功能。
-
-![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
-
-|           | *ElasticJob-Lite* | *ElasticJob-Cloud* |
-| --------- | ----------------- | ------------------ |
-| 无中心化   | 是                | 否                  |
-| 资源分配   | 不支持             | 支持                |
-| 作业模式   | 常驻               | 常驻 + 瞬时         |
-| 部署依赖   | ZooKeeper         | ZooKeeper + Mesos   |
 
 ## 功能列表
 
@@ -94,7 +80,3 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 ### ZooKeeper
 
 请使用 ZooKeeper 3.6.0 及其以上版本。[详情参见](https://zookeeper.apache.org/)
-
-### Mesos（仅 ElasticJob-Cloud 使用）
-
-请使用 Mesos 1.1.0 及其兼容版本。[详情参见](https://mesos.apache.org/)

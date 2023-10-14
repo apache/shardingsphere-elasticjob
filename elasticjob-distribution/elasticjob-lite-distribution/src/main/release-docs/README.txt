@@ -1,7 +1,7 @@
 Welcome to Apache ShardingSphere-ElasticJob
 ===============================================================================
 
-ElasticJob is a distributed scheduling solution consisting of two separate projects, ElasticJob-Lite and ElasticJob-Cloud.
+ElasticJob is a distributed scheduling solution.
 
 Through the functions of flexible scheduling, resource management and job management, 
 it creates a distributed scheduling solution suitable for Internet scenarios, 

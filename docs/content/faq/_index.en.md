@@ -21,10 +21,6 @@ For the concept of dynamically adding job, everyone has a different understandin
 However, registry center has no affiliation with the job server, can't control the distribution of single-point jobs to other job machines, and also can't start the job of remote server.
 `ElasticJob-Lite` doesn't support ssh secret management and other functions.
 
-`ElasticJob-Cloud` is a `mesos` framework, and `mesos` is responsible for job starting and distribution.
-But you need to package the job and upload it, and call the `REST API` provided by `ElasticJob-Cloud` to write job information into the registry center.
-Packaging and uploading job are the deployment system's functions, `ElasticJob-Cloud` does not support it.
-
 In summary, `ElasticJob` has supported basic dynamically adding jobs, but it can't be fully automated.
 
 ## 3. Why is the job configuration modified in the code or Spring XML file, but the registry center is not updated?
@@ -64,38 +60,26 @@ Distributed problems are very difficult to debug and reproduce. For this reason,
 If you suspect a problem in some scenarios, you can refer to the [dump](/en/user-manual/elasticjob-lite/operation/dump/) document to submit the job runtime information to the community.
 `ElasticJob` has filtered sensitive information such as `IP`, and the dump file can be safely transmitted on the Internet.
 
-## 7. What are the usage restrictions of `ElasticJob-Cloud`?
-
-Answer:
-
-* After the job start successfully, modifying the job name is regarded as a new job, and the original job is discarded.
-
-## 8. When add a task in the `ElasticJob-Cloud`, why does it remain in the ready state, but doesn't start?
-
-Answer:
-
-The task will start when `mesos` has a separate `agent` that can provide the required resources, otherwise it will wait until there are enough resources.
-
-## 9. Why can't the Console page display normally?
+## 7. Why can't the Console page display normally?
 
 Answer:
 
 Make sure that the `Web Console`'s version is consistent with `ElasticJob`, otherwise it will become unavailable.
 
-## 10. Why is the job state shard to be adjusted in the Console?
+## 8. Why is the job state shard to be adjusted in the Console?
 
 Answer:
 
 Shard to be adjusted indicates the state when the job has started but has not yet obtained the shard.
 
-## 11. Why is there a task scheduling delay in the first startup?
+## 9. Why is there a task scheduling delay in the first startup?
 
 Answer:
 
 ElasticJob will obtain the local IP when performing task scheduling, and it may be slow to obtain the IP for the first time. Try to set `-Djava.net.preferIPv4Stack=true`.
 
 
-## 12. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
+## 10. In Windows env, run ShardingSphere-ElasticJob-UI, could not find or load main class org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap. Why?
 
 Answer:
 
@@ -107,7 +91,7 @@ Open cmd.exe and execute the following command:
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
 ```
 
-## 13. Unable to startup Cloud Scheduler. Continuously output "Elastic job: IP:PORT has leadership"
+## 11. Unable to startup Cloud Scheduler. Continuously output "Elastic job: IP:PORT has leadership"
 
 Answer: 
 
@@ -117,7 +101,7 @@ For instance, Mesos native libraries are under `/usr/local/lib`, so the property
 
 About Apache Mesos, please refer to [Apache Mesos](https://mesos.apache.org/).
 
-## 14. Unable to obtain a suitable IP in the case of multiple network interfaces
+## 12. Unable to obtain a suitable IP in the case of multiple network interfaces
 
 Answer: 
 
@@ -129,7 +113,7 @@ For example
 1. specify network addresses, 192.168.0.100: `-Delasticjob.preferred.network.ip=192.168.0.100`.
 1. specify network addresses for regular expressions, 192.168.*: `-Delasticjob.preferred.network.ip=192.168.*`.
 
-## 15. During the zk authorization upgrade process, there was a false death of the instance during the rolling deployment process, and even if the historical version was rolled back, there was still false death.
+## 13. During the zk authorization upgrade process, there was a false death of the instance during the rolling deployment process, and even if the historical version was rolled back, there was still false death.
 
 Answer:
 
@@ -143,5 +127,5 @@ Through the logs, it can be found that an -102 exception will be thrown:
 xxxx-07-27 22:33:55.224 [DEBUG] [localhost-startStop-1-EventThread] [] [] [] - o.a.c.f.r.c.TreeCache : processResult: CuratorEventImpl{type=GET_DATA, resultCode=-102, path='/xxx/leader/election/latch/_c_bccccdcc-1134-4e0a-bb52-59a13836434a-latch-0000000047', name='null', children=null, context=null, stat=null, data=null, watchedEvent=null, aclList=null}
 ```
 
-1.If you encounter the issue of returning to the historical version and still pretending to be dead during the upgrade process, it is recommended to delete all job directories on zk and restart the historical version afterwards.
-2.Calculate a reasonable job execution gap, such as when the job will not trigger from 21:00 to 21:30 in the evening. During this period, first stop all instances, and then deploy all versions with passwords online.
+1. If you encounter the issue of returning to the historical version and still pretending to be dead during the upgrade process, it is recommended to delete all job directories on zk and restart the historical version afterwards.
+2. Calculate a reasonable job execution gap, such as when the job will not trigger from 21:00 to 21:30 in the evening. During this period, first stop all instances, and then deploy all versions with passwords online.

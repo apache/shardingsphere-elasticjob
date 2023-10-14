@@ -21,10 +21,6 @@ ElasticJob-Lite 为 jar 包，由开发或运维人员负责启动。启动时�
 但注册中心与作业部署机无从属关系，注册中心并不能控制将单点的作业分发至其他作业机，也无法将远程服务器未启动的作业启动。
 ElasticJob-Lite 并不会包含 ssh 免密管理等功能。
 
-ElasticJob-Cloud 为 mesos 框架，由 mesos 负责作业启动和分发。
-但需要将作业打包上传，并调用 ElasticJob-Cloud 提供的 RESTful API 写入注册中心。
-打包上传属于部署系统的范畴 ElasticJob-Cloud 并未涉及。
-
 综上所述，ElasticJob 已做了基本动态添加功能，但无法做到真正意义的完全自动化添加。
 
 ## 3. 为什么在代码或配置文件中修改了作业配置，注册中心配置却没有更新?
@@ -64,37 +60,25 @@ ElasticJob-Lite 提出了 overwrite 概念，可通过 JobConfiguration 或 Spri
 如果您怀疑某些场景出现问题，可参照[作业信息导出](/cn/user-manual/elasticjob-lite/operation/dump/)将作业运行时信息提交至社区。
 ElasticJob 已将 IP 地址等敏感信息过滤，导出的信息可在公网安全传输。
 
-## 7. ElasticJob-Cloud 有何使用限制?
-
-回答：
-
-* 作业启动成功后修改作业名称视为新作业，原作业废弃。
-
-## 8. 在 ElasticJob-Cloud 中添加任务后，为什么任务一直在 ready 状态，而不开始执行?
-
-回答：
-
-任务在 mesos 有单独的 agent 可提供所需的资源时才会启动，否则会等待直到有足够的资源。
-
-## 9. 控制台界面无法正常显示?
+## 7. 控制台界面无法正常显示?
 
 回答：
 
 使用控制台时应确保与 ElasticJob 相关版本保持一致，否则会导致不可用。
 
-## 10. 为什么控制台界面中的作业状态是分片待调整?
+## 8. 为什么控制台界面中的作业状态是分片待调整?
 
 回答：
 
 分片待调整表示作业已启动但尚未获得分片时的状态。
 
-## 11. 为什么首次启动存在任务调度延迟的情况？
+## 9. 为什么首次启动存在任务调度延迟的情况？
 
 回答：
 ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的情况。尝试设置 `-Djava.net.preferIPv4Stack=true`.
 
 
-## 12. Windows环境下，运行ShardingSphere-ElasticJob-UI，找不到或无法加载主类 org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap，如何解决？
+## 10. Windows环境下，运行ShardingSphere-ElasticJob-UI，找不到或无法加载主类 org.apache.shardingsphere.elasticjob.lite.ui.Bootstrap，如何解决？
 
 回答：
 
@@ -108,7 +92,7 @@ ElasticJob 执行任务会获取本机IP，首次可能存在获取IP较慢的�
 tar zxvf apache-shardingsphere-elasticjob-${RELEASE.VERSION}-lite-ui-bin.tar.gz
 ```
 
-## 13. 运行 Cloud Scheduler 持续输出日志 "Elastic job: IP:PORT has leadership"，不能正常运行
+## 11. 运行 Cloud Scheduler 持续输出日志 "Elastic job: IP:PORT has leadership"，不能正常运行
 
 回答：
 
@@ -118,7 +102,7 @@ Cloud Scheduler 依赖 Mesos 库，启动时需要通过 `-Djava.library.path` �
 
 Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
 
-## 14. 在多网卡的情况下无法获取到合适的 IP
+## 12. 在多网卡的情况下无法获取到合适的 IP
 
 回答：
 
@@ -130,7 +114,7 @@ Mesos 相关请参考 [Apache Mesos](https://mesos.apache.org/)。
 1. 指定IP地址 192.168.0.100：`-Delasticjob.preferred.network.ip=192.168.0.100`。
 1. 泛指IP地址(正则表达式) 192.168.*：`-Delasticjob.preferred.network.ip=192.168.*`。
 
-## 15. zk授权升级,在滚动部署过程中出现实例假死,回退到历史版本也依然存在假死。
+## 13. zk授权升级,在滚动部署过程中出现实例假死,回退到历史版本也依然存在假死。
 
 回答:
 

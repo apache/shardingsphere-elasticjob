@@ -87,4 +87,3 @@ The console can only control whether the job itself is running, but it cannot co
 
 The job will be automatically added the first time it runs.
 ElasticJob-Lite is started as a jar and has no job distribution function.
-To publish jobs entirely through the operation and maintenance platform, please use ElasticJob-Cloud.

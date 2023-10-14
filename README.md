@@ -4,8 +4,6 @@
 
 [![Stargazers over time](https://starchart.cc/apache/shardingsphere-elasticjob.svg)](https://starchart.cc/apache/shardingsphere-elasticjob)
 
-ElasticJob is a distributed scheduling solution consisting of two separate projects, ElasticJob-Lite and ElasticJob-Cloud.
-
 Through the functions of flexible scheduling, resource management and job management, 
 it creates a distributed scheduling solution suitable for Internet scenarios, 
 and provides a diversified job ecosystem through open architecture design.
@@ -36,19 +34,6 @@ At the same time, it can release operators too, so that they do not have to worr
 A lightweight, decentralized solution that provides distributed task sharding services.
 
 ![ElasticJob-Lite Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
-
-### ElasticJob-Cloud
-
-Uses Mesos to manage and isolate resources.
-
-![ElasticJob-Cloud Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_cloud.png)
-
-|                   | *ElasticJob-Lite* | *ElasticJob-Cloud* |
-| ----------------- | ----------------- | ------------------ |
-| Decentralization  | Yes               | No                 |
-| Resource Assign   | No                | Yes                |
-| Job Execution     | Daemon            | Daemon + Transient |
-| Deploy Dependency | ZooKeeper         | ZooKeeper + Mesos  |
 
 ## Features
 
@@ -94,7 +79,3 @@ Maven 3.5.0 or above required.
 ### ZooKeeper
 
 ZooKeeper 3.6.0 or above required. [See details](https://zookeeper.apache.org/)
-
-### Mesos (ElasticJob-Cloud only)
-
-Mesos 1.1.0 or compatible version required (For ElasticJob-Cloud only). [See details](https://mesos.apache.org/)

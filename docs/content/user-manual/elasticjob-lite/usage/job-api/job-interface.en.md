@@ -4,8 +4,6 @@ weight = 1
 chapter = true
 +++
 
-ElasticJob-Lite and ElasticJob-Cloud provide a unified job interface, developers need to develop business jobs only once, and then they can be deployed to different environments according to different configurations and deployments.
-
 ElasticJob has two kinds of job types: Class-based job and Type-based job.
 Class-based jobs require developers to weave business logic by implementing interfaces;
 Type-based jobs don't need coding, just need to provide the corresponding configuration.

@@ -5,4 +5,4 @@ weight = 4
 chapter = true
 +++
 
-This chapter describes how to use projects of ElasticJob: ElasticJob-Lite and ElasticJob-Cloud. 
+This chapter describes how to use projects of ElasticJob. 

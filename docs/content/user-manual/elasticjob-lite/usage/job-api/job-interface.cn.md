@@ -4,8 +4,6 @@ weight = 1
 chapter = true
 +++
 
-ElasticJob-Lite 和 ElasticJob-Cloud 提供统一作业接口，开发者仅需对业务作业进行一次开发，之后可根据不同的配置以及部署至不同环境。
-
 ElasticJob 的作业分类基于 class 和 type 两种类型。
 基于 class 的作业需要开发者自行通过实现接口的方式织入业务逻辑；
 基于 type 的作业则无需编码，只需要提供相应配置即可。
