@@ -23,7 +23,6 @@
         <artifactId>elasticjob-infra</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    
     <artifactId>elasticjob-restful</artifactId>
     <name>${project.artifactId}</name>
     
@@ -33,14 +32,10 @@
             <artifactId>elasticjob-infra-common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -60,6 +55,7 @@
             <artifactId>netty-transport</artifactId>
         </dependency>
     </dependencies>
+    
     <build>
         <resources>
             <resource>

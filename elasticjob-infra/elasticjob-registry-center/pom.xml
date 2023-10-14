@@ -31,5 +31,4 @@
         <module>elasticjob-registry-center-api</module>
         <module>elasticjob-regitry-center-provider</module>
     </modules>
-    
 </project>
