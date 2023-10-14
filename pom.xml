@@ -31,12 +31,12 @@
     <description>Distributed scheduled job</description>
     
     <modules>
-        <module>elasticjob-api</module>
-        <module>elasticjob-infra</module>
-        <module>elasticjob-engine</module>
+        <module>api</module>
+        <module>infra</module>
+        <module>engine</module>
+        <module>ecosystem</module>
         
-        <module>elasticjob-distribution</module>
-        <module>elasticjob-ecosystem</module>
+        <module>distribution</module>
     </modules>
     
     <properties>

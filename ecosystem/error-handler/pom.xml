@@ -6,7 +6,7 @@
   ~ The ASF licenses this file to You under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
   ~ the License.  You may obtain a copy of the License at
-  ~  
+  ~
   ~     http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
@@ -20,14 +20,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-registry-center</artifactId>
+        <artifactId>elasticjob-ecosystem</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-regitry-center-provider</artifactId>
+    <artifactId>elasticjob-error-handler</artifactId>
     <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-registry-center-zookeeper-curator</module>
+        <module>spi</module>
+        <module>type</module>
     </modules>
 </project>

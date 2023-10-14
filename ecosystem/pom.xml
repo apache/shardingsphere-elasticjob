@@ -20,15 +20,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-infra</artifactId>
+        <artifactId>elasticjob</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-registry-center</artifactId>
+    <artifactId>elasticjob-ecosystem</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-registry-center-api</module>
-        <module>elasticjob-regitry-center-provider</module>
+        <module>executor</module>
+        <module>error-handler</module>
+        <module>tracing</module>
     </modules>
 </project>

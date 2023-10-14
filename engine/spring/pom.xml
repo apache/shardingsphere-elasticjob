@@ -28,9 +28,9 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-engine-spring-core</module>
-        <module>elasticjob-engine-spring-boot-starter</module>
-        <module>elasticjob-engine-spring-namespace</module>
+        <module>core</module>
+        <module>boot-starter</module>
+        <module>namespace</module>
     </modules>
     
     <properties>
