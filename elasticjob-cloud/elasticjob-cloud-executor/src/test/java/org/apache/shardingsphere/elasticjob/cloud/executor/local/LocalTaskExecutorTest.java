@@ -32,10 +32,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class LocalTaskExecutorTest {
+class LocalTaskExecutorTest {
     
     @Test
-    public void assertSimpleJob() {
+    void assertSimpleJob() {
         TestSimpleJob simpleJob = new TestSimpleJob();
         new LocalTaskExecutor(simpleJob, JobConfiguration.newBuilder(TestSimpleJob.class.getSimpleName(), 3)
                 .cron("*/2 * * * * ?").shardingItemParameters("0=A,1=B").build(), 1).execute();
@@ -43,7 +43,7 @@ public final class LocalTaskExecutorTest {
     }
     
     @Test
-    public void assertDataflowJob() {
+    void assertDataflowJob() {
         TestDataflowJob dataflowJob = new TestDataflowJob();
         new LocalTaskExecutor(dataflowJob, JobConfiguration.newBuilder(TestDataflowJob.class.getSimpleName(), 3)
                 .cron("*/2 * * * * ?").setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, Boolean.FALSE.toString()).build(), 1).execute();
@@ -52,13 +52,13 @@ public final class LocalTaskExecutorTest {
     }
     
     @Test
-    public void assertScriptJob() {
+    void assertScriptJob() {
         new LocalTaskExecutor(new TestDataflowJob(), JobConfiguration.newBuilder("TestScriptJob", 3)
                 .cron("*/2 * * * * ?").setProperty(ScriptJobProperties.SCRIPT_KEY, "echo test").build(), 1).execute();
     }
     
     @Test
-    public void assertNotExistsJobType() {
+    void assertNotExistsJobType() {
         assertThrows(JobConfigurationException.class, () -> new LocalTaskExecutor("not exist", JobConfiguration.newBuilder("not exist", 3).cron("*/2 * * * * ?").build(), 1).execute());
     }
 }

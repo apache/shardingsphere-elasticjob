@@ -28,12 +28,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ElasticJobExecutorServiceTest {
+class ElasticJobExecutorServiceTest {
     
     private static boolean hasExecuted;
     
     @Test
-    public void assertCreateExecutorService() {
+    void assertCreateExecutorService() {
         ElasticJobExecutorService executorServiceObject = new ElasticJobExecutorService("executor-service-test", 1);
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));

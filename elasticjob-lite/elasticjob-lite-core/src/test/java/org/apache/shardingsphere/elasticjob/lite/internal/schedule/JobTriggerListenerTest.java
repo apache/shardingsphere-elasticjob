@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobTriggerListenerTest {
+class JobTriggerListenerTest {
     
     @Mock
     private ExecutionService executionService;
@@ -50,23 +50,23 @@ public final class JobTriggerListenerTest {
     private JobTriggerListener jobTriggerListener;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobTriggerListener = new JobTriggerListener(executionService, shardingService);
     }
     
     @Test
-    public void assertGetName() {
+    void assertGetName() {
         assertThat(jobTriggerListener.getName(), is("JobTriggerListener"));
     }
     
     @Test
-    public void assertTriggerMisfiredWhenPreviousFireTimeIsNull() {
+    void assertTriggerMisfiredWhenPreviousFireTimeIsNull() {
         jobTriggerListener.triggerMisfired(trigger);
         verify(executionService, times(0)).setMisfire(Collections.singletonList(0));
     }
     
     @Test
-    public void assertTriggerMisfiredWhenPreviousFireTimeIsNotNull() {
+    void assertTriggerMisfiredWhenPreviousFireTimeIsNotNull() {
         when(shardingService.getLocalShardingItems()).thenReturn(Collections.singletonList(0));
         when(trigger.getPreviousFireTime()).thenReturn(new Date());
         jobTriggerListener.triggerMisfired(trigger);

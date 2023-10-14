@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class CloudJobConfigurationPOJOTest {
+class CloudJobConfigurationPOJOTest {
     
     private static final String YAML = "appName: app\n"
             + "cpuCount: 1.0\n"
@@ -69,7 +69,7 @@ public final class CloudJobConfigurationPOJOTest {
             + "shardingTotalCount: 3\n";
     
     @Test
-    public void assertToJobConfiguration() {
+    void assertToJobConfiguration() {
         CloudJobConfigurationPOJO pojo = new CloudJobConfigurationPOJO();
         pojo.setAppName("app");
         pojo.setCpuCount(1d);
@@ -113,7 +113,7 @@ public final class CloudJobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertFromJobConfiguration() {
+    void assertFromJobConfiguration() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?")
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
@@ -145,7 +145,7 @@ public final class CloudJobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertMarshal() {
+    void assertMarshal() {
         CloudJobConfigurationPOJO actual = new CloudJobConfigurationPOJO();
         actual.setAppName("app");
         actual.setCpuCount(1d);
@@ -165,7 +165,7 @@ public final class CloudJobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertMarshalWithNullValue() {
+    void assertMarshalWithNullValue() {
         CloudJobConfigurationPOJO actual = new CloudJobConfigurationPOJO();
         actual.setAppName("app");
         actual.setCpuCount(1d);
@@ -177,7 +177,7 @@ public final class CloudJobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertUnmarshal() {
+    void assertUnmarshal() {
         CloudJobConfigurationPOJO actual = YamlEngine.unmarshal(YAML, CloudJobConfigurationPOJO.class);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
@@ -195,7 +195,7 @@ public final class CloudJobConfigurationPOJOTest {
     }
     
     @Test
-    public void assertUnmarshalWithNullValue() {
+    void assertUnmarshalWithNullValue() {
         CloudJobConfigurationPOJO actual = YamlEngine.unmarshal(YAML_WITH_NULL, CloudJobConfigurationPOJO.class);
         assertThat(actual.getAppName(), is("app"));
         assertThat(actual.getCpuCount(), is(1d));

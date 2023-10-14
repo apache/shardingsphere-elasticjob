@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RegisteredJobStatisticJobTest {
+class RegisteredJobStatisticJobTest {
     
     @Mock
     private CloudJobConfigurationService configurationService;
@@ -52,31 +52,31 @@ public class RegisteredJobStatisticJobTest {
     private RegisteredJobStatisticJob registeredJobStatisticJob;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         registeredJobStatisticJob = new RegisteredJobStatisticJob();
         registeredJobStatisticJob.setConfigurationService(configurationService);
         registeredJobStatisticJob.setRepository(repository);
     }
     
     @Test
-    public void assertBuildJobDetail() {
+    void assertBuildJobDetail() {
         assertThat(registeredJobStatisticJob.buildJobDetail().getKey().getName(), is(RegisteredJobStatisticJob.class.getSimpleName()));
     }
     
     @Test
-    public void assertBuildTrigger() {
+    void assertBuildTrigger() {
         Trigger trigger = registeredJobStatisticJob.buildTrigger();
         assertThat(trigger.getKey().getName(), is(RegisteredJobStatisticJob.class.getSimpleName() + "Trigger"));
     }
     
     @Test
-    public void assertGetDataMap() {
+    void assertGetDataMap() {
         assertThat(registeredJobStatisticJob.getDataMap().get("configurationService"), is(configurationService));
         assertThat(registeredJobStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
-    public void assertExecuteWhenRepositoryIsEmpty() {
+    void assertExecuteWhenRepositoryIsEmpty() {
         Optional<JobRegisterStatistics> latestOne = Optional.empty();
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
@@ -88,7 +88,7 @@ public class RegisteredJobStatisticJobTest {
     }
     
     @Test
-    public void assertExecute() {
+    void assertExecute() {
         Optional<JobRegisterStatistics> latestOne = Optional.of(new JobRegisterStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -3)));
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);

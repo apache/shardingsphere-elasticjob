@@ -28,15 +28,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class DingtalkJobErrorHandlerPropertiesValidatorTest {
+class DingtalkJobErrorHandlerPropertiesValidatorTest {
     
     @BeforeEach
-    public void startup() {
+    void startup() {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
     
     @Test
-    public void assertValidateWithNormal() {
+    void assertValidateWithNormal() {
         Properties properties = new Properties();
         properties.setProperty(DingtalkPropertiesConstants.WEBHOOK, "webhook");
         properties.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "1000");
@@ -46,7 +46,7 @@ public final class DingtalkJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithPropsIsNull() {
+    void assertValidateWithPropsIsNull() {
         assertThrows(NullPointerException.class, () -> {
             DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
             actual.validate(null);
@@ -54,7 +54,7 @@ public final class DingtalkJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithWebhookIsNull() {
+    void assertValidateWithWebhookIsNull() {
         DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
         try {
             actual.validate(new Properties());

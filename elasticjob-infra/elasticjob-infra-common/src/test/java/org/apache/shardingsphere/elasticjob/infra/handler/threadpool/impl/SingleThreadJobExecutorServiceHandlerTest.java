@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class SingleThreadJobExecutorServiceHandlerTest {
+class SingleThreadJobExecutorServiceHandlerTest {
     
     @Test
-    public void assertGetPoolSizeAndType() {
+    void assertGetPoolSizeAndType() {
         SingleThreadJobExecutorServiceHandler singleThreadJobExecutorServiceHandler = (SingleThreadJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("SINGLE_THREAD");
         assertThat(singleThreadJobExecutorServiceHandler.getPoolSize(), is(1));
         assertThat(singleThreadJobExecutorServiceHandler.getType(), is("SINGLE_THREAD"));

@@ -52,19 +52,19 @@ public abstract class AbstractOneOffJobSpringIntegrateTest extends AbstractZooke
     
     @BeforeEach
     @AfterEach
-    public void reset() {
+    void reset() {
         FooSimpleElasticJob.reset();
         DataflowElasticJob.reset();
     }
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         JobRegistry.getInstance().shutdown(simpleJobName);
         JobRegistry.getInstance().shutdown(throughputDataflowJobName);
     }
     
     @Test
-    public void assertSpringJobBean() {
+    void assertSpringJobBean() {
         assertSimpleElasticJobBean();
         assertThroughputDataflowElasticJobBean();
     }

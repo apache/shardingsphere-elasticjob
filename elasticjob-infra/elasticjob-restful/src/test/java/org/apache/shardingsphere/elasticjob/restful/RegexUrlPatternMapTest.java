@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class RegexUrlPatternMapTest {
+class RegexUrlPatternMapTest {
     
     @Test
-    public void assertRegexUrlPatternMap() {
+    void assertRegexUrlPatternMap() {
         RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
         urlPatternMap.put("/app/{jobName}", 1);
         urlPatternMap.put("/app/list", 2);
@@ -49,7 +49,7 @@ public final class RegexUrlPatternMapTest {
     }
     
     @Test
-    public void assertAmbiguous() {
+    void assertAmbiguous() {
         RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
         urlPatternMap.put("/foo/{bar}/{fooName}/status", 10);
         urlPatternMap.put("/foo/{bar}/operate/{metrics}", 11);
@@ -60,7 +60,7 @@ public final class RegexUrlPatternMapTest {
     }
     
     @Test
-    public void assertDuplicate() {
+    void assertDuplicate() {
         assertThrows(IllegalArgumentException.class, () -> {
             RegexUrlPatternMap<Integer> urlPatternMap = new RegexUrlPatternMap<>();
             urlPatternMap.put("/app/{jobName}/enable", 0);

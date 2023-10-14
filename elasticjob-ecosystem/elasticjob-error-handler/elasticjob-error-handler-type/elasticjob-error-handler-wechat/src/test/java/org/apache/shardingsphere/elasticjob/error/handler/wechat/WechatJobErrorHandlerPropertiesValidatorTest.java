@@ -28,15 +28,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class WechatJobErrorHandlerPropertiesValidatorTest {
+class WechatJobErrorHandlerPropertiesValidatorTest {
     
     @BeforeEach
-    public void startup() {
+    void startup() {
         ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
     }
     
     @Test
-    public void assertValidateWithNormal() {
+    void assertValidateWithNormal() {
         Properties properties = new Properties();
         properties.setProperty(WechatPropertiesConstants.WEBHOOK, "webhook");
         properties.setProperty(WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "1000");
@@ -46,7 +46,7 @@ public final class WechatJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithPropsIsNull() {
+    void assertValidateWithPropsIsNull() {
         assertThrows(NullPointerException.class, () -> {
             WechatJobErrorHandlerPropertiesValidator actual = getValidator();
             actual.validate(null);
@@ -54,7 +54,7 @@ public final class WechatJobErrorHandlerPropertiesValidatorTest {
     }
     
     @Test
-    public void assertValidateWithWebhookIsNull() {
+    void assertValidateWithWebhookIsNull() {
         WechatJobErrorHandlerPropertiesValidator actual = getValidator();
         try {
             actual.validate(new Properties());

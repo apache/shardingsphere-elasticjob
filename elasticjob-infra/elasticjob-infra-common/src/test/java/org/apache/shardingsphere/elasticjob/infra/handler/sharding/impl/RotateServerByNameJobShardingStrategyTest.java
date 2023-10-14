@@ -29,12 +29,12 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class RotateServerByNameJobShardingStrategyTest {
+class RotateServerByNameJobShardingStrategyTest {
     
     private final RoundRobinByNameJobShardingStrategy rotateServerByNameJobShardingStrategy = new RoundRobinByNameJobShardingStrategy();
     
     @Test
-    public void assertSharding1() {
+    void assertSharding1() {
         Map<JobInstance, List<Integer>> expected = new HashMap<>();
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host2@-@0"), Collections.singletonList(1));
@@ -43,7 +43,7 @@ public final class RotateServerByNameJobShardingStrategyTest {
     }
     
     @Test
-    public void assertSharding2() {
+    void assertSharding2() {
         Map<JobInstance, List<Integer>> expected = new HashMap<>();
         expected.put(new JobInstance("host2@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host0@-@0"), Collections.singletonList(1));
@@ -52,7 +52,7 @@ public final class RotateServerByNameJobShardingStrategyTest {
     }
     
     @Test
-    public void assertSharding3() {
+    void assertSharding3() {
         Map<JobInstance, List<Integer>> expected = new HashMap<>();
         expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
         expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));

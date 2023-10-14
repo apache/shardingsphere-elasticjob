@@ -40,7 +40,7 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class RDBTracingListenerTest {
+class RDBTracingListenerTest {
     
     private static final String JOB_NAME = "test_rdb_event_listener";
     
@@ -50,7 +50,7 @@ public final class RDBTracingListenerTest {
     private JobTracingEventBus jobTracingEventBus;
     
     @BeforeEach
-    public void setUp() throws SQLException {
+    void setUp() throws SQLException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
@@ -69,14 +69,14 @@ public final class RDBTracingListenerTest {
     }
     
     @Test
-    public void assertPostJobExecutionEvent() {
+    void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobTracingEventBus.post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
     }
     
     @Test
-    public void assertPostJobStatusTraceEvent() {
+    void assertPostJobStatusTraceEvent() {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.");
         jobTracingEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);

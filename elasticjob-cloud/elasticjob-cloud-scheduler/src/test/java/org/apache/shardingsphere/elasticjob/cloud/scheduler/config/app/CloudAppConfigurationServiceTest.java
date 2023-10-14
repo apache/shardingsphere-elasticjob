@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class CloudAppConfigurationServiceTest {
+class CloudAppConfigurationServiceTest {
     
     private static final String YAML = "appCacheEnable: true\n"
             + "appName: test_app\n"
@@ -56,28 +56,28 @@ public final class CloudAppConfigurationServiceTest {
     private CloudAppConfigurationService configService;
     
     @Test
-    public void assertAdd() {
+    void assertAdd() {
         CloudAppConfigurationPOJO appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.add(appConfig);
         verify(regCenter).persist("/config/app/test_app", YAML);
     }
     
     @Test
-    public void assertUpdate() {
+    void assertUpdate() {
         CloudAppConfigurationPOJO appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
         configService.update(appConfig);
         verify(regCenter).update("/config/app/test_app", YAML);
     }
     
     @Test
-    public void assertLoadAllWithoutRootNode() {
+    void assertLoadAllWithoutRootNode() {
         when(regCenter.isExisted("/config/app")).thenReturn(false);
         assertTrue(configService.loadAll().isEmpty());
         verify(regCenter).isExisted("/config/app");
     }
     
     @Test
-    public void assertLoadAllWithRootNode() {
+    void assertLoadAllWithRootNode() {
         when(regCenter.isExisted("/config/app")).thenReturn(true);
         when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
         when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
@@ -91,12 +91,12 @@ public final class CloudAppConfigurationServiceTest {
     }
     
     @Test
-    public void assertLoadWithoutConfig() {
+    void assertLoadWithoutConfig() {
         assertFalse(configService.load("test_app").isPresent());
     }
     
     @Test
-    public void assertLoadWithConfig() {
+    void assertLoadWithConfig() {
         when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         Optional<CloudAppConfigurationPOJO> actual = configService.load("test_app");
         assertTrue(actual.isPresent());
@@ -104,7 +104,7 @@ public final class CloudAppConfigurationServiceTest {
     }
     
     @Test
-    public void assertRemove() {
+    void assertRemove() {
         configService.remove("test_app");
         verify(regCenter).remove("/config/app/test_app");
     }

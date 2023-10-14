@@ -43,12 +43,12 @@ import java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class HandlerParameterDecoderTest {
+class HandlerParameterDecoderTest {
     
     private EmbeddedChannel channel;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ContextInitializationInboundHandler contextInitializationInboundHandler = new ContextInitializationInboundHandler();
         HttpRequestDispatcher httpRequestDispatcher = new HttpRequestDispatcher(Collections.singletonList(new DecoderTestController()), false);
         HandlerParameterDecoder handlerParameterDecoder = new HandlerParameterDecoder();
@@ -57,7 +57,7 @@ public final class HandlerParameterDecoderTest {
     }
     
     @Test
-    public void assertDecodeParameters() {
+    void assertDecodeParameters() {
         QueryStringEncoder queryStringEncoder = new QueryStringEncoder("/myApp/C");
         queryStringEncoder.addParam("cron", "0 * * * * ?");
         queryStringEncoder.addParam("integer", "30");

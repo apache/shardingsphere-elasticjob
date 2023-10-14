@@ -41,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class LaunchingTasksTest {
+class LaunchingTasksTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -61,7 +61,7 @@ public final class LaunchingTasksTest {
     private LaunchingTasks launchingTasks;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         FacadeService facadeService = new FacadeService(regCenter);
         ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
@@ -74,7 +74,7 @@ public final class LaunchingTasksTest {
     }
     
     @Test
-    public void assertGetPendingTasks() {
+    void assertGetPendingTasks() {
         List<TaskRequest> actual = launchingTasks.getPendingTasks();
         assertThat(actual.size(), is(20));
     }

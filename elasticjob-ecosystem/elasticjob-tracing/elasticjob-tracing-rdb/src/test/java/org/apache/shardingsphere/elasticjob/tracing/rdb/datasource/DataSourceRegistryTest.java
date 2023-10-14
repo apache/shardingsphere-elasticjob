@@ -32,13 +32,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DataSourceRegistryTest {
+class DataSourceRegistryTest {
     
     @Mock
     private DataSourceConfiguration dataSourceConfiguration;
     
     @Test
-    public void assertGetDataSourceBySameConfiguration() {
+    void assertGetDataSourceBySameConfiguration() {
         when(dataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));
         DataSource expected = DataSourceRegistry.getInstance().getDataSource(dataSourceConfiguration);
         DataSource actual = DataSourceRegistry.getInstance().getDataSource(dataSourceConfiguration);
@@ -47,7 +47,7 @@ public final class DataSourceRegistryTest {
     }
     
     @Test
-    public void assertGetDataSourceWithDifferentConfiguration() {
+    void assertGetDataSourceWithDifferentConfiguration() {
         when(dataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));
         DataSourceConfiguration anotherDataSourceConfiguration = mock(DataSourceConfiguration.class);
         when(anotherDataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));

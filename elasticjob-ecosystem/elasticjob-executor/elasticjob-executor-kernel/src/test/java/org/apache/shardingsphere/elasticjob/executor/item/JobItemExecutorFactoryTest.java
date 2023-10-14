@@ -29,30 +29,30 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class JobItemExecutorFactoryTest {
+class JobItemExecutorFactoryTest {
     
     @Test
-    public void assertGetExecutorByClassFailureWithInvalidType() {
+    void assertGetExecutorByClassFailureWithInvalidType() {
         assertThrows(JobConfigurationException.class, () -> JobItemExecutorFactory.getExecutor(FailedJob.class));
     }
     
     @Test
-    public void assertGetExecutorByClassSuccessWithCurrentClass() {
+    void assertGetExecutorByClassSuccessWithCurrentClass() {
         assertThat(JobItemExecutorFactory.getExecutor(FooJob.class), instanceOf(ClassedFooJobExecutor.class));
     }
     
     @Test
-    public void assertGetExecutorByClassSuccessWithSubClass() {
+    void assertGetExecutorByClassSuccessWithSubClass() {
         assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(ClassedFooJobExecutor.class));
     }
     
     @Test
-    public void assertGetExecutorByTypeFailureWithInvalidType() {
+    void assertGetExecutorByTypeFailureWithInvalidType() {
         assertThrows(JobConfigurationException.class, () -> JobItemExecutorFactory.getExecutor("FAIL"));
     }
     
     @Test
-    public void assertGetExecutorByTypeSuccess() {
+    void assertGetExecutorByTypeSuccess() {
         assertThat(JobItemExecutorFactory.getExecutor("FOO"), instanceOf(TypedFooJobExecutor.class));
     }
 }

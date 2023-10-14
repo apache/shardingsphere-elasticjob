@@ -36,7 +36,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
-public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
     
     private final String scriptJobName = "scriptElasticJob_job_type";
     
@@ -46,13 +46,13 @@ public final class JobSpringNamespaceWithTypeTest extends AbstractZookeeperJUnit
     private Scheduler scheduler;
     
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true)));
         JobRegistry.getInstance().getJobScheduleController(scriptJobName).shutdown();
     }
     
     @Test
-    public void jobScriptWithJobTypeTest() throws SchedulerException {
+    void jobScriptWithJobTypeTest() throws SchedulerException {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(regCenter.isExisted("/" + scriptJobName + "/sharding"), is(true)));
         scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
         assertTrue(scheduler.isStarted());

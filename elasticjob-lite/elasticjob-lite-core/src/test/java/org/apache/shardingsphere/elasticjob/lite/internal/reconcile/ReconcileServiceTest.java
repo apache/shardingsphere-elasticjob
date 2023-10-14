@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ReconcileServiceTest {
+class ReconcileServiceTest {
     
     @Mock
     private ConfigurationService configService;
@@ -50,7 +50,7 @@ public final class ReconcileServiceTest {
     private ReconcileService reconcileService;
     
     @BeforeEach
-    public void setup() {
+    void setup() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         reconcileService = new ReconcileService(regCenter, "test_job");
         ReflectionUtils.setFieldValue(reconcileService, "lastReconcileTime", 1L);
@@ -59,7 +59,7 @@ public final class ReconcileServiceTest {
     }
     
     @Test
-    public void assertReconcile() {
+    void assertReconcile() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").reconcileIntervalMinutes(1).build());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
@@ -70,7 +70,7 @@ public final class ReconcileServiceTest {
     }
     
     @Test
-    public void assertReconcileWithStaticSharding() {
+    void assertReconcileWithStaticSharding() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").reconcileIntervalMinutes(1).staticSharding(true).build());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);

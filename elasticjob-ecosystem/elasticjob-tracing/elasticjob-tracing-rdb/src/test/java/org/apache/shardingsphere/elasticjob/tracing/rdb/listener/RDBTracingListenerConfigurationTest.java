@@ -25,10 +25,10 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class RDBTracingListenerConfigurationTest {
+class RDBTracingListenerConfigurationTest {
     
     @Test
-    public void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
+    void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
@@ -38,7 +38,7 @@ public final class RDBTracingListenerConfigurationTest {
     }
     
     @Test
-    public void assertCreateTracingListenerFailure() {
+    void assertCreateTracingListenerFailure() {
         assertThrows(TracingConfigurationException.class, () -> new RDBTracingListenerConfiguration().createTracingListener(new BasicDataSource()));
     }
 }

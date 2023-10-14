@@ -26,10 +26,10 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ShardingContextsTest {
+class ShardingContextsTest {
     
     @Test
-    public void assertCreateShardingContext() {
+    void assertCreateShardingContext() {
         ShardingContexts shardingContexts = createShardingContexts();
         ShardingContext actual = shardingContexts.createShardingContext(1);
         assertThat(actual.getJobName(), is(shardingContexts.getJobName()));

@@ -43,7 +43,7 @@ import java.util.LinkedHashMap;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class TaskExecutorThreadTest {
+class TaskExecutorThreadTest {
     
     @Mock
     private ExecutorDriver executorDriver;
@@ -51,7 +51,7 @@ public final class TaskExecutorThreadTest {
     private final String taskId = String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY);
     
     @Test
-    public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
+    void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildJavaTransientTaskInfo();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();
@@ -60,7 +60,7 @@ public final class TaskExecutorThreadTest {
     }
     
     @Test
-    public void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
+    void assertLaunchTaskWithDaemonTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildSpringScriptTransientTaskInfo();
         TaskThread taskThread = new TaskExecutor(new TestSimpleJob()).new TaskThread(executorDriver, taskInfo);
         taskThread.run();

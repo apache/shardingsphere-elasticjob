@@ -45,7 +45,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class HttpJobExecutorTest {
+class HttpJobExecutorTest {
     
     private static final int PORT = 9876;
     
@@ -72,7 +72,7 @@ public final class HttpJobExecutorTest {
     private HttpJobExecutor jobExecutor;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
         configuration.setHost(HOST);
         configuration.addControllerInstances(new InternalController());
@@ -81,20 +81,20 @@ public final class HttpJobExecutorTest {
     }
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         lenient().when(jobConfig.getProps()).thenReturn(properties);
         jobExecutor = new HttpJobExecutor();
     }
     
     @AfterAll
-    public static void close() {
+    static void close() {
         if (null != restfulService) {
             restfulService.shutdown();
         }
     }
     
     @Test
-    public void assertUrlEmpty() {
+    void assertUrlEmpty() {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn("");
             jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
@@ -102,7 +102,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertMethodEmpty() {
+    void assertMethodEmpty() {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
             when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("");
@@ -111,7 +111,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertProcessWithoutSuccessCode() {
+    void assertProcessWithoutSuccessCode() {
         when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/unknownMethod"));
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("GET");
         when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("");
@@ -121,7 +121,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertProcessWithGet() {
+    void assertProcessWithGet() {
         when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("GET");
         when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("");
@@ -131,7 +131,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertProcessHeader() {
+    void assertProcessHeader() {
         when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getShardingContext"));
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("GET");
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("4000");
@@ -140,7 +140,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertProcessWithPost() {
+    void assertProcessWithPost() {
         when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/updateName"));
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("POST");
         when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("name=elasticjob");
@@ -151,7 +151,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertProcessWithIOException() {
+    void assertProcessWithIOException() {
         assertThrows(JobExecutionException.class, () -> {
             when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/postWithTimeout"));
             when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("POST");
@@ -163,7 +163,7 @@ public final class HttpJobExecutorTest {
     }
     
     @Test
-    public void assertGetType() {
+    void assertGetType() {
         assertThat(jobExecutor.getType(), is("HTTP"));
     }
     

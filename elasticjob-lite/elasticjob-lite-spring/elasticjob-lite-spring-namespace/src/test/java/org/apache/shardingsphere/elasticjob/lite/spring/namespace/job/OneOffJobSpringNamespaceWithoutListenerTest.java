@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithoutListener.xml")
-public final class OneOffJobSpringNamespaceWithoutListenerTest extends AbstractOneOffJobSpringIntegrateTest {
+class OneOffJobSpringNamespaceWithoutListenerTest extends AbstractOneOffJobSpringIntegrateTest {
     
-    public OneOffJobSpringNamespaceWithoutListenerTest() {
+    OneOffJobSpringNamespaceWithoutListenerTest() {
         super("oneOffSimpleElasticJob", "oneOffDataflowElasticJob");
     }
 }

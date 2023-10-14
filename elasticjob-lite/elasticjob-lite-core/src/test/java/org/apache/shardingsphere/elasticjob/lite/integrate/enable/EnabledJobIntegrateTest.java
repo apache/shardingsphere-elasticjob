@@ -40,7 +40,7 @@ public abstract class EnabledJobIntegrateTest extends BaseIntegrateTest {
     }
     
     @BeforeEach
-    public final void assertEnabledRegCenterInfo() {
+    void assertEnabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();

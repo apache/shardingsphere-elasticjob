@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class SchedulerFacadeTest {
+class SchedulerFacadeTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -50,7 +50,7 @@ public final class SchedulerFacadeTest {
     private SchedulerFacade schedulerFacade;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         schedulerFacade = new SchedulerFacade(null, "test_job");
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
@@ -58,7 +58,7 @@ public final class SchedulerFacadeTest {
     }
     
     @Test
-    public void assertShutdownInstanceIfNotLeaderAndReconcileServiceIsNotRunning() {
+    void assertShutdownInstanceIfNotLeaderAndReconcileServiceIsNotRunning() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         schedulerFacade.shutdownInstance();
@@ -67,7 +67,7 @@ public final class SchedulerFacadeTest {
     }
     
     @Test
-    public void assertShutdownInstanceIfLeaderAndReconcileServiceIsRunning() {
+    void assertShutdownInstanceIfLeaderAndReconcileServiceIsRunning() {
         when(leaderService.isLeader()).thenReturn(true);
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);

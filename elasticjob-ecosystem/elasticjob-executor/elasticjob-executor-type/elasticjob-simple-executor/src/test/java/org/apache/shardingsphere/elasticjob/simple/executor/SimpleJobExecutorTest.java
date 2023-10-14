@@ -34,7 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class SimpleJobExecutorTest {
+class SimpleJobExecutorTest {
     
     @Mock
     private FooSimpleJob fooSimpleJob;
@@ -48,18 +48,18 @@ public final class SimpleJobExecutorTest {
     private SimpleJobExecutor jobExecutor;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobExecutor = new SimpleJobExecutor();
     }
     
     @Test
-    public void assertProcess() {
+    void assertProcess() {
         jobExecutor.process(fooSimpleJob, jobConfig, jobFacade, any());
         verify(fooSimpleJob, times(1)).execute(any());
     }
     
     @Test
-    public void assertGetElasticJobClass() {
+    void assertGetElasticJobClass() {
         assertThat(jobExecutor.getElasticJobClass(), is(SimpleJob.class));
     }
 }

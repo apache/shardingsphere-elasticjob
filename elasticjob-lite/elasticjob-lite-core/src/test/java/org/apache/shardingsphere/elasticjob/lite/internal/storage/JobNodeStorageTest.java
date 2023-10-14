@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobNodeStorageTest {
+class JobNodeStorageTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -55,41 +55,41 @@ public final class JobNodeStorageTest {
     private JobNodeStorage jobNodeStorage;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jobNodeStorage = new JobNodeStorage(regCenter, "test_job");
         ReflectionUtils.setFieldValue(jobNodeStorage, "regCenter", regCenter);
     }
     
     @Test
-    public void assertIsJobNodeExisted() {
+    void assertIsJobNodeExisted() {
         when(regCenter.isExisted("/test_job/config")).thenReturn(true);
         assertTrue(jobNodeStorage.isJobNodeExisted("config"));
         verify(regCenter).isExisted("/test_job/config");
     }
     
     @Test
-    public void assertGetJobNodeData() {
+    void assertGetJobNodeData() {
         when(regCenter.get("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         assertThat(jobNodeStorage.getJobNodeData("config/cron"), is("0/1 * * * * ?"));
         verify(regCenter).get("/test_job/config/cron");
     }
     
     @Test
-    public void assertGetJobNodeDataDirectly() {
+    void assertGetJobNodeDataDirectly() {
         when(regCenter.getDirectly("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         assertThat(jobNodeStorage.getJobNodeDataDirectly("config/cron"), is("0/1 * * * * ?"));
         verify(regCenter).getDirectly("/test_job/config/cron");
     }
     
     @Test
-    public void assertGetJobNodeChildrenKeys() {
+    void assertGetJobNodeChildrenKeys() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("host0", "host1"));
         assertThat(jobNodeStorage.getJobNodeChildrenKeys("servers"), is(Arrays.asList("host0", "host1")));
         verify(regCenter).getChildrenKeys("/test_job/servers");
     }
     
     @Test
-    public void assertCreateJobNodeIfNeeded() {
+    void assertCreateJobNodeIfNeeded() {
         when(regCenter.isExisted("/test_job")).thenReturn(true);
         when(regCenter.isExisted("/test_job/config")).thenReturn(false);
         jobNodeStorage.createJobNodeIfNeeded("config");
@@ -99,7 +99,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertCreateJobNodeIfRootJobNodeIsNotExist() {
+    void assertCreateJobNodeIfRootJobNodeIsNotExist() {
         when(regCenter.isExisted("/test_job")).thenReturn(false);
         jobNodeStorage.createJobNodeIfNeeded("config");
         verify(regCenter).isExisted("/test_job");
@@ -108,7 +108,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertCreateJobNodeIfNotNeeded() {
+    void assertCreateJobNodeIfNotNeeded() {
         when(regCenter.isExisted("/test_job")).thenReturn(true);
         when(regCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.createJobNodeIfNeeded("config");
@@ -118,7 +118,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertRemoveJobNodeIfNeeded() {
+    void assertRemoveJobNodeIfNeeded() {
         when(regCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.removeJobNodeIfExisted("config");
         verify(regCenter).isExisted("/test_job/config");
@@ -126,7 +126,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertRemoveJobNodeIfNotNeeded() {
+    void assertRemoveJobNodeIfNotNeeded() {
         when(regCenter.isExisted("/test_job/config")).thenReturn(false);
         jobNodeStorage.removeJobNodeIfExisted("config");
         verify(regCenter).isExisted("/test_job/config");
@@ -134,37 +134,37 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertFillJobNode() {
+    void assertFillJobNode() {
         jobNodeStorage.fillJobNode("config/cron", "0/1 * * * * ?");
         verify(regCenter).persist("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
-    public void assertFillEphemeralJobNode() {
+    void assertFillEphemeralJobNode() {
         jobNodeStorage.fillEphemeralJobNode("config/cron", "0/1 * * * * ?");
         verify(regCenter).persistEphemeral("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
-    public void assertUpdateJobNode() {
+    void assertUpdateJobNode() {
         jobNodeStorage.updateJobNode("config/cron", "0/1 * * * * ?");
         verify(regCenter).update("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
-    public void assertReplaceJobNode() {
+    void assertReplaceJobNode() {
         jobNodeStorage.replaceJobNode("config/cron", "0/1 * * * * ?");
         verify(regCenter).persist("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
-    public void assertExecuteInTransactionSuccess() throws Exception {
+    void assertExecuteInTransactionSuccess() throws Exception {
         jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
         verify(regCenter).executeInTransaction(any(List.class));
     }
     
     @Test
-    public void assertExecuteInTransactionFailure() {
+    void assertExecuteInTransactionFailure() {
         assertThrows(RegException.class, () -> {
             doThrow(RuntimeException.class).when(regCenter).executeInTransaction(any(List.class));
             jobNodeStorage.executeInTransaction(Collections.singletonList(TransactionOperation.opAdd("/test_transaction", "")));
@@ -172,14 +172,14 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertAddConnectionStateListener() {
+    void assertAddConnectionStateListener() {
         ConnectionStateChangedEventListener listener = mock(ConnectionStateChangedEventListener.class);
         jobNodeStorage.addConnectionStateListener(listener);
         verify(regCenter).addConnectionStateChangedEventListener("/test_job", listener);
     }
     
     @Test
-    public void assertAddDataListener() {
+    void assertAddDataListener() {
         DataChangedEventListener listener = mock(DataChangedEventListener.class);
         String jobName = "test_job";
         ListenerNotifierManager.getInstance().registerJobNotifyExecutor(jobName);
@@ -189,7 +189,7 @@ public final class JobNodeStorageTest {
     }
     
     @Test
-    public void assertGetRegistryCenterTime() {
+    void assertGetRegistryCenterTime() {
         when(regCenter.getRegistryCenterTime("/test_job/systemTime/current")).thenReturn(0L);
         assertThat(jobNodeStorage.getRegistryCenterTime(), is(0L));
         verify(regCenter).getRegistryCenterTime("/test_job/systemTime/current");

@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobClassNameProviderFactoryTest {
+class JobClassNameProviderFactoryTest {
     
     @Test
-    public void assertGetDefaultStrategy() {
+    void assertGetDefaultStrategy() {
         assertThat(JobClassNameProviderFactory.getProvider(), instanceOf(DefaultJobClassNameProvider.class));
     }
 }

@@ -22,25 +22,25 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ShardingStatusTest {
+class ShardingStatusTest {
     
     @Test
-    public void assertGetShardingStatusWhenIsDisabled() {
+    void assertGetShardingStatusWhenIsDisabled() {
         assertThat(ShardingInfo.ShardingStatus.getShardingStatus(true, false, true), is(ShardingInfo.ShardingStatus.DISABLED));
     }
     
     @Test
-    public void assertGetShardingStatusWhenIsRunning() {
+    void assertGetShardingStatusWhenIsRunning() {
         assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, true, false), is(ShardingInfo.ShardingStatus.RUNNING));
     }
     
     @Test
-    public void assertGetShardingStatusWhenIsPending() {
+    void assertGetShardingStatusWhenIsPending() {
         assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false, false), is(ShardingInfo.ShardingStatus.PENDING));
     }
     
     @Test
-    public void assertGetShardingStatusWhenIsShardingError() {
+    void assertGetShardingStatusWhenIsShardingError() {
         assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false, true), is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
     }
 }

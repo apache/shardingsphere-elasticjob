@@ -40,7 +40,7 @@ public abstract class AbstractEmbedZookeeperBaseTest {
     private static final Object INIT_LOCK = new Object();
     
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         startEmbedTestingServer();
     }
     

@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class JobStatisticExceptionTest {
+class JobStatisticExceptionTest {
     
     @Test
-    public void assertGetCause() {
+    void assertGetCause() {
         assertThat(new JobStatisticException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

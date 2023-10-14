@@ -28,10 +28,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ZookeeperCuratorIgnoredExceptionProviderTest {
+class ZookeeperCuratorIgnoredExceptionProviderTest {
     
     @Test
-    public void assertIgnoredException() {
+    void assertIgnoredException() {
         List<Class<? extends Throwable>> expected = Arrays.asList(ConnectionLossException.class, NoNodeException.class, NodeExistsException.class);
         assertThat(new ZookeeperCuratorIgnoredExceptionProvider().getIgnoredExceptions(), is(expected));
     }

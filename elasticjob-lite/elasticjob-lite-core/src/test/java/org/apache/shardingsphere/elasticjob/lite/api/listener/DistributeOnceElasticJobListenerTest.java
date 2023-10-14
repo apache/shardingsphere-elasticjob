@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DistributeOnceElasticJobListenerTest {
+class DistributeOnceElasticJobListenerTest {
     
     @Mock
     private GuaranteeService guaranteeService;
@@ -57,7 +57,7 @@ public final class DistributeOnceElasticJobListenerTest {
     private TestDistributeOnceElasticJobListener distributeOnceElasticJobListener;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         distributeOnceElasticJobListener.setGuaranteeService(guaranteeService);
         ReflectionUtils.setSuperclassFieldValue(distributeOnceElasticJobListener, "timeService", timeService);
@@ -68,7 +68,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertBeforeJobExecutedWhenIsAllStarted() {
+    void assertBeforeJobExecutedWhenIsAllStarted() {
         when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
@@ -77,7 +77,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertBeforeJobExecutedWhenIsNotAllStartedAndNotTimeout() {
+    void assertBeforeJobExecutedWhenIsNotAllStartedAndNotTimeout() {
         when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllStarted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
@@ -87,7 +87,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertBeforeJobExecutedWhenIsNotAllStartedAndTimeout() {
+    void assertBeforeJobExecutedWhenIsNotAllStartedAndTimeout() {
         assertThrows(JobSystemException.class, () -> {
             when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
             when(guaranteeService.isAllStarted()).thenReturn(false);
@@ -99,7 +99,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertAfterJobExecutedWhenIsAllCompleted() {
+    void assertAfterJobExecutedWhenIsAllCompleted() {
         when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
@@ -108,7 +108,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertAfterJobExecutedWhenIsAllCompletedAndNotTimeout() {
+    void assertAfterJobExecutedWhenIsAllCompletedAndNotTimeout() {
         when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
         when(guaranteeService.isAllCompleted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
@@ -118,7 +118,7 @@ public final class DistributeOnceElasticJobListenerTest {
     }
     
     @Test
-    public void assertAfterJobExecutedWhenIsAllCompletedAndTimeout() {
+    void assertAfterJobExecutedWhenIsAllCompletedAndTimeout() {
         assertThrows(JobSystemException.class, () -> {
             when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
             when(guaranteeService.isAllCompleted()).thenReturn(false);

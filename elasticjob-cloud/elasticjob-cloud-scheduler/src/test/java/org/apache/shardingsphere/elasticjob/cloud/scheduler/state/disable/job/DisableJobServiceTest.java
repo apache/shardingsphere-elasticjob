@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DisableJobServiceTest {
+class DisableJobServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -38,32 +38,32 @@ public final class DisableJobServiceTest {
     private DisableJobService disableJobService;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         disableJobService = new DisableJobService(regCenter);
     }
     
     @Test
-    public void assertAdd() {
+    void assertAdd() {
         disableJobService.add("test_job");
         verify(regCenter).isExisted("/state/disable/job/test_job");
         verify(regCenter).persist("/state/disable/job/test_job", "test_job");
     }
     
     @Test
-    public void assertRemove() {
+    void assertRemove() {
         disableJobService.remove("test_job");
         verify(regCenter).remove("/state/disable/job/test_job");
     }
     
     @Test
-    public void assertIsDisabled() {
+    void assertIsDisabled() {
         when(regCenter.isExisted("/state/disable/job/test_job")).thenReturn(true);
         assertTrue(disableJobService.isDisabled("test_job"));
         verify(regCenter).isExisted("/state/disable/job/test_job");
     }
     
     @Test
-    public void assertIsEnabled() {
+    void assertIsEnabled() {
         when(regCenter.isExisted("/state/disable/job/test_job")).thenReturn(false);
         assertFalse(disableJobService.isDisabled("test_job"));
         verify(regCenter).isExisted("/state/disable/job/test_job");

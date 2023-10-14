@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DisableAppServiceTest {
+class DisableAppServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -38,32 +38,32 @@ public final class DisableAppServiceTest {
     private DisableAppService disableAppService;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         disableAppService = new DisableAppService(regCenter);
     }
     
     @Test
-    public void assertAdd() {
+    void assertAdd() {
         disableAppService.add("test_app");
         verify(regCenter).isExisted("/state/disable/app/test_app");
         verify(regCenter).persist("/state/disable/app/test_app", "test_app");
     }
     
     @Test
-    public void assertRemove() {
+    void assertRemove() {
         disableAppService.remove("test_app");
         verify(regCenter).remove("/state/disable/app/test_app");
     }
     
     @Test
-    public void assertIsDisabled() {
+    void assertIsDisabled() {
         when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(true);
         assertTrue(disableAppService.isDisabled("test_app"));
         verify(regCenter).isExisted("/state/disable/app/test_app");
     }
     
     @Test
-    public void assertIsEnabled() {
+    void assertIsEnabled() {
         when(regCenter.isExisted("/state/disable/app/test_app")).thenReturn(false);
         assertFalse(disableAppService.isDisabled("test_app"));
         verify(regCenter).isExisted("/state/disable/app/test_app");

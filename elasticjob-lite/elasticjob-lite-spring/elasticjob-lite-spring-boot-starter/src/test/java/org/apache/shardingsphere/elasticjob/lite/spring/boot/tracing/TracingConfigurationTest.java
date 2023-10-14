@@ -38,18 +38,18 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @SpringBootApplication
 @ActiveProfiles("tracing")
-public class TracingConfigurationTest {
+class TracingConfigurationTest {
     
     @Autowired
     private ApplicationContext applicationContext;
     
     @BeforeAll
-    public static void init() {
+    static void init() {
         EmbedTestingServer.start();
     }
     
     @Test
-    public void assertNotRDBConfiguration() {
+    void assertNotRDBConfiguration() {
         assertNotNull(applicationContext);
         assertFalse(applicationContext.containsBean("tracingDataSource"));
         ObjectProvider<Object> provider = applicationContext.getBeanProvider(ResolvableType.forClassWithGenerics(TracingConfiguration.class, DataSource.class));

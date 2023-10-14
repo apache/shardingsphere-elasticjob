@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-public final class IgnoreJobErrorHandlerTest {
+class IgnoreJobErrorHandlerTest {
     
     @Test
-    public void assertHandleException() {
+    void assertHandleException() {
         JobErrorHandlerFactory.createHandler("IGNORE", new Properties())
                 .orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
     }

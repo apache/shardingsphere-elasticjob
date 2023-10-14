@@ -30,9 +30,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
+class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
     
-    public ScheduleDisabledJobIntegrateTest() {
+    ScheduleDisabledJobIntegrateTest() {
         super(TestType.SCHEDULE);
     }
     
@@ -43,7 +43,7 @@ public final class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrate
     }
     
     @Test
-    public void assertJobRunning() {
+    void assertJobRunning() {
         assertDisabledRegCenterInfo();
         setJobEnable();
         Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));

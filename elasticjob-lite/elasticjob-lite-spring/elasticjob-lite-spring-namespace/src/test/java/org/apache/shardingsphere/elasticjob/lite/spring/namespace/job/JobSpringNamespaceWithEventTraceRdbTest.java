@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.lite.spring.namespace.job;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withEventTraceRdb.xml")
-public final class JobSpringNamespaceWithEventTraceRdbTest extends AbstractJobSpringIntegrateTest {
+class JobSpringNamespaceWithEventTraceRdbTest extends AbstractJobSpringIntegrateTest {
     
-    public JobSpringNamespaceWithEventTraceRdbTest() {
+    JobSpringNamespaceWithEventTraceRdbTest() {
         super("simpleElasticJob_namespace_event_trace_rdb", "dataflowElasticJob_namespace_event_trace_rdb");
     }
 }

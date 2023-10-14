@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class DataflowJobExecutorTest {
+class DataflowJobExecutorTest {
     
     private DataflowJobExecutor jobExecutor;
     
@@ -59,13 +59,13 @@ public final class DataflowJobExecutorTest {
     private Properties properties;
     
     @BeforeEach
-    public void createJobExecutor() {
+    void createJobExecutor() {
         jobExecutor = new DataflowJobExecutor();
     }
     
     @SuppressWarnings("unchecked")
     @Test
-    public void assertProcessWithStreamingExecute() {
+    void assertProcessWithStreamingExecute() {
         List<String> data = Arrays.asList("DataflowJob1", "DataflowJob2");
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("true");
@@ -77,7 +77,7 @@ public final class DataflowJobExecutorTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void assertProcessWithOneOffExecute() {
+    void assertProcessWithOneOffExecute() {
         List<String> data = Arrays.asList("DataflowJob1", "DataflowJob2");
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("false");
@@ -87,7 +87,7 @@ public final class DataflowJobExecutorTest {
     }
     
     @Test
-    public void assertGetElasticJobClass() {
+    void assertGetElasticJobClass() {
         assertThat(jobExecutor.getElasticJobClass(), is(DataflowJob.class));
     }
 }

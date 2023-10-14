@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class TransientProducerSchedulerTest {
+class TransientProducerSchedulerTest {
     
     @Mock
     private ReadyService readyService;
@@ -59,13 +59,13 @@ public final class TransientProducerSchedulerTest {
             .build();
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         transientProducerScheduler = new TransientProducerScheduler(readyService);
         ReflectionUtils.setFieldValue(transientProducerScheduler, "scheduler", scheduler);
     }
     
     @Test
-    public void assertRegister() throws SchedulerException {
+    void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
         transientProducerScheduler.register(cloudJobConfig);
         verify(scheduler).checkExists(jobDetail.getKey());
@@ -73,13 +73,13 @@ public final class TransientProducerSchedulerTest {
     }
     
     @Test
-    public void assertDeregister() throws SchedulerException {
+    void assertDeregister() throws SchedulerException {
         transientProducerScheduler.deregister(cloudJobConfig);
         verify(scheduler).unscheduleJob(TriggerKey.triggerKey(cloudJobConfig.getCron()));
     }
     
     @Test
-    public void assertShutdown() throws SchedulerException {
+    void assertShutdown() throws SchedulerException {
         transientProducerScheduler.shutdown();
         verify(scheduler).isShutdown();
         verify(scheduler).shutdown();

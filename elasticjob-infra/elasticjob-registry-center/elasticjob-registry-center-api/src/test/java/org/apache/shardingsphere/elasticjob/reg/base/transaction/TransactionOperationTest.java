@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class TransactionOperationTest {
+class TransactionOperationTest {
     
     @Test
-    public void assertOpAdd() {
+    void assertOpAdd() {
         TransactionOperation actual = TransactionOperation.opAdd("key", "value");
         assertThat(actual.getType(), is(Type.ADD));
         assertThat(actual.getKey(), is("key"));
@@ -34,7 +34,7 @@ public final class TransactionOperationTest {
     }
     
     @Test
-    public void assertOpUpdate() {
+    void assertOpUpdate() {
         TransactionOperation actual = TransactionOperation.opUpdate("key", "value");
         assertThat(actual.getType(), is(Type.UPDATE));
         assertThat(actual.getKey(), is("key"));
@@ -42,14 +42,14 @@ public final class TransactionOperationTest {
     }
     
     @Test
-    public void assertOpDelete() {
+    void assertOpDelete() {
         TransactionOperation actual = TransactionOperation.opDelete("key");
         assertThat(actual.getType(), is(Type.DELETE));
         assertThat(actual.getKey(), is("key"));
     }
     
     @Test
-    public void assertOpCheckExists() {
+    void assertOpCheckExists() {
         TransactionOperation actual = TransactionOperation.opCheckExists("key");
         assertThat(actual.getType(), is(Type.CHECK_EXISTS));
         assertThat(actual.getKey(), is("key"));

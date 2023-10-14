@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class LeaderServiceTest {
+class LeaderServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -57,7 +57,7 @@ public final class LeaderServiceTest {
     private LeaderService leaderService;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0", null, "127.0.0.1"));
         leaderService = new LeaderService(null, "test_job");
         ReflectionUtils.setFieldValue(leaderService, "jobNodeStorage", jobNodeStorage);
@@ -65,13 +65,13 @@ public final class LeaderServiceTest {
     }
     
     @Test
-    public void assertElectLeader() {
+    void assertElectLeader() {
         leaderService.electLeader();
         verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
-    public void assertIsLeaderUntilBlockWithLeader() {
+    void assertIsLeaderUntilBlockWithLeader() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
@@ -82,21 +82,21 @@ public final class LeaderServiceTest {
     }
     
     @Test
-    public void assertIsLeaderUntilBlockWithoutLeaderAndAvailableServers() {
+    void assertIsLeaderUntilBlockWithoutLeaderAndAvailableServers() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false);
         assertFalse(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
-    public void assertIsLeaderUntilBlockWithoutLeaderWithAvailableServers() {
+    void assertIsLeaderUntilBlockWithoutLeaderWithAvailableServers() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         assertFalse(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
-    public void assertIsLeaderUntilBlockWhenHasLeader() {
+    void assertIsLeaderUntilBlockWhenHasLeader() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
@@ -109,7 +109,7 @@ public final class LeaderServiceTest {
     }
     
     @Test
-    public void assertIsLeader() {
+    void assertIsLeader() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
@@ -118,26 +118,26 @@ public final class LeaderServiceTest {
     }
     
     @Test
-    public void assertHasLeader() {
+    void assertHasLeader() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
         assertTrue(leaderService.hasLeader());
     }
     
     @Test
-    public void assertRemoveLeader() {
+    void assertRemoveLeader() {
         leaderService.removeLeader();
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/election/instance");
     }
     
     @Test
-    public void assertElectLeaderExecutionCallbackWithLeader() {
+    void assertElectLeaderExecutionCallbackWithLeader() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
         leaderService.new LeaderElectionExecutionCallback().execute();
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/instance", "127.0.0.1@-@0");
     }
     
     @Test
-    public void assertElectLeaderExecutionCallbackWithoutLeader() {
+    void assertElectLeaderExecutionCallbackWithoutLeader() {
         leaderService.new LeaderElectionExecutionCallback().execute();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/election/instance", "127.0.0.1@-@0");
     }

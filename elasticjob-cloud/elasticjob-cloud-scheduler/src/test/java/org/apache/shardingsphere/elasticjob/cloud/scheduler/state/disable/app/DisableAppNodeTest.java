@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class DisableAppNodeTest {
+class DisableAppNodeTest {
     
     @Test
-    public void assertGetDisableAppNodePath() {
+    void assertGetDisableAppNodePath() {
         assertThat(DisableAppNode.getDisableAppNodePath("test_app0000000001"), is("/state/disable/app/test_app0000000001"));
     }
 }

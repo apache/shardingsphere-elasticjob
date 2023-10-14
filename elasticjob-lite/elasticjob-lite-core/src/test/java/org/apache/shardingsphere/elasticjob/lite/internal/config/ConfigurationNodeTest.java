@@ -21,12 +21,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class ConfigurationNodeTest {
+class ConfigurationNodeTest {
     
     private final ConfigurationNode configurationNode = new ConfigurationNode("test_job");
     
     @Test
-    public void assertIsConfigPath() {
+    void assertIsConfigPath() {
         assertTrue(configurationNode.isConfigPath("/test_job/config"));
     }
 }

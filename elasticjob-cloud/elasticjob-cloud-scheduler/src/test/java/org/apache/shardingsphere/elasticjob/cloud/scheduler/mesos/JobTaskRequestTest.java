@@ -30,75 +30,75 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public final class JobTaskRequestTest {
+class JobTaskRequestTest {
     
     private final JobTaskRequest jobTaskRequest =
             new JobTaskRequest(new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "unassigned-slave"),
                     CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job").toCloudJobConfiguration());
     
     @Test
-    public void assertGetId() {
+    void assertGetId() {
         assertThat(jobTaskRequest.getId(), StringStartsWith.startsWith("test_job@-@0@-@READY@-@unassigned-slave"));
     }
     
     @Test
-    public void assertTaskGroupName() {
+    void assertTaskGroupName() {
         assertThat(jobTaskRequest.taskGroupName(), is(""));
     }
     
     @Test
-    public void assertGetCPUs() {
+    void assertGetCPUs() {
         assertThat(jobTaskRequest.getCPUs(), is(1.0d));
     }
     
     @Test
-    public void assertGetMemory() {
+    void assertGetMemory() {
         assertThat(jobTaskRequest.getMemory(), is(128.0d));
     }
     
     @Test
-    public void assertGetNetworkMbps() {
+    void assertGetNetworkMbps() {
         assertThat(jobTaskRequest.getNetworkMbps(), is(0d));
     }
     
     @Test
-    public void assertGetDisk() {
+    void assertGetDisk() {
         assertThat(jobTaskRequest.getDisk(), is(10d));
     }
     
     @Test
-    public void assertGetPorts() {
+    void assertGetPorts() {
         assertThat(jobTaskRequest.getPorts(), is(1));
     }
     
     @Test
-    public void assertGetScalarRequests() {
+    void assertGetScalarRequests() {
         assertNull(jobTaskRequest.getScalarRequests());
     }
     
     @Test
-    public void assertGetHardConstraints() {
+    void assertGetHardConstraints() {
         AppConstraintEvaluator.init(null);
         assertThat(jobTaskRequest.getHardConstraints().size(), is(1));
     }
     
     @Test
-    public void assertGetSoftConstraints() {
+    void assertGetSoftConstraints() {
         assertNull(jobTaskRequest.getSoftConstraints());
     }
     
     @Test
-    public void assertSetAssignedResources() {
+    void assertSetAssignedResources() {
         jobTaskRequest.setAssignedResources(null);
     }
     
     @Test
-    public void assertGetAssignedResources() {
+    void assertGetAssignedResources() {
         assertNull(jobTaskRequest.getAssignedResources());
     }
     
     @Test
-    public void assertGetCustomNamedResources() {
+    void assertGetCustomNamedResources() {
         assertThat(jobTaskRequest.getCustomNamedResources(), is(Collections.<String, TaskRequest.NamedResourceSetRequest>emptyMap()));
     }
 }

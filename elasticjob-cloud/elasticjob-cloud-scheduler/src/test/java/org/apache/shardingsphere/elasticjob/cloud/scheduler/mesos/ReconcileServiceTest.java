@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class ReconcileServiceTest {
+class ReconcileServiceTest {
     
     @Mock
     private SchedulerDriver schedulerDriver;
@@ -55,24 +55,24 @@ public final class ReconcileServiceTest {
     private ArgumentCaptor<Collection<Protos.TaskStatus>> taskStatusCaptor;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         reconcileService = new ReconcileService(schedulerDriver, facadeService);
     }
     
     @Test
-    public void assertRunOneIteration() {
+    void assertRunOneIteration() {
         reconcileService.runOneIteration();
         verify(schedulerDriver).reconcileTasks(Collections.emptyList());
     }
     
     @Test
-    public void assertImplicitReconcile() {
+    void assertImplicitReconcile() {
         reconcileService.implicitReconcile();
         verify(schedulerDriver).reconcileTasks(Collections.emptyList());
     }
     
     @Test
-    public void assertExplicitReconcile() {
+    void assertExplicitReconcile() {
         Map<String, Set<TaskContext>> runningTaskMap = new HashMap<>();
         runningTaskMap.put("transient_test_job", Sets.newHashSet(
                 TaskContext.from("transient_test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("transient_test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));

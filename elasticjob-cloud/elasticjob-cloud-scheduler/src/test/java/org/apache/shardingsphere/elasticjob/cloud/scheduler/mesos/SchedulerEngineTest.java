@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class SchedulerEngineTest {
+class SchedulerEngineTest {
     
     @Mock
     private TaskScheduler taskScheduler;
@@ -68,7 +68,7 @@ public final class SchedulerEngineTest {
     private SchedulerEngine schedulerEngine;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         schedulerEngine = new SchedulerEngine(taskScheduler, facadeService, new JobTracingEventBus(), frameworkIDService, statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         lenient().when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
@@ -76,20 +76,20 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertRegistered() {
+    void assertRegistered() {
         schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), Protos.MasterInfo.getDefaultInstance());
         verify(taskScheduler).expireAllLeases();
         verify(frameworkIDService).save("1");
     }
     
     @Test
-    public void assertReregistered() {
+    void assertReregistered() {
         schedulerEngine.reregistered(null, Protos.MasterInfo.getDefaultInstance());
         verify(taskScheduler).expireAllLeases();
     }
     
     @Test
-    public void assertResourceOffers() {
+    void assertResourceOffers() {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0"), OfferBuilder.createOffer("offer_1"));
         schedulerEngine.resourceOffers(schedulerDriver, offers);
@@ -97,13 +97,13 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertOfferRescinded() {
+    void assertOfferRescinded() {
         schedulerEngine.offerRescinded(null, Protos.OfferID.newBuilder().setValue("myOffer").build());
         verify(taskScheduler).expireLease("myOffer");
     }
     
     @Test
-    public void assertRunningStatusUpdateForDaemonJobBegin() {
+    void assertRunningStatusUpdateForDaemonJobBegin() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
@@ -111,7 +111,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertRunningStatusUpdateForDaemonJobComplete() {
+    void assertRunningStatusUpdateForDaemonJobComplete() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
@@ -119,7 +119,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertRunningStatusUpdateForOther() {
+    void assertRunningStatusUpdateForOther() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
@@ -127,7 +127,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertFinishedStatusUpdateWithoutLaunchedTasks() {
+    void assertFinishedStatusUpdateWithoutLaunchedTasks() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
@@ -136,7 +136,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertFinishedStatusUpdate() {
+    void assertFinishedStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -150,7 +150,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertKilledStatusUpdate() {
+    void assertKilledStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -164,7 +164,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertFailedStatusUpdate() {
+    void assertFailedStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -179,7 +179,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertErrorStatusUpdate() {
+    void assertErrorStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -194,7 +194,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertLostStatusUpdate() {
+    void assertLostStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -209,7 +209,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertDroppedStatusUpdate() {
+    void assertDroppedStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -225,7 +225,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertGoneStatusUpdate() {
+    void assertGoneStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -240,7 +240,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertGoneByOperatorStatusUpdate() {
+    void assertGoneByOperatorStatusUpdate() {
         @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
@@ -256,7 +256,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertUnknownStatusUpdate() {
+    void assertUnknownStatusUpdate() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_UNKNOWN)
@@ -265,7 +265,7 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertUnReachedStatusUpdate() {
+    void assertUnReachedStatusUpdate() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_UNREACHABLE)
@@ -274,23 +274,23 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertFrameworkMessage() {
+    void assertFrameworkMessage() {
         schedulerEngine.frameworkMessage(null, null, Protos.SlaveID.newBuilder().setValue("slave-S0").build(), new byte[1]);
     }
     
     @Test
-    public void assertSlaveLost() {
+    void assertSlaveLost() {
         schedulerEngine.slaveLost(null, Protos.SlaveID.newBuilder().setValue("slave-S0").build());
         verify(taskScheduler).expireAllLeasesByVMId("slave-S0");
     }
     
     @Test
-    public void assertExecutorLost() {
+    void assertExecutorLost() {
         schedulerEngine.executorLost(null, Protos.ExecutorID.newBuilder().setValue("test_job@-@0@-@00").build(), Protos.SlaveID.newBuilder().setValue("slave-S0").build(), 0);
     }
     
     @Test
-    public void assertError() {
+    void assertError() {
         schedulerEngine.error(null, null);
     }
 }

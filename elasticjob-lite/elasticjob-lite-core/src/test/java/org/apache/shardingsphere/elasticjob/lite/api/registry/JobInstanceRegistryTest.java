@@ -34,41 +34,37 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public final class JobInstanceRegistryTest {
+class JobInstanceRegistryTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @Test
-    public void assertListenWithoutConfigPath() {
-        JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
-        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName", ""));
+    void assertListenWithoutConfigPath() {
+        new JobInstanceRegistry(regCenter, new JobInstance("id")).new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName", ""));
         verify(regCenter, times(0)).get("/jobName");
     }
     
     @Test
-    public void assertListenLabelNotMatch() {
-        JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label1,label2"));
+    void assertListenLabelNotMatch() {
         String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
-        jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+        new JobInstanceRegistry(regCenter, new JobInstance("id", "label1,label2")).new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
         verify(regCenter, times(0)).get("/jobName");
     }
     
     @Test
-    public void assertListenScheduleJob() {
+    void assertListenScheduleJob() {
         assertThrows(RuntimeException.class, () -> {
-            JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id"));
             String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).cron("0/1 * * * * ?").label("label").build());
-            jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+            new JobInstanceRegistry(regCenter, new JobInstance("id")).new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
         });
     }
     
     @Test
-    public void assertListenOneOffJob() {
+    void assertListenOneOffJob() {
         assertThrows(RuntimeException.class, () -> {
-            JobInstanceRegistry jobInstanceRegistry = new JobInstanceRegistry(regCenter, new JobInstance("id", "label"));
             String jobConfig = toYaml(JobConfiguration.newBuilder("jobName", 1).label("label").build());
-            jobInstanceRegistry.new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
+            new JobInstanceRegistry(regCenter, new JobInstance("id", "label")).new JobInstanceRegistryListener().onChange(new DataChangedEvent(Type.ADDED, "/jobName/config", jobConfig));
         });
     }
     

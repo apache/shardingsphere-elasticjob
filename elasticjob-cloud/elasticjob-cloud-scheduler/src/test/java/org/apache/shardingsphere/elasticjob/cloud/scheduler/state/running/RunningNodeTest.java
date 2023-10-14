@@ -23,15 +23,15 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class RunningNodeTest {
+class RunningNodeTest {
     
     @Test
-    public void assertGetRunningJobNodePath() {
+    void assertGetRunningJobNodePath() {
         assertThat(RunningNode.getRunningJobNodePath("test_job"), is("/state/running/test_job"));
     }
     
     @Test
-    public void assertGetRunningTaskNodePath() {
+    void assertGetRunningTaskNodePath() {
         String nodePath = TaskNode.builder().build().getTaskNodePath();
         assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
     }

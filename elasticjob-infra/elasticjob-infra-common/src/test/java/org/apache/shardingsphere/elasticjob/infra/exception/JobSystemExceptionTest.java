@@ -23,22 +23,22 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JobSystemExceptionTest {
+class JobSystemExceptionTest {
     
     @Test
-    public void assertGetMessage() {
+    void assertGetMessage() {
         assertThat(new JobSystemException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
     
     @Test
-    public void assertGetMessageCause() {
+    void assertGetMessageCause() {
         JobSystemException jobSystemException = new JobSystemException("message is: ", new RuntimeException());
         assertThat(jobSystemException.getMessage(), is("message is: "));
         assertThat(jobSystemException.getCause(), instanceOf(RuntimeException.class));
     }
     
     @Test
-    public void assertGetCause() {
+    void assertGetCause() {
         assertThat(new JobSystemException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }
