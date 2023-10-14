@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.job.simple;
+package org.apache.shardingsphere.elasticjob.engine.example.job.simple;
 
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
-import org.apache.shardingsphere.elasticjob.lite.example.fixture.entity.Foo;
-import org.apache.shardingsphere.elasticjob.lite.example.fixture.repository.FooRepository;
-import org.apache.shardingsphere.elasticjob.lite.example.fixture.repository.FooRepositoryFactory;
+import org.apache.shardingsphere.elasticjob.engine.example.fixture.entity.Foo;
+import org.apache.shardingsphere.elasticjob.engine.example.fixture.repository.FooRepository;
+import org.apache.shardingsphere.elasticjob.engine.example.fixture.repository.FooRepositoryFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

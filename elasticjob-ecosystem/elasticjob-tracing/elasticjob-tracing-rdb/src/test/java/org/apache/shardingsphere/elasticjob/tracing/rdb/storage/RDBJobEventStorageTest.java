@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,13 +64,13 @@ class RDBJobEventStorageTest {
     @Test
     void assertAddJobStatusTraceEvent() {
         assertTrue(storage.addJobStatusTraceEvent(
-                new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.")));
+                new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", "READY", "0", State.TASK_RUNNING, "message is empty.")));
     }
     
     @Test
     void assertAddJobStatusTraceEventWhenFailoverWithTaskStagingState() {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(
-                "test_job", "fake_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "FAILOVER", "0", State.TASK_STAGING, "message is empty.");
+                "test_job", "fake_failover_task_id", "fake_slave_id", "FAILOVER", "0", State.TASK_STAGING, "message is empty.");
         jobStatusTraceEvent.setOriginalTaskId("original_fake_failover_task_id");
         assertThat(storage.getJobStatusTraceEvents("fake_failover_task_id").size(), is(0));
         storage.addJobStatusTraceEvent(jobStatusTraceEvent);
@@ -81,11 +80,11 @@ class RDBJobEventStorageTest {
     @Test
     void assertAddJobStatusTraceEventWhenFailoverWithTaskFailedState() {
         JobStatusTraceEvent stagingJobStatusTraceEvent = new JobStatusTraceEvent(
-                "test_job", "fake_failed_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "FAILOVER", "0", State.TASK_STAGING, "message is empty.");
+                "test_job", "fake_failed_failover_task_id", "fake_slave_id", "FAILOVER", "0", State.TASK_STAGING, "message is empty.");
         stagingJobStatusTraceEvent.setOriginalTaskId("original_fake_failed_failover_task_id");
         storage.addJobStatusTraceEvent(stagingJobStatusTraceEvent);
         JobStatusTraceEvent failedJobStatusTraceEvent = new JobStatusTraceEvent(
-                "test_job", "fake_failed_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "FAILOVER", "0", State.TASK_FAILED, "message is empty.");
+                "test_job", "fake_failed_failover_task_id", "fake_slave_id", "FAILOVER", "0", State.TASK_FAILED, "message is empty.");
         storage.addJobStatusTraceEvent(failedJobStatusTraceEvent);
         List<JobStatusTraceEvent> jobStatusTraceEvents = storage.getJobStatusTraceEvents("fake_failed_failover_task_id");
         assertThat(jobStatusTraceEvents.size(), is(2));

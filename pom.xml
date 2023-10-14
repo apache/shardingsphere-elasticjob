@@ -33,9 +33,7 @@
     <modules>
         <module>elasticjob-api</module>
         <module>elasticjob-infra</module>
-        
-        <module>elasticjob-lite</module>
-        <module>elasticjob-cloud</module>
+        <module>elasticjob-engine</module>
         
         <module>elasticjob-distribution</module>
         <module>elasticjob-ecosystem</module>
@@ -72,9 +70,6 @@
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <hikari-cp.version>4.0.3</hikari-cp.version>
         <mail.version>1.6.0</mail.version>
-        
-        <mesos.version>1.11.0</mesos.version>
-        <fenzo.version>1.0.1</fenzo.version>
         
         <lombok.version>1.18.30</lombok.version>
         
@@ -254,16 +249,6 @@
                 <scope>import</scope>
             </dependency>
             
-            <dependency>
-                <groupId>org.apache.mesos</groupId>
-                <artifactId>mesos</artifactId>
-                <version>${mesos.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.fenzo</groupId>
-                <artifactId>fenzo-core</artifactId>
-                <version>${fenzo.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-dbcp2</artifactId>

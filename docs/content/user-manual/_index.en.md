@@ -5,4 +5,9 @@ weight = 4
 chapter = true
 +++
 
-This chapter describes how to use projects of ElasticJob: ElasticJob-Lite and ElasticJob-Cloud. 
+ElasticJob is a lightweight, decentralized solution that provides distributed task sharding services.
+
+![ElasticJob Architecture](https://shardingsphere.apache.org/elasticjob/current/img/architecture/elasticjob_lite.png)
+
+The advantages of ElasticJob are no centralized design and less external dependence,
+which is suitable for business application with stable resource allocation. 

@@ -53,9 +53,9 @@ The unfinished job from a crashed server will be transferred and executed contin
 Setting the total number of sharding items to 1 and more than 1 servers to execute the jobs makes the job run in the mode of `1` master and `n` slaves.
 Once the servers that are executing jobs are down, the idle servers will take over the jobs and execute them in the next scheduling, or better, if the failover option is enabled, the idle servers can take over the failed jobs immediately.
 
-## ElasticJob-Lite Implementation Principle
+## Implementation Principle
 
-ElasticJob-Lite does not have a job scheduling center node, but the programs based on the deployment job framework trigger the scheduling when the corresponding time point is reached.
+ElasticJob does not have a job scheduling center node, but the programs based on the deployment job framework trigger the scheduling when the corresponding time point is reached.
 The registration center is only used for job registration and monitoring information storage. The main job node is only used to handle functions such as sharding and cleaning.
 
 ### Elastic Distributed Implementation
@@ -91,13 +91,13 @@ Job sharding information. The child node is the sharding item sequence number, s
 The child node of the sharding item sequence number stores detailed information. The child node under each shard is used to control and record the running status of the shard.
 Node details description：
 
-| Child node name  | Ephemeral node   | Description                                                                                                                          |
-| ---------------- |:---------------- |:------------------------------------------------------------------------------------------------------------------------------------ |
-| instance         | NO               | The primary key of the job running instance that executes the shard                                                                  |
-| running          | YES             | The running state of the shard item.<br/>Only valid when monitorExecution is configured                                               |
-| failover         | YES             | If the shard item is assigned to another job server by failover, this node value records the job server IP that executes the shard    |
-| misfire          | NO              | Whether to restart the missed task                                                                                                    |
-| disabled         | NO              | Whether to disable this shard                                                                                                         |
+| Child node name | Ephemeral node | Description                                                                                                                        |
+|-----------------|:---------------|:-----------------------------------------------------------------------------------------------------------------------------------|
+| instance        | NO             | The primary key of the job running instance that executes the shard                                                                |
+| running         | YES            | The running state of the shard item.<br/>Only valid when monitorExecution is configured                                            |
+| failover        | YES            | If the shard item is assigned to another job server by failover, this node value records the job server IP that executes the shard |
+| misfire         | NO             | Whether to restart the missed task                                                                                                 |
+| disabled        | NO             | Whether to disable this shard                                                                                                      |
 
 ### servers node
 
@@ -113,11 +113,11 @@ They are used for master node election, sharding and failover processing respect
 
 The leader node is an internally used node. If you are not interested in the principle of the job framework, you don't need to pay attention to this node.
 
-| Child node name           | Ephemeral node | Description                                                                                                                                                                                                                                                                                                                                             |
-| ------------------------- |:-------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| election\instance         | YES            | The IP address of the master node server.<br />Once the node is deleted, a re-election will be triggered.<br />All operations related to the master node will be blocked during the re-election process.                                                                                                                                                |
-| election\latch            | NO             | Distributed locks elected by the master node<br />Used for distributed locks of curator                                                                                                                                                                                                                                                                 |
-| sharding\necessary        | NO             | The flag for re-sharding. If the total number of shards changes, or the job server node goes online or offline or enabled/disabled, as well as the master node election, the re-sharded flag will be triggered. The master node is re-sharded without being interrupted in the middle<br />The sharding will not be triggered when the job is executed  |
-| sharding\processing       | YES            | The node held by the master node during sharding.<br />If there is this node, all job execution will be blocked until the sharding ends.<br />The ephemeral node will be deleted when the master node sharding is over or the master node crashes                                                                                                       |
-| failover\items\shard item | NO             | Once a job crashes, it will record to this node.<br />When there is an idle job server, it will grab the job items that need to failover from this node                                                                                                                                                                                                 |
-| failover\items\latch      | NO             | Distributed locks used when allocating failover shard items.<br /> Used by curator distributed locks                                                                                                                                                                                                                                                    |
+| Child node name           | Ephemeral node | Description                                                                                                                                                                                                                                                                                                                                            |
+|---------------------------|:---------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| election\instance         | YES            | The IP address of the master node server.<br />Once the node is deleted, a re-election will be triggered.<br />All operations related to the master node will be blocked during the re-election process.                                                                                                                                               |
+| election\latch            | NO             | Distributed locks elected by the master node<br />Used for distributed locks of curator                                                                                                                                                                                                                                                                |
+| sharding\necessary        | NO             | The flag for re-sharding. If the total number of shards changes, or the job server node goes online or offline or enabled/disabled, as well as the master node election, the re-sharded flag will be triggered. The master node is re-sharded without being interrupted in the middle<br />The sharding will not be triggered when the job is executed |
+| sharding\processing       | YES            | The node held by the master node during sharding.<br />If there is this node, all job execution will be blocked until the sharding ends.<br />The ephemeral node will be deleted when the master node sharding is over or the master node crashes                                                                                                      |
+| failover\items\shard item | NO             | Once a job crashes, it will record to this node.<br />When there is an idle job server, it will grab the job items that need to failover from this node                                                                                                                                                                                                |
+| failover\items\latch      | NO             | Distributed locks used when allocating failover shard items.<br /> Used by curator distributed locks                                                                                                                                                                                                                                                   |

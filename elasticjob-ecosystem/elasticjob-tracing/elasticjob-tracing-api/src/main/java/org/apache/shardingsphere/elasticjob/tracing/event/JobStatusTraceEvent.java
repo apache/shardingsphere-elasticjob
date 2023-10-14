@@ -44,8 +44,6 @@ public final class JobStatusTraceEvent implements JobEvent {
     
     private final String slaveId;
     
-    private final Source source;
-    
     private final String executionType;
     
     private final String shardingItems;
@@ -58,9 +56,5 @@ public final class JobStatusTraceEvent implements JobEvent {
     
     public enum State {
         TASK_STAGING, TASK_RUNNING, TASK_FINISHED, TASK_KILLED, TASK_LOST, TASK_FAILED, TASK_ERROR, TASK_DROPPED, TASK_GONE, TASK_GONE_BY_OPERATOR, TASK_UNREACHABLE, TASK_UNKNOWN
-    }
-    
-    public enum Source {
-        CLOUD_SCHEDULER, CLOUD_EXECUTOR, LITE_EXECUTOR
     }
 }
