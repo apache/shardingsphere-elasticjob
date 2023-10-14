@@ -25,8 +25,9 @@ import java.util.Optional;
 public interface JobExtraConfigurationFactory {
     
     /**
-     * Get JobExtraConfiguration.
-     * @return JobExtraConfiguration
+     * Get job extra configuration.
+     * 
+     * @return job extra configuration
      */
     Optional<JobExtraConfiguration> getJobExtraConfiguration();
 }
