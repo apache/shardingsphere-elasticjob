@@ -29,7 +29,5 @@
     
     <modules>
         <module>common</module>
-        <module>registry-center</module>
-        <module>restful</module>
     </modules>
 </project>
