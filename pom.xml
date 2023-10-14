@@ -360,7 +360,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -584,64 +584,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless-maven-plugin.version}</version>
-                <configuration>
-                    <java>
-                        <eclipse>
-                            <!--suppress MavenModelInspection -->
-                            <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/java.xml</file>
-                        </eclipse>
-                        <licenseHeader>
-                            <!--suppress MavenModelInspection -->
-                            <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/copyright.txt</file>
-                        </licenseHeader>
-                    </java>
-                    <pom>
-                        <sortPom>
-                            <encoding>UTF-8</encoding>
-                            <nrOfIndentSpace>4</nrOfIndentSpace>
-                            <keepBlankLines>true</keepBlankLines>
-                            <indentBlankLines>true</indentBlankLines>
-                            <indentSchemaLocation>false</indentSchemaLocation>
-                            <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
-                            <sortModules>false</sortModules>
-                            <sortExecutions>false</sortExecutions>
-                            <predefinedSortOrder>custom_1</predefinedSortOrder>
-                            <expandEmptyElements>false</expandEmptyElements>
-                            <sortProperties>false</sortProperties>
-                        </sortPom>
-                        <replace>
-                            <name>Leading blank line</name>
-                            <search>--&gt;
-&lt;project</search>
-                            <replacement>--&gt;
-
-&lt;project</replacement>
-                        </replace>
-                    </pom>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <configuration>
-                    <configLocation>src/resources/checkstyle.xml</configLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
@@ -692,73 +634,6 @@
                             <goal>report</goal>
                         </goals>
                         <phase>test</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>${apache-rat-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/target/**</exclude>
-                        <exclude>**/logs/**</exclude>
-                        <exclude>**/*.log</exclude>
-                        <!-- IDE files -->
-                        <exclude>**/*.iml</exclude>
-                        <exclude>**/.idea/**</exclude>
-                        <exclude>**/*.classpath</exclude>
-                        <exclude>**/.project</exclude>
-                        <exclude>**/.settings/**</exclude>
-                        <exclude>**/dependency-reduced-pom.xml</exclude>
-                        <!-- git files -->
-                        <exclude>**/.gitignore</exclude>
-                        <exclude>**/.gitmodules</exclude>
-                        <exclude>**/.git/**</exclude>
-                        <!-- CI files -->
-                        <exclude>**/.travis.yml</exclude>
-                        <exclude>**/.mvn/jvm.config</exclude>
-                        <exclude>**/.mvn/wrapper/maven-wrapper.properties</exclude>
-                        <!-- GitHub files -->
-                        <exclude>**/.github/**</exclude>
-                        <!-- document files -->
-                        <exclude>**/*.md</exclude>
-                        <excldue>**/*.MD</excldue>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/docs/**</exclude>
-                        <!-- UI files -->
-                        <exclude>**/.babelrc</exclude>
-                        <exclude>**/.editorconfig</exclude>
-                        <exclude>**/.eslintignore</exclude>
-                        <exclude>**/package.json</exclude>
-                        <exclude>**/assets/**</exclude>
-                        <exclude>**/dist/**</exclude>
-                        <exclude>**/etc/**</exclude>
-                        <exclude>**/node/**</exclude>
-                        <exclude>**/node_modules/**</exclude>
-                        <exclude>**/test/coverage/**</exclude>
-                        <exclude>**/package-lock.json</exclude>
-                        <!-- example files -->
-                        <exclude>/examples/**</exclude>
-                        <!-- to be determined -->
-                        <exclude>**/AdminLTE/**</exclude>
-                        <exclude>**/bootstrap/**</exclude>
-                        <exclude>**/bootstrap-table/**</exclude>
-                        <exclude>**/daterangepicker/**</exclude>
-                        <exclude>**/font-awesome-4.5.0/**</exclude>
-                        <exclude>**/input-mask/**</exclude>
-                        <exclude>**/finput-mask/**</exclude>
-                        <exclude>**/jquery/**</exclude>
-                        <exclude>**/jQuery/**</exclude>
-                        <exclude>**/highcharts/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -881,82 +756,135 @@
         <profile>
             <id>check</id>
             <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.rat</groupId>
+                            <artifactId>apache-rat-plugin</artifactId>
+                            <version>${apache-rat-plugin.version}</version>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/target/**</exclude>
+                                    <exclude>**/logs/**</exclude>
+                                    <exclude>**/*.log</exclude>
+                                    <!-- IDE files -->
+                                    <exclude>**/*.iml</exclude>
+                                    <exclude>**/.idea/**</exclude>
+                                    <exclude>**/*.classpath</exclude>
+                                    <exclude>**/.project</exclude>
+                                    <exclude>**/.settings/**</exclude>
+                                    <exclude>**/dependency-reduced-pom.xml</exclude>
+                                    <!-- git files -->
+                                    <exclude>**/.gitignore</exclude>
+                                    <exclude>**/.gitmodules</exclude>
+                                    <exclude>**/.git/**</exclude>
+                                    <!-- CI files -->
+                                    <exclude>**/.travis.yml</exclude>
+                                    <exclude>**/.mvn/jvm.config</exclude>
+                                    <exclude>**/.mvn/wrapper/maven-wrapper.properties</exclude>
+                                    <!-- GitHub files -->
+                                    <exclude>**/.github/**</exclude>
+                                    <!-- document files -->
+                                    <exclude>**/*.md</exclude>
+                                    <excldue>**/*.MD</excldue>
+                                    <exclude>**/*.txt</exclude>
+                                    <exclude>**/docs/**</exclude>
+                                    <!-- UI files -->
+                                    <exclude>**/.babelrc</exclude>
+                                    <exclude>**/.editorconfig</exclude>
+                                    <exclude>**/.eslintignore</exclude>
+                                    <exclude>**/package.json</exclude>
+                                    <exclude>**/assets/**</exclude>
+                                    <exclude>**/dist/**</exclude>
+                                    <exclude>**/etc/**</exclude>
+                                    <exclude>**/node/**</exclude>
+                                    <exclude>**/node_modules/**</exclude>
+                                    <exclude>**/test/coverage/**</exclude>
+                                    <exclude>**/package-lock.json</exclude>
+                                    <!-- example files -->
+                                    <exclude>/examples/**</exclude>
+                                    <!-- to be determined -->
+                                    <exclude>**/AdminLTE/**</exclude>
+                                    <exclude>**/bootstrap/**</exclude>
+                                    <exclude>**/bootstrap-table/**</exclude>
+                                    <exclude>**/daterangepicker/**</exclude>
+                                    <exclude>**/font-awesome-4.5.0/**</exclude>
+                                    <exclude>**/input-mask/**</exclude>
+                                    <exclude>**/finput-mask/**</exclude>
+                                    <exclude>**/jquery/**</exclude>
+                                    <exclude>**/jQuery/**</exclude>
+                                    <exclude>**/highcharts/**</exclude>
+                                </excludes>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                    <phase>verify</phase>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <version>${maven-checkstyle-plugin.version}</version>
+                            <configuration>
+                                <configLocation>src/resources/checkstyle.xml</configLocation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>com.diffplug.spotless</groupId>
+                            <artifactId>spotless-maven-plugin</artifactId>
+                            <version>${spotless-maven-plugin.version}</version>
+                            <configuration>
+                                <java>
+                                    <eclipse>
+                                        <!--suppress MavenModelInspection -->
+                                        <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/java.xml</file>
+                                    </eclipse>
+                                    <licenseHeader>
+                                        <!--suppress MavenModelInspection -->
+                                        <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/copyright.txt</file>
+                                    </licenseHeader>
+                                </java>
+                                <pom>
+                                    <sortPom>
+                                        <encoding>UTF-8</encoding>
+                                        <nrOfIndentSpace>4</nrOfIndentSpace>
+                                        <keepBlankLines>true</keepBlankLines>
+                                        <indentBlankLines>true</indentBlankLines>
+                                        <indentSchemaLocation>false</indentSchemaLocation>
+                                        <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                                        <sortModules>false</sortModules>
+                                        <sortExecutions>false</sortExecutions>
+                                        <predefinedSortOrder>custom_1</predefinedSortOrder>
+                                        <expandEmptyElements>false</expandEmptyElements>
+                                        <sortProperties>false</sortProperties>
+                                    </sortPom>
+                                    <replace>
+                                        <name>Leading blank line</name>
+                                        <search>--&gt;
+&lt;project</search>
+                                        <replacement>--&gt;
+
+&lt;project</replacement>
+                                    </replace>
+                                </pom>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.rat</groupId>
                         <artifactId>apache-rat-plugin</artifactId>
-                        <version>${apache-rat-plugin.version}</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/target/**</exclude>
-                                <exclude>**/logs/**</exclude>
-                                <exclude>**/*.log</exclude>
-                                <!-- IDE files -->
-                                <exclude>**/*.iml</exclude>
-                                <exclude>**/.idea/**</exclude>
-                                <exclude>**/*.classpath</exclude>
-                                <exclude>**/.project</exclude>
-                                <exclude>**/.settings/**</exclude>
-                                <exclude>**/dependency-reduced-pom.xml</exclude>
-                                <!-- git files -->
-                                <exclude>**/.gitignore</exclude>
-                                <exclude>**/.gitmodules</exclude>
-                                <exclude>**/.git/**</exclude>
-                                <!-- CI files -->
-                                <exclude>**/.travis.yml</exclude>
-                                <exclude>**/.mvn/jvm.config</exclude>
-                                <exclude>**/.mvn/wrapper/maven-wrapper.properties</exclude>
-                                <!-- GitHub files -->
-                                <exclude>**/.github/**</exclude>
-                                <!-- document files -->
-                                <exclude>**/*.md</exclude>
-                                <excldue>**/*.MD</excldue>
-                                <exclude>**/*.txt</exclude>
-                                <exclude>**/docs/**</exclude>
-                                <!-- UI files -->
-                                <exclude>**/.babelrc</exclude>
-                                <exclude>**/.editorconfig</exclude>
-                                <exclude>**/.eslintignore</exclude>
-                                <exclude>**/package.json</exclude>
-                                <exclude>**/assets/**</exclude>
-                                <exclude>**/dist/**</exclude>
-                                <exclude>**/etc/**</exclude>
-                                <exclude>**/node/**</exclude>
-                                <exclude>**/node_modules/**</exclude>
-                                <exclude>**/test/coverage/**</exclude>
-                                <exclude>**/package-lock.json</exclude>
-                                <!-- example files -->
-                                <exclude>/examples/**</exclude>
-                                <!-- to be determined -->
-                                <exclude>**/AdminLTE/**</exclude>
-                                <exclude>**/bootstrap/**</exclude>
-                                <exclude>**/bootstrap-table/**</exclude>
-                                <exclude>**/daterangepicker/**</exclude>
-                                <exclude>**/font-awesome-4.5.0/**</exclude>
-                                <exclude>**/input-mask/**</exclude>
-                                <exclude>**/finput-mask/**</exclude>
-                                <exclude>**/jquery/**</exclude>
-                                <exclude>**/jQuery/**</exclude>
-                                <exclude>**/highcharts/**</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                                <phase>verify</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <version>${maven-checkstyle-plugin.version}</version>
-                        <configuration>
-                            <configLocation>src/resources/checkstyle.xml</configLocation>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>validate</id>
@@ -970,42 +898,14 @@
                     <plugin>
                         <groupId>com.diffplug.spotless</groupId>
                         <artifactId>spotless-maven-plugin</artifactId>
-                        <version>${spotless-maven-plugin.version}</version>
-                        <configuration>
-                            <java>
-                                <eclipse>
-                                    <!--suppress MavenModelInspection -->
-                                    <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/java.xml</file>
-                                </eclipse>
-                                <licenseHeader>
-                                    <!--suppress MavenModelInspection -->
-                                    <file>${maven.multiModuleProjectDirectory}/src/resources/spotless/copyright.txt</file>
-                                </licenseHeader>
-                            </java>
-                            <pom>
-                                <sortPom>
-                                    <encoding>UTF-8</encoding>
-                                    <nrOfIndentSpace>4</nrOfIndentSpace>
-                                    <keepBlankLines>true</keepBlankLines>
-                                    <indentBlankLines>true</indentBlankLines>
-                                    <indentSchemaLocation>false</indentSchemaLocation>
-                                    <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
-                                    <sortModules>false</sortModules>
-                                    <sortExecutions>false</sortExecutions>
-                                    <predefinedSortOrder>custom_1</predefinedSortOrder>
-                                    <expandEmptyElements>false</expandEmptyElements>
-                                    <sortProperties>false</sortProperties>
-                                </sortPom>
-                                <replace>
-                                    <name>Leading blank line</name>
-                                    <search>--&gt;
-                                        &lt;project</search>
-                                    <replacement>--&gt;
-                                        
-                                        &lt;project</replacement>
-                                </replace>
-                            </pom>
-                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>apply</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
