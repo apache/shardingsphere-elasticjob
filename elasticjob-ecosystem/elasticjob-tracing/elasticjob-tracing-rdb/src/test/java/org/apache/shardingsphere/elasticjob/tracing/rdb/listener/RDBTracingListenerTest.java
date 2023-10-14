@@ -23,7 +23,6 @@ import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.Source;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.RDBJobEventStorage;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +76,7 @@ class RDBTracingListenerTest {
     
     @Test
     void assertPostJobStatusTraceEvent() {
-        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, "READY", "0", State.TASK_RUNNING, "message is empty.");
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", "READY", "0", State.TASK_RUNNING, "message is empty.");
         jobTracingEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
     }
