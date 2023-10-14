@@ -35,3 +35,10 @@ github:
   features:
     issues: true
     projects: true
+  protected_branches:
+    master:
+      required_status_checks:
+        contexts:
+          - Check - CheckStyle
+          - Check - Spotless
+          - Check - License
