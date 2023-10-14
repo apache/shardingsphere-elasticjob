@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
         <artifactId>elasticjob-registry-center</artifactId>
-        <version>3.0.4</version>
+        <version>3.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>elasticjob-regitry-center-provider</artifactId>
     <packaging>pom</packaging>
