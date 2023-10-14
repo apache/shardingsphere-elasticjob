@@ -28,8 +28,6 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>core</module>
         <module>spring</module>
-        <module>lifecycle</module>
     </modules>
 </project>
