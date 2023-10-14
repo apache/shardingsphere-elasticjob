@@ -20,16 +20,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-error-handler</artifactId>
+        <artifactId>elasticjob-executor</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-error-handler-type</artifactId>
+    <artifactId>elasticjob-executor-type</artifactId>
     <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
     
     <modules>
-        <module>elasticjob-error-handler-general</module>
-        <module>elasticjob-error-handler-email</module>
-        <module>elasticjob-error-handler-wechat</module>
-        <module>elasticjob-error-handler-dingtalk</module>
+        <module>simple</module>
+        <module>dataflow</module>
+        <module>script</module>
+        <module>http</module>
     </modules>
 </project>
