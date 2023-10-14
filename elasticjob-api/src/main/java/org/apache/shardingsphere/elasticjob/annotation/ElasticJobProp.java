@@ -30,12 +30,14 @@ public @interface ElasticJobProp {
     
     /**
      * Prop key.
+     * 
      * @return key
      */
     String key();
     
     /**
      * Prop value.
+     * 
      * @return value
      */
     String value() default "";
