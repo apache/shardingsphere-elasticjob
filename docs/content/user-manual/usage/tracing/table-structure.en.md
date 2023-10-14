@@ -4,7 +4,7 @@ weight = 4
 chapter = true
 +++
 
-The database which is the value of the event tracing property `event_trace_rdb_url` will automatically creates two tables `JOB_EXECUTION_LOG` and `JOB_STATUS_TRACE_LOG` and several indexes.
+The database which is the value of the event tracing property `event_trace_rdb_url` will automatically create two tables `JOB_EXECUTION_LOG` and `JOB_STATUS_TRACE_LOG` and several indexes.
 
 ## JOB_EXECUTION_LOG Columns
 
