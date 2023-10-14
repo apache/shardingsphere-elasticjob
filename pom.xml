@@ -366,7 +366,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -1005,10 +1005,10 @@
                                 <replace>
                                     <name>Leading blank line</name>
                                     <search>--&gt;
-                                        &lt;project</search>
+&lt;project</search>
                                     <replacement>--&gt;
-                                        
-                                        &lt;project</replacement>
+
+&lt;project</replacement>
                                 </replace>
                             </pom>
                         </configuration>
