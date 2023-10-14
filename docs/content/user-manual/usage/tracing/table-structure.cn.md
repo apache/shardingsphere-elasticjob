@@ -37,7 +37,6 @@ JOB_EXECUTION_LOG 记录每次作业的执行历史。
 | original_task_id | VARCHAR(1000) | 是    | 原任务名称                                                                                                 |
 | task_id          | VARCHAR(1000) | 是    | 任务名称                                                                                                  |
 | slave_id         | VARCHAR(1000) | 是    | 执行作业服务器的 IP 地址                                                                                        |
-| source           | VARCHAR(50)   | 是    | 任务执行源，可选值为CLOUD_SCHEDULER, CLOUD_EXECUTOR, LITE_EXECUTOR                                              |
 | execution_type   | VARCHAR(20)   | 是    | 任务执行类型，可选值为NORMAL_TRIGGER, MISFIRE, FAILOVER                                                          |
 | sharding_item    | VARCHAR(255)  | 是    | 分片项集合，多个分片项以逗号分隔                                                                                      |
 | state            | VARCHAR(20)   | 是    | 任务执行状态，可选值为TASK_STAGING, TASK_RUNNING, TASK_FINISHED, TASK_KILLED, TASK_LOST, TASK_FAILED, TASK_ERROR |
