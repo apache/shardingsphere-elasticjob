@@ -46,7 +46,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-lite-spring-boot-starter</artifactId>
+            <artifactId>elasticjob-engine-spring-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.fixture.repository;
+package org.apache.shardingsphere.elasticjob.engine.example.fixture.repository;
 
-import org.apache.shardingsphere.elasticjob.lite.example.fixture.entity.Foo;
+import org.apache.shardingsphere.elasticjob.engine.example.fixture.entity.Foo;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

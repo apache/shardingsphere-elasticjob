@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.lite.example.fixture.repository;
+package org.apache.shardingsphere.elasticjob.engine.example.fixture.repository;
 
 public final class FooRepositoryFactory {
     

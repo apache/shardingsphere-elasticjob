@@ -33,12 +33,10 @@
         <module>elasticjob-example-lite-java</module>
         <module>elasticjob-example-lite-spring</module>
         <module>elasticjob-example-lite-springboot</module>
-        
-        <module>elasticjob-example-cloud</module>
     </modules>
     
     <properties>
-        <revision>3.0.4</revision>
+        <revision>3.1.0-SNAPSHOT</revision>
         <java.version>1.8</java.version>
         <curator.version>5.1.0</curator.version>
         <springframework.version>4.3.4.RELEASE</springframework.version>
@@ -55,7 +53,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-lite-core</artifactId>
+                <artifactId>elasticjob-engine-core</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -65,13 +63,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-lite-spring-namespace</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.shardingsphere.elasticjob</groupId>
-                <artifactId>elasticjob-cloud-executor</artifactId>
+                <artifactId>elasticjob-engine-spring-namespace</artifactId>
                 <version>${revision}</version>
             </dependency>
             
