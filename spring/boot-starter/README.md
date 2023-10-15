@@ -7,7 +7,7 @@
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-boot-starter</artifactId>
+    <artifactId>elasticjob-spring-boot-starter</artifactId>
     <version>${latest.version}</version>
 </dependency>
 ```
@@ -52,7 +52,7 @@ elasticjob:
     type: RDB
   regCenter:
     serverLists: localhost:6181
-    namespace: elasticjob-engine-springboot
+    namespace: elasticjob-springboot
   jobs:
     classed:
       org.apache.shardingsphere.elasticjob.simple.job.SimpleJob:

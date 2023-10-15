@@ -38,5 +38,5 @@ elasticjob:
 ## Job Start
 
 TracingConfiguration will be registered into the IoC container imperceptibly after setting tracing type to RDB.
-If elasticjob-engine-spring-boot-starter was imported, developers need to do nothing else. 
+If elasticjob-spring-boot-starter was imported, developers need to do nothing else. 
 The instances of JobBootstrap will use the TracingConfiguration automatically.

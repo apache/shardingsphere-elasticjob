@@ -20,16 +20,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-engine-spring</artifactId>
+        <artifactId>elasticjob-spring</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-engine-spring-namespace</artifactId>
+    <artifactId>elasticjob-spring-namespace</artifactId>
     <name>${project.artifactId}</name>
     
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-engine-spring-core</artifactId>
+            <artifactId>elasticjob-spring-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         

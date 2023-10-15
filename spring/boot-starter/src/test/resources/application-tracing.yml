@@ -18,4 +18,4 @@
 elasticjob:
   regCenter:
     serverLists: localhost:18181
-    namespace: elasticjob-engine-spring-boot-starter
+    namespace: elasticjob-spring-boot-starter

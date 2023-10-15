@@ -6,12 +6,12 @@ chapter = true
 
 ## 引入 Maven 依赖
 
-引入 elasticjob-engine-spring
+引入 elasticjob-spring
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-namespace</artifactId>
+    <artifactId>elasticjob-spring-namespace</artifactId>
     <version>${elasticjob.latest.version}</version>
 </dependency>
 ```

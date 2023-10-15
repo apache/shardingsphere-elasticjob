@@ -37,5 +37,5 @@ elasticjob:
 
 ## 作业启动
 
-指定事件追踪数据源类型为 RDB，TracingConfiguration 会自动注册到容器中，如果与 elasticjob-engine-spring-boot-starter 配合使用，
+指定事件追踪数据源类型为 RDB，TracingConfiguration 会自动注册到容器中，如果与 elasticjob-spring-boot-starter 配合使用，
 开发者无需进行其他额外的操作，作业启动器会自动使用创建的 TracingConfiguration。

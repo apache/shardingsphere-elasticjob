@@ -49,7 +49,7 @@ Configuration reference:
 elasticjob:
   regCenter:
     serverLists: localhost:6181
-    namespace: elasticjob-engine-springboot
+    namespace: elasticjob-springboot
   jobs:
     dataflowJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob

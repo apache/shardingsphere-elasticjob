@@ -4,12 +4,12 @@ weight = 2
 chapter = true
 +++
 
-To use the Spring boot, user need to add the dependency of the `elasticjob-engine-spring-boot-starter` module in the `pom.xml` file.
+To use the Spring boot, user need to add the dependency of the `elasticjob-spring-boot-starter` module in the `pom.xml` file.
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-boot-starter</artifactId>
+    <artifactId>elasticjob-spring-boot-starter</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
@@ -38,12 +38,12 @@ Reference:
 elasticjob:
   regCenter:
     serverLists: localhost:6181
-    namespace: elasticjob-engine-springboot
+    namespace: elasticjob-springboot
 ```
 
 **Properties**
 ```
-elasticjob.reg-center.namespace=elasticjob-engine-springboot
+elasticjob.reg-center.namespace=elasticjob-springboot
 elasticjob.reg-center.server-lists=localhost:6181
 ```
 

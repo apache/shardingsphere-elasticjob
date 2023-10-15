@@ -48,7 +48,7 @@ Starter 会根据该配置自动创建 `OneOffJobBootstrap` 或 `ScheduleJobBoot
 elasticjob:
   regCenter:
     serverLists: localhost:6181
-    namespace: elasticjob-engine-springboot
+    namespace: elasticjob-springboot
   jobs:
     dataflowJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob

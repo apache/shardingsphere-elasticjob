@@ -4,12 +4,12 @@ weight = 2
 chapter = true
 +++
 
-使用 Spring-boot 需在 pom.xml 文件中添加 elasticjob-engine-spring-boot-starter 模块的依赖。
+使用 Spring-boot 需在 pom.xml 文件中添加 elasticjob-spring-boot-starter 模块的依赖。
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-boot-starter</artifactId>
+    <artifactId>elasticjob-spring-boot-starter</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
@@ -38,12 +38,12 @@ chapter = true
 elasticjob:
   regCenter:
     serverLists: localhost:6181
-    namespace: elasticjob-engine-springboot
+    namespace: elasticjob-springboot
 ```
 
 **Properties**
 ```
-elasticjob.reg-center.namespace=elasticjob-engine-springboot
+elasticjob.reg-center.namespace=elasticjob-springboot
 elasticjob.reg-center.server-lists=localhost:6181
 ```
 

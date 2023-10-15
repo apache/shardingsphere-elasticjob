@@ -4,12 +4,12 @@ weight = 2
 chapter = true
 +++
 
-To use the Spring namespace, user need to add the dependency of the `elasticjob-engine-spring` module in the `pom.xml` file.
+To use the Spring namespace, user need to add the dependency of the `elasticjob-spring` module in the `pom.xml` file.
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-namespace</artifactId>
+    <artifactId>elasticjob-spring-namespace</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
