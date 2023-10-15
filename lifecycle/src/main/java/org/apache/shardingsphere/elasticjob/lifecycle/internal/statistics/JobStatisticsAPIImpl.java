@@ -113,7 +113,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
                 shardingInstances.add(instanceId);
             }
         }
-        return !instances.containsAll(shardingInstances) || shardingInstances.isEmpty();
+        return !new HashSet<>(instances).containsAll(shardingInstances) || shardingInstances.isEmpty();
     }
     
     private int getJobInstanceCount(final String jobName) {
