@@ -1,7 +1,7 @@
 ## 3.0.4
 
 ## Dependencies Upgrade
-1. Update dependencies to avoid CVE
+1. Update dependencies to fix CVE
 
 ## Enhancements
 1. Support for building with OpenJDK 21
