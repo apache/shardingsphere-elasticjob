@@ -32,5 +32,5 @@
     <elasticjob:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}"
                           max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
 
-    <elasticjob:job-scanner id="job-scanner" base-package="org.apache.shardingsphere.elasticjob.engine.spring.namespace.fixture.job.annotation"/>
+    <elasticjob:job-scanner id="job-scanner" base-package="org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.annotation"/>
 </beans>

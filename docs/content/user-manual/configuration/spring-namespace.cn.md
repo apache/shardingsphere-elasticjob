@@ -4,12 +4,12 @@ weight = 3
 chapter = true
 +++
 
-使用 Spring 命名空间需在 pom.xml 文件中添加 elasticjob-engine-spring 模块的依赖。
+使用 Spring 命名空间需在 pom.xml 文件中添加 elasticjob-spring 模块的依赖。
 
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-namespace</artifactId>
+    <artifactId>elasticjob-spring-namespace</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```

@@ -35,12 +35,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-engine-spring-namespace</artifactId>
+            <artifactId>elasticjob-spring-namespace</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-engine-spring-boot-starter</artifactId>
+            <artifactId>elasticjob-spring-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

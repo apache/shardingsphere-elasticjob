@@ -26,8 +26,8 @@
                         ">
     <import resource="base.xml" />
     
-    <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.engine.spring.namespace.fixture.job.FooSimpleElasticJob" />
-    <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.engine.spring.namespace.fixture.job.DataflowElasticJob" />
+    <bean id="fooJob" class="org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.FooSimpleElasticJob" />
+    <bean id="dataflowJob" class="org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.DataflowElasticJob" />
     
     <elasticjob:job id="simpleElasticJob_namespace" job-ref="fooJob" registry-center-ref="regCenter" 
              cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" 

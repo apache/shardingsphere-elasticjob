@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-http\://shardingsphere.apache.org/schema/elasticjob=org.apache.shardingsphere.elasticjob.engine.spring.namespace.ElasticJobNamespaceHandler
+http\://shardingsphere.apache.org/schema/elasticjob=org.apache.shardingsphere.elasticjob.spring.namespace.ElasticJobNamespaceHandler

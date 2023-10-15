@@ -19,7 +19,7 @@
   "groups": [
     {
       "name": "elasticjob.reg-center",
-      "type": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties",
+      "type": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties",
       "description": "Registry Center configurations."
     },
     {
@@ -36,52 +36,52 @@
       "name": "elasticjob.reg-center.server-lists",
       "type": "java.lang.String",
       "description": "Include IP addresses and ports. Multiple IP address split by comma.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.namespace",
       "type": "java.lang.String",
       "description": "Namespace.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.base-sleep-time-milliseconds",
       "type": "java.lang.Integer",
       "defaultValue": 1000,
       "description": "Base sleep time milliseconds.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.max-sleep-time-milliseconds",
       "type": "java.lang.Integer",
       "defaultValue": 3000,
       "description": "Max sleep time milliseconds.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.max-retries",
       "type": "java.lang.Integer",
       "defaultValue": 3,
       "description": "Max retry times.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.session-timeout-milliseconds",
       "type": "java.lang.Integer",
       "description": "Session timeout milliseconds.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.connection-timeout-milliseconds",
       "type": "java.lang.Integer",
       "description": "Connection timeout milliseconds.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.reg-center.digest",
       "type": "java.lang.String",
       "description": "Zookeeper digest.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.ZookeeperProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties"
     },
     {
       "name": "elasticjob.tracing.type",
@@ -102,13 +102,13 @@
     },
     {
       "name": "elasticjob.jobs",
-      "type": "java.util.Map<java.lang.String,org.apache.shardingsphere.elasticjob.engine.spring.boot.job.ElasticJobConfigurationProperties>"
+      "type": "java.util.Map<java.lang.String,org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobConfigurationProperties>"
     },
     {
       "name": "elasticjob.dump.port",
       "type": "java.lang.Integer",
       "description": "A port for configuring SnapshotService.",
-      "sourceType": "org.apache.shardingsphere.elasticjob.engine.spring.boot.reg.snapshot.SnapshotServiceProperties"
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.snapshot.SnapshotServiceProperties"
     },
     {
       "name": "elasticjob.dump.enabled",

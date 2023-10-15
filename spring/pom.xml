@@ -23,7 +23,7 @@
         <artifactId>elasticjob</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-engine-spring</artifactId>
+    <artifactId>elasticjob-spring</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     

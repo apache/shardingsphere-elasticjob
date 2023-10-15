@@ -9,7 +9,7 @@ chapter = true
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-engine-spring-namespace</artifactId>
+    <artifactId>elasticjob-spring-namespace</artifactId>
     <version>${elasticjob.latest.version}</version>
 </dependency>
 ```
