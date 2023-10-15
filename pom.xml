@@ -34,9 +34,9 @@
         <module>api</module>
         <module>registry-center</module>
         <module>infra</module>
-        <module>core</module>
-        <module>restful</module>
+        <module>kernel</module>
         <module>lifecycle</module>
+        <module>restful</module>
         <module>ecosystem</module>
         <module>spring</module>
         <module>distribution</module>
