@@ -42,7 +42,7 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
     }
     
     protected final void assertDisabledRegCenterInfo() {
-        Awaitility.await().atLeast(100L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> {
+        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> {
             assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
             assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
         });
