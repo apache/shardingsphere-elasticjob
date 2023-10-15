@@ -10,12 +10,12 @@ elasticjob:
     namespace: elasticjob-springboot
   jobs:
     simpleJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootSimpleJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootSimpleJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
     dataflowJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootDataflowJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootDataflowJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
@@ -32,7 +32,7 @@ elasticjob:
       props:
         script.command.line: "echo Manual SCRIPT Job: "
     occurErrorNoticeDingtalkJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootOccurErrorNoticeDingtalkJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootOccurErrorNoticeDingtalkJob
       overwrite: true
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
@@ -46,7 +46,7 @@ elasticjob:
           connectTimeout: 3000
           readTimeout: 5000
     occurErrorNoticeWechatJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootOccurErrorNoticeWechatJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.kernel.job.SpringBootOccurErrorNoticeWechatJob
       overwrite: true
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
@@ -58,7 +58,7 @@ elasticjob:
           connectTimeout: 3000
           readTimeout: 5000
     occurErrorNoticeEmailJob:
-      elasticJobClass: org.apache.shardingsphere.elasticjob.engine.example.job.SpringBootOccurErrorNoticeEmailJob
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.kernel.job.SpringBootOccurErrorNoticeEmailJob
       overwrite: true
       shardingTotalCount: 3
       shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou

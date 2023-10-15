@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.core.setup;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.setup.JobClassNameProviderFactory;
+import org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProviderFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.job;
 
-import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.AnnotationCustomJob;
 import org.apache.shardingsphere.elasticjob.spring.core.scanner.ElasticJobScan;

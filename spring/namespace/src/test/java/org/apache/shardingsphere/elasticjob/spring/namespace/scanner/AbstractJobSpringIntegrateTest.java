@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.scanner;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.engine.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.annotation.AnnotationSimpleJob;
 import org.apache.shardingsphere.elasticjob.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;

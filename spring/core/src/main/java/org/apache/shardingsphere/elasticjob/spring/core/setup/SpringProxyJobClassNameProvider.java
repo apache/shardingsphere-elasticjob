@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.spring.core.setup;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.engine.internal.setup.JobClassNameProvider;
+import org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProvider;
 import org.apache.shardingsphere.elasticjob.spring.core.util.AopTargetUtils;
 import org.springframework.aop.support.AopUtils;
 

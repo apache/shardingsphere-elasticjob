@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lifecycle.internal.operate;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.storage.JobNodePath;
+import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lifecycle.api.ShardingOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 

@@ -19,10 +19,10 @@ package org.apache.shardingsphere.elasticjob.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
-import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.JobBootstrap;
-import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.engine.internal.schedule.JobScheduler;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;

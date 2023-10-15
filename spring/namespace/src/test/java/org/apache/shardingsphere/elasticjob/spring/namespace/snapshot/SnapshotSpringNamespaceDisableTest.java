@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.snapshot;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;

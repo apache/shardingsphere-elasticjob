@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.snapshot.parser;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.spring.namespace.snapshot.tag.SnapshotBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
