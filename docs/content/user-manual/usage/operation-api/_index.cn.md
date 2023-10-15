@@ -10,7 +10,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 配置类 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobConfigurationAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobConfigurationAPI`
 
 ### 获取作业配置
 
@@ -37,7 +37,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 操作类 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobOperateAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobOperateAPI`
 
 ### 触发作业执行
 
@@ -85,7 +85,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 操作分片的 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ShardingOperateAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.ShardingOperateAPI`
 
 ### 禁用作业分片
 
@@ -105,7 +105,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 作业统计 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.JobStatisticsAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobStatisticsAPI`
 
 ### 获取作业总数
 
@@ -139,7 +139,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 作业服务器状态展示 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ServerStatisticsAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.ServerStatisticsAPI`
 
 ### 获取作业服务器总数
 
@@ -155,7 +155,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ## 作业分片状态展示 API
 
-类名称：`org.apache.shardingsphere.elasticjob.engine.lifecycle.api.ShardingStatisticsAPI`
+类名称：`org.apache.shardingsphere.elasticjob.lifecycle.api.ShardingStatisticsAPI`
 
 ### 获取作业分片信息集合
 
