@@ -32,12 +32,13 @@
     
     <modules>
         <module>api</module>
-        <module>infra</module>
-        <module>engine</module>
         <module>registry-center</module>
+        <module>infra</module>
+        <module>core</module>
         <module>restful</module>
+        <module>lifecycle</module>
         <module>ecosystem</module>
-        
+        <module>spring</module>
         <module>distribution</module>
     </modules>
     
@@ -201,6 +202,11 @@
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
                 <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
