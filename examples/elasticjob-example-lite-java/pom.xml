@@ -57,7 +57,7 @@
         
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-engine-core</artifactId>
+            <artifactId>elasticjob-kernel</artifactId>
         </dependency>
         
         <dependency>
