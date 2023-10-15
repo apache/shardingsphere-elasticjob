@@ -48,7 +48,7 @@ public final class JavaMain {
     
     private static final String ZOOKEEPER_CONNECTION_STRING = "localhost:" + EMBED_ZOOKEEPER_PORT;
     
-    private static final String JOB_NAMESPACE = "elasticjob-example-lite-java";
+    private static final String JOB_NAMESPACE = "elasticjob-example-java";
     
     // switch to MySQL by yourself
 //    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.cj.jdbc.Driver";
