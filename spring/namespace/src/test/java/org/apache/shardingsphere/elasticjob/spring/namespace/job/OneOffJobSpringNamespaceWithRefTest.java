@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 
-import org.apache.shardingsphere.elasticjob.engine.api.bootstrap.impl.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.engine.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.ref.RefFooSimpleElasticJob;
 import org.apache.shardingsphere.elasticjob.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.reg.snapshot;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.reg.snapshot;
 
-import org.apache.shardingsphere.elasticjob.engine.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

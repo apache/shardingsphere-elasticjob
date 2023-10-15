@@ -53,7 +53,7 @@ Trigger the job by invoking `execute()` method manually.
 
 ```xml
 
-<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob"/>
+<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.kernel.example.job.simple.SpringSimpleJob"/>
 <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
 ```
 ```java

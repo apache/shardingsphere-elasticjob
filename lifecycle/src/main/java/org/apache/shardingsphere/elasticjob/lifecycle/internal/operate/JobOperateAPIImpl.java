@@ -20,10 +20,10 @@ package org.apache.shardingsphere.elasticjob.lifecycle.internal.operate;
 import com.google.common.base.Preconditions;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.apache.shardingsphere.elasticjob.engine.internal.instance.InstanceService;
-import org.apache.shardingsphere.elasticjob.engine.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.engine.internal.snapshot.SnapshotService;
-import org.apache.shardingsphere.elasticjob.engine.internal.storage.JobNodePath;
+import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lifecycle.api.JobOperateAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 

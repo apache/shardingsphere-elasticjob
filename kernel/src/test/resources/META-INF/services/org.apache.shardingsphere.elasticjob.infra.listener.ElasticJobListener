@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.engine.api.listener.fixture.TestDistributeOnceElasticJobListener
-org.apache.shardingsphere.elasticjob.engine.api.listener.fixture.TestElasticJobListener
-org.apache.shardingsphere.elasticjob.engine.integrate.listener.TestDistributeOnceElasticJobListener
-org.apache.shardingsphere.elasticjob.engine.integrate.listener.TestElasticJobListener
+org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.TestDistributeOnceElasticJobListener
+org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.TestElasticJobListener
+org.apache.shardingsphere.elasticjob.kernel.integrate.listener.TestDistributeOnceElasticJobListener
+org.apache.shardingsphere.elasticjob.kernel.integrate.listener.TestElasticJobListener

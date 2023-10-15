@@ -52,7 +52,7 @@ ElasticJob 提供自定义的 Spring 命名空间，可以与 Spring 容器配�
 
 ```xml
 
-<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.engine.example.job.simple.SpringSimpleJob"/>
+<bean id="oneOffJob" class="org.apache.shardingsphere.elasticjob.kernel.example.job.simple.SpringSimpleJob"/>
 <elasticjob:job id="oneOffJobBean" job-ref="oneOffJob" ...  />
 ```
 ```java
