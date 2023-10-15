@@ -30,9 +30,9 @@
         <module>elasticjob-example-jobs</module>
         <module>elasticjob-example-embed-zk</module>
         
-        <module>elasticjob-example-lite-java</module>
-        <module>elasticjob-example-lite-spring</module>
-        <module>elasticjob-example-lite-springboot</module>
+        <module>elasticjob-example-java</module>
+        <module>elasticjob-example-spring</module>
+        <module>elasticjob-example-springboot</module>
     </modules>
     
     <properties>

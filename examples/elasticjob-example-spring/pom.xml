@@ -25,7 +25,7 @@
         <artifactId>elasticjob-example</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>elasticjob-example-lite-spring</artifactId>
+    <artifactId>elasticjob-example-spring</artifactId>
     <name>${project.artifactId}</name>
     
     <dependencies>
