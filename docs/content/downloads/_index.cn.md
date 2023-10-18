@@ -13,10 +13,10 @@ extracss = true
 ElasticJob 的发布版包括源码包及其对应的二进制包。
 由于下载内容分布在镜像服务器上，所以下载后应该进行 GPG 或 SHA-512 校验，以此来保证内容没有被篡改。
 
-##### ElasticJob - 版本: 3.0.3 ( 发布日期: Mar 31, 2023 )
+##### ElasticJob - 版本: 3.0.4 ( 发布日期: Oct 18, 2023 )
 
-- 源码: [ [SRC](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip.sha512) ]
-- ElasticJob 二进制包: [ [TAR](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz.sha512) ]
+- 源码: [ [SRC](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip.sha512) ]
+- ElasticJob 二进制包: [ [TAR](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz.sha512) ]
 
 ##### ElasticJob-UI - 版本: 3.0.2 ( 发布日期: Oct 31, 2022 )
 
