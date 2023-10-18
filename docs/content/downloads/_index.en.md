@@ -13,10 +13,10 @@ extracss = true
 ElasticJob is released as source code tarballs with corresponding binary tarballs for convenience. 
 The downloads are distributed via mirror sites and should be checked for tampering using GPG or SHA-512.
 
-##### ElasticJob - Version: 3.0.3 ( Release Date: Mar 31, 2023 )
+##### ElasticJob - Version: 3.0.4 ( Release Date: Oct 18, 2023 )
 
-- Source Codes: [ [SRC](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-src.zip.sha512) ]
-- ElasticJob Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.3/apache-shardingsphere-elasticjob-3.0.3-lite-bin.tar.gz.sha512) ]
+- Source Codes: [ [SRC](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-src.zip.sha512) ]
+- ElasticJob Binary Distribution: [ [TAR](https://www.apache.org/dyn/closer.lua/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz) ] [ [ASC](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz.asc) ] [ [SHA512](https://downloads.apache.org/shardingsphere/elasticjob-3.0.4/apache-shardingsphere-elasticjob-3.0.4-lite-bin.tar.gz.sha512) ]
 
 ##### ElasticJob-UI - Version: 3.0.2 ( Release Date: Oct 31, 2022 )
 
