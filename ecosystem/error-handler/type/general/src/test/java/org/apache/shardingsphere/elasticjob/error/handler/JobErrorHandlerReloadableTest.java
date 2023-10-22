@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 class JobErrorHandlerReloadableTest {
     
     @Mock
-    private JobErrorHandler mockJobErrorHandler;
+    private JobErrorHandler jobErrorHandler;
     
     @Test
     void assertInitialize() {
@@ -59,13 +59,13 @@ class JobErrorHandlerReloadableTest {
     @Test
     void assertReload() {
         try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
-            when(mockJobErrorHandler.getType()).thenReturn("mock");
-            setField(jobErrorHandlerReloadable, "jobErrorHandler", mockJobErrorHandler);
+            when(jobErrorHandler.getType()).thenReturn("mock");
+            setField(jobErrorHandlerReloadable, "jobErrorHandler", jobErrorHandler);
             setField(jobErrorHandlerReloadable, "props", new Properties());
             String newJobErrorHandlerType = "LOG";
             JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(newJobErrorHandlerType).build();
             jobErrorHandlerReloadable.reloadIfNecessary(newJobConfig);
-            verify(mockJobErrorHandler).close();
+            verify(jobErrorHandler).close();
             JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
             assertThat(actual.getType(), is(newJobErrorHandlerType));
             assertTrue(actual instanceof LogJobErrorHandler);
@@ -88,9 +88,9 @@ class JobErrorHandlerReloadableTest {
     @Test
     void assertShutdown() {
         try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
-            setField(jobErrorHandlerReloadable, "jobErrorHandler", mockJobErrorHandler);
+            setField(jobErrorHandlerReloadable, "jobErrorHandler", jobErrorHandler);
             jobErrorHandlerReloadable.close();
-            verify(mockJobErrorHandler).close();
+            verify(jobErrorHandler).close();
         }
     }
     
