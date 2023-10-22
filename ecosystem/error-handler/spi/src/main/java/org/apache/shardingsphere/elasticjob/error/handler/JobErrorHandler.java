@@ -17,15 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.SPIPostProcessor;
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 import java.io.Closeable;
 
 /**
  * Job error handler.
  */
-public interface JobErrorHandler extends TypedSPI, SPIPostProcessor, Closeable {
+public interface JobErrorHandler extends TypedSPI, Closeable {
     
     /**
      * Handle exception.
@@ -34,6 +33,9 @@ public interface JobErrorHandler extends TypedSPI, SPIPostProcessor, Closeable {
      * @param cause failure cause
      */
     void handleException(String jobName, Throwable cause);
+    
+    @Override
+    String getType();
     
     @Override
     default void close() {

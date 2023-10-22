@@ -20,17 +20,11 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
-import java.util.Properties;
-
 /**
  * Job error handler for log error message.
  */
 @Slf4j
 public final class LogJobErrorHandler implements JobErrorHandler {
-    
-    @Override
-    public void init(final Properties props) {
-    }
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
@@ -40,5 +34,10 @@ public final class LogJobErrorHandler implements JobErrorHandler {
     @Override
     public String getType() {
         return "LOG";
+    }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
     }
 }

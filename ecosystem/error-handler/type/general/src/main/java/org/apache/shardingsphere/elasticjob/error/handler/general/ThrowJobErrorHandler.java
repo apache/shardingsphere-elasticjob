@@ -20,16 +20,10 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 
-import java.util.Properties;
-
 /**
  * Job error handler for throw exception.
  */
 public final class ThrowJobErrorHandler implements JobErrorHandler {
-    
-    @Override
-    public void init(final Properties props) {
-    }
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {

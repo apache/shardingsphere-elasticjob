@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.error.handler.general;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class LogJobErrorHandlerTest {
     
     @Test
     void assertHandleException() {
-        LogJobErrorHandler actual = (LogJobErrorHandler) JobErrorHandlerFactory.createHandler("LOG", new Properties()).orElseThrow(() -> new JobConfigurationException("LOG error handler not found."));
+        LogJobErrorHandler actual = (LogJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "LOG" , new Properties());
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
