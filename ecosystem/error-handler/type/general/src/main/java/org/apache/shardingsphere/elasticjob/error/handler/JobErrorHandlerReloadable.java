@@ -44,7 +44,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     
     @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (jobConfig.getJobErrorHandlerType().equals(jobErrorHandler.getType()) && props.equals(jobConfig.getProps())) {
+        if (jobErrorHandler.getType().equals(jobConfig.getJobErrorHandlerType()) && props.equals(jobConfig.getProps())) {
             return;
         }
         log.debug("JobErrorHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobErrorHandler.getType(), jobConfig.getJobErrorHandlerType());
