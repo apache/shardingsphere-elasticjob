@@ -29,11 +29,16 @@ import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingPropertie
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.Map;
 
@@ -41,13 +46,12 @@ import java.util.Map;
  * JobBootstrap configuration.
  */
 @Slf4j
-public class ElasticJobBootstrapConfiguration implements SmartInitializingSingleton, ApplicationContextAware {
+public class ElasticJobBootstrapConfiguration implements MergedBeanDefinitionPostProcessor, ApplicationContextAware, InitializingBean {
     
     @Setter
     private ApplicationContext applicationContext;
-    
     @Override
-    public void afterSingletonsInstantiated() {
+    public void afterPropertiesSet() throws Exception {
         log.info("creating Job Bootstrap Beans");
         createJobBootstrapBeans();
         log.info("Job Bootstrap Beans created.");
@@ -133,5 +137,11 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
                 && !tracingProperties.getExcludeJobNames().contains(jobConfig.getJobName())) {
             jobConfig.getExtraConfigurations().add(tracingConfig);
         }
+    }
+
+
+    @Override
+    public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
+        // do nothing, in purpose to initialize bean
     }
 }
