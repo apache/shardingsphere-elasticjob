@@ -27,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListenerFactory;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;
@@ -107,9 +106,7 @@ public final class JobScheduler {
     }
     
     private Collection<ElasticJobListener> getElasticJobListeners(final JobConfiguration jobConfig) {
-        return jobConfig.getJobListenerTypes().stream()
-                .map(type -> ElasticJobListenerFactory.createListener(type).orElseThrow(() -> new IllegalArgumentException(String.format("Can not find job listener type '%s'.", type))))
-                .collect(Collectors.toList());
+        return jobConfig.getJobListenerTypes().stream().map(each -> TypedSPILoader.getService(ElasticJobListener.class, each)).collect(Collectors.toList());
     }
     
     private Optional<TracingConfiguration<?>> findTracingConfiguration() {

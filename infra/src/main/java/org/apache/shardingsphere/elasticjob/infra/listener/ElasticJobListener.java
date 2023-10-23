@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.listener;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
  * ElasticJob listener.
