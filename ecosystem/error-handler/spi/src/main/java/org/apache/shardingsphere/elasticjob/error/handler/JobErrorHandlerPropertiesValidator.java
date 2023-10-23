@@ -17,10 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import org.apache.shardingsphere.elasticjob.infra.validator.JobPropertiesValidator;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
+import java.util.Properties;
 
 /**
  * Job error handler properties validator.
  */
-public interface JobErrorHandlerPropertiesValidator extends JobPropertiesValidator {
+@SingletonSPI
+public interface JobErrorHandlerPropertiesValidator extends TypedSPI {
+    
+    /**
+     * Validate job properties.
+     *
+     * @param props job properties
+     */
+    void validate(Properties props);
 }

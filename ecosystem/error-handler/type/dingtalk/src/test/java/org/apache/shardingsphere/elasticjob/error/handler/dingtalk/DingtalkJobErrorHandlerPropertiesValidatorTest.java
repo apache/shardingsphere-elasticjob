@@ -18,8 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
@@ -30,40 +29,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DingtalkJobErrorHandlerPropertiesValidatorTest {
     
-    @BeforeEach
-    void startup() {
-        ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
-    }
-    
     @Test
     void assertValidateWithNormal() {
         Properties properties = new Properties();
         properties.setProperty(DingtalkPropertiesConstants.WEBHOOK, "webhook");
         properties.setProperty(DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS, "1000");
         properties.setProperty(DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS, "2000");
-        DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
-        actual.validate(properties);
+        TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "DINGTALK").validate(properties);
     }
     
     @Test
     void assertValidateWithPropsIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
-            actual.validate(null);
-        });
+        assertThrows(NullPointerException.class, () -> TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "DINGTALK").validate(null));
     }
     
     @Test
     void assertValidateWithWebhookIsNull() {
-        DingtalkJobErrorHandlerPropertiesValidator actual = getValidator();
         try {
-            actual.validate(new Properties());
-        } catch (NullPointerException e) {
-            assertThat(e.getMessage(), is(String.format("The property `%s` is required.", DingtalkPropertiesConstants.WEBHOOK)));
+            TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "DINGTALK").validate(new Properties());
+        } catch (final NullPointerException ex) {
+            assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", DingtalkPropertiesConstants.WEBHOOK)));
         }
-    }
-    
-    private DingtalkJobErrorHandlerPropertiesValidator getValidator() {
-        return (DingtalkJobErrorHandlerPropertiesValidator) ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, "DINGTALK", null).get();
     }
 }

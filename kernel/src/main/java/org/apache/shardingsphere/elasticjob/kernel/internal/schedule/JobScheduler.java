@@ -28,7 +28,6 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListenerFactory;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;
@@ -36,6 +35,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNamePr
 import org.apache.shardingsphere.elasticjob.kernel.internal.setup.SetUpFacade;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -52,10 +52,6 @@ import java.util.stream.Collectors;
  * Job scheduler.
  */
 public final class JobScheduler {
-    
-    static {
-        ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
-    }
     
     private static final String JOB_EXECUTOR_DATA_MAP_KEY = "jobExecutor";
     
@@ -126,7 +122,7 @@ public final class JobScheduler {
     
     private void validateJobErrorHandlerProperties() {
         if (null != jobConfig.getJobErrorHandlerType()) {
-            ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
+            TypedSPILoader.findService(JobErrorHandlerPropertiesValidator.class, jobConfig.getJobErrorHandlerType(), jobConfig.getProps())
                     .ifPresent(validator -> validator.validate(jobConfig.getProps()));
         }
     }
