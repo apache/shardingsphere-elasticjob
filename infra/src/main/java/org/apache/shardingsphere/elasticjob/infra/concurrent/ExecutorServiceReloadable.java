@@ -17,11 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
-import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -32,34 +32,29 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
     
-    private String jobExecutorServiceHandlerType;
+    private JobExecutorServiceHandler jobExecutorServiceHandler;
     
     private ExecutorService executorService;
     
     @Override
     public void init(final JobConfiguration jobConfig) {
-        jobExecutorServiceHandlerType = Strings.isNullOrEmpty(jobConfig.getJobExecutorServiceHandlerType())
-                ? JobExecutorServiceHandlerFactory.DEFAULT_HANDLER
-                : jobConfig.getJobExecutorServiceHandlerType();
-        executorService = JobExecutorServiceHandlerFactory.getHandler(jobExecutorServiceHandlerType).createExecutorService(jobConfig.getJobName());
+        jobExecutorServiceHandler = TypedSPILoader.getService(JobExecutorServiceHandler.class, jobConfig.getJobExecutorServiceHandlerType());
+        executorService = jobExecutorServiceHandler.createExecutorService(jobConfig.getJobName());
     }
     
     @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        String newJobExecutorServiceHandlerType = Strings.isNullOrEmpty(jobConfig.getJobExecutorServiceHandlerType())
-                ? JobExecutorServiceHandlerFactory.DEFAULT_HANDLER
-                : jobConfig.getJobExecutorServiceHandlerType();
-        if (newJobExecutorServiceHandlerType.equals(jobExecutorServiceHandlerType)) {
+        if (jobExecutorServiceHandler.getType().equals(jobConfig.getJobExecutorServiceHandlerType())) {
             return;
         }
-        log.debug("JobExecutorServiceHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorServiceHandlerType, newJobExecutorServiceHandlerType);
-        reload(newJobExecutorServiceHandlerType, jobConfig.getJobName());
+        log.debug("JobExecutorServiceHandler reload occurred in the job '{}'. Change from '{}' to '{}'.",
+                jobConfig.getJobName(), jobExecutorServiceHandler.getType(), jobConfig.getJobExecutorServiceHandlerType());
+        reload(jobConfig.getJobExecutorServiceHandlerType(), jobConfig.getJobName());
     }
     
     private void reload(final String jobExecutorServiceHandlerType, final String jobName) {
         executorService.shutdown();
-        this.jobExecutorServiceHandlerType = jobExecutorServiceHandlerType;
-        executorService = JobExecutorServiceHandlerFactory.getHandler(jobExecutorServiceHandlerType).createExecutorService(jobName);
+        executorService = TypedSPILoader.getService(JobExecutorServiceHandler.class, jobExecutorServiceHandlerType).createExecutorService(jobName);
     }
     
     @Override
