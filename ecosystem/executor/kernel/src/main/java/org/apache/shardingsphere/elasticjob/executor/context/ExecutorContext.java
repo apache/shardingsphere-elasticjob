@@ -57,7 +57,7 @@ public final class ExecutorContext {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(final Class<T> targetClass) {
-        return (T) TypedSPILoader.getService(Reloadable.class, targetClass, new Properties());
+        return (T) TypedSPILoader.getService(Reloadable.class, targetClass, new Properties()).getInstance();
     }
     
     /**
