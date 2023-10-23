@@ -114,7 +114,7 @@ class WechatJobErrorHandlerTest {
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler(final Properties props) {
-        return (WechatJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "WECHAT" , props);
+        return (WechatJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "WECHAT", props);
     }
     
     private Properties createConfigurationProperties(final String webhook) {

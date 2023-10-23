@@ -52,7 +52,7 @@ class LogJobErrorHandlerTest {
     
     @Test
     void assertHandleException() {
-        LogJobErrorHandler actual = (LogJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "LOG" , new Properties());
+        LogJobErrorHandler actual = (LogJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "LOG", new Properties());
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));

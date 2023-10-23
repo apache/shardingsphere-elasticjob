@@ -124,7 +124,7 @@ class DingtalkJobErrorHandlerTest {
     }
     
     private DingtalkJobErrorHandler getDingtalkJobErrorHandler(final Properties props) {
-        return (DingtalkJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "DINGTALK" , props);
+        return (DingtalkJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "DINGTALK", props);
     }
     
     private Properties createConfigurationProperties(final String webhook) {

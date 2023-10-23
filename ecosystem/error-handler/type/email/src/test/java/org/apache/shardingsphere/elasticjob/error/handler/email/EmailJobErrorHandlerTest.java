@@ -97,7 +97,7 @@ class EmailJobErrorHandlerTest {
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {
-        return (EmailJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "EMAIL" , props);
+        return (EmailJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "EMAIL", props);
     }
     
     private void setUpMockSession(final Session session) {

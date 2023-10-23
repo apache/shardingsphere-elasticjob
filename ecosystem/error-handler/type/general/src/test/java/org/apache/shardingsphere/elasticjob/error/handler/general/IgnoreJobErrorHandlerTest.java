@@ -27,6 +27,6 @@ class IgnoreJobErrorHandlerTest {
     
     @Test
     void assertHandleException() {
-        TypedSPILoader.getService(JobErrorHandler.class, "IGNORE" , new Properties()).handleException("test_job", new RuntimeException("test"));
+        TypedSPILoader.getService(JobErrorHandler.class, "IGNORE", new Properties()).handleException("test_job", new RuntimeException("test"));
     }
 }

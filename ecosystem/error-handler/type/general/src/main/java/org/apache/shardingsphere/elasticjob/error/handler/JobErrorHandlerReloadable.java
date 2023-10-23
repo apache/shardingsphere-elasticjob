@@ -38,7 +38,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     @Override
     public void init(final JobConfiguration jobConfig) {
         props = (Properties) jobConfig.getProps().clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType() , props);
+        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
     
     @Override
@@ -53,7 +53,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     private void reload(final String jobErrorHandlerType, final Properties props) {
         jobErrorHandler.close();
         this.props = (Properties) props.clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobErrorHandlerType , props);
+        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobErrorHandlerType, props);
     }
     
     @Override
