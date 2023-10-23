@@ -45,16 +45,17 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertInitialize() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
-        String jobExecutorServiceHandlerType = "SINGLE_THREAD";
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).build();
-        assertNull(executorServiceReloadable.getInstance());
-        executorServiceReloadable.init(jobConfig);
-        ExecutorService actual = executorServiceReloadable.getInstance();
-        assertNotNull(actual);
-        assertFalse(actual.isShutdown());
-        assertFalse(actual.isTerminated());
-        actual.shutdown();
+        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
+            String jobExecutorServiceHandlerType = "SINGLE_THREAD";
+            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).build();
+            assertNull(executorServiceReloadable.getInstance());
+            executorServiceReloadable.init(jobConfig);
+            ExecutorService actual = executorServiceReloadable.getInstance();
+            assertNotNull(actual);
+            assertFalse(actual.isShutdown());
+            assertFalse(actual.isTerminated());
+            actual.shutdown();
+        }
     }
     
     @Test
@@ -75,14 +76,15 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertUnnecessaryToReload() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType("CPU").build();
-        executorServiceReloadable.init(jobConfig);
-        ExecutorService expected = executorServiceReloadable.getInstance();
-        executorServiceReloadable.reloadIfNecessary(jobConfig);
-        ExecutorService actual = executorServiceReloadable.getInstance();
-        assertThat(actual, is(expected));
-        actual.shutdown();
+        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
+            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType("CPU").build();
+            executorServiceReloadable.init(jobConfig);
+            ExecutorService expected = executorServiceReloadable.getInstance();
+            executorServiceReloadable.reloadIfNecessary(jobConfig);
+            ExecutorService actual = executorServiceReloadable.getInstance();
+            assertThat(actual, is(expected));
+            actual.shutdown();    
+        }
     }
     
     @Test
