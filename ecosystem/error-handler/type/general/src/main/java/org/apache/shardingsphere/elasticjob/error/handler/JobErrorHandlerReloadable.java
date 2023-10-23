@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.error.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
-import org.apache.shardingsphere.elasticjob.infra.context.ReloadablePostProcessor;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Optional;
@@ -30,7 +29,7 @@ import java.util.Properties;
  * JobErrorHandler reloadable.
  */
 @Slf4j
-public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler>, ReloadablePostProcessor {
+public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler> {
     
     private Properties props;
     
@@ -63,8 +62,8 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     }
     
     @Override
-    public String getType() {
-        return JobErrorHandler.class.getName();
+    public Class<JobErrorHandler> getType() {
+        return JobErrorHandler.class;
     }
     
     @Override
