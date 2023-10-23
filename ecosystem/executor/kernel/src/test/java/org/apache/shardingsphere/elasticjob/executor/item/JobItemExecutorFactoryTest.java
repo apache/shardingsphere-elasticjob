@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.executor.item;
 
 import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
-import org.apache.shardingsphere.elasticjob.executor.fixture.executor.TypedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FailedJob;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
@@ -44,15 +43,5 @@ class JobItemExecutorFactoryTest {
     @Test
     void assertGetExecutorByClassSuccessWithSubClass() {
         assertThat(JobItemExecutorFactory.getExecutor(DetailedFooJob.class), instanceOf(ClassedFooJobExecutor.class));
-    }
-    
-    @Test
-    void assertGetExecutorByTypeFailureWithInvalidType() {
-        assertThrows(JobConfigurationException.class, () -> JobItemExecutorFactory.getExecutor("FAIL"));
-    }
-    
-    @Test
-    void assertGetExecutorByTypeSuccess() {
-        assertThat(JobItemExecutorFactory.getExecutor("FOO"), instanceOf(TypedFooJobExecutor.class));
     }
 }

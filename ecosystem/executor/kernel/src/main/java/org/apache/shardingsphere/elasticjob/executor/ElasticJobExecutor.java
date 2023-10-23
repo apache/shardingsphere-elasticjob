@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.executor.context.ExecutorContext;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
+import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
@@ -31,6 +32,7 @@ import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Collection;
 import java.util.Map;
@@ -59,7 +61,7 @@ public final class ElasticJobExecutor {
     }
     
     public ElasticJobExecutor(final String type, final JobConfiguration jobConfig, final JobFacade jobFacade) {
-        this(null, jobConfig, jobFacade, JobItemExecutorFactory.getExecutor(type));
+        this(null, jobConfig, jobFacade, TypedSPILoader.getService(TypedJobItemExecutor.class, type));
     }
     
     private ElasticJobExecutor(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final JobItemExecutor jobItemExecutor) {
