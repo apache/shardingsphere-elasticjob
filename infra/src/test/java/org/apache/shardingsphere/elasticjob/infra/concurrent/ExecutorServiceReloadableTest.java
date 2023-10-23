@@ -83,7 +83,7 @@ class ExecutorServiceReloadableTest {
             executorServiceReloadable.reloadIfNecessary(jobConfig);
             ExecutorService actual = executorServiceReloadable.getInstance();
             assertThat(actual, is(expected));
-            actual.shutdown();    
+            actual.shutdown();
         }
     }
     

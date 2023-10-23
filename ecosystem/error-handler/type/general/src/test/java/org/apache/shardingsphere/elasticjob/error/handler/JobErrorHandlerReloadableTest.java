@@ -70,7 +70,6 @@ class JobErrorHandlerReloadableTest {
             assertThat(actual.getType(), is(newJobErrorHandlerType));
             assertTrue(actual instanceof LogJobErrorHandler);
         }
-
     }
     
     @Test
