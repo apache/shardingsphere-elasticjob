@@ -17,7 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,8 +28,6 @@ class SingleThreadJobExecutorServiceHandlerTest {
     
     @Test
     void assertGetPoolSizeAndType() {
-        SingleThreadJobExecutorServiceHandler singleThreadJobExecutorServiceHandler = (SingleThreadJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("SINGLE_THREAD");
-        assertThat(singleThreadJobExecutorServiceHandler.getPoolSize(), is(1));
-        assertThat(singleThreadJobExecutorServiceHandler.getType(), is("SINGLE_THREAD"));
+        assertThat(((SingleThreadJobExecutorServiceHandler) TypedSPILoader.getService(JobExecutorServiceHandler.class, "SINGLE_THREAD")).getPoolSize(), is(1));
     }
 }

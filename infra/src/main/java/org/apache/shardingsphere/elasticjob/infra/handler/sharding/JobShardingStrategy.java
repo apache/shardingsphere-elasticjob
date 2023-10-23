@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 import java.util.List;
 import java.util.Map;

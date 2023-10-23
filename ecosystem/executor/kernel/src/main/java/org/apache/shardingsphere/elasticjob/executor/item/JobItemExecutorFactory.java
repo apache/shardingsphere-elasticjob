@@ -20,10 +20,8 @@ package org.apache.shardingsphere.elasticjob.executor.item;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +38,6 @@ public final class JobItemExecutorFactory {
     private static final Map<Class, ClassedJobItemExecutor> CLASSED_EXECUTORS = new HashMap<>();
     
     static {
-        ElasticJobServiceLoader.registerTypedService(TypedJobItemExecutor.class);
         ServiceLoader.load(ClassedJobItemExecutor.class).forEach(each -> CLASSED_EXECUTORS.put(each.getElasticJobClass(), each));
     }
     
@@ -58,16 +55,5 @@ public final class JobItemExecutorFactory {
             }
         }
         throw new JobConfigurationException("Can not find executor for elastic job class `%s`", elasticJobClass.getName());
-    }
-    
-    /**
-     * Get executor.
-     *
-     * @param elasticJobType elastic job type
-     * @return job item executor
-     */
-    public static JobItemExecutor getExecutor(final String elasticJobType) {
-        return ElasticJobServiceLoader.getCachedTypedServiceInstance(TypedJobItemExecutor.class, elasticJobType)
-                .orElseThrow(() -> new JobConfigurationException("Cannot find executor for elastic job type `%s`", elasticJobType));
     }
 }

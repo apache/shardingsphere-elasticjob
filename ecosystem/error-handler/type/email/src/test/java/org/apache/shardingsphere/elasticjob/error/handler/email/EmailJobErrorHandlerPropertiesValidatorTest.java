@@ -18,8 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
@@ -29,11 +28,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EmailJobErrorHandlerPropertiesValidatorTest {
-    
-    @BeforeEach
-    void startup() {
-        ElasticJobServiceLoader.registerTypedService(JobErrorHandlerPropertiesValidator.class);
-    }
     
     @Test
     void assertValidateWithNormal() {
@@ -45,29 +39,20 @@ class EmailJobErrorHandlerPropertiesValidatorTest {
         properties.setProperty(EmailPropertiesConstants.PASSWORD, "password");
         properties.setProperty(EmailPropertiesConstants.FROM, "from@xxx.xx");
         properties.setProperty(EmailPropertiesConstants.TO, "to@xxx.xx");
-        EmailJobErrorHandlerPropertiesValidator actual = getValidator();
-        actual.validate(properties);
+        TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "EMAIL").validate(properties);
     }
     
     @Test
     void assertValidateWithPropsIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            EmailJobErrorHandlerPropertiesValidator actual = getValidator();
-            actual.validate(null);
-        });
+        assertThrows(NullPointerException.class, () -> TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "EMAIL").validate(null));
     }
     
     @Test
     void assertValidateWithHostIsNull() {
-        EmailJobErrorHandlerPropertiesValidator actual = getValidator();
         try {
-            actual.validate(new Properties());
-        } catch (NullPointerException e) {
-            assertThat(e.getMessage(), is(String.format("The property `%s` is required.", EmailPropertiesConstants.HOST)));
+            TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "EMAIL").validate(new Properties());
+        } catch (final NullPointerException ex) {
+            assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", EmailPropertiesConstants.HOST)));
         }
-    }
-    
-    private EmailJobErrorHandlerPropertiesValidator getValidator() {
-        return (EmailJobErrorHandlerPropertiesValidator) ElasticJobServiceLoader.newTypedServiceInstance(JobErrorHandlerPropertiesValidator.class, "EMAIL", null).get();
     }
 }

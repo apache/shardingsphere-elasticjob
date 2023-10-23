@@ -19,14 +19,11 @@ package org.apache.shardingsphere.elasticjob.executor.context;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
-import org.apache.shardingsphere.elasticjob.infra.context.ReloadablePostProcessor;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Properties;
-import java.util.ServiceLoader;
 
 /**
  * Executor context.
@@ -36,22 +33,10 @@ import java.util.ServiceLoader;
  */
 public final class ExecutorContext {
     
-    static {
-        ElasticJobServiceLoader.registerTypedService(Reloadable.class);
-    }
-    
-    private final Map<String, Reloadable<?>> reloadableItems = new LinkedHashMap<>();
-    
     public ExecutorContext(final JobConfiguration jobConfig) {
-        ServiceLoader.load(Reloadable.class).forEach(each -> {
-            ElasticJobServiceLoader.newTypedServiceInstance(Reloadable.class, each.getType(), new Properties())
-                    .ifPresent(reloadable -> reloadableItems.put(reloadable.getType(), reloadable));
-        });
-        initReloadable(jobConfig);
-    }
-    
-    private void initReloadable(final JobConfiguration jobConfig) {
-        reloadableItems.values().stream().filter(each -> each instanceof ReloadablePostProcessor).forEach(each -> ((ReloadablePostProcessor) each).init(jobConfig));
+        for (Reloadable<?> each : ShardingSphereServiceLoader.getServiceInstances(Reloadable.class)) {
+            each.init(jobConfig);
+        }
     }
     
     /**
@@ -60,26 +45,26 @@ public final class ExecutorContext {
      * @param jobConfiguration job configuration
      */
     public void reloadIfNecessary(final JobConfiguration jobConfiguration) {
-        reloadableItems.values().forEach(each -> each.reloadIfNecessary(jobConfiguration));
+        ShardingSphereServiceLoader.getServiceInstances(Reloadable.class).forEach(each -> each.reloadIfNecessary(jobConfiguration));
     }
     
     /**
      * Get instance.
      *
      * @param targetClass target class
-     * @param <T>         target type
+     * @param <T> target type
      * @return instance
      */
     @SuppressWarnings("unchecked")
     public <T> T get(final Class<T> targetClass) {
-        return (T) reloadableItems.get(targetClass.getName()).getInstance();
+        return (T) TypedSPILoader.getService(Reloadable.class, targetClass, new Properties()).getInstance();
     }
     
     /**
      * Shutdown all closeable instances.
      */
     public void shutdown() {
-        for (Reloadable<?> each : reloadableItems.values()) {
+        for (Reloadable<?> each : ShardingSphereServiceLoader.getServiceInstances(Reloadable.class)) {
             try {
                 each.close();
             } catch (final IOException ignored) {

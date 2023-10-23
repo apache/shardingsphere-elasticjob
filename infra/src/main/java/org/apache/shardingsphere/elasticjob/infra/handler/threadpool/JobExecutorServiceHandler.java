@@ -17,13 +17,15 @@
 
 package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
 
-import org.apache.shardingsphere.elasticjob.infra.spi.TypedSPI;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 import java.util.concurrent.ExecutorService;
 
 /**
  * Job executor service handler.
  */
+@SingletonSPI
 public interface JobExecutorServiceHandler extends TypedSPI {
     
     /**

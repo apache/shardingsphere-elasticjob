@@ -28,7 +28,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
@@ -75,10 +75,15 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MISFIRE_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.RECONCILE_INTERVAL_MINUTES));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(JobBeanDefinitionTag.JOB_ERROR_HANDLER_TYPE_ATTRIBUTE));
-        if (StringUtils.isEmpty(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).trim())) {
+        result.addConstructorArgValue(
+                element.hasAttribute(JobBeanDefinitionTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE) ? element.getAttribute(JobBeanDefinitionTag.JOB_SHARDING_STRATEGY_TYPE_ATTRIBUTE) : null);
+        result.addConstructorArgValue(
+                element.hasAttribute(JobBeanDefinitionTag.JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE)
+                        ? element.getAttribute(JobBeanDefinitionTag.JOB_EXECUTOR_SERVICE_HANDLER_TYPE_ATTRIBUTE)
+                        : null);
+        result.addConstructorArgValue(
+                element.hasAttribute(JobBeanDefinitionTag.JOB_ERROR_HANDLER_TYPE_ATTRIBUTE) ? element.getAttribute(JobBeanDefinitionTag.JOB_ERROR_HANDLER_TYPE_ATTRIBUTE) : null);
+        if (ObjectUtils.isEmpty(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).trim())) {
             result.addConstructorArgValue(Collections.emptyList());
         } else {
             result.addConstructorArgValue(Arrays.asList(element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE).split(",")));

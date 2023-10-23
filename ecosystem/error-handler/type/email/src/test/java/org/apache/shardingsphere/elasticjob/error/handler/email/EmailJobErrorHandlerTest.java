@@ -21,8 +21,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,7 +97,7 @@ class EmailJobErrorHandlerTest {
     }
     
     private EmailJobErrorHandler getEmailJobErrorHandler(final Properties props) {
-        return (EmailJobErrorHandler) JobErrorHandlerFactory.createHandler("EMAIL", props).orElseThrow(() -> new JobConfigurationException("EMAIL error handler not found."));
+        return (EmailJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "EMAIL", props);
     }
     
     private void setUpMockSession(final Session session) {

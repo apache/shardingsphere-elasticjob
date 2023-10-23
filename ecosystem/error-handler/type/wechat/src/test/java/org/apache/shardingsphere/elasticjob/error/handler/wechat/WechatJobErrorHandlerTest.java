@@ -20,12 +20,12 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +114,7 @@ class WechatJobErrorHandlerTest {
     }
     
     private WechatJobErrorHandler getWechatJobErrorHandler(final Properties props) {
-        return (WechatJobErrorHandler) JobErrorHandlerFactory.createHandler("WECHAT", props).orElseThrow(() -> new JobConfigurationException("WECHAT error handler not found."));
+        return (WechatJobErrorHandler) TypedSPILoader.getService(JobErrorHandler.class, "WECHAT", props);
     }
     
     private Properties createConfigurationProperties(final String webhook) {

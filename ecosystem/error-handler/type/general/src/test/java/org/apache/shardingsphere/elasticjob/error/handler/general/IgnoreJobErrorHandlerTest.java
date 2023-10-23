@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
@@ -27,7 +27,6 @@ class IgnoreJobErrorHandlerTest {
     
     @Test
     void assertHandleException() {
-        JobErrorHandlerFactory.createHandler("IGNORE", new Properties())
-                .orElseThrow(() -> new JobConfigurationException("IGNORE error handler not found.")).handleException("test_job", new RuntimeException("test"));
+        TypedSPILoader.getService(JobErrorHandler.class, "IGNORE", new Properties()).handleException("test_job", new RuntimeException("test"));
     }
 }

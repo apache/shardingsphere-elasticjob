@@ -19,20 +19,15 @@ package org.apache.shardingsphere.elasticjob.infra.listener;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.spi.ElasticJobServiceLoader;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Job listener factory.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticJobListenerFactory {
-    
-    static {
-        ElasticJobServiceLoader.registerTypedService(ElasticJobListener.class);
-    }
     
     /**
      * Create a job listener instance.
@@ -41,6 +36,6 @@ public final class ElasticJobListenerFactory {
      * @return optional job listener instance
      */
     public static Optional<ElasticJobListener> createListener(final String type) {
-        return ElasticJobServiceLoader.newTypedServiceInstance(ElasticJobListener.class, type, new Properties());
+        return TypedSPILoader.findService(ElasticJobListener.class, type);
     }
 }

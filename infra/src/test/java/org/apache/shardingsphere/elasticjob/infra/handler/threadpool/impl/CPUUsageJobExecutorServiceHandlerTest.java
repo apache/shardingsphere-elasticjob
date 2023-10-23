@@ -17,7 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandlerFactory;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,8 +28,6 @@ class CPUUsageJobExecutorServiceHandlerTest {
     
     @Test
     void assertGetPoolSizeAndType() {
-        CPUUsageJobExecutorServiceHandler cpuUsageJobExecutorServiceHandler = (CPUUsageJobExecutorServiceHandler) JobExecutorServiceHandlerFactory.getHandler("CPU");
-        assertThat(cpuUsageJobExecutorServiceHandler.getPoolSize(), is(Runtime.getRuntime().availableProcessors() * 2));
-        assertThat(cpuUsageJobExecutorServiceHandler.getType(), is("CPU"));
+        assertThat(((CPUUsageJobExecutorServiceHandler) TypedSPILoader.getService(JobExecutorServiceHandler.class, "CPU")).getPoolSize(), is(Runtime.getRuntime().availableProcessors() * 2));
     }
 }

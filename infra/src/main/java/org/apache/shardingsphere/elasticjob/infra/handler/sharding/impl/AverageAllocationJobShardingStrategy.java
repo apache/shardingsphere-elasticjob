@@ -32,9 +32,7 @@ import java.util.Map;
  * <p>
  * If the job server number and sharding count cannot be divided, 
  * the redundant sharding item that cannot be divided will be added to the server with small sequence number in turn.
- * 
  * For example:
- * 
  * 1. If there are 3 job servers and the total sharding count is 9, each job server is divided into: 1=[0,1,2], 2=[3,4,5], 3=[6,7,8];
  * 2. If there are 3 job servers and the total sharding count is 8, each job server is divided into: 1=[0,1,6], 2=[2,3,7], 3=[4,5];
  * 3. If there are 3 job servers and the total sharding count is 10, each job server is divided into: 1=[0,1,2,9], 2=[3,4,5], 3=[6,7,8].
@@ -81,5 +79,10 @@ public final class AverageAllocationJobShardingStrategy implements JobShardingSt
     @Override
     public String getType() {
         return "AVG_ALLOCATION";
+    }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
     }
 }

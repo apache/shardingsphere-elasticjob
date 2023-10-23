@@ -49,6 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
         <!-- 3rd party library versions -->
+        <shardingsphere.version>5.4.1</shardingsphere.version>
         <guava.version>32.1.2-jre</guava.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-codec.version>1.16.0</commons-codec.version>
@@ -123,6 +124,11 @@
     
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-infra-spi</artifactId>
+                <version>${shardingsphere.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

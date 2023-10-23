@@ -31,4 +31,9 @@ public final class CPUUsageJobExecutorServiceHandler extends AbstractJobExecutor
     public String getType() {
         return "CPU";
     }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 }
