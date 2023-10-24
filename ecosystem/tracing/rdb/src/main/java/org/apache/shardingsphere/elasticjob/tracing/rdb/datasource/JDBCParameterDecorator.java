@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
 
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
 import javax.sql.DataSource;
 
 /**
@@ -24,7 +26,7 @@ import javax.sql.DataSource;
  * 
  * @param <T> type of data source
  */
-public interface JDBCParameterDecorator<T extends DataSource> {
+public interface JDBCParameterDecorator<T extends DataSource> extends TypedSPI {
     
     /**
      * Decorate data source.
@@ -34,10 +36,6 @@ public interface JDBCParameterDecorator<T extends DataSource> {
      */
     T decorate(T dataSource);
     
-    /**
-     * Get data source type.
-     *
-     * @return data source type
-     */
+    @Override
     Class<T> getType();
 }

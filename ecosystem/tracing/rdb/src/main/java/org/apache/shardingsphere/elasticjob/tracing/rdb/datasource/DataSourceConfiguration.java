@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 /**
  * Data source configuration.
@@ -121,18 +121,8 @@ public final class DataSourceConfiguration implements TracingStorageConfiguratio
                 setterMethod.get().invoke(result, entry.getValue());
             }
         }
-        Optional<JDBCParameterDecorator> decorator = findJDBCParameterDecorator(result);
+        Optional<JDBCParameterDecorator> decorator = TypedSPILoader.findService(JDBCParameterDecorator.class, result.getClass());
         return decorator.isPresent() ? decorator.get().decorate(result) : result;
-    }
-    
-    @SuppressWarnings("rawtypes")
-    private Optional<JDBCParameterDecorator> findJDBCParameterDecorator(final DataSource dataSource) {
-        for (JDBCParameterDecorator each : ServiceLoader.load(JDBCParameterDecorator.class)) {
-            if (each.getType() == dataSource.getClass()) {
-                return Optional.of(each);
-            }
-        }
-        return Optional.empty();
     }
     
     private Optional<Method> findSetterMethod(final Method[] methods, final String property) {
