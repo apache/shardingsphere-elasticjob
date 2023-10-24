@@ -18,13 +18,16 @@
 package org.apache.shardingsphere.elasticjob.tracing.listener;
 
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
  * Tracing listener configuration.
  * 
  * @param <T> type of tracing storage
  */
-public interface TracingListenerConfiguration<T> {
+@SingletonSPI
+public interface TracingListenerConfiguration<T> extends TypedSPI {
     
     /**
      * Create tracing listener.
@@ -35,10 +38,6 @@ public interface TracingListenerConfiguration<T> {
      */
     TracingListener createTracingListener(T storage) throws TracingConfigurationException;
     
-    /**
-     * Get tracing type.
-     * 
-     * @return tracing type
-     */
+    @Override
     String getType();
 }

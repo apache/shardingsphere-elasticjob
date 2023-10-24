@@ -25,7 +25,8 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerFactory;
+import org.apache.shardingsphere.elasticjob.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -64,9 +65,13 @@ public final class JobTracingEventBus {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
     
+    @SuppressWarnings("unchecked")
     private void register(final TracingConfiguration<?> tracingConfig) {
         try {
-            eventBus.register(TracingListenerFactory.getListener(tracingConfig));
+            if (null == tracingConfig.getTracingStorageConfiguration()) {
+                throw new TracingConfigurationException(String.format("Can not find executor service handler type '%s'.", tracingConfig.getType()));
+            }
+            eventBus.register(TypedSPILoader.getService(TracingListenerConfiguration.class, tracingConfig.getType()).createTracingListener(tracingConfig.getTracingStorageConfiguration().getStorage()));
             isRegistered = true;
         } catch (final TracingConfigurationException ex) {
             log.error("Elastic job: create tracing listener failure, error is: ", ex);
