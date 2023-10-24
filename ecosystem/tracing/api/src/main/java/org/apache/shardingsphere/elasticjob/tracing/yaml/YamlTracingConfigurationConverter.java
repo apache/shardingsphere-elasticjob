@@ -39,7 +39,7 @@ public final class YamlTracingConfigurationConverter<T> implements YamlConfigura
     }
     
     private YamlTracingStorageConfiguration<T> convertTracingStorageConfiguration(final TracingStorageConfiguration<T> tracingStorageConfig) {
-        return  (YamlTracingStorageConfiguration) TypedSPILoader.getService(YamlConfigurationConverter.class, tracingStorageConfig.getClass()).convertToYamlConfiguration(tracingStorageConfig);
+        return (YamlTracingStorageConfiguration) TypedSPILoader.getService(YamlConfigurationConverter.class, tracingStorageConfig.getClass()).convertToYamlConfiguration(tracingStorageConfig);
     }
     
     @Override

@@ -71,7 +71,8 @@ public final class JobTracingEventBus {
             if (null == tracingConfig.getTracingStorageConfiguration()) {
                 throw new TracingConfigurationException(String.format("Can not find executor service handler type '%s'.", tracingConfig.getType()));
             }
-            eventBus.register(TypedSPILoader.getService(TracingListenerConfiguration.class, tracingConfig.getType()).createTracingListener(tracingConfig.getTracingStorageConfiguration().getStorage()));
+            eventBus.register(
+                    TypedSPILoader.getService(TracingListenerConfiguration.class, tracingConfig.getType()).createTracingListener(tracingConfig.getTracingStorageConfiguration().getStorage()));
             isRegistered = true;
         } catch (final TracingConfigurationException ex) {
             log.error("Elastic job: create tracing listener failure, error is: ", ex);
