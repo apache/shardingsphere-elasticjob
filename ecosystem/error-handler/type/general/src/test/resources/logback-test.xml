@@ -17,6 +17,7 @@
   -->
 
 <configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <appender name="LogJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
     <logger name="org.apache.shardingsphere.elasticjob.error.handler.general.LogJobErrorHandler" level="error" additivity="false">
         <appender-ref ref="LogJobErrorHandlerTestAppender" />
