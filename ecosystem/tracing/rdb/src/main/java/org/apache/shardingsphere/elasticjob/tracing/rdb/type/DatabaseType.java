@@ -17,17 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.type;
 
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
 /**
  * Database type.
  */
-public interface DatabaseType {
-    
-    /**
-     * Get database type name.
-     * 
-     * @return database type name
-     */
-    String getType();
+@SingletonSPI
+public interface DatabaseType extends TypedSPI {
     
     /**
      * Get database product name.
@@ -53,4 +50,7 @@ public interface DatabaseType {
      * @return duplicate record error code
      */
     int getDuplicateRecordErrorCode();
+    
+    @Override
+    String getType();
 }

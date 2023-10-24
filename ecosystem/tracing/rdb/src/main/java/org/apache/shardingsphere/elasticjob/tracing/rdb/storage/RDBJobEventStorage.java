@@ -25,6 +25,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.St
 import org.apache.shardingsphere.elasticjob.tracing.exception.WrapException;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultDatabaseType;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -36,10 +37,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -56,8 +55,6 @@ public final class RDBJobEventStorage {
     
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
-    private static final Map<String, DatabaseType> DATABASE_TYPES = new HashMap<>();
-    
     private static final Map<DataSource, RDBJobEventStorage> STORAGE_MAP = new ConcurrentHashMap<>();
     
     private final DataSource dataSource;
@@ -65,12 +62,6 @@ public final class RDBJobEventStorage {
     private final DatabaseType databaseType;
     
     private final RDBStorageSQLMapper sqlMapper;
-    
-    static {
-        for (DatabaseType each : ServiceLoader.load(DatabaseType.class)) {
-            DATABASE_TYPES.put(each.getType(), each);
-        }
-    }
     
     private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -117,7 +108,7 @@ public final class RDBJobEventStorage {
     private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
-            for (DatabaseType each : DATABASE_TYPES.values()) {
+            for (DatabaseType each : ShardingSphereServiceLoader.getServiceInstances(DatabaseType.class)) {
                 if (each.getDatabaseProductName().equals(databaseProductName)) {
                     return each;
                 }
