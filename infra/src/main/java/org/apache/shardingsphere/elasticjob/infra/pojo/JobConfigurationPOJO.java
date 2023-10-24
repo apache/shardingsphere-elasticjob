@@ -22,8 +22,8 @@ import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfigurationConverterFactory;
-import org.apache.shardingsphere.elasticjob.infra.yaml.exception.YamlConfigurationConverterNotFoundException;
+import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfigurationConverter;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -125,8 +125,8 @@ public final class JobConfigurationPOJO {
         result.setJobExecutorServiceHandlerType(jobConfiguration.getJobExecutorServiceHandlerType());
         result.setJobErrorHandlerType(jobConfiguration.getJobErrorHandlerType());
         result.setJobListenerTypes(jobConfiguration.getJobListenerTypes());
-        jobConfiguration.getExtraConfigurations().stream().map(each -> YamlConfigurationConverterFactory.findConverter((Class<JobExtraConfiguration>) each.getClass())
-                .orElseThrow(() -> new YamlConfigurationConverterNotFoundException(each.getClass())).convertToYamlConfiguration(each)).forEach(result.getJobExtraConfigurations()::add);
+        jobConfiguration.getExtraConfigurations().stream()
+                .map(each -> TypedSPILoader.getService(YamlConfigurationConverter.class, each.getClass()).convertToYamlConfiguration(each)).forEach(result.getJobExtraConfigurations()::add);
         result.setDescription(jobConfiguration.getDescription());
         result.setProps(jobConfiguration.getProps());
         result.setDisabled(jobConfiguration.isDisabled());

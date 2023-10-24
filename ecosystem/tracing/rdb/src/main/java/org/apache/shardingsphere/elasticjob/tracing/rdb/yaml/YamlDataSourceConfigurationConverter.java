@@ -40,7 +40,7 @@ public final class YamlDataSourceConfigurationConverter implements YamlConfigura
     }
     
     @Override
-    public Class configurationType() {
+    public Class getType() {
         return DataSourceConfiguration.class;
     }
 }

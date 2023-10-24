@@ -18,10 +18,9 @@
 package org.apache.shardingsphere.elasticjob.tracing.yaml;
 
 import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfigurationConverter;
-import org.apache.shardingsphere.elasticjob.infra.yaml.config.YamlConfigurationConverterFactory;
-import org.apache.shardingsphere.elasticjob.infra.yaml.exception.YamlConfigurationConverterNotFoundException;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 /**
  * Converter to convert {@link TracingConfiguration} to {@link YamlTracingConfiguration}.
@@ -32,21 +31,19 @@ import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfigurat
 public final class YamlTracingConfigurationConverter<T> implements YamlConfigurationConverter<TracingConfiguration<T>, YamlTracingConfiguration<T>> {
     
     @Override
-    public YamlTracingConfiguration<T> convertToYamlConfiguration(final TracingConfiguration<T> tracingConfiguration) {
+    public YamlTracingConfiguration<T> convertToYamlConfiguration(final TracingConfiguration<T> tracingConfig) {
         YamlTracingConfiguration<T> result = new YamlTracingConfiguration<>();
-        result.setType(tracingConfiguration.getType());
-        result.setTracingStorageConfiguration(convertTracingStorageConfiguration(tracingConfiguration.getTracingStorageConfiguration()));
+        result.setType(tracingConfig.getType());
+        result.setTracingStorageConfiguration(convertTracingStorageConfiguration(tracingConfig.getTracingStorageConfiguration()));
         return result;
     }
     
-    private YamlTracingStorageConfiguration<T> convertTracingStorageConfiguration(final TracingStorageConfiguration<T> tracingStorageConfiguration) {
-        return YamlConfigurationConverterFactory
-                .<TracingStorageConfiguration<T>, YamlTracingStorageConfiguration<T>>findConverter((Class<TracingStorageConfiguration<T>>) tracingStorageConfiguration.getClass())
-                .orElseThrow(() -> new YamlConfigurationConverterNotFoundException(tracingStorageConfiguration.getClass())).convertToYamlConfiguration(tracingStorageConfiguration);
+    private YamlTracingStorageConfiguration<T> convertTracingStorageConfiguration(final TracingStorageConfiguration<T> tracingStorageConfig) {
+        return  (YamlTracingStorageConfiguration) TypedSPILoader.getService(YamlConfigurationConverter.class, tracingStorageConfig.getClass()).convertToYamlConfiguration(tracingStorageConfig);
     }
     
     @Override
-    public Class configurationType() {
+    public Class getType() {
         return TracingConfiguration.class;
     }
 }
