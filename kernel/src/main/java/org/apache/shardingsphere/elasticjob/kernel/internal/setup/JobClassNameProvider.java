@@ -18,10 +18,12 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.setup;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
  * Job class name provider.
  */
+@SingletonSPI
 public interface JobClassNameProvider {
     
     /**

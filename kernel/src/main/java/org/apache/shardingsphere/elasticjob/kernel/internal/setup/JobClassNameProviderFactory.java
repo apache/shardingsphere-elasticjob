@@ -19,10 +19,9 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.setup;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.Collection;
 
 /**
  * Job class name provider factory.
@@ -30,15 +29,7 @@ import java.util.ServiceLoader;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobClassNameProviderFactory {
     
-    private static final List<JobClassNameProvider> PROVIDERS = new LinkedList<>();
-    
     private static final JobClassNameProvider DEFAULT_PROVIDER = new DefaultJobClassNameProvider();
-    
-    static {
-        for (JobClassNameProvider each : ServiceLoader.load(JobClassNameProvider.class)) {
-            PROVIDERS.add(each);
-        }
-    }
     
     /**
      * Get the first job class name provider.
@@ -46,6 +37,7 @@ public final class JobClassNameProviderFactory {
      * @return job class name provider
      */
     public static JobClassNameProvider getProvider() {
-        return PROVIDERS.isEmpty() ? DEFAULT_PROVIDER : PROVIDERS.get(0);
+        Collection<JobClassNameProvider> jobClassNameProviders = ShardingSphereServiceLoader.getServiceInstances(JobClassNameProvider.class);
+        return jobClassNameProviders.isEmpty() ? DEFAULT_PROVIDER : jobClassNameProviders.iterator().next();
     }
 }
