@@ -18,12 +18,14 @@
 package org.apache.shardingsphere.elasticjob.tracing.storage;
 
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
  * Tracing storage converter.
  *
  * @param <T> storage type
  */
+@SingletonSPI
 public interface TracingStorageConverter<T> {
     
     /**
