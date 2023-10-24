@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.restful.deserializer.factory;
 
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
  * Deserializer factory.
@@ -25,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDese
  * @see RequestBodyDeserializer
  * @see org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializerFactory
  */
+@SingletonSPI
 public interface DeserializerFactory {
     
     /**
