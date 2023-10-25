@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
+package org.apache.shardingsphere.elasticjob.infra.threadpool;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;

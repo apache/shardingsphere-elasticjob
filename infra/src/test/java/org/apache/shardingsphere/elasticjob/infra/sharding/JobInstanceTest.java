@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.sharding;
+package org.apache.shardingsphere.elasticjob.infra.sharding;
 
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;

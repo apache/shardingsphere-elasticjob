@@ -15,27 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type;
+package org.apache.shardingsphere.elasticjob.infra.threadpool;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Job executor pool size provider with use CPU available processors.
+ * Job executor thread pool size provider.
  */
-public final class CPUUsageJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
+@SingletonSPI
+public interface JobExecutorThreadPoolSizeProvider extends TypedSPI {
+    
+    /**
+     * Get thread pool size.
+     * 
+     * @return thread pool size
+     */
+    int getSize();
     
     @Override
-    public int getSize() {
-        return Runtime.getRuntime().availableProcessors() * 2;
-    }
-    
-    @Override
-    public String getType() {
-        return "CPU";
-    }
-    
-    @Override
-    public boolean isDefault() {
-        return true;
-    }
+    String getType();
 }

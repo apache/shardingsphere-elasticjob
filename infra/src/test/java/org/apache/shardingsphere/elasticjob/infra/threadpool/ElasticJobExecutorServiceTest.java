@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.concurrent;
+package org.apache.shardingsphere.elasticjob.infra.threadpool;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.ElasticJobExecutorService;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
