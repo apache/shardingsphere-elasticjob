@@ -42,7 +42,7 @@ class JobAnnotationBuilderTest {
         assertThat(jobConfig.getMaxTimeDiffSeconds(), is(-1));
         assertThat(jobConfig.getReconcileIntervalMinutes(), is(10));
         assertNull(jobConfig.getJobShardingStrategyType());
-        assertNull(jobConfig.getJobExecutorServiceHandlerType());
+        assertNull(jobConfig.getJobExecutorThreadPoolSizeProviderType());
         assertNull(jobConfig.getJobErrorHandlerType());
         assertThat(jobConfig.getDescription(), is("desc"));
         assertThat(jobConfig.getProps().getProperty("print.title"), is("test title"));

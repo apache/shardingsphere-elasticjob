@@ -12,16 +12,16 @@ chapter = true
 
 可配置属性：
 
-| 属性名                         | 构造器注入 |
-| ----------------------------- |:--------- |
-| serverLists                   | 是        |
-| namespace                     | 是        |
-| baseSleepTimeMilliseconds     | 否        |
-| maxSleepTimeMilliseconds      | 否        |
-| maxRetries                    | 否        |
-| sessionTimeoutMilliseconds    | 否        |
-| connectionTimeoutMilliseconds | 否        |
-| digest                        | 否        |
+| 属性名                           | 构造器注入 |
+|-------------------------------|:------|
+| serverLists                   | 是     |
+| namespace                     | 是     |
+| baseSleepTimeMilliseconds     | 否     |
+| maxSleepTimeMilliseconds      | 否     |
+| maxRetries                    | 否     |
+| sessionTimeoutMilliseconds    | 否     |
+| connectionTimeoutMilliseconds | 否     |
+| digest                        | 否     |
 
 ## 作业配置
 
@@ -29,24 +29,24 @@ chapter = true
 
 可配置属性：
 
-| 属性名                         | 构造器注入 |
-| ----------------------------- |:--------- |
-| jobName                       | 是        |
-| shardingTotalCount            | 是        |
-| cron                          | 否        |
-| timeZone                      | 否        |
-| shardingItemParameters        | 否        |
-| jobParameter                  | 否        |
-| monitorExecution              | 否        |
-| failover                      | 否        |
-| misfire                       | 否        |
-| maxTimeDiffSeconds            | 否        |
-| reconcileIntervalMinutes      | 否        |
-| jobShardingStrategyType       | 否        |
-| jobExecutorServiceHandlerType | 否        |
-| jobErrorHandlerType           | 否        |
-| jobListenerTypes              | 否        |
-| description                   | 否        |
-| props                         | 否        |
-| disabled                      | 否        |
-| overwrite                     | 否        |
+| 属性名                               | 构造器注入 |
+|-----------------------------------|:------|
+| jobName                           | 是     |
+| shardingTotalCount                | 是     |
+| cron                              | 否     |
+| timeZone                          | 否     |
+| shardingItemParameters            | 否     |
+| jobParameter                      | 否     |
+| monitorExecution                  | 否     |
+| failover                          | 否     |
+| misfire                           | 否     |
+| maxTimeDiffSeconds                | 否     |
+| reconcileIntervalMinutes          | 否     |
+| jobShardingStrategyType           | 否     |
+| jobExecutorThreadPoolSizeProvider | 否     |
+| jobErrorHandlerType               | 否     |
+| jobListenerTypes                  | 否     |
+| description                       | 否     |
+| props                             | 否     |
+| disabled                          | 否     |
+| overwrite                         | 否     |

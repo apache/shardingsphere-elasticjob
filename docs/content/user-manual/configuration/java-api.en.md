@@ -13,7 +13,7 @@ Class name: `org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfigu
 Configuration: 
 
 | Name                          | Constructor injection |
-| ----------------------------- |:--------------------- |
+|-------------------------------|:----------------------|
 | serverLists                   | Yes                   |
 | namespace                     | Yes                   |
 | baseSleepTimeMilliseconds     | No                    |
@@ -29,24 +29,24 @@ Class name: `org.apache.shardingsphere.elasticjob.api.JobConfiguration`
 
 Configuration: 
 
-| Name                          | Constructor injection |
-| ----------------------------- |:--------------------- |
-| jobName                       | Yes                   |
-| shardingTotalCount            | Yes                   |
-| cron                          | No                    |
-| timeZone                      | No                    |
-| shardingItemParameters        | No                    |
-| jobParameter                  | No                    |
-| monitorExecution              | No                    |
-| failover                      | No                    |
-| misfire                       | No                    |
-| maxTimeDiffSeconds            | No                    |
-| reconcileIntervalMinutes      | No                    |
-| jobShardingStrategyType       | No                    |
-| jobExecutorServiceHandlerType | No                    |
-| jobErrorHandlerType           | No                    |
-| jobListenerTypes              | No                    |
-| description                   | No                    |
-| props                         | No                    |
-| disabled                      | No                    |
-| overwrite                     | No                    |
+| Name                              | Constructor injection |
+|-----------------------------------|:----------------------|
+| jobName                           | Yes                   |
+| shardingTotalCount                | Yes                   |
+| cron                              | No                    |
+| timeZone                          | No                    |
+| shardingItemParameters            | No                    |
+| jobParameter                      | No                    |
+| monitorExecution                  | No                    |
+| failover                          | No                    |
+| misfire                           | No                    |
+| maxTimeDiffSeconds                | No                    |
+| reconcileIntervalMinutes          | No                    |
+| jobShardingStrategyType           | No                    |
+| jobExecutorThreadPoolSizeProvider | No                    |
+| jobErrorHandlerType               | No                    |
+| jobListenerTypes                  | No                    |
+| description                       | No                    |
+| props                             | No                    |
+| disabled                          | No                    |
+| overwrite                         | No                    |

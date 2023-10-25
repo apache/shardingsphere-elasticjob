@@ -37,7 +37,7 @@ class JobConfigurationPOJOTest {
             + "disabled: false\n"
             + "failover: false\n"
             + "jobErrorHandlerType: IGNORE\n"
-            + "jobExecutorServiceHandlerType: CPU\n"
+            + "jobExecutorThreadPoolSizeProviderType: CPU\n"
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
@@ -76,7 +76,7 @@ class JobConfigurationPOJOTest {
         pojo.setFailover(true);
         pojo.setMisfire(true);
         pojo.setJobShardingStrategyType("AVG_ALLOCATION");
-        pojo.setJobExecutorServiceHandlerType("CPU");
+        pojo.setJobExecutorThreadPoolSizeProviderType("CPU");
         pojo.setJobErrorHandlerType("IGNORE");
         pojo.setJobListenerTypes(Collections.singletonList("LOG"));
         pojo.setDescription("Job description");
@@ -93,7 +93,7 @@ class JobConfigurationPOJOTest {
         assertTrue(actual.isFailover());
         assertTrue(actual.isMisfire());
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
-        assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
+        assertThat(actual.getJobExecutorThreadPoolSizeProviderType(), is("CPU"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
         assertThat(actual.getJobListenerTypes(), hasItem("LOG"));
         assertThat(actual.getDescription(), is("Job description"));
@@ -108,7 +108,7 @@ class JobConfigurationPOJOTest {
                 .cron("0/1 * * * * ?")
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                 .monitorExecution(true).failover(true).misfire(true)
-                .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("CPU").jobErrorHandlerType("IGNORE")
+                .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorThreadPoolSizeProviderType("CPU").jobErrorHandlerType("IGNORE")
                 .jobListenerTypes("LOG").description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
         JobConfigurationPOJO actual = JobConfigurationPOJO.fromJobConfiguration(jobConfig);
@@ -121,7 +121,7 @@ class JobConfigurationPOJOTest {
         assertTrue(actual.isFailover());
         assertTrue(actual.isMisfire());
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
-        assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
+        assertThat(actual.getJobExecutorThreadPoolSizeProviderType(), is("CPU"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
         assertThat(actual.getJobListenerTypes(), hasItem("LOG"));
         assertThat(actual.getDescription(), is("Job description"));
@@ -140,7 +140,7 @@ class JobConfigurationPOJOTest {
         actual.setJobParameter("param");
         actual.setMaxTimeDiffSeconds(-1);
         actual.setJobShardingStrategyType("AVG_ALLOCATION");
-        actual.setJobExecutorServiceHandlerType("CPU");
+        actual.setJobExecutorThreadPoolSizeProviderType("CPU");
         actual.setJobErrorHandlerType("IGNORE");
         actual.setDescription("Job description");
         actual.getProps().setProperty("key", "value");
@@ -169,7 +169,7 @@ class JobConfigurationPOJOTest {
         assertFalse(actual.isFailover());
         assertFalse(actual.isMisfire());
         assertThat(actual.getJobShardingStrategyType(), is("AVG_ALLOCATION"));
-        assertThat(actual.getJobExecutorServiceHandlerType(), is("CPU"));
+        assertThat(actual.getJobExecutorThreadPoolSizeProviderType(), is("CPU"));
         assertThat(actual.getJobErrorHandlerType(), is("IGNORE"));
         assertThat(actual.getDescription(), is("Job description"));
         assertThat(actual.getProps().getProperty("key"), is("value"));
@@ -187,7 +187,7 @@ class JobConfigurationPOJOTest {
         assertFalse(actual.isFailover());
         assertFalse(actual.isMisfire());
         assertNull(actual.getJobShardingStrategyType());
-        assertNull(actual.getJobExecutorServiceHandlerType());
+        assertNull(actual.getJobExecutorThreadPoolSizeProviderType());
         assertNull(actual.getJobErrorHandlerType());
         assertNull(actual.getDescription());
         assertTrue(actual.getProps().isEmpty());

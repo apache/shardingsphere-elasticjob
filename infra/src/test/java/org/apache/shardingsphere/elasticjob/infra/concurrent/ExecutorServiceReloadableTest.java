@@ -46,8 +46,7 @@ class ExecutorServiceReloadableTest {
     @Test
     void assertInitialize() {
         try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
-            String jobExecutorServiceHandlerType = "SINGLE_THREAD";
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType).build();
+            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build();
             assertNull(executorServiceReloadable.getInstance());
             executorServiceReloadable.init(jobConfig);
             ExecutorService actual = executorServiceReloadable.getInstance();
@@ -77,7 +76,7 @@ class ExecutorServiceReloadableTest {
     @Test
     void assertUnnecessaryToReload() {
         try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorServiceHandlerType("CPU").build();
+            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("CPU").build();
             executorServiceReloadable.init(jobConfig);
             ExecutorService expected = executorServiceReloadable.getInstance();
             executorServiceReloadable.reloadIfNecessary(jobConfig);

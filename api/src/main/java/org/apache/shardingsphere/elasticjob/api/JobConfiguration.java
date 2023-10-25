@@ -61,7 +61,7 @@ public final class JobConfiguration {
     
     private final String jobShardingStrategyType;
     
-    private final String jobExecutorServiceHandlerType;
+    private final String jobExecutorThreadPoolSizeProviderType;
     
     private final String jobErrorHandlerType;
     
@@ -119,7 +119,7 @@ public final class JobConfiguration {
         
         private String jobShardingStrategyType;
         
-        private String jobExecutorServiceHandlerType;
+        private String jobExecutorThreadPoolSizeProviderType;
         
         private String jobErrorHandlerType;
         
@@ -291,13 +291,13 @@ public final class JobConfiguration {
         }
         
         /**
-         * Set job executor service handler type.
+         * Set job executor thread pool size provider type.
          *
-         * @param jobExecutorServiceHandlerType job executor service handler type
+         * @param jobExecutorThreadPoolSizeProviderType job executor thread pool size provider type
          * @return job configuration builder
          */
-        public Builder jobExecutorServiceHandlerType(final String jobExecutorServiceHandlerType) {
-            this.jobExecutorServiceHandlerType = jobExecutorServiceHandlerType;
+        public Builder jobExecutorThreadPoolSizeProviderType(final String jobExecutorThreadPoolSizeProviderType) {
+            this.jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProviderType;
             return this;
         }
         
@@ -421,7 +421,7 @@ public final class JobConfiguration {
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
-                    jobShardingStrategyType, jobExecutorServiceHandlerType, jobErrorHandlerType, jobListenerTypes,
+                    jobShardingStrategyType, jobExecutorThreadPoolSizeProviderType, jobErrorHandlerType, jobListenerTypes,
                     extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
         }
     }

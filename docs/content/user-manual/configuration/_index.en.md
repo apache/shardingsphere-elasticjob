@@ -36,26 +36,26 @@ Include IP and port, multiple addresses are separated by commas, such as: `host1
 
 ### Configuration
 
-| Name                          | Data Type  | Default Value  | Description                                                                         |
-|-------------------------------|:-----------|:---------------|:------------------------------------------------------------------------------------|
-| jobName                       | String     |                | Job name                                                                            |
-| shardingTotalCount            | int        |                | Sharding total count                                                                |
-| cron                          | String     |                | CRON expression, control the job trigger time                                       |
-| timeZone                      | String     |                | time zone of CRON                                                                   |
-| shardingItemParameters        | String     |                | Sharding item parameters                                                            |
-| jobParameter                  | String     |                | Job parameter                                                                       |
-| monitorExecution              | boolean    | true           | Monitor job execution status                                                        |
-| failover                      | boolean    | false          | Enable or disable job failover                                                      |
-| misfire                       | boolean    | true           | Enable or disable the missed task to re-execute                                     |
-| maxTimeDiffSeconds            | int        | -1(no check)   | The maximum value for time difference between server and registry center in seconds |
-| reconcileIntervalMinutes      | int        | 10             | Service scheduling interval in minutes for repairing job server inconsistent state  |
-| jobShardingStrategyType       | String     | AVG_ALLOCATION | Job sharding strategy type                                                          |
-| jobExecutorServiceHandlerType | String     | CPU            | Job thread pool handler type                                                        |
-| jobErrorHandlerType           | String     |                | Job error handler type                                                              |
-| description                   | String     |                | Job description                                                                     |
-| props                         | Properties |                | Job properties                                                                      |
-| disabled                      | boolean    | false          | Enable or disable start the job                                                     |
-| overwrite                     | boolean    | false          | Enable or disable local configuration override registry center configuration        |
+| Name                              | Data Type  | Default Value  | Description                                                                         |
+|-----------------------------------|:-----------|:---------------|:------------------------------------------------------------------------------------|
+| jobName                           | String     |                | Job name                                                                            |
+| shardingTotalCount                | int        |                | Sharding total count                                                                |
+| cron                              | String     |                | CRON expression, control the job trigger time                                       |
+| timeZone                          | String     |                | time zone of CRON                                                                   |
+| shardingItemParameters            | String     |                | Sharding item parameters                                                            |
+| jobParameter                      | String     |                | Job parameter                                                                       |
+| monitorExecution                  | boolean    | true           | Monitor job execution status                                                        |
+| failover                          | boolean    | false          | Enable or disable job failover                                                      |
+| misfire                           | boolean    | true           | Enable or disable the missed task to re-execute                                     |
+| maxTimeDiffSeconds                | int        | -1(no check)   | The maximum value for time difference between server and registry center in seconds |
+| reconcileIntervalMinutes          | int        | 10             | Service scheduling interval in minutes for repairing job server inconsistent state  |
+| jobShardingStrategyType           | String     | AVG_ALLOCATION | Job sharding strategy type                                                          |
+| jobExecutorThreadPoolSizeProvider | String     | CPU            | Job thread pool handler type                                                        |
+| jobErrorHandlerType               | String     |                | Job error handler type                                                              |
+| description                       | String     |                | Job description                                                                     |
+| props                             | Properties |                | Job properties                                                                      |
+| disabled                          | boolean    | false          | Enable or disable start the job                                                     |
+| overwrite                         | boolean    | false          | Enable or disable local configuration override registry center configuration        |
 
 ### Core Configuration Description
 
@@ -91,7 +91,7 @@ Less than `1` means no repair is performed.
 
 For details, see[Job Sharding Strategy](/en/user-manual/elasticjob/configuration/built-in-strategy/sharding)。
 
-**jobExecutorServiceHandlerType:**
+**jobExecutorThreadPoolSizeProviderType:**
 
 For details, see[Thread Pool Strategy](/en/user-manual/elasticjob/configuration/built-in-strategy/thread-pool)。
 
