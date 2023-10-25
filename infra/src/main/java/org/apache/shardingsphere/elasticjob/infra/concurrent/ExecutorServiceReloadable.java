@@ -33,23 +33,23 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
     
-    private JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider;
+    private String jobExecutorThreadPoolSizeProviderType;
     
     private ExecutorService executorService;
     
     @Override
     public void init(final JobConfiguration jobConfig) {
-        jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
     }
     
     @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (jobExecutorThreadPoolSizeProvider.getType().equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
+        if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
-        log.debug("Reload occurred in the job '{}'. Change from '{}' to '{}'.",
-                jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getType(), jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        log.debug("Reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorThreadPoolSizeProviderType, jobConfig.getJobExecutorThreadPoolSizeProviderType());
         reload(jobConfig.getJobExecutorThreadPoolSizeProviderType(), jobConfig.getJobName());
     }
     

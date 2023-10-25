@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,9 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ExecutorServiceReloadableTest {
@@ -60,9 +57,7 @@ class ExecutorServiceReloadableTest {
     @Test
     void assertReload() {
         ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
-        JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = mock(JobExecutorThreadPoolSizeProvider.class);
-        when(jobExecutorThreadPoolSizeProvider.getType()).thenReturn("mock");
-        setField(executorServiceReloadable, "jobExecutorThreadPoolSizeProvider", jobExecutorThreadPoolSizeProvider);
+        setField(executorServiceReloadable, "jobExecutorThreadPoolSizeProviderType", "mock");
         setField(executorServiceReloadable, "executorService", mockExecutorService);
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
         executorServiceReloadable.reloadIfNecessary(jobConfig);

@@ -32,4 +32,7 @@ public interface JobExecutorThreadPoolSizeProvider extends TypedSPI {
      * @return thread pool size
      */
     int getSize();
+    
+    @Override
+    String getType();
 }
