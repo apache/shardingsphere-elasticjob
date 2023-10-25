@@ -94,49 +94,49 @@ class JobConfigurationAPIImplTest {
     
     @Test
     void assertUpdateJobConfig() {
-        JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-        jobConfiguration.setJobName("test_job");
-        jobConfiguration.setCron("0/1 * * * * ?");
-        jobConfiguration.setShardingTotalCount(3);
-        jobConfiguration.setJobParameter("param");
-        jobConfiguration.setMonitorExecution(true);
-        jobConfiguration.setFailover(false);
-        jobConfiguration.setMisfire(true);
-        jobConfiguration.setMaxTimeDiffSeconds(-1);
-        jobConfiguration.setReconcileIntervalMinutes(10);
-        jobConfiguration.setDescription("");
-        jobConfiguration.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, "true");
-        jobConfigAPI.updateJobConfiguration(jobConfiguration);
+        JobConfigurationPOJO jobConfig = new JobConfigurationPOJO();
+        jobConfig.setJobName("test_job");
+        jobConfig.setCron("0/1 * * * * ?");
+        jobConfig.setShardingTotalCount(3);
+        jobConfig.setJobParameter("param");
+        jobConfig.setMonitorExecution(true);
+        jobConfig.setFailover(false);
+        jobConfig.setMisfire(true);
+        jobConfig.setMaxTimeDiffSeconds(-1);
+        jobConfig.setReconcileIntervalMinutes(10);
+        jobConfig.setDescription("");
+        jobConfig.getProps().setProperty(DataflowJobProperties.STREAM_PROCESS_KEY, "true");
+        jobConfigAPI.updateJobConfiguration(jobConfig);
         verify(regCenter).update("/test_job/config", LifecycleYamlConstants.getDataflowJobYaml());
     }
     
     @Test
     void assertUpdateJobConfigIfJobNameIsEmpty() {
         assertThrows(IllegalArgumentException.class, () -> {
-            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-            jobConfiguration.setJobName("");
-            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+            JobConfigurationPOJO jobConfig = new JobConfigurationPOJO();
+            jobConfig.setJobName("");
+            jobConfigAPI.updateJobConfiguration(jobConfig);
         });
     }
     
     @Test
     void assertUpdateJobConfigIfCronIsEmpty() {
         assertThrows(IllegalArgumentException.class, () -> {
-            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-            jobConfiguration.setJobName("test_job");
-            jobConfiguration.setCron("");
-            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+            JobConfigurationPOJO jobConfig = new JobConfigurationPOJO();
+            jobConfig.setJobName("test_job");
+            jobConfig.setCron("");
+            jobConfigAPI.updateJobConfiguration(jobConfig);
         });
     }
     
     @Test
     void assertUpdateJobConfigIfShardingTotalCountLessThanOne() {
         assertThrows(IllegalArgumentException.class, () -> {
-            JobConfigurationPOJO jobConfiguration = new JobConfigurationPOJO();
-            jobConfiguration.setJobName("test_job");
-            jobConfiguration.setCron("0/1 * * * * ?");
-            jobConfiguration.setShardingTotalCount(0);
-            jobConfigAPI.updateJobConfiguration(jobConfiguration);
+            JobConfigurationPOJO jobConfig = new JobConfigurationPOJO();
+            jobConfig.setJobName("test_job");
+            jobConfig.setCron("0/1 * * * * ?");
+            jobConfig.setShardingTotalCount(0);
+            jobConfigAPI.updateJobConfiguration(jobConfig);
         });
     }
     

@@ -59,11 +59,11 @@ class NettyRestfulServiceTest {
     
     @BeforeAll
     static void init() {
-        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-        configuration.setHost(HOST);
-        configuration.addControllerInstances(new JobController(), new IndexController());
-        configuration.addExceptionHandler(IllegalStateException.class, new CustomIllegalStateExceptionHandler());
-        restfulService = new NettyRestfulService(configuration);
+        NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
+        config.setHost(HOST);
+        config.addControllerInstances(new JobController(), new IndexController());
+        config.addExceptionHandler(IllegalStateException.class, new CustomIllegalStateExceptionHandler());
+        restfulService = new NettyRestfulService(config);
         restfulService.startup();
     }
     

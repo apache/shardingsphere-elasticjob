@@ -51,17 +51,17 @@ public final class DataSourceRegistry {
         return instance;
     }
     
-    void registerDataSource(final DataSourceConfiguration configuration, final DataSource dataSource) {
-        dataSources.putIfAbsent(configuration, dataSource);
+    void registerDataSource(final DataSourceConfiguration dataSourceConfig, final DataSource dataSource) {
+        dataSources.putIfAbsent(dataSourceConfig, dataSource);
     }
     
     /**
-     * Get {@link DataSource} by {@link TracingStorageConfiguration}.
+     * Get {@link DataSource} by {@link DataSourceConfiguration}.
      *
-     * @param configuration {@link TracingStorageConfiguration}
+     * @param dataSourceConfig data source configuration
      * @return instance of {@link DataSource}
      */
-    public DataSource getDataSource(final DataSourceConfiguration configuration) {
-        return dataSources.computeIfAbsent(configuration, DataSourceConfiguration::createDataSource);
+    public DataSource getDataSource(final DataSourceConfiguration dataSourceConfig) {
+        return dataSources.computeIfAbsent(dataSourceConfig, DataSourceConfiguration::createDataSource);
     }
 }

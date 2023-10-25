@@ -32,10 +32,10 @@ class YamlDataSourceConfigurationConverterTest {
     
     @Test
     void assertConvertDataSourceConfiguration() {
-        DataSourceConfiguration dataSourceConfiguration = new DataSourceConfiguration("org.h2.Driver");
-        dataSourceConfiguration.getProps().put("foo", "bar");
+        DataSourceConfiguration dataSourceConfig = new DataSourceConfiguration("org.h2.Driver");
+        dataSourceConfig.getProps().put("foo", "bar");
         YamlDataSourceConfigurationConverter converter = new YamlDataSourceConfigurationConverter();
-        YamlTracingStorageConfiguration<DataSource> actual = converter.convertToYamlConfiguration(dataSourceConfiguration);
+        YamlTracingStorageConfiguration<DataSource> actual = converter.convertToYamlConfiguration(dataSourceConfig);
         assertTrue(actual instanceof YamlDataSourceConfiguration);
         YamlDataSourceConfiguration result = (YamlDataSourceConfiguration) actual;
         assertThat(result.getDataSourceClassName(), is("org.h2.Driver"));

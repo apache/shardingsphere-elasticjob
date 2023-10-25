@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.annotation;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.util.Optional;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -27,15 +26,18 @@ import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 
+import java.util.Optional;
+
 /**
  * Job Builder from @ElasticJobConfiguration.
  */
 public final class JobAnnotationBuilder {
     
     /**
-     * generate JobConfiguration from @ElasticJobConfiguration.
+     * Generate job configuration from @ElasticJobConfiguration.
+     * 
      * @param type The job of @ElasticJobConfiguration annotation class
-     * @return JobConfiguration
+     * @return job configuration
      */
     public static JobConfiguration generateJobConfiguration(final Class<?> type) {
         ElasticJobConfiguration annotation = type.getAnnotation(ElasticJobConfiguration.class);
@@ -60,8 +62,8 @@ public final class JobAnnotationBuilder {
                 .overwrite(annotation.overwrite());
         for (Class<? extends JobExtraConfigurationFactory> clazz : annotation.extraConfigurations()) {
             try {
-                Optional<JobExtraConfiguration> jobExtraConfiguration = clazz.newInstance().getJobExtraConfiguration();
-                jobExtraConfiguration.ifPresent(jobConfigurationBuilder::addExtraConfigurations);
+                Optional<JobExtraConfiguration> jobExtraConfig = clazz.newInstance().getJobExtraConfiguration();
+                jobExtraConfig.ifPresent(jobConfigurationBuilder::addExtraConfigurations);
             } catch (IllegalAccessException | InstantiationException exception) {
                 throw (JobConfigurationException) new JobConfigurationException("new JobExtraConfigurationFactory instance by class '%s' failure", clazz).initCause(exception);
             }

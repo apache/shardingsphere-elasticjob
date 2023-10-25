@@ -48,11 +48,11 @@ class NettyRestfulServiceTrailingSlashSensitiveTest {
     
     @BeforeAll
     static void init() {
-        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-        configuration.setHost(HOST);
-        configuration.setTrailingSlashSensitive(true);
-        configuration.addControllerInstances(new TrailingSlashTestController());
-        restfulService = new NettyRestfulService(configuration);
+        NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
+        config.setHost(HOST);
+        config.setTrailingSlashSensitive(true);
+        config.addControllerInstances(new TrailingSlashTestController());
+        restfulService = new NettyRestfulService(config);
         restfulService.startup();
     }
     

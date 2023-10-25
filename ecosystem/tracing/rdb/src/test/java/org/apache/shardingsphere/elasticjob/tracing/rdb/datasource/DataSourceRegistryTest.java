@@ -35,26 +35,26 @@ import static org.mockito.Mockito.when;
 class DataSourceRegistryTest {
     
     @Mock
-    private DataSourceConfiguration dataSourceConfiguration;
+    private DataSourceConfiguration dataSourceConfig;
     
     @Test
     void assertGetDataSourceBySameConfiguration() {
-        when(dataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));
-        DataSource expected = DataSourceRegistry.getInstance().getDataSource(dataSourceConfiguration);
-        DataSource actual = DataSourceRegistry.getInstance().getDataSource(dataSourceConfiguration);
-        verify(dataSourceConfiguration).createDataSource();
+        when(dataSourceConfig.createDataSource()).then(invocation -> mock(DataSource.class));
+        DataSource expected = DataSourceRegistry.getInstance().getDataSource(dataSourceConfig);
+        DataSource actual = DataSourceRegistry.getInstance().getDataSource(dataSourceConfig);
+        verify(dataSourceConfig).createDataSource();
         assertThat(actual, is(expected));
     }
     
     @Test
     void assertGetDataSourceWithDifferentConfiguration() {
-        when(dataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));
-        DataSourceConfiguration anotherDataSourceConfiguration = mock(DataSourceConfiguration.class);
-        when(anotherDataSourceConfiguration.createDataSource()).then(invocation -> mock(DataSource.class));
-        DataSource one = DataSourceRegistry.getInstance().getDataSource(dataSourceConfiguration);
-        DataSource another = DataSourceRegistry.getInstance().getDataSource(anotherDataSourceConfiguration);
-        verify(dataSourceConfiguration).createDataSource();
-        verify(anotherDataSourceConfiguration).createDataSource();
+        when(dataSourceConfig.createDataSource()).then(invocation -> mock(DataSource.class));
+        DataSourceConfiguration anotherDataSourceConfig = mock(DataSourceConfiguration.class);
+        when(anotherDataSourceConfig.createDataSource()).then(invocation -> mock(DataSource.class));
+        DataSource one = DataSourceRegistry.getInstance().getDataSource(dataSourceConfig);
+        DataSource another = DataSourceRegistry.getInstance().getDataSource(anotherDataSourceConfig);
+        verify(dataSourceConfig).createDataSource();
+        verify(anotherDataSourceConfig).createDataSource();
         assertThat(another, not(one));
     }
 }

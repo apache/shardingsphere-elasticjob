@@ -56,13 +56,13 @@ public final class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
-        JobConfiguration jobConfiguration = configService.load(true);
-        if (!jobConfiguration.isMonitorExecution()) {
+        JobConfiguration jobConfig = configService.load(true);
+        if (!jobConfig.isMonitorExecution()) {
             return;
         }
         String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            if (jobConfiguration.isFailover()) {
+            if (jobConfig.isFailover()) {
                 jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), jobInstanceId);
             } else {
                 jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), jobInstanceId);

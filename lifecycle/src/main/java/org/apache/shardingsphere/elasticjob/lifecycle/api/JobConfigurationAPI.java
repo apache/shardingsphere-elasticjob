@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 public interface JobConfigurationAPI {
     
     /**
-     * get job configuration.
+     * Get job configuration.
      *
      * @param jobName job name
      * @return job configuration

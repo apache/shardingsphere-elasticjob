@@ -38,7 +38,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.Map;
 
 /**
- * JobBootstrap configuration.
+ * Job bootstrap configuration.
  */
 @Slf4j
 public class ElasticJobBootstrapConfiguration implements SmartInitializingSingleton, ApplicationContextAware {

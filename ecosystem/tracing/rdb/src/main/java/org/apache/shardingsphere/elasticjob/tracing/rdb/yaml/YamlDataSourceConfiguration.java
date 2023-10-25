@@ -28,7 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * YAML DataSourceConfiguration.
+ * YAML Data source configuration.
  */
 @Setter
 @Getter

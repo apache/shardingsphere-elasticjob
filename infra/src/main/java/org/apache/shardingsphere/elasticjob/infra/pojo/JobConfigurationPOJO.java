@@ -104,35 +104,35 @@ public final class JobConfigurationPOJO {
     /**
      * Convert from job configuration.
      *
-     * @param jobConfiguration job configuration
+     * @param jobConfig job configuration
      * @return job configuration POJO
      */
     @SuppressWarnings("unchecked")
-    public static JobConfigurationPOJO fromJobConfiguration(final JobConfiguration jobConfiguration) {
+    public static JobConfigurationPOJO fromJobConfiguration(final JobConfiguration jobConfig) {
         JobConfigurationPOJO result = new JobConfigurationPOJO();
-        result.setJobName(jobConfiguration.getJobName());
-        result.setCron(jobConfiguration.getCron());
-        result.setTimeZone(jobConfiguration.getTimeZone());
-        result.setShardingTotalCount(jobConfiguration.getShardingTotalCount());
-        result.setShardingItemParameters(jobConfiguration.getShardingItemParameters());
-        result.setJobParameter(jobConfiguration.getJobParameter());
-        result.setMonitorExecution(jobConfiguration.isMonitorExecution());
-        result.setFailover(jobConfiguration.isFailover());
-        result.setMisfire(jobConfiguration.isMisfire());
-        result.setMaxTimeDiffSeconds(jobConfiguration.getMaxTimeDiffSeconds());
-        result.setReconcileIntervalMinutes(jobConfiguration.getReconcileIntervalMinutes());
-        result.setJobShardingStrategyType(jobConfiguration.getJobShardingStrategyType());
-        result.setJobExecutorServiceHandlerType(jobConfiguration.getJobExecutorServiceHandlerType());
-        result.setJobErrorHandlerType(jobConfiguration.getJobErrorHandlerType());
-        result.setJobListenerTypes(jobConfiguration.getJobListenerTypes());
-        jobConfiguration.getExtraConfigurations().stream()
+        result.setJobName(jobConfig.getJobName());
+        result.setCron(jobConfig.getCron());
+        result.setTimeZone(jobConfig.getTimeZone());
+        result.setShardingTotalCount(jobConfig.getShardingTotalCount());
+        result.setShardingItemParameters(jobConfig.getShardingItemParameters());
+        result.setJobParameter(jobConfig.getJobParameter());
+        result.setMonitorExecution(jobConfig.isMonitorExecution());
+        result.setFailover(jobConfig.isFailover());
+        result.setMisfire(jobConfig.isMisfire());
+        result.setMaxTimeDiffSeconds(jobConfig.getMaxTimeDiffSeconds());
+        result.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
+        result.setJobShardingStrategyType(jobConfig.getJobShardingStrategyType());
+        result.setJobExecutorServiceHandlerType(jobConfig.getJobExecutorServiceHandlerType());
+        result.setJobErrorHandlerType(jobConfig.getJobErrorHandlerType());
+        result.setJobListenerTypes(jobConfig.getJobListenerTypes());
+        jobConfig.getExtraConfigurations().stream()
                 .map(each -> TypedSPILoader.getService(YamlConfigurationConverter.class, each.getClass()).convertToYamlConfiguration(each)).forEach(result.getJobExtraConfigurations()::add);
-        result.setDescription(jobConfiguration.getDescription());
-        result.setProps(jobConfiguration.getProps());
-        result.setDisabled(jobConfiguration.isDisabled());
-        result.setOverwrite(jobConfiguration.isOverwrite());
-        result.setLabel(jobConfiguration.getLabel());
-        result.setStaticSharding(jobConfiguration.isStaticSharding());
+        result.setDescription(jobConfig.getDescription());
+        result.setProps(jobConfig.getProps());
+        result.setDisabled(jobConfig.isDisabled());
+        result.setOverwrite(jobConfig.isOverwrite());
+        result.setLabel(jobConfig.getLabel());
+        result.setStaticSharding(jobConfig.isStaticSharding());
         return result;
     }
 }
