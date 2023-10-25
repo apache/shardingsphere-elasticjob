@@ -37,26 +37,26 @@ ElasticJob 提供了 3 种配置方式，用于不同的使用场景。
 
 ### 可配置属性
 
-| 属性名                           | 类型         | 缺省值            | 描述                   |
-|-------------------------------|:-----------|:---------------|:---------------------|
-| jobName                       | String     |                | 作业名称                 |
-| shardingTotalCount            | int        |                | 作业分片总数               |
-| cron                          | String     |                | CRON 表达式，用于控制作业触发时间  |
-| timeZone                      | String     |                | CRON 的时区设置           |
-| shardingItemParameters        | String     |                | 个性化分片参数              |
-| jobParameter                  | String     |                | 作业自定义参数              |
-| monitorExecution              | boolean    | true           | 监控作业运行时状态            |
-| failover                      | boolean    | false          | 是否开启任务执行失效转移         |
-| misfire                       | boolean    | true           | 是否开启错过任务重新执行         |
-| maxTimeDiffSeconds            | int        | -1（不检查）        | 最大允许的本机与注册中心的时间误差秒数  |
-| reconcileIntervalMinutes      | int        | 10             | 修复作业服务器不一致状态服务调度间隔分钟 |
-| jobShardingStrategyType       | String     | AVG_ALLOCATION | 作业分片策略类型             |
-| jobExecutorServiceHandlerType | String     | CPU            | 作业线程池处理策略            |
-| jobErrorHandlerType           | String     |                | 作业错误处理策略             |
-| description                   | String     |                | 作业描述信息               |
-| props                         | Properties |                | 作业属性配置信息             |
-| disabled                      | boolean    | false          | 作业是否禁止启动             |
-| overwrite                     | boolean    | false          | 本地配置是否可覆盖注册中心配置      |
+| 属性名                               | 类型         | 缺省值            | 描述                   |
+|-----------------------------------|:-----------|:---------------|:---------------------|
+| jobName                           | String     |                | 作业名称                 |
+| shardingTotalCount                | int        |                | 作业分片总数               |
+| cron                              | String     |                | CRON 表达式，用于控制作业触发时间  |
+| timeZone                          | String     |                | CRON 的时区设置           |
+| shardingItemParameters            | String     |                | 个性化分片参数              |
+| jobParameter                      | String     |                | 作业自定义参数              |
+| monitorExecution                  | boolean    | true           | 监控作业运行时状态            |
+| failover                          | boolean    | false          | 是否开启任务执行失效转移         |
+| misfire                           | boolean    | true           | 是否开启错过任务重新执行         |
+| maxTimeDiffSeconds                | int        | -1（不检查）        | 最大允许的本机与注册中心的时间误差秒数  |
+| reconcileIntervalMinutes          | int        | 10             | 修复作业服务器不一致状态服务调度间隔分钟 |
+| jobShardingStrategyType           | String     | AVG_ALLOCATION | 作业分片策略类型             |
+| jobExecutorThreadPoolSizeProvider | String     | CPU            | 作业线程池处理策略            |
+| jobErrorHandlerType               | String     |                | 作业错误处理策略             |
+| description                       | String     |                | 作业描述信息               |
+| props                             | Properties |                | 作业属性配置信息             |
+| disabled                          | boolean    | false          | 作业是否禁止启动             |
+| overwrite                         | boolean    | false          | 本地配置是否可覆盖注册中心配置      |
 
 ### 核心配置项说明
 
@@ -92,7 +92,7 @@ ElasticJob 提供了 3 种配置方式，用于不同的使用场景。
 
 详情请参见[内置分片策略列表](/cn/user-manual/elasticjob/configuration/built-in-strategy/sharding)。
 
-**jobExecutorServiceHandlerType:**
+**jobExecutorThreadPoolSizeProviderType:**
 
 详情请参见[内置线程池策略列表](/cn/user-manual/elasticjob/configuration/built-in-strategy/thread-pool)。
 

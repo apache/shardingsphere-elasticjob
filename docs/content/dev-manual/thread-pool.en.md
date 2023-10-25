@@ -6,11 +6,11 @@ weight = 2
 
 Thread pool strategy, used to create thread pool for job execution. 
 
-| *SPI Name*                            | *Description*                                          |
-| ------------------------------------- | ------------------------------------------------------ |
-| JobExecutorServiceHandler             | Job executor service handler                           |
+| *SPI Name*                        | *Description*                          |
+|-----------------------------------|----------------------------------------|
+| JobExecutorThreadPoolSizeProvider | Job executor thread pool size provider |
 
-| *Implementation Class*                | *Description*                                          |
-| ------------------------------------- | ------------------------------------------------------ |
-| CPUUsageJobExecutorServiceHandler     | Use CPU available processors * 2 to create thread pool |
-| SingleThreadJobExecutorServiceHandler | Use single thread to execute job                       |
+| *Implementation Class*                        | *Description*                                          |
+|-----------------------------------------------|--------------------------------------------------------|
+| CPUUsageJobExecutorThreadPoolSizeProvider     | Use CPU available processors * 2 to create thread pool |
+| SingleThreadJobExecutorThreadPoolSizeProvider | Use single thread to execute job                       |

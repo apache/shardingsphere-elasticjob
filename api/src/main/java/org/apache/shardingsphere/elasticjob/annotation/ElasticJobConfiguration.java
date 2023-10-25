@@ -125,11 +125,11 @@ public @interface ElasticJobConfiguration {
     String jobShardingStrategyType() default "";
     
     /**
-     * Job thread pool handler type.
+     * Job executor thread pool size provider type.
      * 
-     * @return job executor service handler type
+     * @return job executor thread pool size provider type
      */
-    String jobExecutorServiceHandlerType() default "";
+    String jobExecutorThreadPoolSizeProviderType() default "";
     
     /**
      * Job thread pool handler type.

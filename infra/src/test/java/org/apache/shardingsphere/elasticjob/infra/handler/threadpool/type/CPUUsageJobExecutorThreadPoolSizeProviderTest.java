@@ -15,25 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
+package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type;
 
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
+import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ExecutorService;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-/**
- * Job executor service handler.
- */
-@SingletonSPI
-public interface JobExecutorServiceHandler extends TypedSPI {
+class CPUUsageJobExecutorThreadPoolSizeProviderTest {
     
-    /**
-     * Create executor service.
-     * 
-     * @param jobName job name
-     * 
-     * @return executor service
-     */
-    ExecutorService createExecutorService(String jobName);
+    @Test
+    void assertGetPoolSize() {
+        assertThat((TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, "CPU")).getSize(), is(Runtime.getRuntime().availableProcessors() * 2));
+    }
 }

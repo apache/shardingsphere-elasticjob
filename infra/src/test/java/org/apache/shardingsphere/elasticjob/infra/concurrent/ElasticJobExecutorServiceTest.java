@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.concurrent;
 
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.ElasticJobExecutorService;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 

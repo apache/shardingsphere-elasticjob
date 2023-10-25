@@ -20,7 +20,8 @@ package org.apache.shardingsphere.elasticjob.infra.concurrent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorServiceHandler;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.ElasticJobExecutorService;
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Optional;
@@ -32,29 +33,30 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
     
-    private JobExecutorServiceHandler jobExecutorServiceHandler;
+    private String jobExecutorThreadPoolSizeProviderType;
     
     private ExecutorService executorService;
     
     @Override
     public void init(final JobConfiguration jobConfig) {
-        jobExecutorServiceHandler = TypedSPILoader.getService(JobExecutorServiceHandler.class, jobConfig.getJobExecutorServiceHandlerType());
-        executorService = jobExecutorServiceHandler.createExecutorService(jobConfig.getJobName());
+        JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
+        executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
     }
     
     @Override
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (jobExecutorServiceHandler.getType().equals(jobConfig.getJobExecutorServiceHandlerType())) {
+        if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
-        log.debug("JobExecutorServiceHandler reload occurred in the job '{}'. Change from '{}' to '{}'.",
-                jobConfig.getJobName(), jobExecutorServiceHandler.getType(), jobConfig.getJobExecutorServiceHandlerType());
-        reload(jobConfig.getJobExecutorServiceHandlerType(), jobConfig.getJobName());
+        log.debug("Reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorThreadPoolSizeProviderType, jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        reload(jobConfig.getJobExecutorThreadPoolSizeProviderType(), jobConfig.getJobName());
     }
     
-    private void reload(final String jobExecutorServiceHandlerType, final String jobName) {
+    private void reload(final String jobExecutorThreadPoolSizeProviderType, final String jobName) {
         executorService.shutdown();
-        executorService = TypedSPILoader.getService(JobExecutorServiceHandler.class, jobExecutorServiceHandlerType).createExecutorService(jobName);
+        executorService = new ElasticJobExecutorService(
+                "elasticjob-" + jobName, TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobExecutorThreadPoolSizeProviderType).getSize()).createExecutorService();
     }
     
     @Override

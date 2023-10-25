@@ -45,7 +45,7 @@ class ElasticJobConfigurationPropertiesTest {
         properties.setMaxTimeDiffSeconds(1);
         properties.setReconcileIntervalMinutes(2);
         properties.setJobShardingStrategyType("strategyType");
-        properties.setJobExecutorServiceHandlerType("executorType");
+        properties.setJobExecutorThreadPoolSizeProviderType("executorType");
         properties.setJobErrorHandlerType("errorHandlerType");
         properties.setJobListenerTypes(Collections.singleton("listenerType"));
         properties.setDescription("test desc");
@@ -62,7 +62,7 @@ class ElasticJobConfigurationPropertiesTest {
         assertThat(actual.getMaxTimeDiffSeconds(), is(properties.getMaxTimeDiffSeconds()));
         assertThat(actual.getReconcileIntervalMinutes(), is(properties.getReconcileIntervalMinutes()));
         assertThat(actual.getJobShardingStrategyType(), is(properties.getJobShardingStrategyType()));
-        assertThat(actual.getJobExecutorServiceHandlerType(), is(properties.getJobExecutorServiceHandlerType()));
+        assertThat(actual.getJobExecutorThreadPoolSizeProviderType(), is(properties.getJobExecutorThreadPoolSizeProviderType()));
         assertThat(actual.getJobErrorHandlerType(), is(properties.getJobErrorHandlerType()));
         assertThat(actual.getJobListenerTypes().toArray(), is(properties.getJobListenerTypes().toArray()));
         assertThat(actual.getDescription(), is(properties.getDescription()));

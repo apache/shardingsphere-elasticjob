@@ -61,7 +61,7 @@ public final class JobConfigurationPOJO {
     
     private String jobShardingStrategyType;
     
-    private String jobExecutorServiceHandlerType;
+    private String jobExecutorThreadPoolSizeProviderType;
     
     private String jobErrorHandlerType;
     
@@ -91,7 +91,7 @@ public final class JobConfigurationPOJO {
                 .cron(cron).timeZone(timeZone).shardingItemParameters(shardingItemParameters).jobParameter(jobParameter)
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
-                .jobShardingStrategyType(jobShardingStrategyType).jobExecutorServiceHandlerType(jobExecutorServiceHandlerType)
+                .jobShardingStrategyType(jobShardingStrategyType).jobExecutorThreadPoolSizeProviderType(jobExecutorThreadPoolSizeProviderType)
                 .jobErrorHandlerType(jobErrorHandlerType).jobListenerTypes(jobListenerTypes.toArray(new String[]{})).description(description)
                 .disabled(disabled).overwrite(overwrite).label(label).staticSharding(staticSharding).build();
         jobExtraConfigurations.stream().map(YamlConfiguration::toConfiguration).forEach(result.getExtraConfigurations()::add);
@@ -122,7 +122,7 @@ public final class JobConfigurationPOJO {
         result.setMaxTimeDiffSeconds(jobConfig.getMaxTimeDiffSeconds());
         result.setReconcileIntervalMinutes(jobConfig.getReconcileIntervalMinutes());
         result.setJobShardingStrategyType(jobConfig.getJobShardingStrategyType());
-        result.setJobExecutorServiceHandlerType(jobConfig.getJobExecutorServiceHandlerType());
+        result.setJobExecutorThreadPoolSizeProviderType(jobConfig.getJobExecutorThreadPoolSizeProviderType());
         result.setJobErrorHandlerType(jobConfig.getJobErrorHandlerType());
         result.setJobListenerTypes(jobConfig.getJobListenerTypes());
         jobConfig.getExtraConfigurations().stream()

@@ -54,7 +54,7 @@ public final class JobAnnotationBuilder {
                 .maxTimeDiffSeconds(annotation.maxTimeDiffSeconds())
                 .reconcileIntervalMinutes(annotation.reconcileIntervalMinutes())
                 .jobShardingStrategyType(Strings.isNullOrEmpty(annotation.jobShardingStrategyType()) ? null : annotation.jobShardingStrategyType())
-                .jobExecutorServiceHandlerType(Strings.isNullOrEmpty(annotation.jobExecutorServiceHandlerType()) ? null : annotation.jobExecutorServiceHandlerType())
+                .jobExecutorThreadPoolSizeProviderType(Strings.isNullOrEmpty(annotation.jobExecutorThreadPoolSizeProviderType()) ? null : annotation.jobExecutorThreadPoolSizeProviderType())
                 .jobErrorHandlerType(Strings.isNullOrEmpty(annotation.jobErrorHandlerType()) ? null : annotation.jobErrorHandlerType())
                 .jobListenerTypes(annotation.jobListenerTypes())
                 .description(annotation.description())
