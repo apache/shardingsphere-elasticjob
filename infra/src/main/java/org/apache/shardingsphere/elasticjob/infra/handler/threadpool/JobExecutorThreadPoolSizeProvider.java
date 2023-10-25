@@ -20,20 +20,16 @@ package org.apache.shardingsphere.elasticjob.infra.handler.threadpool;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
-import java.util.concurrent.ExecutorService;
-
 /**
- * Job executor service handler.
+ * Job executor thread pool size provider.
  */
 @SingletonSPI
-public interface JobExecutorServiceHandler extends TypedSPI {
+public interface JobExecutorThreadPoolSizeProvider extends TypedSPI {
     
     /**
-     * Create executor service.
+     * Get thread pool size.
      * 
-     * @param jobName job name
-     * 
-     * @return executor service
+     * @return thread pool size
      */
-    ExecutorService createExecutorService(String jobName);
+    int getSize();
 }

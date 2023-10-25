@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.impl;
+package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type;
+
+import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
 
 /**
- * Job executor service handler with single thread.
+ * Job executor pool size provider with single thread.
  */
-public final class SingleThreadJobExecutorServiceHandler extends AbstractJobExecutorServiceHandler {
+public final class SingleThreadJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
     
     @Override
-    protected int getPoolSize() {
+    public int getSize() {
         return 1;
     }
     
