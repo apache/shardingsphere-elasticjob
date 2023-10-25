@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.infra.concurrent.ExecutorServiceReloadable
+org.apache.shardingsphere.elasticjob.infra.threadpool.ExecutorServiceReloadable

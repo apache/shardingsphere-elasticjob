@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.concurrent;
+package org.apache.shardingsphere.elasticjob.infra.threadpool;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.ElasticJobExecutorService;
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Optional;

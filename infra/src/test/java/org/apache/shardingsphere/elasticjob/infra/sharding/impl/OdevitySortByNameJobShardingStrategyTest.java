@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl;
+package org.apache.shardingsphere.elasticjob.infra.sharding.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

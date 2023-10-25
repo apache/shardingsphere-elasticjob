@@ -15,6 +15,5 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl.AverageAllocationJobShardingStrategy
-org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl.OdevitySortByNameJobShardingStrategy
-org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl.RoundRobinByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.infra.threadpool.type.CPUUsageJobExecutorThreadPoolSizeProvider
+org.apache.shardingsphere.elasticjob.infra.threadpool.type.SingleThreadJobExecutorThreadPoolSizeProvider

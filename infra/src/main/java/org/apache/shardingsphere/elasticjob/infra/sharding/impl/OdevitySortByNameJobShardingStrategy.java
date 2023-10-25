@@ -15,43 +15,42 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.sharding.impl;
+package org.apache.shardingsphere.elasticjob.infra.sharding.impl;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.infra.handler.sharding.JobShardingStrategy;
+import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.infra.sharding.JobShardingStrategy;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Sharding strategy which for round robin by name job.
+ * Sharding strategy which for hash with job name to determine IP asc or desc.
+ * 
+ * <p>
+ * IP address asc if job name' hashcode is odd;
+ * IP address desc if job name' hashcode is even.
+ * Used to average assign to job server.
+ * For example: 
+ * 1. If there are 3 job servers with 2 sharding item, and the hash value of job name is odd, then each server is divided into: 1 = [0], 2 = [1], 3 = [];
+ * 2. If there are 3 job servers with 2 sharding item, and the hash value of job name is even, then each server is divided into: 3 = [0], 2 = [1], 1 = [].
+ * </p>
  */
-public final class RoundRobinByNameJobShardingStrategy implements JobShardingStrategy {
+public final class OdevitySortByNameJobShardingStrategy implements JobShardingStrategy {
     
     private final AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
     public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
-        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobInstances, jobName), jobName, shardingTotalCount);
-    }
-    
-    private List<JobInstance> rotateServerList(final List<JobInstance> shardingUnits, final String jobName) {
-        int shardingUnitsSize = shardingUnits.size();
-        int offset = Math.abs(jobName.hashCode()) % shardingUnitsSize;
-        if (0 == offset) {
-            return shardingUnits;
+        long jobNameHash = jobName.hashCode();
+        if (0 == jobNameHash % 2) {
+            Collections.reverse(jobInstances);
         }
-        List<JobInstance> result = new ArrayList<>(shardingUnitsSize);
-        for (int i = 0; i < shardingUnitsSize; i++) {
-            int index = (i + offset) % shardingUnitsSize;
-            result.add(shardingUnits.get(index));
-        }
-        return result;
+        return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shardingTotalCount);
     }
     
     @Override
     public String getType() {
-        return "ROUND_ROBIN";
+        return "ODEVITY";
     }
 }
