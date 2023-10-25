@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.concurrent;
+package org.apache.shardingsphere.elasticjob.kernel.internal.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,21 +26,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BlockUtils {
     
-    /**
-     * Wait short time.
-     */
-    public static void waitingShortTime() {
-        sleep(100L);
-    }
+    private static final long SLEEP_INTERVAL_MILLIS = 100L;
     
     /**
-     * Sleep for the specified number of milliseconds.
-     *
-     * @param  millis the duration of sleep in milliseconds
+     * Waiting short time.
      */
-    public static void sleep(final long millis) {
+    public static void waitingShortTime() {
         try {
-            Thread.sleep(millis);
+            Thread.sleep(SLEEP_INTERVAL_MILLIS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }

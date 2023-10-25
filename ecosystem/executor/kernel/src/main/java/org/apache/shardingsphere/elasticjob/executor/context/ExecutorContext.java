@@ -27,9 +27,6 @@ import java.util.Properties;
 
 /**
  * Executor context.
- *
- * @see org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerReloadable
- * @see org.apache.shardingsphere.elasticjob.infra.concurrent.ExecutorServiceReloadable
  */
 public final class ExecutorContext {
     

@@ -37,11 +37,7 @@
             <artifactId>elasticjob-infra</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-registry-center-api</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+        
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-registry-center-zookeeper-curator</artifactId>
