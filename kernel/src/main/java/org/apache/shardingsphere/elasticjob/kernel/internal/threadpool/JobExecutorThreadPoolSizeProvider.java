@@ -15,22 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type;
+package org.apache.shardingsphere.elasticjob.kernel.internal.threadpool;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Job executor pool size provider with single thread.
+ * Job executor thread pool size provider.
  */
-public final class SingleThreadJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
+@SingletonSPI
+public interface JobExecutorThreadPoolSizeProvider extends TypedSPI {
+    
+    /**
+     * Get thread pool size.
+     * 
+     * @return thread pool size
+     */
+    int getSize();
     
     @Override
-    public int getSize() {
-        return 1;
-    }
-    
-    @Override
-    public String getType() {
-        return "SINGLE_THREAD";
-    }
+    String getType();
 }

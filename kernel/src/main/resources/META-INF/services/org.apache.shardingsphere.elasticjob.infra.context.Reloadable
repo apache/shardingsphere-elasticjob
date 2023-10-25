@@ -15,5 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type.CPUUsageJobExecutorThreadPoolSizeProvider
-org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type.SingleThreadJobExecutorThreadPoolSizeProvider
+org.apache.shardingsphere.elasticjob.kernel.internal.threadpool.ExecutorServiceReloadable

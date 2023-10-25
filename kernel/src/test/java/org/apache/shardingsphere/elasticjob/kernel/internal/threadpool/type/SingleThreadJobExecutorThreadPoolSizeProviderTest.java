@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.handler.threadpool.type;
+package org.apache.shardingsphere.elasticjob.kernel.internal.threadpool.type;
 
-import org.apache.shardingsphere.elasticjob.infra.handler.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.elasticjob.kernel.internal.threadpool.JobExecutorThreadPoolSizeProvider;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
