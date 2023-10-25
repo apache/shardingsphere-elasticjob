@@ -20,10 +20,10 @@ package org.apache.shardingsphere.elasticjob.restful.serializer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.restful.serializer.factory.SerializerFactory;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,10 +50,10 @@ public final class ResponseBodySerializerFactory {
     };
     
     static {
-        for (ResponseBodySerializer serializer : ServiceLoader.load(ResponseBodySerializer.class)) {
+        for (ResponseBodySerializer serializer : ShardingSphereServiceLoader.getServiceInstances(ResponseBodySerializer.class)) {
             RESPONSE_BODY_SERIALIZERS.put(serializer.mimeType(), serializer);
         }
-        for (SerializerFactory factory : ServiceLoader.load(SerializerFactory.class)) {
+        for (SerializerFactory factory : ShardingSphereServiceLoader.getServiceInstances(SerializerFactory.class)) {
             RESPONSE_BODY_SERIALIZER_FACTORIES.put(factory.mimeType(), factory);
         }
     }

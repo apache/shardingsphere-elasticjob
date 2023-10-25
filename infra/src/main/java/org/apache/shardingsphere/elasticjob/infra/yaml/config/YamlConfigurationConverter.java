@@ -17,13 +17,17 @@
 
 package org.apache.shardingsphere.elasticjob.infra.yaml.config;
 
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
 /**
  * YAML configuration converter.
  *
  * @param <T> type of original configuration object
  * @param <Y> type of YAML configuration
  */
-public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> {
+@SingletonSPI
+public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> extends TypedSPI {
     
     /**
      * Convert to YAML configuration.
@@ -33,10 +37,6 @@ public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> {
      */
     Y convertToYamlConfiguration(T data);
     
-    /**
-     * Get type of Configuration.
-     *
-     * @return configuration type
-     */
-    Class<T> configurationType();
+    @Override
+    Class<T> getType();
 }

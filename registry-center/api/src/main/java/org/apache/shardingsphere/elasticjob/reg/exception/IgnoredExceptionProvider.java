@@ -17,11 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.reg.exception;
 
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+
 import java.util.Collection;
 
 /**
  * Ignored exception provider.
  */
+@SingletonSPI
 public interface IgnoredExceptionProvider {
     
     /**

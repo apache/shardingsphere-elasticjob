@@ -36,7 +36,7 @@ public final class YamlJobEventCallerConfigurationConverter implements YamlConfi
     }
     
     @Override
-    public Class configurationType() {
+    public Class getType() {
         return JobEventCallerConfiguration.class;
     }
 }

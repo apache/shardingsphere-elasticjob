@@ -19,12 +19,14 @@ package org.apache.shardingsphere.elasticjob.executor.item.impl;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
  * Classed job item executor.
  * 
  * @param <T> type of ElasticJob
  */
+@SingletonSPI
 public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
     
     /**

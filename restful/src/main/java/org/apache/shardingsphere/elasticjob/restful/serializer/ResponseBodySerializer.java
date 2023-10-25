@@ -17,9 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.restful.serializer;
 
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+
 /**
  * Serializer for serializing response body with specific MIME type.
  */
+@SingletonSPI
 public interface ResponseBodySerializer {
     
     /**

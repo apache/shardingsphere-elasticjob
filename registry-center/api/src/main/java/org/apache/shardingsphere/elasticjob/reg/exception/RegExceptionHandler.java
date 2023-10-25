@@ -20,23 +20,14 @@ package org.apache.shardingsphere.elasticjob.reg.exception;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.ServiceLoader;
+import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 /**
  * Registry center exception handler.
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public final class RegExceptionHandler {
-    
-    private static final Collection<Class<? extends Throwable>> IGNORED_EXCEPTIONS = new LinkedList<>();
-    
-    static {
-        ServiceLoader.load(IgnoredExceptionProvider.class).forEach(each -> IGNORED_EXCEPTIONS.addAll(each.getIgnoredExceptions()));
-    }
     
     /**
      * Handle exception.
@@ -57,6 +48,6 @@ public final class RegExceptionHandler {
     }
     
     private static boolean isIgnoredException(final Throwable cause) {
-        return IGNORED_EXCEPTIONS.stream().anyMatch(each -> each.isInstance(cause));
+        return ShardingSphereServiceLoader.getServiceInstances(IgnoredExceptionProvider.class).stream().flatMap(each -> each.getIgnoredExceptions().stream()).anyMatch(each -> each.isInstance(cause));
     }
 }

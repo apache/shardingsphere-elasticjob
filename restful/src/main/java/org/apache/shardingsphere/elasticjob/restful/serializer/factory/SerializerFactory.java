@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.restful.serializer.factory;
 
 import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializer;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
  * Serializer factory.
@@ -25,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySeria
  * @see ResponseBodySerializer
  * @see org.apache.shardingsphere.elasticjob.restful.serializer.ResponseBodySerializerFactory
  */
+@SingletonSPI
 public interface SerializerFactory {
     
     /**

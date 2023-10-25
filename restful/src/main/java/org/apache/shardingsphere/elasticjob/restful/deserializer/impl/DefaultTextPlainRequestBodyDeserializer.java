@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful.deserializer.impl;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -26,6 +27,7 @@ import java.text.MessageFormat;
 /**
  * Default deserializer for <code>text/plain</code>.
  */
+@SingletonSPI
 public final class DefaultTextPlainRequestBodyDeserializer implements RequestBodyDeserializer {
     
     @Override
