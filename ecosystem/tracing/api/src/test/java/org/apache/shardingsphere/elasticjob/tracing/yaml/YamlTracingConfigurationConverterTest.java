@@ -32,9 +32,9 @@ class YamlTracingConfigurationConverterTest {
     void assertConvertTracingConfiguration() {
         JobEventCaller expectedStorage = () -> {
         };
-        TracingConfiguration<JobEventCaller> tracingConfiguration = new TracingConfiguration<>("TEST", expectedStorage);
+        TracingConfiguration<JobEventCaller> tracingConfig = new TracingConfiguration<>("TEST", expectedStorage);
         YamlTracingConfigurationConverter<JobEventCaller> converter = new YamlTracingConfigurationConverter<>();
-        YamlTracingConfiguration<JobEventCaller> actual = converter.convertToYamlConfiguration(tracingConfiguration);
+        YamlTracingConfiguration<JobEventCaller> actual = converter.convertToYamlConfiguration(tracingConfig);
         assertThat(actual.getType(), is("TEST"));
         assertNotNull(actual.getTracingStorageConfiguration());
         assertTrue(actual.getTracingStorageConfiguration() instanceof YamlJobEventCallerConfiguration);

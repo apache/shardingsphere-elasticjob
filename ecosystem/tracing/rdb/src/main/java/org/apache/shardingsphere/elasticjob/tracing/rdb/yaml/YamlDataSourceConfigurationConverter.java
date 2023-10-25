@@ -32,10 +32,10 @@ public final class YamlDataSourceConfigurationConverter implements YamlConfigura
     
     @Override
     public YamlTracingStorageConfiguration<DataSource> convertToYamlConfiguration(final TracingStorageConfiguration<DataSource> data) {
-        DataSourceConfiguration dataSourceConfiguration = (DataSourceConfiguration) data;
+        DataSourceConfiguration dataSourceConfig = (DataSourceConfiguration) data;
         YamlDataSourceConfiguration result = new YamlDataSourceConfiguration();
-        result.setDataSourceClassName(dataSourceConfiguration.getDataSourceClassName());
-        result.setProps(dataSourceConfiguration.getProps());
+        result.setDataSourceClassName(dataSourceConfig.getDataSourceClassName());
+        result.setProps(dataSourceConfig.getProps());
         return result;
     }
     

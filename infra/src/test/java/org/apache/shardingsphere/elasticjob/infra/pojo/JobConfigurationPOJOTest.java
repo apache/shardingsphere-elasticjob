@@ -104,14 +104,14 @@ class JobConfigurationPOJOTest {
     
     @Test
     void assertFromJobConfiguration() {
-        JobConfiguration jobConfiguration = JobConfiguration.newBuilder("test_job", 3)
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?")
                 .shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
                 .monitorExecution(true).failover(true).misfire(true)
                 .jobShardingStrategyType("AVG_ALLOCATION").jobExecutorServiceHandlerType("CPU").jobErrorHandlerType("IGNORE")
                 .jobListenerTypes("LOG").description("Job description").setProperty("key", "value")
                 .disabled(true).overwrite(true).build();
-        JobConfigurationPOJO actual = JobConfigurationPOJO.fromJobConfiguration(jobConfiguration);
+        JobConfigurationPOJO actual = JobConfigurationPOJO.fromJobConfiguration(jobConfig);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getShardingTotalCount(), is(3));

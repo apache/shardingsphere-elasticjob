@@ -42,16 +42,16 @@ public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionP
     }
     
     private AbstractBeanDefinition buildZookeeperConfigurationBeanDefinition(final Element element) {
-        BeanDefinitionBuilder configuration = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperConfiguration.class);
-        configuration.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.SERVER_LISTS_ATTRIBUTE));
-        configuration.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.NAMESPACE_ATTRIBUTE));
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.BASE_SLEEP_TIME_MILLISECONDS_ATTRIBUTE, "baseSleepTimeMilliseconds", element, configuration);
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.MAX_SLEEP_TIME_MILLISECONDS_ATTRIBUTE, "maxSleepTimeMilliseconds", element, configuration);
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.MAX_RETRIES_ATTRIBUTE, "maxRetries", element, configuration);
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.SESSION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "sessionTimeoutMilliseconds", element, configuration);
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.CONNECTION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "connectionTimeoutMilliseconds", element, configuration);
-        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.DIGEST_ATTRIBUTE, "digest", element, configuration);
-        return configuration.getBeanDefinition();
+        BeanDefinitionBuilder config = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperConfiguration.class);
+        config.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.SERVER_LISTS_ATTRIBUTE));
+        config.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.NAMESPACE_ATTRIBUTE));
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.BASE_SLEEP_TIME_MILLISECONDS_ATTRIBUTE, "baseSleepTimeMilliseconds", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.MAX_SLEEP_TIME_MILLISECONDS_ATTRIBUTE, "maxSleepTimeMilliseconds", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.MAX_RETRIES_ATTRIBUTE, "maxRetries", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.SESSION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "sessionTimeoutMilliseconds", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.CONNECTION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "connectionTimeoutMilliseconds", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.DIGEST_ATTRIBUTE, "digest", element, config);
+        return config.getBeanDefinition();
     }
     
     private void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {

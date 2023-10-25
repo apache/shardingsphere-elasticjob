@@ -42,10 +42,10 @@ public final class ExecutorContext {
     /**
      * Reload all reloadable item if necessary.
      *
-     * @param jobConfiguration job configuration
+     * @param jobConfig job configuration
      */
-    public void reloadIfNecessary(final JobConfiguration jobConfiguration) {
-        ShardingSphereServiceLoader.getServiceInstances(Reloadable.class).forEach(each -> each.reloadIfNecessary(jobConfiguration));
+    public void reloadIfNecessary(final JobConfiguration jobConfig) {
+        ShardingSphereServiceLoader.getServiceInstances(Reloadable.class).forEach(each -> each.reloadIfNecessary(jobConfig));
     }
     
     /**

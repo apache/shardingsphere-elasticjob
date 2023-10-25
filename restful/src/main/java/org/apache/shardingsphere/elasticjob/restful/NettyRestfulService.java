@@ -32,13 +32,13 @@ import org.apache.shardingsphere.elasticjob.restful.pipeline.RestfulServiceChann
 /**
  * Implemented {@link RestfulService} via Netty.
  */
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public final class NettyRestfulService implements RestfulService {
     
     private static final int DEFAULT_WORKER_GROUP_THREADS = 1 + 2 * NettyRuntime.availableProcessors();
     
-    private final NettyRestfulServiceConfiguration configuration;
+    private final NettyRestfulServiceConfiguration config;
     
     private ServerBootstrap serverBootstrap;
     
@@ -52,7 +52,7 @@ public final class NettyRestfulService implements RestfulService {
         serverBootstrap = new ServerBootstrap()
                 .group(bossEventLoopGroup, workerEventLoopGroup)
                 .channel(NioServerSocketChannel.class)
-                .childHandler(new RestfulServiceChannelInitializer(configuration));
+                .childHandler(new RestfulServiceChannelInitializer(config));
     }
     
     @SneakyThrows
@@ -60,14 +60,14 @@ public final class NettyRestfulService implements RestfulService {
     public void startup() {
         initServerBootstrap();
         ChannelFuture channelFuture;
-        if (!Strings.isNullOrEmpty(configuration.getHost())) {
-            channelFuture = serverBootstrap.bind(configuration.getHost(), configuration.getPort());
+        if (!Strings.isNullOrEmpty(config.getHost())) {
+            channelFuture = serverBootstrap.bind(config.getHost(), config.getPort());
         } else {
-            channelFuture = serverBootstrap.bind(configuration.getPort());
+            channelFuture = serverBootstrap.bind(config.getPort());
         }
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
-                log.info("Restful Service started on port {}.", configuration.getPort());
+                log.info("Restful Service started on port {}.", config.getPort());
             } else {
                 log.error("Failed to start Restful Service.", future.cause());
             }

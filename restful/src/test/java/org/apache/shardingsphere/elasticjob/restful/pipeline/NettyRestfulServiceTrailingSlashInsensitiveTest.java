@@ -34,10 +34,10 @@ class NettyRestfulServiceTrailingSlashInsensitiveTest {
     @Test
     void assertPathDuplicateWhenTrailingSlashInsensitive() {
         assertThrows(IllegalArgumentException.class, () -> {
-            NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-            configuration.setHost(HOST);
-            configuration.addControllerInstances(new TrailingSlashTestController());
-            RestfulService restfulService = new NettyRestfulService(configuration);
+            NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
+            config.setHost(HOST);
+            config.addControllerInstances(new TrailingSlashTestController());
+            RestfulService restfulService = new NettyRestfulService(config);
             restfulService.startup();
         });
     }

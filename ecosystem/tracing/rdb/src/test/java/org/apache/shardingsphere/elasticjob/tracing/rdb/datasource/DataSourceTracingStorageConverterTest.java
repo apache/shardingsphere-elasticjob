@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.exception.TracingStorageUnavailableException;
 import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverter;
 import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConverterFactory;
@@ -57,8 +56,7 @@ class DataSourceTracingStorageConverterTest {
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getURL()).thenReturn("jdbc:url");
         DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
-        TracingStorageConfiguration<DataSource> configuration = converter.convertObjectToConfiguration(dataSource);
-        assertNotNull(configuration);
+        assertNotNull(converter.convertObjectToConfiguration(dataSource));
     }
     
     @Test

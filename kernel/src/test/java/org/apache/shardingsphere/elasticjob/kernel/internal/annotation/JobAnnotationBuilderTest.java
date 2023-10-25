@@ -31,24 +31,24 @@ class JobAnnotationBuilderTest {
     
     @Test
     void assertGenerateJobConfiguration() {
-        JobConfiguration jobConfiguration = JobAnnotationBuilder.generateJobConfiguration(AnnotationSimpleJob.class);
-        assertThat(jobConfiguration.getJobName(), is("AnnotationSimpleJob"));
-        assertThat(jobConfiguration.getShardingTotalCount(), is(3));
-        assertThat(jobConfiguration.getShardingItemParameters(), is("0=a,1=b,2=c"));
-        assertThat(jobConfiguration.getCron(), is("*/10 * * * * ?"));
-        assertTrue(jobConfiguration.isMonitorExecution());
-        assertFalse(jobConfiguration.isFailover());
-        assertTrue(jobConfiguration.isMisfire());
-        assertThat(jobConfiguration.getMaxTimeDiffSeconds(), is(-1));
-        assertThat(jobConfiguration.getReconcileIntervalMinutes(), is(10));
-        assertNull(jobConfiguration.getJobShardingStrategyType());
-        assertNull(jobConfiguration.getJobExecutorServiceHandlerType());
-        assertNull(jobConfiguration.getJobErrorHandlerType());
-        assertThat(jobConfiguration.getDescription(), is("desc"));
-        assertThat(jobConfiguration.getProps().getProperty("print.title"), is("test title"));
-        assertThat(jobConfiguration.getProps().getProperty("print.content"), is("test content"));
-        assertFalse(jobConfiguration.isDisabled());
-        assertFalse(jobConfiguration.isOverwrite());
+        JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(AnnotationSimpleJob.class);
+        assertThat(jobConfig.getJobName(), is("AnnotationSimpleJob"));
+        assertThat(jobConfig.getShardingTotalCount(), is(3));
+        assertThat(jobConfig.getShardingItemParameters(), is("0=a,1=b,2=c"));
+        assertThat(jobConfig.getCron(), is("*/10 * * * * ?"));
+        assertTrue(jobConfig.isMonitorExecution());
+        assertFalse(jobConfig.isFailover());
+        assertTrue(jobConfig.isMisfire());
+        assertThat(jobConfig.getMaxTimeDiffSeconds(), is(-1));
+        assertThat(jobConfig.getReconcileIntervalMinutes(), is(10));
+        assertNull(jobConfig.getJobShardingStrategyType());
+        assertNull(jobConfig.getJobExecutorServiceHandlerType());
+        assertNull(jobConfig.getJobErrorHandlerType());
+        assertThat(jobConfig.getDescription(), is("desc"));
+        assertThat(jobConfig.getProps().getProperty("print.title"), is("test title"));
+        assertThat(jobConfig.getProps().getProperty("print.content"), is("test content"));
+        assertFalse(jobConfig.isDisabled());
+        assertFalse(jobConfig.isOverwrite());
     }
     
 }

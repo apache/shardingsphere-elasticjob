@@ -41,13 +41,13 @@ public final class RestfulServiceChannelInitializer extends ChannelInitializer<C
     
     private final ExceptionHandling exceptionHandling;
     
-    public RestfulServiceChannelInitializer(final NettyRestfulServiceConfiguration configuration) {
+    public RestfulServiceChannelInitializer(final NettyRestfulServiceConfiguration config) {
         contextInitializationInboundHandler = new ContextInitializationInboundHandler();
-        filterChainInboundHandler = new FilterChainInboundHandler(configuration.getFilterInstances());
-        httpRequestDispatcher = new HttpRequestDispatcher(configuration.getControllerInstances(), configuration.isTrailingSlashSensitive());
+        filterChainInboundHandler = new FilterChainInboundHandler(config.getFilterInstances());
+        httpRequestDispatcher = new HttpRequestDispatcher(config.getControllerInstances(), config.isTrailingSlashSensitive());
         handlerParameterDecoder = new HandlerParameterDecoder();
         handleMethodExecutor = new HandleMethodExecutor();
-        exceptionHandling = new ExceptionHandling(configuration.getExceptionHandlers());
+        exceptionHandling = new ExceptionHandling(config.getExceptionHandlers());
     }
     
     @Override

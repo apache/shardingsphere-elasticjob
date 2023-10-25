@@ -51,10 +51,10 @@ class WechatJobErrorHandlerTest {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @BeforeAll
     static void init() {
-        NettyRestfulServiceConfiguration configuration = new NettyRestfulServiceConfiguration(PORT);
-        configuration.setHost(HOST);
-        configuration.addControllerInstances(new WechatInternalController());
-        restfulService = new NettyRestfulService(configuration);
+        NettyRestfulServiceConfiguration config = new NettyRestfulServiceConfiguration(PORT);
+        config.setHost(HOST);
+        config.addControllerInstances(new WechatInternalController());
+        restfulService = new NettyRestfulService(config);
         restfulService.startup();
         ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(WechatJobErrorHandler.class);
         ListAppender<LoggingEvent> appender = (ListAppender) log.getAppender("WechatJobErrorHandlerTestAppender");

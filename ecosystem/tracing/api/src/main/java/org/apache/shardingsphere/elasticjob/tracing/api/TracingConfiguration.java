@@ -28,8 +28,8 @@ import org.apache.shardingsphere.elasticjob.tracing.storage.TracingStorageConver
  *
  * @param <T> type of tracing storage
  */
-@Getter
 @RequiredArgsConstructor
+@Getter
 public final class TracingConfiguration<T> implements JobExtraConfiguration {
     
     private final String type;
