@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.context.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.internal.context.fixture;
 
 import lombok.Builder;
-import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.internal.context.ExecutionType;
 
 @Builder
 public final class TaskNode {

@@ -28,8 +28,8 @@ import java.util.UUID;
 /**
  * Job status trace event.
  */
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public final class JobStatusTraceEvent implements JobEvent {
     

@@ -23,7 +23,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 /**
- * Lite job class.
+ * Lite job.
  */
 @Setter
 public final class LiteJob implements Job {
