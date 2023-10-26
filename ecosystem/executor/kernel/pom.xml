@@ -47,5 +47,10 @@
             <artifactId>elasticjob-error-handler-general</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+        </dependency>
     </dependencies>
 </project>

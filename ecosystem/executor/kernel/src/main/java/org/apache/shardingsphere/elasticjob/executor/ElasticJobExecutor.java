@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.infra.threadpool.ExecutorServiceReloadable;
+import org.apache.shardingsphere.elasticjob.executor.threadpool.ExecutorServiceReloadable;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;

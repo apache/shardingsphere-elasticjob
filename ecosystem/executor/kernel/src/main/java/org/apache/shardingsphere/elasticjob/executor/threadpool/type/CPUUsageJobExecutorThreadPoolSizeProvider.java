@@ -15,22 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.threadpool.type;
+package org.apache.shardingsphere.elasticjob.executor.threadpool.type;
 
-import org.apache.shardingsphere.elasticjob.infra.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.elasticjob.executor.threadpool.JobExecutorThreadPoolSizeProvider;
 
 /**
- * Job executor pool size provider with single thread.
+ * Job executor pool size provider with use CPU available processors.
  */
-public final class SingleThreadJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
+public final class CPUUsageJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
     
     @Override
     public int getSize() {
-        return 1;
+        return Runtime.getRuntime().availableProcessors() * 2;
     }
     
     @Override
     public String getType() {
-        return "SINGLE_THREAD";
+        return "CPU";
+    }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
     }
 }

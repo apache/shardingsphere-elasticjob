@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.threadpool;
+package org.apache.shardingsphere.elasticjob.executor.threadpool;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -61,8 +61,7 @@ class ElasticJobExecutorServiceTest {
         
         @Override
         public void run() {
-            Awaitility.await().atMost(1L, TimeUnit.MINUTES)
-                    .untilAsserted(() -> assertThat(hasExecuted, is(true)));
+            Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(hasExecuted, is(true)));
         }
     }
 }
