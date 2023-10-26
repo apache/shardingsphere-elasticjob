@@ -17,19 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
+import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
+import java.io.Closeable;
 import java.util.Properties;
 
 /**
- * JobErrorHandler reloadable.
+ * Job error handler reloadable.
  */
-public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler> {
+public final class JobErrorHandlerReloadable implements Closeable {
     
     private Properties props;
     
+    @Getter
     private JobErrorHandler jobErrorHandler;
     
     public JobErrorHandlerReloadable(final JobConfiguration jobConfig) {
@@ -37,7 +39,11 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
         jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
     
-    @Override
+    /**
+     * Reload if necessary.
+     *
+     * @param jobConfig job configuration
+     */
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
         if (jobErrorHandler.getType().equals(jobConfig.getJobErrorHandlerType()) && props.equals(jobConfig.getProps())) {
             return;
@@ -49,11 +55,6 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
         jobErrorHandler.close();
         this.props = (Properties) props.clone();
         jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobErrorHandlerType, props);
-    }
-    
-    @Override
-    public JobErrorHandler getInstance() {
-        return jobErrorHandler;
     }
     
     @Override

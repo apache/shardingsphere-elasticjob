@@ -84,7 +84,7 @@ public final class ElasticJobExecutor {
         JobConfiguration jobConfig = jobFacade.loadJobConfiguration(true);
         executorServiceReloadable.reloadIfNecessary(jobConfig);
         jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
-        JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getInstance();
+        JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getJobErrorHandler();
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
@@ -153,7 +153,7 @@ public final class ElasticJobExecutor {
         CountDownLatch latch = new CountDownLatch(items.size());
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
-            ExecutorService executorService = executorServiceReloadable.getInstance();
+            ExecutorService executorService = executorServiceReloadable.getExecutorService();
             if (executorService.isShutdown()) {
                 return;
             }
@@ -188,7 +188,7 @@ public final class ElasticJobExecutor {
             completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getJobErrorHandler();
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }

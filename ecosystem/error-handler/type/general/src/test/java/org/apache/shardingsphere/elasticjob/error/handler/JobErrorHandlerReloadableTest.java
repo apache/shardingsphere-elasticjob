@@ -46,7 +46,7 @@ class JobErrorHandlerReloadableTest {
     void assertInitialize() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
         try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable(jobConfig)) {
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler actual = jobErrorHandlerReloadable.getJobErrorHandler();
             assertNotNull(actual);
             assertThat(actual.getType(), is("IGNORE"));
             assertTrue(actual instanceof IgnoreJobErrorHandler);
@@ -64,7 +64,7 @@ class JobErrorHandlerReloadableTest {
             JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(newJobErrorHandlerType).build();
             jobErrorHandlerReloadable.reloadIfNecessary(newJobConfig);
             verify(jobErrorHandler).close();
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler actual = jobErrorHandlerReloadable.getJobErrorHandler();
             assertThat(actual.getType(), is(newJobErrorHandlerType));
             assertTrue(actual instanceof LogJobErrorHandler);
         }
@@ -74,9 +74,9 @@ class JobErrorHandlerReloadableTest {
     void assertUnnecessaryToReload() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
         try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable(jobConfig)) {
-            JobErrorHandler expected = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler expected = jobErrorHandlerReloadable.getJobErrorHandler();
             jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler actual = jobErrorHandlerReloadable.getJobErrorHandler();
             assertThat(actual, is(expected));
         }
     }

@@ -17,19 +17,21 @@
 
 package org.apache.shardingsphere.elasticjob.executor.threadpool;
 
+import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
+import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 
 /**
  * Executor service reloadable.
  */
-public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
+public final class ExecutorServiceReloadable implements Closeable {
     
     private String jobExecutorThreadPoolSizeProviderType;
     
+    @Getter
     private ExecutorService executorService;
     
     public ExecutorServiceReloadable(final JobConfiguration jobConfig) {
@@ -38,7 +40,11 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
     }
     
-    @Override
+    /**
+     * Reload if necessary.
+     *
+     * @param jobConfig job configuration
+     */
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
         if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
@@ -51,11 +57,6 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
         executorService.shutdown();
         executorService = new ElasticJobExecutorService(
                 "elasticjob-" + jobName, TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobExecutorThreadPoolSizeProviderType).getSize()).createExecutorService();
-    }
-    
-    @Override
-    public ExecutorService getInstance() {
-        return executorService;
     }
     
     @Override

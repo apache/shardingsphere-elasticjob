@@ -43,7 +43,7 @@ class ExecutorServiceReloadableTest {
     void assertInitialize() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build();
         try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
-            ExecutorService actual = executorServiceReloadable.getInstance();
+            ExecutorService actual = executorServiceReloadable.getExecutorService();
             assertNotNull(actual);
             assertFalse(actual.isShutdown());
             assertFalse(actual.isTerminated());
@@ -59,7 +59,7 @@ class ExecutorServiceReloadableTest {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
         executorServiceReloadable.reloadIfNecessary(jobConfig);
         verify(mockExecutorService).shutdown();
-        ExecutorService actual = executorServiceReloadable.getInstance();
+        ExecutorService actual = executorServiceReloadable.getExecutorService();
         assertFalse(actual.isShutdown());
         assertFalse(actual.isTerminated());
         actual.shutdown();
@@ -69,9 +69,9 @@ class ExecutorServiceReloadableTest {
     void assertUnnecessaryToReload() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("CPU").build();
         try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
-            ExecutorService expected = executorServiceReloadable.getInstance();
+            ExecutorService expected = executorServiceReloadable.getExecutorService();
             executorServiceReloadable.reloadIfNecessary(jobConfig);
-            ExecutorService actual = executorServiceReloadable.getInstance();
+            ExecutorService actual = executorServiceReloadable.getExecutorService();
             assertThat(actual, is(expected));
             actual.shutdown();
         }
