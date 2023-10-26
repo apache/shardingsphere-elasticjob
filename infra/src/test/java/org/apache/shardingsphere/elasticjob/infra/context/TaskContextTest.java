@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.context;
+package org.apache.shardingsphere.elasticjob.infra.context;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext.MetaInfo;
-import org.apache.shardingsphere.elasticjob.kernel.internal.context.fixture.TaskNode;
+import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
+import org.apache.shardingsphere.elasticjob.infra.context.fixture.TaskNode;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 

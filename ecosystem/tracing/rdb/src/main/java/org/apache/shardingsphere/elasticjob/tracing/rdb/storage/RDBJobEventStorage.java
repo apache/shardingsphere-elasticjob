@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
@@ -343,7 +344,7 @@ public final class RDBJobEventStorage {
             preparedStatement.setString(3, originalTaskId);
             preparedStatement.setString(4, jobStatusTraceEvent.getTaskId());
             preparedStatement.setString(5, jobStatusTraceEvent.getSlaveId());
-            preparedStatement.setString(6, jobStatusTraceEvent.getExecutionType());
+            preparedStatement.setString(6, jobStatusTraceEvent.getExecutionType().name());
             preparedStatement.setString(7, jobStatusTraceEvent.getShardingItems());
             preparedStatement.setString(8, jobStatusTraceEvent.getState().toString());
             preparedStatement.setString(9, truncateString(jobStatusTraceEvent.getMessage()));
@@ -388,7 +389,7 @@ public final class RDBJobEventStorage {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                            resultSet.getString(5), resultSet.getString(6), resultSet.getString(7),
+                            resultSet.getString(5), ExecutionType.valueOf(resultSet.getString(6)), resultSet.getString(7),
                             State.valueOf(resultSet.getString(8)), resultSet.getString(9), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(10)));
                     result.add(jobStatusTraceEvent);
                 }

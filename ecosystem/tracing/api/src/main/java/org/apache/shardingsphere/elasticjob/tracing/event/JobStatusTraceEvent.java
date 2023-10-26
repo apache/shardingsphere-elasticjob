@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.apache.shardingsphere.elasticjob.infra.context.ExecutionType;
 
 import java.util.Date;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public final class JobStatusTraceEvent implements JobEvent {
     
     private final String slaveId;
     
-    private final String executionType;
+    private final ExecutionType executionType;
     
     private final String shardingItems;
     

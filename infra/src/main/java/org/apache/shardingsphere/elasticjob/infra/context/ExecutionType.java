@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.context;
+package org.apache.shardingsphere.elasticjob.infra.context;
 
 /**
  * Execution type.
