@@ -19,9 +19,6 @@ package org.apache.shardingsphere.elasticjob.infra.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.google.gson.TypeAdapter;
-import java.lang.reflect.Type;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -31,22 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonFactory {
     
-    private static GsonBuilder gsonBuilder = new GsonBuilder();
-    
-    private static volatile Gson gson = gsonBuilder.create();
-    
-    private static final JsonParser JSON_PARSER = new JsonParser();
-    
-    /**
-     * Register type adapter.
-     *
-     * @param type Gson type
-     * @param typeAdapter Gson type adapter
-     */
-    public static synchronized void registerTypeAdapter(final Type type, final TypeAdapter typeAdapter) {
-        gsonBuilder.registerTypeAdapter(type, typeAdapter);
-        gson = gsonBuilder.create();
-    }
+    private static final Gson gson = new GsonBuilder().create();
     
     /**
      * Get gson instance.
@@ -55,22 +37,5 @@ public final class GsonFactory {
      */
     public static Gson getGson() {
         return gson;
-    }
-    
-    /**
-     * Get json parser.
-     *
-     * @return json parser instance
-     */
-    public static JsonParser getJsonParser() {
-        return JSON_PARSER;
-    }
-    
-    /**
-     * Re-initialize the GsonBuilder.
-     */
-    public static synchronized void clean() {
-        gsonBuilder = new GsonBuilder();
-        gson = gsonBuilder.create();
     }
 }
