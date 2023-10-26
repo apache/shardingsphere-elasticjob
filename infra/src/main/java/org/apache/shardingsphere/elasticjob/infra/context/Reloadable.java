@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.infra.context;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 import java.io.Closeable;
 
@@ -29,14 +28,7 @@ import java.io.Closeable;
  * @param <T> reload target
  */
 @SingletonSPI
-public interface Reloadable<T> extends TypedSPI, Closeable {
-    
-    /**
-     * Initialize reloadable.
-     *
-     * @param jobConfig job configuration
-     */
-    void init(JobConfiguration jobConfig);
+public interface Reloadable<T> extends Closeable {
     
     /**
      * Reload if necessary.
@@ -51,7 +43,4 @@ public interface Reloadable<T> extends TypedSPI, Closeable {
      * @return instance
      */
     T getInstance();
-    
-    @Override
-    Class<T> getType();
 }

@@ -31,7 +31,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,10 +41,8 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertInitialize() {
-        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build();
-            assertNull(executorServiceReloadable.getInstance());
-            executorServiceReloadable.init(jobConfig);
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build();
+        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
             ExecutorService actual = executorServiceReloadable.getInstance();
             assertNotNull(actual);
             assertFalse(actual.isShutdown());
@@ -56,7 +53,7 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertReload() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
+        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
         setField(executorServiceReloadable, "jobExecutorThreadPoolSizeProviderType", "mock");
         setField(executorServiceReloadable, "executorService", mockExecutorService);
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
@@ -70,9 +67,8 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertUnnecessaryToReload() {
-        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable()) {
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("CPU").build();
-            executorServiceReloadable.init(jobConfig);
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("CPU").build();
+        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
             ExecutorService expected = executorServiceReloadable.getInstance();
             executorServiceReloadable.reloadIfNecessary(jobConfig);
             ExecutorService actual = executorServiceReloadable.getInstance();
@@ -83,7 +79,7 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertShutdown() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable();
+        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
         setField(executorServiceReloadable, "executorService", mockExecutorService);
         executorServiceReloadable.close();
         verify(mockExecutorService).shutdown();

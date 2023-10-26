@@ -17,26 +17,22 @@
 
 package org.apache.shardingsphere.elasticjob.infra.threadpool;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /**
  * Executor service reloadable.
  */
-@Slf4j
 public final class ExecutorServiceReloadable implements Reloadable<ExecutorService> {
     
     private String jobExecutorThreadPoolSizeProviderType;
     
     private ExecutorService executorService;
     
-    @Override
-    public void init(final JobConfiguration jobConfig) {
+    public ExecutorServiceReloadable(final JobConfiguration jobConfig) {
         JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
         jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
@@ -47,8 +43,8 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
         if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
-        log.debug("Reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobExecutorThreadPoolSizeProviderType, jobConfig.getJobExecutorThreadPoolSizeProviderType());
         reload(jobConfig.getJobExecutorThreadPoolSizeProviderType(), jobConfig.getJobName());
+        jobExecutorThreadPoolSizeProviderType = jobConfig.getJobExecutorThreadPoolSizeProviderType();
     }
     
     private void reload(final String jobExecutorThreadPoolSizeProviderType, final String jobName) {
@@ -64,11 +60,6 @@ public final class ExecutorServiceReloadable implements Reloadable<ExecutorServi
     
     @Override
     public void close() {
-        Optional.ofNullable(executorService).ifPresent(ExecutorService::shutdown);
-    }
-    
-    @Override
-    public Class<ExecutorService> getType() {
-        return ExecutorService.class;
+        executorService.shutdown();
     }
 }

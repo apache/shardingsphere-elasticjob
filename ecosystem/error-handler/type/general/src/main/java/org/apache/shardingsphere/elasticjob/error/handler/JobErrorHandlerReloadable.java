@@ -22,7 +22,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -35,8 +34,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     
     private JobErrorHandler jobErrorHandler;
     
-    @Override
-    public void init(final JobConfiguration jobConfig) {
+    public JobErrorHandlerReloadable(final JobConfiguration jobConfig) {
         props = (Properties) jobConfig.getProps().clone();
         jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
@@ -62,12 +60,7 @@ public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandl
     }
     
     @Override
-    public Class<JobErrorHandler> getType() {
-        return JobErrorHandler.class;
-    }
-    
-    @Override
     public void close() {
-        Optional.ofNullable(jobErrorHandler).ifPresent(JobErrorHandler::close);
+        jobErrorHandler.close();
     }
 }
