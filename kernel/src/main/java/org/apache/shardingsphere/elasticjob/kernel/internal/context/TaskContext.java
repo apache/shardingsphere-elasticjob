@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.context;
+package org.apache.shardingsphere.elasticjob.kernel.internal.context;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;

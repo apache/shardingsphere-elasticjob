@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.context;
+package org.apache.shardingsphere.elasticjob.kernel.internal.context;
 
-import org.apache.shardingsphere.elasticjob.infra.context.TaskContext.MetaInfo;
-import org.apache.shardingsphere.elasticjob.infra.context.fixture.TaskNode;
+import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext.MetaInfo;
+import org.apache.shardingsphere.elasticjob.kernel.internal.context.fixture.TaskNode;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -36,7 +37,7 @@ class TaskContextTest {
         TaskContext actual = new TaskContext("test_job", Collections.singletonList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
         assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
-        assertThat(actual.getType(), is(ExecutionType.READY));
+        assertThat(actual.getType(), CoreMatchers.is(ExecutionType.READY));
         assertThat(actual.getSlaveId(), is("slave-S0"));
         assertThat(actual.getId(), startsWith(TaskNode.builder().build().getTaskNodeValue().substring(0, TaskNode.builder().build().getTaskNodeValue().length() - 1)));
     }
@@ -59,7 +60,7 @@ class TaskContextTest {
         assertThat(actual.getId(), is(TaskNode.builder().build().getTaskNodeValue()));
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
         assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
-        assertThat(actual.getType(), is(ExecutionType.READY));
+        assertThat(actual.getType(), CoreMatchers.is(ExecutionType.READY));
         assertThat(actual.getSlaveId(), is("slave-S0"));
     }
     
