@@ -35,8 +35,7 @@ public final class JobErrorHandlerReloader implements Closeable {
     private JobErrorHandler jobErrorHandler;
     
     public JobErrorHandlerReloader(final JobConfiguration jobConfig) {
-        props = (Properties) jobConfig.getProps().clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
+        init(jobConfig);
     }
     
     /**
@@ -48,13 +47,13 @@ public final class JobErrorHandlerReloader implements Closeable {
         if (jobErrorHandler.getType().equals(jobConfig.getJobErrorHandlerType()) && props.equals(jobConfig.getProps())) {
             return;
         }
-        reload(jobConfig.getJobErrorHandlerType(), jobConfig.getProps());
+        jobErrorHandler.close();
+        init(jobConfig);
     }
     
-    private void reload(final String jobErrorHandlerType, final Properties props) {
-        jobErrorHandler.close();
-        this.props = (Properties) props.clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobErrorHandlerType, props);
+    private void init(final JobConfiguration jobConfig) {
+        props = jobConfig.getProps();
+        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
     
     @Override

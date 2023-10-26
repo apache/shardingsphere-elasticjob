@@ -35,9 +35,7 @@ public final class ExecutorServiceReloader implements Closeable {
     private ExecutorService executorService;
     
     public ExecutorServiceReloader(final JobConfiguration jobConfig) {
-        JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
-        jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
-        executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
+        init(jobConfig);
     }
     
     /**
@@ -49,14 +47,14 @@ public final class ExecutorServiceReloader implements Closeable {
         if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
-        reload(jobConfig.getJobExecutorThreadPoolSizeProviderType(), jobConfig.getJobName());
-        jobExecutorThreadPoolSizeProviderType = jobConfig.getJobExecutorThreadPoolSizeProviderType();
+        executorService.shutdown();
+        init(jobConfig);
     }
     
-    private void reload(final String jobExecutorThreadPoolSizeProviderType, final String jobName) {
-        executorService.shutdown();
-        executorService = new ElasticJobExecutorService(
-                "elasticjob-" + jobName, TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobExecutorThreadPoolSizeProviderType).getSize()).createExecutorService();
+    private void init(final JobConfiguration jobConfig) {
+        JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
+        jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
+        executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
     }
     
     @Override
