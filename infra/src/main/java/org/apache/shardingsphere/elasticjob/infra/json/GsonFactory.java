@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GsonFactory {
     
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Gson GSON = new GsonBuilder().create();
     
     /**
      * Get gson instance.
@@ -36,6 +36,6 @@ public final class GsonFactory {
      * @return gson instance
      */
     public static Gson getGson() {
-        return gson;
+        return GSON;
     }
 }
