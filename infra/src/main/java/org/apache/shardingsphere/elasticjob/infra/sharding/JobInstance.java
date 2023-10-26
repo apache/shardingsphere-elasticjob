@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.sharding;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import java.lang.management.ManagementFactory;
 /**
  * Job instance.
  */
+@AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "jobInstanceId")
@@ -50,11 +52,5 @@ public final class JobInstance {
     
     public JobInstance(final String jobInstanceId, final String labels) {
         this(jobInstanceId, labels, IpUtils.getIp());
-    }
-    
-    public JobInstance(final String jobInstanceId, final String labels, final String serverIp) {
-        this.jobInstanceId = jobInstanceId;
-        this.labels = labels;
-        this.serverIp = serverIp;
     }
 }
