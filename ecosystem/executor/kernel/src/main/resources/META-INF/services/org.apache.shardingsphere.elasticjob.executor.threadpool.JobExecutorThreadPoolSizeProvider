@@ -15,4 +15,5 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerReloadable
+org.apache.shardingsphere.elasticjob.executor.threadpool.type.CPUUsageJobExecutorThreadPoolSizeProvider
+org.apache.shardingsphere.elasticjob.executor.threadpool.type.SingleThreadJobExecutorThreadPoolSizeProvider

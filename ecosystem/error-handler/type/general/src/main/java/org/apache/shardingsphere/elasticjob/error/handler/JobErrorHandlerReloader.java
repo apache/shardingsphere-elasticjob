@@ -17,57 +17,47 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.context.Reloadable;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
-import java.util.Optional;
+import java.io.Closeable;
 import java.util.Properties;
 
 /**
- * JobErrorHandler reloadable.
+ * Job error handler reloader.
  */
-@Slf4j
-public final class JobErrorHandlerReloadable implements Reloadable<JobErrorHandler> {
+public final class JobErrorHandlerReloader implements Closeable {
     
     private Properties props;
     
+    @Getter
     private JobErrorHandler jobErrorHandler;
     
-    @Override
-    public void init(final JobConfiguration jobConfig) {
-        props = (Properties) jobConfig.getProps().clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
+    public JobErrorHandlerReloader(final JobConfiguration jobConfig) {
+        init(jobConfig);
     }
     
-    @Override
+    /**
+     * Reload if necessary.
+     *
+     * @param jobConfig job configuration
+     */
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
         if (jobErrorHandler.getType().equals(jobConfig.getJobErrorHandlerType()) && props.equals(jobConfig.getProps())) {
             return;
         }
-        log.debug("JobErrorHandler reload occurred in the job '{}'. Change from '{}' to '{}'.", jobConfig.getJobName(), jobErrorHandler.getType(), jobConfig.getJobErrorHandlerType());
-        reload(jobConfig.getJobErrorHandlerType(), jobConfig.getProps());
-    }
-    
-    private void reload(final String jobErrorHandlerType, final Properties props) {
         jobErrorHandler.close();
-        this.props = (Properties) props.clone();
-        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobErrorHandlerType, props);
+        init(jobConfig);
     }
     
-    @Override
-    public JobErrorHandler getInstance() {
-        return jobErrorHandler;
-    }
-    
-    @Override
-    public Class<JobErrorHandler> getType() {
-        return JobErrorHandler.class;
+    private void init(final JobConfiguration jobConfig) {
+        props = jobConfig.getProps();
+        jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
     
     @Override
     public void close() {
-        Optional.ofNullable(jobErrorHandler).ifPresent(JobErrorHandler::close);
+        jobErrorHandler.close();
     }
 }

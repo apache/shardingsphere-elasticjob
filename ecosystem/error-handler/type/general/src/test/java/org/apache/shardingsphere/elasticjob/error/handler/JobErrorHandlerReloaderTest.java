@@ -32,24 +32,21 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class JobErrorHandlerReloadableTest {
+class JobErrorHandlerReloaderTest {
     
     @Mock
     private JobErrorHandler jobErrorHandler;
     
     @Test
     void assertInitialize() {
-        try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
-            assertNull(jobErrorHandlerReloadable.getInstance());
-            jobErrorHandlerReloadable.init(jobConfig);
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
+            JobErrorHandler actual = jobErrorHandlerReloader.getJobErrorHandler();
             assertNotNull(actual);
             assertThat(actual.getType(), is("IGNORE"));
             assertTrue(actual instanceof IgnoreJobErrorHandler);
@@ -58,15 +55,16 @@ class JobErrorHandlerReloadableTest {
     
     @Test
     void assertReload() {
-        try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             when(jobErrorHandler.getType()).thenReturn("mock");
-            setField(jobErrorHandlerReloadable, "jobErrorHandler", jobErrorHandler);
-            setField(jobErrorHandlerReloadable, "props", new Properties());
+            setField(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
+            setField(jobErrorHandlerReloader, "props", new Properties());
             String newJobErrorHandlerType = "LOG";
             JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(newJobErrorHandlerType).build();
-            jobErrorHandlerReloadable.reloadIfNecessary(newJobConfig);
+            jobErrorHandlerReloader.reloadIfNecessary(newJobConfig);
             verify(jobErrorHandler).close();
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+            JobErrorHandler actual = jobErrorHandlerReloader.getJobErrorHandler();
             assertThat(actual.getType(), is(newJobErrorHandlerType));
             assertTrue(actual instanceof LogJobErrorHandler);
         }
@@ -74,21 +72,21 @@ class JobErrorHandlerReloadableTest {
     
     @Test
     void assertUnnecessaryToReload() {
-        try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
-            JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
-            jobErrorHandlerReloadable.init(jobConfig);
-            JobErrorHandler expected = jobErrorHandlerReloadable.getInstance();
-            jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
-            JobErrorHandler actual = jobErrorHandlerReloadable.getInstance();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
+            JobErrorHandler expected = jobErrorHandlerReloader.getJobErrorHandler();
+            jobErrorHandlerReloader.reloadIfNecessary(jobConfig);
+            JobErrorHandler actual = jobErrorHandlerReloader.getJobErrorHandler();
             assertThat(actual, is(expected));
         }
     }
     
     @Test
     void assertShutdown() {
-        try (JobErrorHandlerReloadable jobErrorHandlerReloadable = new JobErrorHandlerReloadable()) {
-            setField(jobErrorHandlerReloadable, "jobErrorHandler", jobErrorHandler);
-            jobErrorHandlerReloadable.close();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
+            setField(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
+            jobErrorHandlerReloader.close();
             verify(jobErrorHandler).close();
         }
     }
