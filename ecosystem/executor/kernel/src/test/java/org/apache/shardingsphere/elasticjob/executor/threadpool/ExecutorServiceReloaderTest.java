@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ExecutorServiceReloadableTest {
+class ExecutorServiceReloaderTest {
     
     @Mock
     private ExecutorService mockExecutorService;
@@ -42,8 +42,8 @@ class ExecutorServiceReloadableTest {
     @Test
     void assertInitialize() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build();
-        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
-            ExecutorService actual = executorServiceReloadable.getExecutorService();
+        try (ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(jobConfig)) {
+            ExecutorService actual = executorServiceReloader.getExecutorService();
             assertNotNull(actual);
             assertFalse(actual.isShutdown());
             assertFalse(actual.isTerminated());
@@ -53,13 +53,13 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertReload() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
-        setField(executorServiceReloadable, "jobExecutorThreadPoolSizeProviderType", "mock");
-        setField(executorServiceReloadable, "executorService", mockExecutorService);
+        ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
+        setField(executorServiceReloader, "jobExecutorThreadPoolSizeProviderType", "mock");
+        setField(executorServiceReloader, "executorService", mockExecutorService);
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
-        executorServiceReloadable.reloadIfNecessary(jobConfig);
+        executorServiceReloader.reloadIfNecessary(jobConfig);
         verify(mockExecutorService).shutdown();
-        ExecutorService actual = executorServiceReloadable.getExecutorService();
+        ExecutorService actual = executorServiceReloader.getExecutorService();
         assertFalse(actual.isShutdown());
         assertFalse(actual.isTerminated());
         actual.shutdown();
@@ -68,10 +68,10 @@ class ExecutorServiceReloadableTest {
     @Test
     void assertUnnecessaryToReload() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("CPU").build();
-        try (ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(jobConfig)) {
-            ExecutorService expected = executorServiceReloadable.getExecutorService();
-            executorServiceReloadable.reloadIfNecessary(jobConfig);
-            ExecutorService actual = executorServiceReloadable.getExecutorService();
+        try (ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(jobConfig)) {
+            ExecutorService expected = executorServiceReloader.getExecutorService();
+            executorServiceReloader.reloadIfNecessary(jobConfig);
+            ExecutorService actual = executorServiceReloader.getExecutorService();
             assertThat(actual, is(expected));
             actual.shutdown();
         }
@@ -79,9 +79,9 @@ class ExecutorServiceReloadableTest {
     
     @Test
     void assertShutdown() {
-        ExecutorServiceReloadable executorServiceReloadable = new ExecutorServiceReloadable(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
-        setField(executorServiceReloadable, "executorService", mockExecutorService);
-        executorServiceReloadable.close();
+        ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
+        setField(executorServiceReloader, "executorService", mockExecutorService);
+        executorServiceReloader.close();
         verify(mockExecutorService).shutdown();
     }
     

@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerReloadable;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerReloader;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.executor.threadpool.ExecutorServiceReloadable;
+import org.apache.shardingsphere.elasticjob.executor.threadpool.ExecutorServiceReloader;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
@@ -53,9 +53,9 @@ public final class ElasticJobExecutor {
     
     private final JobItemExecutor jobItemExecutor;
     
-    private final ExecutorServiceReloadable executorServiceReloadable;
+    private final ExecutorServiceReloader executorServiceReloader;
     
-    private final JobErrorHandlerReloadable jobErrorHandlerReloadable;
+    private final JobErrorHandlerReloader jobErrorHandlerReloader;
     
     private final Map<Integer, String> itemErrorMessages;
     
@@ -72,8 +72,8 @@ public final class ElasticJobExecutor {
         this.jobFacade = jobFacade;
         this.jobItemExecutor = jobItemExecutor;
         JobConfiguration loadedJobConfig = jobFacade.loadJobConfiguration(true);
-        executorServiceReloadable = new ExecutorServiceReloadable(loadedJobConfig);
-        jobErrorHandlerReloadable = new JobErrorHandlerReloadable(loadedJobConfig);
+        executorServiceReloader = new ExecutorServiceReloader(loadedJobConfig);
+        jobErrorHandlerReloader = new JobErrorHandlerReloader(loadedJobConfig);
         itemErrorMessages = new ConcurrentHashMap<>(jobConfig.getShardingTotalCount(), 1);
     }
     
@@ -82,9 +82,9 @@ public final class ElasticJobExecutor {
      */
     public void execute() {
         JobConfiguration jobConfig = jobFacade.loadJobConfiguration(true);
-        executorServiceReloadable.reloadIfNecessary(jobConfig);
-        jobErrorHandlerReloadable.reloadIfNecessary(jobConfig);
-        JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getJobErrorHandler();
+        executorServiceReloader.reloadIfNecessary(jobConfig);
+        jobErrorHandlerReloader.reloadIfNecessary(jobConfig);
+        JobErrorHandler jobErrorHandler = jobErrorHandlerReloader.getJobErrorHandler();
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
@@ -153,7 +153,7 @@ public final class ElasticJobExecutor {
         CountDownLatch latch = new CountDownLatch(items.size());
         for (int each : items) {
             JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(IpUtils.getHostName(), IpUtils.getIp(), shardingContexts.getTaskId(), jobConfig.getJobName(), executionSource, each);
-            ExecutorService executorService = executorServiceReloadable.getExecutorService();
+            ExecutorService executorService = executorServiceReloader.getExecutorService();
             if (executorService.isShutdown()) {
                 return;
             }
@@ -188,7 +188,7 @@ public final class ElasticJobExecutor {
             completeEvent = startEvent.executionFailure(ExceptionUtils.transform(cause));
             jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtils.transform(cause));
-            JobErrorHandler jobErrorHandler = jobErrorHandlerReloadable.getJobErrorHandler();
+            JobErrorHandler jobErrorHandler = jobErrorHandlerReloader.getJobErrorHandler();
             jobErrorHandler.handleException(jobConfig.getJobName(), cause);
         }
     }
@@ -197,7 +197,7 @@ public final class ElasticJobExecutor {
      * Shutdown executor.
      */
     public void shutdown() {
-        executorServiceReloadable.close();
-        jobErrorHandlerReloadable.close();
+        executorServiceReloader.close();
+        jobErrorHandlerReloader.close();
     }
 }

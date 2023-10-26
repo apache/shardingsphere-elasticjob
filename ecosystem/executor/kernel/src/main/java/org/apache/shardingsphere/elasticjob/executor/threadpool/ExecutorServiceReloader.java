@@ -25,16 +25,16 @@ import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 
 /**
- * Executor service reloadable.
+ * Executor service reloader.
  */
-public final class ExecutorServiceReloadable implements Closeable {
+public final class ExecutorServiceReloader implements Closeable {
     
     private String jobExecutorThreadPoolSizeProviderType;
     
     @Getter
     private ExecutorService executorService;
     
-    public ExecutorServiceReloadable(final JobConfiguration jobConfig) {
+    public ExecutorServiceReloader(final JobConfiguration jobConfig) {
         JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
         jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();

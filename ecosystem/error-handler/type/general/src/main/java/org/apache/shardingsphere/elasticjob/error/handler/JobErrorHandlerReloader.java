@@ -25,16 +25,16 @@ import java.io.Closeable;
 import java.util.Properties;
 
 /**
- * Job error handler reloadable.
+ * Job error handler reloader.
  */
-public final class JobErrorHandlerReloadable implements Closeable {
+public final class JobErrorHandlerReloader implements Closeable {
     
     private Properties props;
     
     @Getter
     private JobErrorHandler jobErrorHandler;
     
-    public JobErrorHandlerReloadable(final JobConfiguration jobConfig) {
+    public JobErrorHandlerReloader(final JobConfiguration jobConfig) {
         props = (Properties) jobConfig.getProps().clone();
         jobErrorHandler = TypedSPILoader.getService(JobErrorHandler.class, jobConfig.getJobErrorHandlerType(), props);
     }
