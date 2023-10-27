@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;

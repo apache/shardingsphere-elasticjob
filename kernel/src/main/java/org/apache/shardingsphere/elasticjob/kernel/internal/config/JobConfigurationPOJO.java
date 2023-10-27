@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.pojo;
+package org.apache.shardingsphere.elasticjob.kernel.internal.config;
 
 import lombok.Getter;
 import lombok.Setter;
