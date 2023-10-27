@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeS
 import java.util.Set;
 
 /**
- * Distributed once elasticjob listener.
+ * Distributed once ElasticJob listener.
  */
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     
