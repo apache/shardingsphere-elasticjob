@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.lifecycle.api;
 
-import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 
 /**
  * Job configuration API.

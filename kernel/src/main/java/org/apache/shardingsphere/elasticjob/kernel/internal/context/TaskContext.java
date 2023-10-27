@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.context;
+package org.apache.shardingsphere.elasticjob.kernel.internal.context;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.shardingsphere.elasticjob.infra.constant.ExecutionType;
 
 import java.util.Collections;
 import java.util.List;

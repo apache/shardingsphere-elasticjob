@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.exception;
+package org.apache.shardingsphere.elasticjob.infra.constant;
 
-import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-class JobStatisticExceptionTest {
+/**
+ * Execution type.
+ */
+public enum ExecutionType {
     
-    @Test
-    void assertGetCause() {
-        assertThat(new JobStatisticException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
-    }
+    /**
+     * Ready of execute.
+     */
+    READY,
+    
+    /**
+     * Failover execution.
+     */
+    FAILOVER
 }
