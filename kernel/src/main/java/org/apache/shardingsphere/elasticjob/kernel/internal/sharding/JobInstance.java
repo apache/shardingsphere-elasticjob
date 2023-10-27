@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.sharding;
+package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

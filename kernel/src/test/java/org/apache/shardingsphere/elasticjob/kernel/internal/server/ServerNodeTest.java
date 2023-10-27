@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.server;
 
-import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.LiteYamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;

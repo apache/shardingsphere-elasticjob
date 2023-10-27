@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.election;
 
-import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerNode;

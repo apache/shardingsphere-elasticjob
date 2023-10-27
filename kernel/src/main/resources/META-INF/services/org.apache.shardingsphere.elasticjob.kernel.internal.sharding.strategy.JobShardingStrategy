@@ -15,6 +15,6 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.infra.sharding.impl.AverageAllocationJobShardingStrategy
-org.apache.shardingsphere.elasticjob.infra.sharding.impl.OdevitySortByNameJobShardingStrategy
-org.apache.shardingsphere.elasticjob.infra.sharding.impl.RoundRobinByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.AverageAllocationJobShardingStrategy
+org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.OdevitySortByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.RoundRobinByNameJobShardingStrategy
