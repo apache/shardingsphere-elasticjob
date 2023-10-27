@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.context;
+package org.apache.shardingsphere.elasticjob.kernel.time;
 
-/**
- * Execution type.
- */
-public enum ExecutionType {
+import org.apache.shardingsphere.elasticjob.kernel.internal.time.TimeService;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class TimeServiceTest {
     
-    /**
-     * Ready of execute.
-     */
-    READY,
+    private final TimeService timeService = new TimeService();
     
-    /**
-     * Failover execution.
-     */
-    FAILOVER
+    @Test
+    void assertGetCurrentMillis() {
+        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
+    }
 }

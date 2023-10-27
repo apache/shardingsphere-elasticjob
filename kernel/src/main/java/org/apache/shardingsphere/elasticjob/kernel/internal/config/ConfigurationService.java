@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironm
 import org.apache.shardingsphere.elasticjob.infra.pojo.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.env.TimeService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.time.TimeService;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 
 /**

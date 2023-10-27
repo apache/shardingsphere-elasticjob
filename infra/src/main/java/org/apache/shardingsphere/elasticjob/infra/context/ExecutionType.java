@@ -15,27 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.listener;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
-
-import java.util.Optional;
+package org.apache.shardingsphere.elasticjob.infra.context;
 
 /**
- * Job listener factory.
+ * Execution type.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ElasticJobListenerFactory {
+public enum ExecutionType {
     
     /**
-     * Create a job listener instance.
-     *
-     * @param type job listener type
-     * @return optional job listener instance
+     * Ready of execute.
      */
-    public static Optional<ElasticJobListener> createListener(final String type) {
-        return TypedSPILoader.findService(ElasticJobListener.class, type);
-    }
+    READY,
+    
+    /**
+     * Failover execution.
+     */
+    FAILOVER
 }
