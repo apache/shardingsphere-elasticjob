@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.sharding;
+package org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy;
 
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 import java.util.List;

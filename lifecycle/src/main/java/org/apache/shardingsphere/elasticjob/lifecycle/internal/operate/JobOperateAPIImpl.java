@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.lifecycle.internal.operate;
 
 import com.google.common.base.Preconditions;
-import org.apache.shardingsphere.elasticjob.infra.sharding.JobInstance;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
