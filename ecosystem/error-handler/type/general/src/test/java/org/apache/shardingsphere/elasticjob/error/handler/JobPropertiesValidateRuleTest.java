@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.validator;
+package org.apache.shardingsphere.elasticjob.error.handler;
 
 import org.junit.jupiter.api.Test;
 

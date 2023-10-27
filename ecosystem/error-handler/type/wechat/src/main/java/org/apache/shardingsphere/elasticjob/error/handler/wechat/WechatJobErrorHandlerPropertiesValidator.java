@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.validator.JobPropertiesValidateRule;
+import org.apache.shardingsphere.elasticjob.error.handler.JobPropertiesValidateRule;
 
 import java.util.Properties;
 
