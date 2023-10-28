@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)
 @Import({ElasticJobRegistryCenterConfiguration.class, ElasticJobTracingConfiguration.class, ElasticJobSnapshotServiceConfiguration.class})
 @EnableConfigurationProperties(ElasticJobProperties.class)
-public class ElasticJobLiteAutoConfiguration {
+public class ElasticJobAutoConfiguration {
     
     @Configuration(proxyBeanMethods = false)
     @Import({ElasticJobBootstrapConfiguration.class, ScheduleJobBootstrapStartupRunner.class})
