@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.script;
 import org.apache.commons.exec.OS;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.script.executor.ScriptJobExecutor;
@@ -49,7 +49,7 @@ class ScriptJobExecutorTest {
     private JobConfiguration jobConfig;
     
     @Mock
-    private JobFacade jobFacade;
+    private JobRuntimeService jobRuntimeService;
     
     @Mock
     private Properties properties;
@@ -68,7 +68,7 @@ class ScriptJobExecutorTest {
     void assertProcessWithJobConfigurationException() {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps()).thenReturn(properties);
-            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         });
     }
     
@@ -77,7 +77,7 @@ class ScriptJobExecutorTest {
         assertThrows(JobSystemException.class, () -> {
             when(jobConfig.getProps()).thenReturn(properties);
             when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn("demo.sh");
-            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         });
     }
     
@@ -85,7 +85,7 @@ class ScriptJobExecutorTest {
     void assertProcess() {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getProperty(ScriptJobProperties.SCRIPT_KEY)).thenReturn(determineCommandByPlatform());
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
     }
     
     private String determineCommandByPlatform() {

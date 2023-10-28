@@ -18,11 +18,11 @@
 package org.apache.shardingsphere.elasticjob.dataflow.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.type.ClassedJobItemExecutor;
 
 import java.util.List;
 
@@ -32,27 +32,27 @@ import java.util.List;
 public final class DataflowJobExecutor implements ClassedJobItemExecutor<DataflowJob> {
     
     @Override
-    public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
         if (Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false).toString())) {
-            streamingExecute(elasticJob, jobConfig, jobFacade, shardingContext);
+            streamingExecute(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         } else {
             oneOffExecute(elasticJob, shardingContext);
         }
     }
     
-    private void streamingExecute(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    private void streamingExecute(final DataflowJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
         List<Object> data = fetchData(elasticJob, shardingContext);
         while (null != data && !data.isEmpty()) {
             processData(elasticJob, shardingContext, data);
-            if (!isEligibleForJobRunning(jobConfig, jobFacade)) {
+            if (!isEligibleForJobRunning(jobConfig, jobRuntimeService)) {
                 break;
             }
             data = fetchData(elasticJob, shardingContext);
         }
     }
     
-    private boolean isEligibleForJobRunning(final JobConfiguration jobConfig, final JobFacade jobFacade) {
-        return !jobFacade.isNeedSharding() && Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false).toString());
+    private boolean isEligibleForJobRunning(final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService) {
+        return !jobRuntimeService.isNeedSharding() && Boolean.parseBoolean(jobConfig.getProps().getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false).toString());
     }
     
     private void oneOffExecute(final DataflowJob elasticJob, final ShardingContext shardingContext) {

@@ -21,9 +21,9 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.http.pojo.HttpParam;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -48,7 +48,7 @@ import java.util.Properties;
 public final class HttpJobExecutor implements TypedJobItemExecutor {
     
     @Override
-    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
         HttpParam httpParam = getHttpParam(jobConfig.getProps());
         HttpURLConnection connection = null;
         try {
@@ -85,9 +85,9 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
                 }
             }
             if (isRequestSucceed(code)) {
-                log.debug("HTTP job execute result : {}", result.toString());
+                log.debug("HTTP job execute result : {}", result);
             } else {
-                log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result.toString());
+                log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result);
             }
         } catch (final IOException ex) {
             throw new JobExecutionException(ex);

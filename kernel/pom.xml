@@ -37,6 +37,11 @@
             <artifactId>elasticjob-infra</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-error-handler-spi</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>

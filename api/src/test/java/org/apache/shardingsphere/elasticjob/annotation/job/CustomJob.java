@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.annotation.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
 public interface CustomJob extends ElasticJob {
     

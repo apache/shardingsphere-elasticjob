@@ -23,8 +23,9 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
@@ -64,7 +65,7 @@ public final class JobScheduler {
     
     private final SchedulerFacade schedulerFacade;
     
-    private final LiteJobFacade jobFacade;
+    private final JobFacade jobFacade;
     
     private final ElasticJobExecutor jobExecutor;
     
@@ -79,7 +80,7 @@ public final class JobScheduler {
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        jobFacade = new JobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJob, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
@@ -93,7 +94,7 @@ public final class JobScheduler {
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
-        jobFacade = new LiteJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
+        jobFacade = new JobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJobType, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);

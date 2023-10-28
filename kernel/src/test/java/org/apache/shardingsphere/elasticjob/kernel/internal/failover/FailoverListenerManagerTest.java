@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.failover;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.LiteYamlConstants;
+import org.apache.shardingsphere.elasticjob.kernel.fixture.YamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
@@ -163,7 +163,7 @@ class FailoverListenerManagerTest {
     
     @Test
     void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/other", LiteYamlConstants.getJobYaml()));
+        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/other", YamlConstants.getJobYaml()));
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
@@ -175,13 +175,13 @@ class FailoverListenerManagerTest {
     
     @Test
     void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYaml()));
+        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", YamlConstants.getJobYaml()));
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYamlWithFailover(false)));
+        failoverListenerManager.new FailoverSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", YamlConstants.getJobYamlWithFailover(false)));
         verify(failoverService).removeFailoverInfo();
     }
     

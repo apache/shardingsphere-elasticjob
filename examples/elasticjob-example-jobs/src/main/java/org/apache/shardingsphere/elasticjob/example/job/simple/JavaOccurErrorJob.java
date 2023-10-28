@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.example.job.simple;
 
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 public final class JavaOccurErrorJob implements SimpleJob {

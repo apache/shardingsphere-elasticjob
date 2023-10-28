@@ -31,11 +31,6 @@
             <artifactId>elasticjob-error-handler-spi</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-error-handler-general</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
         
         <dependency>
             <groupId>com.sun.mail</groupId>

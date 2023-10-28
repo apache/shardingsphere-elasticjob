@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.LiteYamlConstants;
+import org.apache.shardingsphere.elasticjob.kernel.fixture.YamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduleController;
@@ -83,14 +83,14 @@ class ShardingListenerManagerTest {
     
     @Test
     void assertShardingTotalCountChangedJobListenerWhenIsConfigPathButCurrentShardingTotalCountIsZero() {
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/config", LiteYamlConstants.getJobYaml()));
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/config", YamlConstants.getJobYaml()));
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsEqualToNewShardingTotalCount() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 3);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/config", LiteYamlConstants.getJobYaml()));
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/config", YamlConstants.getJobYaml()));
         verify(shardingService, times(0)).setReshardingFlag();
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
@@ -98,7 +98,7 @@ class ShardingListenerManagerTest {
     @Test
     void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 5);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYaml()));
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", YamlConstants.getJobYaml()));
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
