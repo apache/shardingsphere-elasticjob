@@ -51,7 +51,7 @@ class EmailJobErrorHandlerPropertiesValidatorTest {
     void assertValidateWithHostIsNull() {
         try {
             TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "EMAIL").validate(new Properties());
-        } catch (final NullPointerException ex) {
+        } catch (final IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", EmailPropertiesConstants.HOST)));
         }
     }

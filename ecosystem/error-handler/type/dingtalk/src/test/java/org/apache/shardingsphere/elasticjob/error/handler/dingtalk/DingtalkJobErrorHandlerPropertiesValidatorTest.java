@@ -47,7 +47,7 @@ class DingtalkJobErrorHandlerPropertiesValidatorTest {
     void assertValidateWithWebhookIsNull() {
         try {
             TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "DINGTALK").validate(new Properties());
-        } catch (final NullPointerException ex) {
+        } catch (final IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", DingtalkPropertiesConstants.WEBHOOK)));
         }
     }
