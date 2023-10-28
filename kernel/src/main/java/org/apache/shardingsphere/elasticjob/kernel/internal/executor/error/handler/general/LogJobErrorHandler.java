@@ -15,24 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 
 /**
- * Lite job.
+ * Job error handler for log error message.
  */
-@Setter
-public final class LiteJob implements Job {
-    
-    private ElasticJobExecutor jobExecutor;
+@Slf4j
+public final class LogJobErrorHandler implements JobErrorHandler {
     
     @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    public void handleException(final String jobName, final Throwable cause) {
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
     
+    @Override
+    public String getType() {
+        return "LOG";
+    }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 }

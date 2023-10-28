@@ -39,8 +39,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-executor-kernel</artifactId>
-            <version>3.1.0-SNAPSHOT</version>
+            <artifactId>elasticjob-error-handler-spi</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         
         <dependency>

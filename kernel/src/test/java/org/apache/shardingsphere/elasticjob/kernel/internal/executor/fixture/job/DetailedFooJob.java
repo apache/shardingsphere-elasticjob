@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.fixture.job;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
-/**
- * Lite job.
- */
-@Setter
-public final class LiteJob implements Job {
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+public final class DetailedFooJob implements FooJob {
     
-    private ElasticJobExecutor jobExecutor;
+    private final Collection<Integer> completedJobItems = new CopyOnWriteArraySet<>();
+    
+    @Getter
+    private volatile boolean completed;
     
     @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    public void foo(final ShardingContext shardingContext) {
+        completedJobItems.add(shardingContext.getShardingItem());
+        completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
     }
-    
 }

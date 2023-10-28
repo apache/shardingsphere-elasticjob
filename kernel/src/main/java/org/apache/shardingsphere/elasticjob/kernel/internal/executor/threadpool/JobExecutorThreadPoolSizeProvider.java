@@ -15,24 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Lite job.
+ * Job executor thread pool size provider.
  */
-@Setter
-public final class LiteJob implements Job {
+@SingletonSPI
+public interface JobExecutorThreadPoolSizeProvider extends TypedSPI {
     
-    private ElasticJobExecutor jobExecutor;
+    /**
+     * Get thread pool size.
+     * 
+     * @return thread pool size
+     */
+    int getSize();
     
     @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
-    }
-    
+    String getType();
 }

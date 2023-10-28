@@ -15,24 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.fixture.executor;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
 
-/**
- * Lite job.
- */
-@Setter
-public final class LiteJob implements Job {
-    
-    private ElasticJobExecutor jobExecutor;
+public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
     @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
     }
     
+    @Override
+    public String getType() {
+        return "FOO";
+    }
 }

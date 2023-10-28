@@ -27,7 +27,6 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>general</module>
         <module>email</module>
         <module>wechat</module>
         <module>dingtalk</module>

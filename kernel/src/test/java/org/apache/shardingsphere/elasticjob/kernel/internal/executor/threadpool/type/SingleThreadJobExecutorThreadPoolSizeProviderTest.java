@@ -15,24 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool.type;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool.JobExecutorThreadPoolSizeProvider;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
+import org.junit.jupiter.api.Test;
 
-/**
- * Lite job.
- */
-@Setter
-public final class LiteJob implements Job {
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+class SingleThreadJobExecutorThreadPoolSizeProviderTest {
     
-    private ElasticJobExecutor jobExecutor;
-    
-    @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    @Test
+    void assertGetPoolSize() {
+        assertThat((TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, "SINGLE_THREAD")).getSize(), is(1));
     }
-    
 }

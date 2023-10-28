@@ -15,24 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
+import org.junit.jupiter.api.Test;
 
-/**
- * Lite job.
- */
-@Setter
-public final class LiteJob implements Job {
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class ThrowJobErrorHandlerTest {
     
-    private ElasticJobExecutor jobExecutor;
-    
-    @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    @Test
+    void assertHandleException() {
+        assertThrows(JobSystemException.class, () -> TypedSPILoader.getService(JobErrorHandler.class, "THROW", new Properties()).handleException("test_job", new RuntimeException("test")));
     }
-    
 }

@@ -15,24 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool.type;
 
-import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool.JobExecutorThreadPoolSizeProvider;
 
 /**
- * Lite job.
+ * Job executor pool size provider with use CPU available processors.
  */
-@Setter
-public final class LiteJob implements Job {
-    
-    private ElasticJobExecutor jobExecutor;
+public final class CPUUsageJobExecutorThreadPoolSizeProvider implements JobExecutorThreadPoolSizeProvider {
     
     @Override
-    public void execute(final JobExecutionContext context) {
-        jobExecutor.execute();
+    public int getSize() {
+        return Runtime.getRuntime().availableProcessors() * 2;
     }
     
+    @Override
+    public String getType() {
+        return "CPU";
+    }
+    
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 }
