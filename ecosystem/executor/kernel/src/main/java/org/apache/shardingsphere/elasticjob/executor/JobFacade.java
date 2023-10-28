@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.service.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;

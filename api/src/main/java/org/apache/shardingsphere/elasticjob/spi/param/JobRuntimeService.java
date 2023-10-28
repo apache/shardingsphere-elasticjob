@@ -1,4 +1,4 @@
-package org.apache.shardingsphere.elasticjob.spi.service;
+package org.apache.shardingsphere.elasticjob.spi.param;
 
 /**
  * Job runtime service.

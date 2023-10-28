@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.spi.service.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 
 /**
  * Lite job runtime service.

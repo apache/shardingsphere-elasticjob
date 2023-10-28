@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.example.job.dataflow;
 
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.example.fixture.entity.Foo;
 import org.apache.shardingsphere.elasticjob.example.fixture.repository.FooRepository;

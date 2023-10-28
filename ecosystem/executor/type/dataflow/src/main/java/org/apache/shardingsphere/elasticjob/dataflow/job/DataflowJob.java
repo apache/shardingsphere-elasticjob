@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.dataflow.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
 import java.util.List;
 

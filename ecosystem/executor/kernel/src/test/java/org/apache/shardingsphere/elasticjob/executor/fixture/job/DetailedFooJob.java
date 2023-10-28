@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.executor.fixture.job;
 
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;

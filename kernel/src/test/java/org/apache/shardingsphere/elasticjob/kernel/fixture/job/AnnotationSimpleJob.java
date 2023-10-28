@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.fixture.job;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 @Getter

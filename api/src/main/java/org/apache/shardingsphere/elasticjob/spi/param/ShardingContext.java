@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.api;
+package org.apache.shardingsphere.elasticjob.spi.param;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

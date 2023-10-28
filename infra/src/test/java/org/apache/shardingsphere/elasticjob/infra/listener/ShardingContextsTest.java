@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.infra.listener;
 
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
