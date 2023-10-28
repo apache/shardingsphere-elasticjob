@@ -47,7 +47,7 @@ class WechatJobErrorHandlerPropertiesValidatorTest {
     void assertValidateWithWebhookIsNull() {
         try {
             TypedSPILoader.getService(JobErrorHandlerPropertiesValidator.class, "WECHAT").validate(new Properties());
-        } catch (final NullPointerException ex) {
+        } catch (final IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", WechatPropertiesConstants.WEBHOOK)));
         }
     }

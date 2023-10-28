@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.validate.JobPropertiesValidateRule;
+import org.apache.shardingsphere.elasticjob.infra.exception.PropertiesPreconditions;
 
 import java.util.Properties;
 
@@ -29,9 +29,9 @@ public final class DingtalkJobErrorHandlerPropertiesValidator implements JobErro
     
     @Override
     public void validate(final Properties props) {
-        JobPropertiesValidateRule.validateIsRequired(props, DingtalkPropertiesConstants.WEBHOOK);
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS);
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS);
+        PropertiesPreconditions.checkRequired(props, DingtalkPropertiesConstants.WEBHOOK);
+        PropertiesPreconditions.checkPositiveInteger(props, DingtalkPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS);
+        PropertiesPreconditions.checkPositiveInteger(props, DingtalkPropertiesConstants.READ_TIMEOUT_MILLISECONDS);
     }
     
     @Override
