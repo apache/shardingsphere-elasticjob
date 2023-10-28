@@ -17,16 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.snapshot;
 
-import org.apache.shardingsphere.elasticjob.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotEnabled.xml")
-class SnapshotSpringNamespaceEnableTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class SnapshotSpringNamespaceEnableTest {
+    
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
+    
+    @BeforeAll
+    static void init() {
+        EMBED_TESTING_SERVER.start();
+    }
     
     @Test
     void assertSnapshotEnable() throws IOException {

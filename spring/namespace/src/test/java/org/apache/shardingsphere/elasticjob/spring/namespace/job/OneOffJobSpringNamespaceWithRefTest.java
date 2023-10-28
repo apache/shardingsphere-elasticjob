@@ -19,16 +19,19 @@ package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
-import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.ref.RefFooSimpleElasticJob;
-import org.apache.shardingsphere.elasticjob.spring.namespace.test.AbstractZookeeperJUnitJupiterSpringContextTests;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.ref.RefFooSimpleElasticJob;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +39,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobRef.xml")
-class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterSpringContextTests {
+class OneOffJobSpringNamespaceWithRefTest {
+    
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
     
     private final String oneOffSimpleJobName = "oneOffSimpleElasticJobRef";
     
@@ -46,6 +52,11 @@ class OneOffJobSpringNamespaceWithRefTest extends AbstractZookeeperJUnitJupiterS
     
     @Autowired
     private CoordinatorRegistryCenter regCenter;
+    
+    @BeforeAll
+    static void init() {
+        EMBED_TESTING_SERVER.start();
+    }
     
     @BeforeEach
     @AfterEach
