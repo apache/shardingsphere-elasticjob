@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.AnnotationCustomJob;
 import org.apache.shardingsphere.elasticjob.spring.core.scanner.ElasticJobScan;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class ElasticJobSpringBootScannerTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        new EmbedTestingServer(18181).start();
         AnnotationCustomJob.reset();
     }
     

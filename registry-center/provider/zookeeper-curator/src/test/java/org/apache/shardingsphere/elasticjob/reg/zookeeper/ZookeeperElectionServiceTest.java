@@ -24,7 +24,7 @@ import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +42,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ZookeeperElectionServiceTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
     private static final String HOST_AND_PORT = "localhost:8899";
     
     private static final String ELECTION_PATH = "/election";
@@ -51,18 +53,18 @@ class ZookeeperElectionServiceTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
     }
     
     @Test
     void assertContend() throws Exception {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EMBED_TESTING_SERVER.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         ZookeeperElectionService service = new ZookeeperElectionService(HOST_AND_PORT, client, ELECTION_PATH, electionCandidate);
         service.start();
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
-        CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EMBED_TESTING_SERVER.getConnectionString(), new RetryOneTime(2000));
         ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", anotherClient, ELECTION_PATH, anotherElectionCandidate);
         anotherClient.start();
         anotherClient.blockUntilConnected();
@@ -80,7 +82,7 @@ class ZookeeperElectionServiceTest {
     @SneakyThrows
     private void blockUntilCondition(final Supplier<Boolean> condition) {
         while (!condition.get()) {
-            Thread.sleep(100);
+            Thread.sleep(100L);
         }
     }
     

@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,14 +33,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class ZookeeperRegistryCenterExecuteInLeaderTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterExecuteInLeaderTest.class.getName());
+            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterExecuteInLeaderTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();

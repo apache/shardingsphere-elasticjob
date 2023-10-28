@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.zookeeper.KeeperException.NoAuthException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,15 +33,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ZookeeperRegistryCenterForAuthTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
     private static final String NAME_SPACE = ZookeeperRegistryCenterForAuthTest.class.getName();
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), NAME_SPACE);
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), NAME_SPACE);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         ZOOKEEPER_CONFIGURATION.setDigest("digest:password");
         ZOOKEEPER_CONFIGURATION.setSessionTimeoutMilliseconds(5000);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(5000);
@@ -58,7 +60,7 @@ class ZookeeperRegistryCenterForAuthTest {
     @Test
     void assertInitWithDigestSuccess() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.builder()
-                .connectString(EmbedTestingServer.getConnectionString())
+                .connectString(EMBED_TESTING_SERVER.getConnectionString())
                 .retryPolicy(new RetryOneTime(2000))
                 .authorization("digest", "digest:password".getBytes()).build();
         client.start();
@@ -69,7 +71,7 @@ class ZookeeperRegistryCenterForAuthTest {
     @Test
     void assertInitWithDigestFailure() {
         assertThrows(NoAuthException.class, () -> {
-            CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+            CuratorFramework client = CuratorFrameworkFactory.newClient(EMBED_TESTING_SERVER.getConnectionString(), new RetryOneTime(2000));
             client.start();
             client.blockUntilConnected();
             client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested");

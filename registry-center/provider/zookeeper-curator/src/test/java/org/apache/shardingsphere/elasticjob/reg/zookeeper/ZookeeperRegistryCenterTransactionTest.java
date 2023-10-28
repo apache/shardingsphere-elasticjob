@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.zookeeper.KeeperException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,14 +34,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ZookeeperRegistryCenterTransactionTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterTransactionTest.class.getName());
+            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterTransactionTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();

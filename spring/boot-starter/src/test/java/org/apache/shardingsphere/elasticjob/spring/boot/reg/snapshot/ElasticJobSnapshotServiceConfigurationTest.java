@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.reg.snapshot;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
-import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ class ElasticJobSnapshotServiceConfigurationTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        new EmbedTestingServer(18181).start();
     }
     
     @Test

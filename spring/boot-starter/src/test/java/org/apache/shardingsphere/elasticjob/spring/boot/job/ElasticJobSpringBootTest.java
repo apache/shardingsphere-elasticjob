@@ -24,10 +24,10 @@ import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobB
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
@@ -60,19 +60,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("elasticjob")
 class ElasticJobSpringBootTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(18181);
+    
     @Autowired
     private ApplicationContext applicationContext;
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
     }
     
     @Test
     void assertZookeeperProperties() {
         assertNotNull(applicationContext);
         ZookeeperProperties actual = applicationContext.getBean(ZookeeperProperties.class);
-        assertThat(actual.getServerLists(), is(EmbedTestingServer.getConnectionString()));
+        assertThat(actual.getServerLists(), is(EMBED_TESTING_SERVER.getConnectionString()));
         assertThat(actual.getNamespace(), is("elasticjob-spring-boot-starter"));
     }
     

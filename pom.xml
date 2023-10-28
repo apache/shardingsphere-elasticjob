@@ -37,8 +37,12 @@
         <module>kernel</module>
         <module>lifecycle</module>
         <module>restful</module>
+        
         <module>ecosystem</module>
         <module>spring</module>
+        
+        <module>test</module>
+        
         <module>distribution</module>
     </modules>
     
