@@ -36,7 +36,7 @@ public final class PropertiesPreconditions {
      * @param key property key to be checked
      */
     public static void checkRequired(final Properties props, final String key) {
-        Preconditions.checkState(props.containsKey(key), "The property `%s` is required.", key);
+        Preconditions.checkArgument(props.containsKey(key), "The property `%s` is required.", key);
     }
     
     /**

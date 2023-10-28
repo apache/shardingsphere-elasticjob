@@ -30,7 +30,7 @@ class PropertiesPreconditionsTest {
     void assertValidateIsRequiredWithValidateError() {
         try {
             PropertiesPreconditions.checkRequired(new Properties(), "key");
-        } catch (NullPointerException ex) {
+        } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", "key")));
         }
     }
