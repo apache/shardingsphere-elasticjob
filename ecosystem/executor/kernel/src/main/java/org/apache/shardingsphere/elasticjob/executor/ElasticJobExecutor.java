@@ -25,11 +25,11 @@ import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerReloade
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.executor.item.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.threadpool.ExecutorServiceReloader;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.executor.threadpool.ExecutorServiceReloader;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent.ExecutionSource;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
@@ -178,7 +178,7 @@ public final class ElasticJobExecutor {
         log.trace("Job '{}' executing, item is: '{}'.", jobConfig.getJobName(), item);
         JobExecutionEvent completeEvent;
         try {
-            jobItemExecutor.process(elasticJob, jobConfig, jobFacade, shardingContexts.createShardingContext(item));
+            jobItemExecutor.process(elasticJob, jobConfig, jobFacade.getJobRuntimeService(), shardingContexts.createShardingContext(item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobConfig.getJobName(), item);
             jobFacade.postJobExecutionEvent(completeEvent);

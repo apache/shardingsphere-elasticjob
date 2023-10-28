@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spring.boot.job.executor;
+package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.executor.item.type.ClassedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.CustomJob;
 
-public final class CustomClassedJobExecutor implements ClassedJobItemExecutor<CustomJob> {
+/**
+ * Lite job runtime service.
+ */
+@RequiredArgsConstructor
+public final class LiteJobJobRuntimeService implements JobRuntimeService {
+    
+    private final LiteJobFacade jobFacade;
     
     @Override
-    public void process(final CustomJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
-        elasticJob.execute(shardingContext);
-    }
-    
-    @Override
-    public Class<CustomJob> getElasticJobClass() {
-        return CustomJob.class;
+    public boolean isNeedSharding() {
+        return jobFacade.isNeedSharding();
     }
 }

@@ -18,15 +18,15 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
 import com.google.common.base.Strings;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext;
 import org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionService;
@@ -51,7 +51,6 @@ public final class LiteJobFacade implements JobFacade {
     
     private final ConfigurationService configService;
     
-    @Getter
     private final ShardingService shardingService;
     
     private final ExecutionContextService executionContextService;
@@ -169,5 +168,10 @@ public final class LiteJobFacade implements JobFacade {
         if (!Strings.isNullOrEmpty(message)) {
             log.trace(message);
         }
+    }
+    
+    @Override
+    public JobRuntimeService getJobRuntimeService() {
+        return new LiteJobJobRuntimeService(this);
     }
 }

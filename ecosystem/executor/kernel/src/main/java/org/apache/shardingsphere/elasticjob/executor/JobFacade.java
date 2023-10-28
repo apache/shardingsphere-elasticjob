@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -87,17 +88,17 @@ public interface JobFacade {
     void clearMisfire(Collection<Integer> shardingItems);
     
     /**
-     * Judge job whether need to execute misfire tasks.
+     * Judge job whether to need to execute misfire tasks.
      * 
      * @param shardingItems sharding items
-     * @return whether need to execute misfire tasks
+     * @return need to execute misfire tasks or not
      */
     boolean isExecuteMisfired(Collection<Integer> shardingItems);
     
     /**
-     * Judge job whether need resharding.
+     * Judge job whether to need resharding.
      *
-     * @return whether need resharding
+     * @return need resharding or not
      */
     boolean isNeedSharding();
     
@@ -130,4 +131,11 @@ public interface JobFacade {
      * @param message job message
      */
     void postJobStatusTraceEvent(String taskId, State state, String message);
+    
+    /**
+     * Get job runtime service.
+     * 
+     * @return job runtime service
+     */
+    JobRuntimeService getJobRuntimeService();
 }

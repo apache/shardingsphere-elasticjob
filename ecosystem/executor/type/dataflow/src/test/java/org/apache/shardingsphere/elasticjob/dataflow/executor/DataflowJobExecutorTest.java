@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +50,7 @@ class DataflowJobExecutorTest {
     private JobConfiguration jobConfig;
     
     @Mock
-    private JobFacade jobFacade;
+    private JobRuntimeService jobRuntimeService;
     
     @Mock
     private ShardingContext shardingContext;
@@ -70,8 +70,8 @@ class DataflowJobExecutorTest {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("true");
         when(elasticJob.fetchData(shardingContext)).thenReturn(data);
-        when(jobFacade.isNeedSharding()).thenReturn(true);
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        when(jobRuntimeService.isNeedSharding()).thenReturn(true);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         verify(elasticJob, times(1)).processData(shardingContext, data);
     }
     
@@ -82,7 +82,7 @@ class DataflowJobExecutorTest {
         when(jobConfig.getProps()).thenReturn(properties);
         when(properties.getOrDefault(DataflowJobProperties.STREAM_PROCESS_KEY, false)).thenReturn("false");
         when(elasticJob.fetchData(shardingContext)).thenReturn(data);
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         verify(elasticJob, times(1)).processData(shardingContext, data);
     }
     

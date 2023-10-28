@@ -20,13 +20,13 @@ package org.apache.shardingsphere.elasticjob.executor.fixture.executor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.executor.item.type.TypedJobItemExecutor;
 
 public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
     @Override
-    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
     }
     
     @Override
