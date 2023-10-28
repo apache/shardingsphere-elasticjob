@@ -22,12 +22,12 @@ import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,9 @@ public abstract class BaseSnapshotServiceTest {
     
     static final int DUMP_PORT = 9000;
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
+    
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
@@ -55,7 +57,7 @@ public abstract class BaseSnapshotServiceTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
         REG_CENTER.init();
     }

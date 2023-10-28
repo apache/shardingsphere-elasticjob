@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
-import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class TracingConfigurationTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        new EmbedTestingServer(18181).start();
     }
     
     @Test

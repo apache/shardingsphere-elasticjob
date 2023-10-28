@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.kernel.internal.annotation.JobAnnotationBuilder;
 import org.apache.shardingsphere.elasticjob.kernel.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
@@ -32,6 +31,7 @@ import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,9 @@ import org.junit.jupiter.api.BeforeEach;
 @Getter(AccessLevel.PROTECTED)
 public abstract class BaseAnnotationTest {
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
+    
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
     
     @Getter(AccessLevel.PROTECTED)
     private static final CoordinatorRegistryCenter REGISTRY_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
@@ -75,7 +77,7 @@ public abstract class BaseAnnotationTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
         REGISTRY_CENTER.init();
     }

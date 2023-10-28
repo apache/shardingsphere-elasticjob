@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.fixture;
+package org.apache.shardingsphere.elasticjob.test.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -31,20 +30,23 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/**
+ * Embed ZooKeeper testing server
+ */
+@RequiredArgsConstructor
 @Slf4j
 public final class EmbedTestingServer {
-    
-    private static final int PORT = 7181;
     
     private static volatile TestingServer testingServer;
     
     private static final Object INIT_LOCK = new Object();
     
+    private final int port;
+    
     /**
      * Start embed zookeeper server.
      */
-    public static void start() {
+    public void start() {
         if (null != testingServer) {
             log.info("Embed zookeeper server already exists 1, on {}", testingServer.getConnectString());
             return;
@@ -60,9 +62,9 @@ public final class EmbedTestingServer {
         }
     }
     
-    private static void start0() {
+    private void start0() {
         try {
-            testingServer = new TestingServer(PORT, true);
+            testingServer = new TestingServer(port, true);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -82,7 +84,7 @@ public final class EmbedTestingServer {
         }
     }
     
-    private static void waitTestingServerReady() {
+    private void waitTestingServerReady() {
         int maxRetries = 60;
         try (CuratorFramework client = buildCuratorClient()) {
             client.start();
@@ -108,7 +110,7 @@ public final class EmbedTestingServer {
         }
     }
     
-    private static CuratorFramework buildCuratorClient() {
+    private CuratorFramework buildCuratorClient() {
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
         int retryIntervalMilliseconds = 500;
         int maxRetries = 3;
@@ -120,7 +122,7 @@ public final class EmbedTestingServer {
         return builder.build();
     }
     
-    private static boolean isIgnoredException(final Throwable cause) {
+    private boolean isIgnoredException(final Throwable cause) {
         return cause instanceof KeeperException.ConnectionLossException || cause instanceof KeeperException.NoNodeException || cause instanceof KeeperException.NodeExistsException;
     }
     
@@ -129,7 +131,7 @@ public final class EmbedTestingServer {
      *
      * @return connection string
      */
-    public static String getConnectionString() {
-        return "localhost:" + PORT;
+    public String getConnectionString() {
+        return "localhost:" + port;
     }
 }

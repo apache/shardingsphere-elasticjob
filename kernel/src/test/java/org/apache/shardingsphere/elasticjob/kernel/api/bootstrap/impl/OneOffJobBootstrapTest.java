@@ -19,12 +19,12 @@ package org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl;
 
 import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OneOffJobBootstrapTest {
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), OneOffJobBootstrapTest.class.getSimpleName());
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
+    
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), OneOffJobBootstrapTest.class.getSimpleName());
     
     private static final int SHARDING_TOTAL_COUNT = 3;
     
@@ -50,7 +52,7 @@ class OneOffJobBootstrapTest {
     
     @BeforeAll
     static void init() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
     }
     
     @BeforeEach
@@ -60,7 +62,7 @@ class OneOffJobBootstrapTest {
     }
     
     @AfterEach
-    void teardown() {
+    void tearDown() {
         zkRegCenter.close();
     }
     
@@ -108,7 +110,7 @@ class OneOffJobBootstrapTest {
     private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
         Scheduler scheduler = getScheduler(oneOffJobBootstrap);
         while (0 == counter.get() || !scheduler.getCurrentlyExecutingJobs().isEmpty()) {
-            Thread.sleep(100);
+            Thread.sleep(100L);
         }
     }
 }

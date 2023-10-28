@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,14 +30,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class ZookeeperRegistryCenterMiscellaneousTest {
     
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();

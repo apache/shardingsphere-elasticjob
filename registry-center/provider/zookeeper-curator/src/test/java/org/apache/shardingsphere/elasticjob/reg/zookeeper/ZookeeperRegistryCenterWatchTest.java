@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.fixture.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class ZookeeperRegistryCenterWatchTest {
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterWatchTest.class.getName());
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterWatchTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
-        EmbedTestingServer.start();
+        EMBED_TESTING_SERVER.start();
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();
