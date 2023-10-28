@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationExce
 import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.fixture.job.FailedJob;
+import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FailedJob;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
