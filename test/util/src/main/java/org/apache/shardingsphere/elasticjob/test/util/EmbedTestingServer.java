@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Embed ZooKeeper testing server
+ * Embed ZooKeeper testing server.
  */
 @RequiredArgsConstructor
 @Slf4j
