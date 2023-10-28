@@ -17,10 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.lifecycle.internal.reg;
 
-import org.apache.shardingsphere.elasticjob.lifecycle.AbstractEmbedZookeeperBaseTest;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -29,26 +30,33 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class RegistryCenterFactoryTest extends AbstractEmbedZookeeperBaseTest {
+class RegistryCenterFactoryTest {
+    
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(8181);
+    
+    @BeforeAll
+    static void setUp() {
+        EMBED_TESTING_SERVER.start();
+    }
     
     @Test
     void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", null));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(EMBED_TESTING_SERVER.getConnectionString(), "namespace", null));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertNull(zkConfig.getDigest());
     }
     
     @Test
     void assertCreateCoordinatorRegistryCenterWithDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", "digest"));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(EMBED_TESTING_SERVER.getConnectionString(), "namespace", "digest"));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertThat(zkConfig.getDigest(), is("digest"));
     }
     
     @Test
     void assertCreateCoordinatorRegistryCenterFromCache() throws ReflectiveOperationException {
-        RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null);
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", null));
+        RegistryCenterFactory.createCoordinatorRegistryCenter(EMBED_TESTING_SERVER.getConnectionString(), "otherNamespace", null);
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(EMBED_TESTING_SERVER.getConnectionString(), "otherNamespace", null));
         assertThat(zkConfig.getNamespace(), is("otherNamespace"));
         assertNull(zkConfig.getDigest());
     }
