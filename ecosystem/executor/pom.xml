@@ -28,6 +28,9 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>type</module>
+        <module>simple</module>
+        <module>dataflow</module>
+        <module>script</module>
+        <module>http</module>
     </modules>
 </project>
