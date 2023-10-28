@@ -29,7 +29,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-executor-kernel</artifactId>
+            <artifactId>elasticjob-infra</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         
