@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.validate.JobPropertiesValidateRule;
+import org.apache.shardingsphere.elasticjob.infra.validate.PropertiesPreconditions;
 
 import java.util.Properties;
 
@@ -29,9 +29,9 @@ public final class WechatJobErrorHandlerPropertiesValidator implements JobErrorH
     
     @Override
     public void validate(final Properties props) {
-        JobPropertiesValidateRule.validateIsRequired(props, WechatPropertiesConstants.WEBHOOK);
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS);
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS);
+        PropertiesPreconditions.checkRequired(props, WechatPropertiesConstants.WEBHOOK);
+        PropertiesPreconditions.checkPositiveInteger(props, WechatPropertiesConstants.CONNECT_TIMEOUT_MILLISECONDS);
+        PropertiesPreconditions.checkPositiveInteger(props, WechatPropertiesConstants.READ_TIMEOUT_MILLISECONDS);
     }
     
     @Override

@@ -24,12 +24,12 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class JobPropertiesValidateRuleTest {
+class PropertiesPreconditionsTest {
     
     @Test
     void assertValidateIsRequiredWithValidateError() {
         try {
-            JobPropertiesValidateRule.validateIsRequired(new Properties(), "key");
+            PropertiesPreconditions.checkRequired(new Properties(), "key");
         } catch (NullPointerException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", "key")));
         }
@@ -39,19 +39,19 @@ class JobPropertiesValidateRuleTest {
     void assertValidateIsRequiredWithNormal() {
         Properties props = new Properties();
         props.setProperty("key", "value");
-        JobPropertiesValidateRule.validateIsRequired(props, "key");
+        PropertiesPreconditions.checkRequired(props, "key");
     }
     
     @Test
     void assertValidateIsPositiveIntegerWithValueNoExist() {
-        JobPropertiesValidateRule.validateIsPositiveInteger(new Properties(), "key");
+        PropertiesPreconditions.checkPositiveInteger(new Properties(), "key");
     }
     
     @Test
     void assertValidateIsPositiveIntegerWithNormal() {
         Properties props = new Properties();
         props.setProperty("key", "1");
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, "key");
+        PropertiesPreconditions.checkPositiveInteger(props, "key");
     }
     
     @Test
@@ -59,7 +59,7 @@ class JobPropertiesValidateRuleTest {
         Properties props = new Properties();
         props.setProperty("key", "wrong_value");
         try {
-            JobPropertiesValidateRule.validateIsPositiveInteger(props, "key");
+            PropertiesPreconditions.checkPositiveInteger(props, "key");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` should be integer.", "key")));
         }
@@ -70,7 +70,7 @@ class JobPropertiesValidateRuleTest {
         Properties props = new Properties();
         props.setProperty("key", "-1");
         try {
-            JobPropertiesValidateRule.validateIsPositiveInteger(props, "key");
+            PropertiesPreconditions.checkPositiveInteger(props, "key");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage(), is(String.format("The property `%s` should be positive.", "key")));
         }

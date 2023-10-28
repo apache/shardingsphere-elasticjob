@@ -24,37 +24,38 @@ import lombok.NoArgsConstructor;
 import java.util.Properties;
 
 /**
- * Job properties validate rule.
+ * Properties preconditions.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobPropertiesValidateRule {
+public final class PropertiesPreconditions {
     
     /**
-     * Validate property value is required.
+     * Check property value is required.
      * 
-     * @param props properties to be validated
-     * @param key property key to be validated
+     * @param props properties to be checked
+     * @param key property key to be checked
      */
-    public static void validateIsRequired(final Properties props, final String key) {
-        Preconditions.checkNotNull(props.getProperty(key), "The property `%s` is required.", key);
+    public static void checkRequired(final Properties props, final String key) {
+        Preconditions.checkState(props.containsKey(key), "The property `%s` is required.", key);
     }
     
     /**
-     * Validate property value is positive integer.
+     * Check property value is positive integer.
      * 
-     * @param props properties to be validated
-     * @param key property key to be validated
+     * @param props properties to be checked
+     * @param key property key to be checked
      */
-    public static void validateIsPositiveInteger(final Properties props, final String key) {
+    public static void checkPositiveInteger(final Properties props, final String key) {
         String propertyValue = props.getProperty(key);
-        if (null != propertyValue) {
-            int integerValue;
-            try {
-                integerValue = Integer.parseInt(propertyValue);
-            } catch (final NumberFormatException ignored) {
-                throw new IllegalArgumentException(String.format("The property `%s` should be integer.", key));
-            }
-            Preconditions.checkArgument(integerValue > 0, "The property `%s` should be positive.", key);
+        if (null == propertyValue) {
+            return;
         }
+        int integerValue;
+        try {
+            integerValue = Integer.parseInt(propertyValue);
+        } catch (final NumberFormatException ignored) {
+            throw new IllegalArgumentException(String.format("The property `%s` should be integer.", key));
+        }
+        Preconditions.checkArgument(integerValue > 0, "The property `%s` should be positive.", key);
     }
 }

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.email;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.validate.JobPropertiesValidateRule;
+import org.apache.shardingsphere.elasticjob.infra.validate.PropertiesPreconditions;
 
 import java.util.Properties;
 
@@ -29,13 +29,13 @@ public final class EmailJobErrorHandlerPropertiesValidator implements JobErrorHa
     
     @Override
     public void validate(final Properties props) {
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.HOST);
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.PORT);
-        JobPropertiesValidateRule.validateIsPositiveInteger(props, EmailPropertiesConstants.PORT);
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.USERNAME);
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.PASSWORD);
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.FROM);
-        JobPropertiesValidateRule.validateIsRequired(props, EmailPropertiesConstants.TO);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.HOST);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.PORT);
+        PropertiesPreconditions.checkPositiveInteger(props, EmailPropertiesConstants.PORT);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.USERNAME);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.PASSWORD);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.FROM);
+        PropertiesPreconditions.checkRequired(props, EmailPropertiesConstants.TO);
     }
     
     @Override
