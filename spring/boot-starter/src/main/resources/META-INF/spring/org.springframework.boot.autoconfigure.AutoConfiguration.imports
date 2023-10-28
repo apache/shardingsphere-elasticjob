@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobLiteAutoConfiguration
+org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobAutoConfiguration
