@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
-import org.apache.shardingsphere.elasticjob.infra.validate.PropertiesPreconditions;
+import org.apache.shardingsphere.elasticjob.infra.exception.PropertiesPreconditions;
 
 import java.util.Properties;
 

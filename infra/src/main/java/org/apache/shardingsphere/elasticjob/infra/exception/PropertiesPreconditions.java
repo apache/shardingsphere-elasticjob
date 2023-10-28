@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.infra.validate;
+package org.apache.shardingsphere.elasticjob.infra.exception;
 
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
