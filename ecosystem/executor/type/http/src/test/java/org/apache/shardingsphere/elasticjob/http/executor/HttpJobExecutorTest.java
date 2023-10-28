@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.http.executor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.service.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.http.executor.fixture.InternalController;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;

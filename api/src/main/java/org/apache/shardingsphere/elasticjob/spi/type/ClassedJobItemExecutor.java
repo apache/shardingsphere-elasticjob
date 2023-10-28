@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.executor.item.type;
+package org.apache.shardingsphere.elasticjob.spi.type;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.JobItemExecutor;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**

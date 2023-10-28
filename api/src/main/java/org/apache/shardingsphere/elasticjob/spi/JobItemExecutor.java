@@ -15,16 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.executor.item.type;
+package org.apache.shardingsphere.elasticjob.spi;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.executor.item.JobItemExecutor;
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.service.JobRuntimeService;
 
 /**
- * Typed job item executor.
+ * Job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
-@SingletonSPI
-public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
+public interface JobItemExecutor<T extends ElasticJob> {
+    
+    /**
+     * Process job item.
+     * 
+     * @param elasticJob elastic job
+     * @param jobConfig job configuration
+     * @param jobRuntimeService job runtime service
+     * @param shardingContext sharding context
+     */
+    void process(T elasticJob, JobConfiguration jobConfig, JobRuntimeService jobRuntimeService, ShardingContext shardingContext);
 }

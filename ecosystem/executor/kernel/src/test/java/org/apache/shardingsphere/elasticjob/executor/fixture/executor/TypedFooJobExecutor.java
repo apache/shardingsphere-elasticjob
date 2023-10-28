@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.executor.fixture.executor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.executor.item.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.service.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
 
 public final class TypedFooJobExecutor implements TypedJobItemExecutor {
     
