@@ -15,22 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.fixture.executor;
+package org.apache.shardingsphere.elasticjob.kernel.fixture.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
 
-public final class TypedFooJobExecutor implements TypedJobItemExecutor {
-    
-    @Override
-    public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
-    }
-    
-    @Override
-    public String getType() {
-        return "FOO";
-    }
+public final class FailedJob implements ElasticJob {
 }

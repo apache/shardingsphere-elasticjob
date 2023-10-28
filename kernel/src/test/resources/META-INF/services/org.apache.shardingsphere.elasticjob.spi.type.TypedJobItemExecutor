@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.kernel.internal.executor.fixture.executor.TypedFooJobExecutor
+org.apache.shardingsphere.elasticjob.kernel.fixture.executor.TypedFooJobExecutor
