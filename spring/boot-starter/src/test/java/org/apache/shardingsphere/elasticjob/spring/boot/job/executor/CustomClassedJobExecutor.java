@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.spring.boot.job.executor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.type.ClassedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.CustomJob;
 
 public final class CustomClassedJobExecutor implements ClassedJobItemExecutor<CustomJob> {

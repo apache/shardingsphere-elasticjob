@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.type.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.http.pojo.HttpParam;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -85,9 +85,9 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
                 }
             }
             if (isRequestSucceed(code)) {
-                log.debug("HTTP job execute result : {}", result.toString());
+                log.debug("HTTP job execute result : {}", result);
             } else {
-                log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result.toString());
+                log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result);
             }
         } catch (final IOException ex) {
             throw new JobExecutionException(ex);

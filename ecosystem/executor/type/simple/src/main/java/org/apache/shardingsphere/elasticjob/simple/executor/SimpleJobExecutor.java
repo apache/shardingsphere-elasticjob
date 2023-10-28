@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.type.ClassedJobItemExecutor;
 
 /**
  * Simple job executor.

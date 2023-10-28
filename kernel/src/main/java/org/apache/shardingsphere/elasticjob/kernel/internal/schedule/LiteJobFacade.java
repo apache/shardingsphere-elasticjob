@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
 import com.google.common.base.Strings;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
@@ -50,6 +51,7 @@ public final class LiteJobFacade implements JobFacade {
     
     private final ConfigurationService configService;
     
+    @Getter
     private final ShardingService shardingService;
     
     private final ExecutionContextService executionContextService;

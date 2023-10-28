@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.fixture.executor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
 import org.apache.shardingsphere.elasticjob.executor.JobFacade;
-import org.apache.shardingsphere.elasticjob.executor.item.impl.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.executor.item.type.ClassedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
 
 public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJob> {
