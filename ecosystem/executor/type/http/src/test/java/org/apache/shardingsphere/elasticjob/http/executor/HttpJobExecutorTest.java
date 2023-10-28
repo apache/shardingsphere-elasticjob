@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.http.executor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.ShardingContext;
-import org.apache.shardingsphere.elasticjob.executor.JobFacade;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.http.executor.fixture.InternalController;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
@@ -60,7 +60,7 @@ class HttpJobExecutorTest {
     private JobConfiguration jobConfig;
     
     @Mock
-    private JobFacade jobFacade;
+    private JobRuntimeService jobRuntimeService;
     
     // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.
     @Mock(strictness = Mock.Strictness.LENIENT)
@@ -97,7 +97,7 @@ class HttpJobExecutorTest {
     void assertUrlEmpty() {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn("");
-            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         });
     }
     
@@ -106,7 +106,7 @@ class HttpJobExecutorTest {
         assertThrows(JobConfigurationException.class, () -> {
             when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
             when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("");
-            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         });
     }
     
@@ -117,7 +117,7 @@ class HttpJobExecutorTest {
         when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("");
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("4000");
         when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("5000");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
     }
     
     @Test
@@ -127,7 +127,7 @@ class HttpJobExecutorTest {
         when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("");
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("4000");
         when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("5000");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
     }
     
     @Test
@@ -136,7 +136,7 @@ class HttpJobExecutorTest {
         when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("GET");
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("4000");
         when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("5000");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
     }
     
     @Test
@@ -147,7 +147,7 @@ class HttpJobExecutorTest {
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("4000");
         when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("5000");
         when(jobConfig.getProps().getProperty(HttpJobProperties.CONTENT_TYPE_KEY)).thenReturn("application/x-www-form-urlencoded");
-        jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+        jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
     }
     
     @Test
@@ -158,7 +158,7 @@ class HttpJobExecutorTest {
             when(jobConfig.getProps().getProperty(HttpJobProperties.DATA_KEY)).thenReturn("name=elasticjob");
             when(jobConfig.getProps().getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000")).thenReturn("1");
             when(jobConfig.getProps().getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000")).thenReturn("1");
-            jobExecutor.process(elasticJob, jobConfig, jobFacade, shardingContext);
+            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
         });
     }
     

@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.executor.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.executor.fixture.job.FooJob;
+import org.apache.shardingsphere.elasticjob.executor.item.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
@@ -30,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -47,6 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ElasticJobExecutorTest {
     
     @Mock
@@ -58,6 +62,9 @@ class ElasticJobExecutorTest {
     private JobFacade jobFacade;
     
     @Mock
+    private JobRuntimeService jobRuntimeService;
+    
+    @Mock
     private ClassedFooJobExecutor jobItemExecutor;
     
     private ElasticJobExecutor elasticJobExecutor;
@@ -66,6 +73,7 @@ class ElasticJobExecutorTest {
     void setUp() {
         jobConfig = createJobConfiguration();
         when(jobFacade.loadJobConfiguration(anyBoolean())).thenReturn(jobConfig);
+        when(jobFacade.getJobRuntimeService()).thenReturn(jobRuntimeService);
         elasticJobExecutor = new ElasticJobExecutor(fooJob, jobConfig, jobFacade);
         setJobItemExecutor();
     }
@@ -89,7 +97,7 @@ class ElasticJobExecutorTest {
             try {
                 elasticJobExecutor.execute();
             } finally {
-                verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+                verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
             }
         });
     }
@@ -103,7 +111,7 @@ class ElasticJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED,
                 "Previous job 'test_job' - shardingItems '[]' is still running, misfired job will start after previous job completed.");
-        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
     }
     
     @Test
@@ -113,7 +121,7 @@ class ElasticJobExecutorTest {
         elasticJobExecutor.execute();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "Sharding item for job 'test_job' is empty.");
-        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
     }
     
     @Test
@@ -128,7 +136,7 @@ class ElasticJobExecutorTest {
     
     private void assertExecuteFailureWhenThrowException(final ShardingContexts shardingContexts) {
         prepareForIsNotMisfire(jobFacade, shardingContexts);
-        doThrow(RuntimeException.class).when(jobItemExecutor).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        doThrow(RuntimeException.class).when(jobItemExecutor).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
         try {
             elasticJobExecutor.execute();
         } finally {
@@ -136,7 +144,7 @@ class ElasticJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
             verify(jobFacade).registerJobBegin(shardingContexts);
-            verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+            verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
             verify(jobFacade).registerJobCompleted(shardingContexts);
         }
     }
@@ -163,7 +171,7 @@ class ElasticJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "");
         verifyForIsNotMisfire(jobFacade, shardingContexts);
-        verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
     }
     
     @Test
@@ -172,7 +180,7 @@ class ElasticJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor.execute();
         verifyForIsNotMisfire(jobFacade, shardingContexts);
-        verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
     }
     
     @Test
@@ -181,7 +189,7 @@ class ElasticJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         elasticJobExecutor.execute();
         verifyForIsNotMisfire(jobFacade, shardingContexts);
-        verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
         verify(jobFacade, times(0)).clearMisfire(shardingContexts.getShardingItemParameters().keySet());
     }
     
@@ -195,7 +203,7 @@ class ElasticJobExecutorTest {
         verify(jobFacade, times(2)).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
-        verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+        verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
         verify(jobFacade, times(2)).registerJobCompleted(shardingContexts);
     }
     
@@ -208,7 +216,7 @@ class ElasticJobExecutorTest {
             try {
                 elasticJobExecutor.execute();
             } finally {
-                verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+                verify(jobItemExecutor, times(0)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
             }
         });
     }
@@ -222,7 +230,7 @@ class ElasticJobExecutorTest {
             try {
                 elasticJobExecutor.execute();
             } finally {
-                verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobFacade), any());
+                verify(jobItemExecutor, times(2)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
             }
         });
     }
