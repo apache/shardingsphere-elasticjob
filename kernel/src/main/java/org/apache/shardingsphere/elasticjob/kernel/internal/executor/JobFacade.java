@@ -17,60 +17,131 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext;
+import org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionContextService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionService;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
+import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Job facade.
  */
-public interface JobFacade {
+@Slf4j
+public final class JobFacade {
+    
+    private final ConfigurationService configService;
+    
+    private final ShardingService shardingService;
+    
+    private final ExecutionContextService executionContextService;
+    
+    private final ExecutionService executionService;
+    
+    private final FailoverService failoverService;
+    
+    private final Collection<ElasticJobListener> elasticJobListeners;
+    
+    private final JobTracingEventBus jobTracingEventBus;
+    
+    public JobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners, final TracingConfiguration<?> tracingConfig) {
+        configService = new ConfigurationService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionContextService = new ExecutionContextService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        failoverService = new FailoverService(regCenter, jobName);
+        this.elasticJobListeners = elasticJobListeners.stream().sorted(Comparator.comparingInt(ElasticJobListener::order)).collect(Collectors.toList());
+        this.jobTracingEventBus = null == tracingConfig ? new JobTracingEventBus() : new JobTracingEventBus(tracingConfig);
+    }
     
     /**
      * Load job configuration.
-     * 
+     *
      * @param fromCache load from cache or not
      * @return job configuration
      */
-    JobConfiguration loadJobConfiguration(boolean fromCache);
+    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
+        return configService.load(fromCache);
+    }
     
     /**
      * Check job execution environment.
-     * 
+     *
      * @throws JobExecutionEnvironmentException job execution environment exception
      */
-    void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException;
+    public void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException {
+        configService.checkMaxTimeDiffSecondsTolerable();
+    }
     
     /**
      * Failover If necessary.
      */
-    void failoverIfNecessary();
+    public void failoverIfNecessary() {
+        if (configService.load(true).isFailover()) {
+            failoverService.failoverIfNecessary();
+        }
+    }
     
     /**
      * Register job begin.
      *
      * @param shardingContexts sharding contexts
      */
-    void registerJobBegin(ShardingContexts shardingContexts);
+    public void registerJobBegin(final ShardingContexts shardingContexts) {
+        executionService.registerJobBegin(shardingContexts);
+    }
     
     /**
      * Register job completed.
      *
      * @param shardingContexts sharding contexts
      */
-    void registerJobCompleted(ShardingContexts shardingContexts);
+    public void registerJobCompleted(final ShardingContexts shardingContexts) {
+        executionService.registerJobCompleted(shardingContexts);
+        if (configService.load(true).isFailover()) {
+            failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
+        }
+    }
     
     /**
      * Get sharding contexts.
      *
      * @return sharding contexts
      */
-    ShardingContexts getShardingContexts();
+    public ShardingContexts getShardingContexts() {
+        boolean isFailover = configService.load(true).isFailover();
+        if (isFailover) {
+            List<Integer> failoverShardingItems = failoverService.getLocalFailoverItems();
+            if (!failoverShardingItems.isEmpty()) {
+                return executionContextService.getJobShardingContext(failoverShardingItems);
+            }
+        }
+        shardingService.shardingIfNecessary();
+        List<Integer> shardingItems = shardingService.getLocalShardingItems();
+        if (isFailover) {
+            shardingItems.removeAll(failoverService.getLocalTakeOffItems());
+        }
+        shardingItems.removeAll(executionService.getDisabledItems(shardingItems));
+        return executionContextService.getJobShardingContext(shardingItems);
+    }
     
     /**
      * Set task misfire flag.
@@ -78,50 +149,68 @@ public interface JobFacade {
      * @param shardingItems sharding items to be set misfire flag
      * @return whether satisfy misfire condition
      */
-    boolean misfireIfRunning(Collection<Integer> shardingItems);
+    public boolean misfireIfRunning(final Collection<Integer> shardingItems) {
+        return executionService.misfireIfHasRunningItems(shardingItems);
+    }
     
     /**
      * Clear misfire flag.
      *
      * @param shardingItems sharding items to be cleared misfire flag
      */
-    void clearMisfire(Collection<Integer> shardingItems);
+    public void clearMisfire(final Collection<Integer> shardingItems) {
+        executionService.clearMisfire(shardingItems);
+    }
     
     /**
      * Judge job whether to need to execute misfire tasks.
-     * 
+     *
      * @param shardingItems sharding items
      * @return need to execute misfire tasks or not
      */
-    boolean isExecuteMisfired(Collection<Integer> shardingItems);
+    public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
+        return configService.load(true).isMisfire() && !isNeedSharding() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+    }
     
     /**
      * Judge job whether to need resharding.
      *
      * @return need resharding or not
      */
-    boolean isNeedSharding();
+    public boolean isNeedSharding() {
+        return shardingService.isNeedSharding();
+    }
     
     /**
      * Call before job executed.
      *
      * @param shardingContexts sharding contexts
      */
-    void beforeJobExecuted(ShardingContexts shardingContexts);
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+        for (ElasticJobListener each : elasticJobListeners) {
+            each.beforeJobExecuted(shardingContexts);
+        }
+    }
     
     /**
      * Call after job executed.
      *
      * @param shardingContexts sharding contexts
      */
-    void afterJobExecuted(ShardingContexts shardingContexts);
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+        for (ElasticJobListener each : elasticJobListeners) {
+            each.afterJobExecuted(shardingContexts);
+        }
+    }
     
     /**
      * Post job execution event.
      *
      * @param jobExecutionEvent job execution event
      */
-    void postJobExecutionEvent(JobExecutionEvent jobExecutionEvent);
+    public void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
+        jobTracingEventBus.post(jobExecutionEvent);
+    }
     
     /**
      * Post job status trace event.
@@ -130,12 +219,21 @@ public interface JobFacade {
      * @param state job state
      * @param message job message
      */
-    void postJobStatusTraceEvent(String taskId, State state, String message);
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
+        TaskContext taskContext = TaskContext.from(taskId);
+        jobTracingEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
+                taskContext.getSlaveId(), taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), state, message));
+        if (!Strings.isNullOrEmpty(message)) {
+            log.trace(message);
+        }
+    }
     
     /**
      * Get job runtime service.
-     * 
+     *
      * @return job runtime service
      */
-    JobRuntimeService getJobRuntimeService();
+    public JobRuntimeService getJobRuntimeService() {
+        return new JobJobRuntimeServiceImpl(this);
+    }
 }

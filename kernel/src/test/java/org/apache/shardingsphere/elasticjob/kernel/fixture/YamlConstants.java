@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LiteYamlConstants {
+public final class YamlConstants {
     
     private static final String JOB_YAML = "jobName: test_job\n"
             + "cron: 0/1 * * * * ?\n"

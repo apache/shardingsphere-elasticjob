@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LiteJobFacadeTest {
+class JobFacadeTest {
     
     @Mock
     private ConfigurationService configService;
@@ -69,55 +69,54 @@ class LiteJobFacadeTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private LiteJobFacade liteJobFacade;
+    private JobFacade jobFacade;
     
     private StringBuilder orderResult;
     
     @BeforeEach
     void setUp() {
         orderResult = new StringBuilder();
-        TestElasticJobListener l1 = new TestElasticJobListener(caller, "l1", 2, orderResult);
-        TestElasticJobListener l2 = new TestElasticJobListener(caller, "l2", 1, orderResult);
-        liteJobFacade = new LiteJobFacade(null, "test_job", Lists.newArrayList(l1, l2), null);
-        ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "jobTracingEventBus", jobTracingEventBus);
+        jobFacade = new JobFacade(null, "test_job",
+                Arrays.asList(new TestElasticJobListener(caller, "l1", 2, orderResult), new TestElasticJobListener(caller, "l2", 1, orderResult)), null);
+        ReflectionUtils.setFieldValue(jobFacade, "configService", configService);
+        ReflectionUtils.setFieldValue(jobFacade, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(jobFacade, "executionContextService", executionContextService);
+        ReflectionUtils.setFieldValue(jobFacade, "executionService", executionService);
+        ReflectionUtils.setFieldValue(jobFacade, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(jobFacade, "jobTracingEventBus", jobTracingEventBus);
     }
     
     @Test
     void assertLoad() {
         JobConfiguration expected = JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build();
         when(configService.load(true)).thenReturn(expected);
-        assertThat(liteJobFacade.loadJobConfiguration(true), is(expected));
+        assertThat(jobFacade.loadJobConfiguration(true), is(expected));
     }
     
     @Test
     void assertCheckMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        liteJobFacade.checkJobExecutionEnvironment();
+        jobFacade.checkJobExecutionEnvironment();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test
     void assertFailoverIfUnnecessary() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
-        liteJobFacade.failoverIfNecessary();
+        jobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
     void assertFailoverIfNecessary() {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
-        liteJobFacade.failoverIfNecessary();
+        jobFacade.failoverIfNecessary();
         verify(failoverService).failoverIfNecessary();
     }
     
     @Test
     void assertRegisterJobBegin() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
-        liteJobFacade.registerJobBegin(shardingContexts);
+        jobFacade.registerJobBegin(shardingContexts);
         verify(executionService).registerJobBegin(shardingContexts);
     }
     
@@ -125,7 +124,7 @@ class LiteJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverDisabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
-        liteJobFacade.registerJobCompleted(shardingContexts);
+        jobFacade.registerJobCompleted(shardingContexts);
         verify(executionService).registerJobCompleted(shardingContexts);
         verify(failoverService, times(0)).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
@@ -134,7 +133,7 @@ class LiteJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverEnabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
-        liteJobFacade.registerJobCompleted(shardingContexts);
+        jobFacade.registerJobCompleted(shardingContexts);
         verify(executionService).registerJobCompleted(shardingContexts);
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
@@ -145,7 +144,7 @@ class LiteJobFacadeTest {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
         when(failoverService.getLocalFailoverItems()).thenReturn(Collections.singletonList(1));
         when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContexts);
-        assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
+        assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService, times(0)).shardingIfNecessary();
     }
     
@@ -157,7 +156,7 @@ class LiteJobFacadeTest {
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
         when(failoverService.getLocalTakeOffItems()).thenReturn(Collections.singletonList(0));
         when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContexts);
-        assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
+        assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }
     
@@ -167,7 +166,7 @@ class LiteJobFacadeTest {
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
         when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(executionContextService.getJobShardingContext(Arrays.asList(0, 1))).thenReturn(shardingContexts);
-        assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
+        assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }
     
@@ -178,45 +177,45 @@ class LiteJobFacadeTest {
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
         when(executionService.getDisabledItems(Arrays.asList(0, 1))).thenReturn(Collections.singletonList(1));
         when(executionContextService.getJobShardingContext(Collections.singletonList(0))).thenReturn(shardingContexts);
-        assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
+        assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }
     
     @Test
     void assertMisfireIfRunning() {
         when(executionService.misfireIfHasRunningItems(Arrays.asList(0, 1))).thenReturn(true);
-        assertThat(liteJobFacade.misfireIfRunning(Arrays.asList(0, 1)), is(true));
+        assertThat(jobFacade.misfireIfRunning(Arrays.asList(0, 1)), is(true));
     }
     
     @Test
     void assertClearMisfire() {
-        liteJobFacade.clearMisfire(Arrays.asList(0, 1));
+        jobFacade.clearMisfire(Arrays.asList(0, 1));
         verify(executionService).clearMisfire(Arrays.asList(0, 1));
     }
     
     @Test
     void assertIsNeedSharding() {
         when(shardingService.isNeedSharding()).thenReturn(true);
-        assertThat(liteJobFacade.isNeedSharding(), is(true));
+        assertThat(jobFacade.isNeedSharding(), is(true));
     }
     
     @Test
     void assertBeforeJobExecuted() {
-        liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
+        jobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
         verify(caller, times(2)).before();
         assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
     void assertAfterJobExecuted() {
-        liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
+        jobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
         verify(caller, times(2)).after();
         assertThat(orderResult.toString(), is("l2l1"));
     }
     
     @Test
     void assertPostJobExecutionEvent() {
-        liteJobFacade.postJobExecutionEvent(null);
+        jobFacade.postJobExecutionEvent(null);
         verify(jobTracingEventBus).post(null);
     }
 }

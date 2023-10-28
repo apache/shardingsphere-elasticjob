@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
-import org.apache.shardingsphere.elasticjob.kernel.fixture.LiteYamlConstants;
+import org.apache.shardingsphere.elasticjob.kernel.fixture.YamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
@@ -50,7 +50,7 @@ class MonitorExecutionListenerManagerTest {
     
     @Test
     void assertMonitorExecutionSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/other", LiteYamlConstants.getJobYaml()));
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/other", YamlConstants.getJobYaml()));
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
@@ -62,13 +62,13 @@ class MonitorExecutionListenerManagerTest {
     
     @Test
     void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYaml()));
+        monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/config", YamlConstants.getJobYaml()));
         verify(executionService, times(0)).clearAllRunningInfo();
     }
     
     @Test
     void assertMonitorExecutionSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        DataChangedEvent event = new DataChangedEvent(Type.UPDATED, "/test_job/config", LiteYamlConstants.getJobYamlWithMonitorExecution(false));
+        DataChangedEvent event = new DataChangedEvent(Type.UPDATED, "/test_job/config", YamlConstants.getJobYamlWithMonitorExecution(false));
         monitorExecutionListenerManager.new MonitorExecutionSettingsChangedJobListener().onChange(event);
         verify(executionService).clearAllRunningInfo();
     }

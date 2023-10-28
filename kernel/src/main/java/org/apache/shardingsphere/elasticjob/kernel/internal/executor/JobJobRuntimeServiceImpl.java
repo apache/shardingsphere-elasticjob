@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 
 /**
- * Lite job runtime service.
+ * Job runtime service implementation.
  */
 @RequiredArgsConstructor
-public final class LiteJobJobRuntimeService implements JobRuntimeService {
+public final class JobJobRuntimeServiceImpl implements JobRuntimeService {
     
-    private final LiteJobFacade jobFacade;
+    private final JobFacade jobFacade;
     
     @Override
     public boolean isNeedSharding() {
