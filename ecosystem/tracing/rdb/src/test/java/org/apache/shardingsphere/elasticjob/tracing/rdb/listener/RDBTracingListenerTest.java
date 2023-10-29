@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import lombok.SneakyThrows;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.infra.constant.ExecutionType;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -33,7 +33,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 import static org.mockito.Mockito.atMost;
@@ -57,15 +56,8 @@ class RDBTracingListenerTest {
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         RDBTracingListener tracingListener = new RDBTracingListener(dataSource);
-        setRepository(tracingListener);
+        ReflectionUtils.setFieldValue(tracingListener, "repository", repository);
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<DataSource>("RDB", dataSource));
-    }
-    
-    @SneakyThrows
-    private void setRepository(final RDBTracingListener tracingListener) {
-        Field field = RDBTracingListener.class.getDeclaredField("repository");
-        field.setAccessible(true);
-        field.set(tracingListener, repository);
     }
     
     @Test

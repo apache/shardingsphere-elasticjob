@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.infra.env;
 
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -110,11 +110,8 @@ class IpUtilsTest {
     }
     
     @Test
-    void assertGetHostName() throws ReflectiveOperationException {
+    void assertGetHostName() {
         assertNotNull(IpUtils.getHostName());
-        Field field = IpUtils.class.getDeclaredField("cachedHostName");
-        field.setAccessible(true);
-        String hostName = (String) field.get(null);
-        assertThat(hostName, is(IpUtils.getHostName()));
+        assertThat(ReflectionUtils.getStaticFieldValue(IpUtils.class, "cachedHostName"), is(IpUtils.getHostName()));
     }
 }
