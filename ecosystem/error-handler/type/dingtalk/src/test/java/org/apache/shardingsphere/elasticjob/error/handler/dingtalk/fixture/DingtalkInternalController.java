@@ -54,7 +54,6 @@ public final class DingtalkInternalController implements RestfulController {
      * @param body body
      * @return send result
      */
-    @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")
     public String send(@Param(name = "access_token", source = ParamSource.QUERY) final String accessToken,
                        @Param(name = "timestamp", source = ParamSource.QUERY, required = false) final Long timestamp,
@@ -77,7 +76,8 @@ public final class DingtalkInternalController implements RestfulController {
         return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 0, "errmsg", "ok"));
     }
     
-    private String sign(final Long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
+    @SneakyThrows({NoSuchAlgorithmException.class, InvalidKeyException.class})
+    private String sign(final Long timestamp) {
         String stringToSign = timestamp + "\n" + SECRET;
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));

@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.infra.env;
 
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -45,8 +45,7 @@ class IpUtilsTest {
     }
     
     @Test
-    @SneakyThrows
-    void assertPreferredNetworkInterface() {
+    void assertPreferredNetworkInterface() throws ReflectiveOperationException {
         System.setProperty(IpUtils.PREFERRED_NETWORK_INTERFACE, "eth0");
         Method declaredMethod = IpUtils.class.getDeclaredMethod("isPreferredNetworkInterface", NetworkInterface.class);
         declaredMethod.setAccessible(true);
@@ -58,8 +57,7 @@ class IpUtilsTest {
     }
     
     @Test
-    @SneakyThrows
-    void assertPreferredNetworkAddress() {
+    void assertPreferredNetworkAddress() throws ReflectiveOperationException {
         Method declaredMethod = IpUtils.class.getDeclaredMethod("isPreferredAddress", InetAddress.class);
         declaredMethod.setAccessible(true);
         InetAddress inetAddress = mock(InetAddress.class);
@@ -78,8 +76,7 @@ class IpUtilsTest {
     }
     
     @Test
-    @SneakyThrows
-    void assertGetFirstNetworkInterface() {
+    void assertGetFirstNetworkInterface() throws IOException, ReflectiveOperationException {
         InetAddress address1 = mock(Inet4Address.class);
         when(address1.isLoopbackAddress()).thenReturn(false);
         when(address1.isAnyLocalAddress()).thenReturn(false);
@@ -113,8 +110,7 @@ class IpUtilsTest {
     }
     
     @Test
-    @SneakyThrows
-    void assertGetHostName() {
+    void assertGetHostName() throws ReflectiveOperationException {
         assertNotNull(IpUtils.getHostName());
         Field field = IpUtils.class.getDeclaredField("cachedHostName");
         field.setAccessible(true);

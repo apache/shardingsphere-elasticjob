@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.restful.pipeline;
 
 import io.netty.channel.embedded.EmbeddedChannel;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.restful.Filter;
 import org.apache.shardingsphere.elasticjob.restful.handler.HandleContext;
 import org.apache.shardingsphere.elasticjob.restful.handler.Handler;
@@ -52,7 +51,6 @@ class FilterChainInboundHandlerTest {
     }
     
     @Test
-    @SneakyThrows
     void assertNoFilter() {
         when(filterInstances.isEmpty()).thenReturn(true);
         channel.writeOneInbound(handleContext);

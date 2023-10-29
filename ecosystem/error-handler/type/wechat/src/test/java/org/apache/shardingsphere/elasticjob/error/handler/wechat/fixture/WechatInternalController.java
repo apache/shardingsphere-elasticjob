@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
@@ -31,12 +30,11 @@ public final class WechatInternalController implements RestfulController {
     private static final String KEY = "mocked_key";
     
     /**
-     * Send wechat message.
+     * Send Wechat message.
      *
      * @param key access token
-     * @return send Result
+     * @return send result
      */
-    @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")
     public String send(@Param(name = "key", source = ParamSource.QUERY) final String key) {
         if (!KEY.equals(key)) {

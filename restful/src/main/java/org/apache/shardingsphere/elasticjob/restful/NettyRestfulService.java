@@ -55,7 +55,7 @@ public final class NettyRestfulService implements RestfulService {
                 .childHandler(new RestfulServiceChannelInitializer(config));
     }
     
-    @SneakyThrows
+    @SneakyThrows(InterruptedException.class)
     @Override
     public void startup() {
         initServerBootstrap();
