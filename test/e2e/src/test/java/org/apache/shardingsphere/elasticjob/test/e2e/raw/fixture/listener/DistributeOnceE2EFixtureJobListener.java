@@ -15,23 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.executor;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.type.ClassedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJob;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
 
-public final class E2EFixtureJobExecutor implements ClassedJobItemExecutor<E2EFixtureJob> {
+public class DistributeOnceE2EFixtureJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    @Override
-    public void process(final E2EFixtureJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
-        elasticJob.foo(shardingContext);
+    public DistributeOnceE2EFixtureJobListener() {
+        super(100L, 100L);
     }
     
     @Override
-    public Class<E2EFixtureJob> getElasticJobClass() {
-        return E2EFixtureJob.class;
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
+    }
+    
+    @Override
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
+    }
+    
+    @Override
+    public String getType() {
+        return "INTEGRATE-DISTRIBUTE";
     }
 }

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.enable;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.enable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJobImpl;
+import org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job.E2EFixtureJobImpl;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 

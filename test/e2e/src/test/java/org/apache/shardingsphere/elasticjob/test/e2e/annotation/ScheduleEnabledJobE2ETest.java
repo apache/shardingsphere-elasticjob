@@ -15,28 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.enable;
+package org.apache.shardingsphere.elasticjob.test.e2e.annotation;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.test.e2e.BaseE2ETest;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
+import org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture.AnnotationSimpleJob;
+import org.awaitility.Awaitility;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class EnabledJobE2ETest extends BaseE2ETest {
+class ScheduleEnabledJobE2ETest extends BaseAnnotationE2ETest {
     
-    protected EnabledJobE2ETest(final TestType type, final ElasticJob elasticJob) {
-        super(type, elasticJob);
+    ScheduleEnabledJobE2ETest() {
+        super(TestType.SCHEDULE, new AnnotationSimpleJob());
     }
     
     @BeforeEach
@@ -45,16 +48,20 @@ public abstract class EnabledJobE2ETest extends BaseE2ETest {
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
-        if (getJobBootstrap() instanceof ScheduleJobBootstrap) {
-            assertThat(jobConfig.getCron(), is("0/1 * * * * ?"));
-        } else {
-            assertNull(jobConfig.getCron());
-        }
-        assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(jobConfig.getCron(), is("*/10 * * * * ?"));
+        assertNull(jobConfig.getTimeZone());
+        assertThat(jobConfig.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.ENABLED.name()));
         assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
         getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
         assertTrue(getLeaderService().isLeaderUntilBlock());
     }
+    
+    @Test
+    void assertJobInit() {
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> MatcherAssert.assertThat(((AnnotationSimpleJob) getElasticJob()).isCompleted(), is(true)));
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
+    }
+    
 }

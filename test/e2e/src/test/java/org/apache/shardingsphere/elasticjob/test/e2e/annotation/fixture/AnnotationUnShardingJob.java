@@ -15,24 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.job;
+package org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture;
 
 import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
-import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArraySet;
-
-public final class E2EFixtureJobImpl implements E2EFixtureJob {
+@ElasticJobConfiguration(jobName = "AnnotationUnShardingJob", description = "desc", shardingTotalCount = 1)
+@Getter
+public final class AnnotationUnShardingJob implements SimpleJob {
     
-    private final Collection<Integer> completedJobItems = new CopyOnWriteArraySet<>();
-    
-    @Getter
     private volatile boolean completed;
     
     @Override
-    public void foo(final ShardingContext shardingContext) {
-        completedJobItems.add(shardingContext.getShardingItem());
-        completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
+    public void execute(final ShardingContext shardingContext) {
+        completed = true;
     }
 }

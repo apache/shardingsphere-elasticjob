@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.annotation.integrate;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.internal.annotation.JobAnnotationBuilder;
 import org.apache.shardingsphere.elasticjob.kernel.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
@@ -37,7 +36,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 @Getter(AccessLevel.PROTECTED)
-public abstract class BaseAnnotationTest {
+public abstract class BaseE2ETest {
     
     private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
     
@@ -54,22 +53,23 @@ public abstract class BaseAnnotationTest {
     
     private final LeaderService leaderService;
     
-    private final String jobName;
+    private final String jobName = System.nanoTime() + "_test_job";
     
-    protected BaseAnnotationTest(final TestType type, final ElasticJob elasticJob) {
+    protected BaseE2ETest(final TestType type, final ElasticJob elasticJob) {
         this.elasticJob = elasticJob;
-        jobConfiguration = JobAnnotationBuilder.generateJobConfiguration(elasticJob.getClass());
-        jobName = jobConfiguration.getJobName();
+        jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJob);
         leaderService = new LeaderService(REGISTRY_CENTER, jobName);
     }
     
+    protected abstract JobConfiguration getJobConfiguration(String jobName);
+    
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob);
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             case ONE_OFF:
-                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob);
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
