@@ -17,17 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler;
 
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.IgnoreJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -59,8 +58,8 @@ class JobErrorHandlerReloaderTest {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             when(jobErrorHandler.getType()).thenReturn("mock");
-            setField(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
-            setField(jobErrorHandlerReloader, "props", new Properties());
+            ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
+            ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "props", new Properties());
             String newJobErrorHandlerType = "LOG";
             JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(newJobErrorHandlerType).build();
             jobErrorHandlerReloader.reloadIfNecessary(newJobConfig);
@@ -86,20 +85,9 @@ class JobErrorHandlerReloaderTest {
     void assertShutdown() {
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
-            setField(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
+            ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
             jobErrorHandlerReloader.close();
             verify(jobErrorHandler).close();
         }
-    }
-    
-    @SneakyThrows
-    private void setField(final Object target, final String fieldName, final Object value) {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        boolean originAccessible = field.isAccessible();
-        if (!originAccessible) {
-            field.setAccessible(true);
-        }
-        field.set(target, value);
-        field.setAccessible(originAccessible);
     }
 }

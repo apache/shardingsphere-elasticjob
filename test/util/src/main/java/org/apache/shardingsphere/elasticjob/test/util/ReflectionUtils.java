@@ -39,8 +39,13 @@ public final class ReflectionUtils {
     @SneakyThrows(ReflectiveOperationException.class)
     public static Object getFieldValue(final Object target, final String fieldName) {
         Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field.get(target);
+        boolean originAccessible = field.isAccessible();
+        if (!originAccessible) {
+            field.setAccessible(true);
+        }
+        Object result = field.get(target);
+        field.setAccessible(originAccessible);
+        return result;
     }
     
     /**
@@ -53,8 +58,12 @@ public final class ReflectionUtils {
     @SneakyThrows(ReflectiveOperationException.class)
     public static void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
         Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        boolean originAccessible = field.isAccessible();
+        if (!originAccessible) {
+            field.setAccessible(true);
+        }
         field.set(target, fieldValue);
+        field.setAccessible(originAccessible);
     }
     
     /**
@@ -67,7 +76,11 @@ public final class ReflectionUtils {
     @SneakyThrows(ReflectiveOperationException.class)
     public static void setSuperclassFieldValue(final Object target, final String fieldName, final Object fieldValue) {
         Field field = target.getClass().getSuperclass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        boolean originAccessible = field.isAccessible();
+        if (!originAccessible) {
+            field.setAccessible(true);
+        }
         field.set(target, fieldValue);
+        field.setAccessible(originAccessible);
     }
 }
