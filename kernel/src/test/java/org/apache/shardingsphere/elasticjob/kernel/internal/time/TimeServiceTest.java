@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.time;
+package org.apache.shardingsphere.elasticjob.kernel.internal.time;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.time.TimeService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
