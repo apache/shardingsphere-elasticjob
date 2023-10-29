@@ -25,6 +25,7 @@ import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -79,11 +81,8 @@ class ZookeeperElectionServiceTest {
         verify(anotherElectionCandidate, atLeastOnce()).stopLeadership();
     }
     
-    @SneakyThrows
     private void blockUntilCondition(final Supplier<Boolean> condition) {
-        while (!condition.get()) {
-            Thread.sleep(100L);
-        }
+        Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(condition::get);
     }
     
     @SneakyThrows

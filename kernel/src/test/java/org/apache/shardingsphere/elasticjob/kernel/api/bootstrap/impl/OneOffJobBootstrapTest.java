@@ -25,6 +25,7 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -91,14 +93,14 @@ class OneOffJobBootstrapTest {
         assertTrue(getScheduler(oneOffJobBootstrap).isShutdown());
     }
     
-    @SneakyThrows
+    @SneakyThrows(ReflectiveOperationException.class)
     private JobScheduler getJobScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
         Field field = OneOffJobBootstrap.class.getDeclaredField("jobScheduler");
         field.setAccessible(true);
         return (JobScheduler) field.get(oneOffJobBootstrap);
     }
     
-    @SneakyThrows
+    @SneakyThrows(ReflectiveOperationException.class)
     private Scheduler getScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
         JobScheduler jobScheduler = getJobScheduler(oneOffJobBootstrap);
         Field schedulerField = JobScheduleController.class.getDeclaredField("scheduler");
@@ -106,11 +108,8 @@ class OneOffJobBootstrapTest {
         return (Scheduler) schedulerField.get(jobScheduler.getJobScheduleController());
     }
     
-    @SneakyThrows
     private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
         Scheduler scheduler = getScheduler(oneOffJobBootstrap);
-        while (0 == counter.get() || !scheduler.getCurrentlyExecutingJobs().isEmpty()) {
-            Thread.sleep(100L);
-        }
+        Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(() -> 0 != counter.get() && scheduler.getCurrentlyExecutingJobs().isEmpty());
     }
 }
