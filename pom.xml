@@ -51,6 +51,7 @@
         <java.version>1.8</java.version>
         <maven.version.range>[3.5.0,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.deploy.skip>false</maven.deploy.skip>
         
         <!-- 3rd party library versions -->
         <shardingsphere.version>5.4.1</shardingsphere.version>
@@ -508,6 +509,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                    <configuration>
+                        <skip>${maven.deploy.skip}</skip>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>net.nicoulaj.maven.plugins</groupId>
