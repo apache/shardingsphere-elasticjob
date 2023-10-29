@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
@@ -25,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,19 +74,12 @@ class ElasticJobExecutorTest {
         when(jobFacade.loadJobConfiguration(anyBoolean())).thenReturn(jobConfig);
         when(jobFacade.getJobRuntimeService()).thenReturn(jobRuntimeService);
         elasticJobExecutor = new ElasticJobExecutor(fooJob, jobConfig, jobFacade);
-        setJobItemExecutor();
+        ReflectionUtils.setFieldValue(elasticJobExecutor, "jobItemExecutor", jobItemExecutor);
     }
     
     private JobConfiguration createJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
                 .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
-    }
-    
-    @SneakyThrows
-    private void setJobItemExecutor() {
-        Field field = ElasticJobExecutor.class.getDeclaredField("jobItemExecutor");
-        field.setAccessible(true);
-        field.set(elasticJobExecutor, jobItemExecutor);
     }
     
     @Test

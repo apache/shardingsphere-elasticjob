@@ -49,6 +49,25 @@ public final class ReflectionUtils {
     }
     
     /**
+     * Get static field value.
+     *
+     * @param target target class
+     * @param fieldName field name
+     * @return field value
+     */
+    @SneakyThrows(ReflectiveOperationException.class)
+    public static Object getStaticFieldValue(final Class<?> target, final String fieldName) {
+        Field field = target.getDeclaredField(fieldName);
+        boolean originAccessible = field.isAccessible();
+        if (!originAccessible) {
+            field.setAccessible(true);
+        }
+        Object result = field.get(null);
+        field.setAccessible(originAccessible);
+        return result;
+    }
+    
+    /**
      * Set field value.
      *
      * @param target target object

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.tracing;
 
 import com.google.common.eventbus.EventBus;
-import lombok.SneakyThrows;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
@@ -31,11 +31,10 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -53,33 +52,24 @@ class JobTracingEventBusTest {
     @Test
     void assertRegisterFailure() {
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("FAIL", null));
-        assertIsRegistered(false);
+        assertFalse((Boolean) ReflectionUtils.getFieldValue(jobTracingEventBus, "isRegistered"));
     }
     
     @Test
     void assertPost() {
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
-        assertIsRegistered(true);
+        assertTrue((Boolean) ReflectionUtils.getFieldValue(jobTracingEventBus, "isRegistered"));
         jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(TestTracingListener::isExecutionEventCalled);
         verify(jobEventCaller).call();
     }
     
     @Test
-    void assertPostWithoutListener() throws ReflectiveOperationException {
+    void assertPostWithoutListener() {
         jobTracingEventBus = new JobTracingEventBus();
-        assertIsRegistered(false);
-        Field field = JobTracingEventBus.class.getDeclaredField("eventBus");
-        field.setAccessible(true);
-        field.set(jobTracingEventBus, eventBus);
+        assertFalse((Boolean) ReflectionUtils.getFieldValue(jobTracingEventBus, "isRegistered"));
+        ReflectionUtils.setFieldValue(jobTracingEventBus, "eventBus", eventBus);
         jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
-    }
-    
-    @SneakyThrows
-    private void assertIsRegistered(final boolean actual) {
-        Field field = JobTracingEventBus.class.getDeclaredField("isRegistered");
-        field.setAccessible(true);
-        assertThat(field.get(jobTracingEventBus), is(actual));
     }
 }

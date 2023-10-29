@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl;
 
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,7 +80,7 @@ class OneOffJobBootstrapTest {
         oneOffJobBootstrap.execute();
         blockUtilFinish(oneOffJobBootstrap, counter);
         assertThat(counter.get(), is(SHARDING_TOTAL_COUNT));
-        getJobScheduler(oneOffJobBootstrap).shutdown();
+        ((JobScheduler) ReflectionUtils.getFieldValue(oneOffJobBootstrap, "jobScheduler")).shutdown();
     }
     
     @Test
@@ -93,19 +91,9 @@ class OneOffJobBootstrapTest {
         assertTrue(getScheduler(oneOffJobBootstrap).isShutdown());
     }
     
-    @SneakyThrows(ReflectiveOperationException.class)
-    private JobScheduler getJobScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
-        Field field = OneOffJobBootstrap.class.getDeclaredField("jobScheduler");
-        field.setAccessible(true);
-        return (JobScheduler) field.get(oneOffJobBootstrap);
-    }
-    
-    @SneakyThrows(ReflectiveOperationException.class)
     private Scheduler getScheduler(final OneOffJobBootstrap oneOffJobBootstrap) {
-        JobScheduler jobScheduler = getJobScheduler(oneOffJobBootstrap);
-        Field schedulerField = JobScheduleController.class.getDeclaredField("scheduler");
-        schedulerField.setAccessible(true);
-        return (Scheduler) schedulerField.get(jobScheduler.getJobScheduleController());
+        JobScheduler jobScheduler = (JobScheduler) ReflectionUtils.getFieldValue(oneOffJobBootstrap, "jobScheduler");
+        return (Scheduler) ReflectionUtils.getFieldValue(jobScheduler.getJobScheduleController(), "scheduler");
     }
     
     private void blockUtilFinish(final OneOffJobBootstrap oneOffJobBootstrap, final AtomicInteger counter) {
