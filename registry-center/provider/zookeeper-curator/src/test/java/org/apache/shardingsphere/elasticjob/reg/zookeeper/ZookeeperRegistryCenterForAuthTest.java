@@ -59,10 +59,11 @@ class ZookeeperRegistryCenterForAuthTest {
     
     @Test
     void assertInitWithDigestSuccess() throws Exception {
-        try (CuratorFramework client = CuratorFrameworkFactory.builder()
-                .connectString(EMBED_TESTING_SERVER.getConnectionString())
-                .retryPolicy(new RetryOneTime(2000))
-                .authorization("digest", "digest:password".getBytes()).build()) {
+        try (
+                CuratorFramework client = CuratorFrameworkFactory.builder()
+                        .connectString(EMBED_TESTING_SERVER.getConnectionString())
+                        .retryPolicy(new RetryOneTime(2000))
+                        .authorization("digest", "digest:password".getBytes()).build()) {
             client.start();
             client.blockUntilConnected();
             assertThat(client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested"), is("deepNested".getBytes()));
