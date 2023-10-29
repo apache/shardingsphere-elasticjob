@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.fixture.job;
+package org.apache.shardingsphere.elasticjob.kernel.internal.annotation.fixture;
 
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
@@ -34,7 +34,7 @@ import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
                 @ElasticJobProp(key = "print.content", value = "test content")
         })
 @Getter
-public class AnnotationSimpleJob implements SimpleJob {
+public class AnnotationJobFixture implements SimpleJob {
     
     private volatile boolean completed;
     

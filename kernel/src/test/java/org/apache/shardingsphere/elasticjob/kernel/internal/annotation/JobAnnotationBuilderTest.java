@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.annotation;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.AnnotationSimpleJob;
+import org.apache.shardingsphere.elasticjob.kernel.internal.annotation.fixture.AnnotationJobFixture;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +31,7 @@ class JobAnnotationBuilderTest {
     
     @Test
     void assertGenerateJobConfiguration() {
-        JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(AnnotationSimpleJob.class);
+        JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(AnnotationJobFixture.class);
         assertThat(jobConfig.getJobName(), is("AnnotationSimpleJob"));
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         assertThat(jobConfig.getShardingItemParameters(), is("0=a,1=b,2=c"));
@@ -50,5 +50,4 @@ class JobAnnotationBuilderTest {
         assertFalse(jobConfig.isDisabled());
         assertFalse(jobConfig.isOverwrite());
     }
-    
 }
