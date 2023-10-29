@@ -26,7 +26,6 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
@@ -39,6 +38,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
@@ -67,10 +67,9 @@ class NettyRestfulServiceTest {
         restfulService.startup();
     }
     
-    @SneakyThrows
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
-    void assertRequestWithParameters() {
+    void assertRequestWithParameters() throws UnsupportedEncodingException {
         String cron = "0 * * * * ?";
         String uri = String.format("/job/myGroup/myJob?cron=%s", URLEncoder.encode(cron, "UTF-8"));
         String description = "Descriptions about this job.";

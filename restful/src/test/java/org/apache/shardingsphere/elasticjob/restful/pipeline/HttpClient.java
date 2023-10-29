@@ -49,7 +49,7 @@ public final class HttpClient {
      * @param consumer HTTP response consumer
      * @param timeoutSeconds wait for consume
      */
-    @SneakyThrows
+    @SneakyThrows(InterruptedException.class)
     public static void request(final String host, final int port, final FullHttpRequest request, final Consumer<FullHttpResponse> consumer, final Long timeoutSeconds) {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();

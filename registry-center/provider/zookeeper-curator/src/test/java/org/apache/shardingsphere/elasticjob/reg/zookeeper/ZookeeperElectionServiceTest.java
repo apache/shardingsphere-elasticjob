@@ -17,7 +17,6 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
-import lombok.SneakyThrows;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
@@ -85,7 +84,6 @@ class ZookeeperElectionServiceTest {
         Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(condition::get);
     }
     
-    @SneakyThrows
     private boolean hasLeadership(final ZookeeperElectionService zookeeperElectionService) {
         return ((LeaderSelector) ReflectionUtils.getFieldValue(zookeeperElectionService, "leaderSelector")).hasLeadership();
     }

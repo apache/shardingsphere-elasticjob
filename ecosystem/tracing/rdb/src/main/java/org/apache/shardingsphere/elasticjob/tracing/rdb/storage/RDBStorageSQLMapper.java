@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -66,7 +67,7 @@ public final class RDBStorageSQLMapper {
         selectOriginalTaskIdForJobStatusTraceLog = props.getProperty("JOB_STATUS_TRACE_LOG.SELECT_ORIGINAL_TASK_ID");
     }
     
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     private Properties loadProps(final String sqlPropertiesFileName) {
         Properties result = new Properties();
         result.load(getPropertiesInputStream(sqlPropertiesFileName));

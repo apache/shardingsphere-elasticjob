@@ -131,7 +131,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
     private String getErrorMessage(final String jobName, final Throwable cause) {
         StringWriter writer = new StringWriter();
         cause.printStackTrace(new PrintWriter(writer, true));
-        String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer.toString());
+        String result = String.format("Job '%s' exception occur in job processing, caused by %s", jobName, writer);
         if (!Strings.isNullOrEmpty(keyword)) {
             result = keyword.concat(result);
         }
@@ -143,7 +143,7 @@ public final class DingtalkJobErrorHandler implements JobErrorHandler {
         return "DINGTALK";
     }
     
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     @Override
     public void close() {
         httpclient.close();

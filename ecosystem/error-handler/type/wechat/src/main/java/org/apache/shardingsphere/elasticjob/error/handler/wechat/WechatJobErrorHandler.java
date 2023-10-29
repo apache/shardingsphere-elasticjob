@@ -99,7 +99,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
     private String getErrorMessage(final String jobName, final Throwable cause) {
         StringWriter stringWriter = new StringWriter();
         cause.printStackTrace(new PrintWriter(stringWriter, true));
-        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, stringWriter.toString());
+        return String.format("Job '%s' exception occur in job processing, caused by %s", jobName, stringWriter);
     }
     
     @Override
@@ -107,7 +107,7 @@ public final class WechatJobErrorHandler implements JobErrorHandler {
         return "WECHAT";
     }
     
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     @Override
     public void close() {
         httpclient.close();
