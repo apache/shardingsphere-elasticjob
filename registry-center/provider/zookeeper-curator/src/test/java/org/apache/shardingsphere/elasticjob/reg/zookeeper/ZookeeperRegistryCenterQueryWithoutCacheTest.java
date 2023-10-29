@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.env.RegistryCenterEnvironmentPreparer;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,7 +47,7 @@ class ZookeeperRegistryCenterQueryWithoutCacheTest {
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
-        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
+        RegistryCenterEnvironmentPreparer.persist(zkRegCenter);
         zkRegCenter.addCacheData("/other");
     }
     

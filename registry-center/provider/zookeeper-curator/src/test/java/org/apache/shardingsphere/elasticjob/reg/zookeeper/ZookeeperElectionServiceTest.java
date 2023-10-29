@@ -25,6 +25,7 @@ import org.apache.curator.retry.RetryOneTime;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -74,7 +74,7 @@ class ZookeeperElectionServiceTest {
         KillSession.kill(client.getZookeeperClient().getZooKeeper());
         service.stop();
         blockUntilCondition(() -> hasLeadership(anotherService));
-        ((CountDownLatch) getFieldValue(anotherService, "leaderLatch")).countDown();
+        ((CountDownLatch) ReflectionUtils.getFieldValue(anotherService, "leaderLatch")).countDown();
         blockUntilCondition(() -> !hasLeadership(anotherService));
         anotherService.stop();
         verify(anotherElectionCandidate, atLeastOnce()).startLeadership();
@@ -87,13 +87,6 @@ class ZookeeperElectionServiceTest {
     
     @SneakyThrows
     private boolean hasLeadership(final ZookeeperElectionService zookeeperElectionService) {
-        return ((LeaderSelector) getFieldValue(zookeeperElectionService, "leaderSelector")).hasLeadership();
-    }
-    
-    @SneakyThrows
-    private Object getFieldValue(final Object target, final String fieldName) {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field.get(target);
+        return ((LeaderSelector) ReflectionUtils.getFieldValue(zookeeperElectionService, "leaderSelector")).hasLeadership();
     }
 }

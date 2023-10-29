@@ -21,7 +21,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

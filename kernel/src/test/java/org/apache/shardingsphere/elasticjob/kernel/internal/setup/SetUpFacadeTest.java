@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.listener.ListenerMan
 import org.apache.shardingsphere.elasticjob.kernel.internal.reconcile.ReconcileService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerService;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

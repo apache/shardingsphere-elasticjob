@@ -17,14 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.threadpool;
 
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ExecutorService;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -54,8 +53,8 @@ class ExecutorServiceReloaderTest {
     @Test
     void assertReload() {
         ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
-        setField(executorServiceReloader, "jobExecutorThreadPoolSizeProviderType", "mock");
-        setField(executorServiceReloader, "executorService", mockExecutorService);
+        ReflectionUtils.setFieldValue(executorServiceReloader, "jobExecutorThreadPoolSizeProviderType", "mock");
+        ReflectionUtils.setFieldValue(executorServiceReloader, "executorService", mockExecutorService);
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
         executorServiceReloader.reloadIfNecessary(jobConfig);
         verify(mockExecutorService).shutdown();
@@ -80,19 +79,8 @@ class ExecutorServiceReloaderTest {
     @Test
     void assertShutdown() {
         ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
-        setField(executorServiceReloader, "executorService", mockExecutorService);
+        ReflectionUtils.setFieldValue(executorServiceReloader, "executorService", mockExecutorService);
         executorServiceReloader.close();
         verify(mockExecutorService).shutdown();
-    }
-    
-    @SneakyThrows
-    private void setField(final Object target, final String fieldName, final Object value) {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        boolean originAccessible = field.isAccessible();
-        if (!originAccessible) {
-            field.setAccessible(true);
-        }
-        field.set(target, value);
-        field.setAccessible(originAccessible);
     }
 }

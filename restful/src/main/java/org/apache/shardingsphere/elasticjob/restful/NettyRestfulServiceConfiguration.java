@@ -32,26 +32,25 @@ import java.util.Map;
 /**
  * Configuration for {@link NettyRestfulService}.
  */
-@Getter
 @RequiredArgsConstructor
+@Getter
+@Setter
 public final class NettyRestfulServiceConfiguration {
-    
-    private final int port;
-    
-    @Setter
-    private String host;
-    
-    /**
-     * If trailing slash sensitive, <code>/foo/bar</code> is not equals to <code>/foo/bar/</code>.
-     */
-    @Setter
-    private boolean trailingSlashSensitive;
     
     private final List<Filter> filterInstances = new LinkedList<>();
     
     private final List<RestfulController> controllerInstances = new LinkedList<>();
     
     private final Map<Class<? extends Throwable>, ExceptionHandler<? extends Throwable>> exceptionHandlers = new HashMap<>();
+    
+    private final int port;
+    
+    private String host;
+    
+    /**
+     * If trailing slash sensitive, <code>/foo/bar</code> is not equals to <code>/foo/bar/</code>.
+     */
+    private boolean trailingSlashSensitive;
     
     /**
      * Add instances of {@link Filter}.

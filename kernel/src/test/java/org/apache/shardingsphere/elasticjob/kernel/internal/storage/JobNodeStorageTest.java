@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.storage;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.ListenerNotifierManager;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegException;

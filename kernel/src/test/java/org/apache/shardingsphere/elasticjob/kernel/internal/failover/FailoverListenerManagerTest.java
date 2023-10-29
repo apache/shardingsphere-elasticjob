@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobSchedule
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent.Type;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;

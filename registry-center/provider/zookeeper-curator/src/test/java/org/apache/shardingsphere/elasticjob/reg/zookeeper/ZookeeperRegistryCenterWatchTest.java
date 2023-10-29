@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.curator.utils.ThreadUtils;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.env.RegistryCenterEnvironmentPreparer;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,7 +49,7 @@ class ZookeeperRegistryCenterWatchTest {
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();
-        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
+        RegistryCenterEnvironmentPreparer.persist(zkRegCenter);
     }
     
     @AfterAll

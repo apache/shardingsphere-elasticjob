@@ -22,7 +22,7 @@ import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

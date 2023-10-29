@@ -28,7 +28,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverSer
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionContextService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
-import org.apache.shardingsphere.elasticjob.kernel.util.ReflectionUtils;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import lombok.SneakyThrows;
 import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Properties;
 
@@ -81,11 +81,10 @@ class EmailJobErrorHandlerTest {
     }
     
     @Test
-    @SneakyThrows
-    void assertHandleExceptionSucceedInSendingEmail() {
+    void assertHandleExceptionSucceedInSendingEmail() throws MessagingException {
         EmailJobErrorHandler emailJobErrorHandler = getEmailJobErrorHandler(createConfigurationProperties());
         setUpMockSession(session);
-        setFieldValue(emailJobErrorHandler, "session", session);
+        ReflectionUtils.setFieldValue(emailJobErrorHandler, "session", session);
         Throwable cause = new RuntimeException("test");
         String jobName = "test_job";
         when(session.getTransport()).thenReturn(transport);
@@ -102,15 +101,8 @@ class EmailJobErrorHandlerTest {
     
     private void setUpMockSession(final Session session) {
         Properties props = new Properties();
-        setFieldValue(session, "props", props);
+        ReflectionUtils.setFieldValue(session, "props", props);
         when(session.getProperties()).thenReturn(props);
-    }
-    
-    @SneakyThrows
-    private void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
-        Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, fieldValue);
     }
     
     private Properties createConfigurationProperties() {

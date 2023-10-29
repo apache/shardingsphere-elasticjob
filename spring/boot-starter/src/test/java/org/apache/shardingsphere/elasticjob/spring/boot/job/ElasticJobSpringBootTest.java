@@ -28,6 +28,7 @@ import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.Cus
 import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,7 +40,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -147,36 +147,26 @@ class ElasticJobSpringBootTest {
     }
     
     @Test
-    void assertOneOffJobBootstrapBeanName() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    void assertOneOffJobBootstrapBeanName() {
         assertNotNull(applicationContext);
-        OneOffJobBootstrap customTestJobBootstrap =
-                applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class);
+        OneOffJobBootstrap customTestJobBootstrap = applicationContext.getBean("customTestJobBean", OneOffJobBootstrap.class);
         assertNotNull(customTestJobBootstrap);
-        Field jobSchedulerField = customTestJobBootstrap.getClass().getDeclaredField("jobScheduler");
-        jobSchedulerField.setAccessible(true);
-        Collection<JobExtraConfiguration> extraConfigurations =
-                ((JobScheduler) jobSchedulerField.get(customTestJobBootstrap)).getJobConfig().getExtraConfigurations();
-        assertThat(extraConfigurations.size(), is(0));
-        OneOffJobBootstrap printTestJobBootstrap =
-                applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class);
-        jobSchedulerField = printTestJobBootstrap.getClass().getDeclaredField("jobScheduler");
-        jobSchedulerField.setAccessible(true);
-        extraConfigurations =
-                ((JobScheduler) jobSchedulerField.get(printTestJobBootstrap)).getJobConfig().getExtraConfigurations();
-        assertThat(extraConfigurations.size(), is(1));
+        Collection<JobExtraConfiguration> extraConfigs = ((JobScheduler) ReflectionUtils.getFieldValue(customTestJobBootstrap, "jobScheduler")).getJobConfig().getExtraConfigurations();
+        assertThat(extraConfigs.size(), is(0));
+        OneOffJobBootstrap printTestJobBootstrap = applicationContext.getBean("printTestJobBean", OneOffJobBootstrap.class);
+        extraConfigs = ((JobScheduler) ReflectionUtils.getFieldValue(printTestJobBootstrap, "jobScheduler")).getJobConfig().getExtraConfigurations();
+        assertThat(extraConfigs.size(), is(1));
     }
     
     @Test
     void assertDefaultBeanNameWithClassJob() {
         assertNotNull(applicationContext);
-        assertNotNull(applicationContext.getBean("defaultBeanNameClassJobScheduleJobBootstrap",
-                ScheduleJobBootstrap.class));
+        assertNotNull(applicationContext.getBean("defaultBeanNameClassJobScheduleJobBootstrap", ScheduleJobBootstrap.class));
     }
     
     @Test
     void assertDefaultBeanNameWithTypeJob() {
         assertNotNull(applicationContext);
-        assertNotNull(applicationContext.getBean("defaultBeanNameTypeJobScheduleJobBootstrap",
-                ScheduleJobBootstrap.class));
+        assertNotNull(applicationContext.getBean("defaultBeanNameTypeJobScheduleJobBootstrap", ScheduleJobBootstrap.class));
     }
 }
