@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.executor;
+package org.apache.shardingsphere.elasticjob.test.e2e.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.type.ClassedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.FooJob;
+import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 
-public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJob> {
+public class E2EFixtureJobListener implements ElasticJobListener {
     
     @Override
-    public void process(final FooJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
-        elasticJob.foo(shardingContext);
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }
     
     @Override
-    public Class<FooJob> getElasticJobClass() {
-        return FooJob.class;
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+    }
+    
+    @Override
+    public String getType() {
+        return "INTEGRATE-TEST";
     }
 }

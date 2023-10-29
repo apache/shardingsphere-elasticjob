@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurat
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
 import org.apache.shardingsphere.elasticjob.test.e2e.BaseE2ETest;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJobImpl;
 import org.awaitility.Awaitility;
 import org.hamcrest.core.IsNull;
 
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public abstract class DisabledJobE2ETest extends BaseE2ETest {
     
     public DisabledJobE2ETest(final TestType type) {
-        super(type, new DetailedFooJob());
+        super(type, new E2EFixtureJobImpl());
     }
     
     protected final void assertDisabledRegCenterInfo() {

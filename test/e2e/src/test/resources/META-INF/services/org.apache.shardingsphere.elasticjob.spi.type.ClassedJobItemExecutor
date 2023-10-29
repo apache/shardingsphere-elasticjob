@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.test.e2e.fixture.executor.ClassedFooJobExecutor
+org.apache.shardingsphere.elasticjob.test.e2e.fixture.executor.E2EFixtureJobExecutor

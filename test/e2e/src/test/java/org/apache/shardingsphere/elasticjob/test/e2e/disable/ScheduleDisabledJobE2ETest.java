@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.test.e2e.disable;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJobImpl;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +46,7 @@ class ScheduleDisabledJobE2ETest extends DisabledJobE2ETest {
     void assertJobRunning() {
         assertDisabledRegCenterInfo();
         setJobEnable();
-        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
+        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((E2EFixtureJobImpl) getElasticJob()).isCompleted(), is(true)));
         assertEnabledRegCenterInfo();
     }
     

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.test.e2e.enable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJobImpl;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class OneOffEnabledJobE2ETest extends EnabledJobE2ETest {
     
     OneOffEnabledJobE2ETest() {
-        super(TestType.ONE_OFF, new DetailedFooJob());
+        super(TestType.ONE_OFF, new E2EFixtureJobImpl());
     }
     
     @Override
@@ -42,7 +42,7 @@ class OneOffEnabledJobE2ETest extends EnabledJobE2ETest {
     
     @Test
     void assertJobInit() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((E2EFixtureJobImpl) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }
