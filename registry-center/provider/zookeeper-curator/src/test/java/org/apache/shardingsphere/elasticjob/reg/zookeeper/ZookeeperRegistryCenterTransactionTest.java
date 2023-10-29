@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.env.RegistryCenterEnvironmentPreparer;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.zookeeper.KeeperException;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,7 +51,7 @@ class ZookeeperRegistryCenterTransactionTest {
     
     @BeforeEach
     void setup() {
-        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
+        RegistryCenterEnvironmentPreparer.persist(zkRegCenter);
     }
     
     @Test

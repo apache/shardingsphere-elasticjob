@@ -22,7 +22,7 @@ import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,8 +66,8 @@ class ZookeeperRegistryCenterListenerTest {
     @BeforeEach
     void setUp() {
         regCenter = new ZookeeperRegistryCenter(null);
-        ZookeeperRegistryCenterTestUtil.setFieldValue(regCenter, "caches", caches);
-        ZookeeperRegistryCenterTestUtil.setFieldValue(regCenter, "client", client);
+        ReflectionUtils.setFieldValue(regCenter, "caches", caches);
+        ReflectionUtils.setFieldValue(regCenter, "client", client);
     }
     
     @Test
@@ -140,11 +140,11 @@ class ZookeeperRegistryCenterListenerTest {
     
     @SuppressWarnings("unchecked")
     private Map<String, List<ConnectionStateListener>> getConnStateListeners() {
-        return (Map<String, List<ConnectionStateListener>>) ZookeeperRegistryCenterTestUtil.getFieldValue(regCenter, "connStateListeners");
+        return (Map<String, List<ConnectionStateListener>>) ReflectionUtils.getFieldValue(regCenter, "connStateListeners");
     }
     
     @SuppressWarnings("unchecked")
     private Map<String, List<CuratorCacheListener>> getDataListeners() {
-        return (Map<String, List<CuratorCacheListener>>) ZookeeperRegistryCenterTestUtil.getFieldValue(regCenter, "dataListeners");
+        return (Map<String, List<CuratorCacheListener>>) ReflectionUtils.getFieldValue(regCenter, "dataListeners");
     }
 }

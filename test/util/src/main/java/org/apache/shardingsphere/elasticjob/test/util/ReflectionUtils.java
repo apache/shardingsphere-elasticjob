@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.util;
+package org.apache.shardingsphere.elasticjob.test.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -30,13 +30,27 @@ import java.lang.reflect.Field;
 public final class ReflectionUtils {
     
     /**
+     * Get field value.
+     *
+     * @param target target object
+     * @param fieldName field name
+     * @return field value
+     */
+    @SneakyThrows(ReflectiveOperationException.class)
+    public static Object getFieldValue(final Object target, final String fieldName) {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(target);
+    }
+    
+    /**
      * Set field value.
      *
      * @param target target object
      * @param fieldName field name
      * @param fieldValue field value
      */
-    @SneakyThrows
+    @SneakyThrows(ReflectiveOperationException.class)
     public static void setFieldValue(final Object target, final String fieldName, final Object fieldValue) {
         Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
@@ -50,7 +64,7 @@ public final class ReflectionUtils {
      * @param fieldName field name
      * @param fieldValue field value
      */
-    @SneakyThrows
+    @SneakyThrows(ReflectiveOperationException.class)
     public static void setSuperclassFieldValue(final Object target, final String fieldName, final Object fieldValue) {
         Field field = target.getClass().getSuperclass().getDeclaredField(fieldName);
         field.setAccessible(true);

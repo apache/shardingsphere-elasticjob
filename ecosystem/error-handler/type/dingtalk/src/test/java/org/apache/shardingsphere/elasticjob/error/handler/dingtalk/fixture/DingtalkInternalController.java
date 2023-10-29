@@ -31,7 +31,6 @@ import org.apache.shardingsphere.elasticjob.restful.annotation.RequestBody;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -53,7 +52,7 @@ public final class DingtalkInternalController implements RestfulController {
      * @param timestamp timestamp
      * @param sign sign
      * @param body body
-     * @return send Result
+     * @return send result
      */
     @SneakyThrows
     @Mapping(method = Http.POST, path = "/send")
@@ -64,7 +63,7 @@ public final class DingtalkInternalController implements RestfulController {
         if (!ACCESS_TOKEN.equals(accessToken)) {
             return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 300001, "errmsg", "token is not exist"));
         }
-        String content = Map.class.cast(body.get("text")).get("content").toString();
+        String content = ((Map) body.get("text")).get("content").toString();
         if (!content.startsWith(KEYWORD)) {
             return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 310000, "errmsg", "keywords not in content, more: [https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq]"));
         }
@@ -78,11 +77,11 @@ public final class DingtalkInternalController implements RestfulController {
         return GsonFactory.getGson().toJson(ImmutableMap.of("errcode", 0, "errmsg", "ok"));
     }
     
-    private String sign(final Long timestamp) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+    private String sign(final Long timestamp) throws NoSuchAlgorithmException, InvalidKeyException {
         String stringToSign = timestamp + "\n" + SECRET;
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
         byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
-        return new String(Base64.getEncoder().encode(signData), StandardCharsets.UTF_8.name());
+        return new String(Base64.getEncoder().encode(signData), StandardCharsets.UTF_8);
     }
 }
