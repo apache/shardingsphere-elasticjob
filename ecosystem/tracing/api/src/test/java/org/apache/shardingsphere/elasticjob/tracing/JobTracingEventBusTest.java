@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.tracing.event.JobEvent;
 import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.tracing.fixture.JobEventCaller;
 import org.apache.shardingsphere.elasticjob.tracing.fixture.TestTracingListener;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -31,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,13 +57,11 @@ class JobTracingEventBusTest {
     }
     
     @Test
-    void assertPost() throws InterruptedException {
+    void assertPost() {
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", jobEventCaller));
         assertIsRegistered(true);
         jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
-        while (!TestTracingListener.isExecutionEventCalled()) {
-            Thread.sleep(100L);
-        }
+        Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(TestTracingListener::isExecutionEventCalled);
         verify(jobEventCaller).call();
     }
     

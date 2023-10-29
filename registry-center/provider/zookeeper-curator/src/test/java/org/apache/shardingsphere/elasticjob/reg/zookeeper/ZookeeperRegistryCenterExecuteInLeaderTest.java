@@ -82,7 +82,7 @@ class ZookeeperRegistryCenterExecuteInLeaderTest {
                 handleConcurrentExecution();
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(100L);
             } catch (final InterruptedException ex) {
                 waitingThread.interrupt();
             }
