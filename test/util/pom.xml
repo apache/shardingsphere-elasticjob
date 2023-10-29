@@ -26,6 +26,10 @@
     <artifactId>elasticjob-test-util</artifactId>
     <name>${project.artifactId}</name>
     
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.curator</groupId>
