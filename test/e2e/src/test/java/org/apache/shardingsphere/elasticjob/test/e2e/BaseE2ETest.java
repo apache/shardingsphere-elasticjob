@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate;
+package org.apache.shardingsphere.elasticjob.test.e2e;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 @Getter(AccessLevel.PROTECTED)
-public abstract class BaseIntegrateTest {
+public abstract class BaseE2ETest {
     
     private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
     
@@ -55,7 +55,7 @@ public abstract class BaseIntegrateTest {
     
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected BaseIntegrateTest(final TestType type, final ElasticJob elasticJob) {
+    protected BaseE2ETest(final TestType type, final ElasticJob elasticJob) {
         this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJob);

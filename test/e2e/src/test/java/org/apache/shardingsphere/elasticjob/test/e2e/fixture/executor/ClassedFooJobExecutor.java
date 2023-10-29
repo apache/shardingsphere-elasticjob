@@ -15,27 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate.listener;
+package org.apache.shardingsphere.elasticjob.test.e2e.fixture.executor;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.type.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.FooJob;
 
-public class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+public final class ClassedFooJobExecutor implements ClassedJobItemExecutor<FooJob> {
     
-    public TestDistributeOnceElasticJobListener() {
-        super(100L, 100L);
+    @Override
+    public void process(final FooJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
+        elasticJob.foo(shardingContext);
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-    }
-    
-    @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-    }
-    
-    @Override
-    public String getType() {
-        return "INTEGRATE-DISTRIBUTE";
+    public Class<FooJob> getElasticJobClass() {
+        return FooJob.class;
     }
 }

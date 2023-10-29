@@ -15,34 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate.enable;
+package org.apache.shardingsphere.elasticjob.test.e2e.disable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-class OneOffEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
+class OneOffDisabledJobE2ETest extends DisabledJobE2ETest {
     
-    OneOffEnabledJobIntegrateTest() {
-        super(TestType.ONE_OFF, new DetailedFooJob());
+    OneOffDisabledJobE2ETest() {
+        super(TestType.ONE_OFF);
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
         return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C")
-                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").overwrite(true).build();
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").disabled(true).overwrite(true).build();
     }
     
     @Test
-    void assertJobInit() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
+    void assertJobRunning() {
+        assertDisabledRegCenterInfo();
     }
 }

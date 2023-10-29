@@ -15,37 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate.disable;
+package org.apache.shardingsphere.elasticjob.test.e2e.enable;
 
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
-import org.apache.shardingsphere.elasticjob.kernel.integrate.BaseIntegrateTest;
+import org.apache.shardingsphere.elasticjob.test.e2e.BaseE2ETest;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
-import org.awaitility.Awaitility;
-import org.hamcrest.core.IsNull;
-
-import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
+public abstract class EnabledJobE2ETest extends BaseE2ETest {
     
-    public DisabledJobIntegrateTest(final TestType type) {
-        super(type, new DetailedFooJob());
+    protected EnabledJobE2ETest(final TestType type, final ElasticJob elasticJob) {
+        super(type, elasticJob);
     }
     
-    protected final void assertDisabledRegCenterInfo() {
-        Awaitility.await().atLeast(1L, TimeUnit.MILLISECONDS).atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> {
-            assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
-            assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
-        });
+    @BeforeEach
+    void assertEnabledRegCenterInfo() {
+        assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
+        assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
         JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         if (getJobBootstrap() instanceof ScheduleJobBootstrap) {
@@ -54,7 +51,10 @@ public abstract class DisabledJobIntegrateTest extends BaseIntegrateTest {
             assertNull(jobConfig.getCron());
         }
         assertThat(jobConfig.getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.DISABLED.name()));
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance"), is(IsNull.nullValue())));
+        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.ENABLED.name()));
+        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
+        assertTrue(getLeaderService().isLeaderUntilBlock());
     }
 }

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate.enable;
+package org.apache.shardingsphere.elasticjob.test.e2e.enable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.DetailedFooJob;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
@@ -28,21 +28,21 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ScheduleEnabledJobIntegrateTest extends EnabledJobIntegrateTest {
+class OneOffEnabledJobE2ETest extends EnabledJobE2ETest {
     
-    ScheduleEnabledJobIntegrateTest() {
-        super(TestType.SCHEDULE, new DetailedFooJob());
+    OneOffEnabledJobE2ETest() {
+        super(TestType.ONE_OFF, new DetailedFooJob());
     }
     
     @Override
     protected JobConfiguration getJobConfiguration(final String jobName) {
-        return JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C")
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C")
                 .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").overwrite(true).build();
     }
     
     @Test
     void assertJobInit() {
-        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((DetailedFooJob) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
 }

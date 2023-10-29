@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.integrate.disable;
+package org.apache.shardingsphere.elasticjob.test.e2e.disable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
+import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.DetailedFooJob;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
@@ -30,9 +30,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ScheduleDisabledJobIntegrateTest extends DisabledJobIntegrateTest {
+class ScheduleDisabledJobE2ETest extends DisabledJobE2ETest {
     
-    ScheduleDisabledJobIntegrateTest() {
+    ScheduleDisabledJobE2ETest() {
         super(TestType.SCHEDULE);
     }
     
