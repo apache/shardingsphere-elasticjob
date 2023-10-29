@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.snapshot;
+package org.apache.shardingsphere.elasticjob.test.e2e.snapshot;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

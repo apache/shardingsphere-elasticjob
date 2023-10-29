@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.snapshot;
+package org.apache.shardingsphere.elasticjob.test.e2e.snapshot;
 
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
+import org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job.E2EFixtureJobImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SnapshotServiceEnableTest extends BaseSnapshotServiceTest {
+class SnapshotServiceEnableE2ETest extends BaseSnapshotServiceE2ETest {
     
-    SnapshotServiceEnableTest() {
-        super(new DetailedFooJob());
+    SnapshotServiceEnableE2ETest() {
+        super(new E2EFixtureJobImpl());
     }
     
     @BeforeEach

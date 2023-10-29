@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.snapshot;
+package org.apache.shardingsphere.elasticjob.test.e2e.snapshot;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class BaseSnapshotServiceTest {
+public abstract class BaseSnapshotServiceE2ETest {
     
     static final int DUMP_PORT = 9000;
     
@@ -51,7 +52,7 @@ public abstract class BaseSnapshotServiceTest {
     @Getter(value = AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    public BaseSnapshotServiceTest(final ElasticJob elasticJob) {
+    public BaseSnapshotServiceE2ETest(final ElasticJob elasticJob) {
         bootstrap = new ScheduleJobBootstrap(REG_CENTER, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
