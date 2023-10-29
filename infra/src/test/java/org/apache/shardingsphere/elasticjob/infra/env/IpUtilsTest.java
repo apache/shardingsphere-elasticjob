@@ -113,5 +113,5 @@ class IpUtilsTest {
     void assertGetHostName() {
         assertNotNull(IpUtils.getHostName());
         assertThat(ReflectionUtils.getStaticFieldValue(IpUtils.class, "cachedHostName"), is(IpUtils.getHostName()));
-    }
+    } 
 }
