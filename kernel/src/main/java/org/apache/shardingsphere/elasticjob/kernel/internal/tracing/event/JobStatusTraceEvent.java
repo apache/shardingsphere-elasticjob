@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.infra.constant.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ExecutionType;
 
 import java.util.Date;
 import java.util.UUID;

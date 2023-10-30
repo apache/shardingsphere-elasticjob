@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.listener;
+package org.apache.shardingsphere.elasticjob.kernel.listener;
 
 import com.google.common.collect.Sets;
 import org.apache.shardingsphere.elasticjob.kernel.infra.time.TimeService;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.ElasticJobListenerCaller;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.TestDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.listener.fixture.ElasticJobListenerCaller;
+import org.apache.shardingsphere.elasticjob.kernel.listener.fixture.TestDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.listener.fixture;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;

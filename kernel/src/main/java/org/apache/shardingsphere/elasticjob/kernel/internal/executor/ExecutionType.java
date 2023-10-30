@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
-public interface ElasticJobListenerCaller {
+/**
+ * Execution type.
+ */
+public enum ExecutionType {
     
     /**
-     * Execute before.
+     * Ready of execute.
      */
-    void before();
+    READY,
     
     /**
-     * Execute after.
+     * Failover execution.
      */
-    void after();
+    FAILOVER
 }
