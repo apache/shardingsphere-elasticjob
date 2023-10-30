@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.util;
+package org.apache.shardingsphere.elasticjob.kernel.infra.util;
 
 import org.junit.jupiter.api.Test;
 

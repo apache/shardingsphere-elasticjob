@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.listener;
 
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.util.BlockUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
 import org.apache.shardingsphere.elasticjob.kernel.infra.time.TimeService;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;

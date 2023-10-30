@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerService
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.util.BlockUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
 
 /**
  * Leader service.

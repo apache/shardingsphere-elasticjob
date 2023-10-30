@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.util.BlockUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
