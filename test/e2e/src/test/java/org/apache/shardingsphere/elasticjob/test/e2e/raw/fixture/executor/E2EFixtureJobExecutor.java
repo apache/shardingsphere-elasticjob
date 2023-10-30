@@ -15,17 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.job;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.executor;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.type.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job.E2EFixtureJob;
 
-public interface E2EFixtureJob extends ElasticJob {
+public final class E2EFixtureJobExecutor implements ClassedJobItemExecutor<E2EFixtureJob> {
     
-    /**
-     * Do job.
-     *
-     * @param shardingContext sharding context
-     */
-    void foo(ShardingContext shardingContext);
+    @Override
+    public void process(final E2EFixtureJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
+        elasticJob.foo(shardingContext);
+    }
+    
+    @Override
+    public Class<E2EFixtureJob> getElasticJobClass() {
+        return E2EFixtureJob.class;
+    }
 }

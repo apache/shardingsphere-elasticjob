@@ -15,27 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.listener;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
+import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
-public class DistributeOnceE2EFixtureJobListener extends AbstractDistributeOnceElasticJobListener {
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+public final class E2EFixtureJobImpl implements E2EFixtureJob {
     
-    public DistributeOnceE2EFixtureJobListener() {
-        super(100L, 100L);
-    }
+    private final Collection<Integer> completedJobItems = new CopyOnWriteArraySet<>();
     
-    @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
-    }
-    
-    @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
-    }
+    @Getter
+    private volatile boolean completed;
     
     @Override
-    public String getType() {
-        return "INTEGRATE-DISTRIBUTE";
+    public void foo(final ShardingContext shardingContext) {
+        completedJobItems.add(shardingContext.getShardingItem());
+        completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
     }
 }

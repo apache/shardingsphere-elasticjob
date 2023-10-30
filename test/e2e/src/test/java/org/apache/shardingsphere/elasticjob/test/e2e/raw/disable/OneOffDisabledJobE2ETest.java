@@ -15,23 +15,25 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.listener;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.disable;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.junit.jupiter.api.Test;
 
-public class E2EFixtureJobListener implements ElasticJobListener {
+class OneOffDisabledJobE2ETest extends DisabledJobE2ETest {
     
-    @Override
-    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+    OneOffDisabledJobE2ETest() {
+        super(TestType.ONE_OFF);
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+    protected JobConfiguration getJobConfiguration(final String jobName) {
+        return JobConfiguration.newBuilder(jobName, 3).shardingItemParameters("0=A,1=B,2=C")
+                .jobListenerTypes("INTEGRATE-TEST", "INTEGRATE-DISTRIBUTE").disabled(true).overwrite(true).build();
     }
     
-    @Override
-    public String getType() {
-        return "INTEGRATE-TEST";
+    @Test
+    void assertJobRunning() {
+        assertDisabledRegCenterInfo();
     }
 }

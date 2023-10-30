@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.disable;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw.disable;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
@@ -24,8 +24,8 @@ import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJo
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
-import org.apache.shardingsphere.elasticjob.test.e2e.BaseE2ETest;
-import org.apache.shardingsphere.elasticjob.test.e2e.fixture.job.E2EFixtureJobImpl;
+import org.apache.shardingsphere.elasticjob.test.e2e.raw.BaseE2ETest;
+import org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job.E2EFixtureJobImpl;
 import org.awaitility.Awaitility;
 import org.hamcrest.core.IsNull;
 

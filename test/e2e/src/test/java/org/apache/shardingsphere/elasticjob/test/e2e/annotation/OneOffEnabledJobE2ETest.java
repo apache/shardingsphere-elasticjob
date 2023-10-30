@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.annotation.integrate;
+package org.apache.shardingsphere.elasticjob.test.e2e.annotation;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
-import org.apache.shardingsphere.elasticjob.kernel.fixture.job.AnnotationUnShardingJob;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;
+import org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture.AnnotationUnShardingJob;
 import org.awaitility.Awaitility;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +36,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class OneOffEnabledJobTest extends BaseAnnotationTest {
+class OneOffEnabledJobE2ETest extends BaseAnnotationE2ETest {
     
-    OneOffEnabledJobTest() {
+    OneOffEnabledJobE2ETest() {
         super(TestType.ONE_OFF, new AnnotationUnShardingJob());
     }
     
@@ -57,7 +58,7 @@ class OneOffEnabledJobTest extends BaseAnnotationTest {
     
     @Test
     void assertJobInit() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(((AnnotationUnShardingJob) getElasticJob()).isCompleted(), is(true)));
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> MatcherAssert.assertThat(((AnnotationUnShardingJob) getElasticJob()).isCompleted(), is(true)));
         assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
     }
     

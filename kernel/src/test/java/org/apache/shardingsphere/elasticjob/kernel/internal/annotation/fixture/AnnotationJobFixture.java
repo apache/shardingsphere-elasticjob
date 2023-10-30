@@ -15,24 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.fixture.job;
+package org.apache.shardingsphere.elasticjob.kernel.internal.annotation.fixture;
 
 import lombok.Getter;
+import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
+import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
-import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArraySet;
-
-public final class E2EFixtureJobImpl implements E2EFixtureJob {
+@ElasticJobConfiguration(
+        jobName = "AnnotationSimpleJob",
+        description = "desc",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=a,1=b,2=c",
+        cron = "*/10 * * * * ?",
+        props = {
+                @ElasticJobProp(key = "print.title", value = "test title"),
+                @ElasticJobProp(key = "print.content", value = "test content")
+        })
+@Getter
+public class AnnotationJobFixture implements SimpleJob {
     
-    private final Collection<Integer> completedJobItems = new CopyOnWriteArraySet<>();
-    
-    @Getter
     private volatile boolean completed;
     
     @Override
-    public void foo(final ShardingContext shardingContext) {
-        completedJobItems.add(shardingContext.getShardingItem());
-        completed = completedJobItems.size() == shardingContext.getShardingTotalCount();
+    public void execute(final ShardingContext shardingContext) {
+        completed = true;
     }
 }

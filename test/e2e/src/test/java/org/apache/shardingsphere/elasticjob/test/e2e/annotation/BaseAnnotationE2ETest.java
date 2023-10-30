@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.snapshot;
+package org.apache.shardingsphere.elasticjob.test.e2e.annotation;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.kernel.internal.annotation.JobAnnotationBuilder;
+import org.apache.shardingsphere.elasticjob.kernel.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
@@ -32,45 +36,69 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class BaseSnapshotServiceTest {
-    
-    static final int DUMP_PORT = 9000;
+@Getter(AccessLevel.PROTECTED)
+public abstract class BaseAnnotationE2ETest {
     
     private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
     
     private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
     
-    @Getter(value = AccessLevel.PROTECTED)
-    private static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
+    @Getter(AccessLevel.PROTECTED)
+    private static final CoordinatorRegistryCenter REGISTRY_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
     
-    @Getter(value = AccessLevel.PROTECTED)
-    private static SnapshotService snapshotService = new SnapshotService(REG_CENTER, DUMP_PORT);
+    private final ElasticJob elasticJob;
     
-    private final ScheduleJobBootstrap bootstrap;
+    private final JobConfiguration jobConfiguration;
     
-    @Getter(value = AccessLevel.PROTECTED)
-    private final String jobName = System.nanoTime() + "_test_job";
+    private final JobBootstrap jobBootstrap;
     
-    public BaseSnapshotServiceTest(final ElasticJob elasticJob) {
-        bootstrap = new ScheduleJobBootstrap(REG_CENTER, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
+    private final LeaderService leaderService;
+    
+    private final String jobName;
+    
+    protected BaseAnnotationE2ETest(final TestType type, final ElasticJob elasticJob) {
+        this.elasticJob = elasticJob;
+        jobConfiguration = JobAnnotationBuilder.generateJobConfiguration(elasticJob.getClass());
+        jobName = jobConfiguration.getJobName();
+        jobBootstrap = createJobBootstrap(type, elasticJob);
+        leaderService = new LeaderService(REGISTRY_CENTER, jobName);
+    }
+    
+    private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
+        switch (type) {
+            case SCHEDULE:
+                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob);
+            case ONE_OFF:
+                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob);
+            default:
+                throw new RuntimeException(String.format("Cannot support `%s`", type));
+        }
     }
     
     @BeforeAll
     static void init() {
         EMBED_TESTING_SERVER.start();
         ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
-        REG_CENTER.init();
+        REGISTRY_CENTER.init();
     }
     
     @BeforeEach
     void setUp() {
-        REG_CENTER.init();
-        bootstrap.schedule();
+        if (jobBootstrap instanceof ScheduleJobBootstrap) {
+            ((ScheduleJobBootstrap) jobBootstrap).schedule();
+        } else {
+            ((OneOffJobBootstrap) jobBootstrap).execute();
+        }
     }
     
     @AfterEach
     void tearDown() {
-        bootstrap.shutdown();
+        jobBootstrap.shutdown();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
+    }
+    
+    public enum TestType {
+        
+        SCHEDULE, ONE_OFF
     }
 }

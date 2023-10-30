@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e;
+package org.apache.shardingsphere.elasticjob.test.e2e.raw;
 
 import lombok.AccessLevel;
 import lombok.Getter;

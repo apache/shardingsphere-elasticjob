@@ -15,26 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.fixture.job;
+package org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture;
 
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
-import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
+import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 
+@ElasticJobConfiguration(jobName = "AnnotationUnShardingJob", description = "desc", shardingTotalCount = 1)
 @Getter
-@ElasticJobConfiguration(
-        jobName = "AnnotationSimpleJob",
-        description = "desc",
-        shardingTotalCount = 3,
-        shardingItemParameters = "0=a,1=b,2=c",
-        cron = "*/10 * * * * ?",
-        props = {
-                @ElasticJobProp(key = "print.title", value = "test title"),
-                @ElasticJobProp(key = "print.content", value = "test content")
-        })
-public class AnnotationSimpleJob implements SimpleJob {
+public final class AnnotationUnShardingJob implements SimpleJob {
     
     private volatile boolean completed;
     
