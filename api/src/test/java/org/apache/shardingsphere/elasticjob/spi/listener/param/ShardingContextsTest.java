@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.infra.listener;
+package org.apache.shardingsphere.elasticjob.spi.listener.param;
 
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -41,7 +41,7 @@ class ShardingContextsTest {
     }
     
     private ShardingContexts createShardingContexts() {
-        Map<Integer, String> map = new HashMap<>(2, 1);
+        Map<Integer, String> map = new HashMap<>(2, 1F);
         map.put(0, "A");
         map.put(1, "B");
         return new ShardingContexts("fake_task_id", "test_job", 2, "", map);

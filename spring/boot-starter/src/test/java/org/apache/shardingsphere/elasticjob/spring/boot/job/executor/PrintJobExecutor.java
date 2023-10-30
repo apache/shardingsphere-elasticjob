@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.spring.boot.job.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
 
 @Slf4j
 public final class PrintJobExecutor implements TypedJobItemExecutor {

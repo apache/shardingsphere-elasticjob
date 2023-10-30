@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.param;
+package org.apache.shardingsphere.elasticjob.spi.executor.param;
 
 /**
  * Job runtime service.

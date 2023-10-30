@@ -15,21 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture;
+package org.apache.shardingsphere.elasticjob.spi.executor;
 
-import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
-import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
 
-@ElasticJobConfiguration(jobName = "AnnotationUnShardingJob", description = "desc", shardingTotalCount = 1)
-@Getter
-public final class AnnotationUnShardingJob implements SimpleJob {
+/**
+ * Job item executor.
+ * 
+ * @param <T> type of ElasticJob
+ */
+public interface JobItemExecutor<T extends ElasticJob> {
     
-    private volatile boolean completed;
-    
-    @Override
-    public void execute(final ShardingContext shardingContext) {
-        completed = true;
-    }
+    /**
+     * Process job item.
+     * 
+     * @param elasticJob elastic job
+     * @param jobConfig job configuration
+     * @param jobRuntimeService job runtime service
+     * @param shardingContext sharding context
+     */
+    void process(T elasticJob, JobConfiguration jobConfig, JobRuntimeService jobRuntimeService, ShardingContext shardingContext);
 }

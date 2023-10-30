@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job;
 
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 
 public class FooSimpleElasticJob implements SimpleJob {
