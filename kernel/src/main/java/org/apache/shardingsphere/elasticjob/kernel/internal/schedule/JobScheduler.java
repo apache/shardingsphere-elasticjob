@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobE
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.JobFacade;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;

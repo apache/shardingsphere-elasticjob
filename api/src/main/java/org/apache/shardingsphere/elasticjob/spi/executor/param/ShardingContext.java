@@ -15,36 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.infra.listener;
+package org.apache.shardingsphere.elasticjob.spi.executor.param;
 
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
- * ElasticJob listener.
+ * Sharding context.
  */
-public interface ElasticJobListener extends TypedSPI {
+@RequiredArgsConstructor
+@Getter
+@ToString
+public final class ShardingContext {
     
-    int LOWEST = Integer.MAX_VALUE;
+    private final String jobName;
     
-    /**
-     * Called before job executed.
-     * 
-     * @param shardingContexts sharding contexts
-     */
-    void beforeJobExecuted(ShardingContexts shardingContexts);
+    private final String taskId;
     
-    /**
-     * Called after job executed.
-     *
-     * @param shardingContexts sharding contexts
-     */
-    void afterJobExecuted(ShardingContexts shardingContexts);
+    private final int shardingTotalCount;
     
-    /**
-     * Listener order, default is the lowest.
-     * @return order
-     */
-    default int order() {
-        return LOWEST;
-    }
+    private final String jobParameter;
+    
+    private final int shardingItem;
+    
+    private final String shardingParameter;
 }

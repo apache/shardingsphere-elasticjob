@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.guarantee;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;

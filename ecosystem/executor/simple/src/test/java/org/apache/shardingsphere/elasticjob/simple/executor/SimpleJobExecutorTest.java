@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.simple.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.simple.job.FooSimpleJob;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.junit.jupiter.api.BeforeEach;

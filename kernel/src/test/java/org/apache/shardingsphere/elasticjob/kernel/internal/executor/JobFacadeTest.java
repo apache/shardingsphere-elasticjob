@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.TestElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;

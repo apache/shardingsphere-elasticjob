@@ -15,16 +15,37 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.type;
+package org.apache.shardingsphere.elasticjob.spi.listener;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.JobItemExecutor;
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Typed job item executor.
+ * ElasticJob listener.
  */
-@SingletonSPI
-public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
+public interface ElasticJobListener extends TypedSPI {
+    
+    int LOWEST = Integer.MAX_VALUE;
+    
+    /**
+     * Called before job executed.
+     * 
+     * @param shardingContexts sharding contexts
+     */
+    void beforeJobExecuted(ShardingContexts shardingContexts);
+    
+    /**
+     * Called after job executed.
+     *
+     * @param shardingContexts sharding contexts
+     */
+    void afterJobExecuted(ShardingContexts shardingContexts);
+    
+    /**
+     * Listener order, default is the lowest.
+     * @return order
+     */
+    default int order() {
+        return LOWEST;
+    }
 }

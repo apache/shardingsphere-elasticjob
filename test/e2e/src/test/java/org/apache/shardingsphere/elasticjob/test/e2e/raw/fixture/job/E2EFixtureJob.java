@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
 
 public interface E2EFixtureJob extends ElasticJob {
     

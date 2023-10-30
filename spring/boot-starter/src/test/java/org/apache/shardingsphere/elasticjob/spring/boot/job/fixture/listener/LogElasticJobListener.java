@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 
 /**
  * Log elastic job listener.
