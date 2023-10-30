@@ -28,8 +28,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;

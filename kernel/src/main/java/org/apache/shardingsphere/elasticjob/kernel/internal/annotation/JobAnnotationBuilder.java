@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfigurationFactory;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 
 import java.util.Optional;
 

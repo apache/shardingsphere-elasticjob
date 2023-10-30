@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 
 import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobExecutionEnvironmentException;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture.TestElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionCo
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.tracing.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.JobTracingEventBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

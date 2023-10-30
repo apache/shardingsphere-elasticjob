@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

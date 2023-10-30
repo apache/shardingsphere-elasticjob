@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.Http;
 import org.apache.shardingsphere.elasticjob.restful.RestfulController;
 import org.apache.shardingsphere.elasticjob.restful.annotation.Mapping;

@@ -25,7 +25,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lifecycle.api.JobStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lifecycle.domain.JobBriefInfo;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;

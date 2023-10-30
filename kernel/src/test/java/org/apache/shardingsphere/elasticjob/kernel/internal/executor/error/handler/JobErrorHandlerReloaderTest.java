@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.IgnoreJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.LogJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;

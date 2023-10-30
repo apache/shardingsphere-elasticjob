@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;

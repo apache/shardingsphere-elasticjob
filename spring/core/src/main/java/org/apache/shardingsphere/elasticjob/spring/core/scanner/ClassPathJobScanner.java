@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.spring.core.scanner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;

@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 
 /**
- * Job error handler properties constants for send error message via dingtalk.
+ * Job error handler properties constants for send error message via Dingtalk.
  */
 public final class DingtalkPropertiesConstants {
     

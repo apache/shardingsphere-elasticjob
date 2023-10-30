@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.env.IpUtils;
 
 import java.util.HashMap;
 import java.util.List;

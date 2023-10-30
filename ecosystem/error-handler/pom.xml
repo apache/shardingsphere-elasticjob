@@ -27,7 +27,6 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>spi</module>
         <module>type</module>
     </modules>
 </project>

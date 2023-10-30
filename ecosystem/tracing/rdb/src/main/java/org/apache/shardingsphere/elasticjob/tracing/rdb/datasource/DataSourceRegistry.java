@@ -19,14 +19,13 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
 
 import javax.sql.DataSource;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Mapping {@link TracingStorageConfiguration} to {@link DataSource}.
+ * Mapping tracing storage configuration} to data source.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataSourceRegistry {

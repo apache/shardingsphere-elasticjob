@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.config;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

@@ -19,9 +19,9 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.yaml.YamlTracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceConfiguration;
-import org.apache.shardingsphere.elasticjob.tracing.yaml.YamlTracingStorageConfiguration;
 
 import javax.sql.DataSource;
 import java.util.LinkedHashMap;
@@ -30,8 +30,8 @@ import java.util.Map;
 /**
  * YAML Data source configuration.
  */
-@Setter
 @Getter
+@Setter
 public final class YamlDataSourceConfiguration implements YamlTracingStorageConfiguration<DataSource> {
     
     private static final long serialVersionUID = -8013707594458676772L;

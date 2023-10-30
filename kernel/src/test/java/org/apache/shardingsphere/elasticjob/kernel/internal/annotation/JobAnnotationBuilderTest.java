@@ -32,7 +32,7 @@ class JobAnnotationBuilderTest {
     @Test
     void assertGenerateJobConfiguration() {
         JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(AnnotationJobFixture.class);
-        assertThat(jobConfig.getJobName(), is("AnnotationSimpleJob"));
+        assertThat(jobConfig.getJobName(), is("AnnotationJobFixture"));
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         assertThat(jobConfig.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(jobConfig.getCron(), is("*/10 * * * * ?"));

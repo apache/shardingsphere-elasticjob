@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurat
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lifecycle.api.JobConfigurationAPI;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 
 /**
  * Job Configuration API implementation class.

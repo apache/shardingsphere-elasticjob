@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
 
 @RequiredArgsConstructor
 public final class TestElasticJobListener implements ElasticJobListener {

@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general;
 
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 
 /**
  * Job error handler for throw exception.

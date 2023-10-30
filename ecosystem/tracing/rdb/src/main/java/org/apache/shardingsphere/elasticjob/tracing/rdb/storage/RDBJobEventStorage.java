@@ -19,11 +19,11 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.infra.constant.ExecutionType;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.tracing.exception.WrapException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.constant.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.exception.WrapException;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultDatabaseType;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
@@ -82,8 +82,8 @@ public final class RDBJobEventStorage {
         return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, ds -> {
             try {
                 return new RDBJobEventStorage(ds);
-            } catch (SQLException e) {
-                throw new WrapException(e);
+            } catch (final SQLException ex) {
+                throw new WrapException(ex);
             }
         }));
     }
@@ -98,11 +98,11 @@ public final class RDBJobEventStorage {
     public static RDBJobEventStorage wrapException(final Supplier<RDBJobEventStorage> supplier) throws SQLException {
         try {
             return supplier.get();
-        } catch (WrapException e) {
-            if (e.getCause() instanceof SQLException) {
-                throw new SQLException(e.getCause());
+        } catch (final WrapException ex) {
+            if (ex.getCause() instanceof SQLException) {
+                throw new SQLException(ex.getCause());
             }
-            throw e;
+            throw ex;
         }
     }
     

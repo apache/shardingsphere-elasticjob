@@ -10,7 +10,7 @@ chapter = true
 ```xml
 <dependency>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
-    <artifactId>elasticjob-kernel</artifactId>
+    <artifactId>elasticjob-bootstrap</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```

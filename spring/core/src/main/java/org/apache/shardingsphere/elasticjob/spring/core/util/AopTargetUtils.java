@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.spring.core.util;
 import java.lang.reflect.Field;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.support.AopUtils;
 

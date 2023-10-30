@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.env.IpUtils;
 
 import java.lang.management.ManagementFactory;
 
