@@ -33,16 +33,11 @@
             <pattern>${log.pattern}</pattern>
         </encoder>
     </appender>
-    <appender name="LogJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
     
     <root>
         <appender-ref ref="STDOUT" />
     </root>
     
     <logger name="org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.infra.handler.error.impl.LogJobErrorHandler" level="OFF" />
     <logger name="org.apache.curator.framework.listen.MappingListenerManager" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type.LogJobErrorHandler" level="error" additivity="false">
-        <appender-ref ref="LogJobErrorHandlerTestAppender" />
-    </logger>
 </configuration>

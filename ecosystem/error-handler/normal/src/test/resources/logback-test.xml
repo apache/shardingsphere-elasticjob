@@ -17,9 +17,29 @@
   -->
 
 <configuration>
+    <property name="log.context.name" value="elasticjob-test" />
+    <property name="log.charset" value="UTF-8" />
+    <property name="log.pattern" value="[%-5level] %date --%thread-- [%logger] %msg %n" />
+    
+    <contextName>${log.context.name}</contextName>
+    
     <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
-    <appender name="DingtalkJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
-    <logger name="org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkJobErrorHandler" level="info" additivity="false">
-        <appender-ref ref="DingtalkJobErrorHandlerTestAppender" />
+    
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder charset="${log.charset}">
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    <appender name="LogJobErrorHandlerTestAppender" class="ch.qos.logback.core.read.ListAppender" />
+    
+    <root>
+        <appender-ref ref="STDOUT" />
+    </root>
+    
+    <logger name="org.apache.shardingsphere.elasticjob.error.handler.normal.LogJobErrorHandler" level="error" additivity="false">
+        <appender-ref ref="LogJobErrorHandlerTestAppender" />
     </logger>
 </configuration>
