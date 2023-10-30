@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl;
+package org.apache.shardingsphere.elasticjob.bootstrap.impl;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;

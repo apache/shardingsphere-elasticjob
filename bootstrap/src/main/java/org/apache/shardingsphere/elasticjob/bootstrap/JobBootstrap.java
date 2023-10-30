@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.bootstrap;
+package org.apache.shardingsphere.elasticjob.bootstrap;
 
 /**
  * Job bootstrap.

@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-kernel</artifactId>
+            <artifactId>elasticjob-bootstrap</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         

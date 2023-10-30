@@ -19,9 +19,9 @@ package org.apache.shardingsphere.elasticjob.spring.boot.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.JobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.JobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.CustomTestJob;

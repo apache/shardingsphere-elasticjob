@@ -33,6 +33,7 @@
     <modules>
         <module>api</module>
         <module>registry-center</module>
+        <module>bootstrap</module>
         <module>infra</module>
         <module>kernel</module>
         <module>lifecycle</module>

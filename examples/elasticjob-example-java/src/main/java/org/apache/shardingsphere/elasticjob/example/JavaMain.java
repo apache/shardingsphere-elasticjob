@@ -25,8 +25,8 @@ import org.apache.shardingsphere.elasticjob.error.handler.email.EmailPropertiesC
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.example.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.kernel.api.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.example.job.simple.JavaOccurErrorJob;
 import org.apache.shardingsphere.elasticjob.example.job.simple.JavaSimpleJob;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
