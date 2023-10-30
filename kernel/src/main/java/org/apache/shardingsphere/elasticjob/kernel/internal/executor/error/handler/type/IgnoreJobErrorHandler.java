@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 
 /**
- * Job error handler for throw exception.
+ * Job error handler for ignore exception.
  */
-public final class ThrowJobErrorHandler implements JobErrorHandler {
+public final class IgnoreJobErrorHandler implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        throw new JobSystemException(cause);
     }
     
     @Override
     public String getType() {
-        return "THROW";
+        return "IGNORE";
     }
 }

@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.IgnoreJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type.IgnoreJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type.LogJobErrorHandler;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
