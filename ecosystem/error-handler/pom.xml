@@ -27,6 +27,8 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>type</module>
+        <module>email</module>
+        <module>wechat</module>
+        <module>dingtalk</module>
     </modules>
 </project>

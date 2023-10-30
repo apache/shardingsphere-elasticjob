@@ -20,10 +20,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-error-handler-type</artifactId>
+        <artifactId>elasticjob-error-handler</artifactId>
         <version>3.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-error-handler-dingtalk</artifactId>
+    <artifactId>elasticjob-error-handler-email</artifactId>
     
     <dependencies>
         <dependency>
@@ -31,20 +31,17 @@
             <artifactId>elasticjob-kernel</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-restful</artifactId>
-            <version>${project.version}</version>
+            <artifactId>elasticjob-test-util</artifactId>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
         </dependency>
     </dependencies>
 </project>
