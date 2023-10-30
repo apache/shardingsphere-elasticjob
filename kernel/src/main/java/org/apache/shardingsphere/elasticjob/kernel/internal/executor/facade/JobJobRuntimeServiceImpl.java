@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;

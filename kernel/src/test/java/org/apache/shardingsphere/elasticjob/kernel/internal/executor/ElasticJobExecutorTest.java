@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.facade.JobFacade;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;

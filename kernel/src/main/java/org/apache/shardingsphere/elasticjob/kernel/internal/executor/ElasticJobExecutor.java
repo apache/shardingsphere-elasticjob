@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandlerReloader;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.facade.JobFacade;
 import org.apache.shardingsphere.elasticjob.spi.executor.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.item.JobItemExecutorFactory;
 import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
