@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.example.controller;
 
-import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.bootstrap.impl.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;

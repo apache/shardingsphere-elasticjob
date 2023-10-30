@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.DataflowElasticJob;

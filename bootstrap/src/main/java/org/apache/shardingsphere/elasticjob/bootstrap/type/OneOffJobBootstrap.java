@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.bootstrap.impl;
+package org.apache.shardingsphere.elasticjob.bootstrap.type;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
