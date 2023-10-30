@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;

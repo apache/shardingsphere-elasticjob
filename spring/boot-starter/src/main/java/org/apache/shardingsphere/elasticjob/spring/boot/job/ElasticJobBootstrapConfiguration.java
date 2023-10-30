@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.bootstrap.impl.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.impl.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;

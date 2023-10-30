@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;

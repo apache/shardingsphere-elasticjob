@@ -29,8 +29,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 /**
- * Job error handler for send error message via dingtalk.
+ * Job error handler for send error message via Dingtalk.
  */
 @Slf4j
 public final class DingtalkJobErrorHandler implements JobErrorHandler {

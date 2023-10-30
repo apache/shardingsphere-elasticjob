@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 
 import java.util.Collections;
 import java.util.HashMap;

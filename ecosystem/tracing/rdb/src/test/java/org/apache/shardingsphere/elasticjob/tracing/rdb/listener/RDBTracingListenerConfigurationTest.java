@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.exception.TracingConfigurationException;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

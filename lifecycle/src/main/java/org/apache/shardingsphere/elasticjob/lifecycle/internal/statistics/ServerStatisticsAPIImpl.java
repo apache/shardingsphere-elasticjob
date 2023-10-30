@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.lifecycle.internal.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
 import org.apache.shardingsphere.elasticjob.lifecycle.api.ServerStatisticsAPI;
 import org.apache.shardingsphere.elasticjob.lifecycle.domain.ServerBriefInfo;

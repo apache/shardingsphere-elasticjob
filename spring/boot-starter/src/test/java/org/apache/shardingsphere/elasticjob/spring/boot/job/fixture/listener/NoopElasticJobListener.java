@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
 
 /**
  * No operation elastic job listener.

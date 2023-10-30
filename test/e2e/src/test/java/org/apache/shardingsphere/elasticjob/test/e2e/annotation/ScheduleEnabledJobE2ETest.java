@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.test.e2e.annotation;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
-import org.apache.shardingsphere.elasticjob.infra.yaml.YamlEngine;
+import org.apache.shardingsphere.elasticjob.kernel.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerStatus;

@@ -17,8 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
 
 public class E2EFixtureJobListener implements ElasticJobListener {
     

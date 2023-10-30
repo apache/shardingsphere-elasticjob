@@ -25,9 +25,9 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.spi.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.spi.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.spi.type.TypedJobItemExecutor;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
-import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 
 import java.io.IOException;

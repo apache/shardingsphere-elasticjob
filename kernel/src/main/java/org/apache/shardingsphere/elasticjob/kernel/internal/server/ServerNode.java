@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.server;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodePath;
-import org.apache.shardingsphere.elasticjob.infra.env.IpUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.env.IpUtils;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.item;
 
-import org.apache.shardingsphere.elasticjob.infra.exception.JobConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;

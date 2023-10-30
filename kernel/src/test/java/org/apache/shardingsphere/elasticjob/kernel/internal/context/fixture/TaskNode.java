@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.context.fixture;
 
 import lombok.Builder;
-import org.apache.shardingsphere.elasticjob.infra.constant.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.infra.constant.ExecutionType;
 
 @Builder
 public final class TaskNode {

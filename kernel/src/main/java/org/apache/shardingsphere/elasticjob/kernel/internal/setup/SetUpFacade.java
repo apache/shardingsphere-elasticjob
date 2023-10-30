@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.setup;
 
-import org.apache.shardingsphere.elasticjob.infra.listener.ElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.election.LeaderService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.ListenerManager;
