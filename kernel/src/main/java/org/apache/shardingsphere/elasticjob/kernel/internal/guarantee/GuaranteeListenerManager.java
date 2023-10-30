@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.guarantee;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ElasticJobListener;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEvent;

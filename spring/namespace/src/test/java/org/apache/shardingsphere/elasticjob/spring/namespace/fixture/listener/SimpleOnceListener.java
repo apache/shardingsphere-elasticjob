@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.fixture.listener;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
 import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.service.FooService;
 import org.springframework.beans.factory.annotation.Autowired;
 

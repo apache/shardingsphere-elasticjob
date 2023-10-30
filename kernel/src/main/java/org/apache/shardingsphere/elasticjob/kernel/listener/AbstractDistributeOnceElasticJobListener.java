@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.api.listener;
+package org.apache.shardingsphere.elasticjob.kernel.listener;
 
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.internal.util.BlockUtils;
