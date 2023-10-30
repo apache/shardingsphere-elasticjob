@@ -15,19 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.time;
+package org.apache.shardingsphere.elasticjob.kernel.infra.time;
 
-/**
- * Time service.
- */
-public final class TimeService {
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class TimeServiceTest {
     
-    /**
-     * Get current millis.
-     * 
-     * @return current millis
-     */
-    public long getCurrentMillis() {
-        return System.currentTimeMillis();
+    private final TimeService timeService = new TimeService();
+    
+    @Test
+    void assertGetCurrentMillis() {
+        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }
