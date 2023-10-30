@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.error.handler;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler;
 
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
-import java.util.Properties;
+import java.io.Closeable;
 
 /**
- * Job error handler properties validator.
+ * Job error handler.
  */
-@SingletonSPI
-public interface JobErrorHandlerPropertiesValidator extends TypedSPI {
+public interface JobErrorHandler extends TypedSPI, Closeable {
     
     /**
-     * Validate job properties.
-     *
-     * @param props job properties
+     * Handle exception.
+     * 
+     * @param jobName job name
+     * @param cause failure cause
      */
-    void validate(Properties props);
+    void handleException(String jobName, Throwable cause);
+    
+    @Override
+    String getType();
+    
+    @Override
+    default void close() {
+    }
 }

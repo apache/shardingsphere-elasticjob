@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 
 /**
  * Job error handler for log error message.

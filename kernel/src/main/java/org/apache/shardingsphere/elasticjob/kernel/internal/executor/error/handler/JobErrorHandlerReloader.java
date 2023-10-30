@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.hand
 
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.io.Closeable;

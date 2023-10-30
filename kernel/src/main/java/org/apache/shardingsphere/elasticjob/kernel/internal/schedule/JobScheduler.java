@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.error.handler.JobErrorHandlerPropertiesValidator;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandlerPropertiesValidator;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.JobFacade;
