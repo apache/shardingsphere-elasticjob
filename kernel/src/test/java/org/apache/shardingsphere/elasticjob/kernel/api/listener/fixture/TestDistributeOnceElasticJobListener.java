@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.api.listener.fixture;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.listener.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
 
 public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
