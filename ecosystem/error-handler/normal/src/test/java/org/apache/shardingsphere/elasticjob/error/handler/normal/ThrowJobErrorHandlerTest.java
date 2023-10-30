@@ -15,18 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
+package org.apache.shardingsphere.elasticjob.error.handler.normal;
 
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-class IgnoreJobErrorHandlerTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class ThrowJobErrorHandlerTest {
     
     @Test
     void assertHandleException() {
-        TypedSPILoader.getService(JobErrorHandler.class, "IGNORE", new Properties()).handleException("test_job", new RuntimeException("test"));
+        assertThrows(JobSystemException.class, () -> TypedSPILoader.getService(JobErrorHandler.class, "THROW", new Properties()).handleException("test_job", new RuntimeException("test")));
     }
 }

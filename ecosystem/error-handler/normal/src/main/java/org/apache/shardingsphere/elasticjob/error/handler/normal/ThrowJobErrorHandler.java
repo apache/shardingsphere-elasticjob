@@ -15,21 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
+package org.apache.shardingsphere.elasticjob.error.handler.normal;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
-import org.junit.jupiter.api.Test;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 
-import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-class ThrowJobErrorHandlerTest {
+/**
+ * Job error handler for throw exception.
+ */
+public final class ThrowJobErrorHandler implements JobErrorHandler {
     
-    @Test
-    void assertHandleException() {
-        assertThrows(JobSystemException.class, () -> TypedSPILoader.getService(JobErrorHandler.class, "THROW", new Properties()).handleException("test_job", new RuntimeException("test")));
+    @Override
+    public void handleException(final String jobName, final Throwable cause) {
+        throw new JobSystemException(cause);
+    }
+    
+    @Override
+    public String getType() {
+        return "THROW";
     }
 }

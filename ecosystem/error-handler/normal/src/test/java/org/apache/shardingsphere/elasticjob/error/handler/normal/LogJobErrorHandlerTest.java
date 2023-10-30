@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
+package org.apache.shardingsphere.elasticjob.error.handler.normal;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;

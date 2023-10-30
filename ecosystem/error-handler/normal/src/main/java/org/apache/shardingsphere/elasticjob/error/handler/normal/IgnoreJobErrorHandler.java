@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
+package org.apache.shardingsphere.elasticjob.error.handler.normal;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 

@@ -80,7 +80,7 @@ class ElasticJobExecutorTest {
     
     private JobConfiguration createJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
-                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("FOO").description("desc").build();
     }
     
     @Test

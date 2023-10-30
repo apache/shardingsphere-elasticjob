@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.type;
+package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.fixture;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
 
-/**
- * Job error handler for throw exception.
- */
-public final class ThrowJobErrorHandler implements JobErrorHandler {
+public final class FooJobErrorHandlerFixture implements JobErrorHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
@@ -32,6 +29,6 @@ public final class ThrowJobErrorHandler implements JobErrorHandler {
     
     @Override
     public String getType() {
-        return "THROW";
+        return "FOO";
     }
 }
