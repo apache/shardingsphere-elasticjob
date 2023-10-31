@@ -21,9 +21,15 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
 import org.junit.jupiter.api.Test;
 
+import javax.sql.DataSource;
+
+import java.sql.SQLException;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class RDBTracingListenerConfigurationTest {
     
@@ -38,7 +44,9 @@ class RDBTracingListenerConfigurationTest {
     }
     
     @Test
-    void assertCreateTracingListenerFailure() {
-        assertThrows(TracingConfigurationException.class, () -> new RDBTracingListenerConfiguration().createTracingListener(new BasicDataSource()));
+    void assertCreateTracingListenerFailure() throws SQLException {
+        DataSource dataSource = mock(DataSource.class);
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(TracingConfigurationException.class, () -> new RDBTracingListenerConfiguration().createTracingListener(dataSource));
     }
 }
