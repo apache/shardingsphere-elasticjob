@@ -86,7 +86,7 @@
         <mail.version>1.6.0</mail.version>
         
         <lombok.version>1.18.30</lombok.version>
-
+        
         <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
         <h2.version>2.2.224</h2.version>
         
