@@ -39,6 +39,6 @@
     </root>
     
     <logger name="org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService" level="OFF" />
-    <logger name="org.apache.shardingsphere.elasticjob.kernel.tracing.JobTracingEventBus" level="OFF" />
+    <logger name="org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus" level="OFF" />
     <logger name="org.apache.curator.framework.listen.MappingListenerManager" level="OFF" />
 </configuration>

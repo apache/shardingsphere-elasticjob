@@ -33,7 +33,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 
 import javax.sql.DataSource;
 import java.io.IOException;

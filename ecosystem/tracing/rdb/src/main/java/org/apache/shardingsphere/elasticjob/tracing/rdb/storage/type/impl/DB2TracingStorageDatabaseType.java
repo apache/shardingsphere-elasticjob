@@ -15,20 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
 
-public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
+/**
+ * Tracing storage database type for DB2.
+ */
+public final class DB2TracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
-    public TracingStorageConfiguration<TracingStorageFixture> convertToConfiguration(final TracingStorageFixture storage) {
-        return new TracingStorageConfigurationFixture(storage);
+    public String getType() {
+        return "DB2";
     }
     
     @Override
-    public Class<TracingStorageFixture> storageType() {
-        return TracingStorageFixture.class;
+    public int getDuplicateRecordErrorCode() {
+        return -803;
     }
 }

@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.junit.jupiter.api.Test;
 

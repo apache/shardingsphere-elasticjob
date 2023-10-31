@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**
@@ -34,7 +34,7 @@ public interface TracingStorageConverter<T> {
      * @param storage storage instance
      * @return instance of {@link TracingStorageConfiguration}
      */
-    TracingStorageConfiguration<T> convertObjectToConfiguration(T storage);
+    TracingStorageConfiguration<T> convertToConfiguration(T storage);
     
     /**
      * Storage type.

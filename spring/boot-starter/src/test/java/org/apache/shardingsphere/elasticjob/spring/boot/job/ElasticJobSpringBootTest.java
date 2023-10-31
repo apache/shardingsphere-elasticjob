@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

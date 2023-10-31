@@ -31,8 +31,8 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionSe
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.JobTracingEventBus;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;

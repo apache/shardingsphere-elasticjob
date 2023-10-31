@@ -15,20 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
-public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
+import javax.sql.DataSource;
+
+/**
+ * JDBC parameter decorator.
+ * 
+ * @param <T> type of data source
+ */
+public interface JDBCParameterDecorator<T extends DataSource> extends TypedSPI {
+    
+    /**
+     * Decorate data source.
+     * 
+     * @param dataSource data source to be decorated
+     * @return decorated data source
+     */
+    T decorate(T dataSource);
     
     @Override
-    public TracingStorageConfiguration<TracingStorageFixture> convertToConfiguration(final TracingStorageFixture storage) {
-        return new TracingStorageConfigurationFixture(storage);
-    }
-    
-    @Override
-    public Class<TracingStorageFixture> storageType() {
-        return TracingStorageFixture.class;
-    }
+    Class<T> getType();
 }

@@ -19,13 +19,13 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.JobTracingEventBus;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.RDBJobEventStorage;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +44,7 @@ class RDBTracingListenerTest {
     private static final String JOB_NAME = "test_rdb_event_listener";
     
     @Mock
-    private RDBJobEventStorage repository;
+    private RDBJobEventRepository repository;
     
     private JobTracingEventBus jobTracingEventBus;
     

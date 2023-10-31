@@ -15,20 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
-public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
+/**
+ * Tracing storage database type.
+ */
+@SingletonSPI
+public interface TracingStorageDatabaseType extends TypedSPI {
     
-    @Override
-    public TracingStorageConfiguration<TracingStorageFixture> convertToConfiguration(final TracingStorageFixture storage) {
-        return new TracingStorageConfigurationFixture(storage);
+    /**
+     * Get database product name.
+     * 
+     * @return database product name
+     */
+    default String getDatabaseProductName() {
+        return getType();
     }
     
+    /**
+     * Get duplicate record error code.
+     * 
+     * @return duplicate record error code
+     */
+    int getDuplicateRecordErrorCode();
+    
     @Override
-    public Class<TracingStorageFixture> storageType() {
-        return TracingStorageFixture.class;
-    }
+    String getType();
 }

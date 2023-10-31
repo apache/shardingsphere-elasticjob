@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.config;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
-
-public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
+/**
+ * Tracing storage configuration.
+ *
+ * @param <T> storage type
+ */
+public interface TracingStorageConfiguration<T> {
     
-    @Override
-    public TracingStorageConfiguration<TracingStorageFixture> convertToConfiguration(final TracingStorageFixture storage) {
-        return new TracingStorageConfigurationFixture(storage);
-    }
-    
-    @Override
-    public Class<TracingStorageFixture> storageType() {
-        return TracingStorageFixture.class;
-    }
+    /**
+     * Create storage.
+     *
+     * @return storage
+     */
+    T getStorage();
 }

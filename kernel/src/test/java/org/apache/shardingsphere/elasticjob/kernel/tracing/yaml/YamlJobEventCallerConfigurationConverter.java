@@ -18,12 +18,12 @@
 package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfigurationConverter;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageConfigurationFixture;
 
 /**
- * YAML JobEventCaller configuration converter.
+ * YAML job event caller configuration converter.
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class YamlJobEventCallerConfigurationConverter

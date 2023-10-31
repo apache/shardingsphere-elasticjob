@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageConfigurationFixture;
 
