@@ -17,37 +17,27 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.fixture.listener;
 
-import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.listener.AbstractDistributeOnceElasticJobListener;
-import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.service.FooService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener {
     
-    @Autowired
-    private FooService fooService;
-    
     private final long startedTimeoutMilliseconds;
     
     private final long completedTimeoutMilliseconds;
     
     public SimpleOnceListener() {
-        this(10000, 20000);
-    }
-    
-    public SimpleOnceListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
-        super(startedTimeoutMilliseconds, completedTimeoutMilliseconds);
-        this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
-        this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
+        super(10000L, 20000L);
+        startedTimeoutMilliseconds = 10000L;
+        completedTimeoutMilliseconds = 20000L;
     }
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
         assertThat(startedTimeoutMilliseconds, is(10000L));
-        assertThat(fooService.foo(), is("this is fooService."));
     }
     
     @Override
