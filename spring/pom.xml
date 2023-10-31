@@ -36,6 +36,7 @@
     <properties>
         <springboot.version>2.7.10</springboot.version>
         <springframework.version>5.3.26</springframework.version>
+        <aspectj.version>1.9.1</aspectj.version>
     </properties>
     
     <dependencyManagement>
@@ -69,6 +70,13 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
