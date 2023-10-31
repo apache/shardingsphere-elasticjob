@@ -17,12 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 
 /**
- * Oracle database type.
+ * Tracing storage database type for Oracle.
  */
-public final class OracleDatabaseType implements DatabaseType {
+public final class OracleTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {

@@ -15,42 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
 
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 
 /**
- * Database type.
+ * Default tracing storage database type.
  */
-@SingletonSPI
-public interface DatabaseType extends TypedSPI {
-    
-    /**
-     * Get database product name.
-     * 
-     * @return database product name
-     */
-    default String getDatabaseProductName() {
-        return getType();
-    }
-    
-    /**
-     * Get SQL properties file.
-     *
-     * @return SQL properties file
-     */
-    default String getSQLPropertiesFile() {
-        return String.format("%s.properties", getType());
-    }
-    
-    /**
-     * Get duplicate record error code.
-     * 
-     * @return duplicate record error code
-     */
-    int getDuplicateRecordErrorCode();
+public class DefaultTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
-    String getType();
+    public String getType() {
+        return "SQL92";
+    }
+    
+    @Override
+    public int getDuplicateRecordErrorCode() {
+        return Integer.MIN_VALUE;
+    }
 }

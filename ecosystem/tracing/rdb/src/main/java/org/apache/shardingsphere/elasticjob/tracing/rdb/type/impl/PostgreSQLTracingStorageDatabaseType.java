@@ -17,12 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 
 /**
- * PostgreSQL database type.
+ * Tracing storage database type for PostgreSQL.
  */
-public final class PostgreSQLDatabaseType implements DatabaseType {
+public final class PostgreSQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {
