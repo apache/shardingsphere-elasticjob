@@ -18,12 +18,12 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.storage;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.ListenerNotifierManager;
-import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.base.transaction.TransactionOperation;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 import org.apache.shardingsphere.elasticjob.reg.listener.ConnectionStateChangedEventListener;
 import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListener;
+import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

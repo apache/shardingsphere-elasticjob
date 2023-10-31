@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandlerPropertiesValidator;
+import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandlerPropertiesValidator;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.junit.jupiter.api.Test;
 

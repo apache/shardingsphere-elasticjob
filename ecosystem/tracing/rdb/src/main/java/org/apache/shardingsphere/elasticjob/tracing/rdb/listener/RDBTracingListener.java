@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.RDBJobEventStorage;
 
 import javax.sql.DataSource;

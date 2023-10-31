@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

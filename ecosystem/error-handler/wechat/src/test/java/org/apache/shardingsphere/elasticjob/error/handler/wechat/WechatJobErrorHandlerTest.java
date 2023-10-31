@@ -21,7 +21,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;

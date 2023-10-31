@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.email;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandler;
 
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;

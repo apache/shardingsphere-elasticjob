@@ -18,9 +18,9 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.exception.TracingStorageUnavailableException;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.storage.TracingStorageConverter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.storage.TracingStorageConverterFactory;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingStorageUnavailableException;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverterFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

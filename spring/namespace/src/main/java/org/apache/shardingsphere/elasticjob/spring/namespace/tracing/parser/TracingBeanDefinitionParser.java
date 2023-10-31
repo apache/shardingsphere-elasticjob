@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.tracing.parser;
 
 import org.apache.shardingsphere.elasticjob.spring.namespace.tracing.tag.TracingBeanDefinitionTag;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;

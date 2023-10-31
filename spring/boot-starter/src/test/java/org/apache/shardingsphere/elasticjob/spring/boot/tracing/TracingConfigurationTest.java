@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;

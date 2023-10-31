@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ExecutionType;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.yaml;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfigurationConverter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.yaml.YamlTracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceConfiguration;
 
 import javax.sql.DataSource;

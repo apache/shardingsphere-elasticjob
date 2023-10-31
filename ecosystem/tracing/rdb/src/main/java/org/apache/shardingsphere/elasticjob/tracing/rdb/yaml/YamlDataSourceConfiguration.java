@@ -19,8 +19,8 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.yaml.YamlTracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceConfiguration;
 
 import javax.sql.DataSource;

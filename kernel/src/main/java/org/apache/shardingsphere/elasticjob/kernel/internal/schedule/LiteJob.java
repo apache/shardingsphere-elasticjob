@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
