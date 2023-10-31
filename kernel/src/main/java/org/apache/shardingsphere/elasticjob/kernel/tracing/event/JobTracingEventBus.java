@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.event;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerConfiguration;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;

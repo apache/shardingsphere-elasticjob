@@ -15,22 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
-
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.config;
 
 /**
- * Tracing storage database type for H2.
+ * Tracing storage configuration.
+ *
+ * @param <T> storage type
  */
-public final class H2TracingStorageDatabaseType implements TracingStorageDatabaseType {
+public interface TracingStorageConfiguration<T> {
     
-    @Override
-    public String getType() {
-        return "H2";
-    }
-    
-    @Override
-    public int getDuplicateRecordErrorCode() {
-        return 23505;
-    }
+    /**
+     * Create storage.
+     *
+     * @return storage
+     */
+    T getStorage();
 }

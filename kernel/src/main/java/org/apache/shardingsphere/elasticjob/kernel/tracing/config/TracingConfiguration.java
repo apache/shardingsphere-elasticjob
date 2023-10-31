@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.api;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

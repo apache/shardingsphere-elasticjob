@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.config.RDBTracingStorageConfiguration;
 
 import javax.sql.DataSource;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,13 @@ public final class DataSourceRegistry {
         return instance;
     }
     
-    void registerDataSource(final RDBTracingStorageConfiguration dataSourceConfig, final DataSource dataSource) {
+    /**
+     * Register data source.
+     * 
+     * @param dataSourceConfig data source configuration
+     * @param dataSource data source
+     */
+    public void registerDataSource(final RDBTracingStorageConfiguration dataSourceConfig, final DataSource dataSource) {
         dataSources.putIfAbsent(dataSourceConfig, dataSource);
     }
     

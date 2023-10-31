@@ -15,9 +15,9 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.MySQLTracingStorageDatabaseType
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.PostgreSQLTracingStorageDatabaseType
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.OracleTracingStorageDatabaseType
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.SQLServerTracingStorageDatabaseType
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DB2TracingStorageDatabaseType
-org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.H2TracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.MySQLTracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.PostgreSQLTracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.OracleTracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.SQLServerTracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.DB2TracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.H2TracingStorageDatabaseType

@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
 
 /**
- * Tracing storage database type for MySQL.
+ * Tracing storage database type for PostgreSQL.
  */
-public final class MySQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
+public final class PostgreSQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {
-        return "MySQL";
+        return "PostgreSQL";
     }
     
     @Override
     public int getDuplicateRecordErrorCode() {
-        return 1062;
+        return 0;
     }
 }

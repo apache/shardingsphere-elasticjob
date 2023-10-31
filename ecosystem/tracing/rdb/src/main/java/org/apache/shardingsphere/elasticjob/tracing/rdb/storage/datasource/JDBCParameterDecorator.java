@@ -15,22 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
+import javax.sql.DataSource;
 
 /**
- * Tracing storage database type for PostgreSQL.
+ * JDBC parameter decorator.
+ * 
+ * @param <T> type of data source
  */
-public final class PostgreSQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
+public interface JDBCParameterDecorator<T extends DataSource> extends TypedSPI {
+    
+    /**
+     * Decorate data source.
+     * 
+     * @param dataSource data source to be decorated
+     * @return decorated data source
+     */
+    T decorate(T dataSource);
     
     @Override
-    public String getType() {
-        return "PostgreSQL";
-    }
-    
-    @Override
-    public int getDuplicateRecordErrorCode() {
-        return 0;
-    }
+    Class<T> getType();
 }

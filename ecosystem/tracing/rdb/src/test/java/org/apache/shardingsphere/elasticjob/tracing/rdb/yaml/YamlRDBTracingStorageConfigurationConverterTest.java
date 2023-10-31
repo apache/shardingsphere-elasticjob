@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.yaml;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.RDBTracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.config.RDBTracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingStorageConfiguration;
 import org.junit.jupiter.api.Test;
 

@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.WrapException;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultTracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.RDBStorageSQLMapper;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.SQLPropertiesFactory;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.DefaultTracingStorageDatabaseType;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 import javax.sql.DataSource;
@@ -35,10 +36,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,14 +85,7 @@ public final class RDBJobEventStorage {
         }));
     }
     
-    /**
-     * WrapException util method.
-     *
-     * @param supplier supplier
-     * @return RDBJobEventStorage
-     * @throws SQLException SQLException
-     */
-    public static RDBJobEventStorage wrapException(final Supplier<RDBJobEventStorage> supplier) throws SQLException {
+    private static RDBJobEventStorage wrapException(final Supplier<RDBJobEventStorage> supplier) throws SQLException {
         try {
             return supplier.get();
         } catch (final WrapException ex) {
@@ -378,26 +368,5 @@ public final class RDBJobEventStorage {
     
     private String truncateString(final String str) {
         return !Strings.isNullOrEmpty(str) && str.length() > 4000 ? str.substring(0, 4000) : str;
-    }
-    
-    List<JobStatusTraceEvent> getJobStatusTraceEvents(final String taskId) {
-        List<JobStatusTraceEvent> result = new ArrayList<>();
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getSelectForJobStatusTraceLog())) {
-            preparedStatement.setString(1, taskId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                            resultSet.getString(5), ExecutionType.valueOf(resultSet.getString(6)), resultSet.getString(7),
-                            State.valueOf(resultSet.getString(8)), resultSet.getString(9), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet.getString(10)));
-                    result.add(jobStatusTraceEvent);
-                }
-            }
-        } catch (final SQLException | ParseException ex) {
-            // TODO log failure directly to output log, consider to be configurable in the future
-            log.error(ex.getMessage());
-        }
-        return result;
     }
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql;
 
 import lombok.Getter;
 

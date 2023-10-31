@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
 
 public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {

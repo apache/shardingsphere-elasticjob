@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.converter;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingStorageUnavailableException;

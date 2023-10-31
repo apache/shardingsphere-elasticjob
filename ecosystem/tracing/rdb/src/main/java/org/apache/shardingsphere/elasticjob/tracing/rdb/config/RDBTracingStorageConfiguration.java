@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.config;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
@@ -24,7 +24,9 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource.DataSourceRegistry;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource.JDBCParameterDecorator;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import javax.sql.DataSource;

@@ -15,27 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.datasource;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl;
 
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
-
-import javax.sql.DataSource;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
 
 /**
- * JDBC parameter decorator.
- * 
- * @param <T> type of data source
+ * Tracing storage database type for MySQL.
  */
-public interface JDBCParameterDecorator<T extends DataSource> extends TypedSPI {
-    
-    /**
-     * Decorate data source.
-     * 
-     * @param dataSource data source to be decorated
-     * @return decorated data source
-     */
-    T decorate(T dataSource);
+public final class MySQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
-    Class<T> getType();
+    public String getType() {
+        return "MySQL";
+    }
+    
+    @Override
+    public int getDuplicateRecordErrorCode() {
+        return 1062;
+    }
 }

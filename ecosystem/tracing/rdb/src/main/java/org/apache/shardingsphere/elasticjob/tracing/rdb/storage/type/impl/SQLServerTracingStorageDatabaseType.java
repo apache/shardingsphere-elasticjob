@@ -15,22 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
 
 /**
- * Default tracing storage database type.
+ * Tracing storage database type for SQLServer.
  */
-public class DefaultTracingStorageDatabaseType implements TracingStorageDatabaseType {
+public final class SQLServerTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {
-        return "SQL92";
+        return "SQLServer";
+    }
+    
+    @Override
+    public String getDatabaseProductName() {
+        return "Microsoft SQL Server";
     }
     
     @Override
     public int getDuplicateRecordErrorCode() {
-        return Integer.MIN_VALUE;
+        return 1;
     }
 }

@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
 
 /**
- * Tracing storage database type for DB2.
+ * Tracing storage database type for H2.
  */
-public final class DB2TracingStorageDatabaseType implements TracingStorageDatabaseType {
+public final class H2TracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {
-        return "DB2";
+        return "H2";
     }
     
     @Override
     public int getDuplicateRecordErrorCode() {
-        return -803;
+        return 23505;
     }
 }

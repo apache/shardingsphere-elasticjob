@@ -34,7 +34,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeS
 import org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProviderFactory;
 import org.apache.shardingsphere.elasticjob.kernel.internal.setup.SetUpFacade;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;

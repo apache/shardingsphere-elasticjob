@@ -27,7 +27,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ExecutionSe
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService;
 import org.apache.shardingsphere.elasticjob.kernel.listener.fixture.ElasticJobListenerCaller;
 import org.apache.shardingsphere.elasticjob.kernel.listener.fixture.TestElasticJobListener;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;

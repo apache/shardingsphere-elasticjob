@@ -15,19 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.api;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type;
+
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Tracing storage configuration.
- *
- * @param <T> storage type
+ * Tracing storage database type.
  */
-public interface TracingStorageConfiguration<T> {
+@SingletonSPI
+public interface TracingStorageDatabaseType extends TypedSPI {
     
     /**
-     * Create storage.
-     *
-     * @return storage
+     * Get database product name.
+     * 
+     * @return database product name
      */
-    T getStorage();
+    default String getDatabaseProductName() {
+        return getType();
+    }
+    
+    /**
+     * Get duplicate record error code.
+     * 
+     * @return duplicate record error code
+     */
+    int getDuplicateRecordErrorCode();
+    
+    @Override
+    String getType();
 }

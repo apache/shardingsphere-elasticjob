@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 
 /**

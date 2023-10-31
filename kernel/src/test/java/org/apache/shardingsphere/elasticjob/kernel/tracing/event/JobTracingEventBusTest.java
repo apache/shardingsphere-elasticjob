@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.event;
 
 import com.google.common.eventbus.EventBus;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TestTracingListener;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
