@@ -24,6 +24,7 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEve
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.WrapException;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.SQLPropertiesFactory;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultTracingStorageDatabaseType;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
@@ -66,8 +67,8 @@ public final class RDBJobEventStorage {
     
     private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
-        tracingStorageDatabaseType = getDatabaseType(dataSource);
-        sqlMapper = new RDBStorageSQLMapper(tracingStorageDatabaseType.getSQLPropertiesFile());
+        tracingStorageDatabaseType = getTracingStorageDatabaseType(dataSource);
+        sqlMapper = new RDBStorageSQLMapper(SQLPropertiesFactory.getProperties(tracingStorageDatabaseType));
         initTablesAndIndexes();
     }
     
@@ -106,7 +107,7 @@ public final class RDBJobEventStorage {
         }
     }
     
-    private TracingStorageDatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
+    private TracingStorageDatabaseType getTracingStorageDatabaseType(final DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
             for (TracingStorageDatabaseType each : ShardingSphereServiceLoader.getServiceInstances(TracingStorageDatabaseType.class)) {

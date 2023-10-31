@@ -36,15 +36,6 @@ public interface TracingStorageDatabaseType extends TypedSPI {
     }
     
     /**
-     * Get SQL properties file.
-     *
-     * @return SQL properties file
-     */
-    default String getSQLPropertiesFile() {
-        return String.format("%s.properties", getType());
-    }
-    
-    /**
      * Get duplicate record error code.
      * 
      * @return duplicate record error code
