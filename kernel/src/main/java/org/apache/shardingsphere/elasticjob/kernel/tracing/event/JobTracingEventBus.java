@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerFactory;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.concurrent.ExecutorService;
@@ -71,7 +71,7 @@ public final class JobTracingEventBus {
                 throw new TracingConfigurationException(String.format("Can not find executor service handler type '%s'.", tracingConfig.getType()));
             }
             eventBus.register(
-                    TypedSPILoader.getService(TracingListenerConfiguration.class, tracingConfig.getType()).createTracingListener(tracingConfig.getTracingStorageConfiguration().getStorage()));
+                    TypedSPILoader.getService(TracingListenerFactory.class, tracingConfig.getType()).create(tracingConfig.getTracingStorageConfiguration().getStorage()));
             isRegistered = true;
         } catch (final TracingConfigurationException ex) {
             log.error("Elastic job: create tracing listener failure, error is: ", ex);

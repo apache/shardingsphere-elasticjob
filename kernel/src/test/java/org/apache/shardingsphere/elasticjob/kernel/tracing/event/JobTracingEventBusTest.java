@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.event;
 import com.google.common.eventbus.EventBus;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TestTracingListener;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TracingListenerFixture;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -48,8 +48,8 @@ class JobTracingEventBusTest {
     private JobTracingEventBus jobTracingEventBus;
     
     @Test
-    void assertRegisterFailure() {
-        jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("FAIL", null));
+    void assertRegisterWithoutTracingStorageConfiguration() {
+        jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", null));
         assertFalse((Boolean) ReflectionUtils.getFieldValue(jobTracingEventBus, "isRegistered"));
     }
     
@@ -58,7 +58,7 @@ class JobTracingEventBusTest {
         jobTracingEventBus = new JobTracingEventBus(new TracingConfiguration<>("TEST", tracingStorage));
         assertTrue((Boolean) ReflectionUtils.getFieldValue(jobTracingEventBus, "isRegistered"));
         jobTracingEventBus.post(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_event_bus_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
-        Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(TestTracingListener::isExecutionEventCalled);
+        Awaitility.await().pollDelay(100L, TimeUnit.MILLISECONDS).until(TracingListenerFixture::isExecutionEventCalled);
         verify(tracingStorage).call();
     }
     

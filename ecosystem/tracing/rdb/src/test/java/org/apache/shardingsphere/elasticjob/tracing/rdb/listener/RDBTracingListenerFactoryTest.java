@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class RDBTracingListenerConfigurationTest {
+class RDBTracingListenerFactoryTest {
     
     @Test
     void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
@@ -40,13 +40,13 @@ class RDBTracingListenerConfigurationTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        assertThat(new RDBTracingListenerConfiguration().createTracingListener(dataSource), instanceOf(RDBTracingListener.class));
+        assertThat(new RDBTracingListenerFactory().create(dataSource), instanceOf(RDBTracingListener.class));
     }
     
     @Test
     void assertCreateTracingListenerFailure() throws SQLException {
         DataSource dataSource = mock(DataSource.class);
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        assertThrows(TracingConfigurationException.class, () -> new RDBTracingListenerConfiguration().createTracingListener(dataSource));
+        assertThrows(TracingConfigurationException.class, () -> new RDBTracingListenerFactory().create(dataSource));
     }
 }

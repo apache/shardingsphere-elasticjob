@@ -15,21 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerFactory;
 
-public final class TestTracingListenerConfiguration implements TracingListenerConfiguration<TracingStorageFixture> {
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
+/**
+ * RDB tracing listener factory.
+ */
+public final class RDBTracingListenerFactory implements TracingListenerFactory<DataSource> {
     
     @Override
-    public TracingListener createTracingListener(final TracingStorageFixture storage) {
-        return new TestTracingListener(storage);
+    public TracingListener create(final DataSource storage) throws TracingConfigurationException {
+        try {
+            return new RDBTracingListener(storage);
+        } catch (final SQLException ex) {
+            throw new TracingConfigurationException(ex);
+        }
     }
     
     @Override
     public String getType() {
-        return "TEST";
+        return "RDB";
     }
 }
