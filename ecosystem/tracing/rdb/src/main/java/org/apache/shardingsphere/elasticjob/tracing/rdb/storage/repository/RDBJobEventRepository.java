@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.WrapException;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingStorageUnavailableException;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.RDBStorageSQLMapper;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.SQLPropertiesFactory;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType;
@@ -69,26 +69,26 @@ public final class RDBJobEventRepository {
     }
     
     /**
-     * The same dataSource always return the same RDBJobEventStorage instance.
+     * The same data source always return the same RDB job event repository instance.
      *
      * @param dataSource dataSource
      * @return RDBJobEventStorage instance
      * @throws SQLException SQLException
      */
     public static RDBJobEventRepository getInstance(final DataSource dataSource) throws SQLException {
-        return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, ds -> {
+        return getInstance(() -> STORAGE_MAP.computeIfAbsent(dataSource, ds -> {
             try {
                 return new RDBJobEventRepository(ds);
             } catch (final SQLException ex) {
-                throw new WrapException(ex);
+                throw new TracingStorageUnavailableException(ex);
             }
         }));
     }
     
-    private static RDBJobEventRepository wrapException(final Supplier<RDBJobEventRepository> supplier) throws SQLException {
+    private static RDBJobEventRepository getInstance(final Supplier<RDBJobEventRepository> supplier) throws SQLException {
         try {
             return supplier.get();
-        } catch (final WrapException ex) {
+        } catch (final TracingStorageUnavailableException ex) {
             if (ex.getCause() instanceof SQLException) {
                 throw new SQLException(ex.getCause());
             }
