@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCaller;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -30,15 +30,15 @@ class YamlTracingConfigurationConverterTest {
     
     @Test
     void assertConvertTracingConfiguration() {
-        JobEventCaller expectedStorage = () -> {
+        TracingStorageFixture expectedStorage = () -> {
         };
-        TracingConfiguration<JobEventCaller> tracingConfig = new TracingConfiguration<>("TEST", expectedStorage);
-        YamlTracingConfigurationConverter<JobEventCaller> converter = new YamlTracingConfigurationConverter<>();
-        YamlTracingConfiguration<JobEventCaller> actual = converter.convertToYamlConfiguration(tracingConfig);
+        TracingConfiguration<TracingStorageFixture> tracingConfig = new TracingConfiguration<>("TEST", expectedStorage);
+        YamlTracingConfigurationConverter<TracingStorageFixture> converter = new YamlTracingConfigurationConverter<>();
+        YamlTracingConfiguration<TracingStorageFixture> actual = converter.convertToYamlConfiguration(tracingConfig);
         assertThat(actual.getType(), is("TEST"));
         assertNotNull(actual.getTracingStorageConfiguration());
         assertTrue(actual.getTracingStorageConfiguration() instanceof YamlJobEventCallerConfiguration);
         YamlJobEventCallerConfiguration result = (YamlJobEventCallerConfiguration) actual.getTracingStorageConfiguration();
-        assertThat(result.getJobEventCaller(), is(expectedStorage));
+        assertThat(result.getTracingStorageFixture(), is(expectedStorage));
     }
 }

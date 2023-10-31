@@ -20,22 +20,22 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCaller;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCallerConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageConfigurationFixture;
 
 /**
  * YAML JobEventCaller configuration.
  */
 @Getter
 @Setter
-public final class YamlJobEventCallerConfiguration implements YamlTracingStorageConfiguration<JobEventCaller> {
+public final class YamlJobEventCallerConfiguration implements YamlTracingStorageConfiguration<TracingStorageFixture> {
     
     private static final long serialVersionUID = -3152825887223378472L;
     
-    private JobEventCaller jobEventCaller;
+    private TracingStorageFixture tracingStorageFixture;
     
     @Override
-    public TracingStorageConfiguration<JobEventCaller> toConfiguration() {
-        return new JobEventCallerConfiguration(jobEventCaller);
+    public TracingStorageConfiguration<TracingStorageFixture> toConfiguration() {
+        return new TracingStorageConfigurationFixture(tracingStorageFixture);
     }
 }

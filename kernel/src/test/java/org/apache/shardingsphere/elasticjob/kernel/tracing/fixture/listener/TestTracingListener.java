@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
@@ -29,17 +30,17 @@ public final class TestTracingListener implements TracingListener {
     @Getter
     private static volatile boolean executionEventCalled;
     
-    private final JobEventCaller jobEventCaller;
+    private final TracingStorageFixture tracingStorageFixture;
     
     @Override
     public void listen(final JobExecutionEvent jobExecutionEvent) {
-        jobEventCaller.call();
+        tracingStorageFixture.call();
         executionEventCalled = true;
     }
     
     @Override
     public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
-        jobEventCaller.call();
+        tracingStorageFixture.call();
     }
     
     /**
