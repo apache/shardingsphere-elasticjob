@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -29,10 +30,10 @@ import java.sql.SQLException;
  */
 public final class RDBTracingListener implements TracingListener {
     
-    private final RDBJobEventStorage repository;
+    private final RDBJobEventRepository repository;
     
     public RDBTracingListener(final DataSource dataSource) throws SQLException {
-        repository = RDBJobEventStorage.getInstance(dataSource);
+        repository = RDBJobEventRepository.getInstance(dataSource);
     }
     
     @Override

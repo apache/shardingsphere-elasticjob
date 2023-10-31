@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +42,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * RDB job event storage.
+ * RDB job event repository.
  */
 @Slf4j
-public final class RDBJobEventStorage {
+public final class RDBJobEventRepository {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
@@ -53,7 +53,7 @@ public final class RDBJobEventStorage {
     
     private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
-    private static final Map<DataSource, RDBJobEventStorage> STORAGE_MAP = new ConcurrentHashMap<>();
+    private static final Map<DataSource, RDBJobEventRepository> STORAGE_MAP = new ConcurrentHashMap<>();
     
     private final DataSource dataSource;
     
@@ -61,7 +61,7 @@ public final class RDBJobEventStorage {
     
     private final RDBStorageSQLMapper sqlMapper;
     
-    private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
+    private RDBJobEventRepository(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         tracingStorageDatabaseType = getTracingStorageDatabaseType(dataSource);
         sqlMapper = new RDBStorageSQLMapper(SQLPropertiesFactory.getProperties(tracingStorageDatabaseType));
@@ -75,17 +75,17 @@ public final class RDBJobEventStorage {
      * @return RDBJobEventStorage instance
      * @throws SQLException SQLException
      */
-    public static RDBJobEventStorage getInstance(final DataSource dataSource) throws SQLException {
+    public static RDBJobEventRepository getInstance(final DataSource dataSource) throws SQLException {
         return wrapException(() -> STORAGE_MAP.computeIfAbsent(dataSource, ds -> {
             try {
-                return new RDBJobEventStorage(ds);
+                return new RDBJobEventRepository(ds);
             } catch (final SQLException ex) {
                 throw new WrapException(ex);
             }
         }));
     }
     
-    private static RDBJobEventStorage wrapException(final Supplier<RDBJobEventStorage> supplier) throws SQLException {
+    private static RDBJobEventRepository wrapException(final Supplier<RDBJobEventRepository> supplier) throws SQLException {
         try {
             return supplier.get();
         } catch (final WrapException ex) {
@@ -177,35 +177,35 @@ public final class RDBJobEventStorage {
     /**
      * Add job execution event.
      * 
-     * @param jobExecutionEvent job execution event
+     * @param event job execution event
      * @return add success or not
      */
-    public boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
-        if (null == jobExecutionEvent.getCompleteTime()) {
-            return insertJobExecutionEvent(jobExecutionEvent);
+    public boolean addJobExecutionEvent(final JobExecutionEvent event) {
+        if (null == event.getCompleteTime()) {
+            return insertJobExecutionEvent(event);
         } else {
-            if (jobExecutionEvent.isSuccess()) {
-                return updateJobExecutionEventWhenSuccess(jobExecutionEvent);
+            if (event.isSuccess()) {
+                return updateJobExecutionEventWhenSuccess(event);
             } else {
-                return updateJobExecutionEventFailure(jobExecutionEvent);
+                return updateJobExecutionEventFailure(event);
             }
         }
     }
     
-    private boolean insertJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
+    private boolean insertJobExecutionEvent(final JobExecutionEvent event) {
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLog())) {
-            preparedStatement.setString(1, jobExecutionEvent.getId());
-            preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setBoolean(8, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(9, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+            preparedStatement.setString(1, event.getId());
+            preparedStatement.setString(2, event.getJobName());
+            preparedStatement.setString(3, event.getTaskId());
+            preparedStatement.setString(4, event.getHostname());
+            preparedStatement.setString(5, event.getIp());
+            preparedStatement.setInt(6, event.getShardingItem());
+            preparedStatement.setString(7, event.getSource().toString());
+            preparedStatement.setBoolean(8, event.isSuccess());
+            preparedStatement.setTimestamp(9, new Timestamp(event.getStartTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
@@ -217,16 +217,16 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
+    private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent event) {
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getUpdateForJobExecutionLog())) {
-            preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
-            preparedStatement.setString(3, jobExecutionEvent.getId());
+            preparedStatement.setBoolean(1, event.isSuccess());
+            preparedStatement.setTimestamp(2, new Timestamp(event.getCompleteTime().getTime()));
+            preparedStatement.setString(3, event.getId());
             if (0 == preparedStatement.executeUpdate()) {
-                return insertJobExecutionEventWhenSuccess(jobExecutionEvent);
+                return insertJobExecutionEventWhenSuccess(event);
             }
             result = true;
         } catch (final SQLException ex) {
@@ -236,26 +236,26 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean insertJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
+    private boolean insertJobExecutionEventWhenSuccess(final JobExecutionEvent event) {
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForComplete())) {
-            preparedStatement.setString(1, jobExecutionEvent.getId());
-            preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setBoolean(8, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(9, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
-            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
+            preparedStatement.setString(1, event.getId());
+            preparedStatement.setString(2, event.getJobName());
+            preparedStatement.setString(3, event.getTaskId());
+            preparedStatement.setString(4, event.getHostname());
+            preparedStatement.setString(5, event.getIp());
+            preparedStatement.setInt(6, event.getShardingItem());
+            preparedStatement.setString(7, event.getSource().toString());
+            preparedStatement.setBoolean(8, event.isSuccess());
+            preparedStatement.setTimestamp(9, new Timestamp(event.getStartTime().getTime()));
+            preparedStatement.setTimestamp(10, new Timestamp(event.getCompleteTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
             if (isDuplicateRecord(ex)) {
-                return updateJobExecutionEventWhenSuccess(jobExecutionEvent);
+                return updateJobExecutionEventWhenSuccess(event);
             }
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error(ex.getMessage());
@@ -263,17 +263,17 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean updateJobExecutionEventFailure(final JobExecutionEvent jobExecutionEvent) {
+    private boolean updateJobExecutionEventFailure(final JobExecutionEvent event) {
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getUpdateForJobExecutionLogForFailure())) {
-            preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
-            preparedStatement.setString(3, truncateString(jobExecutionEvent.getFailureCause()));
-            preparedStatement.setString(4, jobExecutionEvent.getId());
+            preparedStatement.setBoolean(1, event.isSuccess());
+            preparedStatement.setTimestamp(2, new Timestamp(event.getCompleteTime().getTime()));
+            preparedStatement.setString(3, truncateString(event.getFailureCause()));
+            preparedStatement.setString(4, event.getId());
             if (0 == preparedStatement.executeUpdate()) {
-                return insertJobExecutionEventWhenFailure(jobExecutionEvent);
+                return insertJobExecutionEventWhenFailure(event);
             }
             result = true;
         } catch (final SQLException ex) {
@@ -283,26 +283,26 @@ public final class RDBJobEventStorage {
         return result;
     }
     
-    private boolean insertJobExecutionEventWhenFailure(final JobExecutionEvent jobExecutionEvent) {
+    private boolean insertJobExecutionEventWhenFailure(final JobExecutionEvent event) {
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobExecutionLogForFailure())) {
-            preparedStatement.setString(1, jobExecutionEvent.getId());
-            preparedStatement.setString(2, jobExecutionEvent.getJobName());
-            preparedStatement.setString(3, jobExecutionEvent.getTaskId());
-            preparedStatement.setString(4, jobExecutionEvent.getHostname());
-            preparedStatement.setString(5, jobExecutionEvent.getIp());
-            preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
-            preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
-            preparedStatement.setString(8, truncateString(jobExecutionEvent.getFailureCause()));
-            preparedStatement.setBoolean(9, jobExecutionEvent.isSuccess());
-            preparedStatement.setTimestamp(10, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+            preparedStatement.setString(1, event.getId());
+            preparedStatement.setString(2, event.getJobName());
+            preparedStatement.setString(3, event.getTaskId());
+            preparedStatement.setString(4, event.getHostname());
+            preparedStatement.setString(5, event.getIp());
+            preparedStatement.setInt(6, event.getShardingItem());
+            preparedStatement.setString(7, event.getSource().toString());
+            preparedStatement.setString(8, truncateString(event.getFailureCause()));
+            preparedStatement.setBoolean(9, event.isSuccess());
+            preparedStatement.setTimestamp(10, new Timestamp(event.getStartTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {
             if (isDuplicateRecord(ex)) {
-                return updateJobExecutionEventFailure(jobExecutionEvent);
+                return updateJobExecutionEventFailure(event);
             }
             // TODO log failure directly to output log, consider to be configurable in the future
             log.error(ex.getMessage());
@@ -317,28 +317,28 @@ public final class RDBJobEventStorage {
     /**
      * Add job status trace event.
      * 
-     * @param jobStatusTraceEvent job status trace event
+     * @param event job status trace event
      * @return add success or not
      */
-    public boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
-        String originalTaskId = jobStatusTraceEvent.getOriginalTaskId();
-        if (State.TASK_STAGING != jobStatusTraceEvent.getState()) {
-            originalTaskId = getOriginalTaskId(jobStatusTraceEvent.getTaskId());
+    public boolean addJobStatusTraceEvent(final JobStatusTraceEvent event) {
+        String originalTaskId = event.getOriginalTaskId();
+        if (State.TASK_STAGING != event.getState()) {
+            originalTaskId = getOriginalTaskId(event.getTaskId());
         }
         boolean result = false;
         try (
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlMapper.getInsertForJobStatusTraceLog())) {
             preparedStatement.setString(1, UUID.randomUUID().toString());
-            preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
+            preparedStatement.setString(2, event.getJobName());
             preparedStatement.setString(3, originalTaskId);
-            preparedStatement.setString(4, jobStatusTraceEvent.getTaskId());
-            preparedStatement.setString(5, jobStatusTraceEvent.getSlaveId());
-            preparedStatement.setString(6, jobStatusTraceEvent.getExecutionType().name());
-            preparedStatement.setString(7, jobStatusTraceEvent.getShardingItems());
-            preparedStatement.setString(8, jobStatusTraceEvent.getState().toString());
-            preparedStatement.setString(9, truncateString(jobStatusTraceEvent.getMessage()));
-            preparedStatement.setTimestamp(10, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
+            preparedStatement.setString(4, event.getTaskId());
+            preparedStatement.setString(5, event.getSlaveId());
+            preparedStatement.setString(6, event.getExecutionType().name());
+            preparedStatement.setString(7, event.getShardingItems());
+            preparedStatement.setString(8, event.getState().toString());
+            preparedStatement.setString(9, truncateString(event.getMessage()));
+            preparedStatement.setTimestamp(10, new Timestamp(event.getCreationTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {

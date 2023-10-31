@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
+package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
@@ -35,9 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RDBJobEventStorageTest {
+class RDBJobEventRepositoryTest {
     
-    private RDBJobEventStorage storage;
+    private RDBJobEventRepository repository;
     
     private BasicDataSource dataSource;
     
@@ -48,7 +48,7 @@ class RDBJobEventStorageTest {
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
-        storage = RDBJobEventStorage.getInstance(dataSource);
+        repository = RDBJobEventRepository.getInstance(dataSource);
     }
     
     @AfterEach
@@ -58,29 +58,29 @@ class RDBJobEventStorageTest {
     
     @Test
     void assertAddJobExecutionEvent() {
-        assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0)));
+        assertTrue(repository.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0)));
     }
     
     @Test
     void assertAddJobStatusTraceEvent() {
-        assertTrue(storage.addJobStatusTraceEvent(
+        assertTrue(repository.addJobStatusTraceEvent(
                 new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", ExecutionType.READY, "0", State.TASK_RUNNING, "message is empty.")));
     }
     
     @Test
     void assertUpdateJobExecutionEventWhenSuccess() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(startEvent));
+        assertTrue(repository.addJobExecutionEvent(startEvent));
         JobExecutionEvent successEvent = startEvent.executionSuccess();
-        assertTrue(storage.addJobExecutionEvent(successEvent));
+        assertTrue(repository.addJobExecutionEvent(successEvent));
     }
     
     @Test
     void assertUpdateJobExecutionEventWhenFailure() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(startEvent));
+        assertTrue(repository.addJobExecutionEvent(startEvent));
         JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
-        assertTrue(storage.addJobExecutionEvent(failureEvent));
+        assertTrue(repository.addJobExecutionEvent(failureEvent));
         assertThat(failureEvent.getFailureCause(), is("java.lang.RuntimeException: failure"));
         assertNotNull(failureEvent.getCompleteTime());
     }
@@ -89,34 +89,34 @@ class RDBJobEventStorageTest {
     void assertUpdateJobExecutionEventWhenSuccessAndConflict() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent successEvent = startEvent.executionSuccess();
-        assertTrue(storage.addJobExecutionEvent(successEvent));
-        assertFalse(storage.addJobExecutionEvent(startEvent));
+        assertTrue(repository.addJobExecutionEvent(successEvent));
+        assertFalse(repository.addJobExecutionEvent(startEvent));
     }
     
     @Test
     void assertUpdateJobExecutionEventWhenFailureAndConflict() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent failureEvent = startEvent.executionFailure("java.lang.RuntimeException: failure");
-        assertTrue(storage.addJobExecutionEvent(failureEvent));
+        assertTrue(repository.addJobExecutionEvent(failureEvent));
         assertThat(failureEvent.getFailureCause(), is("java.lang.RuntimeException: failure"));
-        assertFalse(storage.addJobExecutionEvent(startEvent));
+        assertFalse(repository.addJobExecutionEvent(startEvent));
     }
     
     @Test
     void assertUpdateJobExecutionEventWhenFailureAndMessageExceed() {
         JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(startEvent));
+        assertTrue(repository.addJobExecutionEvent(startEvent));
         StringBuilder failureMsg = new StringBuilder();
         for (int i = 0; i < 600; i++) {
             failureMsg.append(i);
         }
         JobExecutionEvent failEvent = startEvent.executionFailure("java.lang.RuntimeException: failure" + failureMsg);
-        assertTrue(storage.addJobExecutionEvent(failEvent));
+        assertTrue(repository.addJobExecutionEvent(failEvent));
         assertThat(failEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }
     
     @Test
     void assertFindJobExecutionEvent() {
-        storage.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        repository.addJobExecutionEvent(new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
     }
 }
