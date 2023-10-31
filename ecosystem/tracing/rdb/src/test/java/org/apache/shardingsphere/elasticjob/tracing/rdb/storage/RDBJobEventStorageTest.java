@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.storage;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.kernel.infra.constant.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ExecutionType;
 import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.internal.tracing.event.JobStatusTraceEvent.State;

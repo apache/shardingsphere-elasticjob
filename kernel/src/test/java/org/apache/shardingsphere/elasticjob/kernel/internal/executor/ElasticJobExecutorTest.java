@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.executor;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.facade.JobFacade;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
@@ -79,7 +80,7 @@ class ElasticJobExecutorTest {
     
     private JobConfiguration createJobConfiguration() {
         return JobConfiguration.newBuilder("test_job", 3)
-                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("THROW").description("desc").build();
+                .cron("0/1 * * * * ?").shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).jobErrorHandlerType("FOO").description("desc").build();
     }
     
     @Test

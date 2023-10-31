@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.server;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shardingsphere.elasticjob.kernel.internal.util.BlockUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;

@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
-import org.apache.shardingsphere.elasticjob.kernel.internal.util.SensitiveInfoUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.SensitiveInfoUtils;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 

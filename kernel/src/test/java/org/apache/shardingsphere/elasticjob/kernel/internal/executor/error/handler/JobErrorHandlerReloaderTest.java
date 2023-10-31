@@ -18,8 +18,8 @@
 package org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.IgnoreJobErrorHandler;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.general.LogJobErrorHandler;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.fixture.BarJobErrorHandlerFixture;
+import org.apache.shardingsphere.elasticjob.kernel.internal.executor.error.handler.fixture.FooJobErrorHandlerFixture;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,35 +43,34 @@ class JobErrorHandlerReloaderTest {
     
     @Test
     void assertInitialize() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("FOO").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             JobErrorHandler actual = jobErrorHandlerReloader.getJobErrorHandler();
             assertNotNull(actual);
-            assertThat(actual.getType(), is("IGNORE"));
-            assertTrue(actual instanceof IgnoreJobErrorHandler);
+            assertThat(actual.getType(), is("FOO"));
+            assertTrue(actual instanceof FooJobErrorHandlerFixture);
         }
     }
     
     @Test
     void assertReload() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("FOO").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             when(jobErrorHandler.getType()).thenReturn("mock");
             ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
             ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "props", new Properties());
-            String newJobErrorHandlerType = "LOG";
-            JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType(newJobErrorHandlerType).build();
+            JobConfiguration newJobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("BAR").build();
             jobErrorHandlerReloader.reloadIfNecessary(newJobConfig);
             verify(jobErrorHandler).close();
             JobErrorHandler actual = jobErrorHandlerReloader.getJobErrorHandler();
-            assertThat(actual.getType(), is(newJobErrorHandlerType));
-            assertTrue(actual instanceof LogJobErrorHandler);
+            assertThat(actual.getType(), is("BAR"));
+            assertTrue(actual instanceof BarJobErrorHandlerFixture);
         }
     }
     
     @Test
     void assertUnnecessaryToReload() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("FOO").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             JobErrorHandler expected = jobErrorHandlerReloader.getJobErrorHandler();
             jobErrorHandlerReloader.reloadIfNecessary(jobConfig);
@@ -82,7 +81,7 @@ class JobErrorHandlerReloaderTest {
     
     @Test
     void assertShutdown() {
-        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("IGNORE").build();
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).jobErrorHandlerType("FOO").build();
         try (JobErrorHandlerReloader jobErrorHandlerReloader = new JobErrorHandlerReloader(jobConfig)) {
             ReflectionUtils.setFieldValue(jobErrorHandlerReloader, "jobErrorHandler", jobErrorHandler);
             jobErrorHandlerReloader.close();
