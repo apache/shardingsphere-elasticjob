@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorag
 public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
     
     @Override
-    public TracingStorageConfiguration<TracingStorageFixture> convertObjectToConfiguration(final TracingStorageFixture storage) {
+    public TracingStorageConfiguration<TracingStorageFixture> convertToConfiguration(final TracingStorageFixture storage) {
         return new TracingStorageConfigurationFixture(storage);
     }
     

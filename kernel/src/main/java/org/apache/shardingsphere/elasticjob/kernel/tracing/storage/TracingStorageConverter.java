@@ -34,7 +34,7 @@ public interface TracingStorageConverter<T> {
      * @param storage storage instance
      * @return instance of {@link TracingStorageConfiguration}
      */
-    TracingStorageConfiguration<T> convertObjectToConfiguration(T storage);
+    TracingStorageConfiguration<T> convertToConfiguration(T storage);
     
     /**
      * Storage type.

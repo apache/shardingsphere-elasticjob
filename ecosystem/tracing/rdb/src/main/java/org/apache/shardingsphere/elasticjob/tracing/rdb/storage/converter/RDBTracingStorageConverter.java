@@ -35,7 +35,7 @@ import java.sql.SQLException;
 public final class RDBTracingStorageConverter implements TracingStorageConverter<DataSource> {
     
     @Override
-    public TracingStorageConfiguration<DataSource> convertObjectToConfiguration(final DataSource dataSource) {
+    public TracingStorageConfiguration<DataSource> convertToConfiguration(final DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             log.trace("Try to get connection from {}", connection.getMetaData().getURL());
         } catch (final SQLException ex) {

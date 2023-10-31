@@ -56,7 +56,7 @@ class RDBTracingStorageConverterTest {
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getURL()).thenReturn("jdbc:url");
         RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
-        assertNotNull(converter.convertObjectToConfiguration(dataSource));
+        assertNotNull(converter.convertToConfiguration(dataSource));
     }
     
     @Test
@@ -64,7 +64,7 @@ class RDBTracingStorageConverterTest {
         assertThrows(TracingStorageUnavailableException.class, () -> {
             RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
             doThrow(SQLException.class).when(dataSource).getConnection();
-            converter.convertObjectToConfiguration(dataSource);
+            converter.convertToConfiguration(dataSource);
         });
     }
     
