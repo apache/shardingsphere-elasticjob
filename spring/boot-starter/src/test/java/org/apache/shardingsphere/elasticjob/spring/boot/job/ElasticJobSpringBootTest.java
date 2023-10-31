@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(properties="spring.main.banner-mode=off")
+@SpringBootTest(properties = "spring.main.banner-mode=off")
 @SpringBootApplication
 @ActiveProfiles("elasticjob")
 class ElasticJobSpringBootTest {

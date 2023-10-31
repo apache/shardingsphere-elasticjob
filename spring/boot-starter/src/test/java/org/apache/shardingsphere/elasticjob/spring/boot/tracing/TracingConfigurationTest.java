@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest(properties="spring.main.banner-mode=off")
+@SpringBootTest(properties = "spring.main.banner-mode=off")
 @SpringBootApplication
 @ActiveProfiles("tracing")
 class TracingConfigurationTest {

@@ -36,7 +36,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(properties="spring.main.banner-mode=off")
+@SpringBootTest(properties = "spring.main.banner-mode=off")
 @ActiveProfiles("elasticjob")
 @ElasticJobScan(basePackages = "org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl")
 class ElasticJobSpringBootScannerTest {
