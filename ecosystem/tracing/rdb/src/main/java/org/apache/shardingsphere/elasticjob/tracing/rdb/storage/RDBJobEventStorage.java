@@ -24,7 +24,6 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEve
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.WrapException;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.SQLPropertiesFactory;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultTracingStorageDatabaseType;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
