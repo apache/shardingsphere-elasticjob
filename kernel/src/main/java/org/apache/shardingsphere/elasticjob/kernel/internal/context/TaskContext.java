@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.shardingsphere.elasticjob.kernel.internal.executor.ExecutionType;
+import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
 
 import java.util.Collections;
 import java.util.List;
