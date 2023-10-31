@@ -77,7 +77,7 @@
         <httpcore.version>4.4.16</httpcore.version>
         
         <netty.version>4.1.99.Final</netty.version>
-
+        
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.12</logback.version>
         
@@ -253,7 +253,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -272,8 +272,8 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
-                <optional>true</optional>
                 <version>${slf4j.version}</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
