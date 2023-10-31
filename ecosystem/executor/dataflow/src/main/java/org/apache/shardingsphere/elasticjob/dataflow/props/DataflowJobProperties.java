@@ -23,7 +23,7 @@ package org.apache.shardingsphere.elasticjob.dataflow.props;
 public final class DataflowJobProperties {
     
     /**
-     * Whether use stream mode to process dataflow job.
+     * Whether to use stream mode to process dataflow job.
      */
     public static final String STREAM_PROCESS_KEY = "streaming.process";
 }
