@@ -18,7 +18,6 @@
 package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfiguration;
@@ -28,7 +27,6 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingConfigurat
  *
  * @param <T> type of storage
  */
-@NoArgsConstructor
 @Getter
 @Setter
 public final class YamlTracingConfiguration<T> implements YamlConfiguration<TracingConfiguration<T>> {

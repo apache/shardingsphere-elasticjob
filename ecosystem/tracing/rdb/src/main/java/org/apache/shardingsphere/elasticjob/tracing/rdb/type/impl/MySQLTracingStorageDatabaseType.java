@@ -17,20 +17,20 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl;
 
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
 
 /**
- * H2 database type.
+ * Tracing storage database type for MySQL.
  */
-public final class H2DatabaseType implements DatabaseType {
+public final class MySQLTracingStorageDatabaseType implements TracingStorageDatabaseType {
     
     @Override
     public String getType() {
-        return "H2";
+        return "MySQL";
     }
     
     @Override
     public int getDuplicateRecordErrorCode() {
-        return 23505;
+        return 1062;
     }
 }

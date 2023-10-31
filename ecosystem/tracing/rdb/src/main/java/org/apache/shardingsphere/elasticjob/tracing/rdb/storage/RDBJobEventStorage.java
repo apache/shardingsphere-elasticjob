@@ -24,8 +24,8 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEve
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.WrapException;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.DatabaseType;
-import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.TracingStorageDatabaseType;
+import org.apache.shardingsphere.elasticjob.tracing.rdb.type.impl.DefaultTracingStorageDatabaseType;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 import javax.sql.DataSource;
@@ -60,14 +60,14 @@ public final class RDBJobEventStorage {
     
     private final DataSource dataSource;
     
-    private final DatabaseType databaseType;
+    private final TracingStorageDatabaseType tracingStorageDatabaseType;
     
     private final RDBStorageSQLMapper sqlMapper;
     
     private RDBJobEventStorage(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
-        databaseType = getDatabaseType(dataSource);
-        sqlMapper = new RDBStorageSQLMapper(databaseType.getSQLPropertiesFile());
+        tracingStorageDatabaseType = getDatabaseType(dataSource);
+        sqlMapper = new RDBStorageSQLMapper(tracingStorageDatabaseType.getSQLPropertiesFile());
         initTablesAndIndexes();
     }
     
@@ -106,16 +106,16 @@ public final class RDBJobEventStorage {
         }
     }
     
-    private DatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
+    private TracingStorageDatabaseType getDatabaseType(final DataSource dataSource) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             String databaseProductName = connection.getMetaData().getDatabaseProductName();
-            for (DatabaseType each : ShardingSphereServiceLoader.getServiceInstances(DatabaseType.class)) {
+            for (TracingStorageDatabaseType each : ShardingSphereServiceLoader.getServiceInstances(TracingStorageDatabaseType.class)) {
                 if (each.getDatabaseProductName().equals(databaseProductName)) {
                     return each;
                 }
             }
         }
-        return new DefaultDatabaseType();
+        return new DefaultTracingStorageDatabaseType();
     }
     
     private void initTablesAndIndexes() throws SQLException {
@@ -321,7 +321,7 @@ public final class RDBJobEventStorage {
     }
     
     private boolean isDuplicateRecord(final SQLException ex) {
-        return null != databaseType && databaseType.getDuplicateRecordErrorCode() == ex.getErrorCode();
+        return null != tracingStorageDatabaseType && tracingStorageDatabaseType.getDuplicateRecordErrorCode() == ex.getErrorCode();
     }
     
     /**
