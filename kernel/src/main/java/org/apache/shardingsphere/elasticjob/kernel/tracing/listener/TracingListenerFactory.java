@@ -22,12 +22,12 @@ import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Tracing listener configuration.
+ * Tracing listener factory.
  * 
  * @param <T> type of tracing storage
  */
 @SingletonSPI
-public interface TracingListenerConfiguration<T> extends TypedSPI {
+public interface TracingListenerFactory<T> extends TypedSPI {
     
     /**
      * Create tracing listener.
@@ -36,7 +36,7 @@ public interface TracingListenerConfiguration<T> extends TypedSPI {
      * @return tracing listener
      * @throws TracingConfigurationException tracing configuration exception
      */
-    TracingListener createTracingListener(T storage) throws TracingConfigurationException;
+    TracingListener create(T storage) throws TracingConfigurationException;
     
     @Override
     String getType();

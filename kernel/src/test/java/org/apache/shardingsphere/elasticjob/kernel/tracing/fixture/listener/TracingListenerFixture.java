@@ -25,26 +25,26 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEve
 import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
 
 @RequiredArgsConstructor
-public final class TestTracingListener implements TracingListener {
+public final class TracingListenerFixture implements TracingListener {
     
     @Getter
     private static volatile boolean executionEventCalled;
     
-    private final TracingStorageFixture tracingStorageFixture;
+    private final TracingStorageFixture tracingStorage;
     
     @Override
     public void listen(final JobExecutionEvent jobExecutionEvent) {
-        tracingStorageFixture.call();
+        tracingStorage.call();
         executionEventCalled = true;
     }
     
     @Override
     public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
-        tracingStorageFixture.call();
+        tracingStorage.call();
     }
     
     /**
-     * Set executionEventCalled to false.
+     * Reset.
      */
     public static void reset() {
         executionEventCalled = false;
