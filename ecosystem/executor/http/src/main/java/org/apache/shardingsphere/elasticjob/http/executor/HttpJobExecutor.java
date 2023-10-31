@@ -21,14 +21,13 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.http.pojo.HttpParam;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
-import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,8 +37,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * Http job executor.
@@ -49,42 +46,28 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
     
     @Override
     public void process(final ElasticJob elasticJob, final JobConfiguration jobConfig, final JobRuntimeService jobRuntimeService, final ShardingContext shardingContext) {
-        HttpParam httpParam = getHttpParam(jobConfig.getProps());
+        HttpParam httpParam = new HttpParam(jobConfig.getProps());
         HttpURLConnection connection = null;
         try {
-            URL url = new URL(httpParam.getUrl());
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(httpParam.getMethod());
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(httpParam.getConnectTimeout());
-            connection.setReadTimeout(httpParam.getReadTimeout());
-            if (!Strings.isNullOrEmpty(httpParam.getContentType())) {
-                connection.setRequestProperty("Content-Type", httpParam.getContentType());
-            }
-            connection.setRequestProperty(HttpJobProperties.SHARDING_CONTEXT_KEY, GsonFactory.getGson().toJson(shardingContext));
+            connection = getHttpURLConnection(httpParam, shardingContext);
             connection.connect();
             String data = httpParam.getData();
-            if (isWriteMethod(httpParam.getMethod()) && !Strings.isNullOrEmpty(data)) {
+            if (httpParam.isWriteMethod() && !Strings.isNullOrEmpty(data)) {
                 try (OutputStream outputStream = connection.getOutputStream()) {
                     outputStream.write(data.getBytes(StandardCharsets.UTF_8));
                 }
             }
-            int code = connection.getResponseCode();
-            InputStream resultInputStream;
-            if (isRequestSucceed(code)) {
-                resultInputStream = connection.getInputStream();
-            } else {
-                log.warn("HTTP job {} executed with response code {}", jobConfig.getJobName(), code);
-                resultInputStream = connection.getErrorStream();
-            }
+            int responseCode = connection.getResponseCode();
             StringBuilder result = new StringBuilder();
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resultInputStream, StandardCharsets.UTF_8))) {
+            try (
+                    InputStream inputStream = getConnectionInputStream(jobConfig.getJobName(), connection, responseCode);
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 String line;
                 while (null != (line = bufferedReader.readLine())) {
                     result.append(line);
                 }
             }
-            if (isRequestSucceed(code)) {
+            if (isRequestSucceed(responseCode)) {
                 log.debug("HTTP job execute result : {}", result);
             } else {
                 log.warn("HTTP job {} executed with response body {}", jobConfig.getJobName(), result);
@@ -98,24 +81,26 @@ public final class HttpJobExecutor implements TypedJobItemExecutor {
         }
     }
     
-    private HttpParam getHttpParam(final Properties props) {
-        String url = props.getProperty(HttpJobProperties.URI_KEY);
-        if (Strings.isNullOrEmpty(url)) {
-            throw new JobConfigurationException("Cannot find HTTP URL, job is not executed.");
+    private HttpURLConnection getHttpURLConnection(final HttpParam httpParam, final ShardingContext shardingContext) throws IOException {
+        URL url = new URL(httpParam.getUrl());
+        HttpURLConnection result = (HttpURLConnection) url.openConnection();
+        result.setRequestMethod(httpParam.getMethod());
+        result.setDoOutput(true);
+        result.setConnectTimeout(httpParam.getConnectTimeoutMilliseconds());
+        result.setReadTimeout(httpParam.getReadTimeoutMilliseconds());
+        if (!Strings.isNullOrEmpty(httpParam.getContentType())) {
+            result.setRequestProperty("Content-Type", httpParam.getContentType());
         }
-        String method = props.getProperty(HttpJobProperties.METHOD_KEY);
-        if (Strings.isNullOrEmpty(method)) {
-            throw new JobConfigurationException("Cannot find HTTP method, job is not executed.");
-        }
-        String data = props.getProperty(HttpJobProperties.DATA_KEY);
-        int connectTimeout = Integer.parseInt(props.getProperty(HttpJobProperties.CONNECT_TIMEOUT_KEY, "3000"));
-        int readTimeout = Integer.parseInt(props.getProperty(HttpJobProperties.READ_TIMEOUT_KEY, "5000"));
-        String contentType = props.getProperty(HttpJobProperties.CONTENT_TYPE_KEY);
-        return new HttpParam(url, method, data, connectTimeout, readTimeout, contentType);
+        result.setRequestProperty(HttpJobProperties.SHARDING_CONTEXT_KEY, GsonFactory.getGson().toJson(shardingContext));
+        return result;
     }
     
-    private boolean isWriteMethod(final String method) {
-        return Arrays.asList("POST", "PUT", "DELETE").contains(method.toUpperCase());
+    private InputStream getConnectionInputStream(final String jobName, final HttpURLConnection connection, final int code) throws IOException {
+        if (isRequestSucceed(code)) {
+            return connection.getInputStream();
+        }
+        log.warn("HTTP job {} executed with response code {}", jobName, code);
+        return connection.getErrorStream();
     }
     
     private boolean isRequestSucceed(final int httpStatusCode) {
