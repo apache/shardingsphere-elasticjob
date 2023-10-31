@@ -26,7 +26,8 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.Tracin
  * YAML JobEventCaller configuration converter.
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public final class YamlJobEventCallerConfigurationConverter implements YamlConfigurationConverter<TracingStorageConfiguration<TracingStorageFixture>, YamlTracingStorageConfiguration<TracingStorageFixture>> {
+public final class YamlJobEventCallerConfigurationConverter implements
+        YamlConfigurationConverter<TracingStorageConfiguration<TracingStorageFixture>, YamlTracingStorageConfiguration<TracingStorageFixture>> {
     
     @Override
     public YamlTracingStorageConfiguration<TracingStorageFixture> convertToYamlConfiguration(final TracingStorageConfiguration<TracingStorageFixture> data) {
