@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
 
-public interface JobEventCaller {
+public interface TracingStorageFixture {
     
     /**
-     * Execute call.
+     * Call.
      */
     void call();
 }

@@ -19,24 +19,24 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfigurationConverter;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCaller;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCallerConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageConfigurationFixture;
 
 /**
  * YAML JobEventCaller configuration converter.
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public final class YamlJobEventCallerConfigurationConverter implements YamlConfigurationConverter<TracingStorageConfiguration<JobEventCaller>, YamlTracingStorageConfiguration<JobEventCaller>> {
+public final class YamlJobEventCallerConfigurationConverter implements YamlConfigurationConverter<TracingStorageConfiguration<TracingStorageFixture>, YamlTracingStorageConfiguration<TracingStorageFixture>> {
     
     @Override
-    public YamlTracingStorageConfiguration<JobEventCaller> convertToYamlConfiguration(final TracingStorageConfiguration<JobEventCaller> data) {
+    public YamlTracingStorageConfiguration<TracingStorageFixture> convertToYamlConfiguration(final TracingStorageConfiguration<TracingStorageFixture> data) {
         YamlJobEventCallerConfiguration result = new YamlJobEventCallerConfiguration();
-        result.setJobEventCaller(data.getStorage());
+        result.setTracingStorageFixture(data.getStorage());
         return result;
     }
     
     @Override
     public Class getType() {
-        return JobEventCallerConfiguration.class;
+        return TracingStorageConfigurationFixture.class;
     }
 }

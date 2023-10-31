@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.TestTracingListenerConfiguration
-org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.TestTracingFailureConfiguration
+org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TestTracingListenerConfiguration
+org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TestTracingFailureConfiguration

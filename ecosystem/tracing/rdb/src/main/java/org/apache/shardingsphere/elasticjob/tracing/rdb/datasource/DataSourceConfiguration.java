@@ -40,8 +40,8 @@ import java.util.Optional;
 /**
  * Data source configuration.
  */
-@Getter
 @RequiredArgsConstructor
+@Getter
 public final class DataSourceConfiguration implements TracingStorageConfiguration<DataSource> {
     
     private static final String GETTER_PREFIX = "get";

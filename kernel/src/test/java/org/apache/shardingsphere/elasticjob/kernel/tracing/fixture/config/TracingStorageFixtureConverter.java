@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.api.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
 
-public final class TestTracingFailureConfiguration implements TracingListenerConfiguration<Object> {
+public final class TracingStorageFixtureConverter implements TracingStorageConverter<TracingStorageFixture> {
     
     @Override
-    public TracingListener createTracingListener(final Object storage) throws TracingConfigurationException {
-        throw new TracingConfigurationException(new RuntimeException("assert failure"));
+    public TracingStorageConfiguration<TracingStorageFixture> convertObjectToConfiguration(final TracingStorageFixture storage) {
+        return new TracingStorageConfigurationFixture(storage);
     }
     
     @Override
-    public String getType() {
-        return "FAIL";
+    public Class<TracingStorageFixture> storageType() {
+        return TracingStorageFixture.class;
     }
 }

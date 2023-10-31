@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.JobEventCaller;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,7 +27,7 @@ class TracingStorageConverterFactoryTest {
     
     @Test
     void assertConverterExists() {
-        assertTrue(TracingStorageConverterFactory.findConverter(JobEventCaller.class).isPresent());
+        assertTrue(TracingStorageConverterFactory.findConverter(TracingStorageFixture.class).isPresent());
     }
     
     @Test
