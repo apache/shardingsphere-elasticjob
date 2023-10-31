@@ -27,10 +27,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * {@link TracingStorageConverter} for {@link DataSource}.
+ * RDB tracing storage converter.
  */
 @Slf4j
-public final class DataSourceTracingStorageConverter implements TracingStorageConverter<DataSource> {
+public final class RDBTracingStorageConverter implements TracingStorageConverter<DataSource> {
     
     @Override
     public TracingStorageConfiguration<DataSource> convertObjectToConfiguration(final DataSource dataSource) {
@@ -40,7 +40,7 @@ public final class DataSourceTracingStorageConverter implements TracingStorageCo
             log.error(ex.getLocalizedMessage(), ex);
             throw new TracingStorageUnavailableException(ex);
         }
-        DataSourceConfiguration result = DataSourceConfiguration.getDataSourceConfiguration(dataSource);
+        RDBTracingStorageConfiguration result = RDBTracingStorageConfiguration.getDataSourceConfiguration(dataSource);
         DataSourceRegistry.getInstance().registerDataSource(result, dataSource);
         return result;
     }

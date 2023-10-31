@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class DataSourceConfigurationTest {
+class RDBTracingStorageConfigurationTest {
     
     @Test
     void assertGetDataSourceConfiguration() throws SQLException {
@@ -45,7 +45,7 @@ class DataSourceConfigurationTest {
         actualDataSource.setUsername("root");
         actualDataSource.setPassword("root");
         actualDataSource.setLoginTimeout(1);
-        DataSourceConfiguration actual = DataSourceConfiguration.getDataSourceConfiguration(actualDataSource);
+        RDBTracingStorageConfiguration actual = RDBTracingStorageConfiguration.getDataSourceConfiguration(actualDataSource);
         assertThat(actual.getDataSourceClassName(), is(HikariDataSource.class.getName()));
         assertThat(actual.getProps().get("driverClassName").toString(), is("org.h2.Driver"));
         assertThat(actual.getProps().get("jdbcUrl").toString(), is("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL"));
@@ -63,7 +63,7 @@ class DataSourceConfigurationTest {
         props.put("password", "root");
         props.put("loginTimeout", "5000");
         props.put("test", "test");
-        DataSourceConfiguration dataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration dataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
         dataSourceConfig.getProps().putAll(props);
         HikariDataSource actual = (HikariDataSource) dataSourceConfig.createDataSource();
         assertThat(actual.getDriverClassName(), is("org.h2.Driver"));
@@ -74,8 +74,8 @@ class DataSourceConfigurationTest {
     
     @Test
     void assertEquals() {
-        DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
-        DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration targetDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
         assertThat(originalDataSourceConfig, is(originalDataSourceConfig));
         assertThat(originalDataSourceConfig, is(targetDataSourceConfig));
         originalDataSourceConfig.getProps().put("username", "root");
@@ -85,8 +85,8 @@ class DataSourceConfigurationTest {
     
     @Test
     void assertNotEquals() {
-        DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
-        DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration targetDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
         originalDataSourceConfig.getProps().put("username", "root");
         targetDataSourceConfig.getProps().put("username", "root0");
         assertThat(originalDataSourceConfig, not(targetDataSourceConfig));
@@ -94,13 +94,13 @@ class DataSourceConfigurationTest {
     
     @Test
     void assertEqualsWithNull() {
-        assertFalse(new DataSourceConfiguration(HikariDataSource.class.getName()).equals(null));
+        assertFalse(new RDBTracingStorageConfiguration(HikariDataSource.class.getName()).equals(null));
     }
     
     @Test
     void assertSameHashCode() {
-        DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
-        DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration targetDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
         assertThat(originalDataSourceConfig.hashCode(), is(targetDataSourceConfig.hashCode()));
         originalDataSourceConfig.getProps().put("username", "root");
         targetDataSourceConfig.getProps().put("username", "root");
@@ -112,14 +112,14 @@ class DataSourceConfigurationTest {
     
     @Test
     void assertDifferentHashCode() {
-        DataSourceConfiguration originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
-        DataSourceConfiguration targetDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
+        RDBTracingStorageConfiguration targetDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
         originalDataSourceConfig.getProps().put("username", "root");
         targetDataSourceConfig.getProps().put("username", "root");
         targetDataSourceConfig.getProps().put("password", "root");
         assertThat(originalDataSourceConfig.hashCode(), not(targetDataSourceConfig.hashCode()));
-        originalDataSourceConfig = new DataSourceConfiguration(HikariDataSource.class.getName());
-        targetDataSourceConfig = new DataSourceConfiguration(BasicDataSource.class.getName());
+        originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
+        targetDataSourceConfig = new RDBTracingStorageConfiguration(BasicDataSource.class.getName());
         assertThat(originalDataSourceConfig.hashCode(), not(targetDataSourceConfig.hashCode()));
     }
     
@@ -132,7 +132,7 @@ class DataSourceConfigurationTest {
         actualDataSource.setUsername("root");
         actualDataSource.setPassword("root");
         actualDataSource.setConnectionInitSqls(Arrays.asList("set names utf8mb4;", "set names utf8;"));
-        DataSourceConfiguration actual = DataSourceConfiguration.getDataSourceConfiguration(actualDataSource);
+        RDBTracingStorageConfiguration actual = RDBTracingStorageConfiguration.getDataSourceConfiguration(actualDataSource);
         assertThat(actual.getDataSourceClassName(), is(BasicDataSource.class.getName()));
         assertThat(actual.getProps().get("driverClassName").toString(), is("org.h2.Driver"));
         assertThat(actual.getProps().get("url").toString(), is("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL"));

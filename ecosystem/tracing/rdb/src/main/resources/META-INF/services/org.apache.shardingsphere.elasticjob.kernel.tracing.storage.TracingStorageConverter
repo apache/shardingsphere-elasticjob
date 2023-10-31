@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceTracingStorageConverter
+org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.RDBTracingStorageConverter

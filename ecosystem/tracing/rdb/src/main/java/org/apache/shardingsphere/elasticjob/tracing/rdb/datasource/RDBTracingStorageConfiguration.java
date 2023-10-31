@@ -38,11 +38,11 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 /**
- * Data source configuration.
+ * RDB tracing storage configuration.
  */
 @RequiredArgsConstructor
 @Getter
-public final class DataSourceConfiguration implements TracingStorageConfiguration<DataSource> {
+public final class RDBTracingStorageConfiguration implements TracingStorageConfiguration<DataSource> {
     
     private static final String GETTER_PREFIX = "get";
     
@@ -67,8 +67,8 @@ public final class DataSourceConfiguration implements TracingStorageConfiguratio
      * @param dataSource data source
      * @return data source configuration
      */
-    public static DataSourceConfiguration getDataSourceConfiguration(final DataSource dataSource) {
-        DataSourceConfiguration result = new DataSourceConfiguration(dataSource.getClass().getName());
+    public static RDBTracingStorageConfiguration getDataSourceConfiguration(final DataSource dataSource) {
+        RDBTracingStorageConfiguration result = new RDBTracingStorageConfiguration(dataSource.getClass().getName());
         result.props.putAll(findAllGetterProperties(dataSource));
         return result;
     }
@@ -95,11 +95,6 @@ public final class DataSourceConfiguration implements TracingStorageConfiguratio
             }
         }
         return result;
-    }
-    
-    @Override
-    public DataSource getStorage() {
-        return DataSourceRegistry.getInstance().getDataSource(this);
     }
     
     /**
@@ -136,11 +131,16 @@ public final class DataSourceConfiguration implements TracingStorageConfiguratio
     }
     
     @Override
-    public boolean equals(final Object obj) {
-        return this == obj || null != obj && getClass() == obj.getClass() && equalsByProperties((DataSourceConfiguration) obj);
+    public DataSource getStorage() {
+        return DataSourceRegistry.getInstance().getDataSource(this);
     }
     
-    private boolean equalsByProperties(final DataSourceConfiguration dataSourceConfig) {
+    @Override
+    public boolean equals(final Object obj) {
+        return this == obj || null != obj && getClass() == obj.getClass() && equalsByProperties((RDBTracingStorageConfiguration) obj);
+    }
+    
+    private boolean equalsByProperties(final RDBTracingStorageConfiguration dataSourceConfig) {
         return dataSourceClassName.equals(dataSourceConfig.dataSourceClassName) && props.equals(dataSourceConfig.props);
     }
     

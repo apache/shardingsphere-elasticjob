@@ -23,7 +23,7 @@ import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.Tracin
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageConfigurationFixture;
 
 /**
- * YAML JobEventCaller configuration converter.
+ * YAML job event caller configuration converter.
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class YamlJobEventCallerConfigurationConverter

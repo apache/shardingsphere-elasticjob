@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 class DataSourceRegistryTest {
     
     @Mock
-    private DataSourceConfiguration dataSourceConfig;
+    private RDBTracingStorageConfiguration dataSourceConfig;
     
     @Test
     void assertGetDataSourceBySameConfiguration() {
@@ -49,7 +49,7 @@ class DataSourceRegistryTest {
     @Test
     void assertGetDataSourceWithDifferentConfiguration() {
         when(dataSourceConfig.createDataSource()).then(invocation -> mock(DataSource.class));
-        DataSourceConfiguration anotherDataSourceConfig = mock(DataSourceConfiguration.class);
+        RDBTracingStorageConfiguration anotherDataSourceConfig = mock(RDBTracingStorageConfiguration.class);
         when(anotherDataSourceConfig.createDataSource()).then(invocation -> mock(DataSource.class));
         DataSource one = DataSourceRegistry.getInstance().getDataSource(dataSourceConfig);
         DataSource another = DataSourceRegistry.getInstance().getDataSource(anotherDataSourceConfig);

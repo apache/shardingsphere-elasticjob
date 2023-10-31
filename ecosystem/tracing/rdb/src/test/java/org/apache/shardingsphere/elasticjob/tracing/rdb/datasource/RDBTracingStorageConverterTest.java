@@ -39,7 +39,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DataSourceTracingStorageConverterTest {
+class RDBTracingStorageConverterTest {
     
     @Mock
     private DataSource dataSource;
@@ -55,14 +55,14 @@ class DataSourceTracingStorageConverterTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getURL()).thenReturn("jdbc:url");
-        DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
+        RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
         assertNotNull(converter.convertObjectToConfiguration(dataSource));
     }
     
     @Test
     void assertConvertFailed() {
         assertThrows(TracingStorageUnavailableException.class, () -> {
-            DataSourceTracingStorageConverter converter = new DataSourceTracingStorageConverter();
+            RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
             doThrow(SQLException.class).when(dataSource).getConnection();
             converter.convertObjectToConfiguration(dataSource);
         });

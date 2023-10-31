@@ -25,14 +25,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Mapping tracing storage configuration} to data source.
+ * Mapping tracing storage configuration to data source.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataSourceRegistry {
     
     private static volatile DataSourceRegistry instance;
     
-    private final ConcurrentMap<DataSourceConfiguration, DataSource> dataSources = new ConcurrentHashMap<>();
+    private final ConcurrentMap<RDBTracingStorageConfiguration, DataSource> dataSources = new ConcurrentHashMap<>();
     
     /**
      * Get instance of {@link DataSourceRegistry}.
@@ -50,17 +50,17 @@ public final class DataSourceRegistry {
         return instance;
     }
     
-    void registerDataSource(final DataSourceConfiguration dataSourceConfig, final DataSource dataSource) {
+    void registerDataSource(final RDBTracingStorageConfiguration dataSourceConfig, final DataSource dataSource) {
         dataSources.putIfAbsent(dataSourceConfig, dataSource);
     }
     
     /**
-     * Get {@link DataSource} by {@link DataSourceConfiguration}.
+     * Get {@link DataSource} by {@link RDBTracingStorageConfiguration}.
      *
      * @param dataSourceConfig data source configuration
      * @return instance of {@link DataSource}
      */
-    public DataSource getDataSource(final DataSourceConfiguration dataSourceConfig) {
-        return dataSources.computeIfAbsent(dataSourceConfig, DataSourceConfiguration::createDataSource);
+    public DataSource getDataSource(final RDBTracingStorageConfiguration dataSourceConfig) {
+        return dataSources.computeIfAbsent(dataSourceConfig, RDBTracingStorageConfiguration::createDataSource);
     }
 }
