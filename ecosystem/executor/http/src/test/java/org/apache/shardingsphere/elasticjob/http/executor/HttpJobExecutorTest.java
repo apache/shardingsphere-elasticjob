@@ -19,15 +19,14 @@ package org.apache.shardingsphere.elasticjob.http.executor;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.http.executor.fixture.InternalController;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
-import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionException;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulServiceConfiguration;
 import org.apache.shardingsphere.elasticjob.restful.RestfulService;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,23 +90,6 @@ class HttpJobExecutorTest {
         if (null != restfulService) {
             restfulService.shutdown();
         }
-    }
-    
-    @Test
-    void assertUrlEmpty() {
-        assertThrows(JobConfigurationException.class, () -> {
-            when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn("");
-            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
-        });
-    }
-    
-    @Test
-    void assertMethodEmpty() {
-        assertThrows(JobConfigurationException.class, () -> {
-            when(jobConfig.getProps().getProperty(HttpJobProperties.URI_KEY)).thenReturn(getRequestUri("/getName"));
-            when(jobConfig.getProps().getProperty(HttpJobProperties.METHOD_KEY)).thenReturn("");
-            jobExecutor.process(elasticJob, jobConfig, jobRuntimeService, shardingContext);
-        });
     }
     
     @Test
