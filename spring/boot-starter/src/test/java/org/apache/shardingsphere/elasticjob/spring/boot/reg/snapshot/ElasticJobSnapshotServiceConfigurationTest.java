@@ -29,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.main.banner-mode=off")
 @SpringBootApplication
 @ActiveProfiles("snapshot")
 class ElasticJobSnapshotServiceConfigurationTest {
