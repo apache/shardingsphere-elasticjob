@@ -37,6 +37,4 @@
     <root>
         <appender-ref ref="STDOUT" />
     </root>
-    
-    <logger name="org.apache.shardingsphere.elasticjob.tracing.rdb.datasource.DataSourceTracingStorageConverter" level="OFF" />
 </configuration>
