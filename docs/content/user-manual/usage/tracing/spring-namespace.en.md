@@ -33,9 +33,9 @@ chapter = true
     <bean id="myJob" class="xxx.MyJob" />
     
     <!-- Configure DataSource -->
-    <bean id="tracingDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <bean id="tracingDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <property name="driverClassName" value="${driver.class.name}" />
-        <property name="url" value="${url}" />
+        <property name="jdbcUrl" value="${url}" />
         <property name="username" value="${username}" />
         <property name="password" value="${password}" />
     </bean>

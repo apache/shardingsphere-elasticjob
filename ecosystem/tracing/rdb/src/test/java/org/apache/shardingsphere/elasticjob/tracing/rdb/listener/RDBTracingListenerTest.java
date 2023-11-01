@@ -17,10 +17,10 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.shardingsphere.elasticjob.spi.executor.ExecutionType;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus;
+import org.apache.shardingsphere.elasticjob.spi.executor.ExecutionType;
 import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent;
 import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent.State;
@@ -50,9 +50,9 @@ class RDBTracingListenerTest {
     
     @BeforeEach
     void setUp() throws SQLException {
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
-        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
+        dataSource.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         RDBTracingListener tracingListener = new RDBTracingListener(dataSource);

@@ -18,17 +18,13 @@
 package org.apache.shardingsphere.elasticjob.tracing.rdb.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.jupiter.api.Test;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -119,29 +115,25 @@ class RDBTracingStorageConfigurationTest {
         targetDataSourceConfig.getProps().put("password", "root");
         assertThat(originalDataSourceConfig.hashCode(), not(targetDataSourceConfig.hashCode()));
         originalDataSourceConfig = new RDBTracingStorageConfiguration(HikariDataSource.class.getName());
-        targetDataSourceConfig = new RDBTracingStorageConfiguration(BasicDataSource.class.getName());
+        targetDataSourceConfig = new RDBTracingStorageConfiguration(DataSource.class.getName());
         assertThat(originalDataSourceConfig.hashCode(), not(targetDataSourceConfig.hashCode()));
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     void assertGetDataSourceConfigurationWithConnectionInitSqls() {
-        BasicDataSource actualDataSource = new BasicDataSource();
+        HikariDataSource actualDataSource = new HikariDataSource();
         actualDataSource.setDriverClassName("org.h2.Driver");
-        actualDataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL");
+        actualDataSource.setJdbcUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL");
         actualDataSource.setUsername("root");
         actualDataSource.setPassword("root");
-        actualDataSource.setConnectionInitSqls(Arrays.asList("set names utf8mb4;", "set names utf8;"));
+        actualDataSource.setConnectionInitSql("set names utf8mb4;set names utf8;");
         RDBTracingStorageConfiguration actual = RDBTracingStorageConfiguration.getDataSourceConfiguration(actualDataSource);
-        assertThat(actual.getDataSourceClassName(), is(BasicDataSource.class.getName()));
+        assertThat(actual.getDataSourceClassName(), is(HikariDataSource.class.getName()));
         assertThat(actual.getProps().get("driverClassName").toString(), is("org.h2.Driver"));
-        assertThat(actual.getProps().get("url").toString(), is("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL"));
+        assertThat(actual.getProps().get("jdbcUrl").toString(), is("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL"));
         assertThat(actual.getProps().get("username").toString(), is("root"));
         assertThat(actual.getProps().get("password").toString(), is("root"));
         assertNull(actual.getProps().get("loginTimeout"));
-        assertThat(actual.getProps().get("connectionInitSqls"), instanceOf(List.class));
-        List<String> actualConnectionInitSql = (List<String>) actual.getProps().get("connectionInitSqls");
-        assertThat(actualConnectionInitSql, hasItem("set names utf8mb4;"));
-        assertThat(actualConnectionInitSql, hasItem("set names utf8;"));
+        assertThat(actual.getProps().get("connectionInitSql"), is("set names utf8mb4;set names utf8;"));
     }
 }

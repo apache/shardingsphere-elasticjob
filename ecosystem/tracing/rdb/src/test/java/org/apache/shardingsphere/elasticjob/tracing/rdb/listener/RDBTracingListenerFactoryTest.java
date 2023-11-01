@@ -17,12 +17,11 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.spi.tracing.exception.TracingConfigurationException;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -35,9 +34,9 @@ class RDBTracingListenerFactoryTest {
     
     @Test
     void assertCreateTracingListenerSuccess() throws TracingConfigurationException {
-        BasicDataSource dataSource = new BasicDataSource();
+        HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
-        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
+        dataSource.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         assertThat(new RDBTracingListenerFactory().create(dataSource), instanceOf(RDBTracingListener.class));
