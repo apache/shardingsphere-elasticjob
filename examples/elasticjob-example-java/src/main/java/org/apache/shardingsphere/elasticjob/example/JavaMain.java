@@ -17,23 +17,23 @@
 
 package org.apache.shardingsphere.elasticjob.example;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.DingtalkPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.email.EmailPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.WechatPropertiesConstants;
 import org.apache.shardingsphere.elasticjob.example.job.dataflow.JavaDataflowJob;
-import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
-import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
-import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.example.job.simple.JavaOccurErrorJob;
 import org.apache.shardingsphere.elasticjob.example.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -86,9 +86,9 @@ public final class JavaMain {
     }
     
     private static DataSource setUpEventTraceDataSource() {
-        BasicDataSource result = new BasicDataSource();
+        HikariDataSource result = new HikariDataSource();
         result.setDriverClassName(EVENT_RDB_STORAGE_DRIVER);
-        result.setUrl(EVENT_RDB_STORAGE_URL);
+        result.setJdbcUrl(EVENT_RDB_STORAGE_URL);
         result.setUsername(EVENT_RDB_STORAGE_USERNAME);
         result.setPassword(EVENT_RDB_STORAGE_PASSWORD);
         return result;

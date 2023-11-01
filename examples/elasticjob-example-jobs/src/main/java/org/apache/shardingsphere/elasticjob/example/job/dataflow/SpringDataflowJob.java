@@ -17,19 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.example.job.dataflow;
 
-import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.example.fixture.entity.Foo;
 import org.apache.shardingsphere.elasticjob.example.fixture.repository.FooRepository;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class SpringDataflowJob implements DataflowJob<Foo> {
     
-    @Resource
+    @Autowired
     private FooRepository fooRepository;
     
     @Override
