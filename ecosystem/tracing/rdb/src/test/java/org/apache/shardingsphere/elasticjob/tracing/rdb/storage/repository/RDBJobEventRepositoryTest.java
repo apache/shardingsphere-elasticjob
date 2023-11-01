@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.spi.executor.ExecutionType;
 import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent;
@@ -39,20 +39,20 @@ class RDBJobEventRepositoryTest {
     
     private RDBJobEventRepository repository;
     
-    private BasicDataSource dataSource;
+    private HikariDataSource dataSource;
     
     @BeforeEach
     void setup() throws SQLException {
-        dataSource = new BasicDataSource();
+        dataSource = new HikariDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
-        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
+        dataSource.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         repository = RDBJobEventRepository.getInstance(dataSource);
     }
     
     @AfterEach
-    void teardown() throws SQLException {
+    void tearDown() {
         dataSource.close();
     }
     

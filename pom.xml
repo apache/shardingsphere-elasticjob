@@ -91,8 +91,6 @@
         
         <h2.version>2.2.224</h2.version>
         <hikari-cp.version>4.0.3</hikari-cp.version>
-        <commons-dbcp2.version>2.10.0</commons-dbcp2.version>
-        <commons-pool2.version>2.11.1</commons-pool2.version>
         
         <!-- Compile plugin versions -->
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
@@ -358,12 +356,6 @@
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikari-cp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-dbcp2</artifactId>
-                <version>${commons-dbcp2.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
