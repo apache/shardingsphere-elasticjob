@@ -21,6 +21,8 @@ import com.google.common.eventbus.EventBus;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener.TracingListenerFixture;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;

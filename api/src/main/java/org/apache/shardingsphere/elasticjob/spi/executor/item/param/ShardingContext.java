@@ -15,27 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
+package org.apache.shardingsphere.elasticjob.spi.executor.item.param;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
-import org.junit.jupiter.api.Test;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-class TracingStorageConverterFactoryTest {
+/**
+ * Sharding context.
+ */
+@RequiredArgsConstructor
+@Getter
+@ToString
+public final class ShardingContext {
     
-    @Test
-    void assertConverterExists() {
-        assertTrue(TracingStorageConverterFactory.findConverter(TracingStorageFixture.class).isPresent());
-    }
+    private final String jobName;
     
-    @Test
-    void assertConverterNotFound() {
-        assertFalse(TracingStorageConverterFactory.findConverter(AClassWithoutCorrespondingConverter.class).isPresent());
-    }
+    private final String taskId;
     
-    private static class AClassWithoutCorrespondingConverter {
-        
-    }
+    private final int shardingTotalCount;
+    
+    private final String jobParameter;
+    
+    private final int shardingItem;
+    
+    private final String shardingParameter;
 }

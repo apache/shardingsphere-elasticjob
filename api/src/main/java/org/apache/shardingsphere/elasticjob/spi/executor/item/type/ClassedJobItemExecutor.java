@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.executor.error.handler;
+package org.apache.shardingsphere.elasticjob.spi.executor.item.type;
 
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
-
-import java.util.Properties;
 
 /**
- * Job error handler properties validator.
+ * Classed job item executor.
+ * 
+ * @param <T> type of ElasticJob
  */
 @SingletonSPI
-public interface JobErrorHandlerPropertiesValidator extends TypedSPI {
+public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
     
     /**
-     * Validate job properties.
-     *
-     * @param props job properties
+     * Get elastic job class.
+     * 
+     * @return elastic job class
      */
-    void validate(Properties props);
+    Class<T> getElasticJobClass();
 }

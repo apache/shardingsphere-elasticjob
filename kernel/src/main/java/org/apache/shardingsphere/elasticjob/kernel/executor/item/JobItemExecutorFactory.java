@@ -20,8 +20,8 @@ package org.apache.shardingsphere.elasticjob.kernel.executor.item;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.executor.JobItemExecutor;
-import org.apache.shardingsphere.elasticjob.spi.executor.type.ClassedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.type.ClassedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 

@@ -15,29 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.executor.param;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+package org.apache.shardingsphere.elasticjob.spi.tracing.exception;
 
 /**
- * Sharding context.
+ * Tracing configuration exception.
  */
-@RequiredArgsConstructor
-@Getter
-@ToString
-public final class ShardingContext {
+public final class TracingConfigurationException extends Exception {
     
-    private final String jobName;
+    private static final long serialVersionUID = 4069519372148227761L;
     
-    private final String taskId;
+    public TracingConfigurationException(final Exception ex) {
+        super(ex);
+    }
     
-    private final int shardingTotalCount;
-    
-    private final String jobParameter;
-    
-    private final int shardingItem;
-    
-    private final String shardingParameter;
+    public TracingConfigurationException(final String errorMessage) {
+        super(errorMessage);
+    }
 }

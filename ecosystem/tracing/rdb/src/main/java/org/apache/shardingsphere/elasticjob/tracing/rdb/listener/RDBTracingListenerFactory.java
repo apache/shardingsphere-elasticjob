@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.tracing.rdb.listener;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerFactory;
+import org.apache.shardingsphere.elasticjob.spi.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListenerFactory;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;

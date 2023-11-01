@@ -20,9 +20,9 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.listener;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListener;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent;
 
 @RequiredArgsConstructor
 public final class TracingListenerFixture implements TracingListener {

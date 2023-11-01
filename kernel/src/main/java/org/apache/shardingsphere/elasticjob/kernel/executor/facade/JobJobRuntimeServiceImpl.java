@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.executor.facade;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.JobRuntimeService;
 
 /**
  * Job runtime service implementation.

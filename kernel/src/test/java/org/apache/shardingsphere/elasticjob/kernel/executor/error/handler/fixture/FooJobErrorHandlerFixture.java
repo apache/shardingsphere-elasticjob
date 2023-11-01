@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.fixture;
 
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 
 public final class FooJobErrorHandlerFixture implements JobErrorHandler {
     

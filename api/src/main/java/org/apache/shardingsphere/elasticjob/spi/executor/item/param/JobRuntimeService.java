@@ -15,28 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config;
-
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+package org.apache.shardingsphere.elasticjob.spi.executor.item.param;
 
 /**
- * YAML configuration converter.
- *
- * @param <T> type of original configuration object
- * @param <Y> type of YAML configuration
+ * Job runtime service.
  */
-@SingletonSPI
-public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> extends TypedSPI {
+public interface JobRuntimeService {
     
     /**
-     * Convert to YAML configuration.
+     * Judge job whether to need resharding.
      *
-     * @param data data to be converted
-     * @return YAML configuration
+     * @return need resharding or not
      */
-    Y convertToYamlConfiguration(T data);
-    
-    @Override
-    Class<T> getType();
+    boolean isNeedSharding();
 }

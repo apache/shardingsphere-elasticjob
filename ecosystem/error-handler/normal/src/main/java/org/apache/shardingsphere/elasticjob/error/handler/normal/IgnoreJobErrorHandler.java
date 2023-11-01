@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.error.handler.normal;
 
-import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 
 /**
  * Job error handler for ignore exception.

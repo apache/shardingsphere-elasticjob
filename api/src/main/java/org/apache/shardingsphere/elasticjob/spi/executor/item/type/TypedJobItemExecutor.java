@@ -15,31 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
+package org.apache.shardingsphere.elasticjob.spi.executor.item.type;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.api.ElasticJob;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Tracing storage converter.
- *
- * @param <T> storage type
+ * Typed job item executor.
  */
 @SingletonSPI
-public interface TracingStorageConverter<T> {
-    
-    /**
-     * Convert storage to {@link TracingStorageConfiguration}.
-     *
-     * @param storage storage instance
-     * @return instance of {@link TracingStorageConfiguration}
-     */
-    TracingStorageConfiguration<T> convertToConfiguration(T storage);
-    
-    /**
-     * Storage type.
-     *
-     * @return class of storage
-     */
-    Class<T> storageType();
+public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
 }

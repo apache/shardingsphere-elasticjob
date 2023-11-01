@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.CustomJob;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.repository.BarRepository;
 import org.springframework.beans.factory.annotation.Autowired;

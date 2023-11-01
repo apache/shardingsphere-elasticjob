@@ -19,26 +19,27 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfigurationConverter;
 import org.apache.shardingsphere.infra.spi.ShardingSphereServiceLoader;
 
 import java.util.Optional;
 
 /**
- * Factory for {@link TracingStorageConverter}.
+ * Factory for {@link TracingStorageConfigurationConverter}.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TracingStorageConverterFactory {
     
     /**
-     * Find {@link TracingStorageConverter} for specific storage type.
+     * Find {@link TracingStorageConfigurationConverter} for specific storage type.
      *
      * @param storageType storage type
      * @param <T> storage type
-     * @return instance of {@link TracingStorageConverter}
+     * @return instance of {@link TracingStorageConfigurationConverter}
      */
     @SuppressWarnings("unchecked")
-    public static <T> Optional<TracingStorageConverter<T>> findConverter(final Class<T> storageType) {
-        return ShardingSphereServiceLoader.getServiceInstances(TracingStorageConverter.class).stream()
-                .filter(each -> each.storageType().isAssignableFrom(storageType)).map(each -> (TracingStorageConverter<T>) each).findFirst();
+    public static <T> Optional<TracingStorageConfigurationConverter<T>> findConverter(final Class<T> storageType) {
+        return ShardingSphereServiceLoader.getServiceInstances(TracingStorageConfigurationConverter.class).stream()
+                .filter(each -> each.storageType().isAssignableFrom(storageType)).map(each -> (TracingStorageConfigurationConverter<T>) each).findFirst();
     }
 }

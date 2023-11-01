@@ -25,9 +25,9 @@ import org.apache.shardingsphere.elasticjob.http.pojo.HttpParam;
 import org.apache.shardingsphere.elasticjob.http.props.HttpJobProperties;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.type.TypedJobItemExecutor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

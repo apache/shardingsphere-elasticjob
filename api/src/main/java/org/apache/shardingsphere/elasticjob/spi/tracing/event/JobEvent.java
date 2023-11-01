@@ -15,27 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.executor;
-
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+package org.apache.shardingsphere.elasticjob.spi.tracing.event;
 
 /**
- * Job item executor.
- * 
- * @param <T> type of ElasticJob
+ * Job event.
  */
-public interface JobItemExecutor<T extends ElasticJob> {
+public interface JobEvent {
     
     /**
-     * Process job item.
+     * Get job name.
      * 
-     * @param elasticJob elastic job
-     * @param jobConfig job configuration
-     * @param jobRuntimeService job runtime service
-     * @param shardingContext sharding context
+     * @return job name
      */
-    void process(T elasticJob, JobConfiguration jobConfig, JobRuntimeService jobRuntimeService, ShardingContext shardingContext);
+    String getJobName();
 }

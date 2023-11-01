@@ -17,9 +17,9 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
-import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfigurationConverter;
+import org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfigurationConverter;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfiguration;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 /**

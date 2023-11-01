@@ -15,33 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.listener;
+package org.apache.shardingsphere.elasticjob.spi.executor.error.handler;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
-import com.google.common.eventbus.Subscribe;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+
+import java.util.Properties;
 
 /**
- * Tracing listener.
+ * Job error handler properties validator.
  */
-public interface TracingListener {
+@SingletonSPI
+public interface JobErrorHandlerPropertiesValidator extends TypedSPI {
     
     /**
-     * Listen job execution event.
+     * Validate job properties.
      *
-     * @param jobExecutionEvent job execution event
+     * @param props job properties
      */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobExecutionEvent jobExecutionEvent);
-    
-    /**
-     * Listen job status trace event.
-     *
-     * @param jobStatusTraceEvent job status trace event
-     */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobStatusTraceEvent jobStatusTraceEvent);
+    void validate(Properties props);
 }

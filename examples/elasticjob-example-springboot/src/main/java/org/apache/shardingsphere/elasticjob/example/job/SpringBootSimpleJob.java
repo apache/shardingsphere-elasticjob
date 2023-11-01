@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.example.job;
 
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.example.entity.Foo;
 import org.apache.shardingsphere.elasticjob.example.repository.FooRepository;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;

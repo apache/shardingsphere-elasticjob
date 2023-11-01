@@ -15,29 +15,19 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.executor.error.handler;
-
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
-
-import java.io.Closeable;
+package org.apache.shardingsphere.elasticjob.spi.tracing.storage;
 
 /**
- * Job error handler.
+ * Tracing storage configuration.
+ *
+ * @param <T> storage type
  */
-public interface JobErrorHandler extends TypedSPI, Closeable {
+public interface TracingStorageConfiguration<T> {
     
     /**
-     * Handle exception.
-     * 
-     * @param jobName job name
-     * @param cause failure cause
+     * Create storage.
+     *
+     * @return storage
      */
-    void handleException(String jobName, Throwable cause);
-    
-    @Override
-    String getType();
-    
-    @Override
-    default void close() {
-    }
+    T getStorage();
 }
