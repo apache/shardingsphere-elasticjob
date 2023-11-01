@@ -23,8 +23,9 @@ import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.listener.TracingListenerFactory;
+import org.apache.shardingsphere.elasticjob.spi.tracing.exception.TracingConfigurationException;
+import org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListenerFactory;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobEvent;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.concurrent.ExecutorService;

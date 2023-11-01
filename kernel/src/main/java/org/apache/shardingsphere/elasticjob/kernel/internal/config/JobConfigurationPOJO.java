@@ -21,8 +21,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfigurationConverter;
+import org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfigurationConverter;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.ArrayList;

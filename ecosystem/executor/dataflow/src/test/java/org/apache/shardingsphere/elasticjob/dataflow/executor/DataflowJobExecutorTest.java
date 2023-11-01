@@ -18,10 +18,10 @@
 package org.apache.shardingsphere.elasticjob.dataflow.executor;
 
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.dataflow.job.DataflowJob;
 import org.apache.shardingsphere.elasticjob.dataflow.props.DataflowJobProperties;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.JobRuntimeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

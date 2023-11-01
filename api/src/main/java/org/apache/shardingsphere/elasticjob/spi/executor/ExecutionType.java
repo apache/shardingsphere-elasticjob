@@ -15,24 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.executor.type;
-
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.executor.JobItemExecutor;
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+package org.apache.shardingsphere.elasticjob.spi.executor;
 
 /**
- * Classed job item executor.
- * 
- * @param <T> type of ElasticJob
+ * Execution type.
  */
-@SingletonSPI
-public interface ClassedJobItemExecutor<T extends ElasticJob> extends JobItemExecutor<T> {
+public enum ExecutionType {
     
     /**
-     * Get elastic job class.
-     * 
-     * @return elastic job class
+     * Ready of execute.
      */
-    Class<T> getElasticJobClass();
+    READY,
+    
+    /**
+     * Failover execution.
+     */
+    FAILOVER
 }

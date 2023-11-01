@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spi.listener.param;
 
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

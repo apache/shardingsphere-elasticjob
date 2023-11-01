@@ -15,17 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.executor.param;
+package org.apache.shardingsphere.elasticjob.spi.tracing.listener;
+
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.Subscribe;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent;
 
 /**
- * Job runtime service.
+ * Tracing listener.
  */
-public interface JobRuntimeService {
+public interface TracingListener {
     
     /**
-     * Judge job whether to need resharding.
+     * Listen job execution event.
      *
-     * @return need resharding or not
+     * @param jobExecutionEvent job execution event
      */
-    boolean isNeedSharding();
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(JobExecutionEvent jobExecutionEvent);
+    
+    /**
+     * Listen job status trace event.
+     *
+     * @param jobStatusTraceEvent job status trace event
+     */
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(JobStatusTraceEvent jobStatusTraceEvent);
 }

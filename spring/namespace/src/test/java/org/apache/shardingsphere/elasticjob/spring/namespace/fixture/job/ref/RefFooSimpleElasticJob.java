@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.spring.namespace.fixture.job.ref;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.spring.namespace.fixture.service.FooService;
 

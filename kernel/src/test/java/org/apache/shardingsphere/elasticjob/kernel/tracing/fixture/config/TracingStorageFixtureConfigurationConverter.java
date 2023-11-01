@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config;
 
-import java.io.Serializable;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfigurationConverter;
 
-/**
- * YAML configuration.
- *
- * @param <T> type of configuration
- */
-public interface YamlConfiguration<T> extends Serializable {
+public final class TracingStorageFixtureConfigurationConverter implements TracingStorageConfigurationConverter<TracingStorageFixture> {
     
-    /**
-     * Convert to original configuration.
-     *
-     * @return configuration
-     */
-    T toConfiguration();
+    @Override
+    public TracingStorageConfiguration<TracingStorageFixture> toConfiguration(final TracingStorageFixture storage) {
+        return new TracingStorageConfigurationFixture(storage);
+    }
+    
+    @Override
+    public Class<TracingStorageFixture> storageType() {
+        return TracingStorageFixture.class;
+    }
 }

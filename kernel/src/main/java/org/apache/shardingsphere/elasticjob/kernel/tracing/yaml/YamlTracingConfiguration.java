@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.tracing.yaml;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.config.YamlConfiguration;
+import org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 
 /**

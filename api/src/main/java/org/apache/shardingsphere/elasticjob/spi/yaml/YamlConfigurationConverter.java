@@ -15,20 +15,28 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.exception;
+package org.apache.shardingsphere.elasticjob.spi.yaml;
+
+import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
+import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Tracing configuration exception.
+ * YAML configuration converter.
+ *
+ * @param <T> type of original configuration object
+ * @param <Y> type of YAML configuration
  */
-public final class TracingConfigurationException extends Exception {
+@SingletonSPI
+public interface YamlConfigurationConverter<T, Y extends YamlConfiguration<T>> extends TypedSPI {
     
-    private static final long serialVersionUID = 4069519372148227761L;
+    /**
+     * Convert to YAML configuration.
+     *
+     * @param data data to be converted
+     * @return YAML configuration
+     */
+    Y convertToYamlConfiguration(T data);
     
-    public TracingConfigurationException(final Exception ex) {
-        super(ex);
-    }
-    
-    public TracingConfigurationException(final String errorMessage) {
-        super(errorMessage);
-    }
+    @Override
+    Class<T> getType();
 }

@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverterFactory;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfiguration;
 import org.apache.shardingsphere.infra.spi.exception.ServiceProviderNotFoundException;
 
 /**
@@ -40,6 +41,6 @@ public final class TracingConfiguration<T> implements JobExtraConfiguration {
     public TracingConfiguration(final String type, final T storage) {
         this.type = type;
         tracingStorageConfiguration = TracingStorageConverterFactory.findConverter((Class<T>) storage.getClass())
-                .orElseThrow(() -> new ServiceProviderNotFoundException(storage.getClass(), storage.getClass().getSimpleName())).convertToConfiguration(storage);
+                .orElseThrow(() -> new ServiceProviderNotFoundException(storage.getClass(), storage.getClass().getSimpleName())).toConfiguration(storage);
     }
 }

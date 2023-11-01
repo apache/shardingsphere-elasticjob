@@ -20,7 +20,7 @@ package org.apache.shardingsphere.elasticjob.test.e2e.annotation.fixture;
 import lombok.Getter;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 
 @ElasticJobConfiguration(jobName = "AnnotationUnShardingJob", description = "desc", shardingTotalCount = 1)
 @Getter

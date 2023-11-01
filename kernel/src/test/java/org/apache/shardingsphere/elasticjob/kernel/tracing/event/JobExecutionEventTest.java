@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.tracing.event;
 
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;

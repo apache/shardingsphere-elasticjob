@@ -23,8 +23,8 @@ import org.apache.shardingsphere.elasticjob.kernel.fixture.executor.ClassedFooJo
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.JobRuntimeService;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.JobRuntimeService;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.BeforeEach;

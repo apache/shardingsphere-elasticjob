@@ -15,29 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.tracing.listener;
+package org.apache.shardingsphere.elasticjob.spi.tracing.storage;
 
-import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingConfigurationException;
 import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
 
 /**
- * Tracing listener factory.
- * 
- * @param <T> type of tracing storage
+ * Tracing storage configuration converter.
+ *
+ * @param <T> storage type
  */
 @SingletonSPI
-public interface TracingListenerFactory<T> extends TypedSPI {
+public interface TracingStorageConfigurationConverter<T> {
     
     /**
-     * Create tracing listener.
-     * 
-     * @param storage storage
-     * @return tracing listener
-     * @throws TracingConfigurationException tracing configuration exception
+     * Convert storage to {@link TracingStorageConfiguration}.
+     *
+     * @param storage storage instance
+     * @return instance of {@link TracingStorageConfiguration}
      */
-    TracingListener create(T storage) throws TracingConfigurationException;
+    TracingStorageConfiguration<T> toConfiguration(T storage);
     
-    @Override
-    String getType();
+    /**
+     * Storage type.
+     *
+     * @return class of storage
+     */
+    Class<T> storageType();
 }

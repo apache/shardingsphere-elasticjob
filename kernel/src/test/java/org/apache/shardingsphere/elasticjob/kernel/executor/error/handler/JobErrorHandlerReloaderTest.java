@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.executor.error.handler;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.fixture.BarJobErrorHandlerFixture;
 import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.fixture.FooJobErrorHandlerFixture;
+import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

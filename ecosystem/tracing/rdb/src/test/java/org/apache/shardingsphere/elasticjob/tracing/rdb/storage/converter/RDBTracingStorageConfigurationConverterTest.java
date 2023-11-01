@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.converter;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingStorageUnavailableException;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverter;
+import org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfigurationConverter;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverterFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RDBTracingStorageConverterTest {
+class RDBTracingStorageConfigurationConverterTest {
     
     @Mock
     private DataSource dataSource;
@@ -55,22 +55,22 @@ class RDBTracingStorageConverterTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.getMetaData()).thenReturn(databaseMetaData);
         when(databaseMetaData.getURL()).thenReturn("jdbc:url");
-        RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
-        assertNotNull(converter.convertToConfiguration(dataSource));
+        RDBTracingStorageConfigurationConverter converter = new RDBTracingStorageConfigurationConverter();
+        assertNotNull(converter.toConfiguration(dataSource));
     }
     
     @Test
     void assertConvertFailed() {
         assertThrows(TracingStorageUnavailableException.class, () -> {
-            RDBTracingStorageConverter converter = new RDBTracingStorageConverter();
+            RDBTracingStorageConfigurationConverter converter = new RDBTracingStorageConfigurationConverter();
             doThrow(SQLException.class).when(dataSource).getConnection();
-            converter.convertToConfiguration(dataSource);
+            converter.toConfiguration(dataSource);
         });
     }
     
     @Test
     void assertStorageType() {
-        TracingStorageConverter<HikariDataSource> converter = TracingStorageConverterFactory.findConverter(HikariDataSource.class).orElse(null);
+        TracingStorageConfigurationConverter<HikariDataSource> converter = TracingStorageConverterFactory.findConverter(HikariDataSource.class).orElse(null);
         assertNotNull(converter);
         assertThat(converter.storageType(), is(DataSource.class));
     }

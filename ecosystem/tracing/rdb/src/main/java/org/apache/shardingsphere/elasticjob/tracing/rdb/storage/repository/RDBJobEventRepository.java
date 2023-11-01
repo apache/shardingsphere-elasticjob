@@ -19,9 +19,9 @@ package org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.exception.TracingStorageUnavailableException;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.RDBStorageSQLMapper;
 import org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.SQLPropertiesFactory;

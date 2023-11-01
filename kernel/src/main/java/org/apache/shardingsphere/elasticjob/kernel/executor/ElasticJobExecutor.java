@@ -20,20 +20,20 @@ package org.apache.shardingsphere.elasticjob.kernel.executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
-import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandler;
+import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandlerReloader;
 import org.apache.shardingsphere.elasticjob.kernel.executor.facade.JobFacade;
-import org.apache.shardingsphere.elasticjob.spi.executor.JobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.JobItemExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.executor.item.JobItemExecutorFactory;
-import org.apache.shardingsphere.elasticjob.spi.executor.type.TypedJobItemExecutor;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.type.TypedJobItemExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.ExecutorServiceReloader;
 import org.apache.shardingsphere.elasticjob.kernel.infra.env.IpUtils;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.ExceptionUtils;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobExecutionEnvironmentException;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobExecutionEvent.ExecutionSource;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobStatusTraceEvent.State;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent.ExecutionSource;
+import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent.State;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Collection;
@@ -52,6 +52,7 @@ public final class ElasticJobExecutor {
     
     private final JobFacade jobFacade;
     
+    @SuppressWarnings("rawtypes")
     private final JobItemExecutor jobItemExecutor;
     
     private final ExecutorServiceReloader executorServiceReloader;

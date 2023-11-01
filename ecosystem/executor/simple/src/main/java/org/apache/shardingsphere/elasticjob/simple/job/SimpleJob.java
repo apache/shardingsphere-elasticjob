@@ -18,7 +18,7 @@
 package org.apache.shardingsphere.elasticjob.simple.job;
 
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.executor.param.ShardingContext;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
 
 /**
  * Simple job.

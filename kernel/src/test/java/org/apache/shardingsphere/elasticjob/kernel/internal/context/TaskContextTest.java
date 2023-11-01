@@ -17,7 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.context;
 
-import org.apache.shardingsphere.elasticjob.kernel.executor.ExecutionType;
+import org.apache.shardingsphere.elasticjob.spi.executor.ExecutionType;
 import org.apache.shardingsphere.elasticjob.kernel.internal.context.TaskContext.MetaInfo;
 import org.apache.shardingsphere.elasticjob.kernel.internal.context.fixture.TaskNode;
 import org.hamcrest.CoreMatchers;

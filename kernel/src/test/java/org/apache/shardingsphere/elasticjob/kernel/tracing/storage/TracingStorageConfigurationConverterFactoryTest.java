@@ -15,20 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.kernel.executor;
+package org.apache.shardingsphere.elasticjob.kernel.tracing.storage;
 
-/**
- * Execution type.
- */
-public enum ExecutionType {
+import org.apache.shardingsphere.elasticjob.kernel.tracing.fixture.config.TracingStorageFixture;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class TracingStorageConfigurationConverterFactoryTest {
     
-    /**
-     * Ready of execute.
-     */
-    READY,
+    @Test
+    void assertConverterExists() {
+        assertTrue(TracingStorageConverterFactory.findConverter(TracingStorageFixture.class).isPresent());
+    }
     
-    /**
-     * Failover execution.
-     */
-    FAILOVER
+    @Test
+    void assertConverterNotFound() {
+        assertFalse(TracingStorageConverterFactory.findConverter(AClassWithoutCorrespondingConverter.class).isPresent());
+    }
+    
+    private static class AClassWithoutCorrespondingConverter {
+        
+    }
 }

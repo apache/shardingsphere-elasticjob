@@ -15,16 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.spi.executor.type;
+package org.apache.shardingsphere.elasticjob.spi.yaml;
 
-import org.apache.shardingsphere.elasticjob.api.ElasticJob;
-import org.apache.shardingsphere.elasticjob.spi.executor.JobItemExecutor;
-import org.apache.shardingsphere.infra.spi.annotation.SingletonSPI;
-import org.apache.shardingsphere.infra.spi.type.typed.TypedSPI;
+import java.io.Serializable;
 
 /**
- * Typed job item executor.
+ * YAML configuration.
+ *
+ * @param <T> type of configuration
  */
-@SingletonSPI
-public interface TypedJobItemExecutor extends JobItemExecutor<ElasticJob>, TypedSPI {
+public interface YamlConfiguration<T> extends Serializable {
+    
+    /**
+     * Convert to original configuration.
+     *
+     * @return configuration
+     */
+    T toConfiguration();
 }
