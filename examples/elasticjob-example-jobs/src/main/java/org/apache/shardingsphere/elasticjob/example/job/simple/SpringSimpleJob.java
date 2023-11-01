@@ -17,19 +17,19 @@
 
 package org.apache.shardingsphere.elasticjob.example.job.simple;
 
-import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
-import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.example.fixture.entity.Foo;
 import org.apache.shardingsphere.elasticjob.example.fixture.repository.FooRepository;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
+import org.apache.shardingsphere.elasticjob.spi.executor.item.param.ShardingContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class SpringSimpleJob implements SimpleJob {
     
-    @Resource
+    @Autowired
     private FooRepository fooRepository;
     
     @Override
