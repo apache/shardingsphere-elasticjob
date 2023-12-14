@@ -25,9 +25,8 @@ import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -48,21 +47,17 @@ class OneOffJobBootstrapTest {
     
     private static final int SHARDING_TOTAL_COUNT = 3;
     
-    private ZookeeperRegistryCenter zkRegCenter;
+    private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void init() {
         EMBED_TESTING_SERVER.start();
-    }
-    
-    @BeforeEach
-    void setUp() {
         zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
     }
     
-    @AfterEach
-    void tearDown() {
+    @AfterAll
+    static void tearDown() {
         zkRegCenter.close();
     }
     
