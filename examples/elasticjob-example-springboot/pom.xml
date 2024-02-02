@@ -30,7 +30,7 @@
     
     <properties>
         <springboot.version>2.5.12</springboot.version>
-        <spring.version>5.2.7.RELEASE</spring.version>
+        <spring.version>5.2.22.RELEASE</spring.version>
     </properties>
 
     <dependencyManagement>
