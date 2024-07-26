@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -68,7 +69,8 @@ public class ElasticJobTracingConfiguration {
          */
         @Bean
         @ConditionalOnBean(DataSource.class)
-        public TracingConfiguration<DataSource> tracingConfiguration(final DataSource dataSource, @Nullable final DataSource tracingDataSource) {
+        public TracingConfiguration<DataSource> tracingConfiguration(@Qualifier("dataSource") DataSource dataSource,
+                                                                     @Qualifier("tracingDataSource") @Nullable final DataSource tracingDataSource) {
             return new TracingConfiguration<>("RDB", null == tracingDataSource ? dataSource : tracingDataSource);
         }
     }
