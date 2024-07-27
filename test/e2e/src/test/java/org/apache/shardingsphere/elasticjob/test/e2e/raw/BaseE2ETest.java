@@ -38,12 +38,12 @@ import org.junit.jupiter.api.BeforeEach;
 @Getter(AccessLevel.PROTECTED)
 public abstract class BaseE2ETest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
+    private static ZookeeperConfiguration zookeeperConfig;
     
     @Getter(AccessLevel.PROTECTED)
-    private static final CoordinatorRegistryCenter REGISTRY_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
+    private static CoordinatorRegistryCenter registryCenter;
     
     private final ElasticJob elasticJob;
     
@@ -59,7 +59,7 @@ public abstract class BaseE2ETest {
         this.elasticJob = elasticJob;
         jobConfiguration = getJobConfiguration(jobName);
         jobBootstrap = createJobBootstrap(type, elasticJob);
-        leaderService = new LeaderService(REGISTRY_CENTER, jobName);
+        leaderService = new LeaderService(registryCenter, jobName);
     }
     
     protected abstract JobConfiguration getJobConfiguration(String jobName);
@@ -67,9 +67,9 @@ public abstract class BaseE2ETest {
     private JobBootstrap createJobBootstrap(final TestType type, final ElasticJob elasticJob) {
         switch (type) {
             case SCHEDULE:
-                return new ScheduleJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
+                return new ScheduleJobBootstrap(registryCenter, elasticJob, jobConfiguration);
             case ONE_OFF:
-                return new OneOffJobBootstrap(REGISTRY_CENTER, elasticJob, jobConfiguration);
+                return new OneOffJobBootstrap(registryCenter, elasticJob, jobConfiguration);
             default:
                 throw new RuntimeException(String.format("Cannot support `%s`", type));
         }
@@ -78,8 +78,10 @@ public abstract class BaseE2ETest {
     @BeforeAll
     static void init() {
         EMBED_TESTING_SERVER.start();
-        ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
-        REGISTRY_CENTER.init();
+        zookeeperConfig = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
+        registryCenter = new ZookeeperRegistryCenter(zookeeperConfig);
+        zookeeperConfig.setConnectionTimeoutMilliseconds(30000);
+        registryCenter.init();
     }
     
     @BeforeEach

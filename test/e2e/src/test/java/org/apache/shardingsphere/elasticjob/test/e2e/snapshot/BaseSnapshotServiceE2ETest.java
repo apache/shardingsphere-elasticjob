@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.test.e2e.snapshot;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
@@ -35,17 +36,15 @@ import org.junit.jupiter.api.BeforeEach;
 
 public abstract class BaseSnapshotServiceE2ETest {
     
-    static final int DUMP_PORT = 9000;
+    static final int DUMP_PORT = InstanceSpec.getRandomPort();
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
-    
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIG = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     @Getter(value = AccessLevel.PROTECTED)
-    private static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIG);
+    private static CoordinatorRegistryCenter regCenter;
     
     @Getter(value = AccessLevel.PROTECTED)
-    private static SnapshotService snapshotService = new SnapshotService(REG_CENTER, DUMP_PORT);
+    private static SnapshotService snapshotService;
     
     private final ScheduleJobBootstrap bootstrap;
     
@@ -53,19 +52,22 @@ public abstract class BaseSnapshotServiceE2ETest {
     private final String jobName = System.nanoTime() + "_test_job";
     
     public BaseSnapshotServiceE2ETest(final ElasticJob elasticJob) {
-        bootstrap = new ScheduleJobBootstrap(REG_CENTER, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
+        bootstrap = new ScheduleJobBootstrap(regCenter, elasticJob, JobConfiguration.newBuilder(jobName, 3).cron("0/1 * * * * ?").overwrite(true).build());
     }
     
     @BeforeAll
     static void init() {
         EMBED_TESTING_SERVER.start();
-        ZOOKEEPER_CONFIG.setConnectionTimeoutMilliseconds(30000);
-        REG_CENTER.init();
+        ZookeeperConfiguration zookeeperConfig = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), "zkRegTestCenter");
+        regCenter = new ZookeeperRegistryCenter(zookeeperConfig);
+        snapshotService = new SnapshotService(regCenter, DUMP_PORT);
+        zookeeperConfig.setConnectionTimeoutMilliseconds(30000);
+        regCenter.init();
     }
     
     @BeforeEach
     void setUp() {
-        REG_CENTER.init();
+        regCenter.init();
         bootstrap.schedule();
     }
     

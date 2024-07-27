@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import org.apache.curator.test.InstanceSpec;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -26,8 +27,9 @@ class ZookeeperConfigurationTest {
     
     @Test
     void assertNewZookeeperConfigurationForServerListsAndNamespace() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "myNamespace");
-        assertThat(zkConfig.getServerLists(), is("localhost:2181"));
+        int randomPort = InstanceSpec.getRandomPort();
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:" + randomPort, "myNamespace");
+        assertThat(zkConfig.getServerLists(), is("localhost:" + randomPort));
         assertThat(zkConfig.getNamespace(), is("myNamespace"));
         assertThat(zkConfig.getBaseSleepTimeMilliseconds(), is(1000));
         assertThat(zkConfig.getMaxSleepTimeMilliseconds(), is(3000));

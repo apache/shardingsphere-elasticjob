@@ -41,9 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OneOffJobBootstrapTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(7181);
-    
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), OneOffJobBootstrapTest.class.getSimpleName());
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     private static final int SHARDING_TOTAL_COUNT = 3;
     
@@ -52,7 +50,8 @@ class OneOffJobBootstrapTest {
     @BeforeAll
     static void init() {
         EMBED_TESTING_SERVER.start();
-        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
+        ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), OneOffJobBootstrapTest.class.getSimpleName());
+        zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
         zkRegCenter.init();
     }
     

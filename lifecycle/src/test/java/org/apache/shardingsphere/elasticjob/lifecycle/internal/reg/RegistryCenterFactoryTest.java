@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class RegistryCenterFactoryTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(8181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     @BeforeAll
     static void setUp() {

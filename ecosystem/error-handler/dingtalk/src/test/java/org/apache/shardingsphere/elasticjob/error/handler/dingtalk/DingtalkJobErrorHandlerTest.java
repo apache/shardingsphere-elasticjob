@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.dingtalk;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.error.handler.dingtalk.fixture.DingtalkInternalController;
 import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
@@ -40,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class DingtalkJobErrorHandlerTest {
     
-    private static final int PORT = 9875;
+    private static final int PORT = InstanceSpec.getRandomPort();
     
     private static final String HOST = "localhost";
     
@@ -75,7 +76,7 @@ class DingtalkJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithNotifySuccessful() {
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/send?access_token=mocked_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
@@ -85,7 +86,7 @@ class DingtalkJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithWrongToken() {
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/send?access_token=wrong_token"));
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/send?access_token=wrong_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
@@ -95,7 +96,7 @@ class DingtalkJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithUrlIsNotFound() {
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:9875/404"));
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/404"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
@@ -115,7 +116,7 @@ class DingtalkJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithNoSign() {
-        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://localhost:9875/send?access_token=mocked_token"));
+        DingtalkJobErrorHandler actual = getDingtalkJobErrorHandler(createNoSignJobConfigurationProperties("http://localhost:" + PORT + "/send?access_token=mocked_token"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));

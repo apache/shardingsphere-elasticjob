@@ -43,6 +43,6 @@ class ScheduleEnabledJobE2ETest extends EnabledJobE2ETest {
     @Test
     void assertJobInit() {
         Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((E2EFixtureJobImpl) getElasticJob()).isCompleted(), is(true)));
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getRegistryCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

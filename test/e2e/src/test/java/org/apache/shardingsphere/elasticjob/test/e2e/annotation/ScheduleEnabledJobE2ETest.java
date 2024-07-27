@@ -46,22 +46,22 @@ class ScheduleEnabledJobE2ETest extends BaseAnnotationE2ETest {
     void assertEnabledRegCenterInfo() {
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(getJobName()), is(3));
         assertThat(JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), is(IpUtils.getIp()));
-        JobConfiguration jobConfig = YamlEngine.unmarshal(getREGISTRY_CENTER().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
+        JobConfiguration jobConfig = YamlEngine.unmarshal(getRegistryCenter().get("/" + getJobName() + "/config"), JobConfigurationPOJO.class).toJobConfiguration();
         assertThat(jobConfig.getShardingTotalCount(), is(3));
         assertThat(jobConfig.getCron(), is("*/10 * * * * ?"));
         assertNull(jobConfig.getTimeZone());
         assertThat(jobConfig.getShardingItemParameters(), is("0=a,1=b,2=c"));
-        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.ENABLED.name()));
-        assertThat(getREGISTRY_CENTER().get("/" + getJobName() + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
+        assertThat(getRegistryCenter().get("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp()), is(ServerStatus.ENABLED.name()));
+        assertThat(getRegistryCenter().get("/" + getJobName() + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        assertTrue(getRegistryCenter().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        getRegistryCenter().remove("/" + getJobName() + "/leader/election");
         assertTrue(getLeaderService().isLeaderUntilBlock());
     }
     
     @Test
     void assertJobInit() {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> MatcherAssert.assertThat(((AnnotationSimpleJob) getElasticJob()).isCompleted(), is(true)));
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getRegistryCenter().isExisted("/" + getJobName() + "/sharding"));
     }
     
 }

@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.error.handler.wechat;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.error.handler.wechat.fixture.WechatInternalController;
 import org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler;
 import org.apache.shardingsphere.elasticjob.restful.NettyRestfulService;
@@ -40,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class WechatJobErrorHandlerTest {
     
-    private static final int PORT = 9872;
+    private static final int PORT = InstanceSpec.getRandomPort();
     
     private static final String HOST = "localhost";
     
@@ -75,7 +76,7 @@ class WechatJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithNotifySuccessful() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=mocked_key"));
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/send?key=mocked_key"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
@@ -85,7 +86,7 @@ class WechatJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithWrongToken() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/send?key=wrong_key"));
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/send?key=wrong_key"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));
@@ -105,7 +106,7 @@ class WechatJobErrorHandlerTest {
     
     @Test
     void assertHandleExceptionWithUrlIsNotFound() {
-        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:9872/404"));
+        WechatJobErrorHandler actual = getWechatJobErrorHandler(createConfigurationProperties("http://localhost:" + PORT + "/404"));
         Throwable cause = new RuntimeException("test");
         actual.handleException("test_job", cause);
         assertThat(appenderList.size(), is(1));

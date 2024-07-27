@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.reg.exception.RegException;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,8 @@ class ZookeeperRegistryCenterInitFailureTest {
     @Test
     void assertInitFailure() {
         assertThrows(RegException.class, () -> {
-            ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName()));
+            ZookeeperRegistryCenter zkRegCenter =
+                    new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:" + InstanceSpec.getRandomPort(), ZookeeperRegistryCenterInitFailureTest.class.getName()));
             zkRegCenter.init();
         });
     }
