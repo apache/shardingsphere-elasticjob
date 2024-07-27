@@ -1,0 +1,7 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration",
+  "allPublicMethods":true
+}
+]
