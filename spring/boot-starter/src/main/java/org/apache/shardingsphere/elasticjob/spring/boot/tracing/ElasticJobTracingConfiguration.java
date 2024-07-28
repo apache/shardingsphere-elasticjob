@@ -69,7 +69,7 @@ public class ElasticJobTracingConfiguration {
          */
         @Bean
         @ConditionalOnBean(DataSource.class)
-        public TracingConfiguration<DataSource> tracingConfiguration(@Qualifier("dataSource") DataSource dataSource,
+        public TracingConfiguration<DataSource> tracingConfiguration(@Qualifier("dataSource") final DataSource dataSource,
                                                                      @Qualifier("tracingDataSource") @Nullable final DataSource tracingDataSource) {
             return new TracingConfiguration<>("RDB", null == tracingDataSource ? dataSource : tracingDataSource);
         }
