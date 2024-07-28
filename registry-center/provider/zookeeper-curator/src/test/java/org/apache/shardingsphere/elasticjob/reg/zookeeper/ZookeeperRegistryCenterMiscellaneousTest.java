@@ -30,18 +30,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class ZookeeperRegistryCenterMiscellaneousTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+    private static ZookeeperConfiguration zookeeperConfiguration;
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
         EMBED_TESTING_SERVER.start();
-        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
-        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
+        zookeeperConfiguration = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+        zookeeperConfiguration.setConnectionTimeoutMilliseconds(30000);
+        zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
         zkRegCenter.init();
         zkRegCenter.addCacheData("/test");
     }
@@ -64,7 +64,7 @@ class ZookeeperRegistryCenterMiscellaneousTest {
     
     @Test
     void assertGetZkConfig() {
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
-        assertThat(zkRegCenter.getZkConfig(), is(ZOOKEEPER_CONFIGURATION));
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
+        assertThat(zkRegCenter.getZkConfig(), is(zookeeperConfiguration));
     }
 }

@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.reg;
 
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ class ZookeeperPropertiesTest {
     @Test
     void assertToZookeeperConfiguration() {
         ZookeeperProperties properties = new ZookeeperProperties();
-        properties.setServerLists("localhost:18181");
+        properties.setServerLists("localhost:" + InstanceSpec.getRandomPort());
         properties.setNamespace("test");
         properties.setBaseSleepTimeMilliseconds(2000);
         properties.setMaxSleepTimeMilliseconds(4000);

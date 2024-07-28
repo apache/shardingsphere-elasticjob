@@ -17,12 +17,13 @@
 
 package org.apache.shardingsphere.elasticjob.test.util;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.test.InstanceSpec;
 import org.apache.curator.test.TestingServer;
 import org.apache.zookeeper.KeeperException;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Embed ZooKeeper testing server.
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public final class EmbedTestingServer {
     
@@ -42,6 +43,13 @@ public final class EmbedTestingServer {
     private static final Object INIT_LOCK = new Object();
     
     private final int port;
+    
+    /**
+     * Create the server using a random port.
+     */
+    public EmbedTestingServer() {
+        port = InstanceSpec.getRandomPort();
+    }
     
     /**
      * Start embed zookeeper server.
@@ -64,7 +72,7 @@ public final class EmbedTestingServer {
     
     private void start0() {
         try {
-            testingServer = new TestingServer(port, true);
+            testingServer = new TestingServer(port);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -132,6 +140,6 @@ public final class EmbedTestingServer {
      * @return connection string
      */
     public String getConnectionString() {
-        return "localhost:" + port;
+        return testingServer.getConnectString();
     }
 }

@@ -21,6 +21,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.RetryOneTime;
+import org.apache.curator.test.InstanceSpec;
 import org.apache.curator.test.KillSession;
 import org.apache.shardingsphere.elasticjob.reg.base.ElectionCandidate;
 import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
@@ -43,9 +44,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ZookeeperElectionServiceTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
-    private static final String HOST_AND_PORT = "localhost:8899";
+    private static final int RANDOM_PORT = InstanceSpec.getRandomPort();
+    
+    private static final String HOST_AND_PORT = "localhost:" + RANDOM_PORT;
     
     private static final String ELECTION_PATH = "/election";
     
@@ -66,7 +69,7 @@ class ZookeeperElectionServiceTest {
         service.start();
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
         CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EMBED_TESTING_SERVER.getConnectionString(), new RetryOneTime(2000));
-        ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", anotherClient, ELECTION_PATH, anotherElectionCandidate);
+        ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:" + RANDOM_PORT, anotherClient, ELECTION_PATH, anotherElectionCandidate);
         anotherClient.start();
         anotherClient.blockUntilConnected();
         anotherService.start();

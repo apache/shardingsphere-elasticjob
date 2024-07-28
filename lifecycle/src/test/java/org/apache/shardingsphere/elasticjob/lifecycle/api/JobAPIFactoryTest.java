@@ -26,7 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class JobAPIFactoryTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(8181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     @BeforeAll
     static void setUp() {

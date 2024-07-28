@@ -41,13 +41,13 @@ class SnapshotServiceDisableE2ETest extends BaseSnapshotServiceE2ETest {
     
     @Test
     void assertPortInvalid() {
-        assertThrows(IllegalArgumentException.class, () -> new SnapshotService(getREG_CENTER(), -1).listen());
+        assertThrows(IllegalArgumentException.class, () -> new SnapshotService(getRegCenter(), -1).listen());
     }
     
     @Test
     void assertListenException() throws IOException {
         ServerSocket serverSocket = new ServerSocket(9898);
-        SnapshotService snapshotService = new SnapshotService(getREG_CENTER(), 9898);
+        SnapshotService snapshotService = new SnapshotService(getRegCenter(), 9898);
         snapshotService.listen();
         serverSocket.close();
         assertNull(ReflectionUtils.getFieldValue(snapshotService, "serverSocket"));

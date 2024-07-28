@@ -51,12 +51,12 @@ class ScheduleDisabledJobE2ETest extends DisabledJobE2ETest {
     }
     
     private void setJobEnable() {
-        getREGISTRY_CENTER().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), ServerStatus.ENABLED.name());
+        getRegistryCenter().persist("/" + getJobName() + "/servers/" + JobRegistry.getInstance().getJobInstance(getJobName()).getServerIp(), ServerStatus.ENABLED.name());
     }
     
     private void assertEnabledRegCenterInfo() {
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
-        getREGISTRY_CENTER().remove("/" + getJobName() + "/leader/election");
-        assertTrue(getREGISTRY_CENTER().isExisted("/" + getJobName() + "/sharding"));
+        assertTrue(getRegistryCenter().isExisted("/" + getJobName() + "/instances/" + JobRegistry.getInstance().getJobInstance(getJobName()).getJobInstanceId()));
+        getRegistryCenter().remove("/" + getJobName() + "/leader/election");
+        assertTrue(getRegistryCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

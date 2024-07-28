@@ -19,5 +19,5 @@ elasticjob:
   dump:
     port: 0
   regCenter:
-    serverLists: localhost:18181
+    serverLists: 127.0.0.1:18181
     namespace: elasticjob-spring-boot-starter

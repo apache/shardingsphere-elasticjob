@@ -36,8 +36,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JobOperateAPIImplTest {
     
-    static final int DUMP_PORT = 9000;
-    
     private JobOperateAPI jobOperateAPI;
     
     // TODO We should not use `Mock.Strictness.LENIENT` here, but the default. This is a flaw in the unit test design.

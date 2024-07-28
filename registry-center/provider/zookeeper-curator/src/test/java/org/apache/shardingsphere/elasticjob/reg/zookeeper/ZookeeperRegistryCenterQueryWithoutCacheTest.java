@@ -34,18 +34,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
-    
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
         EMBED_TESTING_SERVER.start();
-        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
-        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
+        ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
+        zookeeperConfiguration.setConnectionTimeoutMilliseconds(30000);
+        zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
         zkRegCenter.init();
         RegistryCenterEnvironmentPreparer.persist(zkRegCenter);
         zkRegCenter.addCacheData("/other");

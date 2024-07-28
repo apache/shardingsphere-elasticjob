@@ -33,21 +33,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ZookeeperRegistryCenterForAuthTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     private static final String NAME_SPACE = ZookeeperRegistryCenterForAuthTest.class.getName();
-    
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), NAME_SPACE);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
         EMBED_TESTING_SERVER.start();
-        ZOOKEEPER_CONFIGURATION.setDigest("digest:password");
-        ZOOKEEPER_CONFIGURATION.setSessionTimeoutMilliseconds(5000);
-        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(5000);
-        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
+        ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), NAME_SPACE);
+        zookeeperConfiguration.setDigest("digest:password");
+        zookeeperConfiguration.setSessionTimeoutMilliseconds(5000);
+        zookeeperConfiguration.setConnectionTimeoutMilliseconds(5000);
+        zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
         zkRegCenter.init();
         RegistryCenterEnvironmentPreparer.persist(zkRegCenter);
     }

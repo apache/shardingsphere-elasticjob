@@ -33,18 +33,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class ZookeeperRegistryCenterExecuteInLeaderTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(9181);
-    
-    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION =
-            new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterExecuteInLeaderTest.class.getName());
+    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer();
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeAll
     static void setUp() {
         EMBED_TESTING_SERVER.start();
-        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
-        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
+        ZookeeperConfiguration zookeeperConfiguration = new ZookeeperConfiguration(EMBED_TESTING_SERVER.getConnectionString(), ZookeeperRegistryCenterExecuteInLeaderTest.class.getName());
+        zkRegCenter = new ZookeeperRegistryCenter(zookeeperConfiguration);
+        zookeeperConfiguration.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter.init();
     }
     
