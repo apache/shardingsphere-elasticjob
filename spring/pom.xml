@@ -34,9 +34,8 @@
     </modules>
     
     <properties>
-        <springboot.version>2.7.10</springboot.version>
-        <springframework.version>5.3.26</springframework.version>
-        <aspectj.version>1.9.1</aspectj.version>
+        <springboot.version>2.7.18</springboot.version>
+        <aspectj.version>1.9.22.1</aspectj.version>
     </properties>
     
     <dependencyManagement>
@@ -47,30 +46,6 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springframework.version}</version>
-                <scope>test</scope>
             </dependency>
             
             <dependency>
