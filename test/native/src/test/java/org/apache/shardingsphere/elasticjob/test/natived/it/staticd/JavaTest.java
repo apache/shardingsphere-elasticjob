@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.test.natived;
+package org.apache.shardingsphere.elasticjob.test.natived.it.staticd;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -75,7 +75,7 @@ class JavaTest {
                         60 * 1000, 500, null,
                         new ExponentialBackoffRetry(500, 3, 500 * 3))) {
             client.start();
-            Awaitility.await().atMost(Duration.ofMillis(500 * 60)).until(client::isConnected);
+            Awaitility.await().atMost(Duration.ofMillis(500 * 60)).ignoreExceptions().until(client::isConnected);
         }
         regCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration(testingServer.getConnectString(), "elasticjob-test-native-java"));
         regCenter.init();

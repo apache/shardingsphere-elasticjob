@@ -34,7 +34,6 @@
     </modules>
     
     <properties>
-        <springboot.version>2.7.18</springboot.version>
         <aspectj.version>1.9.22.1</aspectj.version>
     </properties>
     
@@ -43,7 +42,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot.version}</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
