@@ -19,7 +19,7 @@ package org.apache.shardingsphere.elasticjob.restful.deserializer.impl;
 
 import com.google.gson.Gson;
 import io.netty.handler.codec.http.HttpHeaderValues;
-import org.apache.shardingsphere.elasticjob.infra.json.GsonFactory;
+import org.apache.shardingsphere.elasticjob.kernel.infra.json.GsonFactory;
 import org.apache.shardingsphere.elasticjob.restful.deserializer.RequestBodyDeserializer;
 
 import java.nio.charset.StandardCharsets;

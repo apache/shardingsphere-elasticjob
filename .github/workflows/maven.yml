@@ -44,16 +44,19 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
+          cache: 'maven'
       - name: Build with Maven in Windows
         if: matrix.os == 'windows-latest'
         run: |
-          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install
+          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -T1C
       - name: Build with Maven in Linux or macOS
         if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         run: |
-          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -Pcheck
+          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -Pcheck -T1C
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.java == '8'
         uses: codecov/codecov-action@v3
         with:
           file: '**/target/site/jacoco/jacoco.xml'
+      - name: Build Examples with Maven
+        run: ./mvnw clean package -B -f examples/pom.xml -T1C
