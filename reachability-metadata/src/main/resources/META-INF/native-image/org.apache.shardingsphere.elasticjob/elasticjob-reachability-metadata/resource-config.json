@@ -1,0 +1,11 @@
+{
+  "resources":{
+  "includes":[{
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.ExecutorServiceReloader"},
+    "pattern":".*META-INF/services/org\\.apache\\.shardingsphere\\.elasticjob\\..+"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.SQLPropertiesFactory"},
+    "pattern":".*META-INF/sql/.+\\.properties$"
+  }]},
+  "bundles":[]
+}

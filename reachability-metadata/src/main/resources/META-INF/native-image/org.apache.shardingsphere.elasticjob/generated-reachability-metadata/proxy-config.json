@@ -1,0 +1,6 @@
+[
+  {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.converter.RDBTracingStorageConfigurationConverter"},
+    "interfaces":["java.sql.Connection"]
+  }
+]

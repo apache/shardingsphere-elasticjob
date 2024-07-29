@@ -1,0 +1,253 @@
+[
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.converter.RDBTracingStorageConfigurationConverter"},
+  "name":"[Lcom.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry;"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.reconcile.ReconcileService"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingListenerManager$ShardingTotalCountChangedJobListener"},
+  "name":"java.util.Properties",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.item.JobItemExecutorFactory"},
+  "name":"org.apache.shardingsphere.elasticjob.dataflow.executor.DataflowJobExecutor"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandlerReloader"},
+  "name":"org.apache.shardingsphere.elasticjob.error.handler.normal.IgnoreJobErrorHandler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandlerReloader"},
+  "name":"org.apache.shardingsphere.elasticjob.error.handler.normal.LogJobErrorHandler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.error.handler.JobErrorHandlerReloader"},
+  "name":"org.apache.shardingsphere.elasticjob.error.handler.normal.ThrowJobErrorHandler",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"},
+  "name":"org.apache.shardingsphere.elasticjob.http.executor.HttpJobExecutor"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.ExecutorServiceReloader"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.type.CPUUsageJobExecutorThreadPoolSizeProvider"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.ExecutorServiceReloader"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.type.SingleThreadJobExecutorThreadPoolSizeProvider"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"setCron","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Properties"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "methods":[{"name":"setCron","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Properties"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setDescription","parameterTypes":["java.lang.String"] }, {"name":"setDisabled","parameterTypes":["boolean"] }, {"name":"setFailover","parameterTypes":["boolean"] }, {"name":"setJobExtraConfigurations","parameterTypes":["java.util.Collection"] }, {"name":"setJobName","parameterTypes":["java.lang.String"] }, {"name":"setJobParameter","parameterTypes":["java.lang.String"] }, {"name":"setMaxTimeDiffSeconds","parameterTypes":["int"] }, {"name":"setMisfire","parameterTypes":["boolean"] }, {"name":"setMonitorExecution","parameterTypes":["boolean"] }, {"name":"setOverwrite","parameterTypes":["boolean"] }, {"name":"setReconcileIntervalMinutes","parameterTypes":["int"] }, {"name":"setShardingItemParameters","parameterTypes":["java.lang.String"] }, {"name":"setShardingTotalCount","parameterTypes":["int"] }, {"name":"setStaticSharding","parameterTypes":["boolean"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "allDeclaredFields":true,
+  "methods":[{"name":"getCron","parameterTypes":[] }, {"name":"getDescription","parameterTypes":[] }, {"name":"getJobErrorHandlerType","parameterTypes":[] }, {"name":"getJobExecutorThreadPoolSizeProviderType","parameterTypes":[] }, {"name":"getJobExtraConfigurations","parameterTypes":[] }, {"name":"getJobListenerTypes","parameterTypes":[] }, {"name":"getJobName","parameterTypes":[] }, {"name":"getJobParameter","parameterTypes":[] }, {"name":"getJobShardingStrategyType","parameterTypes":[] }, {"name":"getLabel","parameterTypes":[] }, {"name":"getMaxTimeDiffSeconds","parameterTypes":[] }, {"name":"getProps","parameterTypes":[] }, {"name":"getReconcileIntervalMinutes","parameterTypes":[] }, {"name":"getShardingItemParameters","parameterTypes":[] }, {"name":"getShardingTotalCount","parameterTypes":[] }, {"name":"getTimeZone","parameterTypes":[] }, {"name":"isDisabled","parameterTypes":[] }, {"name":"isFailover","parameterTypes":[] }, {"name":"isMisfire","parameterTypes":[] }, {"name":"isMonitorExecution","parameterTypes":[] }, {"name":"isOverwrite","parameterTypes":[] }, {"name":"isStaticSharding","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "methods":[{"name":"setCron","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Properties"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.reconcile.ReconcileService"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "methods":[{"name":"setCron","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Properties"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingListenerManager$ShardingTotalCountChangedJobListener"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+  "methods":[{"name":"setCron","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Properties"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJOBeanInfo"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJOCustomizer"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobShutdownHookPlugin",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobShutdownHookPlugin",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobShutdownHookPlugin",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setCleanShutdown","parameterTypes":["boolean"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobShutdownHookPluginBeanInfo"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobShutdownHookPluginCustomizer"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance",
+  "allDeclaredFields":true,
+  "methods":[{"name":"getJobInstanceId","parameterTypes":[] }, {"name":"getLabels","parameterTypes":[] }, {"name":"getServerIp","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance",
+  "queryAllPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.setup.SetUpFacade"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstanceBeanInfo"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstanceCustomizer"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setTracingStorageConfiguration","parameterTypes":["org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingStorageConfiguration"] }, {"name":"setType","parameterTypes":["java.lang.String"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfigurationConverter"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler"},
+  "name":"org.apache.shardingsphere.elasticjob.reg.zookeeper.exception.ZookeeperCuratorIgnoredExceptionProvider"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"},
+  "name":"org.apache.shardingsphere.elasticjob.script.executor.ScriptJobExecutor"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.item.JobItemExecutorFactory"},
+  "name":"org.apache.shardingsphere.elasticjob.simple.executor.SimpleJobExecutor"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus"},
+  "name":"org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener",
+  "queryAllDeclaredMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.listener.RDBTracingListener",
+  "queryAllDeclaredMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.listener.RDBTracingListenerFactory"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverterFactory"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.converter.RDBTracingStorageConfigurationConverter"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.DB2TracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.H2TracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.MySQLTracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.OracleTracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.PostgreSQLTracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.SQLServerTracingStorageDatabaseType"
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.yaml.YamlDataSourceConfiguration",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setDataSourceClassName","parameterTypes":["java.lang.String"] }, {"name":"setProps","parameterTypes":["java.util.Map"] }]
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.yaml.YamlDataSourceConfigurationConverter"
+}
+]

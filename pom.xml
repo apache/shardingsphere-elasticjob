@@ -44,6 +44,7 @@
         <module>test</module>
         
         <module>distribution</module>
+        <module>reachability-metadata</module>
     </modules>
     
     <properties>
@@ -83,7 +84,7 @@
         
         <lombok.version>1.18.30</lombok.version>
         
-        <junit.version>5.10.0</junit.version>
+        <junit.version>5.10.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <mockito.version>4.11.0</mockito.version>
         <awaitility.version>4.2.0</awaitility.version>
@@ -126,6 +127,8 @@
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <checksum-maven-plugin.version>1.10</checksum-maven-plugin.version>
+        
+        <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
     </properties>
     
     <dependencyManagement>
@@ -815,6 +818,8 @@
                                     <exclude>**/package-lock.json</exclude>
                                     <!-- example files -->
                                     <exclude>/examples/**</exclude>
+                                    <!-- GraalVM Reachability Metadata is not in JSON5 format.-->
+                                    <exclude>**/META-INF/native-image/**/*.json</exclude>
                                     <!-- to be determined -->
                                     <exclude>**/AdminLTE/**</exclude>
                                     <exclude>**/bootstrap/**</exclude>
@@ -918,6 +923,100 @@
                         </executions>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generateMetadata</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <includes>
+                                    <include>org.apache.shardingsphere.elasticjob.test.natived.**</include>
+                                </includes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.graalvm.buildtools</groupId>
+                            <artifactId>native-maven-plugin</artifactId>
+                            <version>${native-maven-plugin.version}</version>
+                            <extensions>true</extensions>
+                            <configuration>
+                                <agent>
+                                    <enabled>true</enabled>
+                                    <defaultMode>Conditional</defaultMode>
+                                    <modes>
+                                        <conditional>
+                                            <userCodeFilterPath>${user.dir}/test/native/native-image-filter/user-code-filter.json</userCodeFilterPath>
+                                            <extraFilterPath>${user.dir}/test/native/native-image-filter/extra-filter.json</extraFilterPath>
+                                            <parallel>true</parallel>
+                                        </conditional>
+                                    </modes>
+                                    <metadataCopy>
+                                        <disabledStages>
+                                            <stage>main</stage>
+                                        </disabledStages>
+                                        <merge>false</merge>
+                                        <outputDirectory>${user.dir}/reachability-metadata/src/main/resources/META-INF/native-image/org.apache.shardingsphere.elasticjob/generated-reachability-metadata/</outputDirectory>
+                                    </metadataCopy>
+                                </agent>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>build-native</id>
+                                    <goals>
+                                        <goal>compile-no-fork</goal>
+                                    </goals>
+                                    <phase>package</phase>
+                                </execution>
+                                <execution>
+                                    <id>test-native</id>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <phase>test</phase>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>nativeTestInElasticJob</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <includes>
+                                    <include>org.apache.shardingsphere.elasticjob.test.natived.**</include>
+                                </includes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.graalvm.buildtools</groupId>
+                            <artifactId>native-maven-plugin</artifactId>
+                            <version>${native-maven-plugin.version}</version>
+                            <extensions>true</extensions>
+                            <configuration>
+                                <quickBuild>true</quickBuild>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>test-native</id>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <phase>test</phase>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
             </build>
         </profile>
     </profiles>

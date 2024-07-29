@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {"includeClasses": "**"},
+
+    {"excludeClasses": "com.google.common.util.concurrent.**"},
+    {"excludeClasses": "com.zaxxer.hikari.**"},
+    {"excludeClasses": "java.**"},
+    {"includeClasses": "java.util.Properties"},
+    {"excludeClasses": "org.apache.zookeeper.**"},
+    {"excludeClasses": "org.quartz.**"},
+    {"excludeClasses": "sun.misc.**"},
+
+    {"excludeClasses": "org.apache.shardingsphere.elasticjob.test.natived.**"}
+  ],
+  "regexRules": [
+  ]
+}
