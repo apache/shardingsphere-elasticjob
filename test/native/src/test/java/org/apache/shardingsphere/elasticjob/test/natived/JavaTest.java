@@ -157,7 +157,7 @@ class JavaTest {
         ScheduleJobBootstrap jobBootstrap = new ScheduleJobBootstrap(regCenter, "SCRIPT",
                 JobConfiguration.newBuilder("scriptElasticJob", 3)
                         .cron("0/5 * * * * ?")
-                        .setProperty(ScriptJobProperties.SCRIPT_KEY, Paths.get("src/test/resources/script/demo.sh").toString())
+                        .setProperty(ScriptJobProperties.SCRIPT_KEY, Paths.get("src/test/resources/test-native/sh/demo.sh").toString())
                         .addExtraConfigurations(tracingConfig)
                         .build());
         assertDoesNotThrow(() -> {

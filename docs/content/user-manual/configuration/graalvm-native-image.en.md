@@ -106,10 +106,31 @@ Users can quickly collect GraalVM Reachability Metadata through the GraalVM Trac
 if `script.command.line` is set to the relative path of a `.sh` file in the private project's classpath under the GraalVM Native Image when building the GraalVM Native Image, 
 then the `.sh` file must at least have the POSIX file permission of `rwxr-xr-x` set in advance. 
 This is because `com.oracle.svm.core.jdk.resources.NativeImageResourceFileSystem` obviously does not support `java.nio.file.attribute.PosixFileAttributeView`.
+Long story short, users should avoid including logic like the following in their jobs,
 
-3. The Spring namespace integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` of ElasticJob is not yet available under GraalVM Native Image.
+```java
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 
-4. The Spring Boot Starter integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` for ElasticJob is not yet available under GraalVM Native Image.
+public class ExampleUtils {
+    public void setPosixFilePermissions() throws IOException {
+        URL resource = ExampleUtils.class.getResource("/script/demo.sh");
+        assert resource != null;
+        Path path = Paths.get(resource.getPath());
+        Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr-xr-x"));
+    }
+}
+```
+
+3. `WeCom Notification Policy`, `DingTalk Notification Policy`, and `Email Notification Policy` are not yet available under GraalVM Native Image.
+
+4. The Spring namespace integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` of ElasticJob is not yet available under GraalVM Native Image.
+
+5. The Spring Boot Starter integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` for ElasticJob is not yet available under GraalVM Native Image.
 
 ## Contribute GraalVM Reachability Metadata
 
