@@ -104,10 +104,31 @@ graalvmNative {
 若 `script.command.line` 设置为构建 GraalVM Native Image 时， 私有项目的 classpath 下的某个 `.sh` 文件在 GraalVM Native Image 下的相对路径，
 则此 `.sh` 文件至少提前设置 `rwxr-xr-x` 的 POSIX 文件权限。
 因为 `com.oracle.svm.core.jdk.resources.NativeImageResourceFileSystem` 显然不支持 `java.nio.file.attribute.PosixFileAttributeView`。
+长话短说，用户应该避免在作业内包含类似如下的逻辑，
 
-3. ElasticJob 的 Spring 命名空间集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` 尚未在 GraalVM Native Image 下可用。
+```java
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 
-4. ElasticJob 的 Spring Boot Starter 集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` 尚未在 GraalVM Native Image 下可用。
+public class ExampleUtils {
+    public void setPosixFilePermissions() throws IOException {
+        URL resource = ExampleUtils.class.getResource("/script/demo.sh");
+        assert resource != null;
+        Path path = Paths.get(resource.getPath());
+        Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr-xr-x"));
+    }
+}
+```
+
+3. `企业微信通知策略`，`钉钉通知策略`，`邮件通知策略`尚未在 GraalVM Native Image 下可用。
+
+4. ElasticJob 的 Spring 命名空间集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` 尚未在 GraalVM Native Image 下可用。
+
+5. ElasticJob 的 Spring Boot Starter 集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` 尚未在 GraalVM Native Image 下可用。
 
 ## 贡献 GraalVM Reachability Metadata
 
