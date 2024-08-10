@@ -8,6 +8,9 @@ ElasticJob provides a customized Spring Boot Starter, which can be used in conju
 Developers are free from configuring CoordinatorRegistryCenter, JobBootstrap by using ElasticJob Spring Boot Starter.
 What developers need to solve distributed scheduling problem are job implementations with a little configuration.
 
+The following content is only demonstrated through Spring Boot 3. 
+The relevant content may still be valid on Spring Boot 2, but since Spring Boot 2 has ended maintenance, no availability assumptions are made for Spring Boot 2.
+
 ## Job configuration
 
 ### Implements ElasticJob
@@ -76,6 +79,8 @@ When to execute OneOffJob is up to you.
 Developers can inject the `OneOffJobBootstrap` bean into where they plan to invoke.
 Trigger the job by invoking `execute()` method manually.
 
+Users should not use annotations such as `jakarta.annotation.Resource` which partially violate Spring Boot best practices to inject Spring beans that define one-time tasks.
+
 The bean name of `OneOffJobBootstrap` is specified by property "jobBootstrapBeanName",
 Please refer to [Spring Boot Starter Configuration](/en/user-manual/elasticjob/configuration/spring-boot-starter).
 
@@ -83,32 +88,35 @@ Please refer to [Spring Boot Starter Configuration](/en/user-manual/elasticjob/c
 elasticjob:
   jobs:
     myOneOffJob:
+      elasticJobType: SCRIPT
       jobBootstrapBeanName: myOneOffJobBean
-      ....
+      shardingTotalCount: 9
+      props:
+        script.command.line: "echo Manual SCRIPT Job: "
 ```
 
 ```java
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
+
 @RestController
 public class OneOffJobController {
-
-    // Inject via "@Resource"
-    @Resource(name = "myOneOffJobBean")
-    private OneOffJobBootstrap myOneOffJob;
-    
-    @GetMapping("/execute")
-    public String executeOneOffJob() {
-        myOneOffJob.execute();
-        return "{\"msg\":\"OK\"}";
-    }
-
-    // Inject via "@Autowired"
+    // 通过 "@Autowired" 注入
     @Autowired
-    @Qualifier(name = "myOneOffJobBean")
-    private OneOffJobBootstrap myOneOffJob2;
+    @Qualifier("myOneOffJobBean")
+    private ObjectProvider<OneOffJobBootstrap> myOneOffJobProvider;
 
     @GetMapping("/execute2")
     public String executeOneOffJob2() {
-        myOneOffJob2.execute();
+        OneOffJobBootstrap myOneOffJob = myOneOffJobProvider.getIfAvailable();
+        Objects.requireNonNull(myOneOffJob);
+        myOneOffJob.execute();
         return "{\"msg\":\"OK\"}";
     }
 }

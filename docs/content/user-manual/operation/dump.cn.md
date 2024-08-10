@@ -11,8 +11,9 @@ chapter = true
 
 ## 开启监听端口
 
-使用 Java 开启导出端口配置请参见[Java API 使用指南](/cn/user-manual/elasticjob/usage/job-api/java-api)。
-使用 Spring 开启导出端口配置请参见[Spring 使用指南](/cn/user-manual/elasticjob/usage/job-api/spring-namespace)。
+使用 Java API 开启导出端口配置请参见[Java API 作业信息导出配置](/cn/user-manual/elasticjob/configuration/java-api)。
+使用 Spring Boot Starter 开启导出端口配置请参见[Spring Boot Starter 作业信息导出配置](/cn/user-manual/elasticjob/configuration/java-api)。
+使用 Spring 命名空间 开启导出端口配置请参见[Spring 命名空间 作业信息导出配置](/cn/user-manual/elasticjob/configuration/spring-namespace)。
 
 ## 执行导出命令
 
