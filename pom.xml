@@ -755,13 +755,16 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
-                                <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+                                <argLine>@{argLine} --add-opens java.base/java.lang.reflect=ALL-UNNAMED</argLine>
                             </configuration>
                         </plugin>
                     </plugins>
