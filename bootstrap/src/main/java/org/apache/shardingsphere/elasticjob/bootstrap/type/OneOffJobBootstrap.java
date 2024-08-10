@@ -30,7 +30,7 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 /**
  * One off job bootstrap.
  */
-public final class OneOffJobBootstrap implements JobBootstrap {
+public class OneOffJobBootstrap implements JobBootstrap {
     
     private final JobScheduler jobScheduler;
     

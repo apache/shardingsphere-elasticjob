@@ -8,6 +8,9 @@ ElasticJob 提供自定义的 Spring Boot Starter，可以与 Spring Boot 配合
 基于 ElasticJob Spring Boot Starter 使用 ElasticJob ，用户无需手动创建 CoordinatorRegistryCenter、JobBootstrap 等实例，
 只需实现核心作业逻辑并辅以少量配置，即可利用轻量、无中心化的 ElasticJob 解决分布式调度问题。
 
+以下内容仅通过 Spring Boot 3 作为演示。 
+相关内容在 Spring Boot 2 上仍可能有效，但由于 Spring Boot 2 已经结束维护，不对 Spring Boot 2 做任何可用性假设。
+
 ## 作业配置
 
 ### 实现作业逻辑
@@ -74,6 +77,8 @@ elasticjob:
 一次性调度的作业的执行权在开发者手中，开发者可以在需要调用作业的位置注入 `OneOffJobBootstrap`，
 通过 `execute()` 方法执行作业。
 
+用户不应该使用 `jakarta.annotation.Resource` 等部分违反 Spring Boot 最佳实践的注解来注入定义的一次性任务的 Spring Bean。
+
 `OneOffJobBootstrap` bean 的名称通过属性 jobBootstrapBeanName 配置，注入时需要指定依赖的 bean 名称。
 具体配置请参考[配置文档](/cn/user-manual/elasticjob/configuration/spring-boot-starter)。
 
@@ -81,32 +86,35 @@ elasticjob:
 elasticjob:
   jobs:
     myOneOffJob:
+      elasticJobType: SCRIPT
       jobBootstrapBeanName: myOneOffJobBean
-      ....
+      shardingTotalCount: 9
+      props:
+        script.command.line: "echo Manual SCRIPT Job: "
 ```
 
 ```java
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
+
 @RestController
 public class OneOffJobController {
-
-    // 通过 "@Resource" 注入
-    @Resource(name = "myOneOffJobBean")
-    private OneOffJobBootstrap myOneOffJob;
-    
-    @GetMapping("/execute")
-    public String executeOneOffJob() {
-        myOneOffJob.execute();
-        return "{\"msg\":\"OK\"}";
-    }
-
     // 通过 "@Autowired" 注入
     @Autowired
-    @Qualifier(name = "myOneOffJobBean")
-    private OneOffJobBootstrap myOneOffJob2;
+    @Qualifier("myOneOffJobBean")
+    private ObjectProvider<OneOffJobBootstrap> myOneOffJobProvider;
 
     @GetMapping("/execute2")
     public String executeOneOffJob2() {
-        myOneOffJob2.execute();
+        OneOffJobBootstrap myOneOffJob = myOneOffJobProvider.getIfAvailable();
+        Objects.requireNonNull(myOneOffJob);
+        myOneOffJob.execute();
         return "{\"msg\":\"OK\"}";
     }
 }
