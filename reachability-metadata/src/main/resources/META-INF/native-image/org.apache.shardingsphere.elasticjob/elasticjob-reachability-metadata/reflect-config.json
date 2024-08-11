@@ -3,5 +3,11 @@
   "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration"},
   "name":"org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration",
   "allPublicMethods":true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.LiteJob"},
+  "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.LiteJob",
+  "allDeclaredMethods": true,
+  "allDeclaredConstructors": true
 }
 ]

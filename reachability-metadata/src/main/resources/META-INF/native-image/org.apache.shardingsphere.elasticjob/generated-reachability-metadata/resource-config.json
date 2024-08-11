@@ -10,6 +10,9 @@
     "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProviderFactory"},
     "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProvider\\E"
   }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.JobShardingStrategy\\E"
+  }, {
     "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler"},
     "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.reg.exception.IgnoredExceptionProvider\\E"
   }, {

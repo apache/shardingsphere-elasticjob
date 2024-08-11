@@ -1,0 +1,12 @@
+[
+{
+  "condition":{"typeReachable":"org.hamcrest.internal.ReflectiveTypeFinder"},
+  "name":"org.hamcrest.core.StringStartsWith",
+  "queryAllDeclaredMethods":true
+},
+{
+  "condition":{"typeReachable":"org.hamcrest.internal.ReflectiveTypeFinder"},
+  "name":"org.hamcrest.core.SubstringMatcher",
+  "queryAllDeclaredMethods":true
+}
+]

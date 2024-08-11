@@ -39,7 +39,7 @@ public final class Foo implements Serializable {
     private Status status;
     
     public enum Status {
-        TODO,
+        UNFINISHED,
         COMPLETED
     }
 }

@@ -6,7 +6,15 @@ chapter = true
 
 ElasticJob provides a Java API, which can control the life cycle of jobs in a distributed environment by directly operating the registry.
 
-The module is still in incubation.
+The module is still in incubation. Possible dependency configurations are as follows,
+
+```xml
+<dependency>
+  <groupId>org.apache.shardingsphere.elasticjob</groupId>
+  <artifactId>elasticjob-lifecycle</artifactId>
+  <version>${elasticjob.version}</version>
+</dependency>
+```
 
 ## Configuration API
 
@@ -43,11 +51,10 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobOperateAPI`
 
 The job will only trigger execution if it does not conflict with the currently running job, and this flag will be automatically cleared after it is started.
 
-Method signature：void trigger(Optional<String> jobName, Optional<String> serverIp)
+Method signature：void trigger(Optional<String> jobName)
 
 * **Parameters:**
   * jobName — Job name
-  * serverIp — IP address of the job server
 
 ### Disable job
 
@@ -82,6 +89,15 @@ Method signature：void remove(Optional<String> jobName, Optional<String> server
 * **Parameters:**
   * jobName — Job name
   * serverIp — IP address of the job server
+
+### Dump job
+
+Method signature：String dump(String jobName, String instanceIp, int dumpPort)
+
+* **Parameters:**
+  * jobName — Job name
+  * serverIp — IP address of the job server
+  * dumpPort — Dump port
 
 ## Operate sharding API
 

@@ -47,7 +47,7 @@ public class SpringBootDataflowJob implements DataflowJob<Foo> {
                 new SimpleDateFormat("HH:mm:ss").format(new Date()),
                 Thread.currentThread().getId(),
                 "DATAFLOW FETCH");
-        return springBootFooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
+        return springBootFooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10);
     }
     
     @Override
