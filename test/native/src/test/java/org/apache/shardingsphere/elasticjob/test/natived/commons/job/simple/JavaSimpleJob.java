@@ -39,7 +39,7 @@ public class JavaSimpleJob implements SimpleJob {
                 new SimpleDateFormat("HH:mm:ss").format(new Date()),
                 Thread.currentThread().getId(),
                 "SIMPLE");
-        List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
+        List<Foo> data = fooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10);
         data.stream().mapToLong(Foo::getId).forEach(fooRepository::setCompleted);
     }
 }

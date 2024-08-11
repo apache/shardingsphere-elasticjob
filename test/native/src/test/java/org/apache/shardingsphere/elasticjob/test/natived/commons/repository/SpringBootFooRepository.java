@@ -32,28 +32,28 @@ public class SpringBootFooRepository {
     private final Map<Long, Foo> data = new ConcurrentHashMap<>(300, 1);
     
     public SpringBootFooRepository() {
-        addData(0L, 100L, "Beijing");
-        addData(100L, 200L, "Shanghai");
-        addData(200L, 300L, "Guangzhou");
+        addData(0L, 100L, "Norddorf");
+        addData(100L, 200L, "Bordeaux");
+        addData(200L, 300L, "Somerset");
     }
     
     private void addData(final long idFrom, final long idTo, final String location) {
         LongStream.range(idFrom, idTo)
-                .forEachOrdered(i -> data.put(i, new Foo(i, location, Foo.Status.TODO)));
+                .forEachOrdered(i -> data.put(i, new Foo(i, location, Foo.Status.UNFINISHED)));
     }
     
     /**
-     * Find todoData.
+     * Find Unfinished Data.
      * @param location location
      * @param limit limit
      * @return An ordered collection, where the user has precise control over where in the list each element is inserted.
      */
-    public List<Foo> findTodoData(final String location, final int limit) {
+    public List<Foo> findUnfinishedData(final String location, final int limit) {
         List<Foo> result = new ArrayList<>(limit);
         int count = 0;
         for (Map.Entry<Long, Foo> each : data.entrySet()) {
             Foo foo = each.getValue();
-            if (foo.getLocation().equals(location) && foo.getStatus() == Foo.Status.TODO) {
+            if (foo.getLocation().equals(location) && foo.getStatus() == Foo.Status.UNFINISHED) {
                 result.add(foo);
                 count++;
                 if (count == limit) {

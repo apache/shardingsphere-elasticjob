@@ -39,7 +39,7 @@ public class JavaDataflowJob implements DataflowJob<Foo> {
                 new SimpleDateFormat("HH:mm:ss").format(new Date()),
                 Thread.currentThread().getId(),
                 "DATAFLOW FETCH");
-        return fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
+        return fooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10);
     }
     
     @Override

@@ -45,7 +45,7 @@ public class SpringBootSimpleJob implements SimpleJob {
                 new SimpleDateFormat("HH:mm:ss").format(new Date()),
                 Thread.currentThread().getId(),
                 "SIMPLE");
-        springBootFooRepository.findTodoData(shardingContext.getShardingParameter(), 10)
+        springBootFooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10)
                 .forEach(each -> springBootFooRepository.setCompleted(each.getId()));
     }
 }

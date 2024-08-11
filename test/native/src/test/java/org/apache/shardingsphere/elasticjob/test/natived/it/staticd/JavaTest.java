@@ -58,15 +58,6 @@ class JavaTest {
     
     private static TracingConfiguration<DataSource> tracingConfig;
     
-    /**
-     * TODO Internally in {@link org.apache.curator.test.TestingServer},
-     *  {@code Files.createTempDirectory(DirectoryUtils.class.getSimpleName()).toFile())} calls {@link java.nio.file.Path#toFile()},
-     *  which is undesirable in both JAR and GraalVM Native Image,
-     *  see <a href="https://github.com/oracle/graal/issues/7804">oracle/graal#7804</a>.
-     *  ElasticJob believe this requires changes on the apache/curator side.
-     *
-     * @throws Exception errors
-     */
     @BeforeAll
     static void beforeAll() throws Exception {
         testingServer = new TestingServer();

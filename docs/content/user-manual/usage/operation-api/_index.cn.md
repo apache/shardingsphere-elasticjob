@@ -6,7 +6,15 @@ chapter = true
 
 ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的方式控制作业在分布式环境下的生命周期。
 
-该模块目前仍处于孵化状态。
+该模块目前仍处于孵化状态。可能的依赖配置如下，
+
+```xml
+<dependency>
+  <groupId>org.apache.shardingsphere.elasticjob</groupId>
+  <artifactId>elasticjob-lifecycle</artifactId>
+  <version>${elasticjob.version}</version>
+</dependency>
+```
 
 ## 配置类 API
 
@@ -43,11 +51,10 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 作业在不与当前运行中作业冲突的情况下才会触发执行，并在启动后自动清理此标记。
 
-方法签名：void trigger(Optional<String> jobName, Optional<String> serverIp)
+方法签名：void trigger(Optional<String> jobName)
 
 * **Parameters:**
   * jobName — 作业名称
-  * serverIp — 作业服务器IP地址
 
 ### 禁用作业
 
@@ -82,6 +89,15 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 * **Parameters:**
   * jobName — 作业名称
   * serverIp — 作业服务器IP地址
+
+### Dump 作业
+
+方法签名：String dump(String jobName, String instanceIp, int dumpPort)
+
+* **Parameters:**
+  * jobName — 作业名称
+  * serverIp — 作业服务器IP地址
+  * dumpPort — Dump port 
 
 ## 操作分片的 API
 

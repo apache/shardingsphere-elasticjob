@@ -15,8 +15,8 @@
 # limitations under the License.
 #
 
-# `elasticjob.regCenter.serverLists` is dynamically defined in `org.apache.shardingsphere.elasticjob.test.natived.SpirngBootTest`
-# `elasticjob.dump.port` is dynamically defined in `org.apache.shardingsphere.elasticjob.test.natived.SpirngBootTest`
+# `elasticjob.regCenter.serverLists` is dynamically defined in `org.springframework.test.context.DynamicPropertySource`
+# `elasticjob.dump.port` is dynamically defined in `org.springframework.test.context.DynamicPropertySource`
 elasticjob:
   tracing:
     type: RDB
@@ -26,18 +26,18 @@ elasticjob:
       username: sa
       password:
   regCenter:
-    namespace: elasticjob-springboot
+    namespace: elasticjob-test-native-springboot
   jobs:
     simpleJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.SpringBootSimpleJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
-      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      shardingItemParameters: 0=Norddorf,1=Bordeaux,2=Somerset
     dataflowJob:
       elasticJobClass: org.apache.shardingsphere.elasticjob.test.natived.commons.job.dataflow.SpringBootDataflowJob
       cron: 0/5 * * * * ?
       shardingTotalCount: 3
-      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      shardingItemParameters: 0=Norddorf,1=Bordeaux,2=Somerset
     scriptJob:
       elasticJobType: SCRIPT
       cron: 0/10 * * * * ?
