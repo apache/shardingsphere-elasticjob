@@ -91,6 +91,107 @@ graalvmNative {
 }
 ```
 
+## 使用 ElasticJob 的 Spring Boot Starter
+
+### Maven 生态
+
+使用者需要主动使用 GraalVM Reachability Metadata 中央仓库。
+如下配置可供参考，以配置项目额外的 Maven Profiles，以 GraalVM Native Build Tools 的文档为准。
+
+```xml
+<project>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-spring-boot-starter</artifactId>
+            <version>${elasticjob.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>3.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.3.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.10.2</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>build-native</id>
+                        <goals>
+                            <goal>compile-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                    <execution>
+                        <id>test-native</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <id>process-test-aot</id>
+                        <goals>
+                            <goal>process-test-aot</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+### Gradle 生态
+
+使用者需要主动使用 GraalVM Reachability Metadata 中央仓库。
+如下配置可供参考，以配置项目额外的 Gradle Tasks，以 GraalVM Native Build Tools 的文档为准。
+由于 https://github.com/gradle/gradle/issues/17559 的限制，用户需要通过 Maven 依赖的形式引入 Metadata Repository 的 JSON 文件。
+参考 https://github.com/graalvm/native-build-tools/issues/572 。
+
+```groovy
+plugins {
+   id 'org.springframework.boot' version '3.3.2'
+   id 'io.spring.dependency-management' version '1.1.6'
+   id 'org.graalvm.buildtools.native' version '0.10.2'
+}
+
+dependencies {
+   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.2', classifier: 'repository', ext: 'zip')
+}
+
+graalvmNative {
+   metadataRepository {
+        enabled.set(false)
+   }
+}
+```
+
+
 ## 对于 sbt 等不被 GraalVM Native Build Tools 支持的构建工具
 
 此类需求需要在 https://github.com/graalvm/native-build-tools 打开额外的 issue 并提供对应构建工具的 Plugin 实现。
@@ -128,8 +229,6 @@ public class ExampleUtils {
 
 4. ElasticJob 的 Spring 命名空间集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` 尚未在 GraalVM Native Image 下可用。
 
-5. ElasticJob 的 Spring Boot Starter 集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` 尚未在 GraalVM Native Image 下可用。
-
 ## 贡献 GraalVM Reachability Metadata
 
 ElasticJob 对在 GraalVM Native Image 下的可用性的验证，是通过 GraalVM Native Build Tools 的 Maven Plugin 子项目来完成的。
@@ -157,7 +256,7 @@ sudo apt-get install build-essential zlib1g-dev -y
 
 git clone git@github.com:apache/shardingsphere-elasticjob.git
 cd ./shardingsphere-elasticjob/
-./mvnw -PnativeTestInElasticJob -T1C -e clean test
+./mvnw -PnativeTestInElasticJob -T1C -e -Dspring-boot-dependencies.version=3.3.2 clean test
 ```
 
 当贡献者发现缺少与 ElasticJob 无关的第三方库的 GraalVM Reachability Metadata 时，应当在
@@ -186,5 +285,5 @@ ElasticJob 定义了 `generateMetadata` 的 Maven Profile 用于在 GraalVM JIT 
 ```bash
 git clone git@github.com:apache/shardingsphere.git
 cd ./shardingsphere/
-./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
+./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C -Dspring-boot-dependencies.version=3.3.2 clean test native:metadata-copy
 ```

@@ -93,6 +93,107 @@ graalvmNative {
 }
 ```
 
+## Using ElasticJob's Spring Boot Starter
+
+### Maven Ecosystem
+
+Users need to actively use the GraalVM Reachability Metadata Central Repository.
+The following configuration is for reference. 
+To configure additional Maven Profiles for the project, refer to the documentation of GraalVM Native Build Tools.
+
+```xml
+<project>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-spring-boot-starter</artifactId>
+            <version>${elasticjob.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>3.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.3.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.10.2</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>build-native</id>
+                        <goals>
+                            <goal>compile-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                    <execution>
+                        <id>test-native</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <id>process-test-aot</id>
+                        <goals>
+                            <goal>process-test-aot</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+### Gradle Ecosystem
+
+Users need to actively use the GraalVM Reachability Metadata Central Repository.
+The following configuration is for reference. To configure additional Gradle Tasks for the project, refer to the documentation of GraalVM Native Build Tools.
+Due to the limitations of https://github.com/gradle/gradle/issues/17559, users need to introduce the Metadata Repository JSON file in the form of Maven dependencies.
+Refer to https://github.com/graalvm/native-build-tools/issues/572 .
+
+```groovy
+plugins {
+   id 'org.springframework.boot' version '3.3.2'
+   id 'io.spring.dependency-management' version '1.1.6'
+   id 'org.graalvm.buildtools.native' version '0.10.2'
+}
+
+dependencies {
+   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.2', classifier: 'repository', ext: 'zip')
+}
+
+graalvmNative {
+   metadataRepository {
+        enabled.set(false)
+   }
+}
+```
+
 ## For build tools such as sbt that are not supported by GraalVM Native Build Tools
 
 Such requirements require opening additional issues at https://github.com/graalvm/native-build-tools and providing plugin implementations for the corresponding build tools.
@@ -130,8 +231,6 @@ public class ExampleUtils {
 
 4. The Spring namespace integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` of ElasticJob is not yet available under GraalVM Native Image.
 
-5. The Spring Boot Starter integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter` for ElasticJob is not yet available under GraalVM Native Image.
-
 ## Contribute GraalVM Reachability Metadata
 
 ElasticJob's usability verification under GraalVM Native Image is done by the Maven Plugin subproject of GraalVM Native Build Tools.
@@ -160,7 +259,7 @@ sudo apt-get install build-essential zlib1g-dev -y
 
 git clone git@github.com:apache/shardingsphere-elasticjob.git
 cd ./shardingsphere-elasticjob/
-./mvnw -PnativeTestInElasticJob -T1C -e clean test
+./mvnw -PnativeTestInElasticJob -T1C -e -Dspring-boot-dependencies.version=3.3.2 clean test
 ```
 
 When contributors find that GraalVM Reachability Metadata for third-party libraries not related to ElasticJob is missing, 
@@ -190,5 +289,5 @@ contributors should place it in the classpath of the shardingsphere-test-native 
 ```bash
 git clone git@github.com:apache/shardingsphere.git
 cd ./shardingsphere/
-./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
+./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C -Dspring-boot-dependencies.version=3.3.2 clean test native:metadata-copy
 ```

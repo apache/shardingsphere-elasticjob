@@ -93,6 +93,8 @@
         <h2.version>2.2.224</h2.version>
         <hikari-cp.version>4.0.3</hikari-cp.version>
         
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
+        
         <!-- Compile plugin versions -->
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -755,13 +757,16 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
-                                <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+                                <argLine>@{argLine} --add-opens java.base/java.lang.reflect=ALL-UNNAMED</argLine>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -1012,6 +1017,19 @@
                                         <goal>test</goal>
                                     </goals>
                                     <phase>test</phase>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-maven-plugin</artifactId>
+                            <version>${spring-boot-dependencies.version}</version>
+                            <executions>
+                                <execution>
+                                    <id>process-test-aot</id>
+                                    <goals>
+                                        <goal>process-test-aot</goal>
+                                    </goals>
                                 </execution>
                             </executions>
                         </plugin>
