@@ -259,7 +259,7 @@ sudo apt-get install build-essential zlib1g-dev -y
 
 git clone git@github.com:apache/shardingsphere-elasticjob.git
 cd ./shardingsphere-elasticjob/
-./mvnw -PnativeTestInElasticJob -T1C -e -Dspring-boot-dependencies.version=3.3.2 clean test
+./mvnw -PnativeTestInElasticJob -T1C -e clean test
 ```
 
 When contributors find that GraalVM Reachability Metadata for third-party libraries not related to ElasticJob is missing, 
@@ -289,5 +289,5 @@ contributors should place it in the classpath of the shardingsphere-test-native 
 ```bash
 git clone git@github.com:apache/shardingsphere.git
 cd ./shardingsphere/
-./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C -Dspring-boot-dependencies.version=3.3.2 clean test native:metadata-copy
+./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
 ```

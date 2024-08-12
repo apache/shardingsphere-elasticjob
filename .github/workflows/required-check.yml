@@ -29,6 +29,7 @@ concurrency:
 jobs:
   check-checkstyle:
     name: Check - CheckStyle
+    if: github.repository == 'apache/shardingsphere-elasticjob'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -38,6 +39,7 @@ jobs:
 
   check-spotless:
     name: Check - Spotless
+    if: github.repository == 'apache/shardingsphere-elasticjob'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -47,6 +49,7 @@ jobs:
 
   check-license:
     name: Check - License
+    if: github.repository == 'apache/shardingsphere-elasticjob'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
