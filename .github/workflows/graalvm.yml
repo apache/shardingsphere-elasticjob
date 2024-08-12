@@ -28,6 +28,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'apache/shardingsphere-elasticjob'
     strategy:
       matrix:
         java: [ '22.0.2' ]
@@ -45,4 +46,4 @@ jobs:
           native-image-job-reports: 'true'
       - name: Run nativeTest with GraalVM CE for ${{ matrix.java-version }}
         continue-on-error: true
-        run: ./mvnw -PnativeTestInElasticJob -T1C -B -e -Dspring-boot-dependencies.version=3.3.2 clean test
+        run: ./mvnw -PnativeTestInElasticJob -T1C -B -e clean test

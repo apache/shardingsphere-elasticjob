@@ -757,9 +757,6 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
-            <properties>
-                <maven.compiler.release>8</maven.compiler.release>
-            </properties>
             <build>
                 <pluginManagement>
                     <plugins>

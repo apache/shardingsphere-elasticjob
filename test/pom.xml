@@ -30,6 +30,18 @@
     <modules>
         <module>e2e</module>
         <module>util</module>
-        <module>native</module>
     </modules>
+    
+    <profiles>
+        <!-- Block `elasticjob-test-native` module from compiling on JDK 8 to JDK16 -->
+        <profile>
+            <id>jdk17+</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <modules>
+                <module>native</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
