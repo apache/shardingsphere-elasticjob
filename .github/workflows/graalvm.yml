@@ -23,8 +23,7 @@ on:
     paths:
       - '.github/workflows/graalvm.yml'
       - 'reachability-metadata/src/**'
-      - 'test/native/native-image-filter/**'
-      - 'test/native/src/**'
+      - 'test/native/**'
 
 jobs:
   build:

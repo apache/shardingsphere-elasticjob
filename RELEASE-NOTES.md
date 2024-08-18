@@ -1,9 +1,36 @@
+## Release 3.1.0-SNAPSHOT
+
+### API Changes
+
+1. Kernel: Refactor of the way Lambda job classes are identified - [#2370](https://github.com/apache/shardingsphere-elasticjob/issues/2370)
+
+### New Features
+
+### Enhancements
+
+1. Bootstrap: Provides built-in GraalVM Reachability Metadata and nativeTest on Elasticjob Bootstrap - [#2268](https://github.com/apache/shardingsphere-elasticjob/pull/2268)
+1. Build: Support for building with OpenJDK 22 - [#2407](https://github.com/apache/shardingsphere-elasticjob/issues/2407)
+1. Spring Boot Starter: Block `elasticjob-spring-boot-starter` from passing `spring-boot-starter` test scope dependencies - [#2418](https://github.com/apache/shardingsphere-elasticjob/issues/2418)
+1. Lifecycle: Support dynamic configuration of jobs through the Operation API in GraalVM Native Image - [#2426](https://github.com/apache/shardingsphere-elasticjob/pull/2426)
+1. Doc: Adds documentation for connecting to Zookeeper Server with SASL enabled - [#2442](https://github.com/apache/shardingsphere-elasticjob/pull/2442)
+1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
+1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
+
+### Bug Fixes
+
+1. Build: Removes non-existent `elasticjob-tracing-api` and `elasticjob-error-handler-spi` module - [#2412](https://github.com/apache/shardingsphere-elasticjob/pull/2412)
+1. Spring Boot Starter: Fixes the issue that OneOffJobBootstrap cannot be used under ElasticJob Spring Boot Starter - [#2014](https://github.com/apache/shardingsphere-elasticjob/issues/2014)
+
+### Change Logs
+
+1. [MILESTONE](https://github.com/apache/shardingsphere-elasticjob/milestone/7)
+
 ## 3.0.4
 
-## Dependencies Upgrade
+### Dependencies Upgrade
 1. Update dependencies to fix CVE
 
-## Enhancements
+### Enhancements
 1. Support for building with OpenJDK 21
 2. Accelerate the startup speed of ElasticJob
 3. Migrate from Junit Vintage to Junit Jupiter
