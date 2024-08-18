@@ -19,8 +19,6 @@ Please answer these questions before submitting your issue. Thanks!
 
 ### Which version of ElasticJob did you use?
 
-### Which project did you use? ElasticJob-Lite or ElasticJob-Cloud?
-
 ### Expected behavior
 
 ### Actual behavior

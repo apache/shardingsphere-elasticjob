@@ -1,0 +1,81 @@
+spring:
+  profiles:
+    active: dev
+
+elasticjob:
+  tracing:
+    type: RDB
+  regCenter:
+    serverLists: localhost:6181
+    namespace: elasticjob-springboot
+  jobs:
+    simpleJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootSimpleJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    dataflowJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootDataflowJob
+      cron: 0/5 * * * * ?
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+    scriptJob:
+      elasticJobType: SCRIPT
+      cron: 0/10 * * * * ?
+      shardingTotalCount: 3
+      props:
+        script.command.line: "echo SCRIPT Job: "
+    manualScriptJob:
+      elasticJobType: SCRIPT
+      jobBootstrapBeanName: manualScriptJobBean
+      shardingTotalCount: 9
+      props:
+        script.command.line: "echo Manual SCRIPT Job: "
+    occurErrorNoticeDingtalkJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.example.job.SpringBootOccurErrorNoticeDingtalkJob
+      overwrite: true
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      jobErrorHandlerType: DINGTALK
+      jobBootstrapBeanName: occurErrorNoticeDingtalkBean
+      props:
+        dingtalk:
+          webhook: you_webhook
+          keyword: you_keyword
+          secret: you_secret
+          connectTimeout: 3000
+          readTimeout: 5000
+    occurErrorNoticeWechatJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.kernel.job.SpringBootOccurErrorNoticeWechatJob
+      overwrite: true
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      jobErrorHandlerType: WECHAT
+      jobBootstrapBeanName: occurErrorNoticeWechatBean
+      props:
+        wechat:
+          webhook: you_webhook
+          connectTimeout: 3000
+          readTimeout: 5000
+    occurErrorNoticeEmailJob:
+      elasticJobClass: org.apache.shardingsphere.elasticjob.kernel.kernel.job.SpringBootOccurErrorNoticeEmailJob
+      overwrite: true
+      shardingTotalCount: 3
+      shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+      jobErrorHandlerType: EMAIL
+      jobBootstrapBeanName: occurErrorNoticeEmailBean
+      props:
+        email:
+          host: host
+          port: 465
+          username: username
+          password: password
+          useSsl: true
+          subject: ElasticJob error message
+          from: from@xxx.xx
+          to: to1@xxx.xx,to2@xxx.xx
+          cc: cc@xxx.xx
+          bcc: bcc@xxx.xx
+          debug: false
+  dump:
+    port: 9888

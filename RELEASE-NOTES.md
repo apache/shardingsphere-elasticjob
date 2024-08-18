@@ -1,3 +1,37 @@
+## 3.0.4
+
+## Dependencies Upgrade
+1. Update dependencies to fix CVE
+
+## Enhancements
+1. Support for building with OpenJDK 21
+2. Accelerate the startup speed of ElasticJob
+3. Migrate from Junit Vintage to Junit Jupiter
+
+### Change Logs
+
+1. [MILESTONE 3.0.4](https://github.com/apache/shardingsphere-elasticjob/milestone/9)
+
+
+## 3.0.3
+
+### Bug Fixes
+
+1. Job class conflict error caused by empty String
+1. Possible NPE in LegacyCrashedRunningItemListener
+1. Possible NPE in InstanceService.getAvailableJobInstances
+1. Job listeners configured in local configuration were used even if overwrite=false
+
+### Enhancements
+
+1. Add new job dump method in JobOperateAPI
+1. Avoid once listener invoke multi times
+
+### Change Logs
+
+1. [MILESTONE 3.0.3](https://github.com/apache/shardingsphere-elasticjob/milestone/8)
+
+
 ## 3.0.2
 
 ### Bug Fixes
@@ -7,7 +41,7 @@
 1. NPE occur when job instance could not be unmarshalled.
 1. Fix failover too sensitive.
 
-## Enhancements
+### Enhancements
 
 1. Script Job exception's stack was ignored.
 1. Support using different event trace data source when using Spring Boot.

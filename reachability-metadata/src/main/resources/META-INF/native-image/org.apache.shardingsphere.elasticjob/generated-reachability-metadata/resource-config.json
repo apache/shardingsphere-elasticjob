@@ -1,0 +1,50 @@
+{
+  "resources":{
+  "includes":[{
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.tracing.ElasticJobTracingConfiguration$RDBTracingConfiguration"},
+    "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.ExecutorServiceReloader"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.kernel.executor.threadpool.JobExecutorThreadPoolSizeProvider\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProviderFactory"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.kernel.internal.setup.JobClassNameProvider\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingService"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.JobShardingStrategy\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.reg.exception.RegExceptionHandler"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.reg.exception.IgnoredExceptionProvider\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.executor.error.handler.JobErrorHandler\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.executor.item.JobItemExecutorFactory"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.executor.item.type.ClassedJobItemExecutor\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.executor.item.type.TypedJobItemExecutor\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListenerFactory\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.tracing.storage.TracingStorageConverterFactory"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.tracing.storage.TracingStorageConfigurationConverter\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfigurationConverter\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.sql.SQLPropertiesFactory"},
+    "pattern":"\\QMETA-INF/sql/H2.properties\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.tracing.ElasticJobTracingConfiguration$RDBTracingConfiguration"},
+    "pattern":"\\Qorg/h2/util/data.zip\\E"
+  }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"},
+    "pattern":"\\Qorg/quartz/core/quartz-build.properties\\E"
+  }]},
+  "bundles":[]
+}

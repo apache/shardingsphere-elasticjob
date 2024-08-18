@@ -1,0 +1,6 @@
+[
+  {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.spring.boot.tracing.ElasticJobTracingConfiguration$RDBTracingConfiguration"},
+    "interfaces":["java.sql.Connection"]
+  }
+]
