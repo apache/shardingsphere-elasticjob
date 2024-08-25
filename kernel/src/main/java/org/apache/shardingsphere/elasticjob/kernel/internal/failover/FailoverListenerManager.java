@@ -97,6 +97,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                 if (!failoverItems.isEmpty()) {
                     for (int each : failoverItems) {
                         failoverService.setCrashedFailoverFlagDirectly(each);
+                        executionService.clearRunningInfo(Collections.singletonList(each));
                         failoverService.failoverIfNecessary();
                     }
                 } else {

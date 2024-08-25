@@ -157,6 +157,7 @@ class FailoverListenerManagerTest {
         when(instanceNode.getInstanceFullPath()).thenReturn("/test_job/instances");
         failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@1", ""));
         verify(failoverService).setCrashedFailoverFlagDirectly(1);
+        verify(executionService).clearRunningInfo(Collections.singletonList(1));
         verify(failoverService).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
