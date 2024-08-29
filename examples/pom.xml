@@ -46,7 +46,7 @@
         <logback.version>1.2.13</logback.version>
         
         <h2.version>2.2.224</h2.version>
-        <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
+        <mysql-connector-java.version>8.2.0</mysql-connector-java.version>
         
         <hikari-cp.version>4.0.3</hikari-cp.version>
         
