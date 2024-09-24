@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,12 +30,13 @@ import java.util.Set;
 @Setter
 @ConfigurationProperties(prefix = "elasticjob.tracing")
 public class TracingProperties {
-    
+
     private String type;
-    
+
+    @NestedConfigurationProperty
     private DataSourceProperties dataSource;
-    
+
     private Set<String> includeJobNames = new HashSet<>();
-    
+
     private Set<String> excludeJobNames = new HashSet<>();
 }
