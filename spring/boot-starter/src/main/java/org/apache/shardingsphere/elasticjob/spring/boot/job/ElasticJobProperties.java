@@ -31,6 +31,6 @@ import java.util.Map;
 @Setter
 @ConfigurationProperties(prefix = "elasticjob")
 public class ElasticJobProperties {
-
+    
     private Map<String, ElasticJobConfigurationProperties> jobs = new LinkedHashMap<>();
 }

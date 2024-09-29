@@ -30,13 +30,13 @@ import java.util.Set;
 @Setter
 @ConfigurationProperties(prefix = "elasticjob.tracing")
 public class TracingProperties {
-
+    
     private String type;
-
+    
     @NestedConfigurationProperty
     private DataSourceProperties dataSource;
-
+    
     private Set<String> includeJobNames = new HashSet<>();
-
+    
     private Set<String> excludeJobNames = new HashSet<>();
 }
