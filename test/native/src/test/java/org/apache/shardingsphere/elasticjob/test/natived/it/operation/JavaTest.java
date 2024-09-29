@@ -46,11 +46,10 @@ import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
-import org.junit.jupiter.api.function.Executable;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -81,8 +80,8 @@ class JavaTest {
     
     private static TracingConfiguration<DataSource> tracingConfig;
     
-    @BeforeAll
-    static void beforeAll() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         testingServer = new TestingServer();
         try (
                 CuratorZookeeperClient client = new CuratorZookeeperClient(testingServer.getConnectString(),
@@ -103,8 +102,8 @@ class JavaTest {
         tracingConfig = new TracingConfiguration<>("RDB", new HikariDataSource(config));
     }
     
-    @AfterAll
-    static void afterAll() throws IOException {
+    @AfterEach
+    void afterEach() throws IOException {
         firstRegCenter.close();
         secondRegCenter.close();
         testingServer.close();
@@ -112,9 +111,18 @@ class JavaTest {
     
     /**
      * TODO Executing {@link JobConfigurationAPI#removeJobConfiguration(String)} will always cause the listener
-     *  to throw an exception similar to {@code Caused by: java.lang.IllegalStateException: Expected state [STARTED] was [STOPPED]} .
-     *  This is not acceptable behavior.
-     *  The logic inside {@link org.junit.jupiter.api.Assertions#assertDoesNotThrow(Executable)} should be removed.
+     *  to throw an exception. This is not acceptable behavior.
+     *  <pre>
+     *   <code>
+     *  Caused by: java.lang.IllegalStateException: Expected state [STARTED] was [STOPPED]
+     *  at org.apache.curator.shaded.com.google.common.base.Preconditions.checkState(Preconditions.java:835)
+     *  at org.apache.curator.framework.imps.CuratorFrameworkImpl.checkState(CuratorFrameworkImpl.java:465)
+     *  at org.apache.curator.framework.imps.CuratorFrameworkImpl.getData(CuratorFrameworkImpl.java:498)
+     *  at org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter.getDirectly(ZookeeperRegistryCenter.java:179)
+     *  ... 12 common frames omitted
+     *   </code>
+     *  </pre>
+     *
      */
     @Test
     void testJobConfigurationAPI() {
@@ -142,11 +150,6 @@ class JavaTest {
         JobConfigurationPOJO newTestJavaSimpleJob = jobConfigAPI.getJobConfiguration(jobName);
         assertThat(newTestJavaSimpleJob, notNullValue());
         assertThat(newTestJavaSimpleJob.getCron(), is("0/10 * * * * ?"));
-        assertDoesNotThrow(() -> {
-            List<String> ipList = secondRegCenter.getChildrenKeys("/" + jobName + "/servers");
-            assertThat(ipList.size(), is(1));
-            secondRegCenter.remove("/" + jobName + "/servers/" + ipList.get(0));
-        });
         jobConfigAPI.removeJobConfiguration(jobName);
         assertThat(jobConfigAPI.getJobConfiguration(jobName), nullValue());
         job.shutdown();
@@ -244,9 +247,6 @@ class JavaTest {
         job.shutdown();
     }
     
-    /**
-     * TODO The logic inside {@link org.junit.jupiter.api.Assertions#assertDoesNotThrow(Executable)} should be removed.
-     */
     @Test
     void testServerStatisticsAPI() {
         String jobName = "testServerStatisticsAPI";
@@ -277,10 +277,6 @@ class JavaTest {
             assertThat(serverBriefInfo.getDisabledJobsNum().intValue(), is(0));
         });
         job.shutdown();
-        assertDoesNotThrow(() -> {
-            JobConfigurationAPI jobConfigAPI = new JobConfigurationAPIImpl(secondRegCenter);
-            jobConfigAPI.removeJobConfiguration(jobName);
-        });
     }
     
     @Test
