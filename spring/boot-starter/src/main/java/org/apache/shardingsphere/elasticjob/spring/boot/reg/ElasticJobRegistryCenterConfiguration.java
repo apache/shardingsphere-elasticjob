@@ -33,7 +33,7 @@ public class ElasticJobRegistryCenterConfiguration {
      * @param zookeeperProperties factory
      * @return zookeeper registry center
      */
-    @Bean(initMethod = "init")
+    @Bean(initMethod = "init", destroyMethod = "close")
     public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {
         return new ZookeeperRegistryCenter(zookeeperProperties.toZookeeperConfiguration());
     }
