@@ -20,10 +20,11 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.setup;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.job.FooJob;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class DefaultJobClassNameProviderTest {
@@ -35,14 +36,23 @@ class DefaultJobClassNameProviderTest {
         assertThat(result, is("org.apache.shardingsphere.elasticjob.kernel.fixture.job.DetailedFooJob"));
     }
     
-    // TODO OpenJDK 21 breaks this unit test.
     @Test
-    @DisabledForJreRange(min = JRE.JAVA_21, max = JRE.OTHER)
+    @EnabledForJreRange(max = JRE.JAVA_20)
     void assertGetLambdaJobName() {
         JobClassNameProvider jobClassNameProvider = new DefaultJobClassNameProvider();
         FooJob lambdaFooJob = shardingContext -> {
         };
         String result = jobClassNameProvider.getJobClassName(lambdaFooJob);
         assertThat(result, is("org.apache.shardingsphere.elasticjob.kernel.internal.setup.DefaultJobClassNameProviderTest$$Lambda$"));
+    }
+    
+    @Test
+    @EnabledForJreRange(min = JRE.JAVA_21)
+    void assertGetLambdaJobNameForJava21() {
+        JobClassNameProvider jobClassNameProvider = new DefaultJobClassNameProvider();
+        FooJob lambdaFooJob = shardingContext -> {
+        };
+        String result = jobClassNameProvider.getJobClassName(lambdaFooJob);
+        assertThat(result, startsWith("org.apache.shardingsphere.elasticjob.kernel.internal.setup.DefaultJobClassNameProviderTest$$Lambda/0x0000"));
     }
 }
