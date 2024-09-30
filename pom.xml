@@ -130,7 +130,7 @@
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <checksum-maven-plugin.version>1.10</checksum-maven-plugin.version>
         
-        <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
+        <native-maven-plugin.version>0.10.3</native-maven-plugin.version>
     </properties>
     
     <dependencyManagement>

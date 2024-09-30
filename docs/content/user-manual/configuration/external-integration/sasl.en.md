@@ -23,7 +23,7 @@ services:
       - ./jaas-server-test.conf:/jaas-test.conf
     environment:
       JVMFLAGS: "-Djava.security.auth.login.config=/jaas-test.conf"
-      ZOO_CFG_EXTRA: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider sessionRequireClientSASLAuth=true"
+      ZOO_CFG_EXTRA: "authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider sessionRequireClientSASLAuth=true"
     ports:
       - "2181:2181"
 ```
@@ -109,5 +109,4 @@ To connect ElasticJob's `org.apache.shardingsphere.elasticjob.reg.zookeeper.Zook
 the process is similar to DIGEST-MD5. 
 Refer to https://cwiki.apache.org/confluence/display/ZOOKEEPER/Client-Server+mutual+authentication .
 
-Some regions may not allow the use of MIT Kerberos source code or binary products. 
-Please refer to the MIT Kerberos distribution site https://web.mit.edu/kerberos/dist/index.html .
+There is no available Docker Image for Kerberos KDC. Users may need to start Kerberos KDC manually.

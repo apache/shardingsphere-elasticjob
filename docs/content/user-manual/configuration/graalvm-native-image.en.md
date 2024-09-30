@@ -36,7 +36,6 @@ refer to the documentation of GraalVM Native Build Tools.
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-bootstrap</artifactId>
             <version>${elasticjob.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     
@@ -45,7 +44,7 @@ refer to the documentation of GraalVM Native Build Tools.
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.2</version>
+                <version>0.10.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -78,12 +77,12 @@ Refer to https://github.com/graalvm/native-build-tools/issues/572.
 
 ```groovy
 plugins {
-   id 'org.graalvm.buildtools.native' version '0.10.2'
+   id 'org.graalvm.buildtools.native' version '0.10.3'
 }
 
 dependencies {
    implementation 'org.apache.shardingsphere.elasticjob:elasticjob-bootstrap:${elasticjob.version}'
-   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.2', classifier: 'repository', ext: 'zip')
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
@@ -108,28 +107,26 @@ To configure additional Maven Profiles for the project, refer to the documentati
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
             <artifactId>elasticjob-spring-boot-starter</artifactId>
             <version>${elasticjob.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>3.3.2</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.3.2</version>
+            <version>3.3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>3.3.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.2</version>
+                <version>0.10.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -151,7 +148,7 @@ To configure additional Maven Profiles for the project, refer to the documentati
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.3.4</version>
                 <executions>
                     <execution>
                         <id>process-test-aot</id>
@@ -175,22 +172,23 @@ Refer to https://github.com/graalvm/native-build-tools/issues/572 .
 
 ```groovy
 plugins {
-   id 'org.springframework.boot' version '3.3.2'
-   id 'io.spring.dependency-management' version '1.1.6'
-   id 'org.graalvm.buildtools.native' version '0.10.2'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.graalvm.buildtools.native' version '0.10.3'
 }
 
 dependencies {
-   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-   implementation 'org.springframework.boot:spring-boot-starter-web'
-   implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
-   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.2', classifier: 'repository', ext: 'zip')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
+    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
-   metadataRepository {
+    metadataRepository {
         enabled.set(false)
-   }
+    }
 }
 ```
 

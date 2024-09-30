@@ -21,7 +21,7 @@ services:
       - ./jaas-server-test.conf:/jaas-test.conf
     environment:
       JVMFLAGS: "-Djava.security.auth.login.config=/jaas-test.conf"
-      ZOO_CFG_EXTRA: "org.apache.zookeeper.server.auth.SASLAuthenticationProvider sessionRequireClientSASLAuth=true"
+      ZOO_CFG_EXTRA: "authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider sessionRequireClientSASLAuth=true"
     ports:
       - "2181:2181"
 ```
@@ -100,4 +100,4 @@ public class ExampleUtils {
 要使 ElasticJob 的 `org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter` 连接至开启 Kerberos 鉴权的 Zookeeper Server，
 流程类似于 DIGEST-MD5。以 https://cwiki.apache.org/confluence/display/ZOOKEEPER/Client-Server+mutual+authentication 为准。
 
-部分地区可能不被允许使用 MIT Kerberos 的源代码或二进制产物，可参考 MIT Kerberos 的分发站点 https://web.mit.edu/kerberos/dist/index.html 。
+Kerberos KDC 不存在可用的 Docker Image，用户可能需要手动启动 Kerberos KDC。
