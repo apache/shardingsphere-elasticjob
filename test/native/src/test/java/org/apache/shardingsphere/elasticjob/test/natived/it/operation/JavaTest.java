@@ -91,9 +91,9 @@ class JavaTest {
             client.start();
             Awaitility.await().atMost(Duration.ofMillis(500 * 60)).ignoreExceptions().until(client::isConnected);
         }
-        firstRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration(testingServer.getConnectString(), "elasticjob-test-native-java"));
+        firstRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration(testingServer.getConnectString(), "elasticjob-test-native-operation-java"));
         firstRegCenter.init();
-        secondRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration(testingServer.getConnectString(), "elasticjob-test-native-java"));
+        secondRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration(testingServer.getConnectString(), "elasticjob-test-native-operation-java"));
         secondRegCenter.init();
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.h2.Driver");
@@ -114,6 +114,7 @@ class JavaTest {
      * TODO Executing {@link JobConfigurationAPI#removeJobConfiguration(String)} will always cause the listener
      *  to throw an exception similar to {@code Caused by: java.lang.IllegalStateException: Expected state [STARTED] was [STOPPED]} .
      *  This is not acceptable behavior.
+     *  The logic inside {@link org.junit.jupiter.api.Assertions#assertDoesNotThrow(Executable)} should be removed.
      */
     @Test
     void testJobConfigurationAPI() {
@@ -141,6 +142,11 @@ class JavaTest {
         JobConfigurationPOJO newTestJavaSimpleJob = jobConfigAPI.getJobConfiguration(jobName);
         assertThat(newTestJavaSimpleJob, notNullValue());
         assertThat(newTestJavaSimpleJob.getCron(), is("0/10 * * * * ?"));
+        assertDoesNotThrow(() -> {
+            List<String> ipList = secondRegCenter.getChildrenKeys("/" + jobName + "/servers");
+            assertThat(ipList.size(), is(1));
+            secondRegCenter.remove("/" + jobName + "/servers/" + ipList.get(0));
+        });
         jobConfigAPI.removeJobConfiguration(jobName);
         assertThat(jobConfigAPI.getJobConfiguration(jobName), nullValue());
         job.shutdown();
