@@ -109,7 +109,7 @@ public final class ServerService {
     
     /**
      *  Remove unused server IP.
-     *  
+     *
      * @return num of server IP to be removed
      */
     public int removeOfflineServers() {
@@ -132,7 +132,7 @@ public final class ServerService {
                 return;
             }
             String status = jobNodeStorage.getJobNodeData(serverNode.getServerNode(serverIp));
-            if (StringUtils.isNotBlank(status)) {
+            if (StringUtils.isBlank(status)) {
                 return;
             }
             jobNodeStorage.removeJobNodeIfExisted(serverNode.getServerNode(serverIp));
