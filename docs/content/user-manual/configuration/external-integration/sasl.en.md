@@ -52,16 +52,15 @@ public class ExampleUtils {
         Configuration configuration = new Configuration() {
             @Override
             public AppConfigurationEntry[] getAppConfigurationEntry(final String name) {
-                Map<String, String> options = new HashMap<>();
-                options.put("username", "bob");
-                options.put("password", "bobsecret");
-                AppConfigurationEntry entry = new AppConfigurationEntry(
+                Map<String, String> conf = new HashMap<>();
+                conf.put("username", "bob");
+                conf.put("password", "bobsecret");
+                AppConfigurationEntry[] entries = new AppConfigurationEntry[1];
+                entries[0] = new AppConfigurationEntry(
                         "org.apache.zookeeper.server.auth.DigestLoginModule",
                         AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
-                        options);
-                AppConfigurationEntry[] array = new AppConfigurationEntry[1];
-                array[0] = entry;
-                return array;
+                        conf);
+                return entries;
             }
         };
         Configuration.setConfiguration(configuration);
