@@ -22,7 +22,7 @@ Class name: `org.apache.shardingsphere.elasticjob.lifecycle.api.JobConfiguration
 
 ### Get job configuration
 
-Method signature：YamlJobConfiguration getJobConfiguration(String jobName)
+Method signature：`JobConfigurationPOJO getJobConfiguration(String jobName)`
 
 * **Parameters:** 
   * jobName — Job name
@@ -31,14 +31,14 @@ Method signature：YamlJobConfiguration getJobConfiguration(String jobName)
 
 ### Update job configuration
 
-Method signature：void updateJobConfiguration(YamlJobConfiguration yamlJobConfiguration)
+Method signature：`void updateJobConfiguration(JobConfigurationPOJO jobConfig)`
 
 * **Parameters:** 
-  * jobConfiguration — Job configuration object
+  * jobConfig — Job configuration object
 
 ### Remove job configuration 
 
-Method signature：void removeJobConfiguration(String jobName)
+Method signature：`void removeJobConfiguration(String jobName)`
 
 * **Parameters:** 
   * jobName — Job name
@@ -51,7 +51,7 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobOperateAPI`
 
 The job will only trigger execution if it does not conflict with the currently running job, and this flag will be automatically cleared after it is started.
 
-Method signature：void trigger(Optional<String> jobName)
+Method signature：`void trigger(String jobName)`
 
 * **Parameters:**
   * jobName — Job name
@@ -60,7 +60,7 @@ Method signature：void trigger(Optional<String> jobName)
 
 Disabling a job will cause other distributed jobs to trigger resharding.
 
-Method signature：void disable(Optional<String> jobName, Optional<String> serverIp)
+Method signature：`void disable(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — Job name
@@ -68,7 +68,7 @@ Method signature：void disable(Optional<String> jobName, Optional<String> serve
 
 ### Enable job
 
-Method signature：void enable(Optional<String> jobName, Optional<String> serverIp)
+Method signature：`void enable(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — Job name
@@ -76,7 +76,7 @@ Method signature：void enable(Optional<String> jobName, Optional<String> server
 
 ### Shutdown scheduling job
 
-Method signature：void shutdown(Optional<String> jobName, Optional<String> serverIp)
+Method signature：`void shutdown(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — Job name
@@ -84,7 +84,7 @@ Method signature：void shutdown(Optional<String> jobName, Optional<String> serv
 
 ### Remove job
 
-Method signature：void remove(Optional<String> jobName, Optional<String> serverIp)
+Method signature：`void remove(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — Job name
@@ -92,7 +92,7 @@ Method signature：void remove(Optional<String> jobName, Optional<String> server
 
 ### Dump job
 
-Method signature：String dump(String jobName, String instanceIp, int dumpPort)
+Method signature：`String dump(String jobName, String instanceIp, int dumpPort) throws IOException`
 
 * **Parameters:**
   * jobName — Job name
@@ -105,7 +105,7 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.ShardingOperate
 
 ### Disable job sharding
 
-Method signature：void disable(String jobName, String item)
+Method signature：`void disable(String jobName, String item)`
 
 * **Parameters:**
   * jobName — Job name
@@ -113,7 +113,7 @@ Method signature：void disable(String jobName, String item)
 
 ### Enable job sharding
 
-Method signature：void enable(String jobName, String item)
+Method signature：`void enable(String jobName, String item)`
 
 * **Parameters:**
   * jobName — Job name
@@ -125,13 +125,13 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.JobStatisticsAP
 
 ### Get the total count of jobs
 
-Method signature：int getJobsTotalCount()
+Method signature：`int getJobsTotalCount()`
 
 * **Returns:** the total count of jobs
 
 ### Get brief job information
 
-Method signature：JobBriefInfo getJobBriefInfo(String jobName)
+Method signature：`JobBriefInfo getJobBriefInfo(String jobName)`
 
 * **Parameters:**
   * jobName — Job name
@@ -140,13 +140,13 @@ Method signature：JobBriefInfo getJobBriefInfo(String jobName)
 
 ### Get brief information about all jobs.
 
-Method signature：Collection<JobBriefInfo> getAllJobsBriefInfo()
+Method signature：`Collection<JobBriefInfo> getAllJobsBriefInfo()`
 
 * **Returns:** Brief collection of all job information
 
 ### Get brief information of all jobs under this IP
 
-Method signature：Collection<JobBriefInfo> getJobsBriefInfo(String ip)
+Method signature：`Collection<JobBriefInfo> getJobsBriefInfo(String ip)`
 
 * **Parameters:**
   * ip — server IP
@@ -159,13 +159,13 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.ServerStatistic
 
 ### Total count of job servers
 
-Method signature：int getServersTotalCount()
+Method signature：`int getServersTotalCount()`
 
 * **Returns:** Get the total count of job servers
 
 ### Get brief information about all job servers
 
-Method signature：Collection<ServerBriefInfo> getAllServersBriefInfo()
+Method signature：`Collection<ServerBriefInfo> getAllServersBriefInfo()`
 
 * **Returns:** Brief collection of job information
 
@@ -175,7 +175,7 @@ Class name：`org.apache.shardingsphere.elasticjob.lifecycle.api.ShardingStatist
 
 ### Get job sharding information collection
 
-Method signature：Collection<ShardingInfo> getShardingInfo(String jobName)
+Method signature：`Collection<ShardingInfo> getShardingInfo(String jobName)`
 
 * **Parameters:**
   * jobName — Job name

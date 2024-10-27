@@ -29,7 +29,7 @@ jobs:
     if: github.repository == 'apache/shardingsphere-elasticjob'
     strategy:
       matrix:
-        java: [ 8, 17, 21, 22 ]
+        java: [ 8, 17, 21, 23 ]
         os: [ 'windows-latest', 'macos-latest', 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
     steps:

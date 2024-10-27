@@ -50,7 +50,7 @@
         
         <hikari-cp.version>4.0.3</hikari-cp.version>
         
-        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <flatten-maven-plugin.version>1.2.5</flatten-maven-plugin.version>
     </properties>
     

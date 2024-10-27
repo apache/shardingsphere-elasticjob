@@ -22,7 +22,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 获取作业配置
 
-方法签名：YamlJobConfiguration getJobConfiguration(String jobName)
+方法签名：`JobConfigurationPOJO getJobConfiguration(String jobName)`
 
 * **Parameters:** 
   * jobName — 作业名称
@@ -31,14 +31,14 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 更新作业配置
 
-方法签名：void updateJobConfiguration(YamlJobConfiguration yamlJobConfiguration)
+方法签名：`void updateJobConfiguration(JobConfigurationPOJO jobConfig)`
 
 * **Parameters:** 
-  * jobConfiguration — 作业配置对象
+  * jobConfig — 作业配置对象
 
 ### 删除作业设置 
 
-方法签名：void removeJobConfiguration(String jobName)
+方法签名：`void removeJobConfiguration(String jobName)`
 
 * **Parameters:** 
   * jobName — 作业名称
@@ -51,7 +51,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 作业在不与当前运行中作业冲突的情况下才会触发执行，并在启动后自动清理此标记。
 
-方法签名：void trigger(Optional<String> jobName)
+方法签名：`void trigger(String jobName)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -60,7 +60,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 禁用作业将会导致分布式的其他作业触发重新分片。
 
-方法签名：void disable(Optional<String> jobName, Optional<String> serverIp)
+方法签名：`void disable(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -68,7 +68,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 启用作业
 
-方法签名：void enable(Optional<String> jobName, Optional<String> serverIp)
+方法签名：`void enable(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -76,7 +76,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 停止调度作业
 
-方法签名：void shutdown(Optional<String> jobName, Optional<String> serverIp)
+方法签名：`void shutdown(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -84,7 +84,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 删除作业
 
-方法签名：void remove(Optional<String> jobName, Optional<String> serverIp)
+方法签名：`void remove(String jobName, String serverIp)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -92,7 +92,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### Dump 作业
 
-方法签名：String dump(String jobName, String instanceIp, int dumpPort)
+方法签名：`String dump(String jobName, String instanceIp, int dumpPort) throws IOException`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -105,7 +105,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 禁用作业分片
 
-方法签名：void disable(String jobName, String item)
+方法签名：`void disable(String jobName, String item)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -113,7 +113,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 启用作业分片
 
-方法签名：void enable(String jobName, String item)
+方法签名：`void enable(String jobName, String item)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -125,13 +125,13 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 获取作业总数
 
-方法签名：int getJobsTotalCount()
+方法签名：`int getJobsTotalCount()`
 
 * **Returns:** 作业总数
 
 ### 获取作业简明信息
 
-方法签名：JobBriefInfo getJobBriefInfo(String jobName)
+方法签名：`JobBriefInfo getJobBriefInfo(String jobName)`
 
 * **Parameters:**
   * jobName — 作业名称
@@ -140,13 +140,13 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 获取所有作业简明信息
 
-方法签名：Collection<JobBriefInfo> getAllJobsBriefInfo()
+方法签名：`Collection<JobBriefInfo> getAllJobsBriefInfo()`
 
 * **Returns:** 作业简明信息集合
 
 ### 获取该 IP 下所有作业简明信息
 
-方法签名：Collection<JobBriefInfo> getJobsBriefInfo(String ip)
+方法签名：`Collection<JobBriefInfo> getJobsBriefInfo(String ip)`
 
 * **Parameters:**
   * ip — 服务器 IP
@@ -159,13 +159,13 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 获取作业服务器总数
 
-方法签名：int getServersTotalCount()
+方法签名：`int getServersTotalCount()`
 
 * **Returns:** 作业服务器总数
 
 ### 获取所有作业服务器简明信息
 
-方法签名：Collection<ServerBriefInfo> getAllServersBriefInfo()
+方法签名：`Collection<ServerBriefInfo> getAllServersBriefInfo()`
 
 * **Returns:** 作业服务器简明信息集合
 
@@ -175,7 +175,7 @@ ElasticJob 提供了 Java API，可以通过直接对注册中心进行操作的
 
 ### 获取作业分片信息集合
 
-方法签名：Collection<ShardingInfo> getShardingInfo(String jobName)
+方法签名：`Collection<ShardingInfo> getShardingInfo(String jobName)`
 
 * **Parameters:**
   * jobName — 作业名称
