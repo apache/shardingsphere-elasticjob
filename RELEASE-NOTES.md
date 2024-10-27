@@ -14,7 +14,7 @@
 1. Lifecycle: Support dynamic configuration of jobs through the Operation API in GraalVM Native Image - [#2426](https://github.com/apache/shardingsphere-elasticjob/pull/2426)
 1. Doc: Adds documentation for connecting to Zookeeper Server with SASL enabled - [#2442](https://github.com/apache/shardingsphere-elasticjob/pull/2442)
 1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
-1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
+1. Dependencies: Bump Quartz to 2.4.0-rc3 - [#2439](https://github.com/apache/shardingsphere-elasticjob/issues/2439)
 
 ### Bug Fixes
 

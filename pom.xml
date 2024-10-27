@@ -66,7 +66,7 @@
         <snakeyaml.version>2.2</snakeyaml.version>
         <gson.version>2.10.1</gson.version>
         
-        <quartz.version>2.3.2</quartz.version>
+        <quartz.version>2.4.0-rc3</quartz.version>
         
         <zookeeper.version>3.9.2</zookeeper.version>
         <curator.version>5.7.1</curator.version>
@@ -188,12 +188,6 @@
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
                 <version>${quartz.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.mchange</groupId>
-                        <artifactId>c3p0</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             
             <dependency>
