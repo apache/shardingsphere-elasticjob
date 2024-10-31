@@ -24,7 +24,7 @@ import org.apache.shardingsphere.elasticjob.api.ElasticJob;
  */
 public final class DefaultJobClassNameProvider implements JobClassNameProvider {
     
-    private static final String LAMBDA_CHARACTERISTICS = "$$Lambda$";
+    private static final String LAMBDA_CHARACTERISTICS = "$$Lambda";
     
     @Override
     public String getJobClassName(final ElasticJob elasticJob) {
