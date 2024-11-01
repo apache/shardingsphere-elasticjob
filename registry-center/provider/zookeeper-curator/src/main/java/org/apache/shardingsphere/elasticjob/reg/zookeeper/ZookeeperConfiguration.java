@@ -74,4 +74,15 @@ public final class ZookeeperConfiguration {
      * Zookeeper digest.
      */
     private String digest;
+    
+    /**
+     * Allows configuring if the ensemble configuration changes are watched.
+     * If the HA enabled Zookeeper clusters are hidden under a virtual IP of Kubernetes,
+     * the Zookeeper Client can return a URL during Ensemble Tracking,
+     * which will cause an unresolved host exception within the Curator Framework.
+     * At the ElasticJob level, this will cause a cluster restart.
+     *
+     * @see org.apache.curator.framework.CuratorFrameworkFactory.Builder#ensembleTracker(boolean)
+     */
+    private boolean ensembleTracker = true;
 }
