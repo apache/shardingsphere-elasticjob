@@ -6,14 +6,15 @@
 
 ### New Features
 
+1. Bootstrap: Provides built-in GraalVM Reachability Metadata and nativeTest on Elasticjob Bootstrap - [#2268](https://github.com/apache/shardingsphere-elasticjob/pull/2268)
+1. Lifecycle: Support dynamic configuration of jobs through the Operation API in GraalVM Native Image - [#2426](https://github.com/apache/shardingsphere-elasticjob/pull/2426)
+1. Registry Center: Allows to skip Ensemble Tracker for ZookeeperConfiguration to allow connecting to HA enabled Zookeeper clusters in Kubernetes - [#2072](https://github.com/apache/shardingsphere-elasticjob/issues/2072)
+
 ### Enhancements
 
-1. Bootstrap: Provides built-in GraalVM Reachability Metadata and nativeTest on Elasticjob Bootstrap - [#2268](https://github.com/apache/shardingsphere-elasticjob/pull/2268)
 1. Build: Support for building with OpenJDK 22 - [#2407](https://github.com/apache/shardingsphere-elasticjob/issues/2407)
 1. Spring Boot Starter: Block `elasticjob-spring-boot-starter` from passing `spring-boot-starter` test scope dependencies - [#2418](https://github.com/apache/shardingsphere-elasticjob/issues/2418)
-1. Lifecycle: Support dynamic configuration of jobs through the Operation API in GraalVM Native Image - [#2426](https://github.com/apache/shardingsphere-elasticjob/pull/2426)
 1. Doc: Adds documentation for connecting to Zookeeper Server with SASL enabled - [#2442](https://github.com/apache/shardingsphere-elasticjob/pull/2442)
-1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
 1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
 
 ### Bug Fixes
