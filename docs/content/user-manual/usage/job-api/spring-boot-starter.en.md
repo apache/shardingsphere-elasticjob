@@ -107,7 +107,7 @@ import java.util.Objects;
 
 @RestController
 public class OneOffJobController {
-    // 通过 "@Autowired" 注入
+    // Injection via "@Autowired"
     @Autowired
     @Qualifier("myOneOffJobBean")
     private ObjectProvider<OneOffJobBootstrap> myOneOffJobProvider;

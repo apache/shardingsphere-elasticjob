@@ -21,12 +21,18 @@ import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.test.InstanceSpec;
 import org.apache.curator.test.TestingServer;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -41,15 +47,20 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledInNativeImage
 class SpirngBootTest {
     
     private static TestingServer testingServer;
+    
+    @Autowired
+    private ObjectProvider<ZookeeperRegistryCenter> zookeeperRegistryCenterProvider;
     
     private MockMvc mockMvc;
     
@@ -61,7 +72,7 @@ class SpirngBootTest {
     
     @BeforeAll
     static void beforeAll() throws Exception {
-        testingServer = new TestingServer(6181);
+        testingServer = new TestingServer();
         try (
                 CuratorZookeeperClient client = new CuratorZookeeperClient(testingServer.getConnectString(),
                         60 * 1000, 500, null,
@@ -102,5 +113,32 @@ class SpirngBootTest {
                 .getResponse()
                 .getContentAsString();
         assertThat(contentAsString, is("{\"msg\":\"OK\"}"));
+    }
+    
+    @DirtiesContext
+    @Test
+    void testIssue2012() {
+        ZookeeperRegistryCenter zookeeperRegistryCenter = zookeeperRegistryCenterProvider.getIfAvailable();
+        Objects.requireNonNull(zookeeperRegistryCenter);
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("test", 1)
+                .jobParameter("")
+                .cron("0 30 2 ? * *")
+                .overwrite(true)
+                .jobShardingStrategyType("ROUND_ROBIN")
+                .monitorExecution(true)
+                .failover(true)
+                .build();
+        ScheduleJobBootstrap firstJob = new ScheduleJobBootstrap(zookeeperRegistryCenter,
+                (SimpleJob) shardingContext -> System.out.println("test"),
+                jobConfig);
+        ScheduleJobBootstrap secondJob = new ScheduleJobBootstrap(zookeeperRegistryCenter,
+                (SimpleJob) shardingContext -> System.out.println("test"),
+                jobConfig);
+        assertDoesNotThrow(() -> {
+            firstJob.schedule();
+            secondJob.schedule();
+            firstJob.shutdown();
+            secondJob.shutdown();
+        });
     }
 }
