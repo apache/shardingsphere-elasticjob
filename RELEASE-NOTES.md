@@ -20,6 +20,7 @@
 
 1. Build: Removes non-existent `elasticjob-tracing-api` and `elasticjob-error-handler-spi` module - [#2412](https://github.com/apache/shardingsphere-elasticjob/pull/2412)
 1. Spring Boot Starter: Fixes the issue that OneOffJobBootstrap cannot be used under ElasticJob Spring Boot Starter - [#2014](https://github.com/apache/shardingsphere-elasticjob/issues/2014)
+1. Spring: Fixes potential conflict in AOP proxy job class identification in Spring Framework - [#2012](https://github.com/apache/shardingsphere-elasticjob/issues/2012)
 
 ### Change Logs
 

@@ -34,6 +34,9 @@
     "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO"},
     "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.spi.yaml.YamlConfigurationConverter\\E"
   }, {
+    "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.config.RDBTracingStorageConfiguration"},
+    "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.tracing.rdb.storage.datasource.JDBCParameterDecorator\\E"
+  }, {
     "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.tracing.rdb.storage.repository.RDBJobEventRepository"},
     "pattern":"\\QMETA-INF/services/org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.TracingStorageDatabaseType\\E"
   }, {
