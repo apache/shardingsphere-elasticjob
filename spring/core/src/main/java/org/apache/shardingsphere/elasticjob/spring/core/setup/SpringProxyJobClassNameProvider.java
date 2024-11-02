@@ -33,12 +33,30 @@ import org.springframework.aop.support.AopUtils;
 @Slf4j
 public final class SpringProxyJobClassNameProvider implements JobClassNameProvider {
     
+    private static final String LAMBDA_CHARACTERISTICS = "$$Lambda";
+    
     public SpringProxyJobClassNameProvider() {
         log.info("create SpringProxyJobClassNameProvider");
     }
     
     @Override
     public String getJobClassName(final ElasticJob elasticJob) {
-        return AopUtils.isAopProxy(elasticJob) ? AopTargetUtils.getTarget(elasticJob).getClass().getName() : elasticJob.getClass().getName();
+        if (!AopUtils.isAopProxy(elasticJob)) {
+            return getJobClassName(elasticJob.getClass());
+        }
+        return getJobClassName(AopTargetUtils.getTarget(elasticJob).getClass());
+    }
+    
+    private String getJobClassName(final Class<?> elasticJobClass) {
+        String elasticJobClassName = elasticJobClass.getName();
+        return isLambdaClass(elasticJobClass) ? trimLambdaClassSuffix(elasticJobClassName) : elasticJobClassName;
+    }
+    
+    private boolean isLambdaClass(final Class<?> elasticJobClass) {
+        return elasticJobClass.isSynthetic() && elasticJobClass.getSimpleName().contains(LAMBDA_CHARACTERISTICS);
+    }
+    
+    private String trimLambdaClassSuffix(final String className) {
+        return className.substring(0, className.lastIndexOf(LAMBDA_CHARACTERISTICS) + LAMBDA_CHARACTERISTICS.length());
     }
 }

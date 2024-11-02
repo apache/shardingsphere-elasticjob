@@ -9,5 +9,10 @@
   "name":"org.apache.shardingsphere.elasticjob.kernel.internal.schedule.LiteJob",
   "allDeclaredMethods": true,
   "allDeclaredConstructors": true
+},
+{
+  "condition":{"typeReachable":"org.apache.shardingsphere.elasticjob.kernel.infra.yaml.representer.ElasticJobYamlRepresenter"},
+  "name":"org.apache.shardingsphere.elasticjob.tracing.rdb.yaml.YamlDataSourceConfiguration",
+  "allPublicMethods":true
 }
 ]
