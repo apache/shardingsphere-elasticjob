@@ -15,6 +15,7 @@
 1. Build: Support for building with OpenJDK 22 - [#2407](https://github.com/apache/shardingsphere-elasticjob/issues/2407)
 1. Spring Boot Starter: Block `elasticjob-spring-boot-starter` from passing `spring-boot-starter` test scope dependencies - [#2418](https://github.com/apache/shardingsphere-elasticjob/issues/2418)
 1. Doc: Adds documentation for connecting to Zookeeper Server with SASL enabled - [#2442](https://github.com/apache/shardingsphere-elasticjob/pull/2442)
+1. Dependencies: Bump Quartz to 2.4.0 - [#2439](https://github.com/apache/shardingsphere-elasticjob/issues/2439)
 1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
 
 ### Bug Fixes
