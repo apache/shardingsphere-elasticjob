@@ -18,3 +18,4 @@
 org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.AverageAllocationJobShardingStrategy
 org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.OdevitySortByNameJobShardingStrategy
 org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.RoundRobinByNameJobShardingStrategy
+org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.type.SingleShardingBalanceJobShardingStrategy
