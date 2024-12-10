@@ -34,8 +34,8 @@ class SingleShardingBalanceJobShardingStrategyTest {
     @Test
     void assertSharding() {
         Map<JobInstance, List<Integer>> sharding = singleShardingBalanceJobShardingStrategy.sharding(
-            Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")),
-            "JobName", 1);
+                Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")),
+                "JobName", 1);
         int sum = sharding.values().stream().mapToInt(List::size).sum();
         assertThat(sum, is(1));
     }

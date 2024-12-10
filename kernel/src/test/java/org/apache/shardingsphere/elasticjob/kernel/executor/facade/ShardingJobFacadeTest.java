@@ -84,6 +84,12 @@ class ShardingJobFacadeTest {
         ReflectionUtils.setSuperclassFieldValue(shardingJobFacade, "executionService", executionService);
         ReflectionUtils.setSuperclassFieldValue(shardingJobFacade, "failoverService", failoverService);
         ReflectionUtils.setSuperclassFieldValue(shardingJobFacade, "jobTracingEventBus", jobTracingEventBus);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "configService", configService);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "executionContextService", executionContextService);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "executionService", executionService);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(shardingJobFacade, "jobTracingEventBus", jobTracingEventBus);
     }
     
     @Test

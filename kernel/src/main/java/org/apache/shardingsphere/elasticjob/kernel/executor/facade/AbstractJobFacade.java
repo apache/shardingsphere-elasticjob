@@ -48,22 +48,22 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 abstract class AbstractJobFacade implements JobFacade {
-
-    protected final ConfigurationService configService;
-
-    protected final ShardingService shardingService;
-
-    protected final ExecutionContextService executionContextService;
-
-    protected final ExecutionService executionService;
-
-    protected final FailoverService failoverService;
-
-    protected final Collection<ElasticJobListener> elasticJobListeners;
-
-    protected final JobTracingEventBus jobTracingEventBus;
-
-    public AbstractJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners, final TracingConfiguration<?> tracingConfig) {
+    
+    private final ConfigurationService configService;
+    
+    private final ShardingService shardingService;
+    
+    private final ExecutionContextService executionContextService;
+    
+    private final ExecutionService executionService;
+    
+    private final FailoverService failoverService;
+    
+    private final Collection<ElasticJobListener> elasticJobListeners;
+    
+    private final JobTracingEventBus jobTracingEventBus;
+    
+    AbstractJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final Collection<ElasticJobListener> elasticJobListeners, final TracingConfiguration<?> tracingConfig) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionContextService = new ExecutionContextService(regCenter, jobName);

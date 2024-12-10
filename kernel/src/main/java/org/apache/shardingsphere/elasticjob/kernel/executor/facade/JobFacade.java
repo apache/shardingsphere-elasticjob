@@ -37,7 +37,7 @@ public interface JobFacade {
      * @param fromCache load from cache or not
      * @return job configuration
      */
-    JobConfiguration loadJobConfiguration(final boolean fromCache);
+    JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
      * Check job execution environment.
@@ -121,7 +121,7 @@ public interface JobFacade {
      *
      * @param jobExecutionEvent job execution event
      */
-    void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent);
+    void postJobExecutionEvent(JobExecutionEvent jobExecutionEvent);
     
     /**
      * Post job status trace event.
@@ -131,7 +131,7 @@ public interface JobFacade {
      * @param message job message
      */
     void postJobStatusTraceEvent(String taskId, JobStatusTraceEvent.State state, String message);
-
+    
     /**
      * Get job runtime service.
      *

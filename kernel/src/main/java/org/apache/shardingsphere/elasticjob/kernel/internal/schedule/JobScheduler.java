@@ -82,14 +82,15 @@ public final class JobScheduler {
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
-
-        if (1 == this.jobConfig.getShardingTotalCount() // the single sharding scenario
-            && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) { // the specified SINGLE_SHARDING_BALANCE strategy
+        
+        // the single sharding scenario and specified SINGLE_SHARDING_BALANCE strategy
+        if (1 == this.jobConfig.getShardingTotalCount()
+                && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) {
             jobFacade = new SingleShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         } else {
             jobFacade = new ShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         }
-
+        
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJob, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
@@ -103,14 +104,15 @@ public final class JobScheduler {
         Collection<ElasticJobListener> jobListeners = getElasticJobListeners(this.jobConfig);
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
-
-        if (1 == this.jobConfig.getShardingTotalCount() // the single sharding scenario
-            && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) { // the specified SINGLE_SHARDING_BALANCE strategy
+        
+        // the single sharding scenario and specified SINGLE_SHARDING_BALANCE strategy
+        if (1 == this.jobConfig.getShardingTotalCount()
+                && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) {
             jobFacade = new SingleShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         } else {
             jobFacade = new ShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
         }
-
+        
         validateJobProperties();
         jobExecutor = new ElasticJobExecutor(elasticJobType, this.jobConfig, jobFacade);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobListeners);
