@@ -34,9 +34,6 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.Jo
  * this is the real round robin balance job running in the job instance dimension.
  * </pre>
  *
- * @author hongzhu
- * @version V1.0
- * @since 2024-12-03 19:19
  */
 public class SingleShardingBalanceJobShardingStrategy implements JobShardingStrategy {
     

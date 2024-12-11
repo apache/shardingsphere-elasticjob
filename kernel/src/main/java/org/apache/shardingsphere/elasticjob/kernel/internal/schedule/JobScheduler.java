@@ -83,7 +83,6 @@ public final class JobScheduler {
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
         
-        // the single sharding scenario and specified SINGLE_SHARDING_BALANCE strategy
         if (1 == this.jobConfig.getShardingTotalCount()
                 && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) {
             jobFacade = new SingleShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
@@ -105,7 +104,6 @@ public final class JobScheduler {
         setUpFacade = new SetUpFacade(regCenter, this.jobConfig.getJobName(), jobListeners);
         schedulerFacade = new SchedulerFacade(regCenter, this.jobConfig.getJobName());
         
-        // the single sharding scenario and specified SINGLE_SHARDING_BALANCE strategy
         if (1 == this.jobConfig.getShardingTotalCount()
                 && "SINGLE_SHARDING_BALANCE".equals(this.jobConfig.getJobShardingStrategyType())) {
             jobFacade = new SingleShardingJobFacade(regCenter, this.jobConfig.getJobName(), jobListeners, findTracingConfiguration().orElse(null));
