@@ -68,7 +68,7 @@
         
         <quartz.version>2.4.0</quartz.version>
         
-        <zookeeper.version>3.9.2</zookeeper.version>
+        <zookeeper.version>3.9.3</zookeeper.version>
         <curator.version>5.7.1</curator.version>
         
         <mail.version>1.6.0</mail.version>
