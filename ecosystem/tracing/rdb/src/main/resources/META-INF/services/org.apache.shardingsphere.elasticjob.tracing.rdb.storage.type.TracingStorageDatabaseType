@@ -21,3 +21,4 @@ org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.OracleTracing
 org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.SQLServerTracingStorageDatabaseType
 org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.DB2TracingStorageDatabaseType
 org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.H2TracingStorageDatabaseType
+org.apache.shardingsphere.elasticjob.tracing.rdb.storage.type.impl.GaussDBTracingStorageDatabaseType
