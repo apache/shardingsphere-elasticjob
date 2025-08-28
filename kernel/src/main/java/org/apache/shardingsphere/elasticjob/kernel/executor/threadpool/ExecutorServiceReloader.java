@@ -59,6 +59,6 @@ public final class ExecutorServiceReloader implements Closeable {
     
     @Override
     public void close() {
-        executorService.shutdown();
+        executorService.shutdownNow();
     }
 }

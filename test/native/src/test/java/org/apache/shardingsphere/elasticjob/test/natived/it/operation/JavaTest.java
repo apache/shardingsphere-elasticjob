@@ -44,6 +44,7 @@ import org.apache.shardingsphere.elasticjob.lifecycle.internal.statistics.Shardi
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.simple.job.SimpleJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
@@ -54,11 +55,13 @@ import org.junit.jupiter.api.condition.EnabledInNativeImage;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -304,5 +307,48 @@ class JavaTest {
             assertThat(shardingInfo.isFailover(), is(false));
         });
         job.shutdown();
+    }
+
+    @Test
+    void testGivenOneShardingCountWhenShutdownThenTaskCanCaptureInterruptedException() throws Exception {
+        testCaptureInterruptedException(1);
+    }
+
+    @Test
+    void testGivenOneMoreShardingCountWhenShutdownThenTaskCanCaptureInterruptedException() throws Exception {
+        testCaptureInterruptedException(2);
+    }
+
+    private void testCaptureInterruptedException(int shardingTotalCount) throws Exception {
+        String jobName = "testTaskCaptureInterruptedTask";
+        final AtomicBoolean captured = new AtomicBoolean(false);
+        // start in 2 seconds
+        LocalTime tenSecondsLater = LocalTime.now().plusSeconds(2);
+        String cronExpression = String.format("%d %d %d * * ?", tenSecondsLater.getSecond(), tenSecondsLater.getMinute(), tenSecondsLater.getHour());
+        SimpleJob captureInterruptedTask = shardingContext -> {
+            int i = 0;
+            try {
+                while (true) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        captured.set(true);
+                        break;
+                    }
+                    i++;
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                captured.set(true);
+                Thread.currentThread().interrupt();
+            }
+        };
+        ScheduleJobBootstrap job = new ScheduleJobBootstrap(firstRegCenter, captureInterruptedTask,
+                JobConfiguration.newBuilder(jobName, shardingTotalCount)
+                        .cron(cronExpression)
+                        .build());
+        job.schedule();
+        Thread.sleep(4_000);
+        job.shutdown();
+        Thread.sleep(1_000);
+        assertThat(captured.get(), is(true));
     }
 }
