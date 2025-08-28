@@ -38,7 +38,12 @@ public final class LiteJob implements InterruptableJob {
     @Override
     public void execute(final JobExecutionContext context) {
         currentThread = Thread.currentThread();
-        jobExecutor.execute();
+
+        try {
+            jobExecutor.execute();
+        } finally {
+            currentThread = null;
+        }
     }
 
     @Override
