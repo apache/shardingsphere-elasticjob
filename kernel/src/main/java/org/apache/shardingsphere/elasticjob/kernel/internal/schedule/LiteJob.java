@@ -20,7 +20,6 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor;
 import org.quartz.InterruptableJob;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.UnableToInterruptJobException;
 
@@ -33,7 +32,8 @@ import java.util.Objects;
 public final class LiteJob implements InterruptableJob {
     
     private ElasticJobExecutor jobExecutor;
-    private Thread currentThread;
+
+    private volatile Thread currentThread;
     
     @Override
     public void execute(final JobExecutionContext context) {

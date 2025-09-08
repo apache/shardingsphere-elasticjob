@@ -322,18 +322,16 @@ class JavaTest {
     private void testCaptureInterruptedException(int shardingTotalCount) throws Exception {
         String jobName = "testTaskCaptureInterruptedTask";
         final AtomicBoolean captured = new AtomicBoolean(false);
-        // start in 2 seconds
         LocalTime tenSecondsLater = LocalTime.now().plusSeconds(2);
         String cronExpression = String.format("%d %d %d * * ?", tenSecondsLater.getSecond(), tenSecondsLater.getMinute(), tenSecondsLater.getHour());
         SimpleJob captureInterruptedTask = shardingContext -> {
-            int i = 0;
             try {
                 while (true) {
                     if (Thread.currentThread().isInterrupted()) {
                         captured.set(true);
                         break;
                     }
-                    i++;
+                    System.out.println("Running...");
                     Thread.sleep(100);
                 }
             } catch (InterruptedException e) {
@@ -346,9 +344,8 @@ class JavaTest {
                         .cron(cronExpression)
                         .build());
         job.schedule();
-        Thread.sleep(4_000);
+        Awaitility.await().pollDelay(4L, TimeUnit.SECONDS).until(() -> true);
         job.shutdown();
-        Thread.sleep(1_000);
-        assertThat(captured.get(), is(true));
+        Awaitility.await().pollDelay(1L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(captured.get(), is(true)));
     }
 }
