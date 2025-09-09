@@ -57,7 +57,7 @@ class ExecutorServiceReloaderTest {
         ReflectionUtils.setFieldValue(executorServiceReloader, "executorService", mockExecutorService);
         JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
         executorServiceReloader.reloadIfNecessary(jobConfig);
-        verify(mockExecutorService).shutdown();
+        verify(mockExecutorService).shutdownNow();
         ExecutorService actual = executorServiceReloader.getExecutorService();
         assertFalse(actual.isShutdown());
         assertFalse(actual.isTerminated());
@@ -81,6 +81,6 @@ class ExecutorServiceReloaderTest {
         ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
         ReflectionUtils.setFieldValue(executorServiceReloader, "executorService", mockExecutorService);
         executorServiceReloader.close();
-        verify(mockExecutorService).shutdown();
+        verify(mockExecutorService).shutdownNow();
     }
 }
