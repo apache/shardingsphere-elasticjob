@@ -32,20 +32,19 @@ import java.util.Objects;
 public final class LiteJob implements InterruptableJob {
     
     private ElasticJobExecutor jobExecutor;
-
+    
     private volatile Thread currentThread;
     
     @Override
     public void execute(final JobExecutionContext context) {
-        currentThread = Thread.currentThread();
-
         try {
+            currentThread = Thread.currentThread();
             jobExecutor.execute();
         } finally {
             currentThread = null;
         }
     }
-
+    
     @Override
     public void interrupt() throws UnableToInterruptJobException {
         if (Objects.nonNull(currentThread)) {

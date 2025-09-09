@@ -315,16 +315,20 @@ class JavaTest {
         testCaptureInterruptedException(2);
     }
 
-    private void testCaptureInterruptedException(int shardingTotalCount) throws Exception {
-        String jobName = "testTaskCaptureInterruptedTask";
+    private void testCaptureInterruptedException(final int shardingTotalCount) throws Exception {
+        String jobName = "testTaskCaptureInterruptedTask" + shardingTotalCount;
         AtomicBoolean captured = new AtomicBoolean(false);
-        LocalTime twoSecondsLater = LocalTime.now().plusSeconds(2);
-        String cronExpression = String.format("%d %d %d * * ?", twoSecondsLater.getSecond(), twoSecondsLater.getMinute(), twoSecondsLater.getHour());
+        AtomicBoolean running = new AtomicBoolean(false);
+        LocalTime oneSecondsLater = LocalTime.now().plusSeconds(1);
+        String cronExpression = String.format("%d %d %d * * ?", oneSecondsLater.getSecond(), oneSecondsLater.getMinute(), oneSecondsLater.getHour());
         SimpleJob captureInterruptedTask = shardingContext -> {
             try {
+                running.set(true);
+
                 while (true) {
                     if (Thread.currentThread().isInterrupted()) {
                         captured.set(true);
+                        running.set(false);
                         break;
                     }
                     System.out.println("Running...");
@@ -332,6 +336,7 @@ class JavaTest {
                 }
             } catch (final InterruptedException e) {
                 captured.set(true);
+                running.set(false);
                 Thread.currentThread().interrupt();
             }
         };
@@ -340,8 +345,8 @@ class JavaTest {
                         .cron(cronExpression)
                         .build());
         job.schedule();
-        Awaitility.await().pollDelay(4L, TimeUnit.SECONDS).until(() -> true);
+        Awaitility.await().atMost(10L, TimeUnit.SECONDS).pollInterval(100L, TimeUnit.MILLISECONDS).until(running::get);
         job.shutdown();
-        Awaitility.await().pollDelay(1L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(captured.get(), is(true)));
+        Awaitility.await().atMost(10L, TimeUnit.SECONDS).pollInterval(100L, TimeUnit.MILLISECONDS).untilAsserted(() -> assertThat(captured.get(), is(true)));
     }
 }
