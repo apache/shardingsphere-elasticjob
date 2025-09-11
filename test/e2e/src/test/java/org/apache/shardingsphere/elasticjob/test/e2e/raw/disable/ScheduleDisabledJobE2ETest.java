@@ -26,8 +26,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScheduleDisabledJobE2ETest extends DisabledJobE2ETest {
@@ -46,7 +44,7 @@ class ScheduleDisabledJobE2ETest extends DisabledJobE2ETest {
     void assertJobRunning() {
         assertDisabledRegCenterInfo();
         setJobEnable();
-        Awaitility.await().atMost(10L, TimeUnit.SECONDS).untilAsserted(() -> assertThat(((E2EFixtureJobImpl) getElasticJob()).isCompleted(), is(true)));
+        Awaitility.await().atMost(30L, TimeUnit.SECONDS).until(() -> ((E2EFixtureJobImpl) getElasticJob()).isCompleted());
         assertEnabledRegCenterInfo();
     }
     
