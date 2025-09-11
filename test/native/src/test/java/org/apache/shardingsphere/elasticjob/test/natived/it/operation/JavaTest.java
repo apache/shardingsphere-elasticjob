@@ -308,13 +308,13 @@ class JavaTest {
         });
         job.shutdown();
     }
-
+    
     @Test
     void testWhenShutdownThenTaskCanCaptureInterruptedException() throws Exception {
         testCaptureInterruptedException(1);
         testCaptureInterruptedException(2);
     }
-
+    
     private void testCaptureInterruptedException(final int shardingTotalCount) throws Exception {
         String jobName = "testTaskCaptureInterruptedTask" + shardingTotalCount;
         AtomicBoolean captured = new AtomicBoolean(false);
@@ -324,7 +324,7 @@ class JavaTest {
         SimpleJob captureInterruptedTask = shardingContext -> {
             try {
                 running.set(true);
-
+                
                 while (true) {
                     if (Thread.currentThread().isInterrupted()) {
                         captured.set(true);
