@@ -27,7 +27,10 @@ import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
+import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -180,7 +183,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.name("failover").value(value.getTypeConfig().getCoreConfig().isFailover());
         out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
-        out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
+        out.name("jobProperties");
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(value.getTypeConfig().getCoreConfig().getJobProperties().json());
+        Streams.write(element, out);
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
             out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
