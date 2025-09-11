@@ -11,42 +11,66 @@
     <modules>
         <module>elastic-job-common</module>
         <module>elastic-job-lite</module>
-        <module>elastic-job-cloud</module>
     </modules>
+
+    <!-- 定义项目依赖的远程仓库列表，Maven将按声明顺序查找依赖 -->
+    <repositories>
+        <repository>
+            <!-- 仓库唯一标识符，需与settings.xml中可能的认证信息匹配 -->
+            <id>gebRepo</id>
+            <!-- 仓库描述名称，便于开发者识别 -->
+            <name>geb Repository</name>
+            <!-- 仓库访问URL，指向Nexus私服的公共仓库组 -->
+            <url>http://10.19.197.15:8081/repository/maven-public/</url>
+            <!-- 正式版依赖的下载策略 -->
+            <releases>
+                <!-- 启用该仓库的正式版依赖下载 -->
+                <enabled>true</enabled>
+                <!-- 更新策略：daily表示每天检查一次更新（平衡实时性与性能） -->
+                <updatePolicy>daily</updatePolicy>
+                <!-- 校验和验证策略：warn表示校验失败时警告而非中断构建 -->
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <!-- 快照版依赖的下载策略 -->
+            <snapshots>
+                <!-- 启用该仓库的快照版依赖下载（适合开发环境） -->
+                <enabled>true</enabled>
+                <!-- 更新策略：always表示每次构建都检查更新（确保获取最新快照） -->
+                <updatePolicy>always</updatePolicy>
+                <!-- 校验和验证策略：同上 -->
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <!-- 正式版仓库 -->
+        <repository>
+            <id>gebRepo</id>
+            <name>Release Repository</name>
+            <url>http://10.19.197.15:8081/repository/maven-releases/</url>
+        </repository>
+        <!-- 快照版仓库 -->
+        <snapshotRepository>
+            <id>gebRepo</id>
+            <name>Snapshot Repository</name>
+            <url>http://10.19.197.15:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     
     <properties>
         <java.version>1.7</java.version>
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-        
-        <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
-        
+
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <quartz.version>2.2.1</quartz.version>
+        <quartz.version>1.6.0</quartz.version>
         <curator.version>2.10.0</curator.version>
-        <aspectj.version>1.8.0</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <logback.version>1.1.2</logback.version>
-        <jackson.version>2.4.4</jackson.version>
-        <freemarker.version>2.3.20</freemarker.version>
-        <sitemesh.version>2.4.2</sitemesh.version>
-        <commons-codec.version>1.10</commons-codec.version>
-        <commons-exec.version>1.3</commons-exec.version>
         <gson.version>2.6.1</gson.version>
-        <javaee-web-api.version>7.0</javaee-web-api.version>
-        <mesos.version>1.1.0</mesos.version>
-        <fenzo.version>0.11.1</fenzo.version>
-        <jersey.version>1.19</jersey.version>
-        <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
-        <commons-dbcp.version>1.4</commons-dbcp.version>
-        <mysql-connector-java.version>5.1.30</mysql-connector-java.version>
-        <h2.version>1.4.184</h2.version>
-        <junit.version>4.12</junit.version>
-        <unitils.core.version>3.4.2</unitils.core.version>
-        <mockito.version>2.7.21</mockito.version>
         
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
@@ -82,6 +106,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>appframe</groupId>
+                <artifactId>quartz-all</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -90,17 +119,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${quartz.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>c3p0</groupId>
-                        <artifactId>c3p0</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>
@@ -118,194 +136,14 @@
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-test</artifactId>
-                <version>${curator.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>log4j-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${freemarker.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>opensymphony</groupId>
-                <artifactId>sitemesh</artifactId>
-                <version>${sitemesh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-exec</artifactId>
-                <version>${commons-exec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.mesos</groupId>
-                <artifactId>mesos</artifactId>
-                <version>${mesos.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.fenzo</groupId>
-                <artifactId>fenzo-core</artifactId>
-                <version>${fenzo.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-web-api</artifactId>
-                <version>${javaee-web-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-servlet</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-all-server</artifactId>
-                <version>${jetty-all-server.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>${commons-dbcp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-connector-java.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.unitils</groupId>
-                <artifactId>unitils-core</artifactId>
-                <version>${unitils.core.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-inline</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springframework.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -510,168 +348,14 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-             -->
         </plugins>
     </build>
     
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>${maven-project-info-reports-plugin.version}</version>
-                <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>${maven-jxr-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <id>aggregate</id>
-                        <inherited>false</inherited>
-                        <reports>
-                            <report>aggregate</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>${findbugs-maven-plugin.version}</version>
-                <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <effort>Max</effort>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <configuration>
-                    <configLocation>src/main/resources/dd_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                    <targetJdk>${java.version}</targetJdk>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-                <version>${jdepend-maven-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <version>${taglist-maven-plugin.version}</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-    
-    <repositories>
-        <repository>
-            <id>alfresco-maven-repo</id>
-            <url>https://maven.alfresco.com/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>java-net</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>terracotta-releases</id>
-            <url>http://terracotta.org/download/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-    
-    <url>https://github.com/dangdangdotcom/elastic-job</url>
-    <licenses> 
+    <licenses>
         <license>
             <name>Apache License 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
-    <scm>
-        <connection>scm:git:https://github.com/terrymanu/dangdangdotcom/elastic-job.git</connection>
-        <developerConnection>scm:git:git@github.com:terrymanu/dangdangdotcom/elastic-job.git</developerConnection>
-        <url>https://github.com/terrymanu/dangdangdotcom/elastic-job</url>
-    </scm>
-    
-    <mailingLists>
-        <mailingList>
-            <name>ZhangLiang</name>
-            <post>zhangliang@dangdang.com</post>
-        </mailingList>
-         <mailingList>
-            <name>CaoHao</name>
-            <post>caohao@dangdang.com</post>
-        </mailingList>
-    </mailingLists>
-    
-    <developers>
-        <developer>
-            <id>zhangliang</id>
-            <name>ZhangLiang</name>
-            <email>zhangliang@dangdang.com</email>
-            <timezone>8</timezone>
-        </developer>
-        <developer>
-            <id>caohao</id>
-            <name>CaoHao</name>
-            <email>caohao@dangdang.com</email>
-            <timezone>8</timezone>
-        </developer>
-    </developers>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-releases</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
 </project>

@@ -29,16 +29,10 @@ import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobShutdownHookPlugin;
-import com.dangdang.ddframe.job.lite.internal.schedule.LiteJob;
-import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
-import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
+import com.dangdang.ddframe.job.lite.internal.schedule.*;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import lombok.Getter;
-import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -112,7 +106,12 @@ public class JobScheduler {
     }
     
     private JobDetail createJobDetail(final String jobClass) {
-        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
+        //JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
+        JobDetail result = new JobDetail(
+                liteJobConfig.getJobName(),
+                null,
+                LiteJob.class
+        );
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
         if (elasticJobInstance.isPresent()) {
@@ -137,7 +136,8 @@ public class JobScheduler {
             StdSchedulerFactory factory = new StdSchedulerFactory();
             factory.initialize(getBaseQuartzProperties());
             result = factory.getScheduler();
-            result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+            // result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+            result.addGlobalTriggerListener(schedulerFacade.newJobTriggerListener());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }

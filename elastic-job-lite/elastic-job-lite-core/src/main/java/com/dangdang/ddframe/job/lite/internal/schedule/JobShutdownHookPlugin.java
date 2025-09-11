@@ -6,7 +6,6 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.plugins.management.ShutdownHookPlugin;
-import org.quartz.spi.ClassLoadHelper;
 
 /**
  * 作业关闭钩子.
@@ -18,8 +17,8 @@ public final class JobShutdownHookPlugin extends ShutdownHookPlugin {
     private String jobName;
     
     @Override
-    public void initialize(final String name, final Scheduler scheduler, final ClassLoadHelper classLoadHelper) throws SchedulerException {
-        super.initialize(name, scheduler, classLoadHelper);
+    public void initialize(final String name, final Scheduler scheduler) throws SchedulerException {
+        super.initialize(name, scheduler);
         jobName = scheduler.getSchedulerName();
     }
     

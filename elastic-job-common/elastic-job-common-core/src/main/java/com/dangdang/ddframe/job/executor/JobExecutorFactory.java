@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
-import com.dangdang.ddframe.job.executor.type.ScriptJobExecutor;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -44,9 +43,6 @@ public final class JobExecutorFactory {
      */
     @SuppressWarnings("unchecked")
     public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
-        if (null == elasticJob) {
-            return new ScriptJobExecutor(jobFacade);
-        }
         if (elasticJob instanceof SimpleJob) {
             return new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
         }
