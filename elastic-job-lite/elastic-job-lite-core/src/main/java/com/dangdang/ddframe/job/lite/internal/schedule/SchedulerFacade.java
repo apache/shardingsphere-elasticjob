@@ -117,7 +117,7 @@ public final class SchedulerFacade {
         shardingService.setReshardingFlag();
         monitorService.listen();
         if (!reconcileService.isRunning()) {
-            reconcileService.startAsync();
+            reconcileService.start();
         }
     }
     
@@ -130,7 +130,7 @@ public final class SchedulerFacade {
         }
         monitorService.close();
         if (reconcileService.isRunning()) {
-            reconcileService.stopAsync();
+            reconcileService.stop();
         }
         JobRegistry.getInstance().shutdown(jobName);
     }
