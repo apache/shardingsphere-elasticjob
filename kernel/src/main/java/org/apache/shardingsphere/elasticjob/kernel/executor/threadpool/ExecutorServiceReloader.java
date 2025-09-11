@@ -47,7 +47,7 @@ public final class ExecutorServiceReloader implements Closeable {
         if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
-        executorService.shutdownNow();
+        executorService.shutdown();
         init(jobConfig);
     }
     
@@ -59,6 +59,6 @@ public final class ExecutorServiceReloader implements Closeable {
     
     @Override
     public void close() {
-        executorService.shutdownNow();
+        executorService.shutdown();
     }
 }
