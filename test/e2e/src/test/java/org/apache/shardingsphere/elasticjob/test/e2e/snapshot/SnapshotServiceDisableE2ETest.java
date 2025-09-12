@@ -17,6 +17,7 @@
 
 package org.apache.shardingsphere.elasticjob.test.e2e.snapshot;
 
+import org.apache.curator.test.InstanceSpec;
 import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
 import org.apache.shardingsphere.elasticjob.test.e2e.raw.fixture.job.E2EFixtureJobImpl;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
@@ -46,8 +47,9 @@ class SnapshotServiceDisableE2ETest extends BaseSnapshotServiceE2ETest {
     
     @Test
     void assertListenException() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(9898);
-        SnapshotService snapshotService = new SnapshotService(getRegCenter(), 9898);
+        int randomPort = InstanceSpec.getRandomPort();
+        ServerSocket serverSocket = new ServerSocket(randomPort);
+        SnapshotService snapshotService = new SnapshotService(getRegCenter(), randomPort);
         snapshotService.listen();
         serverSocket.close();
         assertNull(ReflectionUtils.getFieldValue(snapshotService, "serverSocket"));

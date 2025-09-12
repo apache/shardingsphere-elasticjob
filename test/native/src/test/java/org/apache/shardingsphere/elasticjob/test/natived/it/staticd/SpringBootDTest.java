@@ -53,9 +53,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+/**
+ * ElasticJob Spring Boot Starter requires that all Spring Boot Applications be shut down before shutting down Zookeeper Server.
+ * That's why this unit test uses {@link DirtiesContext}.
+ * Refer to <a href="https://github.com/spring-projects/spring-framework/issues/26196">spring-projects/spring-framework#26196</a> .
+ */
+@DirtiesContext
+@SpringBootTest(webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledInNativeImage
-class SpirngBootTest {
+class SpringBootDTest {
     
     private static TestingServer testingServer;
     
@@ -94,12 +100,6 @@ class SpirngBootTest {
                 .build();
     }
     
-    /**
-     * ElasticJob Spring Boot Starter requires that all Spring Boot Applications be shut down before shutting down Zookeeper Server.
-     * That's why this unit test uses {@link DirtiesContext}.
-     * Refer to <a href="https://github.com/spring-projects/spring-framework/issues/26196">spring-projects/spring-framework#26196</a> .
-     */
-    @DirtiesContext
     @Test
     public void testOneOffJob() throws Exception {
         String contentAsString = mockMvc.perform(
@@ -115,7 +115,6 @@ class SpirngBootTest {
         assertThat(contentAsString, is("{\"msg\":\"OK\"}"));
     }
     
-    @DirtiesContext
     @Test
     void testIssue2012() {
         ZookeeperRegistryCenter zookeeperRegistryCenter = zookeeperRegistryCenterProvider.getIfAvailable();

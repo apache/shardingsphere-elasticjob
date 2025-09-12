@@ -17,8 +17,12 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
-import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.curator.CuratorZookeeperClient;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.test.TestingServer;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,8 +32,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,12 +48,31 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ActiveProfiles("tracing")
 class TracingConfigurationTest {
     
+    private static TestingServer testingServer;
+    
     @Autowired
     private ApplicationContext applicationContext;
     
+    @DynamicPropertySource
+    static void elasticjobProperties(final DynamicPropertyRegistry registry) {
+        registry.add("elasticjob.regCenter.serverLists", () -> testingServer.getConnectString());
+    }
+    
     @BeforeAll
-    static void init() {
-        new EmbedTestingServer(18181).start();
+    static void init() throws Exception {
+        testingServer = new TestingServer();
+        try (
+                CuratorZookeeperClient client = new CuratorZookeeperClient(testingServer.getConnectString(),
+                        60000, 500, null,
+                        new ExponentialBackoffRetry(500, 3, 1500))) {
+            client.start();
+            Awaitility.await().atMost(Duration.ofSeconds(30L)).ignoreExceptions().until(client::isConnected);
+        }
+    }
+    
+    @AfterAll
+    static void afterAll() throws IOException {
+        testingServer.close();
     }
     
     @Test
