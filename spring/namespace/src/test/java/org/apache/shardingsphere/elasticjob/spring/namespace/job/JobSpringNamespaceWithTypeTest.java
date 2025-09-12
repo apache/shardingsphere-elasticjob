@@ -24,6 +24,8 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -34,10 +36,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * todo There is no `echo` program on Windows 11 cmd. Waiting for a fix.
+ */
+@EnabledOnOs(OS.LINUX)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
 class JobSpringNamespaceWithTypeTest {
@@ -58,13 +62,13 @@ class JobSpringNamespaceWithTypeTest {
     
     @AfterEach
     void tearDown() {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(scheduler.getCurrentlyExecutingJobs().isEmpty(), is(true)));
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).until(() -> scheduler.getCurrentlyExecutingJobs().isEmpty());
         JobRegistry.getInstance().getJobScheduleController(scriptJobName).shutdown();
     }
     
     @Test
     void jobScriptWithJobTypeTest() throws SchedulerException {
-        Awaitility.await().atMost(1L, TimeUnit.MINUTES).untilAsserted(() -> assertThat(regCenter.isExisted("/" + scriptJobName + "/sharding"), is(true)));
+        Awaitility.await().atMost(1L, TimeUnit.MINUTES).until(() -> regCenter.isExisted("/" + scriptJobName + "/sharding"));
         scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
         assertTrue(scheduler.isStarted());
     }
