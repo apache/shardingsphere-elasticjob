@@ -82,13 +82,13 @@
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.13</logback.version>
         
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.40</lombok.version>
         
         <junit.version>5.10.3</junit.version>
-        <hamcrest.version>2.2</hamcrest.version>
+        <hamcrest.version>3.0</hamcrest.version>
         <mockito.version>4.11.0</mockito.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <bytebuddy.version>1.14.18</bytebuddy.version>
+        <bytebuddy.version>1.17.7</bytebuddy.version>
         
         <h2.version>2.2.224</h2.version>
         <hikari-cp.version>4.0.3</hikari-cp.version>
@@ -116,7 +116,7 @@
         <maven-pmd-plugin.version>3.20.0</maven-pmd-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         
         <!-- Report plugin versions -->
         <maven-site-plugin.version>4.0.0-M6</maven-site-plugin.version>
@@ -567,7 +567,6 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <aggregate>true</aggregate>
                     <source>${java.version}</source>
                     <charset>${project.build.sourceEncoding}</charset>
                     <encoding>${project.build.sourceEncoding}</encoding>
