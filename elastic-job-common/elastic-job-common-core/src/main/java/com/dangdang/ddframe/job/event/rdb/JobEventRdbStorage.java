@@ -62,27 +62,59 @@ final class JobEventRdbStorage {
     }
     
     private void initTablesAndIndexes() throws SQLException {
-        try (Connection conn = dataSource.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
             createJobExecutionTableAndIndexIfNeeded(conn);
             createJobStatusTraceTableAndIndexIfNeeded(conn);
             databaseType = DatabaseType.valueFrom(conn.getMetaData().getDatabaseProductName());
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close connection", e);
+                }
+            }
         }
     }
     
     private void createJobExecutionTableAndIndexIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"});
             if (!resultSet.next()) {
                 createJobExecutionTable(conn);
+            }
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close ResultSet", e);
+                }
             }
         }
     }
     
     private void createJobStatusTraceTableAndIndexIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"});
             if (!resultSet.next()) {
                 createJobStatusTraceTable(conn);
+            }
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close ResultSet", e);
+                }
             }
         }
         createTaskIdIndexIfNeeded(conn, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_STATE_INDEX);
@@ -90,7 +122,9 @@ final class JobEventRdbStorage {
     
     private void createTaskIdIndexIfNeeded(final Connection conn, final String tableName, final String indexName) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getIndexInfo(null, null, tableName, false, false)) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getIndexInfo(null, null, tableName, false, false);
             boolean hasTaskIdIndex = false;
             while (resultSet.next()) {
                 if (indexName.equals(resultSet.getString("INDEX_NAME"))) {
@@ -99,6 +133,16 @@ final class JobEventRdbStorage {
             }
             if (!hasTaskIdIndex) {
                 createTaskIdAndStateIndex(conn, tableName);
+            }
+        } catch (SQLException e) {
+            log.error("Failed to get index info", e);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close ResultSet", e);
+                }
             }
         }
     }
@@ -117,8 +161,18 @@ final class JobEventRdbStorage {
                 + "`start_time` TIMESTAMP NULL, "
                 + "`complete_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
         }
     }
     
@@ -136,15 +190,37 @@ final class JobEventRdbStorage {
                 + "`message` VARCHAR(4000) NULL, "
                 + "`creation_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
         }
     }
     
     private void createTaskIdAndStateIndex(final Connection conn, final String tableName) throws SQLException {
         String sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.execute();
+        } catch (SQLException e) {
+            log.error("Failed to create index", e);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
         }
     }
     
@@ -164,9 +240,11 @@ final class JobEventRdbStorage {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -183,6 +261,21 @@ final class JobEventRdbStorage {
                 // TODO 记录失败直接输出日志,未来可考虑配置化
                 log.error(ex.getMessage());    
             }
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -196,9 +289,11 @@ final class JobEventRdbStorage {
     private boolean updateJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
             preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.setString(3, jobExecutionEvent.getId());
@@ -209,6 +304,21 @@ final class JobEventRdbStorage {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -217,9 +327,11 @@ final class JobEventRdbStorage {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`, `complete_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -238,6 +350,21 @@ final class JobEventRdbStorage {
             }
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -245,9 +372,11 @@ final class JobEventRdbStorage {
     private boolean updateJobExecutionEventFailure(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ?, `failure_cause` = ? WHERE id = ?";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
             preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.setString(3, truncateString(jobExecutionEvent.getFailureCause()));
@@ -259,6 +388,21 @@ final class JobEventRdbStorage {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -267,9 +411,11 @@ final class JobEventRdbStorage {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `failure_cause`, `is_success`, `start_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, jobExecutionEvent.getId());
             preparedStatement.setString(2, jobExecutionEvent.getJobName());
             preparedStatement.setString(3, jobExecutionEvent.getTaskId());
@@ -288,6 +434,21 @@ final class JobEventRdbStorage {
             }
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -300,9 +461,11 @@ final class JobEventRdbStorage {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `original_task_id`, `task_id`, `slave_id`, `source`, `execution_type`, `sharding_item`,  " 
                 + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, UUID.randomUUID().toString());
             preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
             preparedStatement.setString(3, originalTaskId);
@@ -319,6 +482,21 @@ final class JobEventRdbStorage {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -326,17 +504,41 @@ final class JobEventRdbStorage {
     private String getOriginalTaskId(final String taskId) {
         String sql = String.format("SELECT original_task_id FROM %s WHERE task_id = '%s' and state='%s'", TABLE_JOB_STATUS_TRACE_LOG, taskId, State.TASK_STAGING);
         String result = "";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-        ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getString("original_task_id");
             }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close ResultSet", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }
@@ -347,21 +549,48 @@ final class JobEventRdbStorage {
     
     List<JobStatusTraceEvent> getJobStatusTraceEvents(final String taskId) {
         String sql = String.format("SELECT * FROM %s WHERE task_id = '%s'", TABLE_JOB_STATUS_TRACE_LOG, taskId);
-        List<JobStatusTraceEvent> result = new ArrayList<>();
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        List<JobStatusTraceEvent> result = new ArrayList<JobStatusTraceEvent>();
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), Source.valueOf(resultSet.getString(6)), ExecutionType.valueOf(resultSet.getString(7)), resultSet.getString(8),
                         State.valueOf(resultSet.getString(9)), resultSet.getString(10), new SimpleDateFormat("yyyy-mm-dd HH:MM:SS").parse(resultSet.getString(11)));
                 result.add(jobStatusTraceEvent);
             }
-        } catch (final SQLException | ParseException ex) {
+        } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
-            log.error(ex.getMessage());
+            log.error("SQL exception occurred while fetching job status trace events", ex);
+        } catch (final ParseException ex) {
+            // TODO 记录失败直接输出日志,未来可考虑配置化
+            log.error("Parse exception occurred while parsing creation time", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close ResultSet", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close PreparedStatement", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Failed to close Connection", e);
+                }
+            }
         }
         return result;
     }

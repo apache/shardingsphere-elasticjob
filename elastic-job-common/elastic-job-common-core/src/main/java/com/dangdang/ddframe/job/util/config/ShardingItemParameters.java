@@ -49,7 +49,7 @@ public final class ShardingItemParameters {
             return Collections.emptyMap();
         }
         String[] shardingItemParameters = originalShardingItemParameters.split(PARAMETER_DELIMITER);
-        Map<Integer, String> result = new HashMap<>(shardingItemParameters.length);
+        Map<Integer, String> result = new HashMap<Integer, String>(shardingItemParameters.length);
         for (String each : shardingItemParameters) {
             ShardingItem shardingItem = parse(each, originalShardingItemParameters);
             result.put(shardingItem.item, shardingItem.parameter);

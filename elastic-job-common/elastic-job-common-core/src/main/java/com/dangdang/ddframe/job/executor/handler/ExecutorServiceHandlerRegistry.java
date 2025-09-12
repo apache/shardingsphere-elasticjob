@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExecutorServiceHandlerRegistry {
     
-    private static final Map<String, ExecutorService> REGISTRY = new HashMap<>();
+    private static final Map<String, ExecutorService> REGISTRY = new HashMap<String, ExecutorService>();
     
     /**
      * 获取线程池服务.

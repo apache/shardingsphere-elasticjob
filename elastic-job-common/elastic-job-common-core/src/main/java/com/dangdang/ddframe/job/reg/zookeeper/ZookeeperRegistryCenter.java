@@ -57,7 +57,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;
     
-    private final Map<String, TreeCache> caches = new HashMap<>();
+    private final Map<String, TreeCache> caches = new HashMap<String, TreeCache>();
     
     @Getter
     private CuratorFramework client;

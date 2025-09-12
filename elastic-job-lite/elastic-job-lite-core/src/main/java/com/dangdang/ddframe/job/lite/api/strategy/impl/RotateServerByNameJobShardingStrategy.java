@@ -44,7 +44,7 @@ public final class RotateServerByNameJobShardingStrategy implements JobShardingS
         if (0 == offset) {
             return shardingUnits;
         }
-        List<JobInstance> result = new ArrayList<>(shardingUnitsSize);
+        List<JobInstance> result = new ArrayList<JobInstance>(shardingUnitsSize);
         for (int i = 0; i < shardingUnitsSize; i++) {
             int index = (i + offset) % shardingUnitsSize;
             result.add(shardingUnits.get(index));

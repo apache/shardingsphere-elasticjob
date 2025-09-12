@@ -71,7 +71,7 @@ public final class JobEventRdbSearch {
      * @return 作业执行轨迹检索结果
      */
     public Result<JobExecutionEvent> findJobExecutionEvents(final Condition condition) {
-        return new Result<>(getEventCount(TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition), getJobExecutionEvents(condition));
+        return new Result<JobExecutionEvent>(getEventCount(TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition), getJobExecutionEvents(condition));
     }
     
     /**
@@ -81,16 +81,18 @@ public final class JobEventRdbSearch {
      * @return 作业状态轨迹检索结果
      */
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(final Condition condition) {
-        return new Result<>(getEventCount(TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition), getJobStatusTraceEvents(condition));
+        return new Result<JobStatusTraceEvent>(getEventCount(TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition), getJobStatusTraceEvents(condition));
     }
     
     private List<JobExecutionEvent> getJobExecutionEvents(final Condition condition) {
-        List<JobExecutionEvent> result = new LinkedList<>();
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        List<JobExecutionEvent> result = new LinkedList<JobExecutionEvent>();
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), JobExecutionEvent.ExecutionSource.valueOf(resultSet.getString(6)), Integer.valueOf(resultSet.getString(7)), 
@@ -102,17 +104,38 @@ public final class JobEventRdbSearch {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch JobExecutionEvent from DB error:", ex);
+        } finally {
+            if (null != resultSet) {
+                try {
+                    resultSet.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != preparedStatement) {
+                try {
+                    preparedStatement.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != conn) {
+                try {
+                    conn.close();
+                } catch (final SQLException ignored) {
+                }
+            }
         }
         return result;
     }
     
     private List<JobStatusTraceEvent> getJobStatusTraceEvents(final Condition condition) {
-        List<JobStatusTraceEvent> result = new LinkedList<>();
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        List<JobStatusTraceEvent> result = new LinkedList<JobStatusTraceEvent>();
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), Source.valueOf(resultSet.getString(6)), ExecutionType.valueOf(resultSet.getString(7)), resultSet.getString(8),
@@ -122,22 +145,63 @@ public final class JobEventRdbSearch {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch JobStatusTraceEvent from DB error:", ex);
+        } finally {
+            if (null != resultSet) {
+                try {
+                    resultSet.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != preparedStatement) {
+                try {
+                    preparedStatement.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != conn) {
+                try {
+                    conn.close();
+                } catch (final SQLException ignored) {
+                }
+            }
         }
         return result;
     }
     
     private int getEventCount(final String tableName, final Collection<String> tableFields, final Condition condition) {
         int result = 0;
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = createCountPreparedStatement(conn, tableName, tableFields, condition);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
-            resultSet.next();
-            result = resultSet.getInt(1);
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = createCountPreparedStatement(conn, tableName, tableFields, condition);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch EventCount from DB error:", ex);
+        } finally {
+            if (null != resultSet) {
+                try {
+                    resultSet.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != preparedStatement) {
+                try {
+                    preparedStatement.close();
+                } catch (final SQLException ignored) {
+                }
+            }
+            if (null != conn) {
+                try {
+                    conn.close();
+                } catch (final SQLException ignored) {
+                }
+            }
         }
         return result;
     }
@@ -247,15 +311,12 @@ public final class JobEventRdbSearch {
         }
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(" ORDER BY ").append(lowerUnderscore);
-        switch (sortOrder.toUpperCase()) {
-            case "ASC":
-                sqlBuilder.append(" ASC");
-                break;
-            case "DESC":
-                sqlBuilder.append(" DESC");
-                break;
-            default :
-                sqlBuilder.append(" ASC");
+        if ("ASC".equalsIgnoreCase(sortOrder)) {
+            sqlBuilder.append(" ASC");
+        } else if ("DESC".equalsIgnoreCase(sortOrder)) {
+            sqlBuilder.append(" DESC");
+        } else {
+            sqlBuilder.append(" ASC");
         }
         return sqlBuilder.toString();
     }

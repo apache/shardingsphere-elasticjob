@@ -42,8 +42,14 @@ public final class ExceptionUtil {
             return "";
         }
         StringWriter result = new StringWriter();
-        try (PrintWriter writer = new PrintWriter(result)) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(result);
             cause.printStackTrace(writer);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
         return result.toString();
     }

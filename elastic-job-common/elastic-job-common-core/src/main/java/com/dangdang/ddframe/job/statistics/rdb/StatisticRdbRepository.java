@@ -67,20 +67,32 @@ public class StatisticRdbRepository {
     }
     
     private void initTables() throws SQLException {
-        try (Connection conn = dataSource.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
             createTaskResultTableIfNeeded(conn);
             createTaskRunningTableIfNeeded(conn);
             createJobRunningTableIfNeeded(conn);
             createJobRegisterTableIfNeeded(conn);
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
     }
     
     private void createTaskResultTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
         for (StatisticInterval each : StatisticInterval.values()) {
-            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RESULT_STATISTICS + "_" + each, new String[]{"TABLE"})) {
+            ResultSet resultSet = null;
+            try {
+                resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RESULT_STATISTICS + "_" + each, new String[]{"TABLE"});
                 if (!resultSet.next()) {
                     createTaskResultTable(conn, each);
+                }
+            } finally {
+                if (resultSet != null) {
+                    resultSet.close();
                 }
             }
         }
@@ -94,16 +106,32 @@ public class StatisticRdbRepository {
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
         }
     }
     
     private void createTaskRunningTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RUNNING_STATISTICS, new String[]{"TABLE"})) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RUNNING_STATISTICS, new String[]{"TABLE"});
             if (!resultSet.next()) {
                 createTaskRunningTable(conn);
+            }
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
             }
         }
     }
@@ -115,16 +143,36 @@ public class StatisticRdbRepository {
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
         }
     }
     
     private void createJobRunningTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_RUNNING_STATISTICS, new String[]{"TABLE"})) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getTables(null, null, TABLE_JOB_RUNNING_STATISTICS, new String[]{"TABLE"});
             if (!resultSet.next()) {
                 createJobRunningTable(conn);
+            }
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
             }
         }
     }
@@ -136,16 +184,36 @@ public class StatisticRdbRepository {
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
         }
     }
     
     private void createJobRegisterTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_REGISTER_STATISTICS, new String[]{"TABLE"})) {
+        ResultSet resultSet = null;
+        try {
+            resultSet = dbMetaData.getTables(null, null, TABLE_JOB_REGISTER_STATISTICS, new String[]{"TABLE"});
             if (!resultSet.next()) {
                 createJobRegisterTable(conn);
+            }
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
             }
         }
     }
@@ -157,8 +225,18 @@ public class StatisticRdbRepository {
                 + "`statistics_time` TIMESTAMP NOT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL,"
                 + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(dbSchema);
             preparedStatement.execute();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
         }
     }
     
@@ -172,9 +250,11 @@ public class StatisticRdbRepository {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_TASK_RESULT_STATISTICS + "_" + taskResultStatistics.getStatisticInterval()
                 + "` (`success_count`, `failed_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, taskResultStatistics.getSuccessCount());
             preparedStatement.setInt(2, taskResultStatistics.getFailedCount());
             preparedStatement.setTimestamp(3, new Timestamp(taskResultStatistics.getStatisticsTime().getTime()));
@@ -184,6 +264,21 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Insert taskResultStatistics to DB error:", ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -197,9 +292,11 @@ public class StatisticRdbRepository {
     public boolean add(final TaskRunningStatistics taskRunningStatistics) {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_TASK_RUNNING_STATISTICS + "` (`running_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, taskRunningStatistics.getRunningCount());
             preparedStatement.setTimestamp(2, new Timestamp(taskRunningStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(taskRunningStatistics.getCreationTime().getTime()));
@@ -208,6 +305,21 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Insert taskRunningStatistics to DB error:", ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -221,9 +333,11 @@ public class StatisticRdbRepository {
     public boolean add(final JobRunningStatistics jobRunningStatistics) {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_RUNNING_STATISTICS + "` (`running_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, jobRunningStatistics.getRunningCount());
             preparedStatement.setTimestamp(2, new Timestamp(jobRunningStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(jobRunningStatistics.getCreationTime().getTime()));
@@ -232,6 +346,21 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Insert jobRunningStatistics to DB error:", ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -245,9 +374,11 @@ public class StatisticRdbRepository {
     public boolean add(final JobRegisterStatistics jobRegisterStatistics) {
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_REGISTER_STATISTICS + "` (`registered_count`, `statistics_time`, `creation_time`) VALUES (?, ?, ?);";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, jobRegisterStatistics.getRegisteredCount());
             preparedStatement.setTimestamp(2, new Timestamp(jobRegisterStatistics.getStatisticsTime().getTime()));
             preparedStatement.setTimestamp(3, new Timestamp(jobRegisterStatistics.getCreationTime().getTime()));
@@ -256,6 +387,21 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Insert jobRegisterStatistics to DB error:", ex);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -268,15 +414,17 @@ public class StatisticRdbRepository {
      * @return 任务运行结果统计数据集合
      */
     public List<TaskResultStatistics> findTaskResultStatistics(final Date from, final StatisticInterval statisticInterval) {
-        List<TaskResultStatistics> result = new LinkedList<>();
+        List<TaskResultStatistics> result = new LinkedList<TaskResultStatistics>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 TaskResultStatistics taskResultStatistics = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
                         statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
@@ -285,6 +433,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch taskResultStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -301,17 +471,41 @@ public class StatisticRdbRepository {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT sum(success_count), sum(failed_count) FROM %s WHERE statistics_time >= '%s'", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = new TaskResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticInterval, new Date());
             }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch summed taskResultStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -326,11 +520,13 @@ public class StatisticRdbRepository {
         TaskResultStatistics result = null;
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_TASK_RESULT_STATISTICS + "_" + statisticInterval);
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
                         statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
@@ -338,6 +534,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest taskResultStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return Optional.fromNullable(result);
     }
@@ -349,15 +567,17 @@ public class StatisticRdbRepository {
      * @return 运行中的任务统计数据集合
      */
     public List<TaskRunningStatistics> findTaskRunningStatistics(final Date from) {
-        List<TaskRunningStatistics> result = new LinkedList<>();
+        List<TaskRunningStatistics> result = new LinkedList<TaskRunningStatistics>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_TASK_RUNNING_STATISTICS, formatter.format(from));
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -366,6 +586,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch taskRunningStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -377,15 +619,17 @@ public class StatisticRdbRepository {
      * @return 运行中的任务统计数据集合
      */
     public List<JobRunningStatistics> findJobRunningStatistics(final Date from) {
-        List<JobRunningStatistics> result = new LinkedList<>();
+        List<JobRunningStatistics> result = new LinkedList<JobRunningStatistics>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_JOB_RUNNING_STATISTICS, formatter.format(from));
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -394,6 +638,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch jobRunningStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -407,11 +673,13 @@ public class StatisticRdbRepository {
         TaskRunningStatistics result = null;
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_TASK_RUNNING_STATISTICS);
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -419,6 +687,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest taskRunningStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return Optional.fromNullable(result);
     }
@@ -432,11 +722,13 @@ public class StatisticRdbRepository {
         JobRunningStatistics result = null;
         String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_JOB_RUNNING_STATISTICS);
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -444,6 +736,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest jobRunningStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return Optional.fromNullable(result);
     }
@@ -455,15 +769,17 @@ public class StatisticRdbRepository {
      * @return 作业注册统计数据集合
      */
     public List<JobRegisterStatistics> findJobRegisterStatistics(final Date from) {
-        List<JobRegisterStatistics> result = new LinkedList<>();
+        List<JobRegisterStatistics> result = new LinkedList<JobRegisterStatistics>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
                 TABLE_JOB_REGISTER_STATISTICS, formatter.format(from));
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -472,6 +788,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch jobRegisterStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return result;
     }
@@ -485,11 +823,13 @@ public class StatisticRdbRepository {
         JobRegisterStatistics result = null;
         String sql = String.format("SELECT id, registered_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
                 TABLE_JOB_REGISTER_STATISTICS);
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery()
-                ) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = dataSource.getConnection();
+            preparedStatement = conn.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
                         new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
@@ -497,6 +837,28 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest jobRegisterStatistics from DB error:", ex);
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    log.error("Close ResultSet error:", e);
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    log.error("Close PreparedStatement error:", e);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    log.error("Close Connection error:", e);
+                }
+            }
         }
         return Optional.fromNullable(result);
     }

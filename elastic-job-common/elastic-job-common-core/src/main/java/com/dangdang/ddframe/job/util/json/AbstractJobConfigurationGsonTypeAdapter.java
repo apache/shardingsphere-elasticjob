@@ -63,53 +63,38 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         String jobClass = "";
         boolean streamingProcess = false;
         String scriptCommandLine = "";
-        Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
+        Map<String, Object> customizedValueMap = new HashMap<String, Object>(32, 1);
         in.beginObject();
         while (in.hasNext()) {
             String jsonName = in.nextName();
-            switch (jsonName) {
-                case "jobName":
-                    jobName = in.nextString();
-                    break;
-                case "cron":
-                    cron = in.nextString();
-                    break;
-                case "shardingTotalCount":
-                    shardingTotalCount = in.nextInt();
-                    break;
-                case "shardingItemParameters":
-                    shardingItemParameters = in.nextString();
-                    break;
-                case "jobParameter":
-                    jobParameter = in.nextString();
-                    break;
-                case "failover":
-                    failover = in.nextBoolean();
-                    break;
-                case "misfire":
-                    misfire = in.nextBoolean();
-                    break;
-                case "description":
-                    description = in.nextString();
-                    break;
-                case "jobProperties":
-                    jobProperties = getJobProperties(in);
-                    break;
-                case "jobType":
-                    jobType = JobType.valueOf(in.nextString());
-                    break;
-                case "jobClass":
-                    jobClass = in.nextString();
-                    break;
-                case "streamingProcess":
-                    streamingProcess = in.nextBoolean();
-                    break;
-                case "scriptCommandLine":
-                    scriptCommandLine = in.nextString();
-                    break;
-                default:
-                    addToCustomizedValueMap(jsonName, in, customizedValueMap);
-                    break;
+            if ("jobName".equals(jsonName)) {
+                jobName = in.nextString();
+            } else if ("cron".equals(jsonName)) {
+                cron = in.nextString();
+            } else if ("shardingTotalCount".equals(jsonName)) {
+                shardingTotalCount = in.nextInt();
+            } else if ("shardingItemParameters".equals(jsonName)) {
+                shardingItemParameters = in.nextString();
+            } else if ("jobParameter".equals(jsonName)) {
+                jobParameter = in.nextString();
+            } else if ("failover".equals(jsonName)) {
+                failover = in.nextBoolean();
+            } else if ("misfire".equals(jsonName)) {
+                misfire = in.nextBoolean();
+            } else if ("description".equals(jsonName)) {
+                description = in.nextString();
+            } else if ("jobProperties".equals(jsonName)) {
+                jobProperties = getJobProperties(in);
+            } else if ("jobType".equals(jsonName)) {
+                jobType = JobType.valueOf(in.nextString());
+            } else if ("jobClass".equals(jsonName)) {
+                jobClass = in.nextString();
+            } else if ("streamingProcess".equals(jsonName)) {
+                streamingProcess = in.nextBoolean();
+            } else if ("scriptCommandLine".equals(jsonName)) {
+                scriptCommandLine = in.nextString();
+            } else {
+                addToCustomizedValueMap(jsonName, in, customizedValueMap);
             }
         }
         in.endObject();
@@ -123,15 +108,11 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         JobProperties result = new JobProperties();
         in.beginObject();
         while (in.hasNext()) {
-            switch (in.nextName()) {
-                case "job_exception_handler":
-                    result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
-                    break;
-                case "executor_service_handler":
-                    result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
-                    break;
-                default:
-                    break;
+            String name = in.nextName();
+            if ("job_exception_handler".equals(name)) {
+                result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
+            } else if ("executor_service_handler".equals(name)) {
+                result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
             }
         }
         in.endObject();

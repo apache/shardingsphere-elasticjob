@@ -38,7 +38,7 @@ import java.util.Map;
 @NoArgsConstructor
 public final class JobProperties {
     
-    private EnumMap<JobPropertiesEnum, String> map = new EnumMap<>(JobPropertiesEnum.class);
+    private Map<JobPropertiesEnum, String> map = new EnumMap<JobPropertiesEnum, String>(JobPropertiesEnum.class);
     
     /**
      * 设置作业属性.
@@ -70,7 +70,7 @@ public final class JobProperties {
      * @return 键集合
      */
     public String json() {
-        Map<String, String> jsonMap = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
+        Map<String, String> jsonMap = new LinkedHashMap<String, String>(JobPropertiesEnum.values().length, 1);
         for (JobPropertiesEnum each : JobPropertiesEnum.values()) {
             jsonMap.put(each.getKey(), get(each));
         }

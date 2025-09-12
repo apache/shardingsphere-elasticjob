@@ -99,7 +99,7 @@ public final class FailoverService {
      */
     public List<Integer> getFailoverItems(final String jobInstanceId) {
         List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
-        List<Integer> result = new ArrayList<>(items.size());
+        List<Integer> result = new ArrayList<Integer>(items.size());
         for (String each : items) {
             int item = Integer.parseInt(each);
             String node = FailoverNode.getExecutionFailoverNode(item);
@@ -130,7 +130,7 @@ public final class FailoverService {
      */
     public List<Integer> getLocalTakeOffItems() {
         List<Integer> shardingItems = shardingService.getLocalShardingItems();
-        List<Integer> result = new ArrayList<>(shardingItems.size());
+        List<Integer> result = new ArrayList<Integer>(shardingItems.size());
         for (int each : shardingItems) {
             if (jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(each))) {
                 result.add(each);

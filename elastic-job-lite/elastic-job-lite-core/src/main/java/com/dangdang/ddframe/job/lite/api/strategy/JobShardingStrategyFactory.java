@@ -47,7 +47,11 @@ public final class JobShardingStrategyFactory {
                 throw new JobConfigurationException("Class '%s' is not job strategy class", jobShardingStrategyClassName);
             }
             return (JobShardingStrategy) jobShardingStrategyClass.newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (final ClassNotFoundException ex) {
+            throw new JobConfigurationException("Sharding strategy class '%s' config error, message details are '%s'", jobShardingStrategyClassName, ex.getMessage());
+        } catch (final InstantiationException ex) {
+            throw new JobConfigurationException("Sharding strategy class '%s' config error, message details are '%s'", jobShardingStrategyClassName, ex.getMessage());
+        } catch (final IllegalAccessException ex) {
             throw new JobConfigurationException("Sharding strategy class '%s' config error, message details are '%s'", jobShardingStrategyClassName, ex.getMessage());
         }
     }

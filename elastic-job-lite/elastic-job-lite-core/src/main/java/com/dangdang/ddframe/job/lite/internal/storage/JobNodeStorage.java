@@ -27,6 +27,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -184,7 +185,9 @@ public final class JobNodeStorage {
      * @param callback 执行操作的回调
      */
     public void executeInLeader(final String latchNode, final LeaderExecutionCallback callback) {
-        try (LeaderLatch latch = new LeaderLatch(getClient(), jobNodePath.getFullPath(latchNode))) {
+        LeaderLatch latch = null;
+        try {
+            latch = new LeaderLatch(getClient(), jobNodePath.getFullPath(latchNode));
             latch.start();
             latch.await();
             callback.execute();
@@ -192,6 +195,14 @@ public final class JobNodeStorage {
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
             handleException(ex);
+        } finally {
+            if (latch != null) {
+                try {
+                    latch.close();
+                } catch (IOException e) {
+                    handleException(e);
+                }
+            }
         }
     }
     

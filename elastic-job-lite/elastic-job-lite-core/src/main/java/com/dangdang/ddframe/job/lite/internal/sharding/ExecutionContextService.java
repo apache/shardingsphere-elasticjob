@@ -80,7 +80,7 @@ public final class ExecutionContextService {
         if (!monitorExecution) {
             return;
         }
-        List<Integer> runningShardingItems = new ArrayList<>(shardingItems.size());
+        List<Integer> runningShardingItems = new ArrayList<Integer>(shardingItems.size());
         for (int each : shardingItems) {
             if (isRunning(each)) {
                 runningShardingItems.add(each);
@@ -94,7 +94,7 @@ public final class ExecutionContextService {
     }
     
     private Map<Integer, String> getAssignedShardingItemParameterMap(final List<Integer> shardingItems, final Map<Integer, String> shardingItemParameterMap) {
-        Map<Integer, String> result = new HashMap<>(shardingItemParameterMap.size(), 1);
+        Map<Integer, String> result = new HashMap<Integer, String>(shardingItemParameterMap.size(), 1);
         for (int each : shardingItems) {
             result.put(each, shardingItemParameterMap.get(each));
         }

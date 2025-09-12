@@ -126,7 +126,7 @@ public final class ExecutionService {
     
     private List<Integer> getAllItems() {
         int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
-        List<Integer> result = new ArrayList<>(shardingTotalCount);
+        List<Integer> result = new ArrayList<Integer>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             result.add(i);
         }
@@ -165,7 +165,7 @@ public final class ExecutionService {
      * @return 标记被错过执行的任务分片项
      */
     public List<Integer> getMisfiredJobItems(final Collection<Integer> items) {
-        List<Integer> result = new ArrayList<>(items.size());
+        List<Integer> result = new ArrayList<Integer>(items.size());
         for (int each : items) {
             if (jobNodeStorage.isJobNodeExisted(ShardingNode.getMisfireNode(each))) {
                 result.add(each);
@@ -192,7 +192,7 @@ public final class ExecutionService {
      * @return 禁用的任务分片项
      */
     public List<Integer> getDisabledItems(final List<Integer> items) {
-        List<Integer> result = new ArrayList<>(items.size());
+        List<Integer> result = new ArrayList<Integer>(items.size());
         for (int each : items) {
             if (jobNodeStorage.isJobNodeExisted(ShardingNode.getDisabledNode(each))) {
                 result.add(each);

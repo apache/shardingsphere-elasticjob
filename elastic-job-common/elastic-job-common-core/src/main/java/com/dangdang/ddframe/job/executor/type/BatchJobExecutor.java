@@ -22,7 +22,7 @@ public class BatchJobExecutor extends AbstractElasticJobExecutor {
 
 
     @Override
-    protected void process(ShardingContext shardingContext) {
+    protected void process(ShardingContext shardingContext) throws Exception {
         Set<Integer> shardingItems = shardingContext.getShardingItemParameters().keySet();
         int shardingItem = shardingContext.getShardingItem();
 
@@ -36,8 +36,8 @@ public class BatchJobExecutor extends AbstractElasticJobExecutor {
 
         log.info("分片 {} 开始执行批次任务，负责处理 {} 个分片。", shardingItem, shardingItems.size());
         try {
-            List<Object> data = batchJob.fetchData(shardingItems);
-            batchJob.processData(data);
+            List<Object> data = batchJob.fetchData(shardingContext, shardingItems);
+            batchJob.processData(shardingContext, data);
         } catch (Exception e) {
             log.error("分片 {} 执行批次任务失败", shardingItem, e);
             throw e;

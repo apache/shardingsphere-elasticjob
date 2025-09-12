@@ -88,31 +88,22 @@ public final class LiteJobConfigurationGsonFactory {
         
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
-            switch (jsonName) {
-                case MONITOR_EXECUTION:
-                    customizedValueMap.put(jsonName, in.nextBoolean());
-                    break;
-                case MAX_TIME_DIFF_SECONDS:
-                    customizedValueMap.put(jsonName, in.nextInt());
-                    break;
-                case MONITOR_PORT:
-                    customizedValueMap.put(jsonName, in.nextInt());
-                    break;
-                case JOB_SHARDING_STRATEGY_CLASS:
-                    customizedValueMap.put(jsonName, in.nextString());
-                    break;
-                case RECONCILE_INTERVAL_MINUTES:
-                    customizedValueMap.put(jsonName, in.nextInt());
-                    break;
-                case DISABLED:
-                    customizedValueMap.put(jsonName, in.nextBoolean());
-                    break;
-                case OVERWRITE:
-                    customizedValueMap.put(jsonName, in.nextBoolean());
-                    break;
-                default:
-                    in.skipValue();
-                    break;
+            if (MONITOR_EXECUTION.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextBoolean());
+            } else if (MAX_TIME_DIFF_SECONDS.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextInt());
+            } else if (MONITOR_PORT.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextInt());
+            } else if (JOB_SHARDING_STRATEGY_CLASS.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextString());
+            } else if (RECONCILE_INTERVAL_MINUTES.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextInt());
+            } else if (DISABLED.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextBoolean());
+            } else if (OVERWRITE.equals(jsonName)) {
+                customizedValueMap.put(jsonName, in.nextBoolean());
+            } else {
+                in.skipValue();
             }
         }
         
@@ -120,25 +111,25 @@ public final class LiteJobConfigurationGsonFactory {
         protected LiteJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             LiteJobConfiguration.Builder builder = LiteJobConfiguration.newBuilder(typeConfig);
             if (customizedValueMap.containsKey(MONITOR_EXECUTION)) {
-                builder.monitorExecution((boolean) customizedValueMap.get(MONITOR_EXECUTION));
+                builder.monitorExecution((Boolean) customizedValueMap.get(MONITOR_EXECUTION));
             }
             if (customizedValueMap.containsKey(MAX_TIME_DIFF_SECONDS)) {
-                builder.maxTimeDiffSeconds((int) customizedValueMap.get(MAX_TIME_DIFF_SECONDS));
+                builder.maxTimeDiffSeconds((Integer) customizedValueMap.get(MAX_TIME_DIFF_SECONDS));
             }
             if (customizedValueMap.containsKey(MONITOR_PORT)) {
-                builder.monitorPort((int) customizedValueMap.get(MONITOR_PORT));
+                builder.monitorPort((Integer) customizedValueMap.get(MONITOR_PORT));
             }
             if (customizedValueMap.containsKey(JOB_SHARDING_STRATEGY_CLASS)) {
                 builder.jobShardingStrategyClass((String) customizedValueMap.get(JOB_SHARDING_STRATEGY_CLASS));
             }
             if (customizedValueMap.containsKey(RECONCILE_INTERVAL_MINUTES)) {
-                builder.reconcileIntervalMinutes((int) customizedValueMap.get(RECONCILE_INTERVAL_MINUTES));
+                builder.reconcileIntervalMinutes((Integer) customizedValueMap.get(RECONCILE_INTERVAL_MINUTES));
             }
             if (customizedValueMap.containsKey(DISABLED)) {
-                builder.disabled((boolean) customizedValueMap.get(DISABLED));
+                builder.disabled((Boolean) customizedValueMap.get(DISABLED));
             }
             if (customizedValueMap.containsKey(OVERWRITE)) {
-                builder.overwrite((boolean) customizedValueMap.get(OVERWRITE));
+                builder.overwrite((Boolean) customizedValueMap.get(OVERWRITE));
             }
             return builder.build();
         }

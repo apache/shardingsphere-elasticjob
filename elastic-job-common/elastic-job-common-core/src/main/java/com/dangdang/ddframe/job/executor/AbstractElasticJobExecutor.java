@@ -66,7 +66,7 @@ public abstract class AbstractElasticJobExecutor {
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
-        itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
+        itemErrorMessages = new ConcurrentHashMap<Integer, String>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
@@ -77,7 +77,11 @@ public abstract class AbstractElasticJobExecutor {
                 return handlerClass.newInstance();
             }
             return getDefaultHandler(jobPropertiesEnum, handlerClassName);
-        } catch (final ReflectiveOperationException ex) {
+        } catch (final ClassNotFoundException ex) {
+            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
+        } catch (final InstantiationException ex) {
+            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
+        } catch (final IllegalAccessException ex) {
             return getDefaultHandler(jobPropertiesEnum, handlerClassName);
         }
     }
@@ -86,7 +90,11 @@ public abstract class AbstractElasticJobExecutor {
         log.warn("Cannot instantiation class '{}', use default '{}' class.", handlerClassName, jobPropertiesEnum.getKey());
         try {
             return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new JobSystemException(e);
+        } catch (final InstantiationException e) {
+            throw new JobSystemException(e);
+        } catch (final IllegalAccessException e) {
             throw new JobSystemException(e);
         }
     }
@@ -219,5 +227,5 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    protected abstract void process(ShardingContext shardingContext);
+    protected abstract void process(ShardingContext shardingContext) throws Exception;
 }

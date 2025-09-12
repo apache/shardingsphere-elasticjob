@@ -48,7 +48,7 @@ public final class SensitiveInfoUtils {
      * @return 替换敏感信息后的字符串列表
      */
     public static List<String> filterSensitiveIps(final List<String> target) {
-        final Map<String, String> fakeIpMap = new HashMap<>();
+        final Map<String, String> fakeIpMap = new HashMap<String, String>();
         final AtomicInteger step = new AtomicInteger();
         return Lists.transform(target, new Function<String, String>() {
             

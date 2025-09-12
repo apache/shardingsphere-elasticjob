@@ -118,8 +118,12 @@ public class JobScheduler {
         } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
             try {
                 result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
-            } catch (final ReflectiveOperationException ex) {
-                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
+            } catch (final ClassNotFoundException ex) {
+                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not be found.", jobClass);
+            } catch (final InstantiationException ex) {
+                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not be instantiated.", jobClass);
+            } catch (final IllegalAccessException ex) {
+                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not be accessed.", jobClass);
             }
         }
         return result;

@@ -71,7 +71,7 @@ public final class InstanceService {
      * @return 可分片的作业运行实例
      */
     public List<JobInstance> getAvailableJobInstances() {
-        List<JobInstance> result = new LinkedList<>();
+        List<JobInstance> result = new LinkedList<JobInstance>();
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
             JobInstance jobInstance = new JobInstance(each);
             if (serverService.isEnableServer(jobInstance.getIp())) {

@@ -95,15 +95,40 @@ public final class MonitorService {
     }
     
     private void process(final Socket socket) throws IOException {
-        try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                Socket autoCloseSocket = socket) {
+        BufferedReader reader = null;
+        BufferedWriter writer = null;
+        Socket autoCloseSocket = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            autoCloseSocket = socket;
             String cmdLine = reader.readLine();
             if (null != cmdLine && DUMP_COMMAND.equalsIgnoreCase(cmdLine)) {
-                List<String> result = new ArrayList<>();
+                List<String> result = new ArrayList<String>();
                 dumpDirectly("/" + jobName, result);
                 outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
+            }
+        } finally {
+            if (null != reader) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    log.error("Elastic job: Monitor service reader close failure, error is: ", ex);
+                }
+            }
+            if (null != writer) {
+                try {
+                    writer.close();
+                } catch (IOException ex) {
+                    log.error("Elastic job: Monitor service writer close failure, error is: ", ex);
+                }
+            }
+            if (null != autoCloseSocket) {
+                try {
+                    autoCloseSocket.close();
+                } catch (IOException ex) {
+                    log.error("Elastic job: Monitor service socket close failure, error is: ", ex);
+                }
             }
         }
     }

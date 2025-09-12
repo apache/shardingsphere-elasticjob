@@ -157,7 +157,7 @@ public final class ShardingService {
         if (!serverService.isAvailableServer(jobInstance.getIp())) {
             return Collections.emptyList();
         }
-        List<Integer> result = new LinkedList<>();
+        List<Integer> result = new LinkedList<Integer>();
         int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
             if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
