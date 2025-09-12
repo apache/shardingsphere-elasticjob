@@ -18,9 +18,11 @@
 package com.dangdang.ddframe.job.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.batch.BatchJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.executor.type.BatchJobExecutor;
 import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import lombok.AccessLevel;
@@ -48,6 +50,9 @@ public final class JobExecutorFactory {
         }
         if (elasticJob instanceof DataflowJob) {
             return new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
+        }
+        if (elasticJob instanceof BatchJob) {
+            return new BatchJobExecutor((BatchJob) elasticJob, jobFacade);
         }
         throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass().getCanonicalName());
     }

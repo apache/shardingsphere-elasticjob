@@ -65,7 +65,7 @@
         <project.build.locale>zh_CN</project.build.locale>
 
         <lombok.version>1.16.4</lombok.version>
-        <guava.version>14.0.1</guava.version>
+        <guava.version>16.0.1</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>1.6.0</quartz.version>
         <curator.version>2.10.0</curator.version>

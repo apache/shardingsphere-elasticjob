@@ -22,7 +22,11 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
@@ -144,16 +148,14 @@ public final class TaskContext {
         public static MetaInfo from(final String value) {
             String[] result = value.split(DELIMITER);
             Preconditions.checkState(1 == result.length || 2 == result.length || 5 == result.length);
-            Iterable<String> iterable = (result.length == 1 || "".equals(result[1]))
-                    ? Collections.<String>emptyList()
-                    : Splitter.on(",").split(result[1]);
-            List<Integer> numbers = Lists.transform(Lists.newArrayList(iterable), new Function<String, Integer>() {
-                @Override
-                public Integer apply(final String input) {
-                    return Integer.parseInt(input);
-                }
-            });
-            return new MetaInfo(result[0], numbers);
+            return new MetaInfo(result[0], 1 == result.length || "".equals(result[1]) ? Collections.<Integer>emptyList() : Lists.transform(Splitter.on(",").splitToList(result[1]),
+                    new Function<String, Integer>() {
+
+                        @Override
+                        public Integer apply(final String input) {
+                            return Integer.parseInt(input);
+                        }
+                    }));
         }
         
         @Override

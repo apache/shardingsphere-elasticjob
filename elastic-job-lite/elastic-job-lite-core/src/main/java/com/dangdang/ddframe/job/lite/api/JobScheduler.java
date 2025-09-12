@@ -106,7 +106,6 @@ public class JobScheduler {
     }
     
     private JobDetail createJobDetail(final String jobClass) {
-        //JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         JobDetail result = new JobDetail(
                 liteJobConfig.getJobName(),
                 null,

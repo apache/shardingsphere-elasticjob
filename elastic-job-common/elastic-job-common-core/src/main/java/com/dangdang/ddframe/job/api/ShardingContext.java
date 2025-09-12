@@ -21,6 +21,8 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Map;
+
 /**
  * 分片上下文.
  * 
@@ -60,13 +62,19 @@ public final class ShardingContext {
      * 分配于本作业实例的分片参数.
      */
     private final String shardingParameter;
-    
+
+    /**
+     * 分配于本作业实例的分片项和参数的Map.
+     */
+    private final Map<Integer, String> shardingItemParameters;
+
     public ShardingContext(final ShardingContexts shardingContexts, final int shardingItem) {
         jobName = shardingContexts.getJobName();
         taskId = shardingContexts.getTaskId();
         shardingTotalCount = shardingContexts.getShardingTotalCount();
         jobParameter = shardingContexts.getJobParameter();
         this.shardingItem = shardingItem;
-        shardingParameter = shardingContexts.getShardingItemParameters().get(shardingItem);
+        shardingItemParameters = shardingContexts.getShardingItemParameters();
+        shardingParameter = shardingItemParameters.get(shardingItem);
     }
 }
