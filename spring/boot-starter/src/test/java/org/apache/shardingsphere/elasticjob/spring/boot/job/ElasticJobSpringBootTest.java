@@ -17,30 +17,38 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.job;
 
+import org.apache.curator.CuratorZookeeperClient;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.test.TestingServer;
 import org.apache.shardingsphere.elasticjob.api.ElasticJob;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.apache.shardingsphere.elasticjob.bootstrap.JobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduler;
+import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.CustomTestJob;
 import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
-import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
-import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -51,30 +59,49 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DirtiesContext
 @SpringBootTest(properties = "spring.main.banner-mode=off")
 @SpringBootApplication
 @ActiveProfiles("elasticjob")
 class ElasticJobSpringBootTest {
     
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(18181);
+    private static TestingServer testingServer;
     
     @Autowired
     private ApplicationContext applicationContext;
     
+    @DynamicPropertySource
+    static void elasticjobProperties(final DynamicPropertyRegistry registry) {
+        registry.add("elasticjob.regCenter.serverLists", () -> testingServer.getConnectString());
+    }
+    
     @BeforeAll
-    static void init() {
-        EMBED_TESTING_SERVER.start();
+    static void init() throws Exception {
+        testingServer = new TestingServer();
+        try (
+                CuratorZookeeperClient client = new CuratorZookeeperClient(testingServer.getConnectString(),
+                        60000, 500, null,
+                        new ExponentialBackoffRetry(500, 3, 1500))) {
+            client.start();
+            Awaitility.await().atMost(Duration.ofSeconds(30L)).ignoreExceptions().until(client::isConnected);
+        }
+    }
+    
+    @AfterAll
+    static void afterAll() throws IOException {
+        testingServer.close();
     }
     
     @Test
     void assertZookeeperProperties() {
         assertNotNull(applicationContext);
         ZookeeperProperties actual = applicationContext.getBean(ZookeeperProperties.class);
-        assertThat(actual.getServerLists(), is(EMBED_TESTING_SERVER.getConnectionString()));
+        assertThat(actual.getServerLists(), is(testingServer.getConnectString()));
         assertThat(actual.getNamespace(), is("elasticjob-spring-boot-starter"));
     }
     
@@ -93,7 +120,7 @@ class ElasticJobSpringBootTest {
         TracingConfiguration<?> tracingConfig = applicationContext.getBean(TracingConfiguration.class);
         assertNotNull(tracingConfig);
         assertThat(tracingConfig.getType(), is("RDB"));
-        assertTrue(tracingConfig.getTracingStorageConfiguration().getStorage() instanceof DataSource);
+        assertInstanceOf(DataSource.class, tracingConfig.getTracingStorageConfiguration().getStorage());
         DataSource dataSource = (DataSource) tracingConfig.getTracingStorageConfiguration().getStorage();
         assertNotNull(dataSource.getConnection());
     }

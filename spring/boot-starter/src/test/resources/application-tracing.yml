@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
+# `elasticjob.regCenter.serverLists` is dynamically defined in `org.springframework.test.context.DynamicPropertySource`
 elasticjob:
   regCenter:
-    serverLists: 127.0.0.1:18181
     namespace: elasticjob-spring-boot-starter
