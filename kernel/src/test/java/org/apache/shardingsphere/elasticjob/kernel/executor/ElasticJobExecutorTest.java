@@ -145,7 +145,7 @@ class ElasticJobExecutorTest {
     
     private boolean isValidErrorMessage(final String errorMessage, final ShardingContexts shardingContexts) {
         if (1 == shardingContexts.getShardingItemParameters().size()) {
-            return errorMessage.equals("{0=java.lang.RuntimeException" + System.lineSeparator() + "}");
+            return ("{0=java.lang.RuntimeException" + System.lineSeparator() + "}").equals(errorMessage);
         } else {
             String pattern1 = "{0=java.lang.RuntimeException" + System.lineSeparator() + ", 1=java.lang.RuntimeException" + System.lineSeparator() + "}";
             String pattern2 = "{1=java.lang.RuntimeException" + System.lineSeparator() + ", 0=java.lang.RuntimeException" + System.lineSeparator() + "}";
