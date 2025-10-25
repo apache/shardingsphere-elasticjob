@@ -42,6 +42,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
@@ -135,17 +136,21 @@ class ElasticJobExecutorTest {
         } finally {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
-            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, getErrorMessage(shardingContexts));
+            verify(jobFacade).postJobStatusTraceEvent(eq(shardingContexts.getTaskId()), eq(State.TASK_ERROR), argThat(msg -> isValidErrorMessage(msg, shardingContexts)));
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
             verify(jobFacade).registerJobCompleted(shardingContexts);
         }
     }
     
-    private String getErrorMessage(final ShardingContexts shardingContexts) {
-        return 1 == shardingContexts.getShardingItemParameters().size()
-                ? "{0=java.lang.RuntimeException" + System.lineSeparator() + "}"
-                : "{0=java.lang.RuntimeException" + System.lineSeparator() + ", 1=java.lang.RuntimeException" + System.lineSeparator() + "}";
+    private boolean isValidErrorMessage(final String errorMessage, final ShardingContexts shardingContexts) {
+        if (1 == shardingContexts.getShardingItemParameters().size()) {
+            return ("{0=java.lang.RuntimeException" + System.lineSeparator() + "}").equals(errorMessage);
+        } else {
+            String pattern1 = "{0=java.lang.RuntimeException" + System.lineSeparator() + ", 1=java.lang.RuntimeException" + System.lineSeparator() + "}";
+            String pattern2 = "{1=java.lang.RuntimeException" + System.lineSeparator() + ", 0=java.lang.RuntimeException" + System.lineSeparator() + "}";
+            return errorMessage.equals(pattern1) || errorMessage.equals(pattern2);
+        }
     }
     
     @Test
