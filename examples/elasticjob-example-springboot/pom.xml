@@ -29,8 +29,8 @@
     <name>${project.artifactId}</name>
     
     <properties>
-        <springboot.version>2.5.12</springboot.version>
-        <spring.version>5.2.22.RELEASE</spring.version>
+        <springboot.version>2.7.18</springboot.version>
+        <spring.version>5.3.31</spring.version>
     </properties>
 
     <dependencyManagement>
@@ -96,5 +96,27 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

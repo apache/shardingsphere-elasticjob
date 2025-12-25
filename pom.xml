@@ -25,11 +25,11 @@
     </parent>
     <groupId>org.apache.shardingsphere.elasticjob</groupId>
     <artifactId>elasticjob</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Elastic Job</name>
     <description>Distributed scheduled job</description>
-    
+
     <modules>
         <module>api</module>
         <module>registry-center</module>
@@ -37,77 +37,84 @@
         <module>kernel</module>
         <module>lifecycle</module>
         <module>restful</module>
-        
+
         <module>ecosystem</module>
         <module>spring</module>
-        
+
         <module>test</module>
-        
+
         <module>distribution</module>
         <module>reachability-metadata</module>
     </modules>
-    
+
     <properties>
+        <!-- CI-Friendly Version Management -->
+        <revision>3.2.0-SNAPSHOT</revision>
+
         <!-- Environments -->
         <java.version>1.8</java.version>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
         <maven.version.range>[3.5.0,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.deploy.skip>false</maven.deploy.skip>
-        
+
         <!-- 3rd party library versions -->
         <shardingsphere.version>5.4.1</shardingsphere.version>
-        
+
         <guava.version>32.1.2-jre</guava.version>
         <checker-qual.version>3.39.0</checker-qual.version>
         <error_prone_annotations.version>2.22.0</error_prone_annotations.version>
         <j2objc-annotations.version>1.3</j2objc-annotations.version>
-        
+
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <gson.version>2.10.1</gson.version>
-        
+
         <quartz.version>2.4.0</quartz.version>
-        
+
         <zookeeper.version>3.9.4</zookeeper.version>
         <curator.version>5.9.0</curator.version>
-        
+
         <mail.version>1.6.0</mail.version>
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-exec.version>1.3</commons-exec.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore.version>4.4.16</httpcore.version>
-        
+
         <netty.version>4.1.112.Final</netty.version>
-        
+
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.13</logback.version>
-        
+
         <lombok.version>1.18.40</lombok.version>
-        
+
         <junit.version>5.10.3</junit.version>
         <hamcrest.version>3.0</hamcrest.version>
         <mockito.version>4.11.0</mockito.version>
         <awaitility.version>4.2.0</awaitility.version>
         <bytebuddy.version>1.17.7</bytebuddy.version>
-        
+
         <h2.version>2.2.224</h2.version>
         <hikari-cp.version>4.0.3</hikari-cp.version>
-        
+
         <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
-        
+
         <!-- Compile plugin versions -->
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        
+
         <!-- Release plugin versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
         <maven-assembly-plugin.version>3.5.0</maven-assembly-plugin.version>
-        
+
         <!-- Check plugin versions -->
         <apache-rat-plugin.version>0.15</apache-rat-plugin.version>
         <spotless-maven-plugin.version>2.22.1</spotless-maven-plugin.version>
@@ -117,7 +124,7 @@
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
-        
+
         <!-- Report plugin versions -->
         <maven-site-plugin.version>4.0.0-M6</maven-site-plugin.version>
         <maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
@@ -129,10 +136,11 @@
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <checksum-maven-plugin.version>1.10</checksum-maven-plugin.version>
-        
+
         <native-maven-plugin.version>0.10.3</native-maven-plugin.version>
+        <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -140,7 +148,7 @@
                 <artifactId>shardingsphere-infra-spi</artifactId>
                 <version>${shardingsphere.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -167,7 +175,7 @@
                 <artifactId>j2objc-annotations</artifactId>
                 <version>${j2objc-annotations.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
@@ -183,13 +191,13 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
                 <version>${quartz.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
@@ -216,7 +224,7 @@
                 <version>${curator.version}</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
@@ -242,7 +250,7 @@
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
@@ -250,7 +258,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -288,14 +296,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
@@ -344,7 +352,7 @@
                 <version>${awaitility.version}</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
@@ -358,13 +366,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -377,12 +385,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -414,7 +422,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>apache-shardingsphere-elasticjob-${project.version}</finalName>
         <pluginManagement>
@@ -552,6 +560,33 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- Maven CI-Friendly Version Management -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -660,7 +695,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -724,9 +759,9 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <url>http://shardingsphere.apache.org/elasticjob/</url>
-    
+
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -734,7 +769,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <mailingLists>
         <mailingList>
             <name>ShardingSphere Developer List</name>
@@ -743,14 +778,14 @@
             <post>dev@shardingsphere.apache.org</post>
         </mailingList>
     </mailingLists>
-    
+
     <scm>
         <connection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</connection>
         <developerConnection>scm:git:https://github.com/apache/shardingsphere-elasticjob.git</developerConnection>
         <url>https://github.com/apache/shardingsphere-elasticjob.git</url>
         <tag>HEAD</tag>
     </scm>
-    
+
     <profiles>
         <profile>
             <id>jdk11+</id>
@@ -1035,5 +1070,5 @@
             </build>
         </profile>
     </profiles>
-    
+
 </project>
