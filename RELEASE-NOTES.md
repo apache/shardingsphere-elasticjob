@@ -1,4 +1,9 @@
-## Release 3.1.0-SNAPSHOT
+## Release 3.0.5-SNAPSHOT
+
+### CVE
+
+1. Fix CVE-2025-25193, CVE-2024-47535 [#2498](https://github.com/apache/shardingsphere-elasticjob/pull/2498)
+1. Fix CVE-2024-22259 [#2500](https://github.com/apache/shardingsphere-elasticjob/pull/2500)
 
 ### API Changes
 
