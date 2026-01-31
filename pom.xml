@@ -97,6 +97,7 @@
         <hikari-cp.version>4.0.3</hikari-cp.version>
         
         <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
+        <spring-framework.version>5.3.39</spring-framework.version>
         
         <!-- Compile plugin versions -->
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
