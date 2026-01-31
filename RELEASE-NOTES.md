@@ -1,4 +1,4 @@
-## Release 3.0.5-SNAPSHOT
+## 3.0.5
 
 ### CVE
 
