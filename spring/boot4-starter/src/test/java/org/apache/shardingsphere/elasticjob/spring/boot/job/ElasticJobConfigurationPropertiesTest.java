@@ -30,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @EnabledForJreRange(min = JRE.JAVA_17, max = JRE.JAVA_25)
 class ElasticJobConfigurationPropertiesTest {
-
+    
     @Test
     void assertToJobConfiguration() {
         ElasticJobConfigurationProperties properties = new ElasticJobConfigurationProperties();
