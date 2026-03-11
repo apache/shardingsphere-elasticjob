@@ -30,6 +30,7 @@
     <modules>
         <module>core</module>
         <module>boot-starter</module>
+        <module>boot4-starter</module>
         <module>namespace</module>
     </modules>
     
