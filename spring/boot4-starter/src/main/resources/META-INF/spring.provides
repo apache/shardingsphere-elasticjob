@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-provides: elasticjob-spring-boot-starter
+provides: elasticjob-spring-boot4-starter
