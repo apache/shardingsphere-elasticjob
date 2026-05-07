@@ -24,26 +24,24 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * todo There is no `echo` program on Windows 11 cmd. Waiting for a fix.
- */
-@EnabledOnOs(OS.LINUX)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml")
+@ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml", initializers = JobSpringNamespaceWithTypeTest.ScriptCommandLineInitializer.class)
 class JobSpringNamespaceWithTypeTest {
     
     private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
@@ -71,5 +69,15 @@ class JobSpringNamespaceWithTypeTest {
         Awaitility.await().atMost(1L, TimeUnit.MINUTES).until(() -> regCenter.isExisted("/" + scriptJobName + "/sharding"));
         scheduler = (Scheduler) ReflectionTestUtils.getField(JobRegistry.getInstance().getJobScheduleController(scriptJobName), "scheduler");
         assertTrue(scheduler.isStarted());
+    }
+    
+    static class ScriptCommandLineInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        
+        @Override
+        public void initialize(final ConfigurableApplicationContext applicationContext) {
+            String command = System.getProperty("os.name", "").contains("Windows") ? "cmd /c echo test" : "echo test";
+            applicationContext.getEnvironment().getPropertySources()
+                    .addFirst(new MapPropertySource("testScriptCommandLine", Collections.singletonMap("script.scriptCommandLine", command)));
+        }
     }
 }
