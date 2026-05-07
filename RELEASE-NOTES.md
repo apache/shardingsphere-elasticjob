@@ -1,3 +1,9 @@
+## 3.0.6-SNAPSHOT
+
+### Enhancements
+
+1. Bump the JDK requirement for build time from JDK 8 to JDK 17 - [#2509](https://github.com/apache/shardingsphere-elasticjob/issues/2509)
+
 ## 3.0.5
 
 ### CVE

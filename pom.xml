@@ -600,7 +600,7 @@
                                     <version>${maven.version.range}</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>${java.version}</version>
+                                    <version>[17,)</version>
                                 </requireJavaVersion>
                             </rules>
                             <fail>true</fail>
