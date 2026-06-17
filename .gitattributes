@@ -1,0 +1,1 @@
+﻿* text=auto eol=lf
