@@ -118,7 +118,7 @@ abstract class AbstractJobFacade implements JobFacade {
      * Register job completed.
      *
      * @param shardingContexts sharding contexts
-     * @param failedItems
+     * @param failedItems failed sharding items
      */
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts, final Collection<Integer> failedItems) {
