@@ -37,6 +37,7 @@ import org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEven
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -134,7 +135,8 @@ public final class ElasticJobExecutor {
             process(jobConfig, shardingContexts, executionSource);
         } finally {
             // TODO Consider increasing the status of job failure, and how to handle the overall loop of job failure
-            jobFacade.registerJobCompleted(shardingContexts);
+            Collection<Integer> failedItems = new HashSet<>(itemErrorMessages.keySet());
+            jobFacade.registerJobCompleted(shardingContexts, failedItems);
             if (itemErrorMessages.isEmpty()) {
                 jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
             } else {

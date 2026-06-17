@@ -62,8 +62,9 @@ public interface JobFacade {
      * Register job completed.
      *
      * @param shardingContexts sharding contexts
+     * @param failedItems failed sharding items
      */
-    void registerJobCompleted(ShardingContexts shardingContexts);
+    void registerJobCompleted(ShardingContexts shardingContexts, Collection<Integer> failedItems);
     
     /**
      * Get sharding contexts.

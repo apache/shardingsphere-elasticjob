@@ -103,7 +103,7 @@ class ExecutionServiceTest {
     void assertRegisterJobCompletedWithoutMonitorExecution() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
-        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()));
+        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap()), Collections.emptySet());
         verify(jobNodeStorage, times(0)).removeJobNodeIfExisted(any());
         verify(jobNodeStorage, times(0)).createJobNodeIfNeeded(any());
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
@@ -113,9 +113,20 @@ class ExecutionServiceTest {
     void assertRegisterJobCompletedWithMonitorExecution() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
-        executionService.registerJobCompleted(getShardingContext());
+        executionService.registerJobCompleted(getShardingContext(), Collections.emptySet());
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
+        assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
+    }
+
+    @Test
+    void assertRegisterJobCompletedWithFailedItems() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
+        executionService.registerJobCompleted(getShardingContext(), Arrays.asList(1));
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
+        verify(jobNodeStorage, times(0)).removeJobNodeIfExisted("sharding/1/running");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
     }

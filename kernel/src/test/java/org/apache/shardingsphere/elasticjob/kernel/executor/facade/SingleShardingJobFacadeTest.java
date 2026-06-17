@@ -145,8 +145,8 @@ class SingleShardingJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverDisabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 1, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).cron("0/1 * * * * ?").failover(false).build());
-        singleShardingJobFacade.registerJobCompleted(shardingContexts);
-        verify(executionService).registerJobCompleted(shardingContexts);
+        singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService, times(0)).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
     
@@ -154,8 +154,8 @@ class SingleShardingJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverEnabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 1, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
-        singleShardingJobFacade.registerJobCompleted(shardingContexts);
-        verify(executionService).registerJobCompleted(shardingContexts);
+        singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
     
@@ -173,10 +173,9 @@ class SingleShardingJobFacadeTest {
         jobInstance2.setServerIp("192.168.1.3");
         availJobInst.add(jobInstance2);
         when(instanceService.getAvailableJobInstances()).thenReturn(availJobInst);
-        
-        singleShardingJobFacade.registerJobCompleted(shardingContexts);
-        
-        verify(executionService).registerJobCompleted(shardingContexts);
+
+        singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
         verify(jobNodeStorage).fillEphemeralJobNode("next-job-instance-ip", availJobInst.get(1).getServerIp());
     }
@@ -194,10 +193,10 @@ class SingleShardingJobFacadeTest {
         jobInstance2.setServerIp("192.168.1.3");
         availJobInst.add(jobInstance2);
         when(instanceService.getAvailableJobInstances()).thenReturn(availJobInst);
-        
-        singleShardingJobFacade.registerJobCompleted(shardingContexts);
-        
-        verify(executionService).registerJobCompleted(shardingContexts);
+
+        singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode("next-job-instance-ip", availJobInst.get(0).getServerIp());
     }

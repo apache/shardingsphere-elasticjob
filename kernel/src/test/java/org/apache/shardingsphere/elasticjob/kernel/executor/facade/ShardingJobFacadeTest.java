@@ -130,8 +130,8 @@ class ShardingJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverDisabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(false).build());
-        shardingJobFacade.registerJobCompleted(shardingContexts);
-        verify(executionService).registerJobCompleted(shardingContexts);
+        shardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService, times(0)).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
     
@@ -139,8 +139,8 @@ class ShardingJobFacadeTest {
     void assertRegisterJobCompletedWhenFailoverEnabled() {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.emptyMap());
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").failover(true).monitorExecution(true).build());
-        shardingJobFacade.registerJobCompleted(shardingContexts);
-        verify(executionService).registerJobCompleted(shardingContexts);
+        shardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
+        verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
     }
     
