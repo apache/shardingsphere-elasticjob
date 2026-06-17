@@ -173,7 +173,7 @@ class SingleShardingJobFacadeTest {
         jobInstance2.setServerIp("192.168.1.3");
         availJobInst.add(jobInstance2);
         when(instanceService.getAvailableJobInstances()).thenReturn(availJobInst);
-
+        
         singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
@@ -193,9 +193,9 @@ class SingleShardingJobFacadeTest {
         jobInstance2.setServerIp("192.168.1.3");
         availJobInst.add(jobInstance2);
         when(instanceService.getAvailableJobInstances()).thenReturn(availJobInst);
-
+        
         singleShardingJobFacade.registerJobCompleted(shardingContexts, Collections.emptySet());
-
+        
         verify(executionService).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(failoverService).updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode("next-job-instance-ip", availJobInst.get(0).getServerIp());

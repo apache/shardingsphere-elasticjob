@@ -81,7 +81,7 @@ public final class SingleShardingJobFacade extends AbstractJobFacade {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
     }
-
+    
     @Override
     public void registerJobCompleted(final ShardingContexts shardingContexts, final Collection<Integer> failedItems) {
         super.registerJobCompleted(shardingContexts, failedItems);

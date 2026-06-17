@@ -119,7 +119,7 @@ class ExecutionServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
     }
-
+    
     @Test
     void assertRegisterJobCompletedWithFailedItems() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
