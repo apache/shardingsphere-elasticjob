@@ -44,12 +44,7 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
           cache: 'maven'
-      - name: Build with Maven in Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -T1C
-      - name: Build with Maven in Linux or macOS
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+      - name: Build with Maven
         run: |
           ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -Pcheck -T1C
       - name: Upload coverage to Codecov
