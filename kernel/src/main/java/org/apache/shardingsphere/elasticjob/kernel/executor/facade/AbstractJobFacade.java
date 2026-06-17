@@ -118,12 +118,15 @@ abstract class AbstractJobFacade implements JobFacade {
      * Register job completed.
      *
      * @param shardingContexts sharding contexts
+     * @param failedItems failed sharding items
      */
     @Override
-    public void registerJobCompleted(final ShardingContexts shardingContexts) {
-        executionService.registerJobCompleted(shardingContexts);
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Collection<Integer> failedItems) {
+        executionService.registerJobCompleted(shardingContexts, failedItems);
         if (configService.load(true).isFailover()) {
-            failoverService.updateFailoverComplete(shardingContexts.getShardingItemParameters().keySet());
+            Collection<Integer> successItems = shardingContexts.getShardingItemParameters().keySet()
+                    .stream().filter(item -> !failedItems.contains(item)).collect(Collectors.toSet());
+            failoverService.updateFailoverComplete(successItems);
         }
     }
     

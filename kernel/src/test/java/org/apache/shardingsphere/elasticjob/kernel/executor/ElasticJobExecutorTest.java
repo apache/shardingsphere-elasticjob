@@ -139,7 +139,7 @@ class ElasticJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(eq(shardingContexts.getTaskId()), eq(State.TASK_ERROR), argThat(msg -> isValidErrorMessage(msg, shardingContexts)));
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobItemExecutor, times(shardingContexts.getShardingTotalCount())).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
-            verify(jobFacade).registerJobCompleted(shardingContexts);
+            verify(jobFacade).registerJobCompleted(eq(shardingContexts), argThat(items -> !items.isEmpty()));
         }
     }
     
@@ -202,7 +202,7 @@ class ElasticJobExecutorTest {
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
         verify(jobItemExecutor, times(4)).process(eq(fooJob), eq(jobConfig), eq(jobRuntimeService), any());
-        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts);
+        verify(jobFacade, times(2)).registerJobCompleted(shardingContexts, Collections.emptySet());
     }
     
     @Test
@@ -261,7 +261,7 @@ class ElasticJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
-        verify(jobFacade).registerJobCompleted(shardingContexts);
+        verify(jobFacade).registerJobCompleted(shardingContexts, Collections.emptySet());
         verify(jobFacade).afterJobExecuted(shardingContexts);
     }
 }

@@ -73,14 +73,17 @@ public final class ExecutionService {
      * Register job completed.
      * 
      * @param shardingContexts sharding contexts
+     * @param failedItems failed sharding items
      */
-    public void registerJobCompleted(final ShardingContexts shardingContexts) {
+    public void registerJobCompleted(final ShardingContexts shardingContexts, final Collection<Integer> failedItems) {
         JobRegistry.getInstance().setJobRunning(jobName, false);
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
+            if (!failedItems.contains(each)) {
+                jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
+            }
         }
     }
     
