@@ -19,10 +19,9 @@ package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.spring.namespace.EmbedTestingServerInitializer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.quartz.Scheduler;
@@ -41,10 +40,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml", initializers = JobSpringNamespaceWithTypeTest.ScriptCommandLineInitializer.class)
+@ContextConfiguration(locations = "classpath:META-INF/job/withJobType.xml", initializers = {EmbedTestingServerInitializer.class, JobSpringNamespaceWithTypeTest.ScriptCommandLineInitializer.class})
 class JobSpringNamespaceWithTypeTest {
-    
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
     
     private final String scriptJobName = "scriptElasticJob_job_type";
     
@@ -52,11 +49,6 @@ class JobSpringNamespaceWithTypeTest {
     private CoordinatorRegistryCenter regCenter;
     
     private Scheduler scheduler;
-    
-    @BeforeAll
-    static void init() {
-        EMBED_TESTING_SERVER.start();
-    }
     
     @AfterEach
     void tearDown() {
