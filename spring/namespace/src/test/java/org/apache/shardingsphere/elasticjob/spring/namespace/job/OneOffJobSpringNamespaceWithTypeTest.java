@@ -20,10 +20,9 @@ package org.apache.shardingsphere.elasticjob.spring.namespace.job;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
+import org.apache.shardingsphere.elasticjob.spring.namespace.EmbedTestingServerInitializer;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +39,9 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobType.xml", initializers = OneOffJobSpringNamespaceWithTypeTest.ScriptCommandLineInitializer.class)
+@ContextConfiguration(locations = "classpath:META-INF/job/oneOffWithJobType.xml",
+        initializers = {EmbedTestingServerInitializer.class, OneOffJobSpringNamespaceWithTypeTest.ScriptCommandLineInitializer.class})
 class OneOffJobSpringNamespaceWithTypeTest {
-    
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
     
     private final String scriptJobName = "oneOffScriptElasticJob_job_type";
     
@@ -52,11 +50,6 @@ class OneOffJobSpringNamespaceWithTypeTest {
     
     @Autowired
     private CoordinatorRegistryCenter regCenter;
-    
-    @BeforeAll
-    static void init() {
-        EMBED_TESTING_SERVER.start();
-    }
     
     @AfterEach
     void tearDown() {

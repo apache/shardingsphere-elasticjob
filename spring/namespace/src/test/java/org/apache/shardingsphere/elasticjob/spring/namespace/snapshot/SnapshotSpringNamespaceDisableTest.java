@@ -18,8 +18,7 @@
 package org.apache.shardingsphere.elasticjob.spring.namespace.snapshot;
 
 import org.apache.shardingsphere.elasticjob.kernel.internal.snapshot.SnapshotService;
-import org.apache.shardingsphere.elasticjob.test.util.EmbedTestingServer;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.shardingsphere.elasticjob.spring.namespace.EmbedTestingServerInitializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,15 +29,8 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotDisabled.xml")
+@ContextConfiguration(locations = "classpath:META-INF/snapshot/snapshotDisabled.xml", initializers = EmbedTestingServerInitializer.class)
 class SnapshotSpringNamespaceDisableTest {
-    
-    private static final EmbedTestingServer EMBED_TESTING_SERVER = new EmbedTestingServer(3181);
-    
-    @BeforeAll
-    static void init() {
-        EMBED_TESTING_SERVER.start();
-    }
     
     @Test
     void assertSnapshotDisable() {
