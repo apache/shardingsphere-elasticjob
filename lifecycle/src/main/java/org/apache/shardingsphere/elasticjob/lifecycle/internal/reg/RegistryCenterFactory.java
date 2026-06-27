@@ -24,11 +24,11 @@ import com.google.common.hash.Hashing;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.shardingsphere.elasticjob.reg.spi.RegistryCenterCreator;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class RegistryCenterFactory {
     
     private static final Map<HashCode, CoordinatorRegistryCenter> REG_CENTER_REGISTRY = new ConcurrentHashMap<>();
+    
+    private static final ServiceLoader<RegistryCenterCreator> CREATOR_LOADER = ServiceLoader.load(RegistryCenterCreator.class);
     
     /**
      * Create a {@link CoordinatorRegistryCenter} or return the existing one if there is one set up with the same {@code connectionString}, {@code namespace} and {@code digest} already.
@@ -64,10 +66,11 @@ public final class RegistryCenterFactory {
     private static CoordinatorRegistryCenter newCoordinatorRegistryCenter(final String connectString,
                                                                           final String namespace,
                                                                           final String digest) {
-        final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
-        if (!Strings.isNullOrEmpty(digest)) {
-            zkConfig.setDigest(digest);
+        for (RegistryCenterCreator creator : CREATOR_LOADER) {
+            if (creator.supports(connectString)) {
+                return creator.create(connectString, namespace, digest);
+            }
         }
-        return new ZookeeperRegistryCenter(zkConfig);
+        throw new IllegalArgumentException("No registry center creator found for connect string: " + connectString);
     }
 }

@@ -6,7 +6,7 @@
   ~ The ASF licenses this file to You under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
   ~ the License.  You may obtain a copy of the License at
-  ~
+  ~  
   ~     http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
@@ -20,29 +20,33 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob</artifactId>
+        <artifactId>elasticjob-regitry-center-provider</artifactId>
         <version>3.0.6-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-lifecycle</artifactId>
+    <artifactId>elasticjob-registry-center-etcd</artifactId>
     <name>${project.artifactId}</name>
     
     <dependencies>
         <dependency>
             <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-bootstrap</artifactId>
+            <artifactId>elasticjob-registry-center-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-registry-center-zookeeper-curator</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <groupId>io.etcd</groupId>
+            <artifactId>jetcd-core</artifactId>
         </dependency>
+        
         <dependency>
-            <groupId>org.apache.shardingsphere.elasticjob</groupId>
-            <artifactId>elasticjob-registry-center-etcd</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
@@ -50,11 +54,6 @@
             <artifactId>elasticjob-test-util</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
         </dependency>
     </dependencies>
 </project>

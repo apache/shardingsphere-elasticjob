@@ -13,24 +13,30 @@ ElasticJob has provided 3 kinds of configuration methods for different situation
 
 ## Registry Center Configuration
 
-### Configuration
+ElasticJob supports multiple types of registry centers. For detailed configuration, please refer to [Registry Center Configuration](/en/user-manual/configuration/registry-center).
 
-| Name                          | Data Type | Default Value | Description                                              |
-|-------------------------------|:----------|:--------------|:---------------------------------------------------------|
-| serverLists                   | String    |               | ZooKeeper server IP list                                 |
-| namespace                     | String    |               | ZooKeeper namespace                                      |
-| baseSleepTimeMilliseconds     | int       | 1000          | The initial value of milliseconds for the retry interval |
-| maxSleepTimeMilliseconds      | String    | 3000          | The maximum value of milliseconds for the retry interval |
-| maxRetries                    | String    | 3             | Maximum number of retries                                |
-| sessionTimeoutMilliseconds    | int       | 60000         | Session timeout in milliseconds                          |
-| connectionTimeoutMilliseconds | int       | 15000         | Connection timeout in milliseconds                       |
-| digest                        | String    | no need       | Permission token to connect to ZooKeeper                 |
+### Supported Registry Center Types
+
+| Registry Center Type | Description |
+|---------------------|-------------|
+| [ZooKeeper](/en/user-manual/configuration/registry-center/zookeeper) | Apache ZooKeeper, distributed coordination service |
+| [etcd](/en/user-manual/configuration/registry-center/etcd) | etcd3, distributed key-value store |
+
+### Common Configuration Properties
+
+| Name                          | Data Type | Description                                              |
+|-------------------------------|:----------|:---------------------------------------------------------|
+| serverLists                   | String    | Registry center server IP list                           |
+| namespace                     | String    | Registry center namespace                                |
+| connectionTimeoutMilliseconds | int       | Connection timeout in milliseconds                       |
 
 ### Core Configuration Description
 
 **serverLists:**
 
-Include IP and port, multiple addresses are separated by commas, such as: `host1:2181,host2:2181`
+Include IP and port, multiple addresses are separated by commas.
+- ZooKeeper: `host1:2181,host2:2181`
+- etcd: `http://host1:2379,http://host2:2379`
 
 ## Job Configuration
 
@@ -82,7 +88,7 @@ If the time error exceeds the configured seconds, an exception will be thrown wh
 
 **reconcileIntervalMinutes:**
 
-In a distributed system, due to network, clock and other reasons, ZooKeeper may be inconsistent with the actual running job. This inconsistency cannot be completely avoided through positive verification.
+In a distributed system, due to network, clock and other reasons, the registry center may be inconsistent with the actual running job. This inconsistency cannot be completely avoided through positive verification.
 It is necessary to start another thread to periodically calibrate the consistency between the registry center and the job status, that is, to maintain the final consistency of ElasticJob.
 
 Less than `1` means no repair is performed.

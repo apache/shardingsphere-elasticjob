@@ -3,6 +3,7 @@
 ### Enhancements
 
 1. Bump the JDK requirement for build time from JDK 8 to JDK 17 - [#2509](https://github.com/apache/shardingsphere-elasticjob/issues/2509)
+1. Registry Center: Support etcd3 as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 
 ## 3.0.5
 
