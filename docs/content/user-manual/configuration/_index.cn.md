@@ -13,24 +13,30 @@ ElasticJob 提供了 3 种配置方式，用于不同的使用场景。
 
 ## 注册中心配置项
 
-### 可配置属性
+ElasticJob 支持多种注册中心类型，详细配置请参见[注册中心配置](/cn/user-manual/configuration/registry-center)。
 
-| 属性名                           | 类型     | 缺省值   | 描述                  |
-|-------------------------------|:-------|:------|:--------------------|
-| serverLists                   | String |       | 连接 ZooKeeper 服务器的列表 |
-| namespace                     | String |       | ZooKeeper 的命名空间     |
-| baseSleepTimeMilliseconds     | int    | 1000  | 等待重试的间隔时间的初始毫秒数     |
-| maxSleepTimeMilliseconds      | String | 3000  | 等待重试的间隔时间的最大毫秒数     |
-| maxRetries                    | String | 3     | 最大重试次数              |
-| sessionTimeoutMilliseconds    | int    | 60000 | 会话超时毫秒数             |
-| connectionTimeoutMilliseconds | int    | 15000 | 连接超时毫秒数             |
-| digest                        | String | 无需验证  | 连接 ZooKeeper 的权限令牌  |
+### 支持的注册中心类型
+
+| 注册中心类型 | 说明 |
+|-------------|------|
+| [ZooKeeper](/cn/user-manual/configuration/registry-center/zookeeper) | Apache ZooKeeper，分布式协调服务 |
+| [etcd](/cn/user-manual/configuration/registry-center/etcd) | etcd3，分布式键值存储 |
+
+### 通用配置属性
+
+| 属性名                           | 类型     | 描述                  |
+|-------------------------------|:-------|:--------------------|
+| serverLists                   | String | 连接注册中心服务器的列表 |
+| namespace                     | String | 注册中心的命名空间     |
+| connectionTimeoutMilliseconds | int    | 连接超时毫秒数             |
 
 ### 核心配置项说明
 
 **serverLists:**
 
-包括 IP 地址和端口号，多个地址用逗号分隔，如: host1:2181,host2:2181
+包括 IP 地址和端口号，多个地址用逗号分隔。
+- ZooKeeper: `host1:2181,host2:2181`
+- etcd: `http://host1:2379,http://host2:2379`
 
 
 ## 作业配置项
@@ -83,7 +89,7 @@ ElasticJob 提供了 3 种配置方式，用于不同的使用场景。
 
 **reconcileIntervalMinutes:**
 
-在分布式的场景下由于网络、时钟等原因，可能导致 ZooKeeper 的数据与真实运行的作业产生不一致，这种不一致通过正向的校验无法完全避免。
+在分布式的场景下由于网络、时钟等原因，可能导致注册中心的数据与真实运行的作业产生不一致，这种不一致通过正向的校验无法完全避免。
 需要另外启动一个线程定时校验注册中心数据与真实作业状态的一致性，即维持 ElasticJob 的最终一致性。
 
 配置为小于 1 的任意值表示不执行修复。

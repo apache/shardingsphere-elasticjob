@@ -29,5 +29,6 @@
     
     <modules>
         <module>zookeeper-curator</module>
+        <module>etcd</module>
     </modules>
 </project>
