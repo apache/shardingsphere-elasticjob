@@ -15,7 +15,7 @@ GraalVM Native Build Tools 提供了 Maven Plugin 和 Gradle Plugin 来简化 Gr
 ElasticJob 要求在如下或更高版本的 `GraalVM CE` 完成构建 GraalVM Native Image。使用者可通过 `SDKMAN!` 快速切换 JDK。这同理
 适用于 https://sdkman.io/jdks#graal ， https://sdkman.io/jdks#nik 和 https://sdkman.io/jdks#mandrel 等 `GraalVM CE` 的下游发行版。
 
-- GraalVM CE For JDK 22.0.2，对应于 SDKMAN! 的 `22.0.2-graalce`
+- GraalVM CE For JDK 25.0.2，对应于 SDKMAN! 的 `25.0.2-graalce`
 
 用户依然可以使用 SDKMAN! 上的 `21.0.2-graalce` 等旧版本的 GraalVM CE 来构建 ElasticJob 的 GraalVM Native Image 产物。
 ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
@@ -42,7 +42,7 @@ ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.3</version>
+                <version>1.1.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -75,12 +75,12 @@ ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
 
 ```groovy
 plugins {
-   id 'org.graalvm.buildtools.native' version '0.10.3'
+   id 'org.graalvm.buildtools.native' version '1.1.3'
 }
 
 dependencies {
    implementation 'org.apache.shardingsphere.elasticjob:elasticjob-bootstrap:${elasticjob.version}'
-   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
@@ -108,12 +108,12 @@ graalvmNative {
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.3.4</version>
+            <version>3.5.16</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.3.4</version>
+            <version>3.5.16</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -123,7 +123,7 @@ graalvmNative {
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.3</version>
+                <version>1.1.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -145,7 +145,7 @@ graalvmNative {
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.3.4</version>
+                <version>3.5.16</version>
                 <executions>
                     <execution>
                         <id>process-test-aot</id>
@@ -169,9 +169,9 @@ graalvmNative {
 
 ```groovy
 plugins {
-    id 'org.springframework.boot' version '3.3.4'
-    id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.graalvm.buildtools.native' version '0.10.3'
+    id 'org.springframework.boot' version '3.5.16'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.graalvm.buildtools.native' version '1.1.3'
 }
 
 dependencies {
@@ -179,7 +179,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
-    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
+    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
@@ -247,8 +247,8 @@ ElasticJob 定义了 `nativeTestInElasticJob` 的 Maven Profile 用于为 `elast
 sudo apt install unzip zip curl sed -y
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 22.0.2-graalce
-sdk use java 22.0.2-graalce
+sdk install java 25.0.2-graalce
+sdk use java 25.0.2-graalce
 sudo apt-get install build-essential zlib1g-dev -y
 
 git clone git@github.com:apache/shardingsphere-elasticjob.git
@@ -282,5 +282,5 @@ ElasticJob 定义了 `generateMetadata` 的 Maven Profile 用于在 GraalVM JIT 
 ```bash
 git clone git@github.com:apache/shardingsphere.git
 cd ./shardingsphere/
-./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
+./mvnw -PgenerateMetadata -e -T1C clean test native:metadata-copy
 ```

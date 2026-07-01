@@ -16,7 +16,7 @@ GraalVM Native Build Tools provides Maven Plugin and Gradle Plugin to simplify t
 ElasticJob requires the following or higher versions of `GraalVM CE` to build the GraalVM Native Image. Users can quickly switch JDKs through `SDKMAN!`. 
 This also applies to downstream distributions of `GraalVM CE` such as https://sdkman.io/jdks#graal, https://sdkman.io/jdks#nik and https://sdkman.io/jdks#mandrel.
 
-- GraalVM CE For JDK 22.0.2, corresponding to `22.0.2-graalce` of SDKMAN!
+- GraalVM CE For JDK 25.0.2, corresponding to `25.0.2-graalce` of SDKMAN!
 
 Users can still use old versions of GraalVM CE such as `21.0.2-graalce` on SDKMAN! to build ElasticJob's GraalVM Native Image product.
 ElasticJob does not set CI for GraalVM CE versions that have stopped maintenance.
@@ -44,7 +44,7 @@ refer to the documentation of GraalVM Native Build Tools.
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.3</version>
+                <version>1.1.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -77,12 +77,12 @@ Refer to https://github.com/graalvm/native-build-tools/issues/572.
 
 ```groovy
 plugins {
-   id 'org.graalvm.buildtools.native' version '0.10.3'
+   id 'org.graalvm.buildtools.native' version '1.1.3'
 }
 
 dependencies {
    implementation 'org.apache.shardingsphere.elasticjob:elasticjob-bootstrap:${elasticjob.version}'
-   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
@@ -111,12 +111,12 @@ To configure additional Maven Profiles for the project, refer to the documentati
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.3.4</version>
+            <version>3.5.16</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.3.4</version>
+            <version>3.5.16</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -126,7 +126,7 @@ To configure additional Maven Profiles for the project, refer to the documentati
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.10.3</version>
+                <version>1.1.3</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -148,7 +148,7 @@ To configure additional Maven Profiles for the project, refer to the documentati
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.3.4</version>
+                <version>3.5.16</version>
                 <executions>
                     <execution>
                         <id>process-test-aot</id>
@@ -172,9 +172,9 @@ Refer to https://github.com/graalvm/native-build-tools/issues/572 .
 
 ```groovy
 plugins {
-    id 'org.springframework.boot' version '3.3.4'
-    id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.graalvm.buildtools.native' version '0.10.3'
+    id 'org.springframework.boot' version '3.5.16'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.graalvm.buildtools.native' version '1.1.3'
 }
 
 dependencies {
@@ -182,7 +182,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
-    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '0.10.3', classifier: 'repository', ext: 'zip')
+    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
@@ -251,8 +251,8 @@ Contributors must install Docker Engine to execute the `testcontainers-java` rel
 sudo apt install unzip zip curl sed -y
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 22.0.2-graalce
-sdk use java 22.0.2-graalce
+sdk install java 25.0.2-graalce
+sdk use java 25.0.2-graalce
 sudo apt-get install build-essential zlib1g-dev -y
 
 git clone git@github.com:apache/shardingsphere-elasticjob.git
@@ -287,5 +287,5 @@ contributors should place it in the classpath of the shardingsphere-test-native 
 ```bash
 git clone git@github.com:apache/shardingsphere.git
 cd ./shardingsphere/
-./mvnw -PgenerateMetadata -DskipNativeTests -e -T1C clean test native:metadata-copy
+./mvnw -PgenerateMetadata -e -T1C clean test native:metadata-copy
 ```

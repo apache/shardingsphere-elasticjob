@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
@@ -134,7 +135,12 @@ public final class ExecutionService {
     }
     
     private List<Integer> getAllItems() {
-        int shardingTotalCount = configService.load(true).getShardingTotalCount();
+        int shardingTotalCount;
+        try {
+            shardingTotalCount = configService.load(true).getShardingTotalCount();
+        } catch (final JobConfigurationException ex) {
+            return new ArrayList<>();
+        }
         List<Integer> result = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             result.add(i);

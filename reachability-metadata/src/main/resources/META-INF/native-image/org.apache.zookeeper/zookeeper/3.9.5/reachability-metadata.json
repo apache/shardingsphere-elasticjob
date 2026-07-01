@@ -1,0 +1,28 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.apache.zookeeper.server.quorum.QuorumPeerConfig"
+      },
+      "type": "org.apache.zookeeper.metrics.impl.DefaultMetricsProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.zookeeper.server.ServerCnxnFactory"
+      },
+      "type": "org.apache.zookeeper.server.NIOServerCnxnFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

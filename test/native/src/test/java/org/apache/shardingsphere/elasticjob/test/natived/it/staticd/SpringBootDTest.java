@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -59,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * Refer to <a href="https://github.com/spring-projects/spring-framework/issues/26196">spring-projects/spring-framework#26196</a> .
  */
 @DirtiesContext
-@SpringBootTest(webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = SpringBootDTest.TestApp.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnabledInNativeImage
 class SpringBootDTest {
     
@@ -139,5 +140,9 @@ class SpringBootDTest {
             firstJob.shutdown();
             secondJob.shutdown();
         });
+    }
+    
+    @SpringBootApplication(scanBasePackages = "org.apache.shardingsphere.elasticjob.test.natived")
+    static class TestApp {
     }
 }
