@@ -23,20 +23,22 @@ on:
     paths:
       - '.github/workflows/graalvm.yml'
       - 'reachability-metadata/src/**'
-      - 'test/native/**'
+      - 'test/native/native-image-filter/**'
+      - 'test/native/src/**'
+  workflow_dispatch:
 
 jobs:
   build:
     if: github.repository == 'apache/shardingsphere-elasticjob'
     strategy:
       matrix:
-        java: [ '22.0.2' ]
+        java: [ '25.0.2' ]
         os: [ 'ubuntu-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up GraalVM CE ${{ matrix.java }}
-        uses: graalvm/setup-graalvm@v1
+        uses: graalvm/setup-graalvm@6f3fa030c4b8f77c1f554a860f593a654538fa38
         with:
           java-version: ${{ matrix.java }}
           distribution: 'graalvm-community'
