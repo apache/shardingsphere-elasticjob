@@ -4,11 +4,13 @@
 
     {"excludeClasses": "com.**"},
     {"excludeClasses": "java.**"},
-    {"includeClasses": "java.util.Properties"},
     {"excludeClasses": "javax.**"},
+    {"excludeClasses": "kotlinx.**"},
     {"excludeClasses": "org.**"},
-    {"includeClasses": "org.apache.shardingsphere.elasticjob.**"},
     {"excludeClasses": "sun.**"},
+
+    {"includeClasses": "java.util.Properties"},
+    {"includeClasses": "org.apache.shardingsphere.elasticjob.**"},
 
     {"excludeClasses": "org.apache.shardingsphere.elasticjob.test.natived.**"}
   ],
