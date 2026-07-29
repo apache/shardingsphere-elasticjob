@@ -38,6 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.internal.configuration.plugins.Plugins;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -120,21 +121,26 @@ class EtcdRegistryCenterTest {
     }
     
     @Test
-    void assertCacheFallsBackToDirectReadAfterWatchError() {
+    void assertCacheFallsBackToDirectReadAfterWatchCompletion() {
         GetResponse response = mockSnapshotResponse();
         when(kvClient.get(eq(toByteSequence(CACHE_PATH + "/")), any(GetOption.class))).thenReturn(CompletableFuture.completedFuture(response));
         registryCenter.addCacheData(CACHE_PATH);
         ArgumentCaptor<Watch.Listener> listenerCaptor = ArgumentCaptor.forClass(Watch.Listener.class);
         verify(watchClient).watch(eq(toByteSequence(CACHE_PATH + "/")), any(WatchOption.class), listenerCaptor.capture());
-        listenerCaptor.getValue().onError(mock(Throwable.class));
+        listenerCaptor.getValue().onCompleted();
         GetResponse directResponse = mockDirectResponse("value-1");
         when(kvClient.get(toByteSequence(CACHE_KEY))).thenReturn(CompletableFuture.completedFuture(directResponse));
         assertThat(registryCenter.get(CACHE_KEY), is("value-1"));
     }
     
     @Test
-    void assertCacheRecoversAfterWatchReconnect() {
+    void assertCacheRetainsUnchangedDataAfterWatchReconnect() {
         GetResponse response = mockSnapshotResponse();
+        KeyValue cachedKeyValue = response.getKvs().get(0);
+        KeyValue unchangedKeyValue = mock(KeyValue.class);
+        when(unchangedKeyValue.getKey()).thenReturn(toByteSequence(CACHE_PATH + "/unchanged"));
+        when(unchangedKeyValue.getValue()).thenReturn(toByteSequence("stable"));
+        when(response.getKvs()).thenReturn(Arrays.asList(cachedKeyValue, unchangedKeyValue));
         when(kvClient.get(eq(toByteSequence(CACHE_PATH + "/")), any(GetOption.class))).thenReturn(CompletableFuture.completedFuture(response));
         registryCenter.addCacheData(CACHE_PATH);
         ArgumentCaptor<Watch.Listener> listenerCaptor = ArgumentCaptor.forClass(Watch.Listener.class);
@@ -142,6 +148,32 @@ class EtcdRegistryCenterTest {
         listenerCaptor.getValue().onError(mock(Throwable.class));
         listenerCaptor.getValue().onNext(mockWatchResponse(WatchEvent.EventType.PUT, "value-1"));
         assertThat(registryCenter.get(CACHE_KEY), is("value-1"));
+        assertThat(registryCenter.get(CACHE_PATH + "/unchanged"), is("stable"));
+    }
+    
+    @Test
+    void assertDifferentCacheSnapshotsDoNotBlockEachOther() throws Exception {
+        CompletableFuture<GetResponse> firstSnapshot = new CompletableFuture<>();
+        CountDownLatch firstSnapshotStarted = new CountDownLatch(1);
+        doAnswer(invocation -> {
+            firstSnapshotStarted.countDown();
+            return firstSnapshot;
+        }).when(kvClient).get(eq(toByteSequence("/job-a/")), any(GetOption.class));
+        GetResponse emptySnapshot = mock(GetResponse.class);
+        when(emptySnapshot.getKvs()).thenReturn(Collections.emptyList());
+        Response.Header header = mock(Response.Header.class);
+        when(header.getRevision()).thenReturn(10L);
+        when(emptySnapshot.getHeader()).thenReturn(header);
+        when(kvClient.get(eq(toByteSequence("/job-b/")), any(GetOption.class))).thenReturn(CompletableFuture.completedFuture(emptySnapshot));
+        CompletableFuture<Void> firstRegistration = CompletableFuture.runAsync(() -> registryCenter.addCacheData("/job-a"));
+        assertThat(firstSnapshotStarted.await(5L, TimeUnit.SECONDS), is(true));
+        CompletableFuture<Void> secondRegistration = CompletableFuture.runAsync(() -> registryCenter.addCacheData("/job-b"));
+        try {
+            secondRegistration.get(5L, TimeUnit.SECONDS);
+        } finally {
+            firstSnapshot.complete(emptySnapshot);
+            firstRegistration.get(5L, TimeUnit.SECONDS);
+        }
     }
     
     @Test
