@@ -29,19 +29,26 @@ import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.WatchOption;
 import io.etcd.jetcd.watch.WatchEvent;
 import io.etcd.jetcd.watch.WatchResponse;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.internal.configuration.plugins.Plugins;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -131,6 +138,61 @@ class EtcdRegistryCenterTest {
         GetResponse directResponse = mockDirectResponse("value-1");
         when(kvClient.get(toByteSequence(CACHE_KEY))).thenReturn(CompletableFuture.completedFuture(directResponse));
         assertThat(registryCenter.get(CACHE_KEY), is("value-1"));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    void assertCacheRetainedAfterPreviousWatchCompletion() throws Exception {
+        GetResponse initialResponse = mockSnapshotResponse();
+        GetResponse refreshedResponse = mockSnapshotResponse();
+        KeyValue refreshedKeyValue = refreshedResponse.getKvs().get(0);
+        when(refreshedKeyValue.getValue()).thenReturn(toByteSequence("value-1"));
+        when(kvClient.get(eq(toByteSequence(CACHE_PATH + "/")), any(GetOption.class))).thenReturn(
+                CompletableFuture.completedFuture(initialResponse), CompletableFuture.completedFuture(refreshedResponse));
+        Map<String, ByteSequence> cachedValues = new ConcurrentHashMap<>();
+        Map<String, ByteSequence> blockingCache = mock(Map.class, AdditionalAnswers.delegatesTo(cachedValues));
+        CountDownLatch evictionStarted = new CountDownLatch(1);
+        CountDownLatch continueEviction = new CountDownLatch(1);
+        doAnswer(invocation -> {
+            evictionStarted.countDown();
+            if (!continueEviction.await(5L, TimeUnit.SECONDS)) {
+                throw new IllegalStateException("Timed out waiting to continue cache eviction");
+            }
+            return cachedValues.remove((String) invocation.getArgument(0));
+        }).when(blockingCache).remove(CACHE_KEY);
+        Plugins.getMemberAccessor().set(EtcdRegistryCenter.class.getDeclaredField("cache"), registryCenter, blockingCache);
+        registryCenter.addCacheData(CACHE_PATH);
+        ArgumentCaptor<Watch.Listener> listenerCaptor = ArgumentCaptor.forClass(Watch.Listener.class);
+        verify(watchClient).watch(eq(toByteSequence(CACHE_PATH + "/")), any(WatchOption.class), listenerCaptor.capture());
+        FutureTask<Void> completionTask = new FutureTask<>(() -> {
+            listenerCaptor.getValue().onCompleted();
+            return null;
+        });
+        Thread completionThread = new Thread(completionTask);
+        completionThread.start();
+        assertThat(evictionStarted.await(5L, TimeUnit.SECONDS), is(true));
+        FutureTask<Void> registrationTask = new FutureTask<>(() -> {
+            registryCenter.addCacheData(CACHE_PATH);
+            return null;
+        });
+        Thread registrationThread = new Thread(registrationTask);
+        registrationThread.start();
+        try {
+            Awaitility.await().atMost(5L, TimeUnit.SECONDS).until(() -> {
+                ByteSequence cachedValue = cachedValues.get(CACHE_KEY);
+                boolean refreshedValueCached = null != cachedValue && "value-1".equals(cachedValue.toString(StandardCharsets.UTF_8));
+                ThreadInfo threadInfo = ManagementFactory.getThreadMXBean().getThreadInfo(registrationThread.getId());
+                boolean registrationBlockedByCompletion =
+                        null != threadInfo && Thread.State.BLOCKED == threadInfo.getThreadState() && completionThread.getId() == threadInfo.getLockOwnerId();
+                return refreshedValueCached || registrationBlockedByCompletion;
+            });
+        } finally {
+            continueEviction.countDown();
+            completionTask.get(5L, TimeUnit.SECONDS);
+            registrationTask.get(5L, TimeUnit.SECONDS);
+        }
+        Map<String, ByteSequence> actualCache = (Map<String, ByteSequence>) registryCenter.getRawCache(CACHE_PATH);
+        assertThat(actualCache.get(CACHE_KEY), is(toByteSequence("value-1")));
     }
     
     @Test

@@ -377,7 +377,7 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                 previousListener.close();
                 previousListener.evictCacheEntries();
             }
-            EtcdCacheWatchListener listener = new EtcdCacheWatchListener(prefix);
+            EtcdCacheWatchListener listener = new EtcdCacheWatchListener(prefix, cacheLock);
             try {
                 GetOption option = GetOption.builder()
                         .isPrefix(true)
@@ -541,14 +541,17 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         
         private final String prefix;
         
+        private final Object cacheLock;
+        
         private final Set<String> cachedKeys = ConcurrentHashMap.newKeySet();
         
         private Watcher watcher;
         
         private boolean active = true;
         
-        EtcdCacheWatchListener(final String prefix) {
+        EtcdCacheWatchListener(final String prefix, final Object cacheLock) {
             this.prefix = prefix;
+            this.cacheLock = cacheLock;
         }
         
         void setWatcher(final Watcher watcher) {
@@ -626,8 +629,11 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                 }
                 active = false;
             }
-            cacheWatches.remove(prefix, this);
-            evictCacheEntries();
+            synchronized (cacheLock) {
+                if (cacheWatches.remove(prefix, this)) {
+                    evictCacheEntries();
+                }
+            }
             log.warn("Cache watch completed for key: {}", prefix);
         }
     }
