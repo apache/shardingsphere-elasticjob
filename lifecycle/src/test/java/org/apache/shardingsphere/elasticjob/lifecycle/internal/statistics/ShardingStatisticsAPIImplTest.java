@@ -30,6 +30,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,9 @@ class ShardingStatisticsAPIImplTest {
         when(regCenter.get("/test_job/instances/ip2@-@2341")).thenReturn("jobInstanceId: ip2@-@2341\nserverIp: ip2\n");
         when(regCenter.get("/test_job/instances/ip3@-@3412")).thenReturn("jobInstanceId: ip3@-@3412\nserverIp: ip3\n");
         when(regCenter.get("/test_job/instances/ip4@-@4123")).thenReturn("jobInstanceId: ip4@-@4123\nserverIp: ip4\n");
+        when(regCenter.getDirectly("/test_job/instances/ip1@-@1234")).thenReturn("jobInstanceId: ip1@-@1234\nserverIp: ip1\n");
+        when(regCenter.getDirectly("/test_job/instances/ip3@-@3412")).thenReturn("jobInstanceId: ip3@-@3412\nserverIp: ip3\n");
+        when(regCenter.getDirectly("/test_job/instances/ip4@-@4123")).thenReturn("jobInstanceId: ip4@-@4123\nserverIp: ip4\n");
         when(regCenter.isExisted("/test_job/instances/ip4@-@4123")).thenReturn(true);
         when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
         when(regCenter.isExisted("/test_job/sharding/1/running")).thenReturn(false);
@@ -84,8 +88,8 @@ class ShardingStatisticsAPIImplTest {
                 case 2:
                     assertTrue(each.isFailover());
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
-                    assertThat(each.getServerIp(), is("ip2"));
-                    assertThat(each.getInstanceId(), is("ip2@-@2341"));
+                    assertNull(each.getServerIp());
+                    assertNull(each.getInstanceId());
                     break;
                 case 3:
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.DISABLED));

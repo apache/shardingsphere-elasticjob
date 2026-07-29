@@ -96,8 +96,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
         if (null != jobName && null != serverIp) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
-                JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
-                if (serverIp.equals(jobInstance.getServerIp())) {
+                if (isInstanceOnServer(jobNodePath, each, serverIp)) {
                     regCenter.remove(jobNodePath.getInstanceNodePath(each));
                 }
             }
@@ -112,13 +111,17 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                 JobNodePath jobNodePath = new JobNodePath(job);
                 List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
                 for (String each : instances) {
-                    JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
-                    if (serverIp.equals(jobInstance.getServerIp())) {
+                    if (isInstanceOnServer(jobNodePath, each, serverIp)) {
                         regCenter.remove(jobNodePath.getInstanceNodePath(each));
                     }
                 }
             }
         }
+    }
+    
+    private boolean isInstanceOnServer(final JobNodePath jobNodePath, final String instanceId, final String serverIp) {
+        String instanceData = regCenter.getDirectly(jobNodePath.getInstanceNodePath(instanceId));
+        return null != instanceData && serverIp.equals(YamlEngine.unmarshal(instanceData, JobInstance.class).getServerIp());
     }
     
     @Override

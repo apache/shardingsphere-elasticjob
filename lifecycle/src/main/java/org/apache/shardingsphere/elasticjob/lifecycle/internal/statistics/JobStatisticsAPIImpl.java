@@ -160,7 +160,11 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
         for (String each : instances) {
-            JobInstance jobInstance = YamlEngine.unmarshal(regCenter.get(jobNodePath.getInstanceNodePath(each)), JobInstance.class);
+            String instanceData = regCenter.getDirectly(jobNodePath.getInstanceNodePath(each));
+            if (null == instanceData) {
+                continue;
+            }
+            JobInstance jobInstance = YamlEngine.unmarshal(instanceData, JobInstance.class);
             if (ip.equals(jobInstance.getServerIp())) {
                 result++;
             }

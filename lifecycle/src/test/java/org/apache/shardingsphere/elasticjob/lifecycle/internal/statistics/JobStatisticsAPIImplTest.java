@@ -161,7 +161,7 @@ class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job_2/servers/ip1")).thenReturn("ENABLED");
         when(regCenter.getDirectly("/test_job_2/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Collections.singletonList("ip1@-@defaultInstance"));
-        when(regCenter.get("/test_job_1/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
+        when(regCenter.getDirectly("/test_job_1/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
         int i = 0;
         for (JobBriefInfo each : jobStatisticsAPI.getJobsBriefInfo("ip1")) {
             assertThat(each.getJobName(), is("test_job_" + ++i));
@@ -173,5 +173,15 @@ class JobStatisticsAPIImplTest {
                 assertThat(each.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
             }
         }
+    }
+    
+    @Test
+    void assertGetJobsBriefInfoByIpWhenInstanceDisappears() {
+        when(regCenter.getChildrenKeys("/")).thenReturn(Collections.singletonList("test_job"));
+        when(regCenter.isExisted("/test_job/servers/ip1")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Collections.singletonList("ip1@-@defaultInstance"));
+        when(regCenter.get("/test_job/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
+        JobBriefInfo actual = jobStatisticsAPI.getJobsBriefInfo("ip1").iterator().next();
+        assertThat(actual.getInstanceCount(), is(0));
     }
 }
