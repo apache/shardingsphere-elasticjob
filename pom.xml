@@ -74,7 +74,7 @@
         <zookeeper.version>3.9.5</zookeeper.version>
         <curator.version>5.9.0</curator.version>
         <jetcd.version>0.7.7</jetcd.version>
-        <grpc.version>1.81.0</grpc.version>
+        <grpc.version>1.82.2</grpc.version>
         
         <mail.version>1.6.0</mail.version>
         <commons-codec.version>1.16.0</commons-codec.version>
@@ -82,7 +82,7 @@
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore.version>4.4.16</httpcore.version>
         
-        <netty.version>4.1.132.Final</netty.version>
+        <netty.version>4.1.136.Final</netty.version>
         
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.13</logback.version>
