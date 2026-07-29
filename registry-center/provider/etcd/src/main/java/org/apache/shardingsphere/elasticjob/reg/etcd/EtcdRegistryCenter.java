@@ -71,6 +71,8 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     private final Map<String, ByteSequence> cache = new ConcurrentHashMap<>();
     
+    private final Map<String, EtcdCacheWatchListener> cacheWatches = new ConcurrentHashMap<>();
+    
     private final Map<String, List<Watcher>> watches = new ConcurrentHashMap<>();
     
     private final Map<String, List<ConnectionStateChangedEventListener>> connStateListeners = new ConcurrentHashMap<>();
@@ -129,7 +131,11 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
             }
         }
         leaseIdMap.clear();
-        cache.clear();
+        synchronized (cacheWatches) {
+            cacheWatches.values().forEach(EtcdCacheWatchListener::close);
+            cacheWatches.clear();
+            cache.clear();
+        }
         for (List<Watcher> watchList : watches.values()) {
             watchList.forEach(Watcher::close);
         }
@@ -348,25 +354,50 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public void addCacheData(final String cachePath) {
-        try {
-            String prefix = cachePath.endsWith("/") ? cachePath : cachePath + "/";
-            GetOption option = GetOption.newBuilder()
-                    .withPrefix(toByteSequence(prefix))
-                    .build();
-            GetResponse response = kvClient.get(toByteSequence(prefix), option).get();
-            for (KeyValue kv : response.getKvs()) {
-                cache.put(kv.getKey().toString(StandardCharsets.UTF_8), kv.getValue());
+        String prefix = cachePath.endsWith("/") ? cachePath : cachePath + "/";
+        synchronized (cacheWatches) {
+            EtcdCacheWatchListener previousListener = cacheWatches.remove(prefix);
+            if (null != previousListener) {
+                previousListener.close();
             }
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
+            evictCacheEntries(prefix);
+            try {
+                GetOption option = GetOption.builder()
+                        .isPrefix(true)
+                        .build();
+                GetResponse response = kvClient.get(toByteSequence(prefix), option).get();
+                for (KeyValue kv : response.getKvs()) {
+                    cache.put(kv.getKey().toString(StandardCharsets.UTF_8), kv.getValue());
+                }
+                WatchOption watchOption = WatchOption.builder()
+                        .isPrefix(true)
+                        .withRevision(response.getHeader().getRevision() + 1L)
+                        .build();
+                EtcdCacheWatchListener listener = new EtcdCacheWatchListener(prefix);
+                listener.setWatcher(client.getWatchClient().watch(toByteSequence(prefix), watchOption, listener));
+                cacheWatches.put(prefix, listener);
+                // CHECKSTYLE:OFF
+            } catch (final Exception ex) {
+                // CHECKSTYLE:ON
+                evictCacheEntries(prefix);
+                RegExceptionHandler.handleException(ex);
+            }
         }
     }
     
     @Override
     public void evictCacheData(final String cachePath) {
         String prefix = cachePath.endsWith("/") ? cachePath : cachePath + "/";
+        synchronized (cacheWatches) {
+            EtcdCacheWatchListener listener = cacheWatches.remove(prefix);
+            if (null != listener) {
+                listener.close();
+            }
+            evictCacheEntries(prefix);
+        }
+    }
+    
+    private void evictCacheEntries(final String prefix) {
         cache.entrySet().removeIf(entry -> entry.getKey().startsWith(prefix));
     }
     
@@ -476,6 +507,66 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         @Override
         public void onCompleted() {
             log.debug("Watch completed for key: {}", key);
+        }
+    }
+    
+    private class EtcdCacheWatchListener implements Watch.Listener {
+        
+        private final String prefix;
+        
+        private Watcher watcher;
+        
+        private boolean active = true;
+        
+        EtcdCacheWatchListener(final String prefix) {
+            this.prefix = prefix;
+        }
+        
+        synchronized void setWatcher(final Watcher watcher) {
+            this.watcher = watcher;
+        }
+        
+        synchronized void close() {
+            active = false;
+            if (null != watcher) {
+                watcher.close();
+            }
+        }
+        
+        @Override
+        public synchronized void onNext(final WatchResponse response) {
+            if (!active) {
+                return;
+            }
+            for (WatchEvent event : response.getEvents()) {
+                String eventKey = event.getKeyValue().getKey().toString(StandardCharsets.UTF_8);
+                switch (event.getEventType()) {
+                    case PUT:
+                        cache.put(eventKey, event.getKeyValue().getValue());
+                        break;
+                    case DELETE:
+                        cache.remove(eventKey);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        
+        @Override
+        public synchronized void onError(final Throwable throwable) {
+            if (active) {
+                evictCacheEntries(prefix);
+                log.error("Cache watch error for key: {}", prefix, throwable);
+            }
+        }
+        
+        @Override
+        public synchronized void onCompleted() {
+            if (active) {
+                evictCacheEntries(prefix);
+                log.debug("Cache watch completed for key: {}", prefix);
+            }
         }
     }
 }
