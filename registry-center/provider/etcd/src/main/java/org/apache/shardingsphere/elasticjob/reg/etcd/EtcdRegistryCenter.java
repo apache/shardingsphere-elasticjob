@@ -52,6 +52,7 @@ import org.apache.shardingsphere.elasticjob.reg.listener.DataChangedEventListene
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -67,6 +68,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
+    private static final int CACHE_LOCK_STRIPE_COUNT = 64;
+    
     @Getter(AccessLevel.PROTECTED)
     private final EtcdConfiguration etcdConfig;
     
@@ -74,7 +77,7 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     private final Map<String, EtcdCacheWatchListener> cacheWatches = new ConcurrentHashMap<>();
     
-    private final Map<String, Object> cacheLocks = new ConcurrentHashMap<>();
+    private final Object[] cacheLocks = new Object[CACHE_LOCK_STRIPE_COUNT];
     
     private final Map<String, List<Watcher>> watches = new ConcurrentHashMap<>();
     
@@ -97,6 +100,7 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     public EtcdRegistryCenter(final EtcdConfiguration etcdConfig) {
         this.etcdConfig = etcdConfig;
+        Arrays.setAll(cacheLocks, ignored -> new Object());
     }
     
     @Override
@@ -144,7 +148,6 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         }
         cacheWatchListeners.forEach(EtcdCacheWatchListener::close);
         cache.clear();
-        cacheLocks.clear();
         for (List<Watcher> watchList : watches.values()) {
             watchList.forEach(Watcher::close);
         }
@@ -364,7 +367,7 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public void addCacheData(final String cachePath) {
         String prefix = cachePath.endsWith("/") ? cachePath : cachePath + "/";
-        Object cacheLock = cacheLocks.computeIfAbsent(prefix, key -> new Object());
+        Object cacheLock = getCacheLock(prefix);
         synchronized (cacheLock) {
             if (closed) {
                 return;
@@ -415,7 +418,7 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public void evictCacheData(final String cachePath) {
         String prefix = cachePath.endsWith("/") ? cachePath : cachePath + "/";
-        Object cacheLock = cacheLocks.computeIfAbsent(prefix, key -> new Object());
+        Object cacheLock = getCacheLock(prefix);
         synchronized (cacheLock) {
             EtcdCacheWatchListener listener;
             synchronized (cacheWatches) {
@@ -426,6 +429,10 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                 listener.evictCacheEntries();
             }
         }
+    }
+    
+    private Object getCacheLock(final String prefix) {
+        return cacheLocks[Math.floorMod(prefix.hashCode(), cacheLocks.length)];
     }
     
     @Override

@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -193,6 +194,25 @@ class EtcdRegistryCenterTest {
         }
         Map<String, ByteSequence> actualCache = (Map<String, ByteSequence>) registryCenter.getRawCache(CACHE_PATH);
         assertThat(actualCache.get(CACHE_KEY), is(toByteSequence("value-1")));
+    }
+    
+    @Test
+    void assertCacheLocksAreBounded() throws ReflectiveOperationException {
+        GetResponse response = mock(GetResponse.class);
+        when(response.getKvs()).thenReturn(Collections.emptyList());
+        Response.Header header = mock(Response.Header.class);
+        when(header.getRevision()).thenReturn(10L);
+        when(response.getHeader()).thenReturn(header);
+        when(kvClient.get(any(ByteSequence.class), any(GetOption.class))).thenReturn(CompletableFuture.completedFuture(response));
+        int cachePathCount = 128;
+        for (int each = 0; each < cachePathCount; each++) {
+            String cachePath = "/job-" + each;
+            registryCenter.addCacheData(cachePath);
+            registryCenter.evictCacheData(cachePath);
+        }
+        Object cacheLocks = Plugins.getMemberAccessor().get(EtcdRegistryCenter.class.getDeclaredField("cacheLocks"), registryCenter);
+        int actualCacheLockCount = cacheLocks instanceof Map ? ((Map<?, ?>) cacheLocks).size() : ((Object[]) cacheLocks).length;
+        assertThat(actualCacheLockCount, lessThan(cachePathCount));
     }
     
     @Test
