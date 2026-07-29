@@ -526,10 +526,14 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
             this.watcher = watcher;
         }
         
-        synchronized void close() {
-            active = false;
-            if (null != watcher) {
-                watcher.close();
+        void close() {
+            Watcher watcherToClose;
+            synchronized (this) {
+                active = false;
+                watcherToClose = watcher;
+            }
+            if (null != watcherToClose) {
+                watcherToClose.close();
             }
         }
         

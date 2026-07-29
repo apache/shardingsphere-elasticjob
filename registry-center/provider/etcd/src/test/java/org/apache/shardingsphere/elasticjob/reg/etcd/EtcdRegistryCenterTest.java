@@ -40,12 +40,15 @@ import org.mockito.internal.configuration.plugins.Plugins;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -164,6 +167,44 @@ class EtcdRegistryCenterTest {
         registryCenter.close();
         verify(watcher).close();
         verify(client).close();
+    }
+    
+    @Test
+    void assertCacheWatcherCloseWithoutDeadlockOnWatchError() throws InterruptedException {
+        GetResponse response = mockSnapshotResponse();
+        when(kvClient.get(eq(toByteSequence(CACHE_PATH + "/")), any(GetOption.class))).thenReturn(CompletableFuture.completedFuture(response));
+        registryCenter.addCacheData(CACHE_PATH);
+        ArgumentCaptor<Watch.Listener> listenerCaptor = ArgumentCaptor.forClass(Watch.Listener.class);
+        verify(watchClient).watch(eq(toByteSequence(CACHE_PATH + "/")), any(WatchOption.class), listenerCaptor.capture());
+        Object watchLock = new Object();
+        CountDownLatch watchLockAcquired = new CountDownLatch(1);
+        CountDownLatch closeStarted = new CountDownLatch(1);
+        CompletableFuture<Void> continueErrorCallback = new CompletableFuture<>();
+        doAnswer(invocation -> {
+            closeStarted.countDown();
+            synchronized (watchLock) {
+                return null;
+            }
+        }).when(watcher).close();
+        CountDownLatch errorCallbackCompleted = new CountDownLatch(1);
+        CompletableFuture.runAsync(() -> {
+            synchronized (watchLock) {
+                watchLockAcquired.countDown();
+                continueErrorCallback.join();
+                listenerCaptor.getValue().onError(new RuntimeException("watch failed"));
+            }
+            errorCallbackCompleted.countDown();
+        });
+        assertThat(watchLockAcquired.await(5L, TimeUnit.SECONDS), is(true));
+        CountDownLatch evictionCompleted = new CountDownLatch(1);
+        CompletableFuture.runAsync(() -> {
+            registryCenter.evictCacheData(CACHE_PATH);
+            evictionCompleted.countDown();
+        });
+        assertThat(closeStarted.await(5L, TimeUnit.SECONDS), is(true));
+        continueErrorCallback.complete(null);
+        assertThat(errorCallbackCompleted.await(5L, TimeUnit.SECONDS), is(true));
+        assertThat(evictionCompleted.await(5L, TimeUnit.SECONDS), is(true));
     }
     
     private GetResponse mockSnapshotResponse() {
