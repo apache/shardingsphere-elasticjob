@@ -32,6 +32,7 @@ import java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,12 +61,16 @@ class ServerStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.get("/test_job1/servers/ip1")).thenReturn("DISABLED");
-        when(regCenter.get("/test_job1/servers/ip2")).thenReturn("");
+        lenient().when(regCenter.get("/test_job1/servers/ip1")).thenReturn("ENABLED");
+        lenient().when(regCenter.get("/test_job1/servers/ip2")).thenReturn("ENABLED");
+        lenient().when(regCenter.get("/test_job2/servers/ip1")).thenReturn("ENABLED");
+        lenient().when(regCenter.get("/test_job2/servers/ip2")).thenReturn("ENABLED");
+        when(regCenter.getDirectly("/test_job1/servers/ip1")).thenReturn("DISABLED");
+        when(regCenter.getDirectly("/test_job1/servers/ip2")).thenReturn("");
         when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Collections.singletonList("ip1@-@defaultInstance"));
         
-        when(regCenter.get("/test_job2/servers/ip1")).thenReturn("DISABLED");
-        when(regCenter.get("/test_job2/servers/ip2")).thenReturn("DISABLED");
+        when(regCenter.getDirectly("/test_job2/servers/ip1")).thenReturn("DISABLED");
+        when(regCenter.getDirectly("/test_job2/servers/ip2")).thenReturn("DISABLED");
         when(regCenter.get("/test_job1/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
         when(regCenter.get("/test_job2/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
         when(regCenter.get("/test_job2/instances/ip2@-@defaultInstance2")).thenReturn("jobInstanceId: ip2@-@defaultInstance2\nserverIp: ip2\n");

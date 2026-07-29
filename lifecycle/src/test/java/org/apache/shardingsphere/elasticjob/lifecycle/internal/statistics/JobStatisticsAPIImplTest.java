@@ -77,7 +77,7 @@ class JobStatisticsAPIImplTest {
     void assertGetOKJobBriefInfoWithPartialDisabledServer() {
         when(regCenter.getDirectly("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
+        when(regCenter.getDirectly("/test_job/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1"));
         when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
@@ -90,8 +90,10 @@ class JobStatisticsAPIImplTest {
     void assertGetDisabledJobBriefInfo() {
         when(regCenter.getDirectly("/test_job/config")).thenReturn(LifecycleYamlConstants.getSimpleJobYaml("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.get("/test_job/servers/ip1")).thenReturn("DISABLED");
-        when(regCenter.get("/test_job/servers/ip2")).thenReturn("DISABLED");
+        when(regCenter.get("/test_job/servers/ip1")).thenReturn("ENABLED");
+        when(regCenter.get("/test_job/servers/ip2")).thenReturn("ENABLED");
+        when(regCenter.getDirectly("/test_job/servers/ip1")).thenReturn("DISABLED");
+        when(regCenter.getDirectly("/test_job/servers/ip2")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
@@ -155,7 +157,8 @@ class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2", "test_job_3"));
         when(regCenter.isExisted("/test_job_1/servers/ip1")).thenReturn(true);
         when(regCenter.isExisted("/test_job_2/servers/ip1")).thenReturn(true);
-        when(regCenter.get("/test_job_2/servers/ip1")).thenReturn("DISABLED");
+        when(regCenter.get("/test_job_2/servers/ip1")).thenReturn("ENABLED");
+        when(regCenter.getDirectly("/test_job_2/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Collections.singletonList("ip1@-@defaultInstance"));
         when(regCenter.get("/test_job_1/instances/ip1@-@defaultInstance")).thenReturn("jobInstanceId: ip1@-@defaultInstance\nserverIp: ip1\n");
         int i = 0;
