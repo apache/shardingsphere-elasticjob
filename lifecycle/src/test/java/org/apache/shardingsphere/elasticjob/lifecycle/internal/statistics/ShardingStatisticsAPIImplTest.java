@@ -50,10 +50,15 @@ class ShardingStatisticsAPIImplTest {
     @Test
     void assertGetShardingInfo() {
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2", "3"));
-        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@1234");
+        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip0@-@0000");
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@2341");
         when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@3412");
         when(regCenter.get("/test_job/sharding/3/instance")).thenReturn("ip4@-@4123");
+        when(regCenter.getDirectly("/test_job/sharding/0/instance")).thenReturn("ip1@-@1234");
+        when(regCenter.getDirectly("/test_job/sharding/1/instance")).thenReturn("ip2@-@2341");
+        when(regCenter.getDirectly("/test_job/sharding/2/instance")).thenReturn("ip3@-@3412");
+        when(regCenter.getDirectly("/test_job/sharding/3/instance")).thenReturn("ip4@-@4123");
+        when(regCenter.get("/test_job/instances/ip0@-@0000")).thenReturn("jobInstanceId: ip0@-@0000\nserverIp: ip0\n");
         when(regCenter.get("/test_job/instances/ip1@-@1234")).thenReturn("jobInstanceId: ip1@-@1234\nserverIp: ip1\n");
         when(regCenter.get("/test_job/instances/ip2@-@2341")).thenReturn("jobInstanceId: ip2@-@2341\nserverIp: ip2\n");
         when(regCenter.get("/test_job/instances/ip3@-@3412")).thenReturn("jobInstanceId: ip3@-@3412\nserverIp: ip3\n");

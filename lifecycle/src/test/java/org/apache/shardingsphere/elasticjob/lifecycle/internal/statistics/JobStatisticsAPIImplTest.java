@@ -60,9 +60,10 @@ class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip2@-@defaultInstance");
+        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip3@-@oldInstance");
+        when(regCenter.getDirectly("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/1/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/2/instance")).thenReturn("ip2@-@defaultInstance");
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getJobName(), is("test_job"));
@@ -80,8 +81,8 @@ class JobStatisticsAPIImplTest {
         when(regCenter.getDirectly("/test_job/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1"));
-        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.OK));
     }
@@ -105,9 +106,9 @@ class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
-        when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job/sharding/2/instance")).thenReturn("ip3@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.SHARDING_FLAG));
     }
@@ -133,11 +134,11 @@ class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
         when(regCenter.getChildrenKeys("/test_job_1/sharding")).thenReturn(Arrays.asList("0", "1"));
-        when(regCenter.get("/test_job_1/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
-        when(regCenter.get("/test_job_1/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job_1/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job_1/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         when(regCenter.getChildrenKeys("/test_job_2/sharding")).thenReturn(Arrays.asList("0", "1"));
-        when(regCenter.get("/test_job_2/sharding/0/instance")).thenReturn("ip3@-@defaultInstance");
-        when(regCenter.get("/test_job_2/sharding/1/instance")).thenReturn("ip4@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job_2/sharding/0/instance")).thenReturn("ip3@-@defaultInstance");
+        when(regCenter.getDirectly("/test_job_2/sharding/1/instance")).thenReturn("ip4@-@defaultInstance");
         when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job_2/instances")).thenReturn(Arrays.asList("ip3@-@defaultInstance", "ip4@-@defaultInstance"));
         int i = 0;
