@@ -98,7 +98,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         List<String> serversPath = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         int disabledServerCount = 0;
         for (String each : serversPath) {
-            if (JobBriefInfo.JobStatus.DISABLED.name().equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
+            if (JobBriefInfo.JobStatus.DISABLED.name().equals(regCenter.getDirectly(jobNodePath.getServerNodePath(each)))) {
                 disabledServerCount++;
             }
         }
@@ -147,7 +147,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
     private JobBriefInfo.JobStatus getJobStatusByJobNameAndIp(final String jobName, final String ip) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        String status = regCenter.get(jobNodePath.getServerNodePath(ip));
+        String status = regCenter.getDirectly(jobNodePath.getServerNodePath(ip));
         if ("DISABLED".equalsIgnoreCase(status)) {
             return JobBriefInfo.JobStatus.DISABLED;
         } else {

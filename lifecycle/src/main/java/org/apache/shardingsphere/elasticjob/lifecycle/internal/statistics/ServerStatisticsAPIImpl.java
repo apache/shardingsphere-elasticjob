@@ -59,7 +59,7 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
             for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
                 servers.putIfAbsent(each, new ServerBriefInfo(each));
                 ServerBriefInfo serverInfo = servers.get(each);
-                if ("DISABLED".equalsIgnoreCase(regCenter.get(jobNodePath.getServerNodePath(each)))) {
+                if ("DISABLED".equalsIgnoreCase(regCenter.getDirectly(jobNodePath.getServerNodePath(each)))) {
                     serverInfo.getDisabledJobsNum().incrementAndGet();
                 }
                 serverInfo.getJobNames().add(jobName);
