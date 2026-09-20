@@ -192,16 +192,25 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                     .withSortOrder(GetOption.SortOrder.DESCEND)
                     .build();
             GetResponse response = kvClient.get(toByteSequence(prefix), option).get();
-            List<String> result = new ArrayList<>();
+            Set<String> result = ConcurrentHashMap.newKeySet();
             for (KeyValue kv : response.getKvs()) {
                 String childKey = kv.getKey().toString(StandardCharsets.UTF_8);
+                if (!childKey.startsWith(prefix)) {
+                    continue;
+                }
                 String relativeKey = childKey.substring(prefix.length());
-                if (!relativeKey.isEmpty() && !relativeKey.contains("/")) {
-                    result.add(relativeKey);
+                if (relativeKey.isEmpty()) {
+                    continue;
+                }
+                int slashIndex = relativeKey.indexOf('/');
+                String immediateChild = -1 == slashIndex ? relativeKey : relativeKey.substring(0, slashIndex);
+                if (!immediateChild.isEmpty()) {
+                    result.add(immediateChild);
                 }
             }
-            result.sort(Comparator.reverseOrder());
-            return result;
+            List<String> sortedResult = new ArrayList<>(result);
+            sortedResult.sort(Comparator.reverseOrder());
+            return sortedResult;
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -217,6 +226,9 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public boolean isExisted(final String key) {
+        if ("/".equals(key) || "".equals(key)) {
+            return true;
+        }
         try {
             GetResponse response = kvClient.get(toByteSequence(key)).get();
             return !response.getKvs().isEmpty();
@@ -325,9 +337,11 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public void executeInLeader(final String key, final LeaderExecutionCallback callback) {
+        long leaseId = 0L;
         try {
+            leaseId = createLease(30);
             ByteSequence lockKey = toByteSequence(key);
-            LockResponse lockResponse = lockClient.lock(lockKey, 30).get();
+            LockResponse lockResponse = lockClient.lock(lockKey, leaseId).get();
             try {
                 callback.execute();
             } finally {
@@ -337,6 +351,17 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
             handleException(ex);
+        } finally {
+            if (0L != leaseId) {
+                try {
+                    leaseClient.revoke(leaseId).get();
+                    // CHECKSTYLE:OFF
+                } catch (final Exception ignored) {
+                    // CHECKSTYLE:ON
+                    // ignored, lease will expire automatically or be revoked on close
+                }
+                leaseIdMap.remove(leaseId);
+            }
         }
     }
     
