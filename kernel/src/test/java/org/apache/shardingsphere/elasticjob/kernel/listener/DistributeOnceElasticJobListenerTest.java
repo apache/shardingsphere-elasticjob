@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -96,6 +97,46 @@ class DistributeOnceElasticJobListenerTest {
             verify(guaranteeService).registerStart(Arrays.asList(0, 1));
             verify(guaranteeService, times(0)).clearAllStartedInfo();
         });
+    }
+    
+    @Test
+    void assertBeforeJobExecutedWhenRegisterStartTimeout() {
+        assertThrows(JobSystemException.class, () -> {
+            when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(false);
+            when(timeService.getCurrentMillis()).thenReturn(0L, 100L);
+            distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+        });
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService).clearAllStartedInfo();
+    }
+    
+    @Test
+    void assertBeforeJobExecutedWhenRegisterStartSucceedBeforeTimeout() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 0L);
+        assertDoesNotThrow(() -> distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts));
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService, times(0)).clearAllStartedInfo();
+    }
+    
+    @Test
+    void assertAfterJobExecutedWhenRegisterCompleteTimeout() {
+        assertThrows(JobSystemException.class, () -> {
+            when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(false);
+            when(timeService.getCurrentMillis()).thenReturn(0L, 100L);
+            distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+        });
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService).clearAllCompletedInfo();
+    }
+    
+    @Test
+    void assertAfterJobExecutedWhenRegisterCompleteSucceedBeforeTimeout() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(true);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 0L);
+        assertDoesNotThrow(() -> distributeOnceElasticJobListener.afterJobExecuted(shardingContexts));
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService, times(0)).clearAllCompletedInfo();
     }
     
     @Test

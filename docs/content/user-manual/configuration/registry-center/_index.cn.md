@@ -15,61 +15,11 @@ ElasticJob 支持多种注册中心类型，用于协调分布式作业的调度
 |-------------|------|
 | [ZooKeeper](/cn/user-manual/configuration/registry-center/zookeeper) | Apache ZooKeeper，分布式协调服务 |
 | [etcd](/cn/user-manual/configuration/registry-center/etcd) | etcd3，分布式键值存储 |
+| [Nacos](/cn/user-manual/configuration/registry-center/nacos) | Nacos 3.x，动态服务发现与配置管理 |
+| [Memory](/cn/user-manual/configuration/registry-center/memory) | 内置进程内实现，仅用于单元测试与本地开发 |
 
 ## 配置方式
 
-ElasticJob 提供了以下配置注册中心的方式：
+上表中的每种注册中心文档都详细说明了其自身的配置属性与使用示例。
 
-### Java API
-
-```java
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-
-public class ZookeeperExample {
-    
-    public static void main(String[] args) {
-        // ZooKeeper
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("host1:2181,host2:2181", "elasticjob");
-        CoordinatorRegistryCenter registryCenter = new ZookeeperRegistryCenter(zkConfig);
-        registryCenter.init();
-    }
-}
-```
-
-```java
-import org.apache.shardingsphere.elasticjob.reg.etcd.EtcdConfiguration;
-import org.apache.shardingsphere.elasticjob.reg.etcd.EtcdRegistryCenter;
-import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
-
-public class EtcdExample {
-    
-    public static void main(String[] args) {
-        // etcd
-        EtcdConfiguration etcdConfig = new EtcdConfiguration("http://host1:2379,http://host2:2379", "elasticjob");
-        CoordinatorRegistryCenter registryCenter = new EtcdRegistryCenter(etcdConfig);
-        registryCenter.init();
-    }
-}
-```
-
-### Spring Boot Starter
-
-```yaml
-elasticjob:
-  reg-center:
-    type: zookeeper  # 或 etcd
-    server-lists: host1:2181,host2:2181  # 或 http://host1:2379,http://host2:2379
-    namespace: elasticjob
-```
-
-### Spring Namespace
-
-```xml
-<!-- ZooKeeper -->
-<elasticjob:zookeeper id="regCenter" server-lists="host1:2181,host2:2181" namespace="elasticjob" />
-
-<!-- etcd -->
-<elasticjob:etcd id="regCenter" server-lists="http://host1:2379,http://host2:2379" namespace="elasticjob" />
-```
+需要注意的是，Spring Boot Starter 与 Spring Namespace 目前仅支持 ZooKeeper。其他注册中心类型只能通过 Java API 或 `RegistryCenterFactory` 使用。

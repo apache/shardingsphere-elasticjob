@@ -78,21 +78,37 @@ class TriggerListenerManagerTest {
     }
     
     @Test
-    void assertTriggerWhenJobScheduleControllerIsNull() {
+    void assertNotTriggerWhenJobIsShutdown() {
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.1@-@0", ""));
-        verify(triggerService).removeTriggerFlag();
+        verify(triggerService, times(0)).removeTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
     }
     
     @Test
-    void assertTriggerWhenJobIsRunning() {
+    void assertNotTriggerAndKeepFlagWhenJobIsRunning() {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", true);
         triggerListenerManager.new JobTriggerStatusJobListener().onChange(new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.1@-@0", ""));
-        verify(triggerService).removeTriggerFlag();
+        verify(triggerService, times(0)).removeTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
         JobRegistry.getInstance().setJobRunning("test_job", false);
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
+    void assertTriggerIsRedeliveredWhenJobIsNoLongerRunning() {
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        JobRegistry.getInstance().setJobRunning("test_job", true);
+        DataChangedEvent event = new DataChangedEvent(DataChangedEvent.Type.ADDED, "/test_job/trigger/127.0.0.1@-@0", "");
+        triggerListenerManager.new JobTriggerStatusJobListener().onChange(event);
+        verify(triggerService, times(0)).removeTriggerFlag();
+        verify(jobScheduleController, times(0)).triggerJob();
+        JobRegistry.getInstance().setJobRunning("test_job", false);
+        triggerListenerManager.new JobTriggerStatusJobListener().onChange(event);
+        verify(triggerService).removeTriggerFlag();
+        verify(jobScheduleController).triggerJob();
         JobRegistry.getInstance().shutdown("test_job");
     }
     

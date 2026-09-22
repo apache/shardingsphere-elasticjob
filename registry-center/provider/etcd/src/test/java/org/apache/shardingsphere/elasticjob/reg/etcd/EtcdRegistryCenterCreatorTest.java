@@ -46,4 +46,9 @@ class EtcdRegistryCenterCreatorTest {
     void assertNotSupportsMultipleZookeeperConnectString() {
         assertThat(creator.supports("host1:2181,host2:2181"), is(false));
     }
+    
+    @Test
+    void assertIsNotDefault() {
+        assertThat(creator.isDefault(), is(false));
+    }
 }
