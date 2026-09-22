@@ -13,6 +13,14 @@ To use the Spring boot, user need to add the dependency of the `elasticjob-sprin
     <version>${latest.release.version}</version>
 </dependency>
 ```
+If you are using Spring Boot 4.x, please use
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-spring-boot4-starter</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
 
 ## Registry Center Configuration
 
