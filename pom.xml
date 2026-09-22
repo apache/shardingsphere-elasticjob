@@ -75,6 +75,7 @@
         <curator.version>5.9.0</curator.version>
         <jetcd.version>0.7.7</jetcd.version>
         <grpc.version>1.82.2</grpc.version>
+        <nacos-client.version>3.2.4</nacos-client.version>
         
         <mail.version>1.6.0</mail.version>
         <commons-codec.version>1.16.0</commons-codec.version>
@@ -227,6 +228,11 @@
                 <groupId>io.etcd</groupId>
                 <artifactId>jetcd-core</artifactId>
                 <version>${jetcd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
