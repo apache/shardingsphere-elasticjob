@@ -26,6 +26,7 @@ import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Distributed once ElasticJob listener.
@@ -56,15 +57,13 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (shardingItems.isEmpty()) {
             return;
         }
+        long before = timeService.getCurrentMillis();
         guaranteeService.registerStart(shardingItems);
-        while (!guaranteeService.isRegisterStartSuccess(shardingItems)) {
-            BlockUtils.waitingShortTime();
-        }
+        waitWithinTimeout(() -> !guaranteeService.isRegisterStartSuccess(shardingItems), before, startedTimeoutMilliseconds);
         if (guaranteeService.isAllStarted()) {
             guaranteeService.executeInLeaderForLastStarted(this, shardingContexts);
             return;
         }
-        long before = timeService.getCurrentMillis();
         try {
             synchronized (startedWait) {
                 startedWait.wait(startedTimeoutMilliseconds);
@@ -84,15 +83,13 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (shardingItems.isEmpty()) {
             return;
         }
+        long before = timeService.getCurrentMillis();
         guaranteeService.registerComplete(shardingItems);
-        while (!guaranteeService.isRegisterCompleteSuccess(shardingItems)) {
-            BlockUtils.waitingShortTime();
-        }
+        waitWithinTimeout(() -> !guaranteeService.isRegisterCompleteSuccess(shardingItems), before, completedTimeoutMilliseconds);
         if (guaranteeService.isAllCompleted()) {
             guaranteeService.executeInLeaderForLastCompleted(this, shardingContexts);
             return;
         }
-        long before = timeService.getCurrentMillis();
         try {
             synchronized (completedWait) {
                 completedWait.wait(completedTimeoutMilliseconds);
@@ -103,6 +100,12 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();
             handleTimeout(completedTimeoutMilliseconds);
+        }
+    }
+    
+    private void waitWithinTimeout(final Supplier<Boolean> predicate, final long begin, final long timeoutMilliseconds) {
+        while (predicate.get() && timeService.getCurrentMillis() - begin < timeoutMilliseconds) {
+            BlockUtils.waitingShortTime();
         }
     }
     

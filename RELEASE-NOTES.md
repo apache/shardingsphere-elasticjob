@@ -7,6 +7,16 @@
 1. Build: Supports building ElasticJob GraalVM Native Images via GraalVM CE `25.0.2` - [#2520](https://github.com/apache/shardingsphere-elasticjob/pull/2520)
 1. Registry Center: Support etcd as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 
+### Bug Fixes
+
+1. Kernel: Fixes the issue that the distributed once listener loops forever when the registration is not confirmed by the registry center - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that the trigger flag is removed before the job is triggered - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Registry Center: Fixes the issue that the etcd registry center returns incorrect child keys under a nested path - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
+1. Registry Center: Fixes the issue that the etcd registry center does not report the root path as existed - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
+1. Registry Center: Fixes the issue that the etcd registry center does not revoke the lease created by leader execution - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
+1. Registry Center: Fixes the issue that a closed `ZookeeperRegistryCenter` throws an exception instead of returning the not found value on read - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Registry Center: Fixes the issue that `ZookeeperRegistryCenter` throws a null pointer exception when watching a path without cache - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+
 ## 3.0.5
 
 ### CVE
