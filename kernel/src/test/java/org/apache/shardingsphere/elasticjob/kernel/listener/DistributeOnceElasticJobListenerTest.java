@@ -32,12 +32,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,6 +67,22 @@ class DistributeOnceElasticJobListenerTest {
         map.put(0, "");
         map.put(1, "");
         shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
+    }
+    
+    private static ShardingContexts createEmptyShardingContexts() {
+        return new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
+    }
+    
+    @Test
+    void assertBeforeJobExecutedWithNoShardingItems() {
+        distributeOnceElasticJobListener.beforeJobExecuted(createEmptyShardingContexts());
+        verifyNoInteractions(guaranteeService);
+    }
+    
+    @Test
+    void assertAfterJobExecutedWithNoShardingItems() {
+        distributeOnceElasticJobListener.afterJobExecuted(createEmptyShardingContexts());
+        verifyNoInteractions(guaranteeService);
     }
     
     @Test
@@ -127,5 +145,27 @@ class DistributeOnceElasticJobListenerTest {
             verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
             verify(guaranteeService, times(0)).clearAllCompletedInfo();
         });
+    }
+    
+    @Test
+    void assertBeforeJobExecutedTimeoutWhenRegisterStart() {
+        when(guaranteeService.isRegisterStartSuccess(Sets.newHashSet(0, 1))).thenReturn(false);
+        when(guaranteeService.isAllStarted()).thenReturn(false);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 2L, 2L);
+        assertThrows(JobSystemException.class, () -> distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts));
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService).clearAllStartedInfo();
+        verify(guaranteeService, times(0)).executeInLeaderForLastStarted(distributeOnceElasticJobListener, shardingContexts);
+    }
+    
+    @Test
+    void assertAfterJobExecutedTimeoutWhenRegisterComplete() {
+        when(guaranteeService.isRegisterCompleteSuccess(Sets.newHashSet(0, 1))).thenReturn(false);
+        when(guaranteeService.isAllCompleted()).thenReturn(false);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 2L, 2L);
+        assertThrows(JobSystemException.class, () -> distributeOnceElasticJobListener.afterJobExecuted(shardingContexts));
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService).clearAllCompletedInfo();
+        verify(guaranteeService, times(0)).executeInLeaderForLastCompleted(distributeOnceElasticJobListener, shardingContexts);
     }
 }
