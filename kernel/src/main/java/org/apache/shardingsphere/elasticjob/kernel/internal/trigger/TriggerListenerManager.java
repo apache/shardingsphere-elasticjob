@@ -54,11 +54,13 @@ public final class TriggerListenerManager extends AbstractListenerManager {
             if (!triggerNode.isLocalTriggerPath(event.getKey()) || Type.ADDED != event.getType()) {
                 return;
             }
-            triggerService.removeTriggerFlag();
-            if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().isJobRunning(jobName)) {
+            JobRegistry jobRegistry = JobRegistry.getInstance();
+            if (jobRegistry.isShutdown(jobName) || jobRegistry.isJobRunning(jobName)) {
                 // TODO At present, it cannot be triggered when the job is running, and it will be changed to a stacked trigger in the future.
-                JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
+                return;
             }
+            triggerService.removeTriggerFlag();
+            jobRegistry.getJobScheduleController(jobName).triggerJob();
         }
     }
 }

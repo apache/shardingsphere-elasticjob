@@ -30,5 +30,7 @@
     <modules>
         <module>zookeeper-curator</module>
         <module>etcd</module>
+        <module>memory</module>
+        <module>nacos</module>
     </modules>
 </project>

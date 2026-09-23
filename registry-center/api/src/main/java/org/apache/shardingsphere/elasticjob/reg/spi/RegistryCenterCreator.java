@@ -35,6 +35,19 @@ public interface RegistryCenterCreator {
     boolean supports(String connectString);
     
     /**
+     * Check if this creator is the fallback for a connection string no other creator supports.
+     *
+     * <p>Only one creator should be default, and it is used only when no other creator
+     * supports the connection string, so new registry centers can be added without
+     * modifying existing creators.</p>
+     *
+     * @return true if this creator is the default one
+     */
+    default boolean isDefault() {
+        return false;
+    }
+    
+    /**
      * Create a coordinator registry center.
      *
      * @param connectString connection string

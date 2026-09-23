@@ -28,6 +28,7 @@ import org.apache.shardingsphere.elasticjob.reg.spi.RegistryCenterCreator;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,11 +67,22 @@ public final class RegistryCenterFactory {
     private static CoordinatorRegistryCenter newCoordinatorRegistryCenter(final String connectString,
                                                                           final String namespace,
                                                                           final String digest) {
+        RegistryCenterCreator creator = findCreator(connectString, false).orElse(null);
+        if (null == creator) {
+            creator = findCreator(connectString, true).orElse(null);
+        }
+        if (null == creator) {
+            throw new IllegalArgumentException("No registry center creator found for connect string: " + connectString);
+        }
+        return creator.create(connectString, namespace, digest);
+    }
+    
+    private static Optional<RegistryCenterCreator> findCreator(final String connectString, final boolean defaultCreator) {
         for (RegistryCenterCreator creator : CREATOR_LOADER) {
-            if (creator.supports(connectString)) {
-                return creator.create(connectString, namespace, digest);
+            if (creator.supports(connectString) && creator.isDefault() == defaultCreator) {
+                return Optional.of(creator);
             }
         }
-        throw new IllegalArgumentException("No registry center creator found for connect string: " + connectString);
+        return Optional.empty();
     }
 }

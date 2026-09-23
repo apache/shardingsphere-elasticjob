@@ -56,15 +56,12 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (shardingItems.isEmpty()) {
             return;
         }
-        guaranteeService.registerStart(shardingItems);
-        while (!guaranteeService.isRegisterStartSuccess(shardingItems)) {
-            BlockUtils.waitingShortTime();
-        }
+        long before = timeService.getCurrentMillis();
+        registerStart(shardingItems, before);
         if (guaranteeService.isAllStarted()) {
             guaranteeService.executeInLeaderForLastStarted(this, shardingContexts);
             return;
         }
-        long before = timeService.getCurrentMillis();
         try {
             synchronized (startedWait) {
                 startedWait.wait(startedTimeoutMilliseconds);
@@ -84,15 +81,12 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (shardingItems.isEmpty()) {
             return;
         }
-        guaranteeService.registerComplete(shardingItems);
-        while (!guaranteeService.isRegisterCompleteSuccess(shardingItems)) {
-            BlockUtils.waitingShortTime();
-        }
+        long before = timeService.getCurrentMillis();
+        registerComplete(shardingItems, before);
         if (guaranteeService.isAllCompleted()) {
             guaranteeService.executeInLeaderForLastCompleted(this, shardingContexts);
             return;
         }
-        long before = timeService.getCurrentMillis();
         try {
             synchronized (completedWait) {
                 completedWait.wait(completedTimeoutMilliseconds);
@@ -103,6 +97,28 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();
             handleTimeout(completedTimeoutMilliseconds);
+        }
+    }
+    
+    private void registerStart(final Set<Integer> shardingItems, final long before) {
+        guaranteeService.registerStart(shardingItems);
+        while (!guaranteeService.isRegisterStartSuccess(shardingItems)) {
+            if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
+                guaranteeService.clearAllStartedInfo();
+                handleTimeout(startedTimeoutMilliseconds);
+            }
+            BlockUtils.waitingShortTime();
+        }
+    }
+    
+    private void registerComplete(final Set<Integer> shardingItems, final long before) {
+        guaranteeService.registerComplete(shardingItems);
+        while (!guaranteeService.isRegisterCompleteSuccess(shardingItems)) {
+            if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
+                guaranteeService.clearAllCompletedInfo();
+                handleTimeout(completedTimeoutMilliseconds);
+            }
+            BlockUtils.waitingShortTime();
         }
     }
     

@@ -32,6 +32,11 @@ public final class ZookeeperRegistryCenterCreator implements RegistryCenterCreat
     }
     
     @Override
+    public boolean isDefault() {
+        return true;
+    }
+    
+    @Override
     public CoordinatorRegistryCenter create(final String connectString, final String namespace, final String digest) {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
         if (!Strings.isNullOrEmpty(digest)) {
