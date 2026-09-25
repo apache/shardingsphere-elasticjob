@@ -21,6 +21,7 @@ import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
 import org.apache.shardingsphere.elasticjob.kernel.infra.time.TimeService;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobSystemException;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BoundedWaitGuard;
 import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 import org.apache.shardingsphere.elasticjob.kernel.internal.guarantee.GuaranteeService;
@@ -49,7 +50,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         this.startedTimeoutMilliseconds = startedTimeoutMilliseconds <= 0L ? Long.MAX_VALUE : startedTimeoutMilliseconds;
         this.completedTimeoutMilliseconds = completedTimeoutMilliseconds <= 0L ? Long.MAX_VALUE : completedTimeoutMilliseconds;
     }
-    
+
     @Override
     public final void beforeJobExecuted(final ShardingContexts shardingContexts) {
         Set<Integer> shardingItems = shardingContexts.getShardingItemParameters().keySet();
@@ -57,7 +58,13 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
             return;
         }
         guaranteeService.registerStart(shardingItems);
+        BoundedWaitGuard registerWaitGuard = BoundedWaitGuard.start(startedTimeoutMilliseconds);
         while (!guaranteeService.isRegisterStartSuccess(shardingItems)) {
+            if (registerWaitGuard.shouldGiveUp()) {
+                guaranteeService.clearAllStartedInfo();
+                handleTimeout(startedTimeoutMilliseconds);
+                return;
+            }
             BlockUtils.waitingShortTime();
         }
         if (guaranteeService.isAllStarted()) {
@@ -70,14 +77,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                 startedWait.wait(startedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
         if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
             guaranteeService.clearAllStartedInfo();
             handleTimeout(startedTimeoutMilliseconds);
         }
     }
-    
+
     @Override
     public final void afterJobExecuted(final ShardingContexts shardingContexts) {
         Set<Integer> shardingItems = shardingContexts.getShardingItemParameters().keySet();
@@ -85,7 +92,13 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
             return;
         }
         guaranteeService.registerComplete(shardingItems);
+        BoundedWaitGuard registerWaitGuard = BoundedWaitGuard.start(completedTimeoutMilliseconds);
         while (!guaranteeService.isRegisterCompleteSuccess(shardingItems)) {
+            if (registerWaitGuard.shouldGiveUp()) {
+                guaranteeService.clearAllCompletedInfo();
+                handleTimeout(completedTimeoutMilliseconds);
+                return;
+            }
             BlockUtils.waitingShortTime();
         }
         if (guaranteeService.isAllCompleted()) {
@@ -98,7 +111,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                 completedWait.wait(completedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
         if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();

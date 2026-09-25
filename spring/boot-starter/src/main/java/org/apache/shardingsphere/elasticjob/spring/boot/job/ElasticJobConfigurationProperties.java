@@ -74,6 +74,8 @@ public final class ElasticJobConfigurationProperties {
     private boolean disabled;
     
     private boolean overwrite;
+
+    private long maxWaitMillis = 60_000L;
     
     /**
      * Convert to job configuration.
@@ -87,7 +89,7 @@ public final class ElasticJobConfigurationProperties {
                 .monitorExecution(monitorExecution).failover(failover).misfire(misfire)
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorThreadPoolSizeProviderType(jobExecutorThreadPoolSizeProviderType).jobErrorHandlerType(jobErrorHandlerType)
-                .jobListenerTypes(jobListenerTypes.toArray(new String[0])).description(description).disabled(disabled).overwrite(overwrite).build();
+                .jobListenerTypes(jobListenerTypes.toArray(new String[0])).description(description).disabled(disabled).overwrite(overwrite).maxWaitMillis(maxWaitMillis).build();
         props.stringPropertyNames().forEach(each -> result.getProps().setProperty(each, props.getProperty(each)));
         return result;
     }
