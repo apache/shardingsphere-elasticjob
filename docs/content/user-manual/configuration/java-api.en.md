@@ -65,3 +65,4 @@ Configuration:
 | props                             | No                    |
 | disabled                          | No                    |
 | overwrite                         | No                    |
+| maxWaitMillis                     | No                    |

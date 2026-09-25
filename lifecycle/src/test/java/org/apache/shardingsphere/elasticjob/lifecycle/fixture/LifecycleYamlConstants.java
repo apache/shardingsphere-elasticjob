@@ -43,6 +43,7 @@ public final class LifecycleYamlConstants {
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "maxTimeDiffSeconds: -1\n"
+            + "maxWaitMillis: 60000\n"
             + "misfire: true\n"
             + "monitorExecution: true\n"
             + "overwrite: false\n"

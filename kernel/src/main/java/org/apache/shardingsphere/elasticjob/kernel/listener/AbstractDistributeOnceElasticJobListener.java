@@ -69,7 +69,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                 startedWait.wait(startedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
         if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
             guaranteeService.clearAllStartedInfo();
@@ -95,7 +95,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                 completedWait.wait(completedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
         if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();

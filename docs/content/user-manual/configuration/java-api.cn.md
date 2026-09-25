@@ -64,3 +64,4 @@ ElasticJob 支持 `ZooKeeper`（默认）、`etcd`、`Nacos` 和内存注册中�
 | props                             | 否     |
 | disabled                          | 否     |
 | overwrite                         | 否     |
+| maxWaitMillis                     | 否     |

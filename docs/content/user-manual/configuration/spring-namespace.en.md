@@ -64,6 +64,7 @@ Configuration:
 | props                             | No       |
 | disabled                          | No       |
 | overwrite                         | No       |
+| max-wait-millis                   | No       |
 
 ## Event Tracing Configuration
 

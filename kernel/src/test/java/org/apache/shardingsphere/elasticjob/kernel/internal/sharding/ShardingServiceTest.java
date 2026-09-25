@@ -127,6 +127,7 @@ class ShardingServiceTest {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/processing")).thenReturn(true, false);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").build());
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode(ShardingNode.PROCESSING, "");
     }
@@ -136,9 +137,11 @@ class ShardingServiceTest {
         when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
         when(executionService.hasRunningItems()).thenReturn(true, false);
         when(jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)).thenReturn(Arrays.asList("0", "1"));
+        when(jobNodeStorage.executeInTransactionStrict(any(List.class))).thenReturn(true);
         shardingService.shardingIfNecessary();
         verify(executionService, times(2)).hasRunningItems();
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
@@ -148,7 +151,7 @@ class ShardingServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/instance");
         verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
-        verify(jobNodeStorage).executeInTransaction(any(List.class));
+        verify(jobNodeStorage).executeInTransactionStrict(any(List.class));
     }
     
     @Test
@@ -158,6 +161,7 @@ class ShardingServiceTest {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
         when(jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)).thenReturn(Arrays.asList("0", "1", "2", "3"));
+        when(jobNodeStorage.executeInTransactionStrict(any(List.class))).thenReturn(true);
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
         verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0");
@@ -168,7 +172,19 @@ class ShardingServiceTest {
         verify(jobNodeStorage, times(0)).removeJobNodeIfExisted("execution/2");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/3");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
-        verify(jobNodeStorage).executeInTransaction(any(List.class));
+        verify(jobNodeStorage).executeInTransactionStrict(any(List.class));
+    }
+    
+    @Test
+    void assertShardingClearsProcessingNodeWhenTransactionFails() {
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("127.0.0.1@-@0")));
+        when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
+        when(leaderService.isLeaderUntilBlock()).thenReturn(true);
+        when(configService.load(false)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());
+        when(jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.executeInTransactionStrict(any(List.class))).thenReturn(false);
+        shardingService.shardingIfNecessary();
+        verify(jobNodeStorage).removeJobNodeIfExisted(ShardingNode.PROCESSING);
     }
     
     @Test
