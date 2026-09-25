@@ -80,6 +80,8 @@ public final class JobConfiguration {
     private final String label;
     
     private final boolean staticSharding;
+
+    private final long maxWaitMillis;
     
     /**
      * Create ElasticJob configuration builder.
@@ -138,6 +140,8 @@ public final class JobConfiguration {
         private String label;
         
         private boolean staticSharding;
+
+        private long maxWaitMillis = 60_000L;
         
         /**
          * Cron expression.
@@ -410,7 +414,18 @@ public final class JobConfiguration {
             this.staticSharding = staticSharding;
             return this;
         }
-        
+
+        /**
+         * Set max wait milliseconds for coordination wait loops (e.g. sharding, leader election) to give up instead of blocking indefinitely.
+         *
+         * @param maxWaitMillis max wait milliseconds
+         * @return ElasticJob configuration builder
+         */
+        public Builder maxWaitMillis(final long maxWaitMillis) {
+            this.maxWaitMillis = maxWaitMillis;
+            return this;
+        }
+
         /**
          * Build ElasticJob configuration.
          * 
@@ -422,7 +437,7 @@ public final class JobConfiguration {
             return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorThreadPoolSizeProviderType, jobErrorHandlerType, jobListenerTypes,
-                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding, maxWaitMillis);
         }
     }
 }

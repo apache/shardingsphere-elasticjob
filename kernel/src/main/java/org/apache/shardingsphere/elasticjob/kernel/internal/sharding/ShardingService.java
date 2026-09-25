@@ -20,6 +20,8 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.sharding;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.infra.util.BlockUtils;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BoundedWaitGuard;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.WaitTimeoutNotifier;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.strategy.JobShardingStrategy;
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
@@ -65,6 +67,7 @@ public final class ShardingService {
     private final ExecutionService executionService;
     
     private final JobNodePath jobNodePath;
+
     
     public ShardingService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
@@ -121,19 +124,36 @@ public final class ShardingService {
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);
         JobShardingStrategy jobShardingStrategy = TypedSPILoader.getService(JobShardingStrategy.class, jobConfig.getJobShardingStrategyType());
-        jobNodeStorage.executeInTransaction(getShardingResultTransactionOperations(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
+        boolean success = jobNodeStorage.executeInTransactionStrict(getShardingResultTransactionOperations(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
+        if (!success) {
+            log.error("Job '{}' sharding transaction failed due to a registry center exception; clearing PROCESSING flag to avoid indefinite blocking of other instances.", jobName);
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.PROCESSING);
+            return;
+        }
         log.debug("Job '{}' sharding complete.", jobName);
     }
-    
+
     private void blockUntilShardingCompleted() {
+        JobConfiguration jobConfig = configService.load(true);
+        BoundedWaitGuard waitGuard = BoundedWaitGuard.start(jobConfig.getMaxWaitMillis());
         while (!leaderService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
+            if (waitGuard.shouldGiveUp()) {
+                WaitTimeoutNotifier.notifyTimeout(jobName, jobConfig, waitGuard.isInterrupted() ? "sharding to complete (interrupted)" : "sharding to complete");
+                return;
+            }
             log.debug("Job '{}' sleep short time until sharding completed.", jobName);
             BlockUtils.waitingShortTime();
         }
     }
-    
+
     private void waitingOtherShardingItemCompleted() {
+        JobConfiguration jobConfig = configService.load(true);
+        BoundedWaitGuard waitGuard = BoundedWaitGuard.start(jobConfig.getMaxWaitMillis());
         while (executionService.hasRunningItems()) {
+            if (waitGuard.shouldGiveUp()) {
+                WaitTimeoutNotifier.notifyTimeout(jobName, jobConfig, waitGuard.isInterrupted() ? "other job items to complete (interrupted)" : "other job items to complete");
+                return;
+            }
             log.debug("Job '{}' sleep short time until other job completed.", jobName);
             BlockUtils.waitingShortTime();
         }

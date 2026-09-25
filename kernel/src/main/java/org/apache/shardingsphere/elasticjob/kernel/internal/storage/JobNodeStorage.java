@@ -194,6 +194,27 @@ public final class JobNodeStorage {
             RegExceptionHandler.handleException(ex);
         }
     }
+
+    /**
+     * Execute operations in transaction, reporting failure instead of swallowing it silently.
+     *
+     * @param transactionOperations operations to be executed in transaction
+     * @return true if transaction succeeded, false if it failed with an ignored registry-center exception
+     */
+    public boolean executeInTransactionStrict(final List<TransactionOperation> transactionOperations) {
+        List<TransactionOperation> result = new ArrayList<>(transactionOperations.size() + 1);
+        result.add(TransactionOperation.opCheckExists("/"));
+        result.addAll(transactionOperations);
+        try {
+            regCenter.executeInTransaction(result);
+            return true;
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+            return false;
+        }
+    }
     
     /**
      * Execute in leader server.

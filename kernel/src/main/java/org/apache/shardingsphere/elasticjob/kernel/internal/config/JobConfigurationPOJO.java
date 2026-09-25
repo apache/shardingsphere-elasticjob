@@ -80,6 +80,8 @@ public final class JobConfigurationPOJO {
     private String label;
     
     private boolean staticSharding;
+
+    private long maxWaitMillis = 60_000L;
     
     /**
      * Convert to job configuration.
@@ -93,7 +95,7 @@ public final class JobConfigurationPOJO {
                 .maxTimeDiffSeconds(maxTimeDiffSeconds).reconcileIntervalMinutes(reconcileIntervalMinutes)
                 .jobShardingStrategyType(jobShardingStrategyType).jobExecutorThreadPoolSizeProviderType(jobExecutorThreadPoolSizeProviderType)
                 .jobErrorHandlerType(jobErrorHandlerType).jobListenerTypes(jobListenerTypes.toArray(new String[]{})).description(description)
-                .disabled(disabled).overwrite(overwrite).label(label).staticSharding(staticSharding).build();
+                .disabled(disabled).overwrite(overwrite).label(label).staticSharding(staticSharding).maxWaitMillis(maxWaitMillis).build();
         jobExtraConfigurations.stream().map(YamlConfiguration::toConfiguration).forEach(result.getExtraConfigurations()::add);
         for (Object each : props.keySet()) {
             result.getProps().setProperty(each.toString(), props.get(each.toString()).toString());
@@ -133,6 +135,7 @@ public final class JobConfigurationPOJO {
         result.setOverwrite(jobConfig.isOverwrite());
         result.setLabel(jobConfig.getLabel());
         result.setStaticSharding(jobConfig.isStaticSharding());
+        result.setMaxWaitMillis(jobConfig.getMaxWaitMillis());
         return result;
     }
 }

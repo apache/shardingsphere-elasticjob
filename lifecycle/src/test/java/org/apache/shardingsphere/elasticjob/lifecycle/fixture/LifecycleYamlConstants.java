@@ -35,7 +35,7 @@ public final class LifecycleYamlConstants {
             + "description: %s\n"
             + "disabled: false\n"
             + "overwrite: false\n";
-    
+
     private static final String DATAFLOW_JOB_YAML = "cron: 0/1 * * * * ?\n"
             + "description: ''\n"
             + "disabled: false\n"
@@ -43,6 +43,7 @@ public final class LifecycleYamlConstants {
             + "jobName: test_job\n"
             + "jobParameter: param\n"
             + "maxTimeDiffSeconds: -1\n"
+            + "maxWaitMillis: 60000\n"
             + "misfire: true\n"
             + "monitorExecution: true\n"
             + "overwrite: false\n"

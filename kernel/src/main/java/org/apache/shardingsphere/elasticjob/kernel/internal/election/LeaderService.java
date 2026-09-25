@@ -19,6 +19,10 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.election;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.BoundedWaitGuard;
+import org.apache.shardingsphere.elasticjob.kernel.infra.util.WaitTimeoutNotifier;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
@@ -37,11 +41,14 @@ public final class LeaderService {
     private final ServerService serverService;
     
     private final JobNodeStorage jobNodeStorage;
-    
+
+    private final ConfigurationService configService;
+
     public LeaderService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**
@@ -52,18 +59,24 @@ public final class LeaderService {
         jobNodeStorage.executeInLeader(LeaderNode.LATCH, new LeaderElectionExecutionCallback());
         log.debug("Leader election completed.");
     }
-    
+
     /**
      * Judge current server is leader or not.
-     * 
+     *
      * <p>
      * If leader is electing, this method will block until leader elected success.
      * </p>
-     * 
+     *
      * @return current server is leader or not
      */
     public boolean isLeaderUntilBlock() {
+        JobConfiguration jobConfig = configService.load(true);
+        BoundedWaitGuard waitGuard = BoundedWaitGuard.start(jobConfig.getMaxWaitMillis());
         while (!hasLeader() && serverService.hasAvailableServers()) {
+            if (waitGuard.shouldGiveUp()) {
+                WaitTimeoutNotifier.notifyTimeout(jobName, jobConfig, waitGuard.isInterrupted() ? "leader election to complete (interrupted)" : "leader election to complete");
+                return isLeader();
+            }
             log.info("Leader is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
             if (!JobRegistry.getInstance().isShutdown(jobName) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getServerIp())) {

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JobConfigurationPOJOTest {
-    
+
     private static final String YAML = "cron: 0/1 * * * * ?\n"
             + "description: Job description\n"
             + "disabled: false\n"
@@ -42,6 +42,7 @@ class JobConfigurationPOJOTest {
             + "jobParameter: param\n"
             + "jobShardingStrategyType: AVG_ALLOCATION\n"
             + "maxTimeDiffSeconds: -1\n"
+            + "maxWaitMillis: 60000\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
@@ -51,12 +52,13 @@ class JobConfigurationPOJOTest {
             + "shardingItemParameters: 0=A,1=B,2=C\n"
             + "shardingTotalCount: 3\n"
             + "staticSharding: false\n";
-    
+
     private static final String YAML_WITH_NULL = "cron: 0/1 * * * * ?\n"
             + "disabled: false\n"
             + "failover: false\n"
             + "jobName: test_job\n"
             + "maxTimeDiffSeconds: -1\n"
+            + "maxWaitMillis: 60000\n"
             + "misfire: false\n"
             + "monitorExecution: false\n"
             + "overwrite: false\n"
