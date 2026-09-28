@@ -27,6 +27,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.framework.api.transaction.CuratorOp;
 import org.apache.curator.framework.api.transaction.TransactionOp;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
@@ -137,15 +138,20 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public void close() {
+        dataListeners.keySet().forEach(this::removeDataListeners);
+        connStateListeners.keySet().forEach(this::removeConnStateListener);
         for (Entry<String, CuratorCache> each : caches.entrySet()) {
             each.getValue().close();
         }
+        caches.clear();
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
     }
     
     /*
-     * // TODO sleep 500ms, let cache client close first and then client, otherwise will throw exception reference：https://issues.apache.org/jira/browse/CURATOR-157
+     * TODO Sleep 500ms to let the cache close before the client, otherwise the client throws an exception.
+     * 
+     * Curator removes the watches of a closed cache asynchronously, so the pause cannot be removed. See https://issues.apache.org/jira/browse/CURATOR-157.
      */
     private void waitForCacheClose() {
         try {
@@ -157,6 +163,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public String get(final String key) {
+        if (isClientClosed()) {
+            return null;
+        }
         CuratorCache cache = findCuratorCache(key);
         if (null == cache) {
             return getDirectly(key);
@@ -174,8 +183,15 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         return null;
     }
     
+    private boolean isClientClosed() {
+        return null == client || client.getState() != CuratorFrameworkState.STARTED;
+    }
+    
     @Override
     public String getDirectly(final String key) {
+        if (isClientClosed()) {
+            return null;
+        }
         try {
             return new String(client.getData().forPath(key), StandardCharsets.UTF_8);
             // CHECKSTYLE:OFF
@@ -188,6 +204,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public List<String> getChildrenKeys(final String key) {
+        if (isClientClosed()) {
+            return Collections.emptyList();
+        }
         try {
             List<String> result = client.getChildren().forPath(key);
             result.sort(Comparator.reverseOrder());
@@ -202,6 +221,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public int getNumChildren(final String key) {
+        if (isClientClosed()) {
+            return 0;
+        }
         try {
             Stat stat = client.checkExists().forPath(key);
             if (null != stat) {
@@ -217,6 +239,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     
     @Override
     public boolean isExisted(final String key) {
+        if (isClientClosed()) {
+            return false;
+        }
         try {
             return null != client.checkExists().forPath(key);
             // CHECKSTYLE:OFF
@@ -426,6 +451,10 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public void watch(final String key, final DataChangedEventListener listener, final Executor executor) {
         CuratorCache cache = caches.get(key + "/");
+        if (null == cache) {
+            log.warn("Elastic job: no cache for path {}, watch ignored.", key);
+            return;
+        }
         CuratorCacheListener cacheListener = (curatorType, oldData, newData) -> {
             if (null == newData && null == oldData) {
                 return;
