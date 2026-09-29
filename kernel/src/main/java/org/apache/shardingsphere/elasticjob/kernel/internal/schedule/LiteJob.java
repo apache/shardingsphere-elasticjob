@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
 import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.UnableToInterruptJobException;
@@ -40,6 +41,8 @@ public final class LiteJob implements InterruptableJob {
         try {
             currentThread = Thread.currentThread();
             jobExecutor.execute();
+        } catch (final JobConfigurationException ignored) {
+            // The job configuration may be removed while this trigger fires, so there is nothing to execute.
         } finally {
             currentThread = null;
         }

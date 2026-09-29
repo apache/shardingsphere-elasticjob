@@ -109,21 +109,6 @@ class JavaTest {
         testingServer.close();
     }
     
-    /**
-     * TODO Executing {@link JobConfigurationAPI#removeJobConfiguration(String)} will always cause the listener
-     *  to throw an exception. This is not acceptable behavior.
-     *  <pre>
-     *   <code>
-     *  Caused by: java.lang.IllegalStateException: Expected state [STARTED] was [STOPPED]
-     *  at org.apache.curator.shaded.com.google.common.base.Preconditions.checkState(Preconditions.java:835)
-     *  at org.apache.curator.framework.imps.CuratorFrameworkImpl.checkState(CuratorFrameworkImpl.java:465)
-     *  at org.apache.curator.framework.imps.CuratorFrameworkImpl.getData(CuratorFrameworkImpl.java:498)
-     *  at org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter.getDirectly(ZookeeperRegistryCenter.java:179)
-     *  ... 12 common frames omitted
-     *   </code>
-     *  </pre>
-     *
-     */
     @Test
     void testJobConfigurationAPI() {
         String jobName = "testJobConfigurationAPI";
@@ -290,11 +275,20 @@ class JavaTest {
                         .build());
         job.schedule();
         ShardingStatisticsAPI shardingStatisticsAPI = new ShardingStatisticsAPIImpl(secondRegCenter);
+        List<ShardingInfo> shardingInfos = new ArrayList<>();
         Awaitility.await()
                 .atMost(1L, TimeUnit.MINUTES)
                 .ignoreExceptions()
-                .until(() -> 3 == shardingStatisticsAPI.getShardingInfo(jobName).size());
-        shardingStatisticsAPI.getShardingInfo(jobName).forEach(shardingInfo -> {
+                .until(() -> {
+                    Collection<ShardingInfo> current = shardingStatisticsAPI.getShardingInfo(jobName);
+                    if (3 != current.size() || current.stream().anyMatch(each -> null == each.getServerIp())) {
+                        return false;
+                    }
+                    shardingInfos.clear();
+                    shardingInfos.addAll(current);
+                    return true;
+                });
+        shardingInfos.forEach(shardingInfo -> {
             String serverIp = shardingInfo.getServerIp();
             assertThat(serverIp, notNullValue());
             assertThat(shardingInfo.getInstanceId(), startsWith(serverIp + "@-@"));

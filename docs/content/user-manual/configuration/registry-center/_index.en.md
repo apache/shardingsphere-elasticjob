@@ -1,5 +1,4 @@
 +++
-pre = "<b>4.1.2.1 </b>"
 title = "Registry Center Configuration"
 weight = 1
 chapter = true

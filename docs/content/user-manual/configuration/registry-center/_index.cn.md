@@ -1,5 +1,4 @@
 +++
-pre = "<b>4.1.2.1 </b>"
 title = "注册中心配置"
 weight = 1
 chapter = true

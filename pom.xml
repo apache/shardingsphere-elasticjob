@@ -138,6 +138,8 @@
         <checksum-maven-plugin.version>1.10</checksum-maven-plugin.version>
         
         <native-maven-plugin.version>1.1.3</native-maven-plugin.version>
+        <!-- Flipped to true by the generateMetadata profile; only consumed by test/native/pom.xml -->
+        <native.agent.enabled>false</native.agent.enabled>
     </properties>
     
     <dependencyManagement>
@@ -954,6 +956,9 @@
         </profile>
         <profile>
             <id>generateMetadata</id>
+            <properties>
+                <native.agent.enabled>true</native.agent.enabled>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -973,7 +978,6 @@
                             <configuration>
                                 <skipNativeTests>true</skipNativeTests>
                                 <agent>
-                                    <enabled>true</enabled>
                                     <defaultMode>conditional</defaultMode>
                                     <modes>
                                         <conditional>
@@ -993,16 +997,9 @@
                             </configuration>
                             <executions>
                                 <execution>
-                                    <id>build-native</id>
+                                    <id>merge-agent-files</id>
                                     <goals>
-                                        <goal>compile-no-fork</goal>
-                                    </goals>
-                                    <phase>package</phase>
-                                </execution>
-                                <execution>
-                                    <id>test-native</id>
-                                    <goals>
-                                        <goal>test</goal>
+                                        <goal>merge-agent-files</goal>
                                     </goals>
                                     <phase>test</phase>
                                 </execution>
