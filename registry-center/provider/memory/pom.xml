@@ -20,17 +20,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.shardingsphere.elasticjob</groupId>
-        <artifactId>elasticjob-registry-center</artifactId>
+        <artifactId>elasticjob-regitry-center-provider</artifactId>
         <version>3.0.6-SNAPSHOT</version>
     </parent>
-    <artifactId>elasticjob-regitry-center-provider</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>elasticjob-registry-center-memory</artifactId>
     <name>${project.artifactId}</name>
     
-    <modules>
-        <module>zookeeper-curator</module>
-        <module>etcd</module>
-        <module>memory</module>
-        <module>nacos</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.shardingsphere.elasticjob</groupId>
+            <artifactId>elasticjob-registry-center-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 </project>

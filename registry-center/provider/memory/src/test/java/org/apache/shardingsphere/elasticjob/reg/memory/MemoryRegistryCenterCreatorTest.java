@@ -15,40 +15,44 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.etcd;
+package org.apache.shardingsphere.elasticjob.reg.memory;
 
-import org.apache.curator.test.InstanceSpec;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class EtcdRegistryCenterCreatorTest {
+class MemoryRegistryCenterCreatorTest {
     
-    private final EtcdRegistryCenterCreator creator = new EtcdRegistryCenterCreator();
-    
-    @Test
-    void assertSupportsHttpUrl() {
-        assertThat(creator.supports("http://localhost:" + InstanceSpec.getRandomPort()), is(true));
-    }
+    private final MemoryRegistryCenterCreator creator = new MemoryRegistryCenterCreator();
     
     @Test
-    void assertSupportsHttpsUrl() {
-        assertThat(creator.supports("https://localhost:" + InstanceSpec.getRandomPort()), is(true));
+    void assertSupportsMemoryUrl() {
+        assertThat(creator.supports("memory://localhost"), is(true));
     }
     
     @Test
     void assertNotSupportsZookeeperConnectString() {
-        assertThat(creator.supports("localhost:" + InstanceSpec.getRandomPort()), is(false));
+        assertThat(creator.supports("localhost:2181"), is(false));
     }
     
     @Test
-    void assertNotSupportsMultipleZookeeperConnectString() {
-        assertThat(creator.supports("host1:2181,host2:2181"), is(false));
+    void assertNotSupportsEtcdConnectString() {
+        assertThat(creator.supports("http://localhost:2379"), is(false));
+    }
+    
+    @Test
+    void assertNotSupportsNacosConnectString() {
+        assertThat(creator.supports("nacos://127.0.0.1:8848"), is(false));
     }
     
     @Test
     void assertIsNotDefault() {
         assertThat(creator.isDefault(), is(false));
+    }
+    
+    @Test
+    void assertCreate() {
+        assertThat(creator.create("memory://localhost", "test", null) instanceof MemoryRegistryCenter, is(true));
     }
 }

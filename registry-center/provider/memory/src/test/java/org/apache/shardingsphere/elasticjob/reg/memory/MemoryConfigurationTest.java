@@ -15,40 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.etcd;
+package org.apache.shardingsphere.elasticjob.reg.memory;
 
-import org.apache.curator.test.InstanceSpec;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class EtcdRegistryCenterCreatorTest {
-    
-    private final EtcdRegistryCenterCreator creator = new EtcdRegistryCenterCreator();
+class MemoryConfigurationTest {
     
     @Test
-    void assertSupportsHttpUrl() {
-        assertThat(creator.supports("http://localhost:" + InstanceSpec.getRandomPort()), is(true));
-    }
-    
-    @Test
-    void assertSupportsHttpsUrl() {
-        assertThat(creator.supports("https://localhost:" + InstanceSpec.getRandomPort()), is(true));
-    }
-    
-    @Test
-    void assertNotSupportsZookeeperConnectString() {
-        assertThat(creator.supports("localhost:" + InstanceSpec.getRandomPort()), is(false));
-    }
-    
-    @Test
-    void assertNotSupportsMultipleZookeeperConnectString() {
-        assertThat(creator.supports("host1:2181,host2:2181"), is(false));
-    }
-    
-    @Test
-    void assertIsNotDefault() {
-        assertThat(creator.isDefault(), is(false));
+    void assertNewMemoryConfiguration() {
+        MemoryConfiguration config = new MemoryConfiguration("test-namespace");
+        assertThat(config.getNamespace(), is("test-namespace"));
     }
 }

@@ -15,33 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.zookeeper;
+package org.apache.shardingsphere.elasticjob.reg.nacos;
 
 import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.spi.RegistryCenterCreator;
 
 /**
- * ZooKeeper registry center creator.
+ * Nacos registry center creator.
  */
-public final class ZookeeperRegistryCenterCreator implements RegistryCenterCreator {
+public final class NacosRegistryCenterCreator implements RegistryCenterCreator {
     
     @Override
     public boolean supports(final String connectString) {
-        return !connectString.startsWith("http://") && !connectString.startsWith("https://");
-    }
-    
-    @Override
-    public boolean isDefault() {
-        return true;
+        return connectString.startsWith("nacos://");
     }
     
     @Override
     public CoordinatorRegistryCenter create(final String connectString, final String namespace, final String digest) {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
+        NacosConfiguration nacosConfig = new NacosConfiguration(connectString, namespace);
         if (!Strings.isNullOrEmpty(digest)) {
-            zkConfig.setDigest(digest);
+            String[] parts = digest.split(":");
+            if (parts.length == 2) {
+                nacosConfig.setUsername(parts[0]);
+                nacosConfig.setPassword(parts[1]);
+            }
         }
-        return new ZookeeperRegistryCenter(zkConfig);
+        return new NacosRegistryCenter(nacosConfig);
     }
 }

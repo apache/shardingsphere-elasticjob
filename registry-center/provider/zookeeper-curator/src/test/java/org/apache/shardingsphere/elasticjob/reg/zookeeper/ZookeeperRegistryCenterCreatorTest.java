@@ -15,40 +15,45 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.etcd;
+package org.apache.shardingsphere.elasticjob.reg.zookeeper;
 
-import org.apache.curator.test.InstanceSpec;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class EtcdRegistryCenterCreatorTest {
+class ZookeeperRegistryCenterCreatorTest {
     
-    private final EtcdRegistryCenterCreator creator = new EtcdRegistryCenterCreator();
+    private final ZookeeperRegistryCenterCreator creator = new ZookeeperRegistryCenterCreator();
     
     @Test
-    void assertSupportsHttpUrl() {
-        assertThat(creator.supports("http://localhost:" + InstanceSpec.getRandomPort()), is(true));
+    void assertSupportsZookeeperConnectString() {
+        assertThat(creator.supports("localhost:2181"), is(true));
     }
     
     @Test
-    void assertSupportsHttpsUrl() {
-        assertThat(creator.supports("https://localhost:" + InstanceSpec.getRandomPort()), is(true));
+    void assertSupportsMultipleZookeeperConnectString() {
+        assertThat(creator.supports("host1:2181,host2:2181"), is(true));
     }
     
     @Test
-    void assertNotSupportsZookeeperConnectString() {
-        assertThat(creator.supports("localhost:" + InstanceSpec.getRandomPort()), is(false));
+    void assertSupportsOtherConnectStrings() {
+        assertThat(creator.supports("nacos://127.0.0.1:8848"), is(true));
+        assertThat(creator.supports("memory://localhost"), is(true));
     }
     
     @Test
-    void assertNotSupportsMultipleZookeeperConnectString() {
-        assertThat(creator.supports("host1:2181,host2:2181"), is(false));
+    void assertNotSupportsEtcdConnectString() {
+        assertThat(creator.supports("http://localhost:2379"), is(false));
     }
     
     @Test
-    void assertIsNotDefault() {
-        assertThat(creator.isDefault(), is(false));
+    void assertIsDefault() {
+        assertThat(creator.isDefault(), is(true));
+    }
+    
+    @Test
+    void assertCreate() {
+        assertThat(creator.create("localhost:2181", "test", null) instanceof ZookeeperRegistryCenter, is(true));
     }
 }

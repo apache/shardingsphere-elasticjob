@@ -15,40 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.etcd;
+package org.apache.shardingsphere.elasticjob.reg.nacos.exception;
 
-import org.apache.curator.test.InstanceSpec;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class EtcdRegistryCenterCreatorTest {
-    
-    private final EtcdRegistryCenterCreator creator = new EtcdRegistryCenterCreator();
+class NacosIgnoredExceptionProviderTest {
     
     @Test
-    void assertSupportsHttpUrl() {
-        assertThat(creator.supports("http://localhost:" + InstanceSpec.getRandomPort()), is(true));
-    }
-    
-    @Test
-    void assertSupportsHttpsUrl() {
-        assertThat(creator.supports("https://localhost:" + InstanceSpec.getRandomPort()), is(true));
-    }
-    
-    @Test
-    void assertNotSupportsZookeeperConnectString() {
-        assertThat(creator.supports("localhost:" + InstanceSpec.getRandomPort()), is(false));
-    }
-    
-    @Test
-    void assertNotSupportsMultipleZookeeperConnectString() {
-        assertThat(creator.supports("host1:2181,host2:2181"), is(false));
-    }
-    
-    @Test
-    void assertIsNotDefault() {
-        assertThat(creator.isDefault(), is(false));
+    void assertGetIgnoredExceptions() {
+        assertThat(new NacosIgnoredExceptionProvider().getIgnoredExceptions().contains(NacosException.class), is(true));
     }
 }

@@ -15,33 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.shardingsphere.elasticjob.reg.zookeeper;
+package org.apache.shardingsphere.elasticjob.reg.memory;
 
-import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.spi.RegistryCenterCreator;
 
 /**
- * ZooKeeper registry center creator.
+ * Memory registry center creator.
  */
-public final class ZookeeperRegistryCenterCreator implements RegistryCenterCreator {
+public final class MemoryRegistryCenterCreator implements RegistryCenterCreator {
     
     @Override
     public boolean supports(final String connectString) {
-        return !connectString.startsWith("http://") && !connectString.startsWith("https://");
-    }
-    
-    @Override
-    public boolean isDefault() {
-        return true;
+        return connectString.startsWith("memory://");
     }
     
     @Override
     public CoordinatorRegistryCenter create(final String connectString, final String namespace, final String digest) {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
-        if (!Strings.isNullOrEmpty(digest)) {
-            zkConfig.setDigest(digest);
-        }
-        return new ZookeeperRegistryCenter(zkConfig);
+        return new MemoryRegistryCenter(new MemoryConfiguration(namespace));
     }
 }
