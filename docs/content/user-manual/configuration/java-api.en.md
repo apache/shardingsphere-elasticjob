@@ -37,6 +37,7 @@ Configuration:
 | sessionTimeoutMilliseconds    | No                    |
 | connectionTimeoutMilliseconds | No                    |
 | digest                        | No                    |
+| ensembleTracker               | No                    |
 
 ## Job Configuration
 

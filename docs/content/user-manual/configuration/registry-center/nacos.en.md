@@ -28,7 +28,7 @@ Because a Nacos `dataId` only accepts letters, digits and `_-.:`, every path seg
 |-----------------|:----------|:---------------|:---------------------------------------------------------|
 | serverLists     | String    |                | Nacos server address list                                |
 | namespace       | String    |                | ElasticJob namespace, mapped to the Nacos config group   |
-| nacosNamespace  | String    |                | Nacos tenant (namespace id), empty means `public`        |
+| tenant          | String    |                | Nacos tenant (namespace id), empty means `public`        |
 | username        | String    |                | Authentication username                                  |
 | password        | String    |                | Authentication password                                  |
 | timeoutMs       | long      | 3000           | Timeout of config operations in milliseconds             |
@@ -45,6 +45,11 @@ When using `RegistryCenterFactory` (SPI), the `nacos://` prefix is required so t
 **namespace:**
 
 ElasticJob namespace, mapped to the Nacos config group for isolating different job clusters. It is recommended to use meaningful names, such as: `elasticjob`.
+
+**tenant:**
+
+The Nacos tenant (namespace id), used to isolate different environments such as development, test and production. Empty means `public`.
+Note that this is distinct from the ElasticJob `namespace`, which is mapped to the Nacos config group.
 
 **username and password:**
 
@@ -80,6 +85,32 @@ public class NacosRegistryCenterExample {
         registryCenter.close();
     }
 }
+```
+
+### Spring Boot Starter
+
+```yaml
+elasticjob:
+  reg-center:
+    type: nacos
+    server-lists: nacos://127.0.0.1:8848,127.0.0.2:8848
+    namespace: elasticjob
+    tenant: ""
+    username: nacos
+    password: nacos
+    timeout-ms: 3000
+```
+
+### Spring Namespace
+
+```xml
+<elasticjob:nacos id="regCenter" 
+    server-lists="nacos://127.0.0.1:8848,127.0.0.2:8848" 
+    namespace="elasticjob"
+    tenant=""
+    username="nacos"
+    password="nacos"
+    timeout-ms="3000" />
 ```
 
 ### RegistryCenterFactory (SPI)

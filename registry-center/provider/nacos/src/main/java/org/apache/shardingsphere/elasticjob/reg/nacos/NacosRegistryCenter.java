@@ -61,7 +61,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * Registry center of Nacos.
  *
  * <p>Each ElasticJob key (for example {@code /my-job/config}) is stored as one Nacos config.
- * The ElasticJob namespace is mapped to the Nacos config group.
+ * The ElasticJob namespace is mapped to the Nacos config group, while the Nacos tenant
+ * is configured separately and defaults to {@code public}.
  * Because the Nacos {@code dataId} only accepts letters, digits and {@code _-. :},
  * every path segment is encoded with Base64URL and joined with {@code .}.</p>
  */
@@ -110,8 +111,8 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         try {
             Properties props = new Properties();
             props.setProperty(PropertyKeyConst.SERVER_ADDR, resolveServerAddr(nacosConfig.getServerLists()));
-            if (!Strings.isNullOrEmpty(nacosConfig.getNacosNamespace())) {
-                props.setProperty(PropertyKeyConst.NAMESPACE, nacosConfig.getNacosNamespace());
+            if (!Strings.isNullOrEmpty(nacosConfig.getTenant())) {
+                props.setProperty(PropertyKeyConst.NAMESPACE, nacosConfig.getTenant());
             }
             if (!Strings.isNullOrEmpty(nacosConfig.getUsername())) {
                 props.setProperty(PropertyKeyConst.USERNAME, nacosConfig.getUsername());
