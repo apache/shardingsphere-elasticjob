@@ -21,26 +21,20 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Zookeeper bean definition tag.
+ * Nacos bean definition tag.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ZookeeperBeanDefinitionTag {
+public final class NacosBeanDefinitionTag {
     
     public static final String SERVER_LISTS_ATTRIBUTE = "server-lists";
     
     public static final String NAMESPACE_ATTRIBUTE = "namespace";
     
-    public static final String BASE_SLEEP_TIME_MILLISECONDS_ATTRIBUTE = "base-sleep-time-milliseconds";
+    public static final String TENANT_ATTRIBUTE = "tenant";
     
-    public static final String MAX_SLEEP_TIME_MILLISECONDS_ATTRIBUTE = "max-sleep-time-milliseconds";
+    public static final String USERNAME_ATTRIBUTE = "username";
     
-    public static final String MAX_RETRIES_ATTRIBUTE = "max-retries";
+    public static final String PASSWORD_ATTRIBUTE = "password";
     
-    public static final String SESSION_TIMEOUT_MILLISECONDS_ATTRIBUTE = "session-timeout-milliseconds";
-    
-    public static final String CONNECTION_TIMEOUT_MILLISECONDS_ATTRIBUTE = "connection-timeout-milliseconds";
-    
-    public static final String DIGEST_ATTRIBUTE = "digest";
-    
-    public static final String ENSEMBLE_TRACKER_ATTRIBUTE = "ensemble-tracker";
+    public static final String TIMEOUT_MS_ATTRIBUTE = "timeout-ms";
 }

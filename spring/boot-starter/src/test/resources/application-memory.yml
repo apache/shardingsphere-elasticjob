@@ -15,18 +15,14 @@
 # limitations under the License.
 #
 
-regCenter1.serverLists=
-regCenter1.namespace=regCenter1
-regCenter1.baseSleepTimeMilliseconds=1000
-regCenter1.maxSleepTimeMilliseconds=3000
-regCenter1.maxRetries=3
-
-regCenter2.serverLists=
-regCenter2.namespace=regCenter2
-regCenter2.baseSleepTimeMilliseconds=1000
-regCenter2.maxSleepTimeMilliseconds=3000
-regCenter2.maxRetries=3
-regCenter2.sessionTimeoutMilliseconds=1000
-regCenter2.connectionTimeoutMilliseconds=1000
-regCenter2.digest=test:digest
-regCenter2.ensembleTracker=false
+elasticjob:
+  reg-center:
+    type: memory
+    namespace: elasticjob-spring-boot-starter-memory
+  jobs:
+    printTestJob:
+      elasticJobType: PRINT
+      jobBootstrapBeanName: printTestJobBean
+      shardingTotalCount: 1
+      props:
+        print.content: "test print job"

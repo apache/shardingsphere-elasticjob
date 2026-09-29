@@ -21,5 +21,3 @@ ElasticJob 支持多种注册中心类型，用于协调分布式作业的调度
 ## 配置方式
 
 上表中的每种注册中心文档都详细说明了其自身的配置属性与使用示例。
-
-需要注意的是，Spring Boot Starter 与 Spring Namespace 目前仅支持 ZooKeeper。其他注册中心类型只能通过 Java API 或 `RegistryCenterFactory` 使用。

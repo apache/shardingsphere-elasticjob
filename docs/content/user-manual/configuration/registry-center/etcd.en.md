@@ -26,6 +26,7 @@ etcd is a distributed key-value store system. ElasticJob supports using etcd3 as
 | connectionTimeoutMilliseconds | long      | 5000          | Connection timeout in milliseconds                       |
 | username                      | String    |               | Authentication username                                  |
 | password                      | String    |               | Authentication password                                  |
+| ssl                           | boolean   | false         | Whether to use HTTPS                                     |
 | authority                     | String    |               | Authority header for HTTP/2                              |
 
 ### Core Configuration Description
@@ -84,6 +85,8 @@ elasticjob:
     connection-timeout-milliseconds: 5000
     username: root
     password: password
+    ssl: true
+    authority: host1:2379
 ```
 
 ### Spring Namespace
@@ -94,5 +97,7 @@ elasticjob:
     namespace="elasticjob"
     connection-timeout-milliseconds="5000"
     username="root"
-    password="password" />
+    password="password"
+    ssl="true"
+    authority="host1:2379" />
 ```

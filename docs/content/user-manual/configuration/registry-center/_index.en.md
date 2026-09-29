@@ -21,5 +21,3 @@ This section describes how to configure different types of registry centers.
 ## How to Configure
 
 The document of each registry center type above describes its own configuration properties and usage examples in detail.
-
-Please note that the Spring Boot Starter and the Spring Namespace currently only support ZooKeeper. Other registry center types can only be used through the Java API or `RegistryCenterFactory`.
