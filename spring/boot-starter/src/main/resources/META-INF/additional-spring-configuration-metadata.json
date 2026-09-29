@@ -31,7 +31,7 @@
     {
       "name": "elasticjob.reg-center.namespace",
       "type": "java.lang.String",
-      "description": "Namespace.",
+      "description": "Namespace. For the Nacos registry center this is mapped to the Nacos config group, not the Nacos tenant.",
       "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
     },
     {
@@ -81,6 +81,43 @@
       "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
     },
     {
+      "name": "elasticjob.reg-center.username",
+      "type": "java.lang.String",
+      "description": "Authentication username.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
+      "name": "elasticjob.reg-center.password",
+      "type": "java.lang.String",
+      "description": "Authentication password.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
+      "name": "elasticjob.reg-center.ssl",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether to use HTTPs.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
+      "name": "elasticjob.reg-center.authority",
+      "type": "java.lang.String",
+      "description": "Authority header for HTTP/2.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
+      "name": "elasticjob.reg-center.tenant",
+      "type": "java.lang.String",
+      "description": "Nacos tenant (namespace id), empty means public.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
+      "name": "elasticjob.reg-center.timeout-ms",
+      "type": "java.lang.Long",
+      "description": "Timeout milliseconds of Nacos config operations.",
+      "sourceType": "org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties"
+    },
+    {
       "name": "elasticjob.tracing.type",
       "type": "java.lang.String",
       "description": "Type of Event Trace storage."
@@ -121,6 +158,18 @@
         {
           "value": "zookeeper",
           "description": "Using Apache ZooKeeper as registry center."
+        },
+        {
+          "value": "etcd",
+          "description": "Using etcd3 as registry center."
+        },
+        {
+          "value": "nacos",
+          "description": "Using Nacos as registry center."
+        },
+        {
+          "value": "memory",
+          "description": "Using in-memory storage as registry center."
         }
       ]
     },

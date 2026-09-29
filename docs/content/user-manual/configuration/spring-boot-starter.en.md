@@ -18,15 +18,17 @@ To use the Spring boot, user need to add the dependency of the `elasticjob-sprin
 
 Prefix: `elasticjob.reg-center`
 
-`type` selects the registry center, currently only `zookeeper` (default).
+`type` selects the registry center: `zookeeper` (default), `etcd`, `nacos` or `memory`.
+The remaining properties depend on the type, see [Registry Center Configuration](/en/user-manual/configuration/registry-center)
+for the properties and the Spring Boot example of each type.
 
 Configuration:
 
-| Property name | Required |
-|---------------|:---------|
-| type          | No       |
-| server-lists  | Yes      |
-| namespace     | Yes      |
+| Property name | Required                        |
+|---------------|:--------------------------------|
+| type          | No                              |
+| server-lists  | Yes (for zookeeper, etcd, nacos)|
+| namespace     | Yes                             |
 
 Reference:
 
