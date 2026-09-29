@@ -12,6 +12,7 @@
 1. Build: Supports building ElasticJob GraalVM Native Images via GraalVM CE `25.0.2` - [#2520](https://github.com/apache/shardingsphere-elasticjob/pull/2520)
 1. Registry Center: Support etcd as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 1. Registry Center: Supports Nacos and in-memory storage as the registry center - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
+1. Spring: Spring Boot Starter and Spring Namespace support etcd, Nacos and in-memory registry centers - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
 1. Annotation: Complete Annotation Job support - [#1445](https://github.com/apache/shardingsphere-elasticjob/issues/1445)
 
 ### Bug Fixes
@@ -27,6 +28,7 @@
 1. Registry Center: Fixes the issue that `ZookeeperRegistryCenter` throws a null pointer exception when watching a path without cache - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Registry Center: Fixes registry center closed-client reads and nested interrupts - [#2551](https://github.com/apache/shardingsphere-elasticjob/pull/2551)
 1. Registry Center: Fixes closed-client reads and listener removal on `NacosRegistryCenter` close - [#2553](https://github.com/apache/shardingsphere-elasticjob/pull/2553)
+1. Registry Center: Skips revoking already expired leases when closing `EtcdRegistryCenter` - [#2560](https://github.com/apache/shardingsphere-elasticjob/pull/2560)
 1. Spring: Shuts down scheduled job bootstraps gracefully when the Spring application context closes - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
 
 ## 3.0.5

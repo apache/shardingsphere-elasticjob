@@ -26,6 +26,7 @@ etcd 是一个分布式键值存储系统，ElasticJob 支持使用 etcd3 作为
 | connectionTimeoutMilliseconds | long   | 5000  | 连接超时毫秒数             |
 | username                      | String |       | 认证用户名  |
 | password                      | String |       | 认证密码  |
+| ssl                           | boolean | false | 是否使用 HTTPS |
 | authority                     | String |       | HTTP/2 的 authority 头  |
 
 ### 核心配置项说明
@@ -73,7 +74,30 @@ public class EtcdRegistryCenterExample {
 }
 ```
 
-### Spring Boot Starter 与 Spring Namespace
+### Spring Boot Starter
 
-目前 Spring Boot Starter 和 Spring Namespace 仅支持 ZooKeeper，因此 etcd 只能通过 Java API 或
-`RegistryCenterFactory` 使用。详见[注册中心配置](/cn/user-manual/configuration/registry-center)。
+```yaml
+elasticjob:
+  reg-center:
+    type: etcd
+    server-lists: http://host1:2379,http://host2:2379
+    namespace: elasticjob
+    connection-timeout-milliseconds: 5000
+    username: root
+    password: password
+    ssl: true
+    authority: host1:2379
+```
+
+### Spring Namespace
+
+```xml
+<elasticjob:etcd id="regCenter" 
+    server-lists="http://host1:2379,http://host2:2379" 
+    namespace="elasticjob"
+    connection-timeout-milliseconds="5000"
+    username="root"
+    password="password"
+    ssl="true"
+    authority="host1:2379" />
+```

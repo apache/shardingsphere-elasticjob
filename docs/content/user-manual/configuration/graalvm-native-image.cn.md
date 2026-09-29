@@ -354,12 +354,16 @@ ElasticJob 定义了 `generateMetadata` 的 Maven Profile 用于在 GraalVM JIT 
 
 以下命令仅为 `elasticjob-test-native` 生成 Conditional 形态的 GraalVM Reachability Metadata 的一个举例。
 生成的 GraalVM Reachability Metadata 位于 `elasticjob-reachability-metadata` 子模块下。
+末尾的 `native:metadata-copy` 目标为可选项，省略后仅携带 GraalVM Tracing Agent 执行单元测试，不生成 Metadata 文件。
 
-对于测试类和测试文件独立使用的 GraalVM Reachability Metadata，贡献者应该放置到 `shardingsphere-test-native` 子模块的 classpath 的
+对于测试类和测试文件独立使用的 GraalVM Reachability Metadata，贡献者应该放置到 `elasticjob-test-native` 子模块的 classpath 的
 `META-INF/native-image/elasticjob-test-native-test-metadata/` 下。
 
 ```bash
-git clone git@github.com:apache/shardingsphere.git
-cd ./shardingsphere/
+git clone git@github.com:apache/shardingsphere-elasticjob.git
+cd ./shardingsphere-elasticjob/
+# 仅携带 GraalVM Tracing Agent 执行单元测试
+./mvnw -PgenerateMetadata -e -T1C clean test
+# 生成或覆盖 Conditional 形态的 GraalVM Reachability Metadata
 ./mvnw -PgenerateMetadata -e -T1C clean test native:metadata-copy
 ```
