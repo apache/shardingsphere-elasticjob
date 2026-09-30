@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurat
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
@@ -67,12 +68,25 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         addDataListener(new ListenServersChangedJobListener());
     }
     
+    /**
+     * Listener of the job configuration sharding total count change.
+     *
+     * <p>
+     * A deleted configuration node is treated as an empty value, because etcd delivers the removed node's value and
+     * {@link YamlEngine#unmarshal(String, Class)} returns {@code null} for it, so the event is ignored instead of
+     * raising a null pointer exception.
+     * </p>
+     */
     class ShardingTotalCountChangedJobListener implements DataChangedEventListener {
         
         @Override
         public void onChange(final DataChangedEvent event) {
             if (configNode.isConfigPath(event.getKey()) && 0 != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
-                int newShardingTotalCount = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration().getShardingTotalCount();
+                JobConfigurationPOJO jobConfigPOJO = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class);
+                if (null == jobConfigPOJO) {
+                    return;
+                }
+                int newShardingTotalCount = jobConfigPOJO.toJobConfiguration().getShardingTotalCount();
                 if (newShardingTotalCount != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                     shardingService.setReshardingFlag();
                     JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, newShardingTotalCount);
@@ -90,8 +104,23 @@ public final class ShardingListenerManager extends AbstractListenerManager {
             }
         }
         
+        /**
+         * Judge whether the job uses static sharding.
+         *
+         * <p>
+         * A removed job configuration yields {@code false} instead of propagating the exception, because a
+         * configuration change event may still be delivered after the job is shut down and there is nothing left to
+         * reshard then.
+         * </p>
+         *
+         * @return whether the job uses static sharding
+         */
         private boolean isStaticSharding() {
-            return configService.load(true).isStaticSharding();
+            try {
+                return configService.load(true).isStaticSharding();
+            } catch (final JobConfigurationException ignored) {
+                return false;
+            }
         }
         
         private boolean hasShardingInfo() {

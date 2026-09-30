@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.YamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobScheduleController;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
@@ -104,6 +105,14 @@ class ShardingListenerManagerTest {
     }
     
     @Test
+    void assertShardingTotalCountChangedJobListenerWhenConfigurationIsRemoved() {
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 3);
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/config", ""));
+        verify(shardingService, times(0)).setReshardingFlag();
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
+    }
+    
+    @Test
     void assertListenServersChangedJobListenerWhenIsNotServerStatusPath() {
         shardingListenerManager.new ListenServersChangedJobListener().onChange(new DataChangedEvent(Type.ADDED, "/test_job/servers/127.0.0.1/other", ""));
         verify(shardingService, times(0)).setReshardingFlag();
@@ -136,6 +145,16 @@ class ShardingListenerManagerTest {
         JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).build());
+        shardingListenerManager.new ListenServersChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/servers/127.0.0.1", ""));
+        verify(shardingService).setReshardingFlag();
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
+    void assertListenServersChangedJobListenerWhenIsConfigurationRemoved() {
+        JobRegistry.getInstance().registerRegistryCenter("test_job", regCenter);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(configService.load(true)).thenThrow(new JobConfigurationException("Job configuration not found"));
         shardingListenerManager.new ListenServersChangedJobListener().onChange(new DataChangedEvent(Type.UPDATED, "/test_job/servers/127.0.0.1", ""));
         verify(shardingService).setReshardingFlag();
         JobRegistry.getInstance().shutdown("test_job");

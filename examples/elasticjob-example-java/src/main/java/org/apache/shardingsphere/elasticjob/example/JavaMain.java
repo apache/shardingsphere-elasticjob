@@ -42,6 +42,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 
+/**
+ * Java based example entry point.
+ *
+ * <p>
+ * Switch to MySQL by yourself, for example {@code EVENT_RDB_STORAGE_DRIVER} set to
+ * {@code "com.mysql.cj.jdbc.Driver"} and {@code EVENT_RDB_STORAGE_URL} set to
+ * {@code "jdbc:mysql://localhost:3306/elastic_job_log"}.
+ * </p>
+ *
+ * <p>
+ * The one-off job can also be set up with an error handler, for example {@code setUpOneOffJobWithEmail},
+ * {@code setUpOneOffJobWithDingtalk} or {@code setUpOneOffJobWithWechat}.
+ * </p>
+ */
 public final class JavaMain {
     
     private static final int EMBED_ZOOKEEPER_PORT = 4181;
@@ -49,10 +63,6 @@ public final class JavaMain {
     private static final String ZOOKEEPER_CONNECTION_STRING = "localhost:" + EMBED_ZOOKEEPER_PORT;
     
     private static final String JOB_NAMESPACE = "elasticjob-example-java";
-    
-    // switch to MySQL by yourself
-//    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.cj.jdbc.Driver";
-//    private static final String EVENT_RDB_STORAGE_URL = "jdbc:mysql://localhost:3306/elastic_job_log";
     
     private static final String EVENT_RDB_STORAGE_DRIVER = "org.h2.Driver";
     
@@ -73,9 +83,6 @@ public final class JavaMain {
         setUpDataflowJob(regCenter, tracingConfig);
         setUpScriptJob(regCenter, tracingConfig);
         setUpOneOffJob(regCenter, tracingConfig);
-//        setUpOneOffJobWithEmail(regCenter, tracingConfig);
-//        setUpOneOffJobWithDingtalk(regCenter, tracingConfig);
-//        setUpOneOffJobWithWechat(regCenter, tracingConfig);
     }
     
     private static CoordinatorRegistryCenter setUpRegistryCenter() {

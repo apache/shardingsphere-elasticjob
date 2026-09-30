@@ -41,9 +41,15 @@ public class JobScannerConfiguration implements BeanDefinitionRegistryPostProces
         Assert.notNull(this.basePackages, "Property 'basePackage' is required");
     }
     
+    /**
+     * Post process bean factory.
+     *
+     * <p>
+     * Intentionally blank, because job bootstraps are registered in {@code postProcessBeanDefinitionRegistry}.
+     * </p>
+     */
     @Override
     public void postProcessBeanFactory(final ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        // left intentionally blank
     }
     
     @Override

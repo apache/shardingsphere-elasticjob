@@ -335,6 +335,13 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         return client;
     }
     
+    /**
+     * Execute the callback while the given key is leader.
+     *
+     * <p>
+     * A failed lease revocation is ignored, because the lease will expire automatically or be revoked on close.
+     * </p>
+     */
     @Override
     public void executeInLeader(final String key, final LeaderExecutionCallback callback) {
         long leaseId = 0L;
@@ -358,7 +365,6 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                     // CHECKSTYLE:OFF
                 } catch (final Exception ignored) {
                     // CHECKSTYLE:ON
-                    // ignored, lease will expire automatically or be revoked on close
                 }
                 leaseIdMap.remove(leaseId);
             }

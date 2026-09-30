@@ -19,6 +19,14 @@ package org.apache.shardingsphere.elasticjob.example;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * Spring based example entry point.
+ *
+ * <p>
+ * A one-off job can also be executed manually, for example by obtaining the {@code oneOffJobBean}
+ * {@code OneOffJobBootstrap} from the application context and invoking {@code execute()} on it.
+ * </p>
+ */
 public final class SpringMain {
     
     private static final int EMBED_ZOOKEEPER_PORT = 5181;
@@ -28,8 +36,5 @@ public final class SpringMain {
     // CHECKSTYLE:ON
         EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:META-INF/application-context.xml");
-        // One-off Job
-        //OneOffJobBootstrap oneOffJobBootstrap = context.getBean("oneOffJobBean", OneOffJobBootstrap.class);
-        //oneOffJobBootstrap.execute();
     }
 }

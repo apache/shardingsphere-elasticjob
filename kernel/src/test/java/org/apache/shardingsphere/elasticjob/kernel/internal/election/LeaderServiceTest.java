@@ -141,4 +141,12 @@ class LeaderServiceTest {
         leaderService.new LeaderElectionExecutionCallback().execute();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/election/instance", "127.0.0.1@-@0");
     }
+    
+    @Test
+    void assertElectLeaderExecutionCallbackWhenJobInstanceIsAbsent() {
+        LeaderService service = new LeaderService(null, "test_job_without_instance");
+        ReflectionUtils.setFieldValue(service, "jobNodeStorage", jobNodeStorage);
+        service.new LeaderElectionExecutionCallback().execute();
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode(ArgumentMatchers.any(), ArgumentMatchers.any());
+    }
 }

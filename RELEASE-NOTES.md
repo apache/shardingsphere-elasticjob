@@ -12,6 +12,12 @@
 
 1. Kernel: Fixes the issue that the distributed once listener loops forever when the registration is not confirmed by the registry center - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Kernel: Fixes the issue that the trigger flag is removed before the job is triggered - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that a job execution keeps running after the job is shut down - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
+1. Kernel: Fixes the issue that the leader election throws a null pointer exception after the job is shut down - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
+1. Kernel: Fixes the issue that a scheduled trigger throws an exception after the job configuration is removed - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
+1. Kernel: Fixes the issue that the failover listener throws an exception when the job configuration is removed - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
+1. Kernel: Fixes the issue that the sharding listener throws a null pointer exception when the job configuration is removed - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
+1. Kernel: Fixes the issue that the static sharding listener throws an exception when the job configuration is removed - [#2550](https://github.com/apache/shardingsphere-elasticjob/pull/2550)
 1. Registry Center: Fixes the issue that the etcd registry center returns incorrect child keys under a nested path - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not report the root path as existed - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not revoke the lease created by leader execution - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
