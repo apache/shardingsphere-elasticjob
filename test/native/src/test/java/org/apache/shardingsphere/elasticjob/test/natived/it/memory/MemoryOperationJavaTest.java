@@ -166,14 +166,6 @@ class MemoryOperationJavaTest {
         job.shutdown();
     }
     
-    /**
-     * Test sharding operate API.
-     *
-     * <p>
-     * Memory ephemeral nodes never expire while the creating instance is open (unlike etcd leases), so the steady
-     * state after enable is PENDING (idle) or RUNNING (executing), never SHARDING_FLAG.
-     * </p>
-     */
     @Test
     void testShardingOperateAPI() {
         String jobName = "testMemoryShardingOperateAPI";
@@ -207,6 +199,8 @@ class MemoryOperationJavaTest {
                 .collect(Collectors.toList());
         assertThat(firstShardingInfos.size(), is(1));
         assertThat(firstShardingInfos.get(0).getStatus(), is(ShardingInfo.ShardingStatus.DISABLED));
+        // Memory ephemeral nodes never expire while the creating instance is open (unlike etcd leases),
+        // so the steady state after enable is PENDING (idle) or RUNNING (executing), never SHARDING_FLAG.
         shardingOperateAPI.enable(jobName, "0");
         assertThat(secondRegCenter.isExisted("/" + jobName + "/sharding/0/disabled"), is(false));
         Awaitility.await()

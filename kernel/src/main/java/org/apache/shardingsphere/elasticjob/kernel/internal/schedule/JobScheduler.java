@@ -197,15 +197,9 @@ public final class JobScheduler {
     
     /**
      * Shutdown job.
-     *
-     * <p>
-     * The schedule controller is stopped before the registry center is torn down, so that no job execution outlives
-     * it and keeps reading a configuration which has already been removed. {@code waitForJobsToComplete} must stay
-     * {@code false}: Quartz only calls {@code interruptJob()} in that case, whereas waiting for the execution to
-     * finish on its own can block forever because this method still holds the {@link JobScheduleController} monitor.
-     * </p>
      */
     public void shutdown() {
+        // Stop the schedule controller before tearing down the registry center.
         jobScheduleController.shutdown(false);
         setUpFacade.tearDown();
         schedulerFacade.shutdownInstance();

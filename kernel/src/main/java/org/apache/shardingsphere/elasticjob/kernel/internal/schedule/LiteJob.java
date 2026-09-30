@@ -36,20 +36,13 @@ public final class LiteJob implements InterruptableJob {
     
     private volatile Thread currentThread;
     
-    /**
-     * Execute the job.
-     *
-     * <p>
-     * A {@link JobConfigurationException} is swallowed here, because a trigger may still fire after the job
-     * configuration has been removed, and in that case there is nothing left to execute.
-     * </p>
-     */
     @Override
     public void execute(final JobExecutionContext context) {
         try {
             currentThread = Thread.currentThread();
             jobExecutor.execute();
         } catch (final JobConfigurationException ignored) {
+            // The job configuration may be removed while this trigger fires, so there is nothing to execute.
         } finally {
             currentThread = null;
         }

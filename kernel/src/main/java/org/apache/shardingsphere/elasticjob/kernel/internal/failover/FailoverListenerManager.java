@@ -81,20 +81,11 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         addDataListener(new LegacyCrashedRunningItemListener());
     }
     
-    /**
-     * Judge whether failover is enabled.
-     *
-     * <p>
-     * A removed job configuration yields {@code false} instead of propagating the exception, because a configuration
-     * change event may still be delivered after the job is shut down and there is nothing left to fail over then.
-     * </p>
-     *
-     * @return whether failover is enabled
-     */
     private boolean isFailoverEnabled() {
         try {
             return configService.load(true).isFailover();
         } catch (final JobConfigurationException ignored) {
+            // The job configuration has been removed, so there is nothing to fail over.
             return false;
         }
     }

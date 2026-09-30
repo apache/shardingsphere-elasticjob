@@ -90,36 +90,24 @@ class NettyRestfulServiceTest {
         }, TESTCASE_TIMEOUT);
     }
     
-    /**
-     * Assert custom exception handler.
-     *
-     * <p>
-     * The exception is handled by the custom exception handler and returns HTTP status 403.
-     * </p>
-     */
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     void assertCustomExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalState");
         request.headers().set("Exception-Message", "An illegal state exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
+            // Handle by CustomExceptionHandler
             assertThat(httpResponse.status().code(), is(403));
         }, TESTCASE_TIMEOUT);
     }
     
-    /**
-     * Assert using default exception handler.
-     *
-     * <p>
-     * The exception is handled by the default exception handler and returns HTTP status 500.
-     * </p>
-     */
     @Test
     @Timeout(value = TESTCASE_TIMEOUT, unit = TimeUnit.MILLISECONDS)
     void assertUsingDefaultExceptionHandler() {
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/job/throw/IllegalArgument");
         request.headers().set("Exception-Message", "An illegal argument exception message.");
         HttpClient.request(HOST, PORT, request, httpResponse -> {
+            // Handle by DefaultExceptionHandler
             assertThat(httpResponse.status().code(), is(500));
         }, TESTCASE_TIMEOUT);
     }
