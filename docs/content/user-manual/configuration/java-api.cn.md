@@ -6,7 +6,7 @@ chapter = true
 
 ## 注册中心配置
 
-用于注册和协调作业分布式行为的组件，目前仅支持 ZooKeeper。
+用于注册和协调作业分布式行为的组件。支持的注册中心类型：`ZooKeeper`、`etcd`、`Nacos` 与 `Memory`，详见[注册中心配置](/cn/user-manual/configuration/registry-center)。
 
 类名称：org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 
@@ -22,6 +22,7 @@ chapter = true
 | sessionTimeoutMilliseconds    | 否     |
 | connectionTimeoutMilliseconds | 否     |
 | digest                        | 否     |
+| ensembleTracker               | 否     |
 
 ## 作业配置
 

@@ -1,5 +1,9 @@
 ## 3.0.6-SNAPSHOT
 
+### API Changes
+
+1. Spring Boot Starter: Rename `ZookeeperProperties` to `RegistryCenterProperties`, the registry center type is selected by the new `elasticjob.reg-center.type` property - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
+
 ### Enhancements
 
 1. Build: Support building and using ElasticJob with JDK25 - [#2518](https://github.com/apache/shardingsphere-elasticjob/pull/2518)
@@ -7,11 +11,20 @@
 1. Build: Supports building ElasticJob GraalVM Native Images via GraalVM CE `25.0.2` - [#2520](https://github.com/apache/shardingsphere-elasticjob/pull/2520)
 1. Registry Center: Support etcd as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 1. Registry Center: Supports Nacos and in-memory storage as the registry center - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
+1. Spring: Spring Boot Starter and Spring Namespace support etcd, Nacos and in-memory registry centers - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
 
 ### Bug Fixes
 
 1. Kernel: Fixes the issue that the distributed once listener loops forever when the registration is not confirmed by the registry center - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Kernel: Fixes the issue that the trigger flag is removed before the job is triggered - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that a job execution keeps running after the job is shut down - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that the failover listener throws an exception when the job configuration is removed - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that leader election throws a null pointer exception after the job is shut down - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that the sharding listener throws a null pointer exception when the job configuration is removed - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that a scheduled trigger throws an exception after the job configuration is removed - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issue that the static sharding listener throws an exception when the job configuration is removed - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Registry Center: Fixes the issue that `ZookeeperRegistryCenter` throws a registry exception instead of returning the not found value when the client is closed while reading - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Registry Center: Fixes the issue that a job execution aborted by interruption throws a registry exception instead of restoring the interrupt flag - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Registry Center: Fixes the issue that the etcd registry center returns incorrect child keys under a nested path - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not report the root path as existed - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not revoke the lease created by leader execution - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)

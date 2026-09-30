@@ -17,31 +17,25 @@
 
 package org.apache.shardingsphere.elasticjob.spring.namespace.reg.parser;
 
-import com.google.common.base.Strings;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spring.namespace.reg.tag.ZookeeperBeanDefinitionTag;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
-import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
  * Bean definition parser for ZooKeeper.
  */
-public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public final class ZookeeperBeanDefinitionParser extends AbstractRegistryCenterBeanDefinitionParser {
     
     @Override
-    protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperRegistryCenter.class);
-        result.addConstructorArgValue(buildZookeeperConfigurationBeanDefinition(element));
-        result.setInitMethodName("init");
-        result.setDestroyMethodName("close");
-        return result.getBeanDefinition();
+    protected Class<?> getRegistryCenterClass() {
+        return ZookeeperRegistryCenter.class;
     }
     
-    private AbstractBeanDefinition buildZookeeperConfigurationBeanDefinition(final Element element) {
+    @Override
+    protected AbstractBeanDefinition buildConfigurationBeanDefinition(final Element element) {
         BeanDefinitionBuilder config = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperConfiguration.class);
         config.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.SERVER_LISTS_ATTRIBUTE));
         config.addConstructorArgValue(element.getAttribute(ZookeeperBeanDefinitionTag.NAMESPACE_ATTRIBUTE));
@@ -51,13 +45,7 @@ public final class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionP
         addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.SESSION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "sessionTimeoutMilliseconds", element, config);
         addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.CONNECTION_TIMEOUT_MILLISECONDS_ATTRIBUTE, "connectionTimeoutMilliseconds", element, config);
         addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.DIGEST_ATTRIBUTE, "digest", element, config);
+        addPropertyValueIfNotEmpty(ZookeeperBeanDefinitionTag.ENSEMBLE_TRACKER_ATTRIBUTE, "ensembleTracker", element, config);
         return config.getBeanDefinition();
-    }
-    
-    private void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
-        String attributeValue = element.getAttribute(attributeName);
-        if (!Strings.isNullOrEmpty(attributeValue)) {
-            factory.addPropertyValue(propertyName, attributeValue);
-        }
     }
 }

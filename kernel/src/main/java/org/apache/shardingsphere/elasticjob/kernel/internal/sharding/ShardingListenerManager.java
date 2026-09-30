@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurat
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
@@ -72,7 +73,12 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         @Override
         public void onChange(final DataChangedEvent event) {
             if (configNode.isConfigPath(event.getKey()) && 0 != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
-                int newShardingTotalCount = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class).toJobConfiguration().getShardingTotalCount();
+                JobConfigurationPOJO jobConfigPOJO = YamlEngine.unmarshal(event.getValue(), JobConfigurationPOJO.class);
+                // The event may carry no value once the configuration node is deleted while the job is shutting down.
+                if (null == jobConfigPOJO) {
+                    return;
+                }
+                int newShardingTotalCount = jobConfigPOJO.toJobConfiguration().getShardingTotalCount();
                 if (newShardingTotalCount != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                     shardingService.setReshardingFlag();
                     JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, newShardingTotalCount);
@@ -91,7 +97,12 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         }
         
         private boolean isStaticSharding() {
-            return configService.load(true).isStaticSharding();
+            try {
+                return configService.load(true).isStaticSharding();
+            } catch (final JobConfigurationException ignored) {
+                // The job configuration has been removed, so there is nothing to reshard.
+                return false;
+            }
         }
         
         private boolean hasShardingInfo() {

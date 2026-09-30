@@ -24,10 +24,10 @@ Apache ZooKeeper 是 ElasticJob 默认且最成熟的注册中心实现。
 | serverLists                   | String |       | 连接 ZooKeeper 服务器的列表 |
 | namespace                     | String |       | ZooKeeper 的命名空间     |
 | baseSleepTimeMilliseconds     | int    | 1000  | 等待重试的间隔时间的初始毫秒数     |
-| maxSleepTimeMilliseconds      | String | 3000  | 等待重试的间隔时间的最大毫秒数     |
-| maxRetries                    | String | 3     | 最大重试次数              |
-| sessionTimeoutMilliseconds    | int    | 60000 | 会话超时毫秒数             |
-| connectionTimeoutMilliseconds | int    | 15000 | 连接超时毫秒数             |
+| maxSleepTimeMilliseconds      | int    | 3000  | 等待重试的间隔时间的最大毫秒数     |
+| maxRetries                    | int    | 3     | 最大重试次数              |
+| sessionTimeoutMilliseconds    | int    | 0   | 会话超时毫秒数，`0` 表示使用 Curator 缺省值 |
+| connectionTimeoutMilliseconds | int    | 0   | 连接超时毫秒数，`0` 表示使用 Curator 缺省值 |
 | digest                        | String | 无需验证  | 连接 ZooKeeper 的权限令牌  |
 | ensembleTracker               | boolean | true | 是否监听集群配置变化 |
 

@@ -6,7 +6,7 @@ chapter = true
 
 ## Registry Center Configuration
 
-The component which is used to register and coordinate the distributed behavior of jobs, currently only supports `ZooKeeper`.
+The component which is used to register and coordinate the distributed behavior of jobs. Registry center types supported: `ZooKeeper`, `etcd`, `Nacos` and `Memory`, please refer to [Registry Center Configuration](/en/user-manual/configuration/registry-center) for details.
 
 Class name: `org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration`
 
@@ -22,6 +22,7 @@ Configuration:
 | sessionTimeoutMilliseconds    | No                    |
 | connectionTimeoutMilliseconds | No                    |
 | digest                        | No                    |
+| ensembleTracker               | No                    |
 
 ## Job Configuration
 

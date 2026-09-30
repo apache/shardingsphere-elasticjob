@@ -2,9 +2,13 @@
   "rules": [
     {"includeClasses": "**"},
 
+    {"excludeClasses": "android.**"},
+    {"excludeClasses": "ch.**"},
     {"excludeClasses": "com.**"},
+    {"excludeClasses": "io.**"},
     {"excludeClasses": "java.**"},
     {"excludeClasses": "javax.**"},
+    {"excludeClasses": "jdk.**"},
     {"excludeClasses": "kotlinx.**"},
     {"excludeClasses": "org.**"},
     {"excludeClasses": "sun.**"},

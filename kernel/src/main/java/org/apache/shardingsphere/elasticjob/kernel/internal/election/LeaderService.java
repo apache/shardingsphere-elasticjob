@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.election;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
@@ -103,9 +104,11 @@ public final class LeaderService {
         
         @Override
         public void execute() {
-            if (!hasLeader()) {
-                jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+            JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+            if (null == jobInstance || hasLeader()) {
+                return;
             }
+            jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, jobInstance.getJobInstanceId());
         }
     }
 }

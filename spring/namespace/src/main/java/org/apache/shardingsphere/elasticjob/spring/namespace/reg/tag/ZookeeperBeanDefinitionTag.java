@@ -41,4 +41,6 @@ public final class ZookeeperBeanDefinitionTag {
     public static final String CONNECTION_TIMEOUT_MILLISECONDS_ATTRIBUTE = "connection-timeout-milliseconds";
     
     public static final String DIGEST_ATTRIBUTE = "digest";
+    
+    public static final String ENSEMBLE_TRACKER_ATTRIBUTE = "ensemble-tracker";
 }

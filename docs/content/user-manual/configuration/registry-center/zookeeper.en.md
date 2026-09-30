@@ -24,10 +24,10 @@ Apache ZooKeeper is the default and most mature registry center implementation f
 | serverLists                   | String    |               | ZooKeeper server IP list                                 |
 | namespace                     | String    |               | ZooKeeper namespace                                      |
 | baseSleepTimeMilliseconds     | int       | 1000          | The initial value of milliseconds for the retry interval |
-| maxSleepTimeMilliseconds      | String    | 3000          | The maximum value of milliseconds for the retry interval |
-| maxRetries                    | String    | 3             | Maximum number of retries                                |
-| sessionTimeoutMilliseconds    | int       | 60000         | Session timeout in milliseconds                          |
-| connectionTimeoutMilliseconds | int       | 15000         | Connection timeout in milliseconds                       |
+| maxSleepTimeMilliseconds      | int       | 3000          | The maximum value of milliseconds for the retry interval |
+| maxRetries                    | int       | 3             | Maximum number of retries                                |
+| sessionTimeoutMilliseconds    | int       | 0           | Session timeout in milliseconds, `0` means the Curator default |
+| connectionTimeoutMilliseconds | int       | 0           | Connection timeout in milliseconds, `0` means the Curator default |
 | digest                        | String    | no need       | Permission token to connect to ZooKeeper                 |
 | ensembleTracker               | boolean   | true          | Whether to watch ensemble configuration changes          |
 

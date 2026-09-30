@@ -26,6 +26,7 @@ etcd 是一个分布式键值存储系统，ElasticJob 支持使用 etcd3 作为
 | connectionTimeoutMilliseconds | long   | 5000  | 连接超时毫秒数             |
 | username                      | String |       | 认证用户名  |
 | password                      | String |       | 认证密码  |
+| ssl                           | boolean | false | 是否使用 HTTPS |
 | authority                     | String |       | HTTP/2 的 authority 头  |
 
 ### 核心配置项说明
@@ -84,6 +85,8 @@ elasticjob:
     connection-timeout-milliseconds: 5000
     username: root
     password: password
+    ssl: true
+    authority: host1:2379
 ```
 
 ### Spring Namespace
@@ -94,5 +97,7 @@ elasticjob:
     namespace="elasticjob"
     connection-timeout-milliseconds="5000"
     username="root"
-    password="password" />
+    password="password"
+    ssl="true"
+    authority="host1:2379" />
 ```

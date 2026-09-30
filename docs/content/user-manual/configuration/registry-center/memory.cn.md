@@ -54,6 +54,21 @@ public class MemoryRegistryCenterExample {
 }
 ```
 
+### Spring Boot Starter
+
+```yaml
+elasticjob:
+  reg-center:
+    type: memory
+    namespace: elasticjob
+```
+
+### Spring 命名空间
+
+```xml
+<elasticjob:memory id="regCenter" namespace="elasticjob" />
+```
+
 ### RegistryCenterFactory（SPI）
 
 ```java

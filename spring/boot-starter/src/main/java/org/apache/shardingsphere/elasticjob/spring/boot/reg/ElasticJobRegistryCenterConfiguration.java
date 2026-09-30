@@ -17,24 +17,16 @@
 
 package org.apache.shardingsphere.elasticjob.spring.boot.reg;
 
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
- * ElasticJob registry center configuration.
+ * Configuration of the ElasticJob registry center.
+ *
+ * <p>The registry center selected by {@code elasticjob.reg-center.type} is created by one of the imported configurations.
+ * A user-defined {@code CoordinatorRegistryCenter} bean always takes precedence over the auto-configured one.</p>
  */
-@EnableConfigurationProperties(ZookeeperProperties.class)
+@EnableConfigurationProperties(RegistryCenterProperties.class)
+@Import({ZookeeperRegistryCenterConfiguration.class, EtcdRegistryCenterConfiguration.class, NacosRegistryCenterConfiguration.class, MemoryRegistryCenterConfiguration.class})
 public class ElasticJobRegistryCenterConfiguration {
-    
-    /**
-     * Create a zookeeper registry center bean via factory.
-     *
-     * @param zookeeperProperties factory
-     * @return zookeeper registry center
-     */
-    @Bean(initMethod = "init", destroyMethod = "close")
-    public ZookeeperRegistryCenter zookeeperRegistryCenter(final ZookeeperProperties zookeeperProperties) {
-        return new ZookeeperRegistryCenter(zookeeperProperties.toZookeeperConfiguration());
-    }
 }

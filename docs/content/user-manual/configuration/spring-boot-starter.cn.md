@@ -18,33 +18,33 @@ chapter = true
 
 配置前缀：`elasticjob.reg-center`
 
+`type` 指定注册中心类型：`zookeeper`（默认）、`etcd`、`nacos` 或 `memory`。
+其余属性因类型而异，各类型的属性与 Spring Boot 配置示例见[注册中心配置](/cn/user-manual/configuration/registry-center)。
+
 可配置属性：
 
-| 属性名                             | 是否必填 |
-|---------------------------------|:-----|
-| server-lists                    | 是    |
-| namespace                       | 是    |
-| base-sleep-time-milliseconds    | 否    |
-| max-sleep-time-milliseconds     | 否    |
-| max-retries                     | 否    |
-| session-timeout-milliseconds    | 否    |
-| connection-timeout-milliseconds | 否    |
-| digest                          | 否    |
+| 属性名        | 是否必填                        |
+|-------------|:--------------------------------|
+| type        | 否                              |
+| server-lists | 是（zookeeper、etcd、nacos）      |
+| namespace   | 是                             |
 
 配置格式参考：
 
 **YAML**
 ```yaml
 elasticjob:
-  regCenter:
-    serverLists: localhost:6181
+  reg-center:
+    type: zookeeper
+    server-lists: localhost:6181
     namespace: elasticjob-springboot
 ```
 
 **Properties**
 ```
-elasticjob.reg-center.namespace=elasticjob-springboot
+elasticjob.reg-center.type=zookeeper
 elasticjob.reg-center.server-lists=localhost:6181
+elasticjob.reg-center.namespace=elasticjob-springboot
 ```
 
 ## 作业配置
