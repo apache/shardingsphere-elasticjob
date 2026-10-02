@@ -17,41 +17,32 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.schedule;
 
-import lombok.Setter;
 import org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor;
 import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
-import org.quartz.InterruptableJob;
-import org.quartz.JobExecutionContext;
-import org.quartz.UnableToInterruptJobException;
+import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-/**
- * Lite job.
- */
-@Setter
-public final class LiteJob implements InterruptableJob {
+class LiteJobTest {
     
-    private ElasticJobExecutor jobExecutor;
-    
-    private volatile Thread currentThread;
-    
-    @Override
-    public void execute(final JobExecutionContext context) {
-        try {
-            currentThread = Thread.currentThread();
-            jobExecutor.execute();
-        } catch (final JobConfigurationException ignored) {
-            // The job configuration may be removed while this trigger fires, so there is nothing to execute.
-        } finally {
-            currentThread = null;
-        }
+    @Test
+    void assertExecute() {
+        ElasticJobExecutor jobExecutor = mock(ElasticJobExecutor.class);
+        LiteJob liteJob = new LiteJob();
+        liteJob.setJobExecutor(jobExecutor);
+        liteJob.execute(null);
+        verify(jobExecutor).execute();
     }
     
-    @Override
-    public void interrupt() throws UnableToInterruptJobException {
-        if (Objects.nonNull(currentThread)) {
-            currentThread.interrupt();
-        }
+    @Test
+    void assertExecuteWhenJobConfigurationIsRemoved() {
+        ElasticJobExecutor jobExecutor = mock(ElasticJobExecutor.class);
+        doThrow(new JobConfigurationException("Job configuration not found")).when(jobExecutor).execute();
+        LiteJob liteJob = new LiteJob();
+        liteJob.setJobExecutor(jobExecutor);
+        liteJob.execute(null);
+        verify(jobExecutor).execute();
     }
 }

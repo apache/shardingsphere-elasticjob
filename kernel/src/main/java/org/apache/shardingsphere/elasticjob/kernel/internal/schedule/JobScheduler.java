@@ -199,9 +199,10 @@ public final class JobScheduler {
      * Shutdown job.
      */
     public void shutdown() {
+        // Stop the schedule controller before tearing down the registry center.
+        jobScheduleController.shutdown(false);
         setUpFacade.tearDown();
         schedulerFacade.shutdownInstance();
-        jobScheduleController.shutdown(false);
         jobExecutor.shutdown();
     }
 }

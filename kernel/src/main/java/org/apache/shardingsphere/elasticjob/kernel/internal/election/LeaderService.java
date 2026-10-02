@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.kernel.internal.election;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
+import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.server.ServerService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.storage.JobNodeStorage;
 import org.apache.shardingsphere.elasticjob.reg.base.LeaderExecutionCallback;
@@ -98,14 +99,24 @@ public final class LeaderService {
         jobNodeStorage.removeJobNodeIfExisted(LeaderNode.INSTANCE);
     }
     
+    /**
+     * Callback executed while holding the leader latch.
+     *
+     * <p>
+     * The job instance is read before the leader check, and the callback returns without writing when it is absent,
+     * because the instance is removed from the registry before this callback is torn down during shutdown.
+     * </p>
+     */
     @RequiredArgsConstructor
     class LeaderElectionExecutionCallback implements LeaderExecutionCallback {
         
         @Override
         public void execute() {
-            if (!hasLeader()) {
-                jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+            JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+            if (null == jobInstance || hasLeader()) {
+                return;
             }
+            jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, jobInstance.getJobInstanceId());
         }
     }
 }

@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurat
 import org.apache.shardingsphere.elasticjob.kernel.infra.yaml.YamlEngine;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.listener.AbstractListenerManager;
@@ -81,7 +82,12 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     }
     
     private boolean isFailoverEnabled() {
-        return configService.load(true).isFailover();
+        try {
+            return configService.load(true).isFailover();
+        } catch (final JobConfigurationException ignored) {
+            // The job configuration has been removed, so there is nothing to fail over.
+            return false;
+        }
     }
     
     class JobCrashedJobListener implements DataChangedEventListener {

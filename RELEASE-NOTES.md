@@ -12,6 +12,7 @@
 
 1. Kernel: Fixes the issue that the distributed once listener loops forever when the registration is not confirmed by the registry center - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Kernel: Fixes the issue that the trigger flag is removed before the job is triggered - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Kernel: Fixes the issues that a job keeps running or throws an exception after it is shut down or its configuration is removed - [#2549](https://github.com/apache/shardingsphere-elasticjob/issues/2549)
 1. Registry Center: Fixes the issue that the etcd registry center returns incorrect child keys under a nested path - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not report the root path as existed - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that the etcd registry center does not revoke the lease created by leader execution - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)

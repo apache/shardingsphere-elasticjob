@@ -21,6 +21,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.fixture.YamlConstants;
 import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
+import org.apache.shardingsphere.elasticjob.kernel.infra.exception.JobConfigurationException;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceNode;
 import org.apache.shardingsphere.elasticjob.kernel.internal.instance.InstanceService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
@@ -100,6 +101,16 @@ class FailoverListenerManagerTest {
     void assertJobCrashedJobListenerWhenFailoverDisabled() {
         failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@0", ""));
         verify(failoverService, times(0)).failoverIfNecessary();
+    }
+    
+    @Test
+    void assertJobCrashedJobListenerWhenIsConfigurationRemoved() {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController);
+        when(configService.load(true)).thenThrow(new JobConfigurationException("Job configuration not found"));
+        failoverListenerManager.new JobCrashedJobListener().onChange(new DataChangedEvent(Type.DELETED, "/test_job/instances/127.0.0.1@-@1", ""));
+        verify(failoverService, times(0)).failoverIfNecessary();
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
