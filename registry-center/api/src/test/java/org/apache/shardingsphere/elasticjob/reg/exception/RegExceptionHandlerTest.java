@@ -20,7 +20,9 @@ package org.apache.shardingsphere.elasticjob.reg.exception;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RegExceptionHandlerTest {
     
@@ -34,6 +36,17 @@ class RegExceptionHandlerTest {
     @Test
     void assertHandleExceptionWithNull() {
         RegExceptionHandler.handleException(null);
+    }
+    
+    @Test
+    void assertHandleExceptionWithNestedInterruptedException() {
+        Thread.interrupted();
+        try {
+            assertDoesNotThrow(() -> RegExceptionHandler.handleException(new RuntimeException(new InterruptedException())));
+            assertTrue(Thread.currentThread().isInterrupted());
+        } finally {
+            Thread.interrupted();
+        }
     }
     
     @Test
