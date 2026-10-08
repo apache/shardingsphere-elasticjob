@@ -18,6 +18,7 @@
 1. Registry Center: Fixes the issue that the etcd registry center does not revoke the lease created by leader execution - [#2538](https://github.com/apache/shardingsphere-elasticjob/issues/2538)
 1. Registry Center: Fixes the issue that a closed `ZookeeperRegistryCenter` throws an exception instead of returning the not found value on read - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Registry Center: Fixes the issue that `ZookeeperRegistryCenter` throws a null pointer exception when watching a path without cache - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
+1. Registry Center: Fixes registry center closed-client reads and nested interrupts - [#2551](https://github.com/apache/shardingsphere-elasticjob/pull/2551)
 
 ## 3.0.5
 

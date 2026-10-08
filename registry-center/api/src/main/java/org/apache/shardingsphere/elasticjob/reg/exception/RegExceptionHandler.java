@@ -42,6 +42,8 @@ public final class RegExceptionHandler {
             log.debug("Elastic job: ignored exception for: {}", cause.getMessage());
         } else if (cause instanceof InterruptedException) {
             Thread.currentThread().interrupt();
+        } else if (cause.getCause() instanceof InterruptedException) {
+            Thread.currentThread().interrupt();
         } else {
             throw new RegException(cause);
         }

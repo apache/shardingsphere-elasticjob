@@ -197,6 +197,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (isClientClosed()) {
+                return null;
+            }
             RegExceptionHandler.handleException(ex);
             return null;
         }
@@ -214,6 +217,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (isClientClosed()) {
+                return Collections.emptyList();
+            }
             RegExceptionHandler.handleException(ex);
             return Collections.emptyList();
         }
@@ -247,6 +253,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (isClientClosed()) {
+                return false;
+            }
             RegExceptionHandler.handleException(ex);
             return false;
         }
