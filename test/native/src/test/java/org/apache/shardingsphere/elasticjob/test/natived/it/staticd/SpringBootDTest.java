@@ -129,10 +129,12 @@ class SpringBootDTest {
                 .failover(true)
                 .build();
         ScheduleJobBootstrap firstJob = new ScheduleJobBootstrap(zookeeperRegistryCenter,
-                (SimpleJob) shardingContext -> System.out.println("test"),
+                (SimpleJob) shardingContext -> {
+                },
                 jobConfig);
         ScheduleJobBootstrap secondJob = new ScheduleJobBootstrap(zookeeperRegistryCenter,
-                (SimpleJob) shardingContext -> System.out.println("test"),
+                (SimpleJob) shardingContext -> {
+                },
                 jobConfig);
         assertDoesNotThrow(() -> {
             firstJob.schedule();

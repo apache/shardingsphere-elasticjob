@@ -1,0 +1,180 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder"
+      },
+      "type": "io.grpc.netty.shaded.io.grpc.netty.NettyChannelProvider",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder"
+      },
+      "type": "io.grpc.netty.shaded.io.grpc.netty.ProtocolNegotiators$PlaintextHandler",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder"
+      },
+      "type": "io.grpc.netty.shaded.io.grpc.netty.UdsNettyChannelProvider",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.channel.AbstractChannelHandlerContext",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.channel.ChannelOutboundBuffer",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.channel.DefaultChannelConfig",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.channel.DefaultChannelPipeline",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.channel.epoll.AbstractEpollChannel",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.DefaultAttributeMap",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.Recycler$DefaultHandle",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.ResourceLeakDetector$DefaultResourceLeak",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.concurrent.DefaultPromise",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.concurrent.SingleThreadEventExecutor",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueConsumerIndexField",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueProducerIndexField",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "io.grpc.netty.shaded.io.netty.util.internal.PlatformDependent"
+      },
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueProducerLimitField",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    }
+  ]
+}

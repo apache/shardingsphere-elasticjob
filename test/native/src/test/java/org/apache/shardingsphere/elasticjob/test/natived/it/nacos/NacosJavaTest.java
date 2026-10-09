@@ -32,9 +32,7 @@ import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
 import org.awaitility.Awaitility;
-import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
@@ -107,26 +105,18 @@ class NacosJavaTest {
     /**
      * Wait until the Nacos server actually serves config operations.
      *
-     * <p>The container is reported started before its gRPC server accepts connections,
-     * so probe with a real write followed by a direct read until it succeeds.</p>
-     *
-     * <p>The Nacos client talks to the server over a shaded gRPC transport that cannot
-     * complete the handshake inside a GraalVM native image. Abort instead of failing,
-     * since the transport is provided by the Nacos client, not by this project.</p>
+     * <p>The container is reported started before its gRPC server accepts
+     * connections, so probe with a real write followed by a direct read until
+     * it succeeds.</p>
      */
     private static void awaitNacosReady() {
         String probeKey = "/elasticjob-test-native-nacos-java-readiness-probe";
         String probeValue = "ready";
-        try {
-            Awaitility.await().atMost(3L, TimeUnit.MINUTES).until(() -> {
-                regCenter.persist(probeKey, probeValue);
-                return probeValue.equals(regCenter.getDirectly(probeKey));
-            });
-            regCenter.remove(probeKey);
-        } catch (final ConditionTimeoutException ex) {
-            Assumptions.abort("Nacos server did not become ready. "
-                    + "Its shaded gRPC transport is unusable in this native image.");
-        }
+        Awaitility.await().atMost(3L, TimeUnit.MINUTES).until(() -> {
+            regCenter.persist(probeKey, probeValue);
+            return probeValue.equals(regCenter.getDirectly(probeKey));
+        });
+        regCenter.remove(probeKey);
     }
     
     @Test

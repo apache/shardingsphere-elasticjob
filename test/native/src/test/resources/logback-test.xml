@@ -26,8 +26,10 @@
     <logger name="org.apache.shardingsphere.elasticjob" level="warn" additivity="false">
         <appender-ref ref="console" />
     </logger>
-    <root>
-        <level value="error" />
+    <logger name="org.apache.shardingsphere.elasticjob.reg.etcd.EtcdRegistryCenter" level="error" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+    <root level="error">
         <appender-ref ref="console" />
     </root>
 </configuration>

@@ -27,6 +27,14 @@ ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
 使用者需要主动使用 GraalVM Reachability Metadata 中央仓库。
 如下配置可供参考，以配置项目额外的 Maven Profiles，以 GraalVM Native Build Tools 的文档为准。
 
+当应用的 classpath 同时包含 Nacos 客户端和 Logback 时，`grpc-netty-shaded` 使用的 shaded Netty 类会在镜像构建期
+初始化 Logback logger，构建将以 `ch.qos.logback.classic.Logger was found in the image heap` 失败。
+请通过构建参数 `--initialize-at-run-time=io.grpc.netty.shaded.io.netty` 将整棵 shaded Netty 树推迟到运行时初始化。
+
+`native-maven-plugin` 1.1.14 捆绑的 metadata 仓库将 `io.netty:netty-common` 和 `io.netty:netty-transport` 的
+latest metadata 标记为 Netty `5.0.0.Alpha2`。将该 metadata 应用于 Netty 4.1.x 会导致 gRPC 客户端在协议协商阶段挂起，
+因此需要通过 `metadataRepository` 将这些构件以及 `io.netty:netty-codec` 固定到最后一个 Netty 4.x metadata。
+
 ```xml
 <project>
     <dependencies>
@@ -42,8 +50,33 @@ ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>1.1.3</version>
+                <version>1.1.14</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <buildArgs>
+                        <arg>--initialize-at-run-time=io.grpc.netty.shaded.io.netty</arg>
+                    </buildArgs>
+                    <metadataRepository>
+                        <enabled>true</enabled>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-common</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-transport</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-codec</artifactId>
+                                <metadataVersion>4.1.42.Final</metadataVersion>
+                            </dependency>
+                        </dependencies>
+                    </metadataRepository>
+                </configuration>
                 <executions>
                     <execution>
                         <id>build-native</id>
@@ -73,19 +106,31 @@ ElasticJob 不为已停止维护的 GraalVM CE 版本设置 CI。
 由于 https://github.com/gradle/gradle/issues/17559 的限制，用户需要通过 Maven 依赖的形式引入 Metadata Repository 的 JSON 文件。
 参考 https://github.com/graalvm/native-build-tools/issues/572 。
 
+当应用的 classpath 同时包含 Nacos 客户端和 Logback 时，请通过构建参数
+`--initialize-at-run-time=io.grpc.netty.shaded.io.netty` 将 shaded Netty 树推迟到运行时初始化。
+当启用插件的 metadata 仓库检索而不是捆绑的 ZIP 文件时，请通过 `moduleToConfigVersion` 固定 Netty metadata 版本，
+避免将 Netty `5.0.0.Alpha2` 的 metadata 应用于 Netty 4.1.x。
+
 ```groovy
 plugins {
-   id 'org.graalvm.buildtools.native' version '1.1.3'
+   id 'org.graalvm.buildtools.native' version '1.1.14'
 }
 
 dependencies {
    implementation 'org.apache.shardingsphere.elasticjob:elasticjob-bootstrap:${elasticjob.version}'
-   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
+   implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.14', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
+   binaries.all {
+       buildArgs.add('--initialize-at-run-time=io.grpc.netty.shaded.io.netty')
+   }
    metadataRepository {
         enabled.set(false)
+        // 当启用 metadata 仓库检索时，请固定 Netty metadata 版本：
+        // moduleToConfigVersion.put("io.netty:netty-common", "4.1.115.Final")
+        // moduleToConfigVersion.put("io.netty:netty-transport", "4.1.115.Final")
+        // moduleToConfigVersion.put("io.netty:netty-codec", "4.1.42.Final")
    }
 }
 ```
@@ -96,6 +141,7 @@ graalvmNative {
 
 使用者需要主动使用 GraalVM Reachability Metadata 中央仓库。
 如下配置可供参考，以配置项目额外的 Maven Profiles，以 GraalVM Native Build Tools 的文档为准。
+与“使用 ElasticJob 的 Java API”一节同理，`buildArgs` 与 `metadataRepository` 配置是必需的。
 
 ```xml
 <project>
@@ -123,8 +169,33 @@ graalvmNative {
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>1.1.3</version>
+                <version>1.1.14</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <buildArgs>
+                        <arg>--initialize-at-run-time=io.grpc.netty.shaded.io.netty</arg>
+                    </buildArgs>
+                    <metadataRepository>
+                        <enabled>true</enabled>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-common</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-transport</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-codec</artifactId>
+                                <metadataVersion>4.1.42.Final</metadataVersion>
+                            </dependency>
+                        </dependencies>
+                    </metadataRepository>
+                </configuration>
                 <executions>
                     <execution>
                         <id>build-native</id>
@@ -166,12 +237,13 @@ graalvmNative {
 如下配置可供参考，以配置项目额外的 Gradle Tasks，以 GraalVM Native Build Tools 的文档为准。
 由于 https://github.com/gradle/gradle/issues/17559 的限制，用户需要通过 Maven 依赖的形式引入 Metadata Repository 的 JSON 文件。
 参考 https://github.com/graalvm/native-build-tools/issues/572 。
+`buildArgs` 与 `moduleToConfigVersion` 配置与“使用 ElasticJob 的 Java API”一节同理，是必需的。
 
 ```groovy
 plugins {
     id 'org.springframework.boot' version '3.5.16'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.graalvm.buildtools.native' version '1.1.3'
+    id 'org.graalvm.buildtools.native' version '1.1.14'
 }
 
 dependencies {
@@ -179,12 +251,19 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.apache.shardingsphere.elasticjob:elasticjob-spring-boot-starter:${elasticjob.version}'
-    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.3', classifier: 'repository', ext: 'zip')
+    implementation(group: 'org.graalvm.buildtools', name: 'graalvm-reachability-metadata', version: '1.1.14', classifier: 'repository', ext: 'zip')
 }
 
 graalvmNative {
+   binaries.all {
+       buildArgs.add('--initialize-at-run-time=io.grpc.netty.shaded.io.netty')
+   }
    metadataRepository {
         enabled.set(false)
+        // 当启用 metadata 仓库检索时，请固定 Netty metadata 版本：
+        // moduleToConfigVersion.put("io.netty:netty-common", "4.1.115.Final")
+        // moduleToConfigVersion.put("io.netty:netty-transport", "4.1.115.Final")
+        // moduleToConfigVersion.put("io.netty:netty-codec", "4.1.42.Final")
    }
 }
 ```
