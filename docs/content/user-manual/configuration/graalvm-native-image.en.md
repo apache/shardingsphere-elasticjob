@@ -365,12 +365,16 @@ while the entries in `META-INF/native-image/org.apache.shardingsphere.elasticjob
 
 The following command is just an example of generating Conditional GraalVM Reachability Metadata for `elasticjob-test-native`.
 The generated GraalVM Reachability Metadata is located in the `elasticjob-reachability-metadata` submodule.
+The trailing `native:metadata-copy` goal is optional: omit it to only execute the unit tests with the GraalVM Tracing Agent attached.
 
 For GraalVM Reachability Metadata used independently by test classes and test files, 
-contributors should place it in the classpath of the shardingsphere-test-native submodule under `META-INF/native-image/elasticjob-test-native-test-metadata/`.
+contributors should place it in the classpath of the elasticjob-test-native submodule under `META-INF/native-image/elasticjob-test-native-test-metadata/`.
 
 ```bash
-git clone git@github.com:apache/shardingsphere.git
-cd ./shardingsphere/
+git clone git@github.com:apache/shardingsphere-elasticjob.git
+cd ./shardingsphere-elasticjob/
+# Only execute the unit tests with the GraalVM Tracing Agent attached
+./mvnw -PgenerateMetadata -e -T1C clean test
+# Generate or overwrite the Conditional GraalVM Reachability Metadata
 ./mvnw -PgenerateMetadata -e -T1C clean test native:metadata-copy
 ```

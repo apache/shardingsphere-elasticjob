@@ -37,11 +37,11 @@ class NacosConfigurationTest {
         NacosConfiguration config = new NacosConfiguration("127.0.0.1:8848", "test");
         config.setUsername("nacos");
         config.setPassword("nacos");
-        config.setNacosNamespace("public");
+        config.setTenant("public");
         config.setTimeoutMs(5000L);
         assertThat(config.getUsername(), is("nacos"));
         assertThat(config.getPassword(), is("nacos"));
-        assertThat(config.getNacosNamespace(), is("public"));
+        assertThat(config.getTenant(), is("public"));
         assertThat(config.getTimeoutMs(), is(5000L));
     }
 }
