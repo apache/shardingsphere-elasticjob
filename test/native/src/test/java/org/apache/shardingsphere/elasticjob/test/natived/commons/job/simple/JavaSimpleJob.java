@@ -23,8 +23,6 @@ import org.apache.shardingsphere.elasticjob.test.natived.commons.entity.Foo;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.repository.FooRepository;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.repository.FooRepositoryFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class JavaSimpleJob implements SimpleJob {
@@ -33,12 +31,6 @@ public class JavaSimpleJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        System.out.printf(
-                "Item: %s | Time: %s | Thread: %s | %s%n",
-                shardingContext.getShardingItem(),
-                new SimpleDateFormat("HH:mm:ss").format(new Date()),
-                Thread.currentThread().getId(),
-                "SIMPLE");
         List<Foo> data = fooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10);
         data.stream().mapToLong(Foo::getId).forEach(fooRepository::setCompleted);
     }

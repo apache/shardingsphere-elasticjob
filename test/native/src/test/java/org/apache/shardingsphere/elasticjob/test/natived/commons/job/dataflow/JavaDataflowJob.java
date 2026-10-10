@@ -23,8 +23,6 @@ import org.apache.shardingsphere.elasticjob.test.natived.commons.entity.Foo;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.repository.FooRepository;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.repository.FooRepositoryFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class JavaDataflowJob implements DataflowJob<Foo> {
@@ -33,23 +31,11 @@ public class JavaDataflowJob implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
-        System.out.printf(
-                "Item: %s | Time: %s | Thread: %s | %s%n",
-                shardingContext.getShardingItem(),
-                new SimpleDateFormat("HH:mm:ss").format(new Date()),
-                Thread.currentThread().getId(),
-                "DATAFLOW FETCH");
         return fooRepository.findUnfinishedData(shardingContext.getShardingParameter(), 10);
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
-        System.out.printf(
-                "Item: %s | Time: %s | Thread: %s | %s%n",
-                shardingContext.getShardingItem(),
-                new SimpleDateFormat("HH:mm:ss").format(new Date()),
-                Thread.currentThread().getId(),
-                "DATAFLOW PROCESS");
         data.stream().mapToLong(Foo::getId).forEach(fooRepository::setCompleted);
     }
 }

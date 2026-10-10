@@ -127,6 +127,34 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>${native-maven-plugin.version}</version>
+                <configuration>
+                    <agent>
+                        <enabled>${native.agent.enabled}</enabled>
+                    </agent>
+                    <buildArgs>
+                        <arg>--initialize-at-run-time=io.grpc.netty.shaded.io.netty</arg>
+                    </buildArgs>
+                    <metadataRepository>
+                        <enabled>true</enabled>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-common</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-transport</artifactId>
+                                <metadataVersion>4.1.115.Final</metadataVersion>
+                            </dependency>
+                            <dependency>
+                                <groupId>io.netty</groupId>
+                                <artifactId>netty-codec</artifactId>
+                                <metadataVersion>4.1.42.Final</metadataVersion>
+                            </dependency>
+                        </dependencies>
+                    </metadataRepository>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

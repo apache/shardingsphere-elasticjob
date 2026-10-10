@@ -6,7 +6,21 @@ chapter = true
 
 ## 注册中心配置
 
-用于注册和协调作业分布式行为的组件，目前仅支持 ZooKeeper。
+用于注册和协调作业分布式行为的组件。
+ElasticJob 支持 `ZooKeeper`（默认）、`etcd`、`Nacos` 和内存注册中心。
+除 `elasticjob-bootstrap` 外，还需要添加注册中心实现对应的 Maven 依赖：
+
+| 注册中心     | Maven 依赖 |
+|----------|------|
+| ZooKeeper | `org.apache.shardingsphere.elasticjob:elasticjob-registry-center-zookeeper-curator` |
+| etcd     | `org.apache.shardingsphere.elasticjob:elasticjob-registry-center-etcd` |
+| Nacos    | `org.apache.shardingsphere.elasticjob:elasticjob-registry-center-nacos` |
+| Memory   | `org.apache.shardingsphere.elasticjob:elasticjob-registry-center-memory` |
+
+依赖版本使用 `${elasticjob.version}`。
+各注册中心实现的可配置属性与使用示例，请参阅[注册中心配置](/cn/user-manual/configuration/registry-center)。
+
+默认的 ZooKeeper 实现如下所示。
 
 类名称：org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration
 

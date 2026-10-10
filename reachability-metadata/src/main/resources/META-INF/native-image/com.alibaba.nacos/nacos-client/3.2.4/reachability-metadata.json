@@ -1,0 +1,741 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.ability.ClientAbilities",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.ability.ServerAbilities",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.ability.ClientConfigAbility",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.ability.ServerConfigAbility",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.AbstractConfigRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.AbstractFuzzyWatchNotifyRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ClientConfigMetricRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ClientConfigMetricRequest$MetricsKey",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigBatchListenRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigBatchListenRequest$ConfigListenContext",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigChangeNotifyRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigFuzzyWatchChangeNotifyRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigFuzzyWatchRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigFuzzyWatchSyncRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigFuzzyWatchSyncRequest$Context",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigPublishRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigQueryRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.ConfigRemoveRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.request.cluster.ConfigChangeClusterSyncRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ClientConfigMetricResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigChangeBatchListenResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigChangeBatchListenResponse$ConfigContext",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigChangeNotifyResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigFuzzyWatchChangeNotifyResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigFuzzyWatchResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigFuzzyWatchSyncResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigPublishResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigQueryResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.ConfigRemoveResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.config.remote.response.cluster.ConfigChangeClusterSyncResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.grpc.auto.Metadata",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.grpc.auto.Metadata$Builder",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.grpc.auto.Payload",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.grpc.auto.Payload$Builder",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.Payload",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.ability.ClientRemoteAbility",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.ability.ServerRemoteAbility",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ClientDetectionRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ConnectResetRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ConnectionSetupRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.HealthCheckRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.InternalRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.PushAckRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.Request",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.RequestMeta",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.RequestMeta$1",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ServerCheckRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ServerLoaderInfoRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ServerReloadRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.ServerRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.request.SetupAckRequest",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ClientDetectionResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ConnectResetResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ErrorResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.HealthCheckResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.Response",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ResponseCode",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ServerCheckResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ServerLoaderInfoResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.ServerReloadResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.api.remote.response.SetupAckResponse",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.client.config.NacosConfigService",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.client.config.impl.ClientWorker",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.common.remote.TlsConfig",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.common.remote.client.RpcClient",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.alibaba.nacos.api.config.ConfigService"
+      },
+      "type": "com.alibaba.nacos.common.remote.client.RpcClientTlsConfig",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true,
+      "queryAllDeclaredMethods": true,
+      "queryAllDeclaredConstructors": true
+    }
+  ]
+}

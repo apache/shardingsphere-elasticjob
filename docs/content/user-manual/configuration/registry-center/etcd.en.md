@@ -73,26 +73,8 @@ public class EtcdRegistryCenterExample {
 }
 ```
 
-### Spring Boot Starter
+### Spring Boot Starter and Spring Namespace
 
-```yaml
-elasticjob:
-  reg-center:
-    type: etcd
-    server-lists: http://host1:2379,http://host2:2379
-    namespace: elasticjob
-    connection-timeout-milliseconds: 5000
-    username: root
-    password: password
-```
-
-### Spring Namespace
-
-```xml
-<elasticjob:etcd id="regCenter" 
-    server-lists="http://host1:2379,http://host2:2379" 
-    namespace="elasticjob"
-    connection-timeout-milliseconds="5000"
-    username="root"
-    password="password" />
-```
+The Spring Boot Starter and the Spring Namespace only support ZooKeeper at present,
+so etcd can only be used through the Java API or `RegistryCenterFactory`.
+See the [Registry Center Configuration](/en/user-manual/configuration/registry-center) page for details.
