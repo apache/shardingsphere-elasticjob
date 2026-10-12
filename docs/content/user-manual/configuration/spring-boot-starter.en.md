@@ -18,33 +18,32 @@ To use the Spring boot, user need to add the dependency of the `elasticjob-sprin
 
 Prefix: `elasticjob.reg-center`
 
-Configuration: 
+`type` selects the registry center, currently only `zookeeper` (default).
 
-| Property name                   | Required |
-|---------------------------------|:---------|
-| server-lists                    | Yes      |
-| namespace                       | Yes      |
-| base-sleep-time-milliseconds    | No       |
-| max-sleep-time-milliseconds     | No       |
-| max-retries                     | No       |
-| session-timeout-milliseconds    | No       |
-| connection-timeout-milliseconds | No       |
-| digest                          | No       |
+Configuration:
 
-Reference: 
+| Property name | Required |
+|---------------|:---------|
+| type          | No       |
+| server-lists  | Yes      |
+| namespace     | Yes      |
+
+Reference:
 
 **YAML**
 ```yaml
 elasticjob:
-  regCenter:
-    serverLists: localhost:6181
+  reg-center:
+    type: zookeeper
+    server-lists: localhost:6181
     namespace: elasticjob-springboot
 ```
 
 **Properties**
 ```
-elasticjob.reg-center.namespace=elasticjob-springboot
+elasticjob.reg-center.type=zookeeper
 elasticjob.reg-center.server-lists=localhost:6181
+elasticjob.reg-center.namespace=elasticjob-springboot
 ```
 
 ## Job Configuration
