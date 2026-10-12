@@ -52,7 +52,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -268,5 +270,28 @@ class NacosRegistryCenterTest {
     @Test
     void assertGetDirectlyOfRoot() {
         assertThat(registryCenter.getDirectly("/"), is(nullValue()));
+    }
+    
+    @Test
+    void assertClosedReadsReturnNotFound() {
+        registryCenter.close();
+        assertThat(registryCenter.getDirectly(KEY), is(nullValue()));
+        assertThat(registryCenter.get(KEY), is(nullValue()));
+        assertThat(registryCenter.isExisted(KEY), is(false));
+        assertThat(registryCenter.getChildrenKeys("/job"), is(Collections.emptyList()));
+    }
+    
+    @Test
+    void assertCloseSkipsClientListenerRemoval() throws Exception {
+        when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class)))
+                .thenReturn(CompletableFuture.completedFuture(Collections.emptySet()));
+        doNothing().when(configService).cancelFuzzyWatch(anyString(), anyString(), any(FuzzyWatchEventWatcher.class));
+        List<DataChangedEvent> events = new CopyOnWriteArrayList<>();
+        registryCenter.watch("/job", events::add, null);
+        clearInvocations(configService);
+        registryCenter.close();
+        verify(configService, never()).removeListener(anyString(), anyString(), any(Listener.class));
+        verify(configService, never()).cancelFuzzyWatch(anyString(), anyString(), any(FuzzyWatchEventWatcher.class));
+        verify(configService).shutDown();
     }
 }

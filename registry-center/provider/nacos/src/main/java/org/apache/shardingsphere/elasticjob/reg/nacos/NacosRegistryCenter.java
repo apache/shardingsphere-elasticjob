@@ -173,6 +173,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public String getDirectly(final String key) {
+        if (closed) {
+            return null;
+        }
         String normalized = normalizeKey(key);
         if ("/".equals(normalized)) {
             return null;
@@ -182,6 +185,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (closed) {
+                return null;
+            }
             RegExceptionHandler.handleException(ex);
             return null;
         }
@@ -189,6 +195,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public List<String> getChildrenKeys(final String key) {
+        if (closed) {
+            return Collections.emptyList();
+        }
         String normalized = normalizeKey(key);
         try {
             String encodedPrefix = "/".equals(normalized) ? "" : toDataId(normalized);
@@ -216,6 +225,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (closed) {
+                return Collections.emptyList();
+            }
             RegExceptionHandler.handleException(ex);
             return Collections.emptyList();
         }
@@ -228,6 +240,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public boolean isExisted(final String key) {
+        if (closed) {
+            return false;
+        }
         String normalized = normalizeKey(key);
         if ("/".equals(normalized) || "".equals(key)) {
             return true;
@@ -237,6 +252,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
+            if (closed) {
+                return false;
+            }
             RegExceptionHandler.handleException(ex);
             return false;
         }
@@ -724,18 +742,22 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         }
         
         void close() {
-            for (Map.Entry<String, Listener> entry : contentListeners.entrySet()) {
-                configService.removeListener(entry.getKey(), getGroup(), entry.getValue());
+            if (!closed) {
+                for (Map.Entry<String, Listener> entry : contentListeners.entrySet()) {
+                    configService.removeListener(entry.getKey(), getGroup(), entry.getValue());
+                }
             }
             contentListeners.clear();
             if (null != fuzzyWatcher) {
                 String pattern = encodedPrefix.isEmpty() ? "*" : encodedPrefix + ".*";
-                try {
-                    configService.cancelFuzzyWatch(pattern, getGroup(), fuzzyWatcher);
-                    // CHECKSTYLE:OFF
-                } catch (final Exception ignored) {
-                    // CHECKSTYLE:ON
-                    log.debug("Elastic job: failed to cancel nacos cache fuzzy watch for pattern: {}.", pattern);
+                if (!closed) {
+                    try {
+                        configService.cancelFuzzyWatch(pattern, getGroup(), fuzzyWatcher);
+                        // CHECKSTYLE:OFF
+                    } catch (final Exception ignored) {
+                        // CHECKSTYLE:ON
+                        log.debug("Elastic job: failed to cancel nacos cache fuzzy watch for pattern: {}.", pattern);
+                    }
                 }
                 fuzzyWatcher = null;
             }
@@ -839,19 +861,23 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         }
         
         void close() {
-            for (Map.Entry<String, Listener> entry : contentListeners.entrySet()) {
-                configService.removeListener(entry.getKey(), getGroup(), entry.getValue());
+            if (!closed) {
+                for (Map.Entry<String, Listener> entry : contentListeners.entrySet()) {
+                    configService.removeListener(entry.getKey(), getGroup(), entry.getValue());
+                }
             }
             contentListeners.clear();
             if (null != fuzzyWatcher) {
                 String encodedPrefix = "/".equals(watchedKey) ? "" : toDataId(watchedKey);
                 String pattern = encodedPrefix.isEmpty() ? "*" : encodedPrefix + ".*";
-                try {
-                    configService.cancelFuzzyWatch(pattern, getGroup(), fuzzyWatcher);
-                    // CHECKSTYLE:OFF
-                } catch (final Exception ignored) {
-                    // CHECKSTYLE:ON
-                    log.debug("Elastic job: failed to cancel nacos data fuzzy watch for pattern: {}.", pattern);
+                if (!closed) {
+                    try {
+                        configService.cancelFuzzyWatch(pattern, getGroup(), fuzzyWatcher);
+                        // CHECKSTYLE:OFF
+                    } catch (final Exception ignored) {
+                        // CHECKSTYLE:ON
+                        log.debug("Elastic job: failed to cancel nacos data fuzzy watch for pattern: {}.", pattern);
+                    }
                 }
                 fuzzyWatcher = null;
             }
