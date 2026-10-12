@@ -19,22 +19,30 @@ package org.apache.shardingsphere.elasticjob.spring.boot.reg;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Configuration properties of the ElasticJob registry center.
+ *
+ * <p>{@code elasticjob.reg-center.type} selects which registry center is created, currently only {@code zookeeper} (default).
+ * Other registry center types will be supported separately.</p>
+ */
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "elasticjob.reg-center")
-public class ZookeeperProperties {
+public class RegistryCenterProperties {
     
     /**
-     * Server list of ZooKeeper.
+     * Type of the registry center.
+     */
+    private String type = "zookeeper";
+    
+    /**
+     * Server list of the registry center.
      *
-     * <p>
-     * Include IP addresses and ports,
-     * Multiple IP address split by comma.
-     * For example: host1:2181,host2:2181
-     * </p>
+     * <p>Include IP addresses and ports,
+     * multiple IP addresses split by comma.
+     * For example: host1:2181,host2:2181</p>
      */
     private String serverLists;
     
@@ -69,23 +77,12 @@ public class ZookeeperProperties {
     private int connectionTimeoutMilliseconds;
     
     /**
-     * Zookeeper digest.
+     * ZooKeeper digest.
      */
     private String digest;
     
     /**
-     * Create ZooKeeper configuration.
-     *
-     * @return instance of ZooKeeper configuration
+     * Whether the ensemble configuration changes are watched.
      */
-    public ZookeeperConfiguration toZookeeperConfiguration() {
-        ZookeeperConfiguration result = new ZookeeperConfiguration(serverLists, namespace);
-        result.setBaseSleepTimeMilliseconds(baseSleepTimeMilliseconds);
-        result.setMaxSleepTimeMilliseconds(maxSleepTimeMilliseconds);
-        result.setMaxRetries(maxRetries);
-        result.setSessionTimeoutMilliseconds(sessionTimeoutMilliseconds);
-        result.setConnectionTimeoutMilliseconds(connectionTimeoutMilliseconds);
-        result.setDigest(digest);
-        return result;
-    }
+    private boolean ensembleTracker = true;
 }

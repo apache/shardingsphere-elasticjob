@@ -29,7 +29,7 @@ import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobSchedule
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.spring.boot.job.fixture.job.impl.CustomTestJob;
-import org.apache.shardingsphere.elasticjob.spring.boot.reg.ZookeeperProperties;
+import org.apache.shardingsphere.elasticjob.spring.boot.reg.RegistryCenterProperties;
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.TracingProperties;
 import org.apache.shardingsphere.elasticjob.test.util.ReflectionUtils;
 import org.awaitility.Awaitility;
@@ -98,9 +98,10 @@ class ElasticJobSpringBootTest {
     }
     
     @Test
-    void assertZookeeperProperties() {
+    void assertRegistryCenterProperties() {
         assertNotNull(applicationContext);
-        ZookeeperProperties actual = applicationContext.getBean(ZookeeperProperties.class);
+        RegistryCenterProperties actual = applicationContext.getBean(RegistryCenterProperties.class);
+        assertThat(actual.getType(), is("zookeeper"));
         assertThat(actual.getServerLists(), is(testingServer.getConnectString()));
         assertThat(actual.getNamespace(), is("elasticjob-spring-boot-starter"));
     }

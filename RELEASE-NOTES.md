@@ -1,5 +1,9 @@
 ## 3.0.6-SNAPSHOT
 
+### API Changes
+
+1. Spring Boot Starter: Rename `ZookeeperProperties` to `RegistryCenterProperties`, the registry center type is selected by the new `elasticjob.reg-center.type` property - [#2554](https://github.com/apache/shardingsphere-elasticjob/pull/2554)
+
 ### Enhancements
 
 1. Build: Support building and using ElasticJob with JDK25 - [#2518](https://github.com/apache/shardingsphere-elasticjob/pull/2518)
