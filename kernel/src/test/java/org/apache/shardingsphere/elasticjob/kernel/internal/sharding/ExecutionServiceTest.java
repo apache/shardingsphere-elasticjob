@@ -100,6 +100,13 @@ class ExecutionServiceTest {
     }
     
     @Test
+    void assertRegisterJobBeginWithoutJobInstance() {
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(true).build());
+        executionService.registerJobBegin(getShardingContext());
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode(any(), any());
+    }
+    
+    @Test
     void assertRegisterJobCompletedWithoutMonitorExecution() {
         JobRegistry.getInstance().setJobRunning("test_job", true);
         when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 3).cron("0/1 * * * * ?").monitorExecution(false).build());

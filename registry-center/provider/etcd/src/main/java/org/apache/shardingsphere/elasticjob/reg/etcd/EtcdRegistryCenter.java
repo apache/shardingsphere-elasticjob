@@ -36,6 +36,8 @@ import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.options.WatchOption;
 import io.etcd.jetcd.watch.WatchEvent;
 import io.etcd.jetcd.watch.WatchResponse;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -136,7 +138,11 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
                 // CHECKSTYLE:OFF
             } catch (final Exception ex) {
                 // CHECKSTYLE:ON
-                log.warn("Failed to revoke lease: {}", leaseId, ex);
+                if (isLeaseNotFound(ex)) {
+                    log.debug("Elastic job: etcd lease {} already expired, skip revoking.", leaseId);
+                } else {
+                    log.warn("Failed to revoke lease: {}", leaseId, ex);
+                }
             }
         }
         leaseIdMap.clear();
@@ -155,6 +161,17 @@ public final class EtcdRegistryCenter implements CoordinatorRegistryCenter {
         if (client != null) {
             client.close();
         }
+    }
+    
+    static boolean isLeaseNotFound(final Throwable ex) {
+        Throwable cause = ex;
+        while (null != cause) {
+            if (cause instanceof StatusRuntimeException && Status.Code.NOT_FOUND == ((StatusRuntimeException) cause).getStatus().getCode()) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
     }
     
     @Override

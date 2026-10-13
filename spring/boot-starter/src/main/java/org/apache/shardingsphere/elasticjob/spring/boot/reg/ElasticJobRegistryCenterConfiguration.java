@@ -23,10 +23,10 @@ import org.springframework.context.annotation.Import;
 /**
  * Configuration of the ElasticJob registry center.
  *
- * <p>The registry center selected by {@code elasticjob.reg-center.type} is created by the imported configuration.
+ * <p>The registry center selected by {@code elasticjob.reg-center.type} is created by one of the imported configurations.
  * A user-defined {@code CoordinatorRegistryCenter} bean always takes precedence over the auto-configured one.</p>
  */
 @EnableConfigurationProperties(RegistryCenterProperties.class)
-@Import(ZookeeperRegistryCenterConfiguration.class)
+@Import({ZookeeperRegistryCenterConfiguration.class, EtcdRegistryCenterConfiguration.class, NacosRegistryCenterConfiguration.class, MemoryRegistryCenterConfiguration.class})
 public class ElasticJobRegistryCenterConfiguration {
 }

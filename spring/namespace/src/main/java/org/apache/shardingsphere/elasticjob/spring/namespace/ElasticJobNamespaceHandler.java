@@ -19,6 +19,9 @@ package org.apache.shardingsphere.elasticjob.spring.namespace;
 
 import org.apache.shardingsphere.elasticjob.spring.namespace.scanner.parser.JobScannerBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.spring.namespace.job.parser.JobBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.spring.namespace.reg.parser.EtcdBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.spring.namespace.reg.parser.MemoryBeanDefinitionParser;
+import org.apache.shardingsphere.elasticjob.spring.namespace.reg.parser.NacosBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.spring.namespace.reg.parser.ZookeeperBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.spring.namespace.snapshot.parser.SnapshotBeanDefinitionParser;
 import org.apache.shardingsphere.elasticjob.spring.namespace.tracing.parser.TracingBeanDefinitionParser;
@@ -33,6 +36,9 @@ public final class ElasticJobNamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
         registerBeanDefinitionParser("job", new JobBeanDefinitionParser());
         registerBeanDefinitionParser("zookeeper", new ZookeeperBeanDefinitionParser());
+        registerBeanDefinitionParser("etcd", new EtcdBeanDefinitionParser());
+        registerBeanDefinitionParser("nacos", new NacosBeanDefinitionParser());
+        registerBeanDefinitionParser("memory", new MemoryBeanDefinitionParser());
         registerBeanDefinitionParser("snapshot", new SnapshotBeanDefinitionParser());
         registerBeanDefinitionParser("rdb-tracing", new TracingBeanDefinitionParser());
         registerBeanDefinitionParser("job-scanner", new JobScannerBeanDefinitionParser());
