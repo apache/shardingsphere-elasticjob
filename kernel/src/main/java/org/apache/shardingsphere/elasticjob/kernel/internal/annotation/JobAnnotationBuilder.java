@@ -59,7 +59,8 @@ public final class JobAnnotationBuilder {
                 .jobListenerTypes(annotation.jobListenerTypes())
                 .description(annotation.description())
                 .disabled(annotation.disabled())
-                .overwrite(annotation.overwrite());
+                .overwrite(annotation.overwrite())
+                .maxWaitMillis(annotation.maxWaitMillis());
         for (Class<? extends JobExtraConfigurationFactory> clazz : annotation.extraConfigurations()) {
             try {
                 Optional<JobExtraConfiguration> jobExtraConfig = clazz.newInstance().getJobExtraConfiguration();

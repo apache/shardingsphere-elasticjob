@@ -65,6 +65,7 @@ chapter = true
 | props                             | 否    |
 | disabled                          | 否    |
 | overwrite                         | 否    |
+| max-wait-millis                   | 否    |
 
 ## 事件追踪配置
 

@@ -81,6 +81,8 @@ public final class JobConfiguration {
     
     private final boolean staticSharding;
     
+    private final long maxWaitMillis;
+    
     /**
      * Create ElasticJob configuration builder.
      *
@@ -138,6 +140,8 @@ public final class JobConfiguration {
         private String label;
         
         private boolean staticSharding;
+        
+        private long maxWaitMillis = 60_000L;
         
         /**
          * Cron expression.
@@ -412,6 +416,22 @@ public final class JobConfiguration {
         }
         
         /**
+         * Set max wait milliseconds for coordination wait loops (e.g. sharding, leader election) to give up instead of blocking indefinitely.
+         *
+         * <p>
+         * Each wait is bounded separately. When the limit elapses or the waiting thread is interrupted, the wait stops, the situation is reported to the job error handler,
+         * and the caller continues without the awaited state having been reached.
+         * </p>
+         *
+         * @param maxWaitMillis max wait milliseconds
+         * @return ElasticJob configuration builder
+         */
+        public Builder maxWaitMillis(final long maxWaitMillis) {
+            this.maxWaitMillis = maxWaitMillis;
+            return this;
+        }
+        
+        /**
          * Build ElasticJob configuration.
          * 
          * @return ElasticJob configuration
@@ -422,7 +442,7 @@ public final class JobConfiguration {
             return new JobConfiguration(jobName, cron, timeZone, shardingTotalCount, shardingItemParameters, jobParameter,
                     monitorExecution, failover, misfire, maxTimeDiffSeconds, reconcileIntervalMinutes,
                     jobShardingStrategyType, jobExecutorThreadPoolSizeProviderType, jobErrorHandlerType, jobListenerTypes,
-                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding);
+                    extraConfigurations, description, props, disabled, overwrite, label, staticSharding, maxWaitMillis);
         }
     }
 }

@@ -196,6 +196,31 @@ public final class JobNodeStorage {
     }
     
     /**
+     * Execute operations in transaction, reporting failure instead of swallowing it silently.
+     *
+     * <p>
+     * Only exceptions that the registry center treats as ignorable are reported as {@code false}. Any other exception is still rethrown, as in {@link #executeInTransaction(List)}.
+     * </p>
+     *
+     * @param transactionOperations operations to be executed in transaction
+     * @return true if transaction succeeded, false if it failed with an ignored registry-center exception
+     */
+    public boolean executeInTransactionStrict(final List<TransactionOperation> transactionOperations) {
+        List<TransactionOperation> result = new ArrayList<>(transactionOperations.size() + 1);
+        result.add(TransactionOperation.opCheckExists("/"));
+        result.addAll(transactionOperations);
+        try {
+            regCenter.executeInTransaction(result);
+            return true;
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+            return false;
+        }
+    }
+    
+    /**
      * Execute in leader server.
      * 
      * @param latchNode node for leader latch

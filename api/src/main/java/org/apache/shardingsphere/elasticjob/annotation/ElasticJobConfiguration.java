@@ -179,4 +179,11 @@ public @interface ElasticJobConfiguration {
      * @return overwrite
      */
     boolean overwrite() default false;
+    
+    /**
+     * Maximum time in milliseconds that the coordination wait loops, such as sharding and leader election, block before giving up.
+     *
+     * @return max wait milliseconds
+     */
+    long maxWaitMillis() default 60_000L;
 }

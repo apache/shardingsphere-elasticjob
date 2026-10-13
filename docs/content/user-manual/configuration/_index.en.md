@@ -62,6 +62,7 @@ Include IP and port, multiple addresses are separated by commas.
 | props                             | Properties |                | Job properties                                                                      |
 | disabled                          | boolean    | false          | Enable or disable start the job                                                     |
 | overwrite                         | boolean    | false          | Enable or disable local configuration override registry center configuration        |
+| maxWaitMillis                     | long       | 60000          | Maximum time in milliseconds that the sharding and leader election wait loops block before giving up |
 
 ### Core Configuration Description
 
@@ -116,6 +117,10 @@ It can be used for deployment, forbid jobs to start, and then start them uniform
 **overwrite:**
 
 If the value is `true`, local configuration override registry center configuration every time the job is started.
+
+**maxWaitMillis:**
+
+The maximum time in milliseconds that the sharding and leader election wait loops block while waiting for the registry center state to change. The limit applies to each wait separately. When it elapses, or the waiting thread is interrupted, the wait stops, the situation is reported to the job error handler, and the job continues. Defaults to `60000`.
 
 ## Job Listener Configuration
 

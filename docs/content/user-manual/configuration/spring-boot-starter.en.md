@@ -74,6 +74,7 @@ Configuration:
 | props                             | No       |
 | disabled                          | No       |
 | overwrite                         | No       |
+| max-wait-millis                   | No       |
 
 **"elasticJobClass" and "elasticJobType" are mutually exclusive.**
 

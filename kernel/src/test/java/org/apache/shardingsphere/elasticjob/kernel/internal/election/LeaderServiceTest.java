@@ -17,6 +17,8 @@
 
 package org.apache.shardingsphere.elasticjob.kernel.internal.election;
 
+import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
+import org.apache.shardingsphere.elasticjob.kernel.internal.config.ConfigurationService;
 import org.apache.shardingsphere.elasticjob.kernel.internal.sharding.JobInstance;
 import org.apache.shardingsphere.elasticjob.kernel.internal.election.LeaderService.LeaderElectionExecutionCallback;
 import org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobRegistry;
@@ -54,6 +56,9 @@ class LeaderServiceTest {
     @Mock
     private ServerService serverService;
     
+    @Mock
+    private ConfigurationService configService;
+    
     private LeaderService leaderService;
     
     @BeforeEach
@@ -62,6 +67,7 @@ class LeaderServiceTest {
         leaderService = new LeaderService(null, "test_job");
         ReflectionUtils.setFieldValue(leaderService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(leaderService, "serverService", serverService);
+        ReflectionUtils.setFieldValue(leaderService, "configService", configService);
     }
     
     @Test
@@ -102,6 +108,7 @@ class LeaderServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         when(serverService.hasAvailableServers()).thenReturn(true);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
+        when(configService.load(true)).thenReturn(JobConfiguration.newBuilder("test_job", 1).build());
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
