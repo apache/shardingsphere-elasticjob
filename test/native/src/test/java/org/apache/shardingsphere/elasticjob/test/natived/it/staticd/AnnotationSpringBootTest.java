@@ -100,7 +100,7 @@ class AnnotationSpringBootTest {
     @Configuration(proxyBeanMethods = false)
     @ElasticJobScan(basePackages = "org.apache.shardingsphere.elasticjob.test.natived.commons.job.annotation")
     static class TestApp {
-
+        
         @Bean(initMethod = "init", destroyMethod = "close")
         ZookeeperRegistryCenter registryCenter(@Value("${elasticjob.regCenter.serverLists}") final String serverLists) {
             return new ZookeeperRegistryCenter(new ZookeeperConfiguration(serverLists, "elasticjob-test-native-annotation-springboot"));
