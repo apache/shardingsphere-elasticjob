@@ -19,6 +19,7 @@ package org.apache.shardingsphere.elasticjob.spring.core.scanner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
+import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -33,9 +34,20 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A {@link ClassPathBeanDefinitionScanner} that registers ScheduleJobBootstrap by {@code basePackage}.
+ * A {@link ClassPathBeanDefinitionScanner} that registers job bootstraps by {@code basePackage}.
+ *
+ * <p>
+ * Schedule jobs (with {@code cron}) are registered as {@link ScheduleJobBootstrap} with init method {@code schedule}.
+ * One-off jobs (without {@code cron}) are registered as {@link OneOffJobBootstrap} without init method.
+ * Only bean references are registered in the bean definition so that Spring AOT native images can generate code for them.
+ * Job configuration is resolved at runtime from {@link ElasticJobConfiguration} (with superclass fallback for CGLIB proxies).
+ * Registration is idempotent: a bootstrap whose {@code jobName} is already taken (e.g. equal to the scanned job bean name,
+ * or already registered by AOT generated code at native runtime) is skipped. Therefore the {@code jobName} must differ
+ * from the scanned job bean name.
+ * </p>
  *
  * @see ScheduleJobBootstrap
+ * @see OneOffJobBootstrap
  */
 public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
     
@@ -70,16 +82,26 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
                 continue;
             }
             ElasticJobConfiguration jobAnnotation = jobClass.getAnnotation(ElasticJobConfiguration.class);
+            if (null == jobAnnotation) {
+                continue;
+            }
             String registryCenter = jobAnnotation.registryCenter();
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
-            factory.setInitMethodName("schedule");
+            BeanDefinitionBuilder factory;
+            if (StringUtils.isEmpty(jobAnnotation.cron())) {
+                factory = BeanDefinitionBuilder.rootBeanDefinition(OneOffJobBootstrap.class);
+            } else {
+                factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
+                factory.setInitMethodName("schedule");
+            }
             if (!StringUtils.isEmpty(registryCenter)) {
                 factory.addConstructorArgReference(registryCenter);
             } else {
                 factory.addConstructorArgValue(new RuntimeBeanReference(CoordinatorRegistryCenter.class));
             }
             factory.addConstructorArgReference(Objects.requireNonNull(holder.getBeanName()));
-            registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
+            if (!registry.containsBeanDefinition(jobAnnotation.jobName())) {
+                registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
+            }
         }
     }
 }

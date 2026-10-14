@@ -74,6 +74,8 @@ Configuration:
 | props                             | No       |
 | disabled                          | No       |
 | overwrite                         | No       |
+| label                             | No       |
+| static-sharding                   | No       |
 | max-wait-millis                   | No       |
 
 **"elasticJobClass" and "elasticJobType" are mutually exclusive.**

@@ -51,6 +51,8 @@ class ElasticJobConfigurationPropertiesTest {
         properties.setDescription("test desc");
         properties.setDisabled(true);
         properties.setOverwrite(true);
+        properties.setLabel("test-label");
+        properties.setStaticSharding(true);
         properties.getProps().setProperty("test", "test");
         JobConfiguration actual = properties.toJobConfiguration("testJob");
         assertThat(actual.getJobName(), is("testJob"));
@@ -68,6 +70,8 @@ class ElasticJobConfigurationPropertiesTest {
         assertThat(actual.getDescription(), is(properties.getDescription()));
         assertThat(actual.isDisabled(), is(properties.isDisabled()));
         assertThat(actual.isOverwrite(), is(properties.isOverwrite()));
+        assertThat(actual.getLabel(), is(properties.getLabel()));
+        assertThat(actual.isStaticSharding(), is(properties.isStaticSharding()));
         assertThat(actual.isMisfire(), is(properties.isMisfire()));
         assertThat(actual.isFailover(), is(properties.isFailover()));
         assertThat(actual.isMonitorExecution(), is(properties.isMonitorExecution()));

@@ -39,6 +39,39 @@ Through the way of DI (Dependency Injection), developers can easily use data sou
 </beans>
 ```
 
+### Configure jobs with annotation scanning
+
+As an alternative, declare job configuration with `@ElasticJobConfiguration` and scan it with `<elasticjob:job-scanner />`.
+`base-package` accepts a single package or multiple comma-separated packages. A non-empty `cron` creates a
+`ScheduleJobBootstrap` which is scheduled automatically; an empty `cron` creates a `OneOffJobBootstrap` which must be triggered manually.
+
+```java
+@ElasticJobConfiguration(
+        jobName = "simpleJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=a,1=b,2=c")
+public class AnnotationSimpleJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // do something
+    }
+}
+```
+
+```xml
+<elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="my-job" />
+<elasticjob:job-scanner id="jobScanner" base-package="org.example.job" />
+```
+
+Notes:
+
+- The bootstrap bean name defaults to the `jobName` in the annotation, which must differ from the scanned job bean name.
+- `registryCenter` in the annotation optionally specifies the registry center bean name. When empty, the single
+  `CoordinatorRegistryCenter` bean is injected by type.
+- Job configuration is resolved at runtime from the annotation (with superclass fallback for CGLIB proxies). Only bean references are registered so bean definitions stay Spring AOT friendly, and the annotation types are covered by GraalVM reachability metadata for native images.
+
 ## Job Start
 
 ### Schedule Job

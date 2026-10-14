@@ -34,7 +34,8 @@ public final class JobScannerBeanDefinitionParser extends AbstractBeanDefinition
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobScannerConfiguration.class);
         String attribute = element.getAttribute(JobScannerBeanDefinitionTag.BASE_PACKAGE);
-        factory.addConstructorArgValue(attribute);
+        String[] basePackages = org.springframework.util.StringUtils.commaDelimitedListToStringArray(org.springframework.util.StringUtils.trimAllWhitespace(attribute));
+        factory.addConstructorArgValue(basePackages);
         return factory.getBeanDefinition();
     }
 }

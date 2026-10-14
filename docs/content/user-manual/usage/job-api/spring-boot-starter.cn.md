@@ -66,6 +66,49 @@ elasticjob:
         script.command.line: "echo SCRIPT Job: "
 ```
 
+### 使用注解配置作业
+
+除了 `elasticjob.jobs` 配置，还可以用 `@ElasticJobConfiguration` 声明作业配置，
+并用 `@ElasticJobScan` 开启扫描。扫描器会根据 `cron` 是否为空自动创建
+`ScheduleJobBootstrap`（`cron` 非空）或 `OneOffJobBootstrap`（`cron` 为空）。
+
+```java
+@Component
+@ElasticJobConfiguration(
+        jobName = "annotationSimpleJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou")
+public class AnnotationSimpleJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // 处理作业
+    }
+}
+```
+
+开启扫描，`value` 与 `basePackages` 均可指定待扫描的包：
+
+```java
+@Configuration
+@ElasticJobScan(basePackages = "org.example.job")
+public class ElasticJobConfig {
+}
+```
+
+说明：
+
+- Bootstrap Bean 名称默认为 `jobName`，且必须与被扫描的作业 Bean 名称不同。`cron` 非空时创建 `ScheduleJobBootstrap`，
+  应用启动后自动调度；`cron` 为空时创建 `OneOffJobBootstrap`，需要手动触发。
+- `registryCenter` 可选，用于指定 `CoordinatorRegistryCenter` Bean 名称。
+  为空时按类型注入容器中唯一的 `CoordinatorRegistryCenter`。
+- 作业配置在运行时从注解解析（CGLIB 代理走超类回退）。Bean 定义中仅注册 Bean 引用以保持 Spring AOT 友好，注解类型由 GraalVM 可达性元数据覆盖，原生镜像下仍可工作。
+- 注解属性覆盖 `timeZone`、`jobParameter`、`monitorExecution`、`failover`、`misfire`、
+  `maxTimeDiffSeconds`、`reconcileIntervalMinutes`、`jobShardingStrategyType`、
+  `jobExecutorThreadPoolSizeProviderType`、`jobErrorHandlerType`、`jobListenerTypes`、
+  `extraConfigurations`、`description`、`props`、`disabled`、`overwrite`、`label`、`staticSharding`、`maxWaitMillis`。
+
 ## 作业启动
 
 ### 定时调度

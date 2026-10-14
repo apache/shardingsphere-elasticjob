@@ -74,6 +74,8 @@ elasticjob.reg-center.namespace=elasticjob-springboot
 | props                             | 否    |
 | disabled                          | 否    |
 | overwrite                         | 否    |
+| label                             | 否    |
+| static-sharding                   | 否    |
 | max-wait-millis                   | 否    |
 
 **elasticJobClass 与 elasticJobType 互斥，每项作业只能有一种类型**
