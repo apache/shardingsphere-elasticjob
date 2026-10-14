@@ -1,0 +1,11 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.springframework.boot.autoconfigure.AutoConfigurationImportSelector"
+      },
+      "type": "org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter",
+      "allPublicConstructors": true
+    }
+  ]
+}

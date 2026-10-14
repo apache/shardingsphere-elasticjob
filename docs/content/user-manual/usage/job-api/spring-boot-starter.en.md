@@ -67,6 +67,49 @@ elasticjob:
         script.command.line: "echo SCRIPT Job: "
 ```
 
+### Configure jobs with annotation
+
+As an alternative to `elasticjob.jobs` properties, declare job configuration with `@ElasticJobConfiguration`
+and enable scanning with `@ElasticJobScan`. The scanner creates `ScheduleJobBootstrap` (when `cron` is set)
+or `OneOffJobBootstrap` (when `cron` is empty) automatically.
+
+```java
+@Component
+@ElasticJobConfiguration(
+        jobName = "annotationSimpleJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou")
+public class AnnotationSimpleJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // do something
+    }
+}
+```
+
+Enable scanning. Both `value` and `basePackages` accept base packages to scan:
+
+```java
+@Configuration
+@ElasticJobScan(basePackages = "org.example.job")
+public class ElasticJobConfig {
+}
+```
+
+Notes:
+
+- The bootstrap bean name defaults to the `jobName`, which must differ from the scanned job bean name. A non-empty `cron` creates a `ScheduleJobBootstrap`
+  which is scheduled automatically on startup; an empty `cron` creates a `OneOffJobBootstrap` which must be triggered manually.
+- `registryCenter` optionally specifies the `CoordinatorRegistryCenter` bean name. When empty, the single
+  `CoordinatorRegistryCenter` bean in the context is injected by type.
+- Job configuration is resolved at runtime from the annotation (with superclass fallback for CGLIB proxies). Only bean references are registered so bean definitions stay Spring AOT friendly, and the annotation types are covered by GraalVM reachability metadata for native images.
+- Annotation attributes cover `timeZone`, `jobParameter`, `monitorExecution`, `failover`, `misfire`,
+  `maxTimeDiffSeconds`, `reconcileIntervalMinutes`, `jobShardingStrategyType`,
+  `jobExecutorThreadPoolSizeProviderType`, `jobErrorHandlerType`, `jobListenerTypes`,
+  `extraConfigurations`, `description`, `props`, `disabled`, `overwrite`, `label`, `staticSharding`, `maxWaitMillis`.
+
 ## Job Start
 
 ### Schedule Job

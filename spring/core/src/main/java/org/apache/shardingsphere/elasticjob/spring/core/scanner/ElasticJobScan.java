@@ -28,6 +28,12 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Use this annotation to register Elastic job.
+ *
+ * <p>
+ * Only bean references are registered by the backing scanner, so generated bean definitions stay
+ * compatible with Spring AOT native images. Annotation introspection at native runtime is covered by
+ * GraalVM reachability metadata, see {@code elasticjob-reachability-metadata}.
+ * </p>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -40,7 +46,7 @@ public @interface ElasticJobScan {
      *
      * @return Base packages name
      */
-    String[] value() default "";
+    String[] value() default {};
     
     /**
      * Base packages to scan for Elastic job.

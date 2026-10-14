@@ -1,0 +1,18 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.springframework.context.annotation.ConfigurationClassParser"
+      },
+      "type": "org.springframework.context.annotation.AnnotationScopeMetadataResolver",
+      "allPublicConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.springframework.context.annotation.ConfigurationClassParser"
+      },
+      "type": "org.springframework.context.annotation.CommonAnnotationBeanPostProcessor",
+      "allPublicConstructors": true
+    }
+  ]
+}

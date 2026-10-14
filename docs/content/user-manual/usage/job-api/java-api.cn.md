@@ -13,6 +13,53 @@ ElasticJob 采用构建器模式创建作业配置对象。
     JobConfiguration jobConfig = JobConfiguration.newBuilder("myJob", 3).cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
 ```
 
+## 使用注解简化作业配置
+
+在作业类上使用 `@ElasticJobConfiguration` 声明作业配置，再通过 `JobAnnotationBuilder` 生成 `JobConfiguration`，
+或让 `JobBootstrap` 自动从注解解析配置。
+
+```java
+@ElasticJobConfiguration(
+        jobName = "myJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
+        description = "my job")
+public class MyJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // do something
+    }
+}
+```
+
+显式生成 `JobConfiguration`：
+
+```java
+JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(MyJob.class);
+new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), jobConfig).schedule();
+```
+
+也可以省略 `JobConfiguration` 参数，让 Bootstrap 自动从注解解析。
+`cron` 为空表示一次性作业：
+
+```java
+// 定时作业，cron 不能为空
+new ScheduleJobBootstrap(createRegistryCenter(), new MyJob()).schedule();
+
+// 一次性作业，cron 必须为空
+new OneOffJobBootstrap(createRegistryCenter(), new MyOneOffJob()).execute();
+```
+
+常用注解属性与 `JobConfiguration` 一一对应：
+`jobName`、`cron`、`timeZone`、`shardingTotalCount`、`shardingItemParameters`、`jobParameter`、
+`monitorExecution`、`failover`、`misfire`、`maxTimeDiffSeconds`、`reconcileIntervalMinutes`、
+`jobShardingStrategyType`、`jobExecutorThreadPoolSizeProviderType`、`jobErrorHandlerType`、
+`jobListenerTypes`、`extraConfigurations`、`description`、`props`、`disabled`、`overwrite`、
+`label`、`staticSharding`、`maxWaitMillis`。
+其中 `registryCenter` 仅用于 Spring 扫描时选择注册中心 Bean，会被 `JobAnnotationBuilder` 忽略。
+
 ## 作业启动
 
 ElasticJob 调度器分为定时调度和一次性调度两种类型。

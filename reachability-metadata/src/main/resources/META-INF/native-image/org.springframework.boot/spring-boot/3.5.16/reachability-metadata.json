@@ -1,0 +1,11 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.springframework.boot.SpringApplication"
+      },
+      "type": "org.springframework.boot.context.TypeExcludeFilter",
+      "allPublicConstructors": true
+    }
+  ]
+}

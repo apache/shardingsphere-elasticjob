@@ -21,6 +21,79 @@
       "type": "org.apache.shardingsphere.elasticjob.kernel.internal.schedule.LiteJob",
       "allPublicConstructors": true,
       "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ClassPathJobScanner"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ElasticJobScan",
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.annotation.JobAnnotationBuilder"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration",
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.annotation.JobAnnotationBuilder"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.annotation.ElasticJobProp",
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ClassPathJobScanner"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ElasticJobScanRegistrar",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ClassPathJobScanner"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.spring.core.scanner.JobScannerConfiguration",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ClassPathJobScanner"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.spring.core.scanner.ClassPathJobScanner",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.tracing.event.JobTracingEventBus"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener",
+      "methods": [
+        {
+          "name": "listen",
+          "parameterTypes": [
+            "org.apache.shardingsphere.elasticjob.spi.tracing.event.JobExecutionEvent"
+          ]
+        },
+        {
+          "name": "listen",
+          "parameterTypes": [
+            "org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent"
+          ]
+        }
+      ]
     }
   ],
   "resources": [

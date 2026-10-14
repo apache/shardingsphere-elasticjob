@@ -40,7 +40,7 @@ public final class JobAnnotationBuilder {
      * @return job configuration
      */
     public static JobConfiguration generateJobConfiguration(final Class<?> type) {
-        ElasticJobConfiguration annotation = type.getAnnotation(ElasticJobConfiguration.class);
+        ElasticJobConfiguration annotation = findAnnotation(type);
         Preconditions.checkArgument(null != annotation, "@ElasticJobConfiguration not found by class '%s'.", type);
         Preconditions.checkArgument(!Strings.isNullOrEmpty(annotation.jobName()), "@ElasticJobConfiguration jobName could not be empty by class '%s'.", type);
         JobConfiguration.Builder jobConfigurationBuilder = JobConfiguration.newBuilder(annotation.jobName(), annotation.shardingTotalCount())
@@ -60,6 +60,8 @@ public final class JobAnnotationBuilder {
                 .description(annotation.description())
                 .disabled(annotation.disabled())
                 .overwrite(annotation.overwrite())
+                .label(Strings.isNullOrEmpty(annotation.label()) ? null : annotation.label())
+                .staticSharding(annotation.staticSharding())
                 .maxWaitMillis(annotation.maxWaitMillis());
         for (Class<? extends JobExtraConfigurationFactory> clazz : annotation.extraConfigurations()) {
             try {
@@ -73,5 +75,21 @@ public final class JobAnnotationBuilder {
             jobConfigurationBuilder.setProperty(prop.key(), prop.value());
         }
         return jobConfigurationBuilder.build();
+    }
+    
+    private static ElasticJobConfiguration findAnnotation(final Class<?> type) {
+        ElasticJobConfiguration result = type.getAnnotation(ElasticJobConfiguration.class);
+        if (null != result) {
+            return result;
+        }
+        Class<?> current = type.getSuperclass();
+        while (null != current && Object.class != current) {
+            result = current.getAnnotation(ElasticJobConfiguration.class);
+            if (null != result) {
+                return result;
+            }
+            current = current.getSuperclass();
+        }
+        return null;
     }
 }

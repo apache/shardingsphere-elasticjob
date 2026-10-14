@@ -12,6 +12,7 @@
 1. Build: Supports building ElasticJob GraalVM Native Images via GraalVM CE `25.0.2` - [#2520](https://github.com/apache/shardingsphere-elasticjob/pull/2520)
 1. Registry Center: Support etcd as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 1. Registry Center: Supports Nacos and in-memory storage as the registry center - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
+1. Annotation: Complete Annotation Job support - [#1445](https://github.com/apache/shardingsphere-elasticjob/issues/1445)
 
 ### Bug Fixes
 
