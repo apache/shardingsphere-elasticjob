@@ -36,3 +36,9 @@ For example:
 Type: ROUND_ROBIN
 
 Sharding for round robin by name job.
+
+## Single Sharding Balance Strategy
+
+Type: SINGLE_SHARDING_BALANCE
+
+Before applying average allocation, this strategy rotates the job-instance order using the job-name hash and current time. For a single-shard job, the selected instance can therefore change across sharding calculations.
