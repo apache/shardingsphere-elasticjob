@@ -52,12 +52,20 @@
 1. Dependencies: Bump Quartz to 2.4.0 - [#2439](https://github.com/apache/shardingsphere-elasticjob/issues/2439)
 1. Build: Support building and using ElasticJob with JDK23 - [#2453](https://github.com/apache/shardingsphere-elasticjob/issues/2453)
 1. Build: Support building and using ElasticJob with JDK24 - [#2481](https://github.com/apache/shardingsphere-elasticjob/pull/2481)
+1. Tracing: Support GaussDB as an RDB tracing storage database - [#2472](https://github.com/apache/shardingsphere-elasticjob/pull/2472)
+1. Kernel: Add the `SINGLE_SHARDING_BALANCE` job sharding strategy - [#2462](https://github.com/apache/shardingsphere-elasticjob/pull/2462)
+1. Spring Boot Starter: Improve tracing properties configuration - [#2438](https://github.com/apache/shardingsphere-elasticjob/pull/2438)
+1. Kernel: Support graceful exit when business-code capture is interrupted during shutdown - [#2475](https://github.com/apache/shardingsphere-elasticjob/pull/2475)
 
 ### Bug Fixes
 
 1. Build: Removes non-existent `elasticjob-tracing-api` and `elasticjob-error-handler-spi` module - [#2412](https://github.com/apache/shardingsphere-elasticjob/pull/2412)
 1. Spring Boot Starter: Fixes the issue that OneOffJobBootstrap cannot be used under ElasticJob Spring Boot Starter - [#2014](https://github.com/apache/shardingsphere-elasticjob/issues/2014)
 1. Spring: Fixes potential conflict in AOP proxy job class identification in Spring Framework - [#2012](https://github.com/apache/shardingsphere-elasticjob/issues/2012)
+1. Kernel: Fixes failover behavior that could leave a job unexecuted - [#2432](https://github.com/apache/shardingsphere-elasticjob/pull/2432)
+1. Kernel: Fixes removal of offline job servers - [#2445](https://github.com/apache/shardingsphere-elasticjob/pull/2445)
+1. Spring Boot Starter: Closes the Zookeeper registry center bean on destruction - [#2441](https://github.com/apache/shardingsphere-elasticjob/pull/2441)
+1. Spring Boot Starter: Fixes tracing compatibility with Spring Boot 3.2.x - [#2405](https://github.com/apache/shardingsphere-elasticjob/pull/2405)
 
 ### Change Logs
 
