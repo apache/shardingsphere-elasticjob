@@ -33,6 +33,10 @@ chapter = true
 | session-timeout-milliseconds    | 否    |
 | connection-timeout-milliseconds | 否    |
 | digest                          | 否    |
+| ensemble-tracker                | 否    |
+
+`<elasticjob:etcd />`、`<elasticjob:nacos />` 和 `<elasticjob:memory />` 也已支持，
+各类型的属性与配置示例见[注册中心配置](/cn/user-manual/configuration/registry-center)章节。
 
 ## 作业配置
 

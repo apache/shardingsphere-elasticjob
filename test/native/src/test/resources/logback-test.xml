@@ -26,7 +26,7 @@
     <logger name="org.apache.shardingsphere.elasticjob" level="warn" additivity="false">
         <appender-ref ref="console" />
     </logger>
-    <logger name="org.apache.shardingsphere.elasticjob.reg.etcd.EtcdRegistryCenter" level="error" additivity="false">
+    <logger name="org.apache.curator.framework.imps.CuratorFrameworkImpl" level="off" additivity="false">
         <appender-ref ref="console" />
     </logger>
     <root level="error">

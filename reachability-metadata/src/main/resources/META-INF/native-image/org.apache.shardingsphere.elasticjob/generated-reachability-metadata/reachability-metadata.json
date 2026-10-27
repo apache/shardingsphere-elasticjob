@@ -775,6 +775,18 @@
           "parameterTypes": [
             "boolean"
           ]
+        },
+        {
+          "name": "setCron",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setJobExtraConfigurations",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
         }
       ]
     },
@@ -995,6 +1007,12 @@
           "parameterTypes": [
             "java.util.Collection"
           ]
+        },
+        {
+          "name": "setProps",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
         }
       ]
     },
@@ -1090,6 +1108,24 @@
           "name": "setStaticSharding",
           "parameterTypes": [
             "boolean"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setJobParameter",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProps",
+          "parameterTypes": [
+            "java.util.Properties"
           ]
         }
       ]
@@ -2332,7 +2368,15 @@
       "condition": {
         "typeReached": "org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"
       },
-      "type": "org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener"
+      "type": "org.apache.shardingsphere.elasticjob.spi.tracing.listener.TracingListener",
+      "methods": [
+        {
+          "name": "listen",
+          "parameterTypes": [
+            "org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent"
+          ]
+        }
+      ]
     },
     {
       "condition": {
@@ -2344,7 +2388,15 @@
       "condition": {
         "typeReached": "org.apache.shardingsphere.elasticjob.spring.boot.job.ElasticJobBootstrapConfiguration"
       },
-      "type": "org.apache.shardingsphere.elasticjob.tracing.rdb.listener.RDBTracingListener"
+      "type": "org.apache.shardingsphere.elasticjob.tracing.rdb.listener.RDBTracingListener",
+      "methods": [
+        {
+          "name": "listen",
+          "parameterTypes": [
+            "org.apache.shardingsphere.elasticjob.spi.tracing.event.JobStatusTraceEvent"
+          ]
+        }
+      ]
     },
     {
       "condition": {
@@ -2825,6 +2877,104 @@
         "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.schedule.JobTriggerListener"
       },
       "type": "org.apache.shardingsphere.elasticjob.tracing.rdb.yaml.YamlDataSourceConfigurationCustomizer"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager$LegacyCrashedRunningItemListener"
+      },
+      "type": "java.util.Properties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingListenerManager$ListenServersChangedJobListener"
+      },
+      "type": "java.util.Properties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.sharding.ShardingListenerManager$ShardingTotalCountChangedJobListener"
+      },
+      "type": "java.util.Properties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager$LegacyCrashedRunningItemListener"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.kernel.internal.config.JobConfigurationPOJO",
+      "methods": [
+        {
+          "name": "setProps",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager$FailoverSettingsChangedJobListener"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTracingStorageConfiguration",
+          "parameterTypes": [
+            "org.apache.shardingsphere.elasticjob.kernel.tracing.yaml.YamlTracingStorageConfiguration"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.internal.failover.FailoverListenerManager$FailoverSettingsChangedJobListener"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.tracing.rdb.yaml.YamlDataSourceConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDataSourceClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProps",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
     }
   ],
   "resources": [
