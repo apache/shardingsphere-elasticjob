@@ -97,11 +97,11 @@ class ScheduleJobBootstrapGracefulShutdownTest {
                         "elasticjob.jobs.stopStartJob.cron=0/1 * * * * ?",
                         "elasticjob.jobs.stopStartJob.shardingTotalCount=1")
                 .run(context -> {
-                    ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) context.getSourceApplicationContext();
                     ScheduleJobBootstrapStartupRunner runner = context.getBean(ScheduleJobBootstrapStartupRunner.class);
                     runner.run();
                     assertFalse(JobRegistry.getInstance().isShutdown(jobName));
                     assertFalse(JobRegistry.getInstance().getJobScheduleController(jobName).isPaused());
+                    ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) context.getSourceApplicationContext();
                     applicationContext.stop();
                     assertFalse(runner.isRunning());
                     assertFalse(JobRegistry.getInstance().isShutdown(jobName));
