@@ -28,6 +28,7 @@
 1. Registry Center: Fixes registry center closed-client reads and nested interrupts - [#2551](https://github.com/apache/shardingsphere-elasticjob/pull/2551)
 1. Registry Center: Fixes closed-client reads and listener removal on `NacosRegistryCenter` close - [#2553](https://github.com/apache/shardingsphere-elasticjob/pull/2553)
 1. Spring: Shuts down scheduled job bootstraps gracefully when the Spring application context closes - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
+1. Spring: Fixes the issue that `@ElasticJobScan` skips bootstrap registration when the job bean is already registered by component scanning - [#2559](https://github.com/apache/shardingsphere-elasticjob/pull/2559)
 
 ## 3.0.5
 

@@ -22,8 +22,10 @@ import org.apache.shardingsphere.elasticjob.annotation.ElasticJobConfiguration;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -44,6 +46,8 @@ import java.util.Set;
  * Registration is idempotent: a bootstrap whose {@code jobName} is already taken (e.g. equal to the scanned job bean name,
  * or already registered by AOT generated code at native runtime) is skipped. Therefore the {@code jobName} must differ
  * from the scanned job bean name.
+ * Beans already registered (e.g. via {@code @Component} with ordinary component scanning) are reused:
+ * the scanner still registers their bootstraps instead of skipping them.
  * </p>
  *
  * @see ScheduleJobBootstrap
@@ -67,41 +71,117 @@ public class ClassPathJobScanner extends ClassPathBeanDefinitionScanner {
         if (!beanDefinitions.isEmpty()) {
             processBeanDefinitions(beanDefinitions);
         }
+        processAlreadyRegisteredBeans(basePackages);
         return beanDefinitions;
     }
     
     private void processBeanDefinitions(final Set<BeanDefinitionHolder> beanDefinitions) {
-        BeanDefinitionRegistry registry = getRegistry();
         for (BeanDefinitionHolder holder : beanDefinitions) {
             ScannedGenericBeanDefinition definition = (ScannedGenericBeanDefinition) holder.getBeanDefinition();
             Class<?> jobClass;
             try {
                 jobClass = Class.forName(definition.getMetadata().getClassName());
-            } catch (ClassNotFoundException ex) {
+            } catch (final ClassNotFoundException ex) {
                 // TODO： log
                 continue;
             }
-            ElasticJobConfiguration jobAnnotation = jobClass.getAnnotation(ElasticJobConfiguration.class);
+            ElasticJobConfiguration jobAnnotation = findAnnotation(jobClass);
             if (null == jobAnnotation) {
                 continue;
             }
-            String registryCenter = jobAnnotation.registryCenter();
-            BeanDefinitionBuilder factory;
-            if (StringUtils.isEmpty(jobAnnotation.cron())) {
-                factory = BeanDefinitionBuilder.rootBeanDefinition(OneOffJobBootstrap.class);
-            } else {
-                factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
-                factory.setInitMethodName("schedule");
+            registerBootstrap(holder.getBeanName(), jobAnnotation);
+        }
+    }
+    
+    /**
+     * Register bootstraps for job beans already present in the registry.
+     *
+     * <p>
+     * With ordinary Spring Boot component scanning, a job class annotated with {@code @Component}
+     * is registered before {@link JobScannerConfiguration} runs. {@code super.doScan} then skips it
+     * via {@code checkCandidate}, so no bootstrap would be created. This pass reuses the existing
+     * job bean name and registers the missing bootstrap.
+     * </p>
+     *
+     * @param basePackages the packages to check for annotated classes
+     */
+    private void processAlreadyRegisteredBeans(final String... basePackages) {
+        BeanDefinitionRegistry registry = getRegistry();
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
+            String className = beanDefinition.getBeanClassName();
+            if (null == className && beanDefinition instanceof AbstractBeanDefinition
+                    && ((AbstractBeanDefinition) beanDefinition).hasBeanClass()) {
+                className = ((AbstractBeanDefinition) beanDefinition).getBeanClass().getName();
             }
-            if (!StringUtils.isEmpty(registryCenter)) {
-                factory.addConstructorArgReference(registryCenter);
-            } else {
-                factory.addConstructorArgValue(new RuntimeBeanReference(CoordinatorRegistryCenter.class));
+            if (null == className || !isInBasePackages(className, basePackages)) {
+                continue;
             }
-            factory.addConstructorArgReference(Objects.requireNonNull(holder.getBeanName()));
-            if (!registry.containsBeanDefinition(jobAnnotation.jobName())) {
-                registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
+            // Skip bootstraps registered above. They reference job beans and their class has no job annotation.
+            if (OneOffJobBootstrap.class.getName().equals(className) || ScheduleJobBootstrap.class.getName().equals(className)) {
+                continue;
+            }
+            Class<?> jobClass;
+            try {
+                jobClass = Class.forName(className);
+            } catch (final ClassNotFoundException ex) {
+                // TODO： log
+                continue;
+            }
+            ElasticJobConfiguration jobAnnotation = findAnnotation(jobClass);
+            if (null == jobAnnotation) {
+                continue;
+            }
+            if (registry.containsBeanDefinition(jobAnnotation.jobName())) {
+                continue;
+            }
+            registerBootstrap(beanName, jobAnnotation);
+        }
+    }
+    
+    private void registerBootstrap(final String jobBeanName, final ElasticJobConfiguration jobAnnotation) {
+        String registryCenter = jobAnnotation.registryCenter();
+        BeanDefinitionBuilder factory;
+        if (StringUtils.isEmpty(jobAnnotation.cron())) {
+            factory = BeanDefinitionBuilder.rootBeanDefinition(OneOffJobBootstrap.class);
+        } else {
+            factory = BeanDefinitionBuilder.rootBeanDefinition(ScheduleJobBootstrap.class);
+            factory.setInitMethodName("schedule");
+        }
+        if (!StringUtils.isEmpty(registryCenter)) {
+            factory.addConstructorArgReference(registryCenter);
+        } else {
+            factory.addConstructorArgValue(new RuntimeBeanReference(CoordinatorRegistryCenter.class));
+        }
+        factory.addConstructorArgReference(Objects.requireNonNull(jobBeanName));
+        BeanDefinitionRegistry registry = getRegistry();
+        if (!registry.containsBeanDefinition(jobAnnotation.jobName())) {
+            registry.registerBeanDefinition(jobAnnotation.jobName(), factory.getBeanDefinition());
+        }
+    }
+    
+    private static ElasticJobConfiguration findAnnotation(final Class<?> jobClass) {
+        ElasticJobConfiguration result = jobClass.getAnnotation(ElasticJobConfiguration.class);
+        if (null != result) {
+            return result;
+        }
+        Class<?> current = jobClass.getSuperclass();
+        while (null != current && Object.class != current) {
+            result = current.getAnnotation(ElasticJobConfiguration.class);
+            if (null != result) {
+                return result;
+            }
+            current = current.getSuperclass();
+        }
+        return null;
+    }
+    
+    private static boolean isInBasePackages(final String className, final String... basePackages) {
+        for (String basePackage : basePackages) {
+            if (null != basePackage && !basePackage.isEmpty() && className.startsWith(basePackage + ".")) {
+                return true;
             }
         }
+        return false;
     }
 }
