@@ -65,7 +65,29 @@ chapter = true
 | props                             | 否    |
 | disabled                          | 否    |
 | overwrite                         | 否    |
+| label                             | 否    |
+| static-sharding                   | 否    |
 | max-wait-millis                   | 否    |
+
+## 作业扫描配置
+
+\<elasticjob:job-scanner />
+
+通过 `@ElasticJobConfiguration` 声明作业配置后，可用作业扫描按包自动注册定时或一次性作业。
+`cron` 非空创建 `ScheduleJobBootstrap` 并自动调度，`cron` 为空创建 `OneOffJobBootstrap` 需手动触发。
+
+可配置属性：
+
+| 属性名        | 是否必填 | 说明                              |
+|------------|:-----|:--------------------------------|
+| id         | 是    | 扫描配置 Bean 主键                    |
+| base-package | 是    | 待扫描的包，支持单个包或逗号分隔的多个包        |
+
+配置参考：
+
+```xml
+<elasticjob:job-scanner id="jobScanner" base-package="org.example.job" />
+```
 
 ## 事件追踪配置
 

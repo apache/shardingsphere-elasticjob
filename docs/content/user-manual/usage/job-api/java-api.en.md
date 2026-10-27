@@ -13,6 +13,53 @@ The code example is as follows:
     JobConfiguration jobConfig = JobConfiguration.newBuilder("myJob", 3).cron("0/5 * * * * ?").shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
 ```
 
+## Use annotation to simplify job configuration
+
+Declare job configuration with `@ElasticJobConfiguration` on the job class, then build the `JobConfiguration` via `JobAnnotationBuilder`
+or let the `JobBootstrap` resolve it from the annotation automatically.
+
+```java
+@ElasticJobConfiguration(
+        jobName = "myJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou",
+        description = "my job")
+public class MyJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // do something
+    }
+}
+```
+
+Generate `JobConfiguration` explicitly:
+
+```java
+JobConfiguration jobConfig = JobAnnotationBuilder.generateJobConfiguration(MyJob.class);
+new ScheduleJobBootstrap(createRegistryCenter(), new MyJob(), jobConfig).schedule();
+```
+
+Or omit the `JobConfiguration` parameter and let the bootstrap resolve it from the annotation.
+An empty `cron` means a one-off job:
+
+```java
+// Schedule job, cron must not be empty
+new ScheduleJobBootstrap(createRegistryCenter(), new MyJob()).schedule();
+
+// One-off job, cron must be empty
+new OneOffJobBootstrap(createRegistryCenter(), new MyOneOffJob()).execute();
+```
+
+Common annotation attributes map one-to-one to `JobConfiguration`:
+`jobName`, `cron`, `timeZone`, `shardingTotalCount`, `shardingItemParameters`, `jobParameter`,
+`monitorExecution`, `failover`, `misfire`, `maxTimeDiffSeconds`, `reconcileIntervalMinutes`,
+`jobShardingStrategyType`, `jobExecutorThreadPoolSizeProviderType`, `jobErrorHandlerType`,
+`jobListenerTypes`, `extraConfigurations`, `description`, `props`, `disabled`, `overwrite`,
+`label`, `staticSharding`, `maxWaitMillis`.
+`registryCenter` is only used by Spring scanning to select the registry center bean and is ignored by `JobAnnotationBuilder`.
+
 ## Job start
 
 ElasticJob scheduler is divided into two types: timed scheduling and one-time scheduling.

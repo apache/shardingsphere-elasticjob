@@ -181,6 +181,20 @@ public @interface ElasticJobConfiguration {
     boolean overwrite() default false;
     
     /**
+     * Job label.
+     *
+     * @return label
+     */
+    String label() default "";
+    
+    /**
+     * Enable or disable static sharding.
+     *
+     * @return static sharding
+     */
+    boolean staticSharding() default false;
+    
+    /**
      * Maximum time in milliseconds that the coordination wait loops, such as sharding and leader election, block before giving up.
      *
      * @return max wait milliseconds

@@ -60,11 +60,36 @@ Configuration:
 | job-sharding-strategy-type        | No       |
 | job-executor-service-handler-type | No       |
 | job-error-handler-type            | No       |
+| job-listener-types                | No       |
 | description                       | No       |
 | props                             | No       |
 | disabled                          | No       |
 | overwrite                         | No       |
+| label                             | No       |
+| static-sharding                   | No       |
 | max-wait-millis                   | No       |
+
+## Job Scanner Configuration
+
+\<elasticjob:job-scanner />
+
+After declaring job configuration with `@ElasticJobConfiguration`, use the job scanner to register
+schedule or one-off jobs by base package automatically.
+A non-empty `cron` creates a `ScheduleJobBootstrap` which is scheduled automatically;
+an empty `cron` creates a `OneOffJobBootstrap` which must be triggered manually.
+
+Configuration:
+
+| Name         | Required | Description                                       |
+|--------------|:---------|:--------------------------------------------------|
+| id           | Yes      | Identify of the scanner in the Spring container   |
+| base-package | Yes      | Base package to scan, single or comma-separated   |
+
+Reference:
+
+```xml
+<elasticjob:job-scanner id="jobScanner" base-package="org.example.job" />
+```
 
 ## Event Tracing Configuration
 

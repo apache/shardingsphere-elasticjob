@@ -55,7 +55,7 @@ public class ElasticJobScanRegistrar implements ImportBeanDefinitionRegistrar {
                 .collect(Collectors.toList()));
         basePackages.addAll(Arrays.stream(annoAttrs.getStringArray("basePackages")).filter(StringUtils::hasText)
                 .collect(Collectors.toList()));
-        factory.addConstructorArgValue(basePackages);
+        factory.addConstructorArgValue(basePackages.toArray(new String[0]));
         registry.registerBeanDefinition(generateBaseBeanName(annoMeta), factory.getBeanDefinition());
     }
     

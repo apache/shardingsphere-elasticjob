@@ -39,6 +39,38 @@ ElasticJob 提供自定义的 Spring 命名空间，可以与 Spring 容器配�
 </beans>
 ```
 
+### 使用注解扫描配置作业
+
+也可以用 `@ElasticJobConfiguration` 声明作业配置，再用 `<elasticjob:job-scanner />` 按包扫描。
+`base-package` 支持单个包或逗号分隔的多个包。`cron` 非空时创建 `ScheduleJobBootstrap` 并自动调度，
+`cron` 为空时创建 `OneOffJobBootstrap` 需要手动触发。
+
+```java
+@ElasticJobConfiguration(
+        jobName = "simpleJob",
+        cron = "0/5 * * * * ?",
+        shardingTotalCount = 3,
+        shardingItemParameters = "0=a,1=b,2=c")
+public class AnnotationSimpleJob implements SimpleJob {
+    
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        // 处理作业
+    }
+}
+```
+
+```xml
+<elasticjob:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="my-job" />
+<elasticjob:job-scanner id="jobScanner" base-package="org.example.job" />
+```
+
+说明：
+
+- Bootstrap Bean 名称默认为注解中的 `jobName`，且必须与被扫描的作业 Bean 名称不同。
+- 注解中的 `registryCenter` 可指定注册中心 Bean 名称，为空时按类型注入唯一的 `CoordinatorRegistryCenter`。
+- 作业配置在运行时从注解解析（CGLIB 代理走超类回退）。Bean 定义中仅注册 Bean 引用以保持 Spring AOT 友好，注解类型由 GraalVM 可达性元数据覆盖，原生镜像下仍可工作。
+
 ## 作业启动
 
 ### 定时调度
