@@ -54,6 +54,20 @@ public final class ScheduleJobBootstrap implements JobBootstrap {
         jobScheduler.getJobScheduleController().scheduleJob(jobScheduler.getJobConfig().getCron(), jobScheduler.getJobConfig().getTimeZone());
     }
     
+    /**
+     * Pause job.
+     */
+    public void pause() {
+        jobScheduler.getJobScheduleController().pauseJob();
+    }
+    
+    /**
+     * Resume job.
+     */
+    public void resume() {
+        jobScheduler.getJobScheduleController().resumeJob();
+    }
+    
     @Override
     public void shutdown() {
         jobScheduler.shutdown();

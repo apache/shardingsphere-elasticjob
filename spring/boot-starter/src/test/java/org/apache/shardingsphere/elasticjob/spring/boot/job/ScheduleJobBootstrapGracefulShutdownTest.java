@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -81,6 +82,36 @@ class ScheduleJobBootstrapGracefulShutdownTest {
                     assertFalse(JobRegistry.getInstance().isShutdown(JOB_NAME));
                 });
         assertTrue(JobRegistry.getInstance().isShutdown(JOB_NAME));
+    }
+    
+    @Test
+    void assertStopPausesAndStartResumesWithoutShutdown() {
+        String jobName = "stopStartJob";
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(ElasticJobAutoConfiguration.class))
+                .withUserConfiguration(TestJobConfiguration.class)
+                .withPropertyValues(
+                        "elasticjob.reg-center.serverLists=" + testingServer.getConnectString(),
+                        "elasticjob.reg-center.namespace=stop-start-test",
+                        "elasticjob.jobs.stopStartJob.elasticJobClass=org.apache.shardingsphere.elasticjob.spring.boot.job.ScheduleJobBootstrapGracefulShutdownTest$CountingJob",
+                        "elasticjob.jobs.stopStartJob.cron=0/1 * * * * ?",
+                        "elasticjob.jobs.stopStartJob.shardingTotalCount=1")
+                .run(context -> {
+                    ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) context.getSourceApplicationContext();
+                    ScheduleJobBootstrapStartupRunner runner = context.getBean(ScheduleJobBootstrapStartupRunner.class);
+                    runner.run();
+                    assertFalse(JobRegistry.getInstance().isShutdown(jobName));
+                    assertFalse(JobRegistry.getInstance().getJobScheduleController(jobName).isPaused());
+                    applicationContext.stop();
+                    assertFalse(runner.isRunning());
+                    assertFalse(JobRegistry.getInstance().isShutdown(jobName));
+                    assertTrue(JobRegistry.getInstance().getJobScheduleController(jobName).isPaused());
+                    applicationContext.start();
+                    assertTrue(runner.isRunning());
+                    assertFalse(JobRegistry.getInstance().isShutdown(jobName));
+                    assertFalse(JobRegistry.getInstance().getJobScheduleController(jobName).isPaused());
+                });
+        assertTrue(JobRegistry.getInstance().isShutdown(jobName));
     }
     
     @Configuration
