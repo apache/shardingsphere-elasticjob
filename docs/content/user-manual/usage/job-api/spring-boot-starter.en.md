@@ -74,9 +74,8 @@ and enable scanning with `@ElasticJobScan`. The scanner creates `ScheduleJobBoot
 or `OneOffJobBootstrap` (when `cron` is empty) automatically.
 
 ```java
-@Component
 @ElasticJobConfiguration(
-        jobName = "annotationSimpleJob",
+        jobName = "annotationSimpleJobSchedule",
         cron = "0/5 * * * * ?",
         shardingTotalCount = 3,
         shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou")
@@ -100,6 +99,8 @@ public class ElasticJobConfig {
 
 Notes:
 
+- Do not annotate the job class with `@Component`. `@ElasticJobScan` registers the job bean (`annotationSimpleJob` here) automatically.
+  If the job bean is already registered via ordinary component scanning, the scanner reuses it and still registers its bootstrap.
 - The bootstrap bean name defaults to the `jobName`, which must differ from the scanned job bean name. A non-empty `cron` creates a `ScheduleJobBootstrap`
   which is scheduled automatically on startup; an empty `cron` creates a `OneOffJobBootstrap` which must be triggered manually.
 - `registryCenter` optionally specifies the `CoordinatorRegistryCenter` bean name. When empty, the single

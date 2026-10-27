@@ -19,15 +19,18 @@ package org.apache.shardingsphere.elasticjob.spring.core.scanner;
 
 import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
 import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
+import org.apache.shardingsphere.elasticjob.spring.core.scanner.fixture.ScannerScheduleJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassPathJobScannerTest {
     
@@ -75,5 +78,20 @@ class ClassPathJobScannerTest {
         assertThat(registry.containsBeanDefinition("scheduledScannerJob"), is(false));
         assertThat(registry.containsBeanDefinition("oneOffScannerJob"), is(false));
         assertThat(registry.containsBeanDefinition("customRegistryScannerJob"), is(false));
+    }
+    
+    @Test
+    void assertScanWithAlreadyRegisteredJobBean() {
+        DefaultListableBeanFactory registry = new DefaultListableBeanFactory();
+        // Simulate ordinary component scanning (@Component) having registered the job bean before @ElasticJobScan runs.
+        registry.registerBeanDefinition("scannerScheduleJob", BeanDefinitionBuilder.genericBeanDefinition(ScannerScheduleJob.class).getBeanDefinition());
+        ClassPathJobScanner scanner = new ClassPathJobScanner(registry);
+        scanner.scan("org.apache.shardingsphere.elasticjob.spring.core.scanner.fixture");
+        assertTrue(registry.containsBeanDefinition("scannerScheduleJob"));
+        assertTrue(registry.containsBeanDefinition("scheduledScannerJob"));
+        BeanDefinition scheduleJobBootstrap = registry.getBeanDefinition("scheduledScannerJob");
+        assertThat(scheduleJobBootstrap.getBeanClassName(), is(ScheduleJobBootstrap.class.getName()));
+        assertThat(scheduleJobBootstrap.getInitMethodName(), is("schedule"));
+        assertThat(scheduleJobBootstrap.getConstructorArgumentValues().getArgumentCount(), is(2));
     }
 }
