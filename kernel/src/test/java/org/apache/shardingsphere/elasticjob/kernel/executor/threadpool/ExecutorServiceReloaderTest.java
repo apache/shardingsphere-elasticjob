@@ -77,6 +77,18 @@ class ExecutorServiceReloaderTest {
     }
     
     @Test
+    void assertUnnecessaryToReloadWhenTypeIsNotSet() {
+        JobConfiguration jobConfig = JobConfiguration.newBuilder("job", 1).build();
+        try (ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(jobConfig)) {
+            ExecutorService expected = executorServiceReloader.getExecutorService();
+            executorServiceReloader.reloadIfNecessary(jobConfig);
+            ExecutorService actual = executorServiceReloader.getExecutorService();
+            assertThat(actual, is(expected));
+            actual.shutdown();
+        }
+    }
+    
+    @Test
     void assertShutdown() {
         ExecutorServiceReloader executorServiceReloader = new ExecutorServiceReloader(JobConfiguration.newBuilder("job", 1).jobExecutorThreadPoolSizeProviderType("SINGLE_THREAD").build());
         ReflectionUtils.setFieldValue(executorServiceReloader, "executorService", mockExecutorService);

@@ -22,6 +22,7 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.infra.spi.type.typed.TypedSPILoader;
 
 import java.io.Closeable;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -44,7 +45,7 @@ public final class ExecutorServiceReloader implements Closeable {
      * @param jobConfig job configuration
      */
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
+        if (Objects.equals(jobExecutorThreadPoolSizeProviderType, jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
             return;
         }
         executorService.shutdownNow();
@@ -53,7 +54,7 @@ public final class ExecutorServiceReloader implements Closeable {
     
     private void init(final JobConfiguration jobConfig) {
         JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
-        jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
+        jobExecutorThreadPoolSizeProviderType = jobConfig.getJobExecutorThreadPoolSizeProviderType();
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
     }
     
