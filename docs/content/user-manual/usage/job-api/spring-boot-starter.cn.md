@@ -73,9 +73,8 @@ elasticjob:
 `ScheduleJobBootstrap`（`cron` 非空）或 `OneOffJobBootstrap`（`cron` 为空）。
 
 ```java
-@Component
 @ElasticJobConfiguration(
-        jobName = "annotationSimpleJob",
+        jobName = "annotationSimpleJobSchedule",
         cron = "0/5 * * * * ?",
         shardingTotalCount = 3,
         shardingItemParameters = "0=Beijing,1=Shanghai,2=Guangzhou")
@@ -99,6 +98,8 @@ public class ElasticJobConfig {
 
 说明：
 
+- 不要在作业类上再加 `@Component`，`@ElasticJobScan` 会自动注册作业 Bean（本例为 `annotationSimpleJob`）。
+  即使作业 Bean 已经通过普通组件扫描提前注册，扫描器也会复用它并注册对应的 Bootstrap。
 - Bootstrap Bean 名称默认为 `jobName`，且必须与被扫描的作业 Bean 名称不同。`cron` 非空时创建 `ScheduleJobBootstrap`，
   应用启动后自动调度；`cron` 为空时创建 `OneOffJobBootstrap`，需要手动触发。
 - `registryCenter` 可选，用于指定 `CoordinatorRegistryCenter` Bean 名称。
