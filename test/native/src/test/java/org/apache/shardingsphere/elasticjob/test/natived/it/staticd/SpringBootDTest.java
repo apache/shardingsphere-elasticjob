@@ -74,12 +74,14 @@ class SpringBootDTest {
     @DynamicPropertySource
     static void elasticjobProperties(final DynamicPropertyRegistry registry) {
         registry.add("elasticjob.regCenter.serverLists", () -> testingServer.getConnectString());
+        registry.add("elasticjob.regCenter.sessionTimeoutMilliseconds", () -> 60000);
+        registry.add("elasticjob.regCenter.connectionTimeoutMilliseconds", () -> 15000);
         registry.add("elasticjob.dump.port", InstanceSpec::getRandomPort);
     }
     
     @BeforeAll
     static void beforeAll() throws Exception {
-        testingServer = new TestingServer();
+        testingServer = new TestingServer(new InstanceSpec(null, -1, -1, -1, true, -1, 3000, -1), true);
         try (
                 CuratorZookeeperClient client = new CuratorZookeeperClient(testingServer.getConnectString(),
                         60 * 1000, 500, null,

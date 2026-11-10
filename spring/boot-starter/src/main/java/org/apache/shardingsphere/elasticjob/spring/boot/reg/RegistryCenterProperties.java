@@ -24,8 +24,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Configuration properties of the ElasticJob registry center.
  *
- * <p>{@code elasticjob.reg-center.type} selects which registry center is created, currently only {@code zookeeper} (default).
- * Other registry center types will be supported separately.</p>
+ * <p>The properties are shared by all the registry center types.
+ * {@code elasticjob.reg-center.type} selects which registry center is created:
+ * {@code zookeeper} (default), {@code etcd}, {@code nacos} or {@code memory}.
+ * Properties that are only valid for a specific registry center are ignored by the other types,
+ * and a value of {@code 0} for a timeout means that the built-in default of the registry center is used.</p>
  */
 @Getter
 @Setter
@@ -52,37 +55,69 @@ public class RegistryCenterProperties {
     private String namespace;
     
     /**
-     * Base sleep time milliseconds.
+     * Base sleep time milliseconds, only used by ZooKeeper.
      */
     private int baseSleepTimeMilliseconds = 1000;
     
     /**
-     * Max sleep time milliseconds.
+     * Max sleep time milliseconds, only used by ZooKeeper.
      */
     private int maxSleepTimeMilliseconds = 3000;
     
     /**
-     * Max retry times.
+     * Max retry times, only used by ZooKeeper.
      */
     private int maxRetries = 3;
     
     /**
-     * Session timeout milliseconds.
+     * Session timeout milliseconds, only used by ZooKeeper.
      */
     private int sessionTimeoutMilliseconds;
     
     /**
-     * Connection timeout milliseconds.
+     * Connection timeout milliseconds, used by ZooKeeper and etcd.
      */
     private int connectionTimeoutMilliseconds;
     
     /**
-     * ZooKeeper digest.
+     * ZooKeeper digest, only used by ZooKeeper.
      */
     private String digest;
     
     /**
-     * Whether the ensemble configuration changes are watched.
+     * Whether the ensemble configuration changes are watched, only used by ZooKeeper.
      */
     private boolean ensembleTracker = true;
+    
+    /**
+     * Username for authentication, used by etcd and Nacos.
+     */
+    private String username;
+    
+    /**
+     * Password for authentication, used by etcd and Nacos.
+     */
+    private String password;
+    
+    /**
+     * Whether to use HTTPs, only used by etcd.
+     */
+    private boolean ssl;
+    
+    /**
+     * Authority header for HTTP/2, only used by etcd.
+     */
+    private String authority;
+    
+    /**
+     * Nacos tenant (namespace id), only used by Nacos.
+     *
+     * <p>Distinct from the ElasticJob {@code namespace}, which is mapped to the Nacos config group.</p>
+     */
+    private String tenant;
+    
+    /**
+     * Timeout milliseconds of config operations, only used by Nacos.
+     */
+    private long timeoutMs;
 }

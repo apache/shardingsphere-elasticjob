@@ -26,6 +26,7 @@ etcd is a distributed key-value store system. ElasticJob supports using etcd3 as
 | connectionTimeoutMilliseconds | long      | 5000          | Connection timeout in milliseconds                       |
 | username                      | String    |               | Authentication username                                  |
 | password                      | String    |               | Authentication password                                  |
+| ssl                           | boolean   | false         | Whether to use HTTPS                                     |
 | authority                     | String    |               | Authority header for HTTP/2                              |
 
 ### Core Configuration Description
@@ -73,8 +74,30 @@ public class EtcdRegistryCenterExample {
 }
 ```
 
-### Spring Boot Starter and Spring Namespace
+### Spring Boot Starter
 
-The Spring Boot Starter and the Spring Namespace only support ZooKeeper at present,
-so etcd can only be used through the Java API or `RegistryCenterFactory`.
-See the [Registry Center Configuration](/en/user-manual/configuration/registry-center) page for details.
+```yaml
+elasticjob:
+  reg-center:
+    type: etcd
+    server-lists: http://host1:2379,http://host2:2379
+    namespace: elasticjob
+    connection-timeout-milliseconds: 5000
+    username: root
+    password: password
+    ssl: true
+    authority: host1:2379
+```
+
+### Spring Namespace
+
+```xml
+<elasticjob:etcd id="regCenter" 
+    server-lists="http://host1:2379,http://host2:2379" 
+    namespace="elasticjob"
+    connection-timeout-milliseconds="5000"
+    username="root"
+    password="password"
+    ssl="true"
+    authority="host1:2379" />
+```

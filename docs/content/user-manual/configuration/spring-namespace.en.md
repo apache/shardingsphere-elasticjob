@@ -20,7 +20,7 @@ Spring namespace: [http://shardingsphere.apache.org/schema/elasticjob/elasticjob
 
 \<elasticjob:zookeeper />
 
-Configuration: 
+Configuration:
 
 | Name                            | Required |
 |---------------------------------|:---------|
@@ -33,6 +33,10 @@ Configuration:
 | session-timeout-milliseconds    | No       |
 | connection-timeout-milliseconds | No       |
 | digest                          | No       |
+| ensemble-tracker                | No       |
+
+`<elasticjob:etcd />`, `<elasticjob:nacos />` and `<elasticjob:memory />` are also supported.
+Their attributes and examples are documented in the [registry center section](/en/user-manual/configuration/registry-center).
 
 ## Job Configuration
 

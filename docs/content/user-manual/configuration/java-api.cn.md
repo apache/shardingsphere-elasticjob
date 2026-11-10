@@ -36,6 +36,7 @@ ElasticJob 支持 `ZooKeeper`（默认）、`etcd`、`Nacos` 和内存注册中�
 | sessionTimeoutMilliseconds    | 否     |
 | connectionTimeoutMilliseconds | 否     |
 | digest                        | 否     |
+| ensembleTracker               | 否     |
 
 ## 作业配置
 

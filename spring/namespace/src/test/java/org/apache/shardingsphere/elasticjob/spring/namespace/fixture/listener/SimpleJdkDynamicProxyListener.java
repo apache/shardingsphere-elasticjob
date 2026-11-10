@@ -20,6 +20,7 @@ package org.apache.shardingsphere.elasticjob.spring.namespace.fixture.listener;
 import org.apache.shardingsphere.elasticjob.spi.listener.ElasticJobListener;
 import org.apache.shardingsphere.elasticjob.spi.listener.param.ShardingContexts;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -27,12 +28,21 @@ public class SimpleJdkDynamicProxyListener implements ElasticJobListener {
     
     @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-        assertThat(shardingContexts.getJobName(), is("simpleElasticJob_namespace_listener_jdk_proxy"));
+        assertThatJobName(shardingContexts);
     }
     
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
-        assertThat(shardingContexts.getJobName(), is("simpleElasticJob_namespace_listener_jdk_proxy"));
+        assertThatJobName(shardingContexts);
+    }
+    
+    /**
+     * SimpleJdkDynamicProxyListener is shared by the scheduled and one-off namespace listener tests.
+     *
+     * @param shardingContexts sharding contexts
+     */
+    private void assertThatJobName(final ShardingContexts shardingContexts) {
+        assertThat(shardingContexts.getJobName(), anyOf(is("simpleElasticJob_namespace_listener_jdk_proxy"), is("oneOffSimpleElasticJob_namespace_listener_jdk_proxy")));
     }
     
     @Override

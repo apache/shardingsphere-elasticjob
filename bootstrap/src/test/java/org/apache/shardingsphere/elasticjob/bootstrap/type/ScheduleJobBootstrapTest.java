@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import ch.qos.logback.classic.Level;
@@ -90,8 +89,7 @@ class ScheduleJobBootstrapTest {
         String jobName = "testTaskCaptureInterruptedTask" + shardingTotalCount;
         AtomicBoolean captured = new AtomicBoolean(false);
         AtomicBoolean running = new AtomicBoolean(false);
-        LocalTime magicTime = LocalTime.now().plusSeconds(2L);
-        String cronExpression = String.format("%d %d %d * * ?", magicTime.getSecond(), magicTime.getMinute(), magicTime.getHour());
+        String cronExpression = "0/1 * * * * ?";
         SimpleJob job = shardingContext -> {
             try {
                 running.set(true);

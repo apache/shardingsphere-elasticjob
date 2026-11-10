@@ -6,7 +6,7 @@ weight = 4
 Memory is a built-in in-process registry center implementation. It stores all data in a static `ConcurrentHashMap` and requires no external server.
 
 > Only for unit tests and local development in a single JVM.
-> data is neither persisted nor shared across processes, and leader election is JVM-local.
+> Data is neither persisted nor shared across processes, and leader election is JVM-local.
 
 Instances sharing the same namespace share the same in-memory data; different namespaces are isolated from each other.
 Ephemeral nodes are removed when the registry center instance that created them is closed.
@@ -52,6 +52,21 @@ public class MemoryRegistryCenterExample {
         registryCenter.close();
     }
 }
+```
+
+### Spring Boot Starter
+
+```yaml
+elasticjob:
+  reg-center:
+    type: memory
+    namespace: elasticjob
+```
+
+### Spring Namespace
+
+```xml
+<elasticjob:memory id="regCenter" namespace="elasticjob" />
 ```
 
 ### RegistryCenterFactory (SPI)

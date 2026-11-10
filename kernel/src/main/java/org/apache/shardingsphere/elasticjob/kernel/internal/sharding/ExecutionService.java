@@ -60,7 +60,11 @@ public final class ExecutionService {
         if (!jobConfig.isMonitorExecution()) {
             return;
         }
-        String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
+        JobInstance jobInstance = JobRegistry.getInstance().getJobInstance(jobName);
+        if (null == jobInstance) {
+            return;
+        }
+        String jobInstanceId = jobInstance.getJobInstanceId();
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             if (jobConfig.isFailover()) {
                 jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), jobInstanceId);

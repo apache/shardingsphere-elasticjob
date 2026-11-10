@@ -23,6 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 class OneOffJobSpringNamespaceWithListenerAndCglibTest extends AbstractOneOffJobSpringIntegrateTest {
     
     OneOffJobSpringNamespaceWithListenerAndCglibTest() {
-        super("simpleElasticJob_namespace_listener_cglib", "dataflowElasticJob_namespace_listener_cglib");
+        super("oneOffSimpleElasticJob_namespace_listener_cglib", "oneOffDataflowElasticJob_namespace_listener_cglib");
     }
 }

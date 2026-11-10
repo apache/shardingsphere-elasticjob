@@ -28,7 +28,7 @@ Nacos 是一个动态服务发现、配置和服务管理平台，ElasticJob 支
 |----------------|:-------|:------|:------------------------------------|
 | serverLists    | String |       | Nacos 服务器地址列表                     |
 | namespace      | String |       | ElasticJob 命名空间，映射为 Nacos 配置 group |
-| nacosNamespace | String |       | Nacos 租户（命名空间 ID），为空表示 `public`    |
+| tenant         | String |       | Nacos 租户（命名空间 ID），为空表示 `public`    |
 | username       | String |       | 认证用户名                               |
 | password       | String |       | 认证密码                                |
 | timeoutMs      | long   | 3000  | 配置操作超时毫秒数                          |
@@ -45,6 +45,11 @@ Nacos 是一个动态服务发现、配置和服务管理平台，ElasticJob 支
 **namespace:**
 
 ElasticJob 命名空间，映射为 Nacos 配置 group，用于隔离不同的作业集群。建议使用有意义的名称，如：`elasticjob`。
+
+**tenant:**
+
+Nacos 租户（命名空间 ID），用于隔离开发、测试、生产等不同环境，为空表示 `public`。
+注意它与 ElasticJob 的 `namespace` 不同，后者映射为 Nacos 配置 group。
 
 **username 和 password:**
 
@@ -80,6 +85,32 @@ public class NacosRegistryCenterExample {
         registryCenter.close();
     }
 }
+```
+
+### Spring Boot Starter
+
+```yaml
+elasticjob:
+  reg-center:
+    type: nacos
+    server-lists: nacos://127.0.0.1:8848,127.0.0.2:8848
+    namespace: elasticjob
+    tenant: ""
+    username: nacos
+    password: nacos
+    timeout-ms: 3000
+```
+
+### Spring Namespace
+
+```xml
+<elasticjob:nacos id="regCenter" 
+    server-lists="nacos://127.0.0.1:8848,127.0.0.2:8848" 
+    namespace="elasticjob"
+    tenant=""
+    username="nacos"
+    password="nacos"
+    timeout-ms="3000" />
 ```
 
 ### RegistryCenterFactory（SPI）

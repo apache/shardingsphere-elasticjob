@@ -43,14 +43,16 @@ public final class NacosConfiguration {
     private final String serverLists;
     
     /**
-     * Namespace, mapped to Nacos config group.
+     * Namespace, mapped to the Nacos config group rather than the Nacos tenant.
      */
     private final String namespace;
     
     /**
      * Nacos tenant (namespace id), empty means public.
+     *
+     * <p>Distinct from the ElasticJob {@code namespace}, which is mapped to the Nacos config group.</p>
      */
-    private String nacosNamespace = "";
+    private String tenant = "";
     
     /**
      * Username for authentication.
