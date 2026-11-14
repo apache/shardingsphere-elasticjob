@@ -75,3 +75,20 @@ jobs:
         run: ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -DskipTests -T1C
       - name: Run Tests with JDK 8
         run: JAVA_HOME=$JAVA_HOME_8_X64 ./mvnw --batch-mode --no-transfer-progress surefire:test -fae -T1C
+
+  build-spring-boot-4:
+    if: github.repository == 'apache/shardingsphere-elasticjob'
+    strategy:
+      matrix:
+        java: [ 17, 25 ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+          cache: 'maven'
+      - name: Run Spring Boot Starter tests with Spring Boot 4
+        run: ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' -Pspring-boot-4 -pl spring/boot-starter -am test -Dtest='org.apache.shardingsphere.elasticjob.spring.boot.**.*Test' -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false -T1C
