@@ -16,6 +16,10 @@ chapter = true
 
 命名空间：[http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd](http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd)
 
+## Spring Framework 兼容性
+
+命名空间模块以 Spring Framework 5.3 编译，并使用 Spring Boot 3.5 和 4.0 对应的 Spring Framework 6.2 和 7.0 进行测试。Spring Framework 6 和 7 要求 JDK 17 或更高版本。
+
 ## 注册中心配置
 
 \<elasticjob:zookeeper />

@@ -65,6 +65,7 @@ ElasticJob 已于 2020 年 5 月 28 日成为 [Apache ShardingSphere](https://sh
 
 请使用 Java 8 及其以上版本。
 Spring Boot Starter 以 Spring Boot 2.7 编译，支持 Spring Boot 2.7、3.5 和 4.0。Spring Boot 3 和 4 要求 Java 17 及其以上版本。
+Spring 命名空间模块以 Spring Framework 5.3 编译，支持 Spring Framework 5.3、6.2 和 7.0。Spring Framework 6 和 7 要求 Java 17 及其以上版本。
 
 ### Maven
 

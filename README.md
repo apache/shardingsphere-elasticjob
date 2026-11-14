@@ -70,6 +70,7 @@ It is a lightweight, decentralized solution that provides distributed task shard
 
 Java 8 or above required.
 The Spring Boot Starter is compiled against Spring Boot 2.7 and supports Spring Boot 2.7, 3.5 and 4.0. Spring Boot 3 and 4 require Java 17 or above.
+The Spring Namespace module is compiled against Spring Framework 5.3 and supports Spring Framework 5.3, 6.2 and 7.0. Spring Framework 6 and 7 require Java 17 or above.
 
 ### Maven
 
