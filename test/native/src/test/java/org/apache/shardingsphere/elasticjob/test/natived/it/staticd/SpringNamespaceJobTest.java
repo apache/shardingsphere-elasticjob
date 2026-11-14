@@ -59,7 +59,8 @@ class SpringNamespaceJobTest {
         jobBootstrap.execute();
         Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> job.getExecutionCount() == 1);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(applicationContext.getBean("elasticJobTracingDataSource", DataSource.class));
-        Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> jdbcTemplate.queryForObject("SELECT COUNT(*) FROM JOB_EXECUTION_LOG", Integer.class) > 0);
+        Awaitility.await().atMost(Duration.ofSeconds(60))
+                .until(() -> jdbcTemplate.queryForObject("SELECT COUNT(*) FROM JOB_EXECUTION_LOG WHERE job_name = ?", Integer.class, "namespaceNativeOneOffJob") > 0);
     }
     
     @Test
