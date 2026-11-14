@@ -69,17 +69,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
-    <profiles>
-        <profile>
-            <id>spring-boot-4</id>
-            <properties>
-                <spring-boot-dependencies.version>4.0.6</spring-boot-dependencies.version>
-                <spring-framework.version>7.0.7</spring-framework.version>
-                <!-- The root pom pins SLF4J and Logback explicitly, which takes precedence over the Spring Boot BOM; align them with Spring Boot 4.0.6. -->
-                <slf4j.version>2.0.17</slf4j.version>
-                <logback.version>1.5.32</logback.version>
-            </properties>
-        </profile>
-    </profiles>
 </project>

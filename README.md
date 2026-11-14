@@ -69,10 +69,12 @@ It is a lightweight, decentralized solution that provides distributed task shard
 ### Java
 
 Java 8 or above required.
+The Spring Boot Starter is compiled against Spring Boot 2.7 and supports Spring Boot 2.7, 3.5 and 4.0. Spring Boot 3 and 4 require Java 17 or above.
 
 ### Maven
 
 Maven 3.5.0 or above required.
+To build and test the Spring Boot Starter against Spring Boot 3.5 or 4.0, use the `spring-boot-3` or `spring-boot-4` Maven profile. Those profiles require Java 17 or above.
 
 ### ZooKeeper
 

@@ -14,6 +14,13 @@ chapter = true
 </dependency>
 ```
 
+## Spring Boot 兼容性
+
+Starter 以 Spring Boot 2.7 编译。同一套构件在 Spring Boot 2.7、3.5 和 4.0 上测试，应用无论运行在哪一条线上，都使用同一个依赖。
+
+- Spring Boot 2.7 要求 JDK 8 或更高版本。
+- Spring Boot 3.5 和 4.0 要求 JDK 17 或更高版本，与 Spring Boot 本身的要求一致。
+
 ## 注册中心配置
 
 配置前缀：`elasticjob.reg-center`

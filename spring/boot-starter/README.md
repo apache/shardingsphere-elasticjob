@@ -12,6 +12,9 @@
 </dependency>
 ```
 
+The starter is compiled against Spring Boot 2.7 and supports Spring Boot 2.7, 3.5 and 4.0 with the same artifacts.
+Spring Boot 3 and 4 require Java 17 or above.
+
 Tracing starter is optional.
 User can provide a bean of `TracingConfiguration` manually.
 ```xml
