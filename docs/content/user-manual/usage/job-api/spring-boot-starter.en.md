@@ -8,8 +8,8 @@ ElasticJob provides a customized Spring Boot Starter, which can be used in conju
 Developers are free from configuring CoordinatorRegistryCenter, JobBootstrap by using ElasticJob Spring Boot Starter.
 What developers need to solve distributed scheduling problem are job implementations with a little configuration.
 
-The following content is only demonstrated through Spring Boot 3. 
-The relevant content may still be valid on Spring Boot 2, but since Spring Boot 2 has ended maintenance, no availability assumptions are made for Spring Boot 2.
+The following content is demonstrated through Spring Boot 3. The same content applies to Spring Boot 2.7 and 4.0,
+see [Spring Boot Compatibility](/en/user-manual/configuration/spring-boot-starter/#spring-boot-compatibility).
 
 ## Job configuration
 

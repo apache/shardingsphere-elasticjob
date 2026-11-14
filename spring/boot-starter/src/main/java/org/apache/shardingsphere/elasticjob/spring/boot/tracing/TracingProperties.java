@@ -19,7 +19,6 @@ package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -34,7 +33,7 @@ public class TracingProperties {
     private String type;
     
     @NestedConfigurationProperty
-    private DataSourceProperties dataSource;
+    private TracingDataSourceProperties dataSource;
     
     private Set<String> includeJobNames = new HashSet<>();
     

@@ -13,6 +13,7 @@
 1. Registry Center: Support etcd as a registry center - [#2221](https://github.com/apache/shardingsphere-elasticjob/issues/2221)
 1. Registry Center: Supports Nacos and in-memory storage as the registry center - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
 1. Spring: Spring Boot Starter and Spring Namespace support etcd, Nacos and in-memory registry centers - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
+1. Spring: Spring Boot Starter supports Spring Boot 2.7, 3.5 and 4.0, and Spring Namespace supports Spring Framework 5.3, 6.2 and 7.0 - [#2506](https://github.com/apache/shardingsphere-elasticjob/issues/2506)
 1. Annotation: Complete Annotation Job support - [#1445](https://github.com/apache/shardingsphere-elasticjob/issues/1445)
 
 ### Bug Fixes
