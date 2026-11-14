@@ -61,7 +61,7 @@
         <!-- 3rd party library versions -->
         <shardingsphere.version>5.4.1</shardingsphere.version>
         
-        <guava.version>32.1.2-jre</guava.version>
+        <guava.version>33.7.1-jre</guava.version>
         <checker-qual.version>3.39.0</checker-qual.version>
         <error_prone_annotations.version>2.22.0</error_prone_annotations.version>
         <j2objc-annotations.version>1.3</j2objc-annotations.version>
