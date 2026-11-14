@@ -14,6 +14,16 @@ chapter = true
 </dependency>
 ```
 
+如果是 Spring-boot 4.x 请使用
+
+```xml
+<dependency>
+    <groupId>org.apache.shardingsphere.elasticjob</groupId>
+    <artifactId>elasticjob-spring-boot4-starter</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+
 ## 注册中心配置
 
 配置前缀：`elasticjob.reg-center`
