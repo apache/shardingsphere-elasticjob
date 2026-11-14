@@ -39,9 +39,12 @@ import static org.hamcrest.Matchers.is;
 /**
  * Verifies that jobs defined by the Spring Namespace run under GraalVM Native Image,
  * and that the one-off job writes its RDB tracing events.
+ *
+ * <p>The Spring Namespace defines its own tracing configuration, so the RDB tracing of the starter is disabled here.
+ * Otherwise the starter would find two {@code TracingConfiguration} beans while creating the jobs of {@code application.yml}.</p>
  */
 @DirtiesContext
-@SpringBootTest(classes = SpringNamespaceJobTest.TestApp.class)
+@SpringBootTest(classes = SpringNamespaceJobTest.TestApp.class, properties = "elasticjob.tracing.type=NONE")
 @EnabledInNativeImage
 class SpringNamespaceJobTest {
     
@@ -65,7 +68,7 @@ class SpringNamespaceJobTest {
         Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> job.getExecutionCount() > 0);
     }
     
-    @SpringBootApplication
+    @SpringBootApplication(scanBasePackages = "org.apache.shardingsphere.elasticjob.test.natived")
     @ImportResource("classpath:META-INF/native-namespace/job.xml")
     static class TestApp {
     }
