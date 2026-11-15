@@ -18,6 +18,7 @@
 package org.apache.shardingsphere.elasticjob.test.natived.it.staticd;
 
 import org.apache.shardingsphere.elasticjob.bootstrap.type.OneOffJobBootstrap;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeDataflowJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeSimpleJob;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -37,8 +38,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Verifies that jobs defined by the Spring Namespace run under GraalVM Native Image,
- * and that the one-off job writes its RDB tracing events.
+ * Verifies that jobs defined by the Spring Namespace run under GraalVM Native Image.
+ *
+ * <p>The one-off job and the script job write their RDB tracing events, and the scheduled dataflow job processes its data.</p>
  *
  * <p>The Spring Namespace defines its own tracing configuration, so the RDB tracing of the starter is disabled here.
  * Otherwise the starter would find two {@code TracingConfiguration} beans while creating the jobs of {@code application.yml}.</p>
@@ -67,6 +69,19 @@ class SpringNamespaceJobTest {
     void assertScheduledJob() {
         NamespaceNativeSimpleJob job = applicationContext.getBean("namespaceNativeScheduledJobImpl", NamespaceNativeSimpleJob.class);
         Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> job.getExecutionCount() > 0);
+    }
+    
+    @Test
+    void assertDataflowJob() {
+        NamespaceNativeDataflowJob job = applicationContext.getBean("namespaceNativeDataflowJobImpl", NamespaceNativeDataflowJob.class);
+        Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> job.getProcessCount() > 0);
+    }
+    
+    @Test
+    void assertScriptJobWithRdbTracing() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(applicationContext.getBean("elasticJobTracingDataSource", DataSource.class));
+        Awaitility.await().atMost(Duration.ofSeconds(60))
+                .until(() -> jdbcTemplate.queryForObject("SELECT COUNT(*) FROM JOB_EXECUTION_LOG WHERE job_name = ? AND is_success = 1", Integer.class, "namespaceNativeScriptJob") > 0);
     }
     
     @SpringBootApplication(scanBasePackages = "org.apache.shardingsphere.elasticjob.test.natived")

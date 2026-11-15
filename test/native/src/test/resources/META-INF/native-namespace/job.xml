@@ -24,21 +24,31 @@
                            http://shardingsphere.apache.org/schema/elasticjob
                            http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd
                            ">
-    <elasticjob:memory id="regCenter" namespace="elasticjob-test-native-namespace-job" />
-    
-    <bean id="elasticJobTracingDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.h2.Driver" />
-        <property name="jdbcUrl" value="jdbc:h2:mem:namespace_job_event_storage;DB_CLOSE_DELAY=-1" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
-    </bean>
-    <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
-    
-    <bean id="namespaceNativeOneOffJobImpl" class="org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeSimpleJob" />
-    <bean id="namespaceNativeScheduledJobImpl" class="org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeSimpleJob" />
-    
-    <elasticjob:job id="namespaceNativeOneOffJob" job-ref="namespaceNativeOneOffJobImpl" registry-center-ref="regCenter"
-             sharding-total-count="1" tracing-ref="elasticJobTrace" />
-    <elasticjob:job id="namespaceNativeScheduledJob" job-ref="namespaceNativeScheduledJobImpl" registry-center-ref="regCenter"
-             cron="0/1 * * * * ?" sharding-total-count="1" tracing-ref="elasticJobTrace" />
+     <elasticjob:memory id="regCenter" namespace="elasticjob-test-native-namespace-job" />
+     
+     <bean id="elasticJobTracingDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+         <property name="driverClassName" value="org.h2.Driver" />
+         <property name="jdbcUrl" value="jdbc:h2:mem:namespace_job_event_storage;DB_CLOSE_DELAY=-1" />
+         <property name="username" value="sa" />
+         <property name="password" value="" />
+     </bean>
+     <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
+     
+     <bean id="namespaceNativeOneOffJobImpl" class="org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeSimpleJob" />
+     <bean id="namespaceNativeScheduledJobImpl" class="org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeSimpleJob" />
+     <bean id="namespaceNativeDataflowJobImpl" class="org.apache.shardingsphere.elasticjob.test.natived.commons.job.namespace.NamespaceNativeDataflowJob" />
+     
+     <elasticjob:job id="namespaceNativeOneOffJob" job-ref="namespaceNativeOneOffJobImpl" registry-center-ref="regCenter"
+              sharding-total-count="1" tracing-ref="elasticJobTrace" />
+     <elasticjob:job id="namespaceNativeScheduledJob" job-ref="namespaceNativeScheduledJobImpl" registry-center-ref="regCenter"
+              cron="0/1 * * * * ?" sharding-total-count="1" tracing-ref="elasticJobTrace" />
+     <elasticjob:job id="namespaceNativeDataflowJob" job-ref="namespaceNativeDataflowJobImpl" registry-center-ref="regCenter"
+              cron="0/1 * * * * ?" sharding-total-count="1" tracing-ref="elasticJobTrace" />
+     <!-- echo is resolved from PATH, so this job does not depend on the working directory of the native test binary. -->
+     <elasticjob:job id="namespaceNativeScriptJob" job-type="SCRIPT" registry-center-ref="regCenter"
+              cron="0/1 * * * * ?" sharding-total-count="1" tracing-ref="elasticJobTrace">
+         <props>
+             <prop key="script.command.line">echo Namespace SCRIPT Job:</prop>
+         </props>
+     </elasticjob:job>
 </beans>
