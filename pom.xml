@@ -53,6 +53,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
+        <!-- Spring AOT generates code that uses Java 9+ APIs (for example Map.of), so the native test module compiles with this release -->
+        <native.java.version>17</native.java.version>
         <maven.version.range>[3.5.0,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.deploy.skip>false</maven.deploy.skip>
