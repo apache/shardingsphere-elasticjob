@@ -24,9 +24,9 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -37,9 +37,12 @@ import static org.hamcrest.Matchers.is;
 
 /**
  * Verifies that jobs registered by the Spring Namespace {@code elasticjob:job-scanner} tag run under GraalVM Native Image.
+ *
+ * <p>The context has no auto-configuration and no web environment, as in {@link AnnotationSpringBootTest},
+ * because only the registration of the scanned jobs is under test.</p>
  */
 @DirtiesContext
-@SpringBootTest(classes = SpringNamespaceJobScannerTest.TestApp.class)
+@SpringBootTest(classes = SpringNamespaceJobScannerTest.TestApp.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EnabledInNativeImage
 class SpringNamespaceJobScannerTest {
     
@@ -61,7 +64,7 @@ class SpringNamespaceJobScannerTest {
         Awaitility.await().atMost(Duration.ofSeconds(60)).until(() -> job.getExecutionCount() == 1);
     }
     
-    @SpringBootApplication(scanBasePackages = "org.apache.shardingsphere.elasticjob.test.natived")
+    @Configuration(proxyBeanMethods = false)
     @ImportResource("classpath:META-INF/native-namespace/job-scanner.xml")
     static class TestApp {
     }
