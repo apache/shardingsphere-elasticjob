@@ -1,0 +1,7 @@
+[
+  {
+    "name": "org.apache.shardingsphere.elasticjob.test.natived.commons.job.executor.NativeCustomJobExecutor",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  }
+]
