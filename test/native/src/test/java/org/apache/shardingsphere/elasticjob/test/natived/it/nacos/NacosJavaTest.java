@@ -29,8 +29,10 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.nacos.NacosConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.nacos.NacosRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.http.LocalHttpServer;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.tracing.TracingAssertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,6 +43,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -60,12 +63,14 @@ class NacosJavaTest {
     
     private static TracingConfiguration<DataSource> tracingConfig;
     
+    private static DataSource tracingDataSource;
+    
     /**
      * The Nacos client derives the gRPC port as HTTP port + offset (1000 by default).
      * Testcontainers maps ports to random host ports, so the actual offset must be configured.
      */
     @BeforeAll
-    static void beforeAll() {
+    static void beforeAll() throws IOException {
         nacosContainer = new GenericContainer<>(DockerImageName.parse("nacos/nacos-server:v3.2.4"))
                 .withExposedPorts(CONTAINER_HTTP_PORT, CONTAINER_GRPC_PORT)
                 .withEnv("MODE", "standalone")
@@ -88,11 +93,14 @@ class NacosJavaTest {
         config.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         config.setUsername("sa");
         config.setPassword("");
-        tracingConfig = new TracingConfiguration<>("RDB", new HikariDataSource(config));
+        tracingDataSource = new HikariDataSource(config);
+        tracingConfig = new TracingConfiguration<>("RDB", tracingDataSource);
+        LocalHttpServer.start();
     }
     
     @AfterAll
     static void afterAll() {
+        LocalHttpServer.stop();
         if (null != regCenter) {
             regCenter.close();
         }
@@ -123,16 +131,19 @@ class NacosJavaTest {
     void testHttpJob() {
         ScheduleJobBootstrap jobBootstrap = new ScheduleJobBootstrap(regCenter, "HTTP",
                 JobConfiguration.newBuilder("testNacosJavaHttpJob", 3)
-                        .setProperty(HttpJobProperties.URI_KEY, "https://www.apache.org")
+                        .setProperty(HttpJobProperties.URI_KEY, LocalHttpServer.jobUri("testNacosJavaHttpJob"))
                         .setProperty(HttpJobProperties.METHOD_KEY, "GET")
                         .cron("0/5 * * * * ?")
                         .shardingItemParameters("0=Norddorf,1=Bordeaux,2=Somerset")
                         .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            LocalHttpServer.awaitRequest("testNacosJavaHttpJob");
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "testNacosJavaHttpJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
     
     @Test
@@ -182,10 +193,13 @@ class NacosJavaTest {
                 JobConfiguration.newBuilder("testNacosScriptElasticJob", 3)
                         .cron("0/5 * * * * ?")
                         .setProperty(ScriptJobProperties.SCRIPT_KEY, Paths.get("src/test/resources/test-native/sh/demo.sh").toString())
+                        .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "testNacosScriptElasticJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
 }

@@ -140,6 +140,9 @@
                     </agent>
                     <buildArgs>
                         <arg>--initialize-at-run-time=io.grpc.netty.shaded.io.netty</arg>
+                        <!-- HTTP job tests call a local server built on com.sun.net.httpserver, which needs the http URL protocol and the jdk.httpserver module. -->
+                        <arg>--enable-url-protocols=http</arg>
+                        <arg>--add-modules=jdk.httpserver</arg>
                     </buildArgs>
                     <metadataRepository>
                         <enabled>true</enabled>

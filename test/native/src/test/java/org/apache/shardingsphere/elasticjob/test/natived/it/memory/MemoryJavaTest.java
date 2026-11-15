@@ -29,14 +29,17 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.memory.MemoryConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.memory.MemoryRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.http.LocalHttpServer;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.tracing.TracingAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledInNativeImage;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -48,8 +51,10 @@ class MemoryJavaTest {
     
     private static TracingConfiguration<DataSource> tracingConfig;
     
+    private static DataSource tracingDataSource;
+    
     @BeforeAll
-    static void beforeAll() {
+    static void beforeAll() throws IOException {
         regCenter = new MemoryRegistryCenter(new MemoryConfiguration("elasticjob-test-native-memory-java"));
         regCenter.init();
         HikariConfig config = new HikariConfig();
@@ -57,11 +62,14 @@ class MemoryJavaTest {
         config.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         config.setUsername("sa");
         config.setPassword("");
-        tracingConfig = new TracingConfiguration<>("RDB", new HikariDataSource(config));
+        tracingDataSource = new HikariDataSource(config);
+        tracingConfig = new TracingConfiguration<>("RDB", tracingDataSource);
+        LocalHttpServer.start();
     }
     
     @AfterAll
     static void afterAll() {
+        LocalHttpServer.stop();
         if (null != regCenter) {
             regCenter.close();
         }
@@ -71,16 +79,19 @@ class MemoryJavaTest {
     void testHttpJob() {
         ScheduleJobBootstrap jobBootstrap = new ScheduleJobBootstrap(regCenter, "HTTP",
                 JobConfiguration.newBuilder("testMemoryJavaHttpJob", 3)
-                        .setProperty(HttpJobProperties.URI_KEY, "https://www.apache.org")
+                        .setProperty(HttpJobProperties.URI_KEY, LocalHttpServer.jobUri("testMemoryJavaHttpJob"))
                         .setProperty(HttpJobProperties.METHOD_KEY, "GET")
                         .cron("0/5 * * * * ?")
                         .shardingItemParameters("0=Norddorf,1=Bordeaux,2=Somerset")
                         .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            LocalHttpServer.awaitRequest("testMemoryJavaHttpJob");
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "testMemoryJavaHttpJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
     
     @Test
@@ -130,10 +141,13 @@ class MemoryJavaTest {
                 JobConfiguration.newBuilder("testMemoryScriptElasticJob", 3)
                         .cron("0/5 * * * * ?")
                         .setProperty(ScriptJobProperties.SCRIPT_KEY, Paths.get("src/test/resources/test-native/sh/demo.sh").toString())
+                        .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "testMemoryScriptElasticJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
 }
