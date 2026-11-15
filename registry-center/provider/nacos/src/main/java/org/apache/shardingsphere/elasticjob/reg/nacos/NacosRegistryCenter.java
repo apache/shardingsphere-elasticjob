@@ -69,6 +69,13 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
     
+    /**
+     * Placeholder of an empty value.
+     *
+     * <p>Nacos rejects config content that is empty, so an empty value is published as this placeholder and read back as an empty value.</p>
+     */
+    static final String EMPTY_VALUE_PLACEHOLDER = "__elasticjob_empty_value__";
+    
     private static final long FUZZY_LIST_TIMEOUT_SECONDS = 10L;
     
     private static final Map<String, ReentrantLock> LEADER_LOCKS = new ConcurrentHashMap<>();
@@ -182,7 +189,7 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             return null;
         }
         try {
-            return configService.getConfig(toDataId(normalized), getGroup(), nacosConfig.getTimeoutMs());
+            return toLogicalValue(configService.getConfig(toDataId(normalized), getGroup(), nacosConfig.getTimeoutMs()));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -269,7 +276,7 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         }
         try {
             String content = null == value ? "" : value;
-            publishAndVerify(toDataId(normalized), getGroup(), content);
+            publishAndVerify(toDataId(normalized), getGroup(), toStoredContent(content));
             refreshCacheIfWatched(normalized, content);
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
@@ -386,24 +393,23 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         String normalized = normalizeKey(cachePath);
         String prefix = "/".equals(normalized) ? "/" : normalized + "/";
         String encodedPrefix = "/".equals(normalized) ? "" : toDataId(normalized);
-        NacosCacheWatch previous = cacheWatches.remove(prefix);
-        if (null != previous) {
-            previous.close();
-        }
         NacosCacheWatch watch = new NacosCacheWatch(prefix, encodedPrefix);
         try {
-            for (String dataId : listDataIds(encodedPrefix)) {
+            for (String dataId : watch.startFuzzyWatch()) {
                 String originalKey = toOriginalKey(dataId);
                 if (!originalKey.startsWith(prefix) && !"/".equals(prefix)) {
                     continue;
                 }
                 String content = configService.getConfig(dataId, getGroup(), nacosConfig.getTimeoutMs());
                 if (null != content) {
-                    cache.put(originalKey, content);
+                    cache.put(originalKey, toLogicalValue(content));
                     watch.addContentListener(dataId, originalKey);
                 }
             }
-            watch.startFuzzyWatch();
+            NacosCacheWatch previous = cacheWatches.remove(prefix);
+            if (null != previous) {
+                previous.close();
+            }
             if (!closed) {
                 cacheWatches.put(prefix, watch);
             } else {
@@ -543,7 +549,20 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         String pattern = null == encodedPrefix || encodedPrefix.isEmpty() ? "*" : encodedPrefix + ".*";
         String group = getGroup();
         NoopFuzzyWatcher watcher = new NoopFuzzyWatcher();
-        Future<Set<String>> future = configService.fuzzyWatchWithGroupKeys(pattern, group, watcher);
+        try {
+            return awaitDataIds(configService.fuzzyWatchWithGroupKeys(pattern, group, watcher));
+        } finally {
+            try {
+                configService.cancelFuzzyWatch(pattern, group, watcher);
+                // CHECKSTYLE:OFF
+            } catch (final Exception ignored) {
+                // CHECKSTYLE:ON
+                log.debug("Elastic job: failed to cancel nacos fuzzy watch for pattern: {}.", pattern);
+            }
+        }
+    }
+    
+    private List<String> awaitDataIds(final Future<Set<String>> future) throws NacosException {
         try {
             Set<String> groupKeys = future.get(FUZZY_LIST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             if (null == groupKeys || groupKeys.isEmpty()) {
@@ -570,14 +589,6 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
             throw new NacosException(-400, "Failed to list Nacos configs.", ex);
-        } finally {
-            try {
-                configService.cancelFuzzyWatch(pattern, group, watcher);
-                // CHECKSTYLE:OFF
-            } catch (final Exception ignored) {
-                // CHECKSTYLE:ON
-                log.debug("Elastic job: failed to cancel nacos fuzzy watch for pattern: {}.", pattern);
-            }
         }
     }
     
@@ -640,6 +651,14 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         return 0 == result.length() ? "/" : result.toString();
     }
     
+    private static String toStoredContent(final String value) {
+        return Strings.isNullOrEmpty(value) ? EMPTY_VALUE_PLACEHOLDER : value;
+    }
+    
+    private static String toLogicalValue(final String storedContent) {
+        return EMPTY_VALUE_PLACEHOLDER.equals(storedContent) ? "" : storedContent;
+    }
+    
     private static String padBase64(final String value) {
         String result = value;
         int padding = result.length() % 4;
@@ -673,7 +692,7 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             this.encodedPrefix = encodedPrefix;
         }
         
-        void addContentListener(final String dataId, final String originalKey) throws NacosException {
+        boolean addContentListener(final String dataId, final String originalKey) throws NacosException {
             Listener listener = new Listener() {
                 
                 @Override
@@ -686,15 +705,24 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
                     if (null == content) {
                         cache.remove(originalKey);
                     } else {
-                        cache.put(originalKey, content);
+                        cache.put(originalKey, toLogicalValue(content));
                     }
                 }
             };
-            configService.addListener(dataId, getGroup(), listener);
-            contentListeners.put(dataId, listener);
+            // The listing and the fuzzy watch events may both reach the same data ID, so only one listener is kept.
+            if (null != contentListeners.putIfAbsent(dataId, listener)) {
+                return false;
+            }
+            try {
+                configService.addListener(dataId, getGroup(), listener);
+            } catch (final NacosException ex) {
+                contentListeners.remove(dataId, listener);
+                throw ex;
+            }
+            return true;
         }
         
-        void startFuzzyWatch() throws NacosException {
+        List<String> startFuzzyWatch() throws NacosException {
             String pattern = encodedPrefix.isEmpty() ? "*" : encodedPrefix + ".*";
             FuzzyWatchEventWatcher watcher = new AbstractFuzzyWatchEventWatcher() {
                 
@@ -703,8 +731,9 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
                     handleFuzzyEvent(event);
                 }
             };
-            configService.fuzzyWatch(pattern, getGroup(), watcher);
+            Future<Set<String>> future = configService.fuzzyWatchWithGroupKeys(pattern, getGroup(), watcher);
             fuzzyWatcher = watcher;
+            return awaitDataIds(future);
         }
         
         void handleFuzzyEvent(final ConfigFuzzyWatchChangeEvent event) {
@@ -730,10 +759,8 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
                 if (null == content) {
                     cache.remove(originalKey);
                 } else {
-                    cache.put(originalKey, content);
-                    if (!contentListeners.containsKey(event.getDataId())) {
-                        addContentListener(event.getDataId(), originalKey);
-                    }
+                    cache.put(originalKey, toLogicalValue(content));
+                    addContentListener(event.getDataId(), originalKey);
                 }
                 // CHECKSTYLE:OFF
             } catch (final Exception ex) {
@@ -786,12 +813,6 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
         void start() throws NacosException {
             String normalizedPrefix = "/".equals(watchedKey) ? "/" : watchedKey + "/";
             String encodedPrefix = "/".equals(watchedKey) ? "" : toDataId(watchedKey);
-            for (String dataId : listDataIds(encodedPrefix)) {
-                String originalKey = toOriginalKey(dataId);
-                if (originalKey.startsWith(normalizedPrefix)) {
-                    addContentListener(dataId, originalKey);
-                }
-            }
             String pattern = encodedPrefix.isEmpty() ? "*" : encodedPrefix + ".*";
             FuzzyWatchEventWatcher watcher = new AbstractFuzzyWatchEventWatcher() {
                 
@@ -800,11 +821,20 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
                     handleFuzzyEvent(event, normalizedPrefix);
                 }
             };
-            configService.fuzzyWatch(pattern, getGroup(), watcher);
+            // Subscribe once and keep the subscription. Cancelling a listing of the same pattern while
+            // no other watcher is registered races with the new subscription, and the Nacos server then
+            // stops pushing the changes of the pattern.
+            Future<Set<String>> future = configService.fuzzyWatchWithGroupKeys(pattern, getGroup(), watcher);
             fuzzyWatcher = watcher;
+            for (String dataId : awaitDataIds(future)) {
+                String originalKey = toOriginalKey(dataId);
+                if (originalKey.startsWith(normalizedPrefix)) {
+                    addContentListener(dataId, originalKey);
+                }
+            }
         }
         
-        void addContentListener(final String dataId, final String originalKey) throws NacosException {
+        boolean addContentListener(final String dataId, final String originalKey) throws NacosException {
             Listener contentListener = new Listener() {
                 
                 @Override
@@ -814,11 +844,20 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
                 
                 @Override
                 public void receiveConfigInfo(final String content) {
-                    dispatch(new DataChangedEvent(Type.UPDATED, originalKey, null == content ? "" : content));
+                    dispatch(new DataChangedEvent(Type.UPDATED, originalKey, null == content ? "" : toLogicalValue(content)));
                 }
             };
-            configService.addListener(dataId, getGroup(), contentListener);
-            contentListeners.put(dataId, contentListener);
+            // The listing and the fuzzy watch events may both reach the same data ID, so only one listener is kept.
+            if (null != contentListeners.putIfAbsent(dataId, contentListener)) {
+                return false;
+            }
+            try {
+                configService.addListener(dataId, getGroup(), contentListener);
+            } catch (final NacosException ex) {
+                contentListeners.remove(dataId, contentListener);
+                throw ex;
+            }
+            return true;
         }
         
         void handleFuzzyEvent(final ConfigFuzzyWatchChangeEvent event, final String normalizedPrefix) {
@@ -841,11 +880,8 @@ public final class NacosRegistryCenter implements CoordinatorRegistryCenter {
             }
             try {
                 String content = configService.getConfig(event.getDataId(), getGroup(), nacosConfig.getTimeoutMs());
-                boolean isNew = !contentListeners.containsKey(event.getDataId());
-                if (isNew) {
-                    addContentListener(event.getDataId(), originalKey);
-                }
-                dispatch(new DataChangedEvent(isNew ? Type.ADDED : Type.UPDATED, originalKey, null == content ? "" : content));
+                boolean isNew = addContentListener(event.getDataId(), originalKey);
+                dispatch(new DataChangedEvent(isNew ? Type.ADDED : Type.UPDATED, originalKey, null == content ? "" : toLogicalValue(content)));
                 // CHECKSTYLE:OFF
             } catch (final Exception ex) {
                 // CHECKSTYLE:ON
