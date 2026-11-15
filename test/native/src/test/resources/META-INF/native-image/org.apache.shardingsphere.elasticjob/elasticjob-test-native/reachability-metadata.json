@@ -1,0 +1,20 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"
+      },
+      "type": "org.apache.shardingsphere.elasticjob.test.natived.commons.job.executor.NativeCustomJobExecutor",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.apache.shardingsphere.elasticjob.kernel.executor.ElasticJobExecutor"
+      },
+      "glob": "META-INF/services/org.apache.shardingsphere.elasticjob.spi.executor.item.type.TypedJobItemExecutor"
+    }
+  ]
+}
