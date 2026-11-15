@@ -24,6 +24,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.core.NativeDetector;
 import org.springframework.util.Assert;
 
 /**
@@ -49,6 +50,9 @@ public class JobScannerConfiguration implements BeanDefinitionRegistryPostProces
     @Override
     public void postProcessBeanDefinitionRegistry(final BeanDefinitionRegistry registry) throws BeansException {
         ClassPathJobScanner classPathJobScanner = new ClassPathJobScanner(registry);
+        // Registering the annotation config processors at native image runtime would parse the configuration classes again,
+        // which cannot read the class files of the auto configuration there.
+        classPathJobScanner.setIncludeAnnotationConfig(!NativeDetector.inNativeImage());
         classPathJobScanner.scan(basePackages);
     }
     
