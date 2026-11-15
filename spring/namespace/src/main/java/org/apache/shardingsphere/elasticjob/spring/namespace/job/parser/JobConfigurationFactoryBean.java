@@ -22,10 +22,8 @@ import org.apache.shardingsphere.elasticjob.api.JobConfiguration;
 import org.apache.shardingsphere.elasticjob.api.JobExtraConfiguration;
 import org.springframework.beans.factory.FactoryBean;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Properties;
 
 /**
  * Factory bean of {@link JobConfiguration} defined by the Spring Namespace.
@@ -64,13 +62,13 @@ public final class JobConfigurationFactoryBean implements FactoryBean<JobConfigu
     
     private String jobErrorHandlerType;
     
-    private Collection<String> jobListenerTypes = new ArrayList<>();
+    private String[] jobListenerTypes = new String[0];
     
     private Collection<JobExtraConfiguration> extraConfigurations = new LinkedList<>();
     
     private String description;
     
-    private Properties props = new Properties();
+    private String[] propertyKeyValues = new String[0];
     
     private boolean disabled;
     
@@ -97,7 +95,7 @@ public final class JobConfigurationFactoryBean implements FactoryBean<JobConfigu
                 .jobShardingStrategyType(jobShardingStrategyType)
                 .jobExecutorThreadPoolSizeProviderType(jobExecutorThreadPoolSizeProviderType)
                 .jobErrorHandlerType(jobErrorHandlerType)
-                .jobListenerTypes(jobListenerTypes.toArray(new String[0]))
+                .jobListenerTypes(jobListenerTypes)
                 .description(description)
                 .disabled(disabled)
                 .overwrite(overwrite)
@@ -105,8 +103,8 @@ public final class JobConfigurationFactoryBean implements FactoryBean<JobConfigu
                 .staticSharding(staticSharding)
                 .maxWaitMillis(maxWaitMillis);
         extraConfigurations.forEach(result::addExtraConfigurations);
-        for (String each : props.stringPropertyNames()) {
-            result.setProperty(each, props.getProperty(each));
+        for (int i = 0; i < propertyKeyValues.length; i += 2) {
+            result.setProperty(propertyKeyValues[i], propertyKeyValues[i + 1]);
         }
         return result.build();
     }

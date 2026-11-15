@@ -23,6 +23,7 @@ import org.apache.shardingsphere.elasticjob.bootstrap.type.ScheduleJobBootstrap;
 import org.apache.shardingsphere.elasticjob.spring.namespace.job.tag.JobBeanDefinitionTag;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
@@ -32,7 +33,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Job bean definition parser.
@@ -65,6 +68,9 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
      * <p>The configuration is built by {@link JobConfigurationFactoryBean} from property values only,
      * because Spring AOT cannot process the constructor arguments of {@code JobConfiguration}.</p>
      *
+     * <p>Lists and maps are passed as arrays. Spring AOT generates immutable lists and maps for them, and the placeholder
+     * configurer cannot replace the placeholders in an immutable list or map, but it can replace the elements of an array.</p>
+     *
      * @param element job element
      * @param parserContext parser context
      * @return bean definition of job configuration
@@ -96,7 +102,7 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         result.addPropertyValue("description", element.getAttribute(JobBeanDefinitionTag.DESCRIPTION_ATTRIBUTE));
         Element propsElement = DomUtils.getChildElementByTagName(element, JobBeanDefinitionTag.PROPS_TAG);
         if (null != propsElement) {
-            result.addPropertyValue("props", parserContext.getDelegate().parsePropsElement(propsElement));
+            result.addPropertyValue("propertyKeyValues", parsePropertyKeyValues(propsElement, parserContext));
         }
         result.addPropertyValue("disabled", element.getAttribute(JobBeanDefinitionTag.DISABLED_ATTRIBUTE));
         result.addPropertyValue("overwrite", element.getAttribute(JobBeanDefinitionTag.OVERWRITE_ATTRIBUTE));
@@ -106,13 +112,18 @@ public final class JobBeanDefinitionParser extends AbstractBeanDefinitionParser 
         return result.getBeanDefinition();
     }
     
-    private ManagedList<String> parseJobListenerTypes(final Element element) {
-        ManagedList<String> result = new ManagedList<>();
+    private String[] parseJobListenerTypes(final Element element) {
         String jobListenerTypes = element.getAttribute(JobBeanDefinitionTag.JOB_LISTENER_TYPES_ATTRIBUTE);
-        if (!ObjectUtils.isEmpty(jobListenerTypes.trim())) {
-            result.addAll(Arrays.asList(jobListenerTypes.split(",")));
+        return ObjectUtils.isEmpty(jobListenerTypes.trim()) ? new String[0] : jobListenerTypes.split(",");
+    }
+    
+    private String[] parsePropertyKeyValues(final Element propsElement, final ParserContext parserContext) {
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<Object, Object> each : parserContext.getDelegate().parsePropsElement(propsElement).entrySet()) {
+            result.add(((TypedStringValue) each.getKey()).getValue());
+            result.add(((TypedStringValue) each.getValue()).getValue());
         }
-        return result;
+        return result.toArray(new String[0]);
     }
     
     private ManagedList<RuntimeBeanReference> parseExtraConfigs(final String[] extraConfigRefs, final Element element) {

@@ -45,21 +45,11 @@ public final class LocalHttpServer {
      *
      * @throws IOException I/O exception
      */
-    public static void start() throws IOException {
-        start(0);
-    }
-    
-    /**
-     * Start the server on a port of the loopback address. Starting a started server does nothing.
-     *
-     * @param port port, 0 for a free port
-     * @throws IOException I/O exception
-     */
-    public static synchronized void start(final int port) throws IOException {
+    public static synchronized void start() throws IOException {
         if (null != httpServer) {
             return;
         }
-        httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
+        httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         httpServer.createContext("/", exchange -> {
             REQUESTED_PATHS.add(exchange.getRequestURI().getPath());
             exchange.getRequestBody().readAllBytes();
