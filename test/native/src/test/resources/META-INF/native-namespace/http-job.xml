@@ -34,10 +34,11 @@
     </bean>
     <elasticjob:rdb-tracing id="elasticJobTrace" data-source-ref="elasticJobTracingDataSource" />
     
+    <!-- The URI is a literal on the port of SpringNamespaceHttpJobTest.PORT. A placeholder cannot be resolved in the properties of a namespace job in the native context. -->
     <elasticjob:job id="namespaceNativeHttpJob" job-type="HTTP" registry-center-ref="regCenter"
              cron="0/1 * * * * ?" sharding-total-count="1" tracing-ref="elasticJobTrace">
         <props>
-            <prop key="http.uri">${http.job.uri}</prop>
+            <prop key="http.uri">http://127.0.0.1:18770/namespaceNativeHttpJob</prop>
             <prop key="http.method">POST</prop>
             <prop key="http.data">namespace-http-data</prop>
             <prop key="http.content.type">text/plain</prop>

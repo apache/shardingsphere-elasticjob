@@ -26,15 +26,12 @@ import org.junit.jupiter.api.condition.EnabledInNativeImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Verifies that a job defined by the Spring Namespace with {@code job-type} as {@code HTTP} sends its requests
@@ -42,18 +39,22 @@ import java.util.Properties;
  *
  * <p>The context has no auto-configuration and no web environment, as in {@link AnnotationSpringBootTest},
  * because only the namespace job and its tracing are under test.</p>
+ *
+ * <p>The job sends its requests to the port {@link #PORT} that its job definition names.</p>
  */
 @DirtiesContext
 @SpringBootTest(classes = SpringNamespaceHttpJobTest.TestApp.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @EnabledInNativeImage
 class SpringNamespaceHttpJobTest {
     
+    private static final int PORT = 18770;
+    
     @Autowired
     private ApplicationContext applicationContext;
     
     @BeforeAll
     static void beforeAll() throws IOException {
-        LocalHttpServer.start();
+        LocalHttpServer.start(PORT);
     }
     
     @AfterAll
@@ -70,23 +71,5 @@ class SpringNamespaceHttpJobTest {
     @Configuration(proxyBeanMethods = false)
     @ImportResource("classpath:META-INF/native-namespace/http-job.xml")
     static class TestApp {
-        
-        /**
-         * The AOT build phase instantiates this post-processor as well. The URI of the job is only resolved
-         * when the tests actually execute (native image), so that no stale address is baked into the generated context.
-         *
-         * @return property sources placeholder configurer
-         */
-        @Bean
-        static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-            PropertySourcesPlaceholderConfigurer result = new PropertySourcesPlaceholderConfigurer();
-            result.setIgnoreUnresolvablePlaceholders(true);
-            if (null != System.getProperty("org.graalvm.nativeimage.imagecode")) {
-                Properties props = new Properties();
-                props.setProperty("http.job.uri", LocalHttpServer.jobUri("namespaceNativeHttpJob"));
-                result.setProperties(props);
-            }
-            return result;
-        }
     }
 }
