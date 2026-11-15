@@ -16,6 +16,11 @@ To use the Spring namespace, user need to add the dependency of the `elasticjob-
 
 Spring namespace: [http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd](http://shardingsphere.apache.org/schema/elasticjob/elasticjob.xsd)
 
+## Spring Framework Compatibility
+
+The namespace module is compiled against Spring Framework 5.3, and it is tested with Spring Framework 6.2 and 7.0,
+the Spring Framework versions of Spring Boot 3.5 and 4.0. Spring Framework 6 and 7 require JDK 17 or above.
+
 ## Registry Center Configuration
 
 \<elasticjob:zookeeper />

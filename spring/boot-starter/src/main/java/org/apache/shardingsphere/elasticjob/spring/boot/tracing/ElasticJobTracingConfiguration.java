@@ -19,10 +19,8 @@ package org.apache.shardingsphere.elasticjob.spring.boot.tracing;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.shardingsphere.elasticjob.kernel.tracing.config.TracingConfiguration;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,13 +47,15 @@ public class ElasticJobTracingConfiguration {
          */
         @Bean("tracingDataSource")
         public DataSource tracingDataSource(final TracingProperties tracingProperties) {
-            DataSourceProperties dataSource = tracingProperties.getDataSource();
+            TracingDataSourceProperties dataSource = tracingProperties.getDataSource();
             if (dataSource == null) {
                 return null;
             }
             HikariDataSource tracingDataSource = new HikariDataSource();
             tracingDataSource.setJdbcUrl(dataSource.getUrl());
-            BeanUtils.copyProperties(dataSource, tracingDataSource);
+            tracingDataSource.setUsername(dataSource.getUsername());
+            tracingDataSource.setPassword(dataSource.getPassword());
+            tracingDataSource.setDriverClassName(dataSource.getDriverClassName());
             return tracingDataSource;
         }
         

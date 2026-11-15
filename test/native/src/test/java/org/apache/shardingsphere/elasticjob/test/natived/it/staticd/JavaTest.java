@@ -32,8 +32,10 @@ import org.apache.shardingsphere.elasticjob.reg.base.CoordinatorRegistryCenter;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperConfiguration;
 import org.apache.shardingsphere.elasticjob.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.shardingsphere.elasticjob.script.props.ScriptJobProperties;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.http.LocalHttpServer;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.dataflow.JavaDataflowJob;
 import org.apache.shardingsphere.elasticjob.test.natived.commons.job.simple.JavaSimpleJob;
+import org.apache.shardingsphere.elasticjob.test.natived.commons.tracing.TracingAssertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,6 +60,8 @@ class JavaTest {
     
     private static TracingConfiguration<DataSource> tracingConfig;
     
+    private static DataSource tracingDataSource;
+    
     @BeforeAll
     static void beforeAll() throws Exception {
         testingServer = new TestingServer();
@@ -75,11 +79,14 @@ class JavaTest {
         config.setJdbcUrl("jdbc:h2:mem:job_event_storage");
         config.setUsername("sa");
         config.setPassword("");
-        tracingConfig = new TracingConfiguration<>("RDB", new HikariDataSource(config));
+        tracingDataSource = new HikariDataSource(config);
+        tracingConfig = new TracingConfiguration<>("RDB", tracingDataSource);
+        LocalHttpServer.start();
     }
     
     @AfterAll
     static void afterAll() throws IOException {
+        LocalHttpServer.stop();
         regCenter.close();
         testingServer.close();
     }
@@ -88,16 +95,19 @@ class JavaTest {
     void testHttpJob() {
         ScheduleJobBootstrap jobBootstrap = new ScheduleJobBootstrap(regCenter, "HTTP",
                 JobConfiguration.newBuilder("testJavaHttpJob", 3)
-                        .setProperty(HttpJobProperties.URI_KEY, "https://www.apache.org")
+                        .setProperty(HttpJobProperties.URI_KEY, LocalHttpServer.jobUri("testJavaHttpJob"))
                         .setProperty(HttpJobProperties.METHOD_KEY, "GET")
                         .cron("0/5 * * * * ?")
                         .shardingItemParameters("0=Norddorf,1=Bordeaux,2=Somerset")
                         .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            LocalHttpServer.awaitRequest("testJavaHttpJob");
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "testJavaHttpJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
     
     @Test
@@ -151,9 +161,11 @@ class JavaTest {
                         .setProperty(ScriptJobProperties.SCRIPT_KEY, Paths.get("src/test/resources/test-native/sh/demo.sh").toString())
                         .addExtraConfigurations(tracingConfig)
                         .build());
-        assertDoesNotThrow(() -> {
-            jobBootstrap.schedule();
+        assertDoesNotThrow(jobBootstrap::schedule);
+        try {
+            TracingAssertions.awaitSuccessfulExecution(tracingDataSource, "scriptElasticJob");
+        } finally {
             jobBootstrap.shutdown();
-        });
+        }
     }
 }

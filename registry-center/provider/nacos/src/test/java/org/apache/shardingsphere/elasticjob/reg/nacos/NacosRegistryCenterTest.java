@@ -55,6 +55,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -232,7 +233,7 @@ class NacosRegistryCenterTest {
         List<DataChangedEvent> events = new CopyOnWriteArrayList<>();
         registryCenter.watch("/job", events::add, null);
         ArgumentCaptor<FuzzyWatchEventWatcher> watcherCaptor = ArgumentCaptor.forClass(FuzzyWatchEventWatcher.class);
-        verify(configService).fuzzyWatch(eq(NacosRegistryCenter.toDataId("/job") + ".*"), eq(GROUP), watcherCaptor.capture());
+        verify(configService).fuzzyWatchWithGroupKeys(eq(NacosRegistryCenter.toDataId("/job") + ".*"), eq(GROUP), watcherCaptor.capture());
         String childDataId = NacosRegistryCenter.toDataId("/job/config");
         when(configService.getConfig(eq(childDataId), eq(GROUP), anyLong())).thenReturn("v1");
         watcherCaptor.getValue().onEvent(ConfigFuzzyWatchChangeEvent.build("public", GROUP, childDataId, "ADD_CONFIG", "FUZZY_WATCH_RESOURCE_CHANGED"));
@@ -263,6 +264,82 @@ class NacosRegistryCenterTest {
     }
     
     @Test
+    void assertPersistEmptyValue() throws Exception {
+        String dataId = NacosRegistryCenter.toDataId(KEY);
+        when(configService.getConfig(eq(dataId), eq(GROUP), anyLong())).thenReturn(NacosRegistryCenter.EMPTY_VALUE_PLACEHOLDER);
+        registryCenter.persist(KEY, "");
+        verify(configService).publishConfig(eq(dataId), eq(GROUP), eq(NacosRegistryCenter.EMPTY_VALUE_PLACEHOLDER));
+        assertThat(registryCenter.isExisted(KEY), is(true));
+        assertThat(registryCenter.getDirectly(KEY), is(""));
+    }
+    
+    @Test
+    void assertCacheEmptyValue() throws Exception {
+        String dataId = NacosRegistryCenter.toDataId(KEY);
+        Set<String> groupKeys = new HashSet<>(Collections.singletonList(GroupKey.getKey(dataId, GROUP)));
+        when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class)))
+                .thenReturn(CompletableFuture.completedFuture(groupKeys));
+        doNothing().when(configService).cancelFuzzyWatch(anyString(), anyString(), any(FuzzyWatchEventWatcher.class));
+        when(configService.getConfig(eq(dataId), eq(GROUP), anyLong())).thenReturn(NacosRegistryCenter.EMPTY_VALUE_PLACEHOLDER);
+        registryCenter.addCacheData("/job");
+        assertThat(registryCenter.get(KEY), is(""));
+        ArgumentCaptor<Listener> listenerCaptor = ArgumentCaptor.forClass(Listener.class);
+        verify(configService).addListener(eq(dataId), eq(GROUP), listenerCaptor.capture());
+        listenerCaptor.getValue().receiveConfigInfo(NacosRegistryCenter.EMPTY_VALUE_PLACEHOLDER);
+        assertThat(registryCenter.get(KEY), is(""));
+        registryCenter.evictCacheData("/job");
+    }
+    
+    @Test
+    void assertWatchEmptyValue() throws Exception {
+        when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class)))
+                .thenReturn(CompletableFuture.completedFuture(Collections.emptySet()));
+        doNothing().when(configService).cancelFuzzyWatch(anyString(), anyString(), any(FuzzyWatchEventWatcher.class));
+        List<DataChangedEvent> events = new CopyOnWriteArrayList<>();
+        registryCenter.watch("/job", events::add, null);
+        ArgumentCaptor<FuzzyWatchEventWatcher> watcherCaptor = ArgumentCaptor.forClass(FuzzyWatchEventWatcher.class);
+        verify(configService).fuzzyWatchWithGroupKeys(eq(NacosRegistryCenter.toDataId("/job") + ".*"), eq(GROUP), watcherCaptor.capture());
+        String childDataId = NacosRegistryCenter.toDataId("/job/flag");
+        when(configService.getConfig(eq(childDataId), eq(GROUP), anyLong())).thenReturn(NacosRegistryCenter.EMPTY_VALUE_PLACEHOLDER);
+        watcherCaptor.getValue().onEvent(ConfigFuzzyWatchChangeEvent.build("public", GROUP, childDataId, "ADD_CONFIG", "FUZZY_WATCH_RESOURCE_CHANGED"));
+        assertThat(events.size(), is(1));
+        assertThat(events.get(0).getValue(), is(""));
+        registryCenter.removeDataListeners("/job");
+    }
+    
+    @Test
+    void assertWatchEventBeforeListingAddsContentListenerOnce() throws Exception {
+        String childDataId = NacosRegistryCenter.toDataId("/job/config");
+        when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class))).thenAnswer(invocation -> {
+            FuzzyWatchEventWatcher watcher = invocation.getArgument(2);
+            watcher.onEvent(ConfigFuzzyWatchChangeEvent.build("public", GROUP, childDataId, "ADD_CONFIG", "FUZZY_WATCH_RESOURCE_CHANGED"));
+            return CompletableFuture.completedFuture(Collections.singleton(GroupKey.getKey(childDataId, GROUP)));
+        });
+        when(configService.getConfig(eq(childDataId), eq(GROUP), anyLong())).thenReturn("v1");
+        List<DataChangedEvent> events = new CopyOnWriteArrayList<>();
+        registryCenter.watch("/job", events::add, null);
+        verify(configService, times(1)).addListener(eq(childDataId), eq(GROUP), any(Listener.class));
+        assertThat(events.size(), is(1));
+        assertThat(events.get(0).getType(), is(DataChangedEvent.Type.ADDED));
+        registryCenter.removeDataListeners("/job");
+    }
+    
+    @Test
+    void assertCacheEventBeforeListingAddsContentListenerOnce() throws Exception {
+        String childDataId = NacosRegistryCenter.toDataId(KEY);
+        when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class))).thenAnswer(invocation -> {
+            FuzzyWatchEventWatcher watcher = invocation.getArgument(2);
+            watcher.onEvent(ConfigFuzzyWatchChangeEvent.build("public", GROUP, childDataId, "ADD_CONFIG", "FUZZY_WATCH_RESOURCE_CHANGED"));
+            return CompletableFuture.completedFuture(Collections.singleton(GroupKey.getKey(childDataId, GROUP)));
+        });
+        when(configService.getConfig(eq(childDataId), eq(GROUP), anyLong())).thenReturn("v1");
+        registryCenter.addCacheData("/job");
+        verify(configService, times(1)).addListener(eq(childDataId), eq(GROUP), any(Listener.class));
+        assertThat(registryCenter.get(KEY), is("v1"));
+        registryCenter.evictCacheData("/job");
+    }
+    
+    @Test
     void assertGetRawClient() {
         assertThat(registryCenter.getRawClient(), is(configService));
     }
@@ -285,7 +362,6 @@ class NacosRegistryCenterTest {
     void assertCloseSkipsClientListenerRemoval() throws Exception {
         when(configService.fuzzyWatchWithGroupKeys(anyString(), eq(GROUP), any(FuzzyWatchEventWatcher.class)))
                 .thenReturn(CompletableFuture.completedFuture(Collections.emptySet()));
-        doNothing().when(configService).cancelFuzzyWatch(anyString(), anyString(), any(FuzzyWatchEventWatcher.class));
         List<DataChangedEvent> events = new CopyOnWriteArrayList<>();
         registryCenter.watch("/job", events::add, null);
         clearInvocations(configService);

@@ -303,7 +303,9 @@ public class ExampleUtils {
 
 3. `企业微信通知策略`，`钉钉通知策略`，`邮件通知策略`尚未在 GraalVM Native Image 下可用。
 
-4. ElasticJob 的 Spring 命名空间集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` 尚未在 GraalVM Native Image 下可用。
+4. ElasticJob 的 Spring 命名空间集成模块 `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` 已有 native 测试覆盖注册中心标签 `elasticjob:memory`、`elasticjob:etcd`、`elasticjob:nacos` 和 `elasticjob:zookeeper`、作业扫描 `elasticjob:job-scanner`、快照导出 `elasticjob:snapshot`，以及 RDB 事件追踪 `elasticjob:rdb-tracing`。通过 `elasticjob:job` 和 `job-ref` 定义的一次性作业、定时作业和非流式数据流作业，以及 `job-type` 为 `SCRIPT` 和 `HTTP` 的脚本作业和 HTTP 作业，也已有 native 测试覆盖。`job-type` 为通过 SPI 注册的自定义类型化作业执行器的作业，也已有 native 测试覆盖。测试中的自定义执行器拥有公有无参构造器，无需额外的 reachability 元数据即可在 native 构建中运行。
+
+5. `job-type` 为 `HTTP` 的作业通过 `java.net.HttpURLConnection` 访问 `http` 地址，因此 GraalVM Native Image 构建时需要启用 `http` URL 协议，例如使用 `--enable-url-protocols=http`。
 
 ## 贡献 GraalVM Reachability Metadata
 

@@ -14,6 +14,14 @@ To use the Spring boot, user need to add the dependency of the `elasticjob-sprin
 </dependency>
 ```
 
+## Spring Boot Compatibility
+
+The starter is compiled against Spring Boot 2.7. The same artifacts are tested on Spring Boot 2.7, 3.5 and 4.0,
+so applications on any of these lines use the same dependency.
+
+- Spring Boot 2.7 requires JDK 8 or above.
+- Spring Boot 3.5 and 4.0 require JDK 17 or above, as Spring Boot itself does.
+
 ## Registry Center Configuration
 
 Prefix: `elasticjob.reg-center`

@@ -47,6 +47,11 @@ jobs:
       - name: Build with Maven
         run: |
           ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -Pcheck -T1C
+      - name: Run Spring tests of the artifacts compiled against Spring Boot 2.7 on Spring Boot 3 and 4
+        if: matrix.os == 'ubuntu-latest' && matrix.java == '17'
+        run: |
+          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' -Pspring-boot-3 -Dmaven.main.skip=true -pl spring/boot-starter,spring/namespace -am test -Dtest='org.apache.shardingsphere.elasticjob.spring.**.*Test' -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false -T1C
+          ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' -Pspring-boot-4 -Dmaven.main.skip=true -pl spring/boot-starter,spring/namespace -am test -Dtest='org.apache.shardingsphere.elasticjob.spring.**.*Test' -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false -T1C
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.java == '17'
         uses: codecov/codecov-action@v3
@@ -75,3 +80,21 @@ jobs:
         run: ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' clean install -DskipTests -T1C
       - name: Run Tests with JDK 8
         run: JAVA_HOME=$JAVA_HOME_8_X64 ./mvnw --batch-mode --no-transfer-progress surefire:test -fae -T1C
+
+  build-spring-boot-lines:
+    if: github.repository == 'apache/shardingsphere-elasticjob'
+    strategy:
+      matrix:
+        spring-boot: [ 3, 4 ]
+        java: [ 17, 25 ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+          cache: 'maven'
+      - name: Build and test Spring Boot Starter and Spring Namespace with Spring Boot ${{ matrix.spring-boot }}
+        run: ./mvnw --batch-mode --no-transfer-progress '-Dmaven.javadoc.skip=true' -Pspring-boot-${{ matrix.spring-boot }} -pl spring/boot-starter,spring/namespace -am clean test -Dtest='org.apache.shardingsphere.elasticjob.spring.**.*Test' -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false -T1C

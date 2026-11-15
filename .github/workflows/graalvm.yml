@@ -23,6 +23,7 @@ on:
     paths:
       - '.github/workflows/graalvm.yml'
       - 'reachability-metadata/src/**'
+      - 'spring/**'
       - 'test/native/native-image-filter/**'
       - 'test/native/src/**'
   workflow_dispatch:

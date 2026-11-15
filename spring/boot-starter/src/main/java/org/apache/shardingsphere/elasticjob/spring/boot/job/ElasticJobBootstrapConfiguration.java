@@ -73,8 +73,8 @@ public class ElasticJobBootstrapConfiguration implements SmartInitializingSingle
         if (1 == tracingConfigurationBeans.size()) {
             return tracingConfigurationBeans.values().iterator().next();
         }
-        throw new BeanCreationException("More than one [org.apache.shardingsphere.elasticjob.tracing.api.TracingConfiguration] beans found. "
-                + "Consider disabling [org.apache.shardingsphere.elasticjob.tracing.boot.ElasticJobTracingAutoConfiguration].");
+        throw new BeanCreationException("More than one [" + TracingConfiguration.class.getName() + "] beans found. "
+                + "Keep only one of them, for example by removing the extra bean or by not setting [elasticjob.tracing.type] to RDB.");
     }
     
     private void constructJobBootstraps(final ElasticJobProperties elasticJobProperties, final SingletonBeanRegistry singletonBeanRegistry,

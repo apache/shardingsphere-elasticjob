@@ -312,7 +312,9 @@ public class ExampleUtils {
 
 3. `WeCom Notification Policy`, `DingTalk Notification Policy`, and `Email Notification Policy` are not yet available under GraalVM Native Image.
 
-4. The Spring namespace integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` of ElasticJob is not yet available under GraalVM Native Image.
+4. The Spring namespace integration module `org.apache.shardingsphere.elasticjob:elasticjob-spring-namespace` is covered by native tests for the registry center tags `elasticjob:memory`, `elasticjob:etcd`, `elasticjob:nacos` and `elasticjob:zookeeper`, for the job scanner `elasticjob:job-scanner`, for the snapshot `elasticjob:snapshot`, and for RDB tracing with `elasticjob:rdb-tracing`. Jobs defined by `elasticjob:job` are covered for one-off, scheduled and non-streaming dataflow jobs with `job-ref`, and for script jobs and HTTP jobs with `job-type` as `SCRIPT` and `HTTP`. Jobs with a custom `job-type`, which is a typed job item executor registered through SPI, are covered by native tests as well. The custom executor in the tests has a public no-argument constructor and needs no additional reachability metadata to run in the native image build.
+
+5. Jobs defined by `elasticjob:job` with `job-type` as `HTTP` connect to `http` URIs with `java.net.HttpURLConnection`, so the GraalVM Native Image build must enable the `http` URL protocol, for example with `--enable-url-protocols=http`.
 
 ## Contribute GraalVM Reachability Metadata
 

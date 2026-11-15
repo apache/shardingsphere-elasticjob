@@ -8,8 +8,8 @@ ElasticJob 提供自定义的 Spring Boot Starter，可以与 Spring Boot 配合
 基于 ElasticJob Spring Boot Starter 使用 ElasticJob ，用户无需手动创建 CoordinatorRegistryCenter、JobBootstrap 等实例，
 只需实现核心作业逻辑并辅以少量配置，即可利用轻量、无中心化的 ElasticJob 解决分布式调度问题。
 
-以下内容仅通过 Spring Boot 3 作为演示。 
-相关内容在 Spring Boot 2 上仍可能有效，但由于 Spring Boot 2 已经结束维护，不对 Spring Boot 2 做任何可用性假设。
+以下内容以 Spring Boot 3 作为演示，同样适用于 Spring Boot 2.7 和 4.0，
+参见 [Spring Boot 兼容性](/cn/user-manual/configuration/spring-boot-starter/)。
 
 ## 作业配置
 

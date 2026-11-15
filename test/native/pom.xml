@@ -28,6 +28,7 @@
     
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.compiler.release>${native.java.version}</maven.compiler.release>
         <!--TODO Blocked by https://github.com/apache/shardingsphere-elasticjob/issues/2425 -->
         <spring-boot-dependencies.version>3.5.16</spring-boot-dependencies.version>
         <slf4j.version>2.0.18</slf4j.version>
@@ -139,6 +140,9 @@
                     </agent>
                     <buildArgs>
                         <arg>--initialize-at-run-time=io.grpc.netty.shaded.io.netty</arg>
+                        <!-- HTTP job tests call a local server built on com.sun.net.httpserver, which needs the http URL protocol and the jdk.httpserver module. -->
+                        <arg>--enable-url-protocols=http</arg>
+                        <arg>--add-modules=jdk.httpserver</arg>
                     </buildArgs>
                     <metadataRepository>
                         <enabled>true</enabled>

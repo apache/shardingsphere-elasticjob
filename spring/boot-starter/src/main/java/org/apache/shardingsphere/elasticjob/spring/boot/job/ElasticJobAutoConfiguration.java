@@ -22,7 +22,6 @@ import org.apache.shardingsphere.elasticjob.spring.boot.reg.snapshot.ElasticJobS
 import org.apache.shardingsphere.elasticjob.spring.boot.tracing.ElasticJobTracingConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -31,7 +30,11 @@ import org.springframework.context.annotation.Import;
  * ElasticJob auto configuration.
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
+// Matched by name: Spring Boot 4 moved DataSourceAutoConfiguration to spring-boot-jdbc.
+@AutoConfigureAfter(name = {
+        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration"
+})
 @ConditionalOnProperty(name = "elasticjob.enabled", havingValue = "true", matchIfMissing = true)
 @Import({ElasticJobRegistryCenterConfiguration.class, ElasticJobTracingConfiguration.class, ElasticJobSnapshotServiceConfiguration.class})
 @EnableConfigurationProperties(ElasticJobProperties.class)
