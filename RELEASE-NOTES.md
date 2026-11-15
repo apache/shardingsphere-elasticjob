@@ -14,7 +14,6 @@
 1. Registry Center: Supports Nacos and in-memory storage as the registry center - [#2436](https://github.com/apache/shardingsphere-elasticjob/issues/2436)
 1. Spring: Spring Boot Starter and Spring Namespace support etcd, Nacos and in-memory registry centers - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
 1. Spring: Spring Boot Starter supports Spring Boot 2.7, 3.5 and 4.0, and Spring Namespace supports Spring Framework 5.3, 6.2 and 7.0 - [#2506](https://github.com/apache/shardingsphere-elasticjob/issues/2506)
-1. Spring: Spring Namespace registry centers, job scanner, snapshot, RDB tracing and the jobs defined with job-ref or job-type SCRIPT or HTTP work under GraalVM Native Image, verified by native tests - [#2506](https://github.com/apache/shardingsphere-elasticjob/issues/2506)
 1. Annotation: Complete Annotation Job support - [#1445](https://github.com/apache/shardingsphere-elasticjob/issues/1445)
 
 ### Bug Fixes
@@ -30,7 +29,6 @@
 1. Registry Center: Fixes the issue that `ZookeeperRegistryCenter` throws a null pointer exception when watching a path without cache - [#2543](https://github.com/apache/shardingsphere-elasticjob/issues/2543)
 1. Registry Center: Fixes registry center closed-client reads and nested interrupts - [#2551](https://github.com/apache/shardingsphere-elasticjob/pull/2551)
 1. Registry Center: Fixes closed-client reads and listener removal on `NacosRegistryCenter` close - [#2553](https://github.com/apache/shardingsphere-elasticjob/pull/2553)
-1. Registry Center: Fixes the issue that `NacosRegistryCenter` drops empty values and watch events, so jobs using the Nacos registry center may never shard or execute - [#2568](https://github.com/apache/shardingsphere-elasticjob/pull/2568)
 1. Registry Center: Skips revoking already expired leases when closing `EtcdRegistryCenter` - [#2560](https://github.com/apache/shardingsphere-elasticjob/pull/2560)
 1. Spring: Shuts down scheduled job bootstraps gracefully when the Spring application context closes - [#2548](https://github.com/apache/shardingsphere-elasticjob/pull/2548)
 1. Spring: Fixes the issue that `@ElasticJobScan` skips bootstrap registration when the job bean is already registered by component scanning - [#2559](https://github.com/apache/shardingsphere-elasticjob/pull/2559)
