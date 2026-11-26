@@ -23,16 +23,14 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PropertiesPreconditionsTest {
     
     @Test
     void assertValidateIsRequiredWithValidateError() {
-        try {
-            PropertiesPreconditions.checkRequired(new Properties(), "key");
-        } catch (IllegalArgumentException ex) {
-            assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", "key")));
-        }
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> PropertiesPreconditions.checkRequired(new Properties(), "key"));
+        assertThat(ex.getMessage(), is(String.format("The property `%s` is required.", "key")));
     }
     
     @Test
@@ -58,21 +56,15 @@ class PropertiesPreconditionsTest {
     void assertValidateIsPositiveIntegerWithWrongString() {
         Properties props = new Properties();
         props.setProperty("key", "wrong_value");
-        try {
-            PropertiesPreconditions.checkPositiveInteger(props, "key");
-        } catch (IllegalArgumentException ex) {
-            assertThat(ex.getMessage(), is(String.format("The property `%s` should be integer.", "key")));
-        }
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> PropertiesPreconditions.checkPositiveInteger(props, "key"));
+        assertThat(ex.getMessage(), is(String.format("The property `%s` should be integer.", "key")));
     }
     
     @Test
     void assertValidateIsPositiveIntegerWithNegativeNumber() {
         Properties props = new Properties();
         props.setProperty("key", "-1");
-        try {
-            PropertiesPreconditions.checkPositiveInteger(props, "key");
-        } catch (IllegalArgumentException ex) {
-            assertThat(ex.getMessage(), is(String.format("The property `%s` should be positive.", "key")));
-        }
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> PropertiesPreconditions.checkPositiveInteger(props, "key"));
+        assertThat(ex.getMessage(), is(String.format("The property `%s` should be positive.", "key")));
     }
 }
