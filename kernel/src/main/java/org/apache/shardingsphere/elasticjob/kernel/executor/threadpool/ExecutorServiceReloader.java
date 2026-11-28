@@ -44,7 +44,7 @@ public final class ExecutorServiceReloader implements Closeable {
      * @param jobConfig job configuration
      */
     public synchronized void reloadIfNecessary(final JobConfiguration jobConfig) {
-        if (jobExecutorThreadPoolSizeProviderType.equals(jobConfig.getJobExecutorThreadPoolSizeProviderType())) {
+        if (jobExecutorThreadPoolSizeProviderType.equals(getJobExecutorThreadPoolSizeProviderType(jobConfig))) {
             return;
         }
         executorService.shutdownNow();
@@ -55,6 +55,10 @@ public final class ExecutorServiceReloader implements Closeable {
         JobExecutorThreadPoolSizeProvider jobExecutorThreadPoolSizeProvider = TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType());
         jobExecutorThreadPoolSizeProviderType = jobExecutorThreadPoolSizeProvider.getType();
         executorService = new ElasticJobExecutorService("elasticjob-" + jobConfig.getJobName(), jobExecutorThreadPoolSizeProvider.getSize()).createExecutorService();
+    }
+    
+    private String getJobExecutorThreadPoolSizeProviderType(final JobConfiguration jobConfig) {
+        return TypedSPILoader.getService(JobExecutorThreadPoolSizeProvider.class, jobConfig.getJobExecutorThreadPoolSizeProviderType()).getType();
     }
     
     @Override
